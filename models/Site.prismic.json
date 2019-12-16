@@ -1,0 +1,83 @@
+{
+  "Information" : {
+    "title" : {
+      "type" : "Text",
+      "fieldset" : "Title",
+      "config" : {
+        "label" : "Title"
+      }
+    },
+    "description" : {
+      "type" : "Text",
+      "fieldset" : "Description",
+      "config" : {
+        "label" : "Description"
+      }
+    },
+    "address" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Address"
+      }
+    }
+  },
+  "Analytics" : {
+    "googleUA" : {
+      "type" : "Text",
+      "fieldset" : "Google Analytics Tag",
+      "config" : {
+        "label" : "Google Analytics Tag"
+      }
+    },
+    "googleVerify" : {
+      "type" : "Text",
+      "fieldset" : "Google Site Verification",
+      "config" : {
+        "label" : "Google Site Verification"
+      }
+    }
+  },
+  "Navigation" : {
+    "navi" : {
+      "type" : "Slices",
+      "fieldset" : "Navigation Items",
+      "config" : {
+        "choices" : {
+          "nav_item" : {
+            "type" : "Slice",
+            "fieldset" : "Nav Item",
+            "description" : "An item in the main navigation",
+            "icon" : "open_in_new",
+            "display" : "list",
+            "non-repeat" : {
+              "text" : {
+                "type" : "Text",
+                "config" : {
+                  "label" : "Text",
+                  "placeholder" : "Nav Item Text"
+                }
+              },
+              "slug" : {
+                "type" : "Text",
+                "config" : {
+                  "label" : "Slug",
+                  "placeholder" : "A :type or :uid mirror"
+                }
+              },
+              "page" : {
+                "type" : "Link",
+                "config" : {
+                  "select" : "document",
+                  "customtypes" : [ "page" ],
+                  "label" : "Page",
+                  "placeholder" : "Optional doc connection?"
+                }
+              }
+            },
+            "repeat" : { }
+          }
+        }
+      }
+    }
+  }
+}

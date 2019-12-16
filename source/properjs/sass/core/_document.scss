@@ -1,0 +1,66 @@
+/******************************************************************************
+ * Document
+*******************************************************************************/
+html {
+    // tweak
+    background-color: $black;
+    color: $white;
+    transition: color $base-duration $ease,
+                background-color $base-duration $ease;
+
+    &.is-tranny,
+    &.is-site-intro,
+    &.is-navi-mobile {
+        overflow: hidden;
+    }
+
+    &.is-scrolling {
+        pointer-events: none;
+    }
+}
+body {
+    // OpenType features
+    @include font-family-sans();
+    background-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: rgba( 0, 0, 0, 0 );
+    -webkit-touch-callout: none;
+
+    &.is-tranny,
+    &.is-site-intro {
+        overflow: hidden;
+    }
+}
+html,
+body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+
+
+/******************************************************************************
+ * Element
+*******************************************************************************/
+hr {
+    @include ruler();
+}
+pre {
+    @include mono();
+    white-space: pre;
+    overflow: auto;
+    padding-top: $expander-0;
+    padding-bottom: $expander-0;
+    background-color: #111;
+    border: 1px solid $grey-dark;
+}
+
+
+
+/******************************************************************************
+ * User Agent
+*******************************************************************************/
+::-webkit-scrollbar {
+    display: none;
+    }

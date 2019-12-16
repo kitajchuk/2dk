@@ -1,0 +1,42 @@
+{
+    "site": {
+        "data": {
+            "title": "2dk",
+            "description": "A Javascript Kit of Parts 2d game maker SDK.",
+            "googleUA": "",
+            "googleVerify": ""
+        }
+    },
+    "navi": {
+        "items": [
+            {
+                "uid": "home",
+                "text": "Home",
+                "slug": "/"
+            },
+            {
+                "uid": "maps",
+                "text": "Maps",
+                "slug": "/maps/"
+            }
+        ]
+    },
+    "results": [
+        {
+            "uid": "home",
+            "type": "page",
+            "data": {
+                "title": "2dK",
+                "description": "A Javascript Kit of Parts 2d game maker SDK."
+            }
+        },
+        {
+            "uid": "maps",
+            "type": "page",
+            "data": {
+                "title": "2dK Maps",
+                "description": "2 dimensional, tile-based classic gaming maps with Javascript <em>Canvas</em>."
+            }
+        }
+    ]
+}

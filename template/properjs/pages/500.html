@@ -1,0 +1,8 @@
+<div class="servererror">
+    <div class="-wrap -exp">
+        <h2><em>Page Error</em></h2>
+        <pre >
+<%- locals.context.get( 'error' ).toString().replace( /\</g, '&lt;' ).replace( /\>/g, '&gt;' ) %>
+        </pre>
+    </div>
+</div>

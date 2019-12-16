@@ -1,0 +1,54 @@
+._svg {
+    transition: fill $base-duration $ease;
+    cursor: pointer;
+    fill: $white;
+}
+._svg--logo {
+    // width: 128px;
+    // height: 108px;
+    width: 114px;
+    height: 96.19px;
+    transition: fill $base-duration $ease,
+                width $base-duration $ease,
+                height $base-duration $ease;
+
+    @include respond( $mobile-breakpoint ) {
+        width: 64px;
+        height: 54px;
+    }
+}
+._svg--play {
+    width: $expander-m;
+    height: $expander-m;
+    pointer-events: none;
+
+    @include respond-min( $mobile-breakpoint ) {
+        width: $padding-1;
+        height: $padding-1;
+    }
+
+    @include respond-min( $desktop-breakpoint ) {
+        width: $expander-1;
+        height: $expander-1;
+    }
+}
+._svg--npm,
+._svg--tabi,
+._svg--patreon,
+._svg--kickstarter {}
+._svg--npm {
+    width: 64px;
+    height: 20.48px;
+}
+._svg--tabi {
+    width: 43px;
+    height: 29px;
+}
+._svg--kickstarter {
+    width: 25.18px;
+    height: 28px;
+}
+._svg--patreon {
+    width: 29.197px;
+    height: 28px;
+}

@@ -1,0 +1,13 @@
+<%
+const doc = locals.context.doc;
+%>
+<div class="maps js-2dk-maps -exp">
+    <div class="maps__mast -wrap">
+        <h1><em><%- doc.data.title %></em></h1>
+        <p><%- doc.data.description %></p>
+    </div>
+    <hr />
+    <div class="maps__map">
+        <div class="_2dk js-2dk-map"></div>
+    </div>
+</div>
