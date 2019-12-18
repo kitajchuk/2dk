@@ -4,7 +4,7 @@ require( "../sass/2dk.scss" );
 
 
 // Load the JS
-import { Player } from "./lib/index";
+import { Loader, Player, Hero, Map } from "./lib/index";
 
 
 
@@ -17,7 +17,24 @@ import { Player } from "./lib/index";
  */
 class App {
     constructor () {
-        this.player = new Player();
+        this.loader = new Loader();
+        this.loader.loadJson( "/2dk/bundles/test/game.json" ).then(( json ) => {
+            // Player
+            this.player = new Player( json.game );
+
+            // Hero
+            this.hero = new Hero( json.hero );
+            this.player.setHero( this.hero );
+
+            // Map
+            this.loader.loadJson( json.hero.spawn.map ).then(( data ) => {
+                this.map = new Map( data );
+                this.player.setMap( this.map );
+
+                // START!
+                this.player.start();
+            });
+        });
     }
 }
 

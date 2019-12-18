@@ -10,9 +10,36 @@
 
 
 /******************************************************************************
+ * Document
+*******************************************************************************/
+html,
+body {
+    background-color: $black;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+body {
+    @include font-family-sans-bold();
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: rgba( 0, 0, 0, 0 );
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: none;
+}
+
+
+
+/******************************************************************************
  * 2dk Lib
 *******************************************************************************/
-@import "lib/document";
+$tile-size: 32px;
+$hero-speed: 240ms;
+$hero-height: 64px;
+$hero-width: 38px;
+$hero-sprite-width: 304px;
+$hero-sprite-height: 768px;
 
 
 
@@ -21,7 +48,6 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    touch-action: none;
 }
 
 
@@ -60,7 +86,7 @@
 
     ._2dk--debug & {
         background-color: #111;
-        outline: 1px solid $grey-dark;
+        outline: 1px solid $yellow;
     }
 }
 
@@ -76,19 +102,16 @@
     display: block;
     width: 100%;
     height: 100%;
-    z-index: 2;
+    z-index: 10;
 }
 ._2dk__controls > div {
-    cursor: pointer;
     position: absolute;
     display: block;
     background: rgba( 255, 255, 255, 0.25 );
     text-align: center;
     color: rgba( 0, 0, 0, 0.25 );
-    text-stroke: 1px rgba( 0, 0, 0, 0.1 );
+    -webkit-text-stroke: 1px rgba( 0, 0, 0, 0.1 );
     line-height: 1;
-    user-select: none;
-    touch-action: none;
 
     > span {
         display: block;
@@ -164,4 +187,122 @@
     left: 50%;
     transform: translate3d( -50%, 0, 0 );
     margin-left: 49px;
+}
+
+
+
+/******************************************************************************
+ * Maps
+*******************************************************************************/
+._2dk__map,
+._2dk__map__layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    &[data-layer="background"] {
+        z-index: 1;
+    }
+
+    &[data-layer="debug"],
+    &[data-layer="foreground"] {
+        z-index: 3;
+    }
+}
+._2dk__plane {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    // transition: transform $hero-speed ease-in-out;
+}
+
+
+
+/******************************************************************************
+ * Sprites
+*******************************************************************************/
+._2dk__hero {
+    height: $hero-height;
+    width: $tile-size;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    outline: 1px solid $yellow;
+    // transition: transform $hero-speed ease-in-out;
+
+    &:after {
+        content: "";
+        height: $hero-height;
+        width: $hero-width;
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translate3d( -50%, 0, 0 );
+        background-repeat: no-repeat;
+        background-size: ($hero-sprite-width / 2) ($hero-sprite-height / 2);
+    }
+
+    &.left:after {
+        background-position: -76px -0px;
+    }
+    &.right:after {
+        background-position: -114px -0px;
+    }
+    &.up:after {
+        background-position: -38px -0px;
+    }
+    &.down:after {
+        background-position: -0px -0px;
+    }
+    &.walk:after {
+        animation-duration: $hero-speed;
+        animation-iteration-count: infinite;
+    }
+    &.walk.left:after {
+        animation-name: walk-left;
+    }
+    &.walk.right:after {
+        animation-name: walk-right;
+    }
+    &.walk.up:after {
+        animation-name: walk-up;
+    }
+    &.walk.down:after {
+        animation-name: walk-down;
+    }
+}
+
+
+
+@keyframes walk-up {
+    0% { background-position: -38px -64px; }
+    49.99999% { background-position: -38px -64px; }
+    50% { background-position: -38px -128px; }
+    99.99999% { background-position: -38px -128px; }
+    100% { background-position: -38px -0px; }
+}
+@keyframes walk-down {
+    0% { background-position: -0px -64px; }
+    49.99999% { background-position: -0px -64px; }
+    50% { background-position: -0px -128px; }
+    99.99999% { background-position: -0px -128px; }
+    100% { background-position: -0px -0px; }
+}
+@keyframes walk-left {
+    0% { background-position: -76px -64px; }
+    49.99999% { background-position: -76px -64px; }
+    50% { background-position: -76px -128px; }
+    99.99999% { background-position: -76px -128px; }
+    100% { background-position: -76px -0px; }
+}
+@keyframes walk-right {
+    0% { background-position: -114px -64px; }
+    49.99999% { background-position: -114px -64px; }
+    50% { background-position: -114px -128px; }
+    99.99999% { background-position: -114px -128px; }
+    100% { background-position: -114px -0px; }
 }

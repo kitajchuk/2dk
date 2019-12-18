@@ -4,8 +4,8 @@ import $ from "properjs-hobo";
 
 
 const timers = {};
-const keyInterval = 1;
-const keyRepeated = 50;
+const keyInterval = Library.values.speed;
+const keyRepeated = Library.values.repeat;
 let aButton = 0;
 let bButton = 0;
 let instance = null;
@@ -39,7 +39,7 @@ const onKeyDown = ( e ) => {
 
 const onGameKeyUp = ( k ) => {
     if ( k === Library.keys.A ) {
-        instance.fire( "a-up" );
+        instance.fire( "a-release" );
 
         if ( aButton < keyRepeated ) {
             instance.fire( "a" );
@@ -49,13 +49,45 @@ const onGameKeyUp = ( k ) => {
     }
 
     if ( k === Library.keys.B ) {
-        instance.fire( "b-up" );
+        instance.fire( "b-release" );
 
         if ( bButton < keyRepeated ) {
             instance.fire( "b" );
         }
 
         bButton = 0;
+    }
+
+    if ( k === Library.keys.UP ) {
+        instance.fire( "d-up-release", Library.moves.UP );
+    }
+
+    if ( k === Library.keys.RIGHT ) {
+        instance.fire( "d-right-release", Library.moves.RIGHT );
+    }
+
+    if ( k === Library.keys.DOWN ) {
+        instance.fire( "d-down-release", Library.moves.DOWN );
+    }
+
+    if ( k === Library.keys.LEFT ) {
+        instance.fire( "d-left-release", Library.moves.LEFT );
+    }
+};
+
+
+
+const onGameKeyDown = ( k ) => {
+    if ( k === Library.keys.A ) {
+        // Longpress ( hold )
+        aButton++;
+        instance.fire( "a-press" );
+    }
+
+    if ( k === Library.keys.B ) {
+        // Longpress ( hold )
+        bButton++;
+        instance.fire( "b-press" );
     }
 
     if ( k === Library.keys.START ) {
@@ -65,35 +97,21 @@ const onGameKeyUp = ( k ) => {
     if ( k === Library.keys.SELECT ) {
         instance.fire( "select" );
     }
-};
-
-
-
-const onGameKeyDown = ( k ) => {
-    if ( k === Library.keys.A ) {
-        aButton++;
-        instance.fire( "a-down" );
-    }
-
-    if ( k === Library.keys.B ) {
-        bButton++;
-        instance.fire( "b-down" );
-    }
 
     if ( k === Library.keys.UP ) {
-        instance.fire( "d-up" );
+        instance.fire( "d-up-press", Library.moves.UP );
     }
 
     if ( k === Library.keys.RIGHT ) {
-        instance.fire( "d-right" );
+        instance.fire( "d-right-press", Library.moves.RIGHT );
     }
 
     if ( k === Library.keys.DOWN ) {
-        instance.fire( "d-down" );
+        instance.fire( "d-down-press", Library.moves.DOWN );
     }
 
     if ( k === Library.keys.LEFT ) {
-        instance.fire( "d-left" );
+        instance.fire( "d-left-press", Library.moves.LEFT );
     }
 };
 

@@ -1,9 +1,9 @@
 {
-  "title": "Clutch",
-  "name": "clutch",
-  "description": "A Developer SDK for Prismic.io.",
+  "title": "2dk",
+  "name": "2dk",
+  "description": "A Javascript 2d game maker SDK.",
   "private": true,
-  "version": "3.0.0",
+  "version": "1.0.0",
   "scripts": {
     "start": "(npm run server & npm run watch)",
     "bootstrap": "node clutch.install.js",
@@ -68,20 +68,18 @@
     "request-promise": "^4.2.2",
     "xml2js": "^0.4.22"
   },
-  "dependencies": {
-    "nes-cntlr": "^3.0.2"
-  },
+  "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git://github.com/kitajchuk/clutch.git"
+    "url": "git://github.com/kitajchuk/2dk.git"
   },
   "bugs": {
-    "url": "https://github.com/kitajchuk/clutch/issues"
+    "url": "https://github.com/kitajchuk/2dk/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/kitajchuk/clutch/blob/master/LICENSE"
+      "url": "https://github.com/kitajchuk/2dk/blob/master/LICENSE"
     }
   ],
   "keywords": [],

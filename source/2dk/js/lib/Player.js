@@ -1,10 +1,15 @@
 import KeysInterface from "./KeysInterface";
 import TouchInterface from "./TouchInterface";
+import Library from "./Library";
+import GameBox from "./GameBox";
 
 
 
 export default class Player {
-    constructor () {
+    constructor ( data ) {
+        this.data = data;
+        this.paused = true;
+
         this.detect();
         this.build();
         this.bind();
@@ -21,6 +26,7 @@ export default class Player {
         })();
 
         this.sac = (window.navigator.standalone || window.matchMedia( "(display-mode: standalone)" ).matches);
+        this.debug = (!this.sac && !this.device);
     }
 
 
@@ -29,25 +35,71 @@ export default class Player {
         this.interfaces.keys = new KeysInterface();
         this.interfaces.touch = new TouchInterface();
         this.element = document.createElement( "div" );
-        this.screen = document.createElement( "div" );
-
         this.element.className = `_2dk _2dk--${this.sac || this.device ? "play" : "debug"}`;
-        this.screen.className = `_2dk__screen`;
-
-        this.element.appendChild( this.screen );
         this.element.appendChild( this.interfaces.touch.element );
-
         document.body.appendChild( this.element );
     }
 
 
     bind () {
-        this.interfaces.keys.on( "a", () => {
-            console.log( "keys a" );
-        });
+        this._dPadPress = this.dPadPress.bind( this );
+        this.interfaces.keys.on( "d-left-press", this._dPadPress );
+        this.interfaces.touch.on( "d-left-press", this._dPadPress );
+        this.interfaces.keys.on( "d-right-press", this._dPadPress );
+        this.interfaces.touch.on( "d-right-press", this._dPadPress );
+        this.interfaces.keys.on( "d-up-press", this._dPadPress );
+        this.interfaces.touch.on( "d-up-press", this._dPadPress );
+        this.interfaces.keys.on( "d-down-press", this._dPadPress );
+        this.interfaces.touch.on( "d-down-press", this._dPadPress );
 
-        this.interfaces.touch.on( "a", () => {
-            console.log( "touch a" );
+        this._dPadRelease = this.dPadRelease.bind( this );
+        this.interfaces.keys.on( "d-left-release", this._dPadRelease );
+        this.interfaces.touch.on( "d-leftreleases", this._dPadRelease );
+        this.interfaces.keys.on( "d-right-release", this._dPadRelease );
+        this.interfaces.touch.on( "d-right-release", this._dPadRelease );
+        this.interfaces.keys.on( "d-up-release", this._dPadRelease );
+        this.interfaces.touch.on( "d-up-release", this._dPadRelease );
+        this.interfaces.keys.on( "d-down-release", this._dPadRelease );
+        this.interfaces.touch.on( "d-down-release", this._dPadRelease );
+    }
+
+
+    start () {
+        this.hero.load().then(() => {
+            this.map.load().then(() => {
+                this.gamebox = new GameBox( this );
+                this.paused = false;
+            });
         });
+    }
+
+
+    dPadPress ( dir ) {
+        // if ( this.paused ) {
+        //     return;
+        // }
+
+        this.gamebox.press( dir );
+    }
+
+
+    dPadRelease ( dir ) {
+        // if ( this.paused ) {
+        //     return;
+        // }
+
+        this.gamebox.release( dir );
+    }
+
+
+    setMap ( map ) {
+        this.map = map;
+        this.map.player = this;
+    }
+
+
+    setHero ( hero ) {
+        this.hero = hero;
+        this.hero.player = this;
     }
 }

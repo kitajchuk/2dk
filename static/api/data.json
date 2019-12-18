@@ -2,7 +2,7 @@
     "site": {
         "data": {
             "title": "2dk",
-            "description": "A Javascript Kit of Parts 2d game maker SDK.",
+            "description": "A Javascript 2d game maker SDK.",
             "googleUA": "",
             "googleVerify": ""
         }
@@ -27,7 +27,7 @@
             "type": "page",
             "data": {
                 "title": "2dK",
-                "description": "A Javascript Kit of Parts 2d game maker SDK."
+                "description": "A Javascript 2d game maker SDK."
             }
         },
         {

@@ -1,7 +1,7 @@
 2dk
 ===
 
-> A Javascript Kit of Parts 2d game maker SDK.
+> A Javascript 2d game maker SDK.
 
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/c2715ad9-4380-4ac9-a795-baf1a0854b7a/deploy-status)](https://app.netlify.com/sites/clutch-dev/deploys)

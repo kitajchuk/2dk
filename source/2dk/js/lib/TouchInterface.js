@@ -1,12 +1,11 @@
 import Library from "./Library";
 import Controller from "properjs-controller";
-import $ from "properjs-hobo";
 
 
 
 const timers = {};
-const touchInterval = 1;
-const touchRepeated = 50;
+const touchInterval = Library.values.speed;
+const touchRepeated = Library.values.repeat;
 let aButton = 0;
 let bButton = 0;
 let controls = null;
@@ -18,13 +17,21 @@ let controlsA = null;
 let controlsB = null;
 let controlsStart = null;
 let controlsSelect = null;
-let directions = [];
 let instance = null;
 
 
 
-const onPreventStart = ( e ) => {
+const onTouchEnd = ( e ) => {
     e.preventDefault();
+
+    endTouches();
+
+    controlsUp.classList.remove( "is-active" );
+    controlsLeft.classList.remove( "is-active" );
+    controlsRight.classList.remove( "is-active" );
+    controlsDown.classList.remove( "is-active" );
+
+    return false;
 };
 
 
@@ -40,25 +47,35 @@ const onTouchMove = ( e ) => {
     // Move off of a specific control
     if ( elem.className === "_2dk__controls" ) {
         endTouches();
-        $( directions ).removeClass( "is-active" );
+
+        controlsUp.classList.remove( "is-active" );
+        controlsLeft.classList.remove( "is-active" );
+        controlsRight.classList.remove( "is-active" );
+        controlsDown.classList.remove( "is-active" );
 
     // Move into a specific control
     } else if ( /up/.test( elem.className ) ) {
+        endTouches();
         startTouch( Library.keys.UP );
-        $( elem ).addClass( "is-active" );
+        elem.classList.add( "is-active" );
 
     } else if ( /right/.test( elem.className ) ) {
+        endTouches();
         startTouch( Library.keys.RIGHT );
-        $( elem ).addClass( "is-active" );
+        elem.classList.add( "is-active" );
 
     } else if ( /down/.test( elem.className ) ) {
+        endTouches();
         startTouch( Library.keys.DOWN );
-        $( elem ).addClass( "is-active" );
+        elem.classList.add( "is-active" );
 
     } else if ( /left/.test( elem.className ) ) {
+        endTouches();
         startTouch( Library.keys.LEFT );
-        $( elem ).addClass( "is-active" );
+        elem.classList.add( "is-active" );
     }
+
+    return false;
 };
 
 
@@ -68,19 +85,6 @@ const endTouches = () => {
         if ( timers.hasOwnProperty( k ) ) {
             endTouch( k );
         }
-    }
-};
-
-
-
-const startTouch = ( k ) => {
-    if ( !timers[ k ] ) {
-        onGameTouchStart( k );
-
-        timers[ k ] = setInterval(() => {
-            onGameTouchStart( k );
-
-        }, touchInterval );
     }
 };
 
@@ -98,137 +102,214 @@ const endTouch = ( k ) => {
 
 
 
-const onStartUp = () => {
+const startTouch = ( k ) => {
+    if ( !timers[ k ] ) {
+        onGameTouchStart( k );
+
+        timers[ k ] = setInterval(() => {
+            onGameTouchStart( k );
+
+        }, touchInterval );
+    }
+};
+
+
+
+const onStartUp = ( e ) => {
+    e.preventDefault();
+
     startTouch( Library.keys.UP );
 
-    $( controlsUp ).addClass( "is-active" );
+    controlsUp.classList.add( "is-active" );
+
+    return false;
 };
 
 
 
-const onStartRight = () => {
+const onStartRight = ( e ) => {
+    e.preventDefault();
+
     startTouch( Library.keys.RIGHT );
 
-    $( controlsRight ).addClass( "is-active" );
+    controlsRight.classList.add( "is-active" );
+
+    return false;
 };
 
 
 
-const onStartDown = () => {
+const onStartDown = ( e ) => {
+    e.preventDefault();
+
     startTouch( Library.keys.DOWN );
 
-    $( controlsDown ).addClass( "is-active" );
+    controlsDown.classList.add( "is-active" );
+
+    return false;
 };
 
 
 
-const onStartLeft = () => {
+const onStartLeft = ( e ) => {
+    e.preventDefault();
+
     startTouch( Library.keys.LEFT );
 
-    $( controlsLeft ).addClass( "is-active" );
+    controlsLeft.classList.add( "is-active" );
+
+    return false;
 };
 
 
 
-const onStartA = () => {
+const onStartA = ( e ) => {
+    e.preventDefault();
+
     startTouch( Library.keys.A );
 
-    $( controlsA ).addClass( "is-active" );
+    controlsA.classList.add( "is-active" );
+
+    return false;
 };
 
 
 
-const onStartB = () => {
+const onStartB = ( e ) => {
+    e.preventDefault();
+
     startTouch( Library.keys.B );
 
-    $( controlsB ).addClass( "is-active" );
+    controlsB.classList.add( "is-active" );
+
+    return false;
 };
 
 
 
-const onStartStart = () => {
+const onStartStart = ( e ) => {
+    e.preventDefault();
+
     startTouch( Library.keys.START );
 
-    $( controlsStart ).addClass( "is-active" );
+    controlsStart.classList.add( "is-active" );
+
+    return false;
 };
 
 
 
-const onStartSelect = () => {
+const onStartSelect = ( e ) => {
+    e.preventDefault();
+
     startTouch( Library.keys.SELECT );
 
-    $( controlsSelect ).addClass( "is-active" );
+    controlsSelect.classList.add( "is-active" );
+
+    return false;
 };
 
 
 
-const onEndUp = () => {
+const onEndUp = ( e ) => {
+    e.preventDefault();
+
     endTouch( Library.keys.UP );
 
-    $( controlsUp ).removeClass( "is-active" );
+    controlsUp.classList.remove( "is-active" );
+
+    return false;
 };
 
 
 
-const onEndRight = () => {
+const onEndRight = ( e ) => {
+    e.preventDefault();
+
     endTouch( Library.keys.RIGHT );
 
-    $( controlsRight ).removeClass( "is-active" );
+    controlsRight.classList.remove( "is-active" );
+
+    return false;
 };
 
 
 
-const onEndDown = () => {
+const onEndDown = ( e ) => {
+    e.preventDefault();
+
     endTouch( Library.keys.DOWN );
 
-    $( controlsDown ).removeClass( "is-active" );
+    controlsDown.classList.remove( "is-active" );
+
+    return false;
 };
 
 
 
-const onEndLeft = () => {
+const onEndLeft = ( e ) => {
+    e.preventDefault();
+
     endTouch( Library.keys.LEFT );
 
-    $( controlsLeft ).removeClass( "is-active" );
+    controlsLeft.classList.remove( "is-active" );
+
+    return false;
 };
 
 
 
-const onEndA = () => {
+const onEndA = ( e ) => {
+    e.preventDefault();
+
     endTouch( Library.keys.A );
 
-    $( controlsA ).removeClass( "is-active" );
+    controlsA.classList.remove( "is-active" );
+
+    return false;
 };
 
 
 
-const onEndB = () => {
+const onEndB = ( e ) => {
+    e.preventDefault();
+
     endTouch( Library.keys.B );
 
-    $( controlsB ).removeClass( "is-active" );
+    controlsB.classList.remove( "is-active" );
+
+    return false;
 };
 
 
 
-const onEndStart = () => {
+const onEndStart = ( e ) => {
+    e.preventDefault();
+
     endTouch( Library.keys.START );
 
-    $( controlsStart ).removeClass( "is-active" );
+    controlsStart.classList.remove( "is-active" );
+
+    return false;
 };
 
 
 
-const onEndSelect = () => {
+const onEndSelect = ( e ) => {
+    e.preventDefault();
+
     endTouch( Library.keys.SELECT );
 
-    $( controlsSelect ).removeClass( "is-active" );
+    controlsSelect.classList.remove( "is-active" );
+
+    return false;
 };
 
 
 
 const onGameTouchEnd = ( k ) => {
     if ( k === Library.keys.A ) {
-        instance.fire( "a-up" );
+        instance.fire( "a-release" );
 
         if ( aButton < touchRepeated ) {
             instance.fire( "a" );
@@ -238,13 +319,45 @@ const onGameTouchEnd = ( k ) => {
     }
 
     if ( k === Library.keys.B ) {
-        instance.fire( "b-up" );
+        instance.fire( "b-release" );
 
         if ( bButton < touchRepeated ) {
             instance.fire( "b" );
         }
 
         bButton = 0;
+    }
+
+    if ( k === Library.keys.UP ) {
+        instance.fire( "d-up-release", Library.moves.UP );
+    }
+
+    if ( k === Library.keys.RIGHT ) {
+        instance.fire( "d-right-release", Library.moves.RIGHT );
+    }
+
+    if ( k === Library.keys.DOWN ) {
+        instance.fire( "d-down-release", Library.moves.DOWN );
+    }
+
+    if ( k === Library.keys.LEFT ) {
+        instance.fire( "d-left-release", Library.moves.LEFT );
+    }
+};
+
+
+
+const onGameTouchStart = ( k ) => {
+    if ( k === Library.keys.A ) {
+        // Longpress ( hold )
+        aButton++;
+        instance.fire( "a-press" );
+    }
+
+    if ( k === Library.keys.B ) {
+        // Longpress ( hold )
+        bButton++;
+        instance.fire( "b-press" );
     }
 
     if ( k === Library.keys.START ) {
@@ -254,35 +367,21 @@ const onGameTouchEnd = ( k ) => {
     if ( k === Library.keys.SELECT ) {
         instance.fire( "select" );
     }
-};
-
-
-
-const onGameTouchStart = ( k ) => {
-    if ( k === Library.keys.A ) {
-        aButton++;
-        instance.fire( "a-down" );
-    }
-
-    if ( k === Library.keys.B ) {
-        bButton++;
-        instance.fire( "b-down" );
-    }
 
     if ( k === Library.keys.UP ) {
-        instance.fire( "d-up" );
+        instance.fire( "d-up-press", Library.moves.UP );
     }
 
     if ( k === Library.keys.RIGHT ) {
-        instance.fire( "d-right" );
+        instance.fire( "d-right-press", Library.moves.RIGHT );
     }
 
     if ( k === Library.keys.DOWN ) {
-        instance.fire( "d-down" );
+        instance.fire( "d-down-press", Library.moves.DOWN );
     }
 
     if ( k === Library.keys.LEFT ) {
-        instance.fire( "d-left" );
+        instance.fire( "d-left-press", Library.moves.LEFT );
     }
 };
 
@@ -297,9 +396,8 @@ export default class TouchInterface extends Controller {
 
             this.build();
 
-            // Prevent default on all touchstarts
-            document.addEventListener( "touchstart", onPreventStart, false );
             document.addEventListener( "touchmove", onTouchMove, false );
+            document.addEventListener( "touchend", onTouchEnd, false );
 
             controlsUp.addEventListener( "touchstart", onStartUp, false );
             controlsRight.addEventListener( "touchstart", onStartRight, false );
@@ -358,8 +456,6 @@ export default class TouchInterface extends Controller {
         controls.appendChild( controlsB );
         controls.appendChild( controlsStart );
         controls.appendChild( controlsSelect );
-
-        directions = [controlsUp, controlsRight, controlsDown, controlsLeft];
 
         this.element = controls;
     }

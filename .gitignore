@@ -17,7 +17,6 @@
 # Clutch
 .notes
 .clutch
-.clutch-pre
 static/js
 static/css
 static/svg
@@ -29,6 +28,7 @@ static/*.json
 static/**/*.json
 !static/img/icon/manifest.json
 !static/api/data.json
+!static/2dk/**/*.json
 
 
 # Node / npm
