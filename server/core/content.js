@@ -37,8 +37,9 @@ const getPage = function ( req, res, listener ) {
             // 0.2 => Multiple ContentItems(s)
             const isNoNamePage = (core.template.cache.pages.indexOf( `${page}.html` ) === -1);
             const isNoTypePage = data.doc ? (core.template.cache.pages.indexOf( `${data.doc.type}.html` ) === -1) : true;
+            const isWebAppPage = (context.page === core.config.app);
 
-            if ( isNoNamePage && isNoTypePage ) {
+            if ( isNoNamePage && isNoTypePage && !isWebAppPage ) {
                 const file = path.join( core.config.template.pagesDir, `${page}.html` );
 
                 fail( `Missing template for this endpoint. ${file.replace( `${page}.html`, `<em>${page}.html</em>` )}.` );
@@ -88,18 +89,19 @@ const getPage = function ( req, res, listener ) {
             });
         };
         const render = ( callback ) => {
+            let layout = core.config.template.layout;
             const localObject = {
                 context: context
             };
             const doc = localObject.context.get( "doc" );
             const isNoNamePage = (core.template.cache.pages.indexOf( `${page}.html` ) === -1);
-            let layout = core.config.template.layout;
+            const isWebAppPage = (context.page === core.config.app);
 
             if ( isNoNamePage && doc ) {
                 localObject.context.set( "page", doc.type );
             }
 
-            if ( context.page === core.config.app ) {
+            if ( isWebAppPage ) {
                 layout = path.join( core.config.template.dir, `${core.config.app}.html` );
             }
 

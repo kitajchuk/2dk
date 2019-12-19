@@ -12,7 +12,7 @@ const envVars = {
 };
 const config = {
     // App name
-    app: "2dk",
+    app: "webapp",
     // The URL of your actual site, Netlify domain: `kitajchuk.com`
     url: "https://2dk.kitajchuk.com",
     // Theme to load from ./source and ./template

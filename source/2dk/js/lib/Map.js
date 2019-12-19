@@ -1,7 +1,5 @@
 import Loader from "./Loader";
-import Library from "./Library";
-import Tween from "properjs-tween";
-import Easing from "properjs-easing";
+import Config from "./Config";
 
 
 
@@ -69,15 +67,15 @@ const drawMapTiles = ( ctx, img, data, grid ) => {
 
 
 const drawGridLines = ( ctx, w, h, g ) => {
-    ctx.globalAlpha = 1.0;
+    ctx.globalAlpha = 0.5;
 
     for ( let y = 1; y < h; y++ ) {
-        ctx.fillStyle = "#EEFD02";
+        ctx.fillStyle = Config.colors.white;
         ctx.fillRect( 0, (y * g), (g * w), 1 );
     }
 
     for ( let x = 1; x < w; x++ ) {
-        ctx.fillStyle = "#EEFD02";
+        ctx.fillStyle = Config.colors.white;
         ctx.fillRect( (x * g), 0, 1, (g * h) );
     }
 };
@@ -111,7 +109,6 @@ class MapLocation {
     constructor ( map ) {
         this.map = map;
         this.layers = {};
-
         this.build();
     }
 
@@ -119,6 +116,10 @@ class MapLocation {
     build () {
         for ( let id in this.map.data.textures ) {
             this.setLayer( id );
+
+            if ( this.map.player.debug ) {
+                this.setDebugLayer();
+            }
         }
     }
 
@@ -137,6 +138,22 @@ class MapLocation {
             this.map.data.tilesize
         );
     }
+
+
+    setDebugLayer () {
+        this.layers.debug = new MapLayer({
+            id: "debug",
+            width: this.map.data.width,
+            height: this.map.data.height
+        });
+
+        drawGridLines(
+            this.layers.debug.context,
+            this.map.width,
+            this.map.height,
+            this.map.data.tilesize
+        );
+    }
 }
 
 
@@ -144,9 +161,6 @@ class MapLocation {
 export default class Map {
     constructor ( data ) {
         this.data = data;
-        this.tweens = {};
-        this.element = document.createElement( "div" );
-        this.element.className = "_2dk__map";
         this.loader = new Loader();
         this.layers = {};
         this.location = null;
@@ -156,6 +170,18 @@ export default class Map {
             x: 0,
             y: 0
         };
+        this.build();
+    }
+
+
+    build () {
+        this.element = document.createElement( "div" );
+        this.element.className = "_2dk__map";
+        this.objects = document.createElement( "div" );
+        this.objects.className = `_2dk__obj`;
+        this.objects.style.width = `${this.width}px`;
+        this.objects.style.height = `${this.height}px`;
+        this.element.appendChild( this.objects );
     }
 
 
@@ -191,30 +217,14 @@ export default class Map {
     }
 
 
-    tween ( axis, from, to ) {
-        const handler = ( t ) => {
-            this.offset[ axis ] = t;
-            this.render();
-        };
-
-        if ( this.tweens[ axis ] ) {
-            this.tweens[ axis ].stop();
-        }
-
-        this.tweens[ axis ] = new Tween({
-            ease: Easing.swing,
-            from,
-            to,
-            delay: 0,
-            duration: Library.values.cycle,
-            update: handler,
-            complete: handler
-        });
-    }
-
-
     render () {
         this.clear();
+
+        this.objects.style.webkitTransform = `translate3d(
+            ${this.offset.x}px,
+            ${this.offset.y}px,
+            0
+        )`;
 
         for ( let id in this.layers ) {
             /*
@@ -242,15 +252,6 @@ export default class Map {
                 this.location.layers[ id ].data.height
             );
         }
-
-        if ( this.debugLayer ) {
-            drawGridLines(
-                this.debugLayer.context,
-                this.player.data.width,
-                this.player.data.height,
-                this.data.tilesize
-            );
-        }
     }
 
 
@@ -275,6 +276,11 @@ export default class Map {
     }
 
 
+    addSprite ( sprite ) {
+        this.objects.appendChild( sprite.element );
+    }
+
+
     setLayer ( id ) {
         this.layers[ id ] = new MapLayer({
             id,
@@ -287,12 +293,12 @@ export default class Map {
 
 
     setDebugLayer () {
-        this.debugLayer = new MapLayer({
+        this.layers.debug = new MapLayer({
             id: "debug",
             width: this.player.data.width,
             height: this.player.data.height
         });
 
-        this.element.appendChild( this.debugLayer.canvas );
+        this.element.appendChild( this.layers.debug.canvas );
     }
 }

@@ -1,8 +1,6 @@
 import Loader from "./Loader";
-import Library from "./Library";
+import Config from "./Config";
 import $ from "properjs-hobo";
-import Tween from "properjs-tween";
-import Easing from "properjs-easing";
 
 
 
@@ -21,7 +19,8 @@ class Sprite {
         this.element = document.createElement( "div" );
         this.element.style.width = `${this.width}px`;
         this.element.style.height = `${this.height}px`;
-        this.element.className = `_2dk__${this.data.name}`;
+        this.element.style.animationDuration = `${Config.animation.cycle}ms`;
+        this.element.className = `_2dk__${this.data.id}`;
         this.$element = $( this.element );
     }
 
@@ -29,14 +28,7 @@ class Sprite {
     load () {
         return new Promise(( resolve ) => {
             this.loader.loadImg( this.data.image ).then(() => {
-                this.element.innerHTML = `
-                    <style>
-                        ._2dk__${this.data.name}:after {
-                            background-image: url( "${this.data.image}" );
-                        }
-                    </style>
-                `;
-
+                this.element.style.backgroundImage = `url(${this.data.image})`;
                 resolve();
             });
         });
@@ -48,27 +40,27 @@ class Sprite {
 class Hero extends Sprite {
     constructor ( data ) {
         // Enfore the heroes journey
-        data.name = "hero";
+        data.id = "hero";
         super( data );
 
         this.cycling = false;
-        this.timeout = null;
-        this.tweens = {};
+        this.tween = null;
         this.offset = {
             x: data.spawn.x,
             y: data.spawn.y
         };
-        this.center = {
-            x: data.spawn.x + (this.width / 2) + (this.height / 2),
-            y: data.spawn.y + (this.width / 2) + (this.height / 2)
-        };
         this.hitbox = {
-            x: data.spawn.x,
-            y: data.spawn.y + this.height / 2,
-            width: this.width,
-            height: this.height / 2
+            x: data.spawn.x + this.data.boxes.hit.x,
+            y: data.spawn.y + this.data.boxes.hit.y,
+            width: this.data.boxes.hit.width,
+            height: this.data.boxes.hit.height
         };
-
+        this.collisionbox = {
+            x: data.spawn.x + this.data.boxes.collision.x,
+            y: data.spawn.y + this.data.boxes.collision.y,
+            width: this.data.boxes.collision.width,
+            height: this.data.boxes.collision.height
+        };
         this.init();
     }
 
@@ -84,12 +76,10 @@ class Hero extends Sprite {
 
     move ( dir, poi ) {
         this.offset = poi;
-        this.center = {
-            x: this.offset.x + (this.width / 2) + (this.height / 2),
-            y: this.offset.y + (this.width / 2) + (this.height / 2)
-        };
-        this.hitbox.x = this.offset.x;
-        this.hitbox.y = this.offset.y + this.height / 2;
+        this.hitbox.x = this.offset.x + this.data.boxes.hit.x;
+        this.hitbox.y = this.offset.y + this.data.boxes.hit.y;
+        this.collisionbox.x = this.offset.x + this.data.boxes.collision.x;
+        this.collisionbox.y = this.offset.y + this.data.boxes.collision.y;
         this.element.style.webkitTransform = `translate3d(
             ${this.offset.x}px,
             ${this.offset.y}px,
@@ -98,57 +88,17 @@ class Hero extends Sprite {
     }
 
 
-    tween ( axis, from, to ) {
-        const handler = ( t ) => {
-            this.offset[ axis ] = t;
-            this.center = {
-                x: this.offset.x + (this.width / 2) + (this.height / 2),
-                y: this.offset.y + (this.width / 2) + (this.height / 2)
-            };
-            this.hitbox.x = this.offset.x;
-            this.hitbox.y = this.offset.y + this.height / 2;
-            this.element.style.webkitTransform = `translate3d(
-                ${this.offset.x}px,
-                ${this.offset.y}px,
-                0
-            )`;
-        };
-
-        if ( this.tweens[ axis ] ) {
-            this.tweens[ axis ].stop();
-        }
-
-        this.tweens[ axis ] = new Tween({
-            ease: Easing.swing,
-            from,
-            to,
-            delay: 0,
-            duration: Library.values.cycle,
-            update: handler,
-            complete: handler
-        });
-    }
-
-
     cycle ( dir ) {
-        if ( !this.cycling ) {
-            this.cycling = true;
-
+        // if ( !this.cycling ) {
+            // this.cycling = true;
             this.$element.removeClass( "up down right left" );
             this.$element.addClass( `walk ${dir}` );
-
-            this.timeout = setTimeout(() => {
-                this.face( dir );
-                this.cycling = false;
-
-            }, Library.values.cycle );
-        }
+        // }
     }
 
 
     clear ( dir ) {
-        clearTimeout( this.timeout );
-        this.cycling = false;
+        // this.cycling = false;
         this.face( dir );
     }
 
@@ -159,12 +109,12 @@ class Hero extends Sprite {
     }
 
 
-    getHitbox ( poi ) {
+    getBox ( poi, box ) {
         return {
-            x: poi.x,
-            y: poi.y + this.height / 2,
-            width: this.width,
-            height: this.height / 2
+            x: poi.x + this.data.boxes[ box ].x,
+            y: poi.y + this.data.boxes[ box ].y,
+            width: this.data.boxes[ box ].width,
+            height: this.data.boxes[ box ].height
         };
     }
 }

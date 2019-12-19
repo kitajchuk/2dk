@@ -1,11 +1,11 @@
-import Library from "./Library";
+import Config from "./Config";
 import Controller from "properjs-controller";
 
 
 
 const timers = {};
-const touchInterval = Library.values.speed;
-const touchRepeated = Library.values.repeat;
+const touchInterval = Config.values.speed;
+const touchRepeated = Config.values.repeat;
 let aButton = 0;
 let bButton = 0;
 let controls = null;
@@ -56,23 +56,19 @@ const onTouchMove = ( e ) => {
     // Move into a specific control
     } else if ( /up/.test( elem.className ) ) {
         endTouches();
-        startTouch( Library.keys.UP );
-        elem.classList.add( "is-active" );
+        onStartUp( e );
 
     } else if ( /right/.test( elem.className ) ) {
         endTouches();
-        startTouch( Library.keys.RIGHT );
-        elem.classList.add( "is-active" );
+        onStartRight( e );
 
     } else if ( /down/.test( elem.className ) ) {
         endTouches();
-        startTouch( Library.keys.DOWN );
-        elem.classList.add( "is-active" );
+        onStartDown( e );
 
     } else if ( /left/.test( elem.className ) ) {
         endTouches();
-        startTouch( Library.keys.LEFT );
-        elem.classList.add( "is-active" );
+        onStartLeft( e );
     }
 
     return false;
@@ -118,7 +114,7 @@ const startTouch = ( k ) => {
 const onStartUp = ( e ) => {
     e.preventDefault();
 
-    startTouch( Library.keys.UP );
+    startTouch( Config.keys.UP );
 
     controlsUp.classList.add( "is-active" );
 
@@ -130,7 +126,7 @@ const onStartUp = ( e ) => {
 const onStartRight = ( e ) => {
     e.preventDefault();
 
-    startTouch( Library.keys.RIGHT );
+    startTouch( Config.keys.RIGHT );
 
     controlsRight.classList.add( "is-active" );
 
@@ -142,7 +138,7 @@ const onStartRight = ( e ) => {
 const onStartDown = ( e ) => {
     e.preventDefault();
 
-    startTouch( Library.keys.DOWN );
+    startTouch( Config.keys.DOWN );
 
     controlsDown.classList.add( "is-active" );
 
@@ -154,7 +150,7 @@ const onStartDown = ( e ) => {
 const onStartLeft = ( e ) => {
     e.preventDefault();
 
-    startTouch( Library.keys.LEFT );
+    startTouch( Config.keys.LEFT );
 
     controlsLeft.classList.add( "is-active" );
 
@@ -166,7 +162,7 @@ const onStartLeft = ( e ) => {
 const onStartA = ( e ) => {
     e.preventDefault();
 
-    startTouch( Library.keys.A );
+    startTouch( Config.keys.A );
 
     controlsA.classList.add( "is-active" );
 
@@ -178,7 +174,7 @@ const onStartA = ( e ) => {
 const onStartB = ( e ) => {
     e.preventDefault();
 
-    startTouch( Library.keys.B );
+    startTouch( Config.keys.B );
 
     controlsB.classList.add( "is-active" );
 
@@ -190,7 +186,7 @@ const onStartB = ( e ) => {
 const onStartStart = ( e ) => {
     e.preventDefault();
 
-    startTouch( Library.keys.START );
+    startTouch( Config.keys.START );
 
     controlsStart.classList.add( "is-active" );
 
@@ -202,7 +198,7 @@ const onStartStart = ( e ) => {
 const onStartSelect = ( e ) => {
     e.preventDefault();
 
-    startTouch( Library.keys.SELECT );
+    startTouch( Config.keys.SELECT );
 
     controlsSelect.classList.add( "is-active" );
 
@@ -214,7 +210,7 @@ const onStartSelect = ( e ) => {
 const onEndUp = ( e ) => {
     e.preventDefault();
 
-    endTouch( Library.keys.UP );
+    endTouch( Config.keys.UP );
 
     controlsUp.classList.remove( "is-active" );
 
@@ -226,7 +222,7 @@ const onEndUp = ( e ) => {
 const onEndRight = ( e ) => {
     e.preventDefault();
 
-    endTouch( Library.keys.RIGHT );
+    endTouch( Config.keys.RIGHT );
 
     controlsRight.classList.remove( "is-active" );
 
@@ -238,7 +234,7 @@ const onEndRight = ( e ) => {
 const onEndDown = ( e ) => {
     e.preventDefault();
 
-    endTouch( Library.keys.DOWN );
+    endTouch( Config.keys.DOWN );
 
     controlsDown.classList.remove( "is-active" );
 
@@ -250,7 +246,7 @@ const onEndDown = ( e ) => {
 const onEndLeft = ( e ) => {
     e.preventDefault();
 
-    endTouch( Library.keys.LEFT );
+    endTouch( Config.keys.LEFT );
 
     controlsLeft.classList.remove( "is-active" );
 
@@ -262,7 +258,7 @@ const onEndLeft = ( e ) => {
 const onEndA = ( e ) => {
     e.preventDefault();
 
-    endTouch( Library.keys.A );
+    endTouch( Config.keys.A );
 
     controlsA.classList.remove( "is-active" );
 
@@ -274,7 +270,7 @@ const onEndA = ( e ) => {
 const onEndB = ( e ) => {
     e.preventDefault();
 
-    endTouch( Library.keys.B );
+    endTouch( Config.keys.B );
 
     controlsB.classList.remove( "is-active" );
 
@@ -286,7 +282,7 @@ const onEndB = ( e ) => {
 const onEndStart = ( e ) => {
     e.preventDefault();
 
-    endTouch( Library.keys.START );
+    endTouch( Config.keys.START );
 
     controlsStart.classList.remove( "is-active" );
 
@@ -298,7 +294,7 @@ const onEndStart = ( e ) => {
 const onEndSelect = ( e ) => {
     e.preventDefault();
 
-    endTouch( Library.keys.SELECT );
+    endTouch( Config.keys.SELECT );
 
     controlsSelect.classList.remove( "is-active" );
 
@@ -308,7 +304,10 @@ const onEndSelect = ( e ) => {
 
 
 const onGameTouchEnd = ( k ) => {
-    if ( k === Library.keys.A ) {
+    // Force number type
+    k = Number( k );
+
+    if ( k === Config.keys.A ) {
         instance.fire( "a-release" );
 
         if ( aButton < touchRepeated ) {
@@ -318,7 +317,7 @@ const onGameTouchEnd = ( k ) => {
         aButton = 0;
     }
 
-    if ( k === Library.keys.B ) {
+    if ( k === Config.keys.B ) {
         instance.fire( "b-release" );
 
         if ( bButton < touchRepeated ) {
@@ -328,60 +327,63 @@ const onGameTouchEnd = ( k ) => {
         bButton = 0;
     }
 
-    if ( k === Library.keys.UP ) {
-        instance.fire( "d-up-release", Library.moves.UP );
+    if ( k === Config.keys.UP ) {
+        instance.fire( "d-up-release", Config.moves.UP );
     }
 
-    if ( k === Library.keys.RIGHT ) {
-        instance.fire( "d-right-release", Library.moves.RIGHT );
+    if ( k === Config.keys.RIGHT ) {
+        instance.fire( "d-right-release", Config.moves.RIGHT );
     }
 
-    if ( k === Library.keys.DOWN ) {
-        instance.fire( "d-down-release", Library.moves.DOWN );
+    if ( k === Config.keys.DOWN ) {
+        instance.fire( "d-down-release", Config.moves.DOWN );
     }
 
-    if ( k === Library.keys.LEFT ) {
-        instance.fire( "d-left-release", Library.moves.LEFT );
+    if ( k === Config.keys.LEFT ) {
+        instance.fire( "d-left-release", Config.moves.LEFT );
     }
 };
 
 
 
 const onGameTouchStart = ( k ) => {
-    if ( k === Library.keys.A ) {
+    // Force number type
+    k = Number( k );
+
+    if ( k === Config.keys.A ) {
         // Longpress ( hold )
         aButton++;
         instance.fire( "a-press" );
     }
 
-    if ( k === Library.keys.B ) {
+    if ( k === Config.keys.B ) {
         // Longpress ( hold )
         bButton++;
         instance.fire( "b-press" );
     }
 
-    if ( k === Library.keys.START ) {
+    if ( k === Config.keys.START ) {
         instance.fire( "start" );
     }
 
-    if ( k === Library.keys.SELECT ) {
+    if ( k === Config.keys.SELECT ) {
         instance.fire( "select" );
     }
 
-    if ( k === Library.keys.UP ) {
-        instance.fire( "d-up-press", Library.moves.UP );
+    if ( k === Config.keys.UP ) {
+        instance.fire( "d-up-press", Config.moves.UP );
     }
 
-    if ( k === Library.keys.RIGHT ) {
-        instance.fire( "d-right-press", Library.moves.RIGHT );
+    if ( k === Config.keys.RIGHT ) {
+        instance.fire( "d-right-press", Config.moves.RIGHT );
     }
 
-    if ( k === Library.keys.DOWN ) {
-        instance.fire( "d-down-press", Library.moves.DOWN );
+    if ( k === Config.keys.DOWN ) {
+        instance.fire( "d-down-press", Config.moves.DOWN );
     }
 
-    if ( k === Library.keys.LEFT ) {
-        instance.fire( "d-left-press", Library.moves.LEFT );
+    if ( k === Config.keys.LEFT ) {
+        instance.fire( "d-left-press", Config.moves.LEFT );
     }
 };
 

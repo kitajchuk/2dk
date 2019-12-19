@@ -1,7 +1,8 @@
 import KeysInterface from "./KeysInterface";
 import TouchInterface from "./TouchInterface";
-import Library from "./Library";
+import Config from "./Config";
 import GameBox from "./GameBox";
+import paramalama from "paramalama";
 
 
 
@@ -9,7 +10,8 @@ export default class Player {
     constructor ( data ) {
         this.data = data;
         this.paused = true;
-
+        this.query = paramalama( window.location.search );
+        this.debug = this.query.debug ? true : false;
         this.detect();
         this.build();
         this.bind();
@@ -26,7 +28,6 @@ export default class Player {
         })();
 
         this.sac = (window.navigator.standalone || window.matchMedia( "(display-mode: standalone)" ).matches);
-        this.debug = (!this.sac && !this.device);
     }
 
 
@@ -35,7 +36,7 @@ export default class Player {
         this.interfaces.keys = new KeysInterface();
         this.interfaces.touch = new TouchInterface();
         this.element = document.createElement( "div" );
-        this.element.className = `_2dk _2dk--${this.sac || this.device ? "play" : "debug"}`;
+        this.element.className = `_2dk _2dk--${this.debug ? "debug" : "play"}`;
         this.element.appendChild( this.interfaces.touch.element );
         document.body.appendChild( this.element );
     }
@@ -43,6 +44,9 @@ export default class Player {
 
     bind () {
         this._dPadPress = this.dPadPress.bind( this );
+        this._dPadRelease = this.dPadRelease.bind( this );
+
+        // Standard 4 point d-pad
         this.interfaces.keys.on( "d-left-press", this._dPadPress );
         this.interfaces.touch.on( "d-left-press", this._dPadPress );
         this.interfaces.keys.on( "d-right-press", this._dPadPress );
@@ -52,9 +56,9 @@ export default class Player {
         this.interfaces.keys.on( "d-down-press", this._dPadPress );
         this.interfaces.touch.on( "d-down-press", this._dPadPress );
 
-        this._dPadRelease = this.dPadRelease.bind( this );
+        // Standard 4 point d-pad on release
         this.interfaces.keys.on( "d-left-release", this._dPadRelease );
-        this.interfaces.touch.on( "d-leftreleases", this._dPadRelease );
+        this.interfaces.touch.on( "d-left-release", this._dPadRelease );
         this.interfaces.keys.on( "d-right-release", this._dPadRelease );
         this.interfaces.touch.on( "d-right-release", this._dPadRelease );
         this.interfaces.keys.on( "d-up-release", this._dPadRelease );
@@ -95,6 +99,7 @@ export default class Player {
     setMap ( map ) {
         this.map = map;
         this.map.player = this;
+        this.map.addSprite( this.hero );
     }
 
 

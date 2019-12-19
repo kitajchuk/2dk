@@ -8,17 +8,29 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 
 
 
-/**
- *
- * @public
- * @class App
- * @classdesc Main 2dk sandbox app.
- *
- */
+////////////////////////////////////////////////////////////////////////////////
+// Build Notes: ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// TODO: Sandbox development Map for ease of testing/experimenting...
+// TODO: Sandbox development Hero ALTTP sprite cycle from spritesheet.
+// TODO: Better boxes for hit and collision.
+// TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
+// TODO: Bounce physics so Hero does not get tile collision locked, clip edges.
+// TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused)
+// TODO: Precise tile collision detection objects (x, y, width, height) 4x4?
+// TODO: Debug visuals: grid, hero, hitbox, collisionbox, collision tiles
+
+// BUGS: ???
+
+// TEST: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
+// TEST: NPC hypothesis is that NPCs will work now that positions are absolute!
+// TEST: Retina canvas for map tiles. Design 64x64 and render 32x32...?
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 class App {
     constructor () {
         this.loader = new Loader();
-        this.loader.loadJson( "/2dk/bundles/test/game.json" ).then(( json ) => {
+        this.loader.loadJson( "/webapp/bundles/test/game.json" ).then(( json ) => {
             // Player
             this.player = new Player( json.game );
 

@@ -1,11 +1,11 @@
-import Library from "./Library";
+import Config from "./Config";
 import Controller from "properjs-controller";
 import $ from "properjs-hobo";
 
 
 const timers = {};
-const keyInterval = Library.values.speed;
-const keyRepeated = Library.values.repeat;
+const keyInterval = Config.values.speed;
+const keyRepeated = Config.values.repeat;
 let aButton = 0;
 let bButton = 0;
 let instance = null;
@@ -38,7 +38,7 @@ const onKeyDown = ( e ) => {
 
 
 const onGameKeyUp = ( k ) => {
-    if ( k === Library.keys.A ) {
+    if ( k === Config.keys.A ) {
         instance.fire( "a-release" );
 
         if ( aButton < keyRepeated ) {
@@ -48,7 +48,7 @@ const onGameKeyUp = ( k ) => {
         aButton = 0;
     }
 
-    if ( k === Library.keys.B ) {
+    if ( k === Config.keys.B ) {
         instance.fire( "b-release" );
 
         if ( bButton < keyRepeated ) {
@@ -58,60 +58,60 @@ const onGameKeyUp = ( k ) => {
         bButton = 0;
     }
 
-    if ( k === Library.keys.UP ) {
-        instance.fire( "d-up-release", Library.moves.UP );
+    if ( k === Config.keys.UP ) {
+        instance.fire( "d-up-release", Config.moves.UP );
     }
 
-    if ( k === Library.keys.RIGHT ) {
-        instance.fire( "d-right-release", Library.moves.RIGHT );
+    if ( k === Config.keys.RIGHT ) {
+        instance.fire( "d-right-release", Config.moves.RIGHT );
     }
 
-    if ( k === Library.keys.DOWN ) {
-        instance.fire( "d-down-release", Library.moves.DOWN );
+    if ( k === Config.keys.DOWN ) {
+        instance.fire( "d-down-release", Config.moves.DOWN );
     }
 
-    if ( k === Library.keys.LEFT ) {
-        instance.fire( "d-left-release", Library.moves.LEFT );
+    if ( k === Config.keys.LEFT ) {
+        instance.fire( "d-left-release", Config.moves.LEFT );
     }
 };
 
 
 
 const onGameKeyDown = ( k ) => {
-    if ( k === Library.keys.A ) {
+    if ( k === Config.keys.A ) {
         // Longpress ( hold )
         aButton++;
         instance.fire( "a-press" );
     }
 
-    if ( k === Library.keys.B ) {
+    if ( k === Config.keys.B ) {
         // Longpress ( hold )
         bButton++;
         instance.fire( "b-press" );
     }
 
-    if ( k === Library.keys.START ) {
+    if ( k === Config.keys.START ) {
         instance.fire( "start" );
     }
 
-    if ( k === Library.keys.SELECT ) {
+    if ( k === Config.keys.SELECT ) {
         instance.fire( "select" );
     }
 
-    if ( k === Library.keys.UP ) {
-        instance.fire( "d-up-press", Library.moves.UP );
+    if ( k === Config.keys.UP ) {
+        instance.fire( "d-up-press", Config.moves.UP );
     }
 
-    if ( k === Library.keys.RIGHT ) {
-        instance.fire( "d-right-press", Library.moves.RIGHT );
+    if ( k === Config.keys.RIGHT ) {
+        instance.fire( "d-right-press", Config.moves.RIGHT );
     }
 
-    if ( k === Library.keys.DOWN ) {
-        instance.fire( "d-down-press", Library.moves.DOWN );
+    if ( k === Config.keys.DOWN ) {
+        instance.fire( "d-down-press", Config.moves.DOWN );
     }
 
-    if ( k === Library.keys.LEFT ) {
-        instance.fire( "d-left-press", Library.moves.LEFT );
+    if ( k === Config.keys.LEFT ) {
+        instance.fire( "d-left-press", Config.moves.LEFT );
     }
 };
 

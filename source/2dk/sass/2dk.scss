@@ -34,12 +34,18 @@ body {
 /******************************************************************************
  * 2dk Lib
 *******************************************************************************/
-$tile-size: 32px;
-$hero-speed: 240ms;
-$hero-height: 64px;
-$hero-width: 38px;
+// @2x sizes
+$hero-height: 96px;
+$hero-width: 76px;
 $hero-sprite-width: 304px;
 $hero-sprite-height: 768px;
+// @1x sizes
+$hero-h: $hero-height / 2;
+$hero-w: $hero-width / 2;
+$hero-sw: $hero-sprite-width / 2;
+$hero-sh: $hero-sprite-height / 2;
+$hero-speed: 240ms;
+$tile-size: 32px;
 
 
 
@@ -211,12 +217,11 @@ $hero-sprite-height: 768px;
         z-index: 3;
     }
 }
-._2dk__plane {
+._2dk__obj {
     position: absolute;
     left: 0;
     top: 0;
     z-index: 2;
-    // transition: transform $hero-speed ease-in-out;
 }
 
 
@@ -225,84 +230,77 @@ $hero-sprite-height: 768px;
  * Sprites
 *******************************************************************************/
 ._2dk__hero {
-    height: $hero-height;
-    width: $tile-size;
+    height: $hero-h;
+    width: $hero-w;
     position: absolute;
     left: 0;
     top: 0;
     z-index: 2;
-    outline: 1px solid $yellow;
-    // transition: transform $hero-speed ease-in-out;
+    background-repeat: no-repeat;
+    background-size: $hero-sw $hero-sh;
 
-    &:after {
-        content: "";
-        height: $hero-height;
-        width: $hero-width;
-        position: absolute;
-        left: 50%;
-        top: 0;
-        transform: translate3d( -50%, 0, 0 );
-        background-repeat: no-repeat;
-        background-size: ($hero-sprite-width / 2) ($hero-sprite-height / 2);
+    ._2dk--debug & {
+        outline: 1px solid $yellow;
     }
 
-    &.left:after {
-        background-position: -76px -0px;
+    &.down {
+        background-position: 0 0;
     }
-    &.right:after {
-        background-position: -114px -0px;
+    &.up {
+        background-position: (-$hero-w) 0;
     }
-    &.up:after {
-        background-position: -38px -0px;
+    &.left {
+        background-position: (-$hero-w * 2) 0;
     }
-    &.down:after {
-        background-position: -0px -0px;
+    &.right {
+        background-position: (-$hero-w * 3) 0;
     }
-    &.walk:after {
-        animation-duration: $hero-speed;
+
+    &.walk {
+        // animation-duration: $hero-speed;
         animation-iteration-count: infinite;
     }
-    &.walk.left:after {
-        animation-name: walk-left;
-    }
-    &.walk.right:after {
-        animation-name: walk-right;
-    }
-    &.walk.up:after {
-        animation-name: walk-up;
-    }
-    &.walk.down:after {
+    &.walk.down {
         animation-name: walk-down;
     }
+    &.walk.up {
+        animation-name: walk-up;
+    }
+    &.walk.left {
+        animation-name: walk-left;
+    }
+    &.walk.right {
+        animation-name: walk-right;
+    }
 }
 
 
 
-@keyframes walk-up {
-    0% { background-position: -38px -64px; }
-    49.99999% { background-position: -38px -64px; }
-    50% { background-position: -38px -128px; }
-    99.99999% { background-position: -38px -128px; }
-    100% { background-position: -38px -0px; }
-}
 @keyframes walk-down {
-    0% { background-position: -0px -64px; }
-    49.99999% { background-position: -0px -64px; }
-    50% { background-position: -0px -128px; }
-    99.99999% { background-position: -0px -128px; }
-    100% { background-position: -0px -0px; }
+    0% { background-position: 0 (-$hero-h); }
+    49.99999% { background-position: 0 (-$hero-h); }
+    50% { background-position: 0 (-$hero-h * 2); }
+    99.99999% { background-position: 0 (-$hero-h * 2); }
+    100% { background-position: 0 0; }
+}
+@keyframes walk-up {
+    0% { background-position: (-$hero-w) (-$hero-h); }
+    49.99999% { background-position: (-$hero-w) (-$hero-h); }
+    50% { background-position: (-$hero-w) (-$hero-h * 2); }
+    99.99999% { background-position: (-$hero-w) (-$hero-h * 2); }
+    100% { background-position: (-$hero-w) 0; }
 }
 @keyframes walk-left {
-    0% { background-position: -76px -64px; }
-    49.99999% { background-position: -76px -64px; }
-    50% { background-position: -76px -128px; }
-    99.99999% { background-position: -76px -128px; }
-    100% { background-position: -76px -0px; }
+    0% { background-position: (-$hero-w * 2) (-$hero-h); }
+    49.99999% { background-position: (-$hero-w * 2) (-$hero-h); }
+    50% { background-position: (-$hero-w * 2) (-$hero-h * 2); }
+    99.99999% { background-position: (-$hero-w * 2) (-$hero-h * 2); }
+    100% { background-position: (-$hero-w * 2) 0; }
 }
 @keyframes walk-right {
-    0% { background-position: -114px -64px; }
-    49.99999% { background-position: -114px -64px; }
-    50% { background-position: -114px -128px; }
-    99.99999% { background-position: -114px -128px; }
-    100% { background-position: -114px -0px; }
+    0% { background-position: (-$hero-w * 3) (-$hero-h); }
+    49.99999% { background-position: (-$hero-w * 3) (-$hero-h); }
+    50% { background-position: (-$hero-w * 3) (-$hero-h * 2); }
+    99.99999% { background-position: (-$hero-w * 3) (-$hero-h * 2); }
+    100% { background-position: (-$hero-w * 3) 0; }
 }

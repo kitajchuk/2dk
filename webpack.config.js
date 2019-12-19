@@ -31,7 +31,8 @@ const webpackConfig = {
             files: [
                 "template/**/*.html",
                 "template/**/*.json"
-            ]
+            ],
+            startPath: "/webapp/?debug=1"
         })
     ],
 

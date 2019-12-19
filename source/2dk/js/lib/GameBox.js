@@ -1,6 +1,4 @@
-import Library from "./Library";
-import Tween from "properjs-tween";
-import Easing from "properjs-easing";
+import Config from "./Config";
 
 
 
@@ -10,24 +8,24 @@ export default class GameBox {
         this.player = player;
         this.hero = player.hero;
         this.map = player.map;
-        this.step = Library.values.step;
-        this.tweens = {};
-        this.viewbox = {
-            width: this.player.data.width,
-            height: this.player.data.height
-        };
+        this.step = Config.values.step;
+        this.tween = null;
         this.mapbounds = {
             top: 0,
-            bottom: this.map.height - this.viewbox.height,
+            bottom: this.map.height - this.player.data.height,
             left: 0,
-            right: this.map.width - this.viewbox.width
+            right: this.map.width - this.player.data.width
+        };
+        this.playbox = {
+            top: 0,
+            bottom: this.map.height - this.hero.height,
+            left: 0,
+            right: this.map.width - this.hero.width
         };
         this.transform = {
             x: 0,
-            y: 0,
-            z: 0
+            y: 0
         };
-
         this.build();
         this.init();
     }
@@ -35,14 +33,8 @@ export default class GameBox {
 
     build () {
         this.screen = document.createElement( "div" );
-        this.plane = document.createElement( "div" );
         this.screen.className = `_2dk__screen`;
-        this.plane.className = `_2dk__plane`;
-        this.plane.style.width = `${this.map.width}px`;
-        this.plane.style.height = `${this.map.height}px`;
-        this.plane.appendChild( this.hero.element );
         this.screen.appendChild( this.map.element );
-        this.screen.appendChild( this.plane );
         this.player.element.appendChild( this.screen );
     }
 
@@ -50,11 +42,6 @@ export default class GameBox {
     init () {
         this.transform = this.update( this.hero.offset );
         this.map.init( this.transform );
-        this.plane.style.webkitTransform = `translate3d(
-            ${this.transform.x}px,
-            ${this.transform.y}px,
-            0
-        )`;
     }
 
 
@@ -91,76 +78,35 @@ export default class GameBox {
     }
 
 
-    move ( transform ) {
-        this.transform = transform;
-        this.plane.style.webkitTransform = `translate3d(
-            ${this.transform.x}px,
-            ${this.transform.y}px,
-            0
-        )`;
-    }
-
-
-    tween ( axis, from, to ) {
-        const handler = ( t ) => {
-            this.transform[ axis ] = t;
-            this.plane.style.webkitTransform = `translate3d(
-                ${this.transform.x}px,
-                ${this.transform.y}px,
-                0
-            )`;
-        };
-
-        if ( this.tweens[ axis ] ) {
-            this.tweens[ axis ].stop();
-        }
-
-        this.tweens[ axis ] = new Tween({
-            ease: Easing.swing,
-            from,
-            to,
-            delay: 0,
-            duration: Library.values.cycle,
-            update: handler,
-            complete: ( t ) => {
-                handler( t );
-            }
-        });
-    }
+    // animate ( dir, transform ) {
+    //     const handler = () => {
+    //         this.transform.x = this.tween.target._gsTransform.x;
+    //         this.transform.y = this.tween.target._gsTransform.y;
+    //         this.map.move( dir, this.transform );
+    //     };
+    //
+    //     if ( this.tween ) {
+    //         this.tween.kill();
+    //     }
+    //
+    //     this.tween = window.TweenLite.to( this.plane, Config.values.slide, {
+    //         css: transform,
+    //         ease: window.Power4.easeOut,
+    //         onUpdate: handler,
+    //         onComplete: handler
+    //     });
+    // }
 
 
     press ( dir ) {
-        // TODO: Cancel physics slide on end of movement!!!
-        // TODO: Hero sprite cycle is buggy for diagonal movement
-        // TODO: Hero hitbox collision with map tiles for movement
+        const poi = this.getPoi( dir, Config.values.step );
+        const collision = {
+            map: this.checkMap( poi ),
+            box: this.checkBox( poi )
+        };
 
-        // Point of interest we'd like to move to...
-        const poi = {};
-
-        if ( dir === Library.moves.LEFT ) {
-            poi.x = this.hero.offset.x - Library.values.step;
-            poi.y = this.hero.offset.y;
-        }
-
-        if ( dir === Library.moves.RIGHT ) {
-            poi.x = this.hero.offset.x + Library.values.step;
-            poi.y = this.hero.offset.y;
-        }
-
-        if ( dir === Library.moves.UP ) {
-            poi.x = this.hero.offset.x;
-            poi.y = this.hero.offset.y - Library.values.step;
-        }
-
-        if ( dir === Library.moves.DOWN ) {
-            poi.x = this.hero.offset.x;
-            poi.y = this.hero.offset.y + Library.values.step;
-        }
-
-        const collision = this.checkMap( poi );
-
-        if ( collision ) {
-            this.hero.clear( dir );
+        if ( collision.map || collision.box ) {
+            this.hero.cycle( dir );
             return;
         }
 
@@ -169,13 +115,54 @@ export default class GameBox {
         this.hero.move( dir, poi );
         this.hero.cycle( dir );
         this.map.move( dir, transform );
-        this.move( transform );
+    }
+
+
+    getPoi ( dir, step ) {
+        const poi = {};
+
+        if ( dir === Config.moves.LEFT ) {
+            poi.x = this.hero.offset.x - step;
+            poi.y = this.hero.offset.y;
+        }
+
+        if ( dir === Config.moves.RIGHT ) {
+            poi.x = this.hero.offset.x + step;
+            poi.y = this.hero.offset.y;
+        }
+
+        if ( dir === Config.moves.UP ) {
+            poi.x = this.hero.offset.x;
+            poi.y = this.hero.offset.y - step;
+        }
+
+        if ( dir === Config.moves.DOWN ) {
+            poi.x = this.hero.offset.x;
+            poi.y = this.hero.offset.y + step;
+        }
+
+        return poi;
+    }
+
+
+    checkBox ( poi ) {
+        let ret = false;
+
+        if ( poi.x <= this.playbox.left || poi.x >= this.playbox.right ) {
+            ret = true;
+        }
+
+        if ( poi.y <= this.playbox.top || poi.y >= this.playbox.bottom ) {
+            ret = true;
+        }
+
+        return ret;
     }
 
 
     checkMap ( poi ) {
         let ret = false;
-        const hitbox = this.hero.getHitbox( poi );
+        const hitbox = this.hero.getBox( poi, "collision" );
 
         for ( let y = this.map.data.collision.length; y--; ) {
             if ( ret ) {
@@ -204,20 +191,7 @@ export default class GameBox {
 
 
     release ( dir ) {
-        console.log( `GameBox release ${dir}` );
-
-        this.hero.clear( dir );
-
-        // TODO: Physics slide on end of movement for effect
-
-        // this.hero.tween( "x", this.offset.x, poi.x );
-        // this.hero.tween( "y", this.offset.y, poi.y );
-
-        // this.map.tween( "x", this.offset.x, transform.x );
-        // this.map.tween( "y", this.offset.y, transform.y );
-
-        // this.tween( "x", this.transform.x, transform.x );
-        // this.tween( "y", this.transform.y, transform.y );
+        this.hero.face( dir );
     }
 
 
