@@ -11,6 +11,7 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 ////////////////////////////////////////////////////////////////////////////////
 // Build Notes: ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+// NOTE: Link sprite is 84px at widest and 96px at tallest for walking...
 // TODO: Sandbox development Map for ease of testing/experimenting...
 // TODO: Sandbox development Hero ALTTP sprite cycle from spritesheet.
 // TODO: Better boxes for hit and collision.
@@ -18,13 +19,17 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // TODO: Bounce physics so Hero does not get tile collision locked, clip edges.
 // TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused)
 // TODO: Precise tile collision detection objects (x, y, width, height) 4x4?
-// TODO: Debug visuals: grid, hero, hitbox, collisionbox, collision tiles
+// TODO: Debug visuals: grid, hero, hitbox, collisionbox, collision tiles.
 
 // BUGS: ???
 
 // TEST: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
 // TEST: NPC hypothesis is that NPCs will work now that positions are absolute!
 // TEST: Retina canvas for map tiles. Design 64x64 and render 32x32...?
+// TEST: TouchpadInterface.
+
+// NOTE: Use top-down player state for literal on/off hardware > software.
+// NOTE: Use Artificial General Interlligence for NPC base class.
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 class App {

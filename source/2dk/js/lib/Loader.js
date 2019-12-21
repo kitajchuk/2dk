@@ -15,7 +15,7 @@ export default class Loader {
 
             img.onerror = () => {
                 reject();
-            }
+            };
 
             img.src = src;
         });
