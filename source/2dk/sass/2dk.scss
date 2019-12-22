@@ -32,7 +32,7 @@ body {
 
 
 /******************************************************************************
- * 2dk Lib
+ * 2dk Player
 *******************************************************************************/
 // @2x sizes
 $hero-height: 96px;
@@ -112,8 +112,118 @@ $tile-size: 32px;
 
     ._2dk--debug & {
         background-color: #111;
-        outline: 1px solid $yellow;
+        outline: 1px solid $teal;
     }
+}
+
+
+
+/******************************************************************************
+ * Maps
+*******************************************************************************/
+._2dk__map,
+._2dk__map__layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    &[data-layer="debug"],
+    &[data-layer="background"] {
+        z-index: 1;
+    }
+
+    &[data-layer="foreground"] {
+        z-index: 3;
+    }
+}
+._2dk__obj {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+}
+
+
+
+/******************************************************************************
+ * Sprites
+*******************************************************************************/
+._2dk__hero {
+    height: $hero-h;
+    width: $hero-w;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    background-repeat: no-repeat;
+    background-size: $hero-sw $hero-sh;
+
+    ._2dk--debug & {
+        outline: 1px solid $teal;
+    }
+
+    &.down {
+        background-position: 0 0;
+    }
+    &.up {
+        background-position: (-$hero-w) 0;
+    }
+    &.left {
+        background-position: (-$hero-w * 2) 0;
+    }
+    &.right {
+        background-position: (-$hero-w * 3) 0;
+    }
+
+    &.walk {
+        // animation-duration: $hero-speed;
+        animation-iteration-count: infinite;
+    }
+    &.walk.down {
+        animation-name: walk-down;
+    }
+    &.walk.up {
+        animation-name: walk-up;
+    }
+    &.walk.left {
+        animation-name: walk-left;
+    }
+    &.walk.right {
+        animation-name: walk-right;
+    }
+}
+
+
+
+@keyframes walk-down {
+    0% { background-position: 0 (-$hero-h); }
+    49.99999% { background-position: 0 (-$hero-h); }
+    50% { background-position: 0 (-$hero-h * 2); }
+    99.99999% { background-position: 0 (-$hero-h * 2); }
+    100% { background-position: 0 0; }
+}
+@keyframes walk-up {
+    0% { background-position: (-$hero-w) (-$hero-h); }
+    49.99999% { background-position: (-$hero-w) (-$hero-h); }
+    50% { background-position: (-$hero-w) (-$hero-h * 2); }
+    99.99999% { background-position: (-$hero-w) (-$hero-h * 2); }
+    100% { background-position: (-$hero-w) 0; }
+}
+@keyframes walk-left {
+    0% { background-position: (-$hero-w * 2) (-$hero-h); }
+    49.99999% { background-position: (-$hero-w * 2) (-$hero-h); }
+    50% { background-position: (-$hero-w * 2) (-$hero-h * 2); }
+    99.99999% { background-position: (-$hero-w * 2) (-$hero-h * 2); }
+    100% { background-position: (-$hero-w * 2) 0; }
+}
+@keyframes walk-right {
+    0% { background-position: (-$hero-w * 3) (-$hero-h); }
+    49.99999% { background-position: (-$hero-w * 3) (-$hero-h); }
+    50% { background-position: (-$hero-w * 3) (-$hero-h * 2); }
+    99.99999% { background-position: (-$hero-w * 3) (-$hero-h * 2); }
+    100% { background-position: (-$hero-w * 3) 0; }
 }
 
 
@@ -213,114 +323,4 @@ $tile-size: 32px;
     left: 50%;
     transform: translate3d( -50%, 0, 0 );
     margin-left: 49px;
-}
-
-
-
-/******************************************************************************
- * Maps
-*******************************************************************************/
-._2dk__map,
-._2dk__map__layer {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-
-    &[data-layer="background"] {
-        z-index: 1;
-    }
-
-    &[data-layer="debug"],
-    &[data-layer="foreground"] {
-        z-index: 3;
-    }
-}
-._2dk__obj {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 2;
-}
-
-
-
-/******************************************************************************
- * Sprites
-*******************************************************************************/
-._2dk__hero {
-    height: $hero-h;
-    width: $hero-w;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 2;
-    background-repeat: no-repeat;
-    background-size: $hero-sw $hero-sh;
-
-    ._2dk--debug & {
-        outline: 1px solid $yellow;
-    }
-
-    &.down {
-        background-position: 0 0;
-    }
-    &.up {
-        background-position: (-$hero-w) 0;
-    }
-    &.left {
-        background-position: (-$hero-w * 2) 0;
-    }
-    &.right {
-        background-position: (-$hero-w * 3) 0;
-    }
-
-    &.walk {
-        // animation-duration: $hero-speed;
-        animation-iteration-count: infinite;
-    }
-    &.walk.down {
-        animation-name: walk-down;
-    }
-    &.walk.up {
-        animation-name: walk-up;
-    }
-    &.walk.left {
-        animation-name: walk-left;
-    }
-    &.walk.right {
-        animation-name: walk-right;
-    }
-}
-
-
-
-@keyframes walk-down {
-    0% { background-position: 0 (-$hero-h); }
-    49.99999% { background-position: 0 (-$hero-h); }
-    50% { background-position: 0 (-$hero-h * 2); }
-    99.99999% { background-position: 0 (-$hero-h * 2); }
-    100% { background-position: 0 0; }
-}
-@keyframes walk-up {
-    0% { background-position: (-$hero-w) (-$hero-h); }
-    49.99999% { background-position: (-$hero-w) (-$hero-h); }
-    50% { background-position: (-$hero-w) (-$hero-h * 2); }
-    99.99999% { background-position: (-$hero-w) (-$hero-h * 2); }
-    100% { background-position: (-$hero-w) 0; }
-}
-@keyframes walk-left {
-    0% { background-position: (-$hero-w * 2) (-$hero-h); }
-    49.99999% { background-position: (-$hero-w * 2) (-$hero-h); }
-    50% { background-position: (-$hero-w * 2) (-$hero-h * 2); }
-    99.99999% { background-position: (-$hero-w * 2) (-$hero-h * 2); }
-    100% { background-position: (-$hero-w * 2) 0; }
-}
-@keyframes walk-right {
-    0% { background-position: (-$hero-w * 3) (-$hero-h); }
-    49.99999% { background-position: (-$hero-w * 3) (-$hero-h); }
-    50% { background-position: (-$hero-w * 3) (-$hero-h * 2); }
-    99.99999% { background-position: (-$hero-w * 3) (-$hero-h * 2); }
-    100% { background-position: (-$hero-w * 3) 0; }
 }

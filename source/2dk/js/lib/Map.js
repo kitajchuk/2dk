@@ -70,12 +70,12 @@ const drawGridLines = ( ctx, w, h, g ) => {
     ctx.globalAlpha = 0.5;
 
     for ( let y = 1; y < h; y++ ) {
-        ctx.fillStyle = Config.colors.white;
+        ctx.fillStyle = Config.colors.teal;
         ctx.fillRect( 0, (y * g), (g * w), 1 );
     }
 
     for ( let x = 1; x < w; x++ ) {
-        ctx.fillStyle = Config.colors.white;
+        ctx.fillStyle = Config.colors.teal;
         ctx.fillRect( (x * g), 0, 1, (g * h) );
     }
 };

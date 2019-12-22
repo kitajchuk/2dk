@@ -21,6 +21,7 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // TODO: Debug visuals: grid, hero, hitbox, collisionbox, collision tiles.
 
 // BUGS: KeysInterface is buggy for diagonal movement now that touch works lol.
+// BUGS: Touch-end event stops d-pad movement, which it should not do.
 
 // TEST: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
 // TEST: NPC hypothesis is that NPCs will work now that positions are absolute!
