@@ -18,6 +18,7 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // TODO: Bounce physics so Hero does not get tile collision locked, clip edges.
 // TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused)
 // TODO: Precise tile collision detection objects (x, y, width, height) 4x4?
+//       2D-game maker needs hacking...
 // TODO: Debug visuals: grid, hero, hitbox, collisionbox, collision tiles.
 
 // BUGS: KeysInterface is buggy for diagonal movement now that touch works lol.
@@ -29,7 +30,7 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // TEST: TouchpadInterface.
 
 // NOTE: Use top-down player state for literal on/off hardware > software.
-// NOTE: Use Artificial General Interlligence for NPC base class.
+// NOTE: Use Artificial General Intelligence for NPC base class.
 // NOTE: Link sprite is 84px at widest and 96px at tallest for walking...
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

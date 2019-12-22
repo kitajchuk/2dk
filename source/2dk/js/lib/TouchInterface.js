@@ -39,6 +39,8 @@ const onTouchEnd = ( e ) => {
 const onTouchMove = ( e ) => {
     e.preventDefault();
 
+    console.log( e );
+
     const elem = document.elementFromPoint(
         e.touches[ 0 ].pageX,
         e.touches[ 0 ].pageY
