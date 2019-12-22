@@ -1,0 +1,33 @@
+{
+    "game": {
+        "width": 480,
+        "height": 320,
+        "tilesize": 32
+    },
+    "hero": {
+        "id": "link",
+        "name": "BK",
+        "width": 38,
+        "height": 48,
+        "image": "/webapp/bundles/sandbox/sprites/hero.png",
+        "spawn": {
+            "x": 256,
+            "y": 256,
+            "map": "/webapp/bundles/sandbox/maps/sandbox.json"
+        },
+        "boxes": {
+            "hit": {
+                "x": 5,
+                "y": 14,
+                "width": 28,
+                "height": 32
+            },
+            "collision": {
+                "x": 9,
+                "y": 24,
+                "width": 20,
+                "height": 18
+            }
+        }
+    }
+}

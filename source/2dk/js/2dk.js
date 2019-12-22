@@ -11,7 +11,6 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 ////////////////////////////////////////////////////////////////////////////////
 // Build Notes: ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// NOTE: Link sprite is 84px at widest and 96px at tallest for walking...
 // TODO: Sandbox development Map for ease of testing/experimenting...
 // TODO: Sandbox development Hero ALTTP sprite cycle from spritesheet.
 // TODO: Better boxes for hit and collision.
@@ -21,7 +20,7 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // TODO: Precise tile collision detection objects (x, y, width, height) 4x4?
 // TODO: Debug visuals: grid, hero, hitbox, collisionbox, collision tiles.
 
-// BUGS: ???
+// BUGS: KeysInterface is buggy for diagonal movement now that touch works lol.
 
 // TEST: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
 // TEST: NPC hypothesis is that NPCs will work now that positions are absolute!
@@ -30,12 +29,13 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 
 // NOTE: Use top-down player state for literal on/off hardware > software.
 // NOTE: Use Artificial General Interlligence for NPC base class.
+// NOTE: Link sprite is 84px at widest and 96px at tallest for walking...
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 class App {
     constructor () {
         this.loader = new Loader();
-        this.loader.loadJson( "/webapp/bundles/test/game.json" ).then(( json ) => {
+        this.loader.loadJson( "/webapp/bundles/sandbox/game.json" ).then(( json ) => {
             // Player
             this.player = new Player( json.game );
 

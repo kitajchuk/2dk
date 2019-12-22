@@ -61,7 +61,8 @@ $tile-size: 32px;
 @media only screen and ( orientation: portrait ) {
     ._2dk {
         &:after {
-            content: "Rotate to Landscape";
+            @include wrap();
+            content: "Rotate to Landscape.";
             position: fixed;
             left: 0;
             top: 0;
@@ -73,6 +74,25 @@ $tile-size: 32px;
             justify-content: center;
             align-items: center;
             z-index: 12;
+            text-align: center;
+        }
+
+        &:before {
+            @include wrap();
+            content: "(+Homescreen for Webapp)";
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            color: $grey;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 13;
+            text-align: center;
+            padding-bottom: $padding-1  ;
         }
     }
 }

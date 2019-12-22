@@ -54,6 +54,13 @@ pre {
     padding-bottom: $expander-0;
     background-color: #111;
     border: 1px solid $grey-dark;
+
+    @include respond( $mobile-breakpoint ) {
+        padding-top: $padding-m;
+        padding-bottom: $padding-m;
+        border-left: 0;
+        border-right: 0;
+    }
 }
 
 

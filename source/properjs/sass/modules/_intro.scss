@@ -22,8 +22,8 @@
 // Sourced from: https://github.com/leviv/botw-loader
 #tri-loader {
     position: absolute;
-    left: 48px;
-    bottom: 56px;
+    left: $padding-1;
+    bottom: $expander-0 + 24px;
 
     @include respond( $mobile-breakpoint ) {
         left: $padding-m;

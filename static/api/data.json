@@ -2,7 +2,7 @@
     "site": {
         "data": {
             "title": "2dk",
-            "description": "A Javascript 2d game maker SDK.",
+            "description": "A Javascript 2d game development SDK.",
             "googleUA": "",
             "googleVerify": ""
         }
@@ -15,9 +15,9 @@
                 "slug": "/"
             },
             {
-                "uid": "maps",
-                "text": "Maps",
-                "slug": "/maps/"
+                "uid": "webapp",
+                "text": "Webapp",
+                "slug": "/webapp/"
             }
         ]
     },
@@ -27,15 +27,15 @@
             "type": "page",
             "data": {
                 "title": "2dK",
-                "description": "A Javascript 2d game maker SDK."
+                "description": "A Javascript 2d game development SDK."
             }
         },
         {
-            "uid": "maps",
+            "uid": "sprites",
             "type": "page",
             "data": {
-                "title": "2dK Maps",
-                "description": "2 dimensional, tile-based classic gaming maps with Javascript <em>Canvas</em>."
+                "title": "2dK Sprites",
+                "description": "A unique style of CSS sprite that works with JS canvas maps."
             }
         }
     ]

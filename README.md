@@ -1,7 +1,7 @@
 2dk
 ===
 
-> A Javascript 2d game maker SDK.
+> A Javascript 2d game development SDK.
 
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/b6bd6820-200c-492b-86e1-5d9c42456b87/deploy-status)](https://app.netlify.com/sites/2dk/deploys)

@@ -1,7 +1,7 @@
 {
   "title": "2dk",
   "name": "2dk",
-  "description": "A Javascript 2d game maker SDK.",
+  "description": "A Javascript 2d game development SDK.",
   "private": true,
   "version": "1.0.0",
   "scripts": {
