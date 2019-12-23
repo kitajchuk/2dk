@@ -36,6 +36,10 @@ export default class Player {
     build () {
         this.element = document.createElement( "div" );
         this.element.className = `_2dk _2dk--${this.debug ? "debug" : "play"}`;
+        this.splash = document.createElement( "div" );
+        this.splash.className = "_2dk__splash";
+        this.splash.innerHTML = "<div>Rotate to Landscape.</div><div>+Webapp</div>";
+        this.element.appendChild( this.splash );
         this.element.appendChild( this.gamepad.element );
         document.body.appendChild( this.element );
     }
