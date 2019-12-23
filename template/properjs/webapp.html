@@ -1,3 +1,6 @@
+<%
+const timestamp = Date.now();
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,19 +9,19 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="2dk" />
-        <link rel="apple-touch-icon" sizes="57x57" href="/img/icon/apple-icon-57x57.png?v=cachebuster" />
-        <link rel="apple-touch-icon" sizes="60x60" href="/img/icon/apple-icon-60x60.png?v=cachebuster" />
-        <link rel="apple-touch-icon" sizes="72x72" href="/img/icon/apple-icon-72x72.png?v=cachebuster" />
-        <link rel="apple-touch-icon" sizes="76x76" href="/img/icon/apple-icon-76x76.png?v=cachebuster" />
-        <link rel="apple-touch-icon" sizes="114x114" href="/img/icon/apple-icon-114x114.png?v=cachebuster" />
-        <link rel="apple-touch-icon" sizes="120x120" href="/img/icon/apple-icon-120x120.png?v=cachebuster" />
-        <link rel="apple-touch-icon" sizes="144x144" href="/img/icon/apple-icon-144x144.png?v=cachebuster" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/img/icon/apple-icon-152x152.png?v=cachebuster" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/icon/apple-icon-180x180.png?v=cachebuster" />
+        <link rel="apple-touch-icon" sizes="57x57" href="/img/icon/apple-icon-57x57.png?v=<%= timestamp %>" />
+        <link rel="apple-touch-icon" sizes="60x60" href="/img/icon/apple-icon-60x60.png?v=<%= timestamp %>" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/img/icon/apple-icon-72x72.png?v=<%= timestamp %>" />
+        <link rel="apple-touch-icon" sizes="76x76" href="/img/icon/apple-icon-76x76.png?v=<%= timestamp %>" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/img/icon/apple-icon-114x114.png?v=<%= timestamp %>" />
+        <link rel="apple-touch-icon" sizes="120x120" href="/img/icon/apple-icon-120x120.png?v=<%= timestamp %>" />
+        <link rel="apple-touch-icon" sizes="144x144" href="/img/icon/apple-icon-144x144.png?v=<%= timestamp %>" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/img/icon/apple-icon-152x152.png?v=<%= timestamp %>" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/icon/apple-icon-180x180.png?v=<%= timestamp %>" />
         <link href="/css/2dk.css" rel="stylesheet" media="screen" />
     </head>
     <body>
-        <script src="/js/greensock.js"></script>
-        <script src="/js/2dk.js"></script>
+        <script src="/js/greensock.js?v=<%= timestamp %>"></script>
+        <script src="/js/2dk.js?v=<%= timestamp %>"></script>
     </body>
 </html>

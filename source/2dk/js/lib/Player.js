@@ -60,6 +60,13 @@ export default class Player {
 
         // Start button (pause)
         this.gamepad.on( "start-press", this._startPress );
+
+        // Screen size / Orientation change
+        window.onresize = () => {
+            this.width = this.data.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : this.data.width;
+            this.height = this.data.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : this.data.height;
+            this.map.updateLayers( this.width, this.height );
+        };
     }
 
 

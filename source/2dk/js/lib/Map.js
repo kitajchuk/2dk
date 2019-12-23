@@ -100,6 +100,16 @@ class MapLayer {
         this.canvas.style.height = `${this.data.height}px`;
         this.canvas.height = this.data.height;
     }
+
+
+    update ( width, height ) {
+        this.data.width = width;
+        this.data.height = height;
+        this.canvas.style.width = `${this.data.width}px`;
+        this.canvas.width = this.data.width;
+        this.canvas.style.height = `${this.data.height}px`;
+        this.canvas.height = this.data.height;
+    }
 }
 
 
@@ -278,6 +288,15 @@ export default class Map {
 
     addSprite ( sprite ) {
         this.objects.appendChild( sprite.element );
+    }
+
+
+    updateLayers ( width, height ) {
+        for ( let id in this.layers ) {
+            this.layers[ id ].update( width, height );
+        }
+
+        this.render();
     }
 
 
