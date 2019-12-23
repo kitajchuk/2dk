@@ -36,7 +36,6 @@ class Sprite {
         this.element = document.createElement( "div" );
         this.element.style.width = `${this.width}px`;
         this.element.style.height = `${this.height}px`;
-        this.element.style.animationDuration = `${Config.animation.cycle}ms`;
         this.element.className = `_2dk__${this.data.id}`;
         this.$element = $( this.element );
     }

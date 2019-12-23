@@ -14,7 +14,7 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // TODO: Sandbox development Map for ease of testing/experimenting...
 // TODO: Sandbox development Hero ALTTP sprite cycle from spritesheet.
 
-// TODO: Better boxes for hit and collision.
+// TODO: Use collisionbox to determine hero gamebox bounds colliders.
 // TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
 // TODO: Bounce physics so Hero does not get tile collision locked, clip edges.
 // TODO: Precise tile collision detection objects (x, y, width, height) 4x4?

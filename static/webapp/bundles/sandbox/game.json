@@ -8,8 +8,8 @@
     "hero": {
         "id": "link",
         "name": "BK",
-        "width": 38,
-        "height": 48,
+        "width": 64,
+        "height": 70,
         "image": "/webapp/bundles/sandbox/sprites/hero.png",
         "spawn": {
             "x": 256,
@@ -18,16 +18,16 @@
         },
         "boxes": {
             "hit": {
-                "x": 5,
-                "y": 14,
-                "width": 28,
-                "height": 32
+                "x": 20,
+                "y": 27,
+                "width": 24,
+                "height": 30
             },
             "collision": {
-                "x": 9,
-                "y": 24,
-                "width": 20,
-                "height": 18
+                "x": 20,
+                "y": 35,
+                "width": 24,
+                "height": 22
             }
         }
     }

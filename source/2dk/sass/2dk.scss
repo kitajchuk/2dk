@@ -35,10 +35,10 @@ body {
  * 2dk Player
 *******************************************************************************/
 // @2x sizes
-$hero-height: 96px;
-$hero-width: 76px;
-$hero-sprite-width: 304px;
-$hero-sprite-height: 768px;
+$hero-height: 140px;
+$hero-width: 128px;
+$hero-sprite-width: 1536px;
+$hero-sprite-height: 560px;
 // @1x sizes
 $hero-h: $hero-height / 2;
 $hero-w: $hero-width / 2;
@@ -193,62 +193,42 @@ $tile-size: 32px;
         background-position: 0 0;
     }
     &.up {
-        background-position: (-$hero-w) 0;
+        background-position: 0 (-$hero-h);
     }
     &.left {
-        background-position: (-$hero-w * 2) 0;
+        background-position: 0 (-$hero-h * 2);
     }
     &.right {
-        background-position: (-$hero-w * 3) 0;
+        background-position: (-$hero-w * 8) (-$hero-h * 3);
     }
 
-    &.walk {
-        // animation-duration: $hero-speed;
-        animation-iteration-count: infinite;
-    }
     &.walk.down {
-        animation-name: walk-down;
+        animation: walk-down $hero-speed steps( 8 ) infinite;
     }
     &.walk.up {
-        animation-name: walk-up;
+        animation: walk-up $hero-speed steps( 8 ) infinite;
     }
     &.walk.left {
-        animation-name: walk-left;
+        animation: walk-left $hero-speed steps( 8 ) infinite;
     }
     &.walk.right {
-        animation-name: walk-right;
+        animation: walk-right $hero-speed steps( 8 ) infinite;
     }
 }
 
 
 
 @keyframes walk-down {
-    0% { background-position: 0 (-$hero-h); }
-    49.99999% { background-position: 0 (-$hero-h); }
-    50% { background-position: 0 (-$hero-h * 2); }
-    99.99999% { background-position: 0 (-$hero-h * 2); }
-    100% { background-position: 0 0; }
+    100% { background-position: (-$hero-w * 8) 0; }
 }
 @keyframes walk-up {
-    0% { background-position: (-$hero-w) (-$hero-h); }
-    49.99999% { background-position: (-$hero-w) (-$hero-h); }
-    50% { background-position: (-$hero-w) (-$hero-h * 2); }
-    99.99999% { background-position: (-$hero-w) (-$hero-h * 2); }
-    100% { background-position: (-$hero-w) 0; }
+    100% { background-position: (-$hero-w * 8) (-$hero-h); }
 }
 @keyframes walk-left {
-    0% { background-position: (-$hero-w * 2) (-$hero-h); }
-    49.99999% { background-position: (-$hero-w * 2) (-$hero-h); }
-    50% { background-position: (-$hero-w * 2) (-$hero-h * 2); }
-    99.99999% { background-position: (-$hero-w * 2) (-$hero-h * 2); }
-    100% { background-position: (-$hero-w * 2) 0; }
+    100% { background-position: (-$hero-w * 8) (-$hero-h * 2); }
 }
 @keyframes walk-right {
-    0% { background-position: (-$hero-w * 3) (-$hero-h); }
-    49.99999% { background-position: (-$hero-w * 3) (-$hero-h); }
-    50% { background-position: (-$hero-w * 3) (-$hero-h * 2); }
-    99.99999% { background-position: (-$hero-w * 3) (-$hero-h * 2); }
-    100% { background-position: (-$hero-w * 3) 0; }
+    100% { background-position: 0 (-$hero-h * 3); }
 }
 
 
