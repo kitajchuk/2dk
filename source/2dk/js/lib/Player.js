@@ -45,6 +45,7 @@ export default class Player {
     bind () {
         this._dPadPress = this.dPadPress.bind( this );
         this._dPadRelease = this.dPadRelease.bind( this );
+        this._startPress = this.startPress.bind( this );
 
         // Standard 4 point d-pad
         this.interfaces.keys.on( "left-press", this._dPadPress );
@@ -65,6 +66,9 @@ export default class Player {
         this.interfaces.touch.on( "up-release", this._dPadRelease );
         this.interfaces.keys.on( "down-release", this._dPadRelease );
         this.interfaces.touch.on( "down-release", this._dPadRelease );
+
+        // Start button (pause)
+        this.interfaces.touch.on( "start-press", this._startPress );
     }
 
 
@@ -78,19 +82,28 @@ export default class Player {
     }
 
 
+    startPress () {
+        this.paused = !this.paused;
+
+        if ( this.paused ) {
+            this.hero.face( this.hero.dir );
+        }
+    }
+
+
     dPadPress ( dir ) {
-        // if ( this.paused ) {
-        //     return;
-        // }
+        if ( this.paused ) {
+            return;
+        }
 
         this.gamebox.press( dir );
     }
 
 
     dPadRelease ( dir ) {
-        // if ( this.paused ) {
-        //     return;
-        // }
+        if ( this.paused ) {
+            return;
+        }
 
         this.gamebox.release( dir );
     }

@@ -9,7 +9,6 @@ export default class GameBox {
         this.hero = player.hero;
         this.map = player.map;
         this.step = Config.values.step;
-        this.tween = null;
         this.mapbounds = {
             top: 0,
             bottom: this.map.height - this.player.data.height,
@@ -76,26 +75,6 @@ export default class GameBox {
 
         return transform;
     }
-
-
-    // animate ( dir, transform ) {
-    //     const handler = () => {
-    //         this.transform.x = this.tween.target._gsTransform.x;
-    //         this.transform.y = this.tween.target._gsTransform.y;
-    //         this.map.move( dir, this.transform );
-    //     };
-    //
-    //     if ( this.tween ) {
-    //         this.tween.kill();
-    //     }
-    //
-    //     this.tween = window.TweenLite.to( this.plane, Config.values.slide, {
-    //         css: transform,
-    //         ease: window.Power4.easeOut,
-    //         onUpdate: handler,
-    //         onComplete: handler
-    //     });
-    // }
 
 
     press ( dir ) {

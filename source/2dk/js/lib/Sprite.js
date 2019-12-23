@@ -10,7 +10,24 @@ class Sprite {
         this.data = data;
         this.width = data.width;
         this.height = data.height;
+        this.offset = {
+            x: data.spawn.x,
+            y: data.spawn.y
+        };
+        this.hitbox = {
+            x: data.spawn.x + this.data.boxes.hit.x,
+            y: data.spawn.y + this.data.boxes.hit.y,
+            width: this.data.boxes.hit.width,
+            height: this.data.boxes.hit.height
+        };
+        this.collisionbox = {
+            x: data.spawn.x + this.data.boxes.collision.x,
+            y: data.spawn.y + this.data.boxes.collision.y,
+            width: this.data.boxes.collision.width,
+            height: this.data.boxes.collision.height
+        };
         this.loader = new Loader();
+        this.dir = "none";
         this.build();
     }
 
@@ -29,39 +46,10 @@ class Sprite {
         return new Promise(( resolve ) => {
             this.loader.loadImg( this.data.image ).then(() => {
                 this.element.style.backgroundImage = `url(${this.data.image})`;
+                this.init();
                 resolve();
             });
         });
-    }
-}
-
-
-
-class Hero extends Sprite {
-    constructor ( data ) {
-        // Enfore the heroes journey
-        data.id = "hero";
-        super( data );
-
-        this.cycling = false;
-        this.tween = null;
-        this.offset = {
-            x: data.spawn.x,
-            y: data.spawn.y
-        };
-        this.hitbox = {
-            x: data.spawn.x + this.data.boxes.hit.x,
-            y: data.spawn.y + this.data.boxes.hit.y,
-            width: this.data.boxes.hit.width,
-            height: this.data.boxes.hit.height
-        };
-        this.collisionbox = {
-            x: data.spawn.x + this.data.boxes.collision.x,
-            y: data.spawn.y + this.data.boxes.collision.y,
-            width: this.data.boxes.collision.width,
-            height: this.data.boxes.collision.height
-        };
-        this.init();
     }
 
 
@@ -89,21 +77,14 @@ class Hero extends Sprite {
 
 
     cycle ( dir ) {
-        // if ( !this.cycling ) {
-            // this.cycling = true;
-            this.$element.removeClass( "up down right left" );
-            this.$element.addClass( `walk ${dir}` );
-        // }
-    }
-
-
-    clear ( dir ) {
-        // this.cycling = false;
-        this.face( dir );
+        this.dir = dir;
+        this.$element.removeClass( "up down right left" );
+        this.$element.addClass( `walk ${dir}` );
     }
 
 
     face ( dir ) {
+        this.dir = dir;
         this.$element.removeClass( "walk up down right left" );
         this.$element.addClass( dir );
     }
@@ -116,6 +97,16 @@ class Hero extends Sprite {
             width: this.data.boxes[ box ].width,
             height: this.data.boxes[ box ].height
         };
+    }
+}
+
+
+
+class Hero extends Sprite {
+    constructor ( data ) {
+        // Enfore the heroes journey
+        data.id = "hero";
+        super( data );
     }
 }
 

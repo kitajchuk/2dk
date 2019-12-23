@@ -9,61 +9,65 @@ const touchControls = {
     a: {
         key: Config.keys.A,
         elem: null,
-        hold: 0,
-        text: "A",
         timer: null,
         touched: false,
+        hold: 0,
+        text: "A",
     },
     b: {
         key: Config.keys.B,
         elem: null,
-        hold: 0,
-        text: "B",
         timer: null,
         touched: false,
+        hold: 0,
+        text: "B",
     },
     start: {
         key: Config.keys.START,
         elem: null,
-        text: "Start",
         timer: null,
         touched: false,
+        hold: 0,
+        text: "Start",
+        menu: true,
     },
     select: {
         key: Config.keys.SELECT,
         elem: null,
-        text: "Select",
+        hold: 0,
         timer: null,
         touched: false,
+        text: "Select",
+        menu: true,
     },
     // D-Pad
     up: {
         key: Config.keys.UP,
         elem: null,
         timer: null,
-        dpad: Config.moves.UP,
         touched: false,
+        dpad: Config.moves.UP,
     },
     down: {
         key: Config.keys.DOWN,
         elem: null,
         timer: null,
-        dpad: Config.moves.DOWN,
         touched: false,
+        dpad: Config.moves.DOWN,
     },
     right: {
         key: Config.keys.RIGHT,
         elem: null,
         timer: null,
-        dpad: Config.moves.RIGHT,
         touched: false,
+        dpad: Config.moves.RIGHT,
     },
     left: {
         key: Config.keys.LEFT,
         elem: null,
         timer: null,
-        dpad: Config.moves.LEFT,
         touched: false,
+        dpad: Config.moves.LEFT,
     },
 };
 let instance = null;
@@ -241,16 +245,22 @@ const startTouch = ( control ) => {
 
 
 const handleTouchStart = ( control ) => {
+    if ( control.touched && control.menu && control.hold > 0 ) {
+        control.hold++;
+        console.log( `suspended ${control.btn}` );
+        return;
+    }
+
     if ( control.hasOwnProperty( "hold" ) ) {
         control.hold++;
 
         if ( control.hold > touchRepeated ) {
             instance.fire( `${control.btn}-longpress` );
-            // console.log( `${control.btn}-longpress` );
+            console.log( `${control.btn}-longpress` );
 
         } else {
             instance.fire( `${control.btn}-press` );
-            // console.log( `${control.btn}-press` );
+            console.log( `${control.btn}-press` );
         }
 
     } else {
@@ -265,11 +275,11 @@ const handleTouchEnd = ( control ) => {
     if ( control.hasOwnProperty( "hold" ) ) {
         if ( control.hold > touchRepeated ) {
             instance.fire( `${control.btn}-longrelease` );
-            // console.log( `${control.btn}-longrelease` );
+            console.log( `${control.btn}-longrelease` );
 
         } else {
             instance.fire( `${control.btn}-release` );
-            // console.log( `${control.btn}-release` );
+            console.log( `${control.btn}-release` );
         }
 
         control.hold = 0;
