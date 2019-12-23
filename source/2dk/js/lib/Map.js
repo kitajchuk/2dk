@@ -284,8 +284,8 @@ export default class Map {
     setLayer ( id ) {
         this.layers[ id ] = new MapLayer({
             id,
-            width: this.player.data.width,
-            height: this.player.data.height
+            width: this.player.width,
+            height: this.player.height
         });
 
         this.element.appendChild( this.layers[ id ].canvas );
@@ -295,8 +295,8 @@ export default class Map {
     setDebugLayer () {
         this.layers.debug = new MapLayer({
             id: "debug",
-            width: this.player.data.width,
-            height: this.player.data.height
+            width: this.player.width,
+            height: this.player.height
         });
 
         this.element.appendChild( this.layers.debug.canvas );

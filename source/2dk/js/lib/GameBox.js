@@ -11,9 +11,9 @@ export default class GameBox {
         this.step = Config.values.step;
         this.mapbounds = {
             top: 0,
-            bottom: this.map.height - this.player.data.height,
+            bottom: this.map.height - this.player.height,
             left: 0,
-            right: this.map.width - this.player.data.width
+            right: this.map.width - this.player.width
         };
         this.playbox = {
             top: 0,
@@ -33,6 +33,16 @@ export default class GameBox {
     build () {
         this.screen = document.createElement( "div" );
         this.screen.className = `_2dk__screen`;
+
+        if ( this.player.data.fullscreen ) {
+            this.screen.style.width = "100%";
+            this.screen.style.height = "100%";
+
+        } else {
+            this.screen.style.width = `${this.player.width}px`;
+            this.screen.style.height = `${this.player.height}px`;
+        }
+
         this.screen.appendChild( this.map.element );
         this.player.element.appendChild( this.screen );
     }
@@ -45,8 +55,8 @@ export default class GameBox {
 
 
     update ( poi ) {
-        const x = ( poi.x - (this.player.data.width / 2) );
-        const y = ( poi.y - (this.player.data.height / 2) );
+        const x = ( poi.x - (this.player.width / 2) );
+        const y = ( poi.y - (this.player.height / 2) );
         const transform = {};
 
         if ( x >= this.mapbounds.left && x <= this.mapbounds.right ) {

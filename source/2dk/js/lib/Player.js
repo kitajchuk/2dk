@@ -12,6 +12,8 @@ export default class Player {
         this.query = paramalama( window.location.search );
         this.debug = this.query.debug ? true : false;
         this.gamepad = new GamePad();
+        this.width = this.data.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : this.data.width;
+        this.height = this.data.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : this.data.height;
         this.detect();
         this.build();
         this.bind();
