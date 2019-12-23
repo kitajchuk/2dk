@@ -3,33 +3,134 @@ import Controller from "properjs-controller";
 
 
 
-const timers = {};
 const touchInterval = Config.values.speed;
 const touchRepeated = Config.values.repeat;
-let aButton = 0;
-let bButton = 0;
-let controls = null;
-let controlsUp = null;
-let controlsRight = null;
-let controlsDown = null;
-let controlsLeft = null;
-let controlsA = null;
-let controlsB = null;
-let controlsStart = null;
-let controlsSelect = null;
+const touchControls = {
+    a: {
+        key: Config.keys.A,
+        elem: null,
+        hold: 0,
+        text: "A",
+        timer: null,
+        touched: false,
+    },
+    b: {
+        key: Config.keys.B,
+        elem: null,
+        hold: 0,
+        text: "B",
+        timer: null,
+        touched: false,
+    },
+    start: {
+        key: Config.keys.START,
+        elem: null,
+        text: "Start",
+        timer: null,
+        touched: false,
+    },
+    select: {
+        key: Config.keys.SELECT,
+        elem: null,
+        text: "Select",
+        timer: null,
+        touched: false,
+    },
+    // D-Pad
+    up: {
+        key: Config.keys.UP,
+        elem: null,
+        timer: null,
+        dpad: Config.moves.UP,
+        touched: false,
+    },
+    down: {
+        key: Config.keys.DOWN,
+        elem: null,
+        timer: null,
+        dpad: Config.moves.DOWN,
+        touched: false,
+    },
+    right: {
+        key: Config.keys.RIGHT,
+        elem: null,
+        timer: null,
+        dpad: Config.moves.RIGHT,
+        touched: false,
+    },
+    left: {
+        key: Config.keys.LEFT,
+        elem: null,
+        timer: null,
+        dpad: Config.moves.LEFT,
+        touched: false,
+    },
+};
 let instance = null;
 
 
 
-const onTouchEnd = ( e ) => {
+const getControl = ( key ) => {
+    let ret = null;
+
+    for ( let btn in touchControls ) {
+        if ( touchControls[ btn ].key === key ) {
+            ret = touchControls[ btn ];
+            break;
+        }
+    }
+
+    return ret;
+};
+
+
+
+const getDpad = ( key ) => {
+    let ret = null;
+
+    for ( let btn in touchControls ) {
+        if ( touchControls[ btn ].key === key && touchControls[ btn ].dpad ) {
+            ret = touchControls[ btn ];
+            break;
+        }
+    }
+
+    return ret;
+};
+
+
+
+const getTouched = ( touches, control ) => {
+    let ret = null;
+
+    for ( let i = 0; i < touches.length; i++ ) {
+        const touched = document.elementFromPoint( touches[ i ].pageX, touches[ i ].pageY );
+        const key = Number( touched.dataset.key );
+
+        if ( key === control.key ) {
+            ret = control;
+            break;
+        }
+    }
+
+    return ret;
+};
+
+
+
+const onTouchStart = ( e ) => {
     e.preventDefault();
 
-    endTouches();
+    for ( let i = 0; i < e.touches.length; i++ ) {
+        const touched = document.elementFromPoint( e.touches[ i ].pageX, e.touches[ i ].pageY );
+        const key = Number( touched.dataset.key );
 
-    controlsUp.classList.remove( "is-active" );
-    controlsLeft.classList.remove( "is-active" );
-    controlsRight.classList.remove( "is-active" );
-    controlsDown.classList.remove( "is-active" );
+        if ( key ) {
+            const control = getControl( key );
+
+            startTouch( control );
+        }
+    }
 
     return false;
 };
@@ -39,38 +140,27 @@ const onTouchEnd = ( e ) => {
 const onTouchMove = ( e ) => {
     e.preventDefault();
 
-    console.log( e );
+    for ( let i = 0; i < e.touches.length; i++ ) {
+        const touched = document.elementFromPoint( e.touches[ i ].pageX, e.touches[ i ].pageY );
+        const key = Number( touched.dataset.key );
 
-    const elem = document.elementFromPoint(
-        e.touches[ 0 ].pageX,
-        e.touches[ 0 ].pageY
-    );
+        if ( key ) {
+            const control = getControl( key );
 
-    // Move off of a specific control
-    if ( elem.className === "_2dk__controls" ) {
-        endTouches();
+            if ( control ) {
+                startTouch( control );
+            }
+        }
 
-        controlsUp.classList.remove( "is-active" );
-        controlsLeft.classList.remove( "is-active" );
-        controlsRight.classList.remove( "is-active" );
-        controlsDown.classList.remove( "is-active" );
+        for ( let btn in touchControls ) {
+            if ( touchControls[ btn ].touched ) {
+                const touched = getTouched( e.touches, touchControls[ btn ] );
 
-    // Move into a specific control
-    } else if ( /up/.test( elem.className ) ) {
-        endTouches();
-        onStartUp( e );
-
-    } else if ( /right/.test( elem.className ) ) {
-        endTouches();
-        onStartRight( e );
-
-    } else if ( /down/.test( elem.className ) ) {
-        endTouches();
-        onStartDown( e );
-
-    } else if ( /left/.test( elem.className ) ) {
-        endTouches();
-        onStartLeft( e );
+                if ( !touched ) {
+                    cancelTouch( touchControls[ btn ] );
+                }
+            }
+        }
     }
 
     return false;
@@ -78,34 +168,71 @@ const onTouchMove = ( e ) => {
 
 
 
-const endTouches = () => {
-    for ( const k in timers ) {
-        if ( timers.hasOwnProperty( k ) ) {
-            endTouch( k );
+const onTouchEnd = ( e ) => {
+    e.preventDefault();
+
+    if ( !e.touches.length ) {
+        clearTouches();
+        cancelTouches();
+
+    } else {
+        for ( let btn in touchControls ) {
+            if ( touchControls[ btn ].touched ) {
+                const touched = getTouched( e.touches, touchControls[ btn ] );
+
+                if ( !touched ) {
+                    cancelTouch( touchControls[ btn ] );
+                }
+            }
+        }
+    }
+
+    return false;
+};
+
+
+
+const clearTouches = () => {
+    for ( let btn in touchControls ) {
+        touchControls[ btn ].elem.classList.remove( "is-active" );
+    }
+};
+
+
+
+const cancelTouches = () => {
+    for ( let btn in touchControls ) {
+        if ( touchControls[ btn ].timer ) {
+            cancelTouch( touchControls[ btn ] );
         }
     }
 };
 
 
 
-const endTouch = ( k ) => {
-    if ( timers[ k ] ) {
-        clearInterval( timers[ k ] );
-
-        delete timers[ k ];
+const cancelTouch = ( control ) => {
+    if ( control.timer ) {
+        clearInterval( control.timer );
+        control.timer = null;
     }
 
-    onGameTouchEnd( k );
+    control.elem.classList.remove( "is-active" );
+    control.touched = false;
+
+    handleTouchEnd( control );
 };
 
 
 
-const startTouch = ( k ) => {
-    if ( !timers[ k ] ) {
-        onGameTouchStart( k );
+const startTouch = ( control ) => {
+    if ( !control.timer ) {
+        control.elem.classList.add( "is-active" );
+        control.touched = true;
 
-        timers[ k ] = setInterval(() => {
-            onGameTouchStart( k );
+        handleTouchStart( control );
+
+        control.timer = setInterval(() => {
+            handleTouchStart( control );
 
         }, touchInterval );
     }
@@ -113,279 +240,43 @@ const startTouch = ( k ) => {
 
 
 
-const onStartUp = ( e ) => {
-    e.preventDefault();
-
-    startTouch( Config.keys.UP );
-
-    controlsUp.classList.add( "is-active" );
-
-    return false;
-};
-
-
-
-const onStartRight = ( e ) => {
-    e.preventDefault();
-
-    startTouch( Config.keys.RIGHT );
-
-    controlsRight.classList.add( "is-active" );
-
-    return false;
-};
-
-
-
-const onStartDown = ( e ) => {
-    e.preventDefault();
-
-    startTouch( Config.keys.DOWN );
-
-    controlsDown.classList.add( "is-active" );
-
-    return false;
-};
-
-
-
-const onStartLeft = ( e ) => {
-    e.preventDefault();
-
-    startTouch( Config.keys.LEFT );
-
-    controlsLeft.classList.add( "is-active" );
-
-    return false;
-};
-
-
-
-const onStartA = ( e ) => {
-    e.preventDefault();
-
-    startTouch( Config.keys.A );
-
-    controlsA.classList.add( "is-active" );
-
-    return false;
-};
-
-
-
-const onStartB = ( e ) => {
-    e.preventDefault();
-
-    startTouch( Config.keys.B );
-
-    controlsB.classList.add( "is-active" );
-
-    return false;
-};
-
-
-
-const onStartStart = ( e ) => {
-    e.preventDefault();
-
-    startTouch( Config.keys.START );
-
-    controlsStart.classList.add( "is-active" );
-
-    return false;
-};
-
-
-
-const onStartSelect = ( e ) => {
-    e.preventDefault();
-
-    startTouch( Config.keys.SELECT );
-
-    controlsSelect.classList.add( "is-active" );
-
-    return false;
-};
-
-
-
-const onEndUp = ( e ) => {
-    e.preventDefault();
-
-    endTouch( Config.keys.UP );
-
-    controlsUp.classList.remove( "is-active" );
-
-    return false;
-};
-
-
-
-const onEndRight = ( e ) => {
-    e.preventDefault();
-
-    endTouch( Config.keys.RIGHT );
-
-    controlsRight.classList.remove( "is-active" );
-
-    return false;
-};
-
-
-
-const onEndDown = ( e ) => {
-    e.preventDefault();
-
-    endTouch( Config.keys.DOWN );
-
-    controlsDown.classList.remove( "is-active" );
-
-    return false;
-};
-
-
-
-const onEndLeft = ( e ) => {
-    e.preventDefault();
-
-    endTouch( Config.keys.LEFT );
-
-    controlsLeft.classList.remove( "is-active" );
-
-    return false;
-};
-
-
-
-const onEndA = ( e ) => {
-    e.preventDefault();
-
-    endTouch( Config.keys.A );
-
-    controlsA.classList.remove( "is-active" );
-
-    return false;
-};
-
-
-
-const onEndB = ( e ) => {
-    e.preventDefault();
-
-    endTouch( Config.keys.B );
-
-    controlsB.classList.remove( "is-active" );
-
-    return false;
-};
-
-
-
-const onEndStart = ( e ) => {
-    e.preventDefault();
-
-    endTouch( Config.keys.START );
-
-    controlsStart.classList.remove( "is-active" );
-
-    return false;
-};
-
-
-
-const onEndSelect = ( e ) => {
-    e.preventDefault();
-
-    endTouch( Config.keys.SELECT );
-
-    controlsSelect.classList.remove( "is-active" );
-
-    return false;
-};
-
-
-
-const onGameTouchEnd = ( k ) => {
-    // Force number type
-    k = Number( k );
-
-    if ( k === Config.keys.A ) {
-        instance.fire( "a-release" );
-
-        if ( aButton < touchRepeated ) {
-            instance.fire( "a" );
+const handleTouchStart = ( control ) => {
+    if ( control.hasOwnProperty( "hold" ) ) {
+        control.hold++;
+
+        if ( control.hold > touchRepeated ) {
+            instance.fire( `${control.btn}-longpress` );
+            // console.log( `${control.btn}-longpress` );
+
+        } else {
+            instance.fire( `${control.btn}-press` );
+            // console.log( `${control.btn}-press` );
         }
 
-        aButton = 0;
-    }
-
-    if ( k === Config.keys.B ) {
-        instance.fire( "b-release" );
-
-        if ( bButton < touchRepeated ) {
-            instance.fire( "b" );
-        }
-
-        bButton = 0;
-    }
-
-    if ( k === Config.keys.UP ) {
-        instance.fire( "d-up-release", Config.moves.UP );
-    }
-
-    if ( k === Config.keys.RIGHT ) {
-        instance.fire( "d-right-release", Config.moves.RIGHT );
-    }
-
-    if ( k === Config.keys.DOWN ) {
-        instance.fire( "d-down-release", Config.moves.DOWN );
-    }
-
-    if ( k === Config.keys.LEFT ) {
-        instance.fire( "d-left-release", Config.moves.LEFT );
+    } else {
+        instance.fire( `${control.btn}-press`, (control.dpad || null) );
+        // console.log( `${control.btn}-press` );
     }
 };
 
 
 
-const onGameTouchStart = ( k ) => {
-    // Force number type
-    k = Number( k );
+const handleTouchEnd = ( control ) => {
+    if ( control.hasOwnProperty( "hold" ) ) {
+        if ( control.hold > touchRepeated ) {
+            instance.fire( `${control.btn}-longrelease` );
+            // console.log( `${control.btn}-longrelease` );
 
-    if ( k === Config.keys.A ) {
-        // Longpress ( hold )
-        aButton++;
-        instance.fire( "a-press" );
-    }
+        } else {
+            instance.fire( `${control.btn}-release` );
+            // console.log( `${control.btn}-release` );
+        }
 
-    if ( k === Config.keys.B ) {
-        // Longpress ( hold )
-        bButton++;
-        instance.fire( "b-press" );
-    }
+        control.hold = 0;
 
-    if ( k === Config.keys.START ) {
-        instance.fire( "start" );
-    }
-
-    if ( k === Config.keys.SELECT ) {
-        instance.fire( "select" );
-    }
-
-    if ( k === Config.keys.UP ) {
-        instance.fire( "d-up-press", Config.moves.UP );
-    }
-
-    if ( k === Config.keys.RIGHT ) {
-        instance.fire( "d-right-press", Config.moves.RIGHT );
-    }
-
-    if ( k === Config.keys.DOWN ) {
-        instance.fire( "d-down-press", Config.moves.DOWN );
-    }
-
-    if ( k === Config.keys.LEFT ) {
-        instance.fire( "d-left-press", Config.moves.LEFT );
+    } else {
+        instance.fire( `${control.btn}-release`, (control.dpad || null) );
+        // console.log( `${control.btn}-release` );
     }
 };
 
@@ -399,68 +290,35 @@ export default class TouchInterface extends Controller {
             instance = this;
 
             this.build();
-
-            document.addEventListener( "touchmove", onTouchMove, false );
-            document.addEventListener( "touchend", onTouchEnd, false );
-
-            controlsUp.addEventListener( "touchstart", onStartUp, false );
-            controlsRight.addEventListener( "touchstart", onStartRight, false );
-            controlsDown.addEventListener( "touchstart", onStartDown, false );
-            controlsLeft.addEventListener( "touchstart", onStartLeft, false );
-            controlsA.addEventListener( "touchstart", onStartA, false );
-            controlsB.addEventListener( "touchstart", onStartB, false );
-            controlsStart.addEventListener( "touchstart", onStartStart, false );
-            controlsSelect.addEventListener( "touchstart", onStartSelect, false );
-
-            controlsUp.addEventListener( "touchend", onEndUp, false );
-            controlsRight.addEventListener( "touchend", onEndRight, false );
-            controlsDown.addEventListener( "touchend", onEndDown, false );
-            controlsLeft.addEventListener( "touchend", onEndLeft, false );
-            controlsA.addEventListener( "touchend", onEndA, false );
-            controlsB.addEventListener( "touchend", onEndB, false );
-            controlsStart.addEventListener( "touchend", onEndStart, false );
-            controlsSelect.addEventListener( "touchend", onEndSelect, false );
+            this.bind();
         }
 
         return instance;
     }
 
 
+    bind () {
+        this.element.addEventListener( "touchstart", onTouchStart, false );
+        this.element.addEventListener( "touchmove", onTouchMove, false );
+        this.element.addEventListener( "touchend", onTouchEnd, false );
+    }
+
+
     build () {
-        controls = document.createElement( "div" );
-        controlsUp = document.createElement( "div" );
-        controlsRight = document.createElement( "div" );
-        controlsDown = document.createElement( "div" );
-        controlsLeft = document.createElement( "div" );
-        controlsA = document.createElement( "div" );
-        controlsB = document.createElement( "div" );
-        controlsStart = document.createElement( "div" );
-        controlsSelect = document.createElement( "div" );
+        this.element = document.createElement( "div" );
+        this.element.className = "_2dk__controls";
 
-        controls.className = "_2dk__controls";
-        controlsUp.className = "_2dk__controls__up";
-        controlsRight.className = "_2dk__controls__right";
-        controlsDown.className = "_2dk__controls__down";
-        controlsLeft.className = "_2dk__controls__left";
-        controlsA.className = "_2dk__controls__a";
-        controlsB.className = "_2dk__controls__b";
-        controlsStart.className = "_2dk__controls__start";
-        controlsSelect.className = "_2dk__controls__select";
+        for ( let btn in touchControls ) {
+            touchControls[ btn ].btn = btn;
+            touchControls[ btn ].elem = document.createElement( "div" );
+            touchControls[ btn ].elem.className = `_2dk__controls__${btn}`;
+            touchControls[ btn ].elem.dataset.key = touchControls[ btn ].key;
 
-        controlsA.innerHTML = "<span>A</span>";
-        controlsB.innerHTML = "<span>B</span>";
-        controlsStart.innerHTML = "<span>Start</span>";
-        controlsSelect.innerHTML = "<span>Select</span>";
+            if ( touchControls[ btn ].text ) {
+                touchControls[ btn ].elem.innerHTML = `<span>${touchControls[ btn ].text}</span>`;
+            }
 
-        controls.appendChild( controlsUp );
-        controls.appendChild( controlsRight );
-        controls.appendChild( controlsDown );
-        controls.appendChild( controlsLeft );
-        controls.appendChild( controlsA );
-        controls.appendChild( controlsB );
-        controls.appendChild( controlsStart );
-        controls.appendChild( controlsSelect );
-
-        this.element = controls;
+            this.element.appendChild( touchControls[ btn ].elem );
+        }
     }
 }

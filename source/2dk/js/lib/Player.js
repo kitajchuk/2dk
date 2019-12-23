@@ -47,24 +47,24 @@ export default class Player {
         this._dPadRelease = this.dPadRelease.bind( this );
 
         // Standard 4 point d-pad
-        this.interfaces.keys.on( "d-left-press", this._dPadPress );
-        this.interfaces.touch.on( "d-left-press", this._dPadPress );
-        this.interfaces.keys.on( "d-right-press", this._dPadPress );
-        this.interfaces.touch.on( "d-right-press", this._dPadPress );
-        this.interfaces.keys.on( "d-up-press", this._dPadPress );
-        this.interfaces.touch.on( "d-up-press", this._dPadPress );
-        this.interfaces.keys.on( "d-down-press", this._dPadPress );
-        this.interfaces.touch.on( "d-down-press", this._dPadPress );
+        this.interfaces.keys.on( "left-press", this._dPadPress );
+        this.interfaces.touch.on( "left-press", this._dPadPress );
+        this.interfaces.keys.on( "right-press", this._dPadPress );
+        this.interfaces.touch.on( "right-press", this._dPadPress );
+        this.interfaces.keys.on( "up-press", this._dPadPress );
+        this.interfaces.touch.on( "up-press", this._dPadPress );
+        this.interfaces.keys.on( "down-press", this._dPadPress );
+        this.interfaces.touch.on( "down-press", this._dPadPress );
 
         // Standard 4 point d-pad on release
-        this.interfaces.keys.on( "d-left-release", this._dPadRelease );
-        this.interfaces.touch.on( "d-left-release", this._dPadRelease );
-        this.interfaces.keys.on( "d-right-release", this._dPadRelease );
-        this.interfaces.touch.on( "d-right-release", this._dPadRelease );
-        this.interfaces.keys.on( "d-up-release", this._dPadRelease );
-        this.interfaces.touch.on( "d-up-release", this._dPadRelease );
-        this.interfaces.keys.on( "d-down-release", this._dPadRelease );
-        this.interfaces.touch.on( "d-down-release", this._dPadRelease );
+        this.interfaces.keys.on( "left-release", this._dPadRelease );
+        this.interfaces.touch.on( "left-release", this._dPadRelease );
+        this.interfaces.keys.on( "right-release", this._dPadRelease );
+        this.interfaces.touch.on( "right-release", this._dPadRelease );
+        this.interfaces.keys.on( "up-release", this._dPadRelease );
+        this.interfaces.touch.on( "up-release", this._dPadRelease );
+        this.interfaces.keys.on( "down-release", this._dPadRelease );
+        this.interfaces.touch.on( "down-release", this._dPadRelease );
     }
 
 
