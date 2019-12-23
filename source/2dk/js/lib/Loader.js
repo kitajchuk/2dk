@@ -1,8 +1,8 @@
-import $ from "properjs-hobo";
+const $ = require( "properjs-hobo" );
 
 
 
-export default class Loader {
+class Loader {
     constructor () {}
 
     loadImg ( src ) {
@@ -41,3 +41,7 @@ export default class Loader {
         });
     }
 }
+
+
+
+module.exports = Loader;

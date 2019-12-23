@@ -5,7 +5,7 @@ process.once( "loaded", () => {
     // console.log( global );
 
     // Pipe 2dk JS libraries into global scope for access in renderer.js
-    // global._2dk = require( "../source/2dk/js/lib/index" );
+    global._2dk = require( "../source/2dk/js/lib/index" );
 });
 
 window.addEventListener( "DOMContentLoaded", () => {

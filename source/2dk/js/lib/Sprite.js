@@ -1,6 +1,6 @@
-import Loader from "./Loader";
-import Config from "./Config";
-import $ from "properjs-hobo";
+const Loader = require( "./Loader" );
+const Config = require( "./Config" );
+const $ = require( "properjs-hobo" );
 
 
 
@@ -129,4 +129,7 @@ class Hero extends Sprite {
 
 
 
-export { Hero, Sprite }
+module.exports = {
+    Hero,
+    Sprite
+};

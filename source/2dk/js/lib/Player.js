@@ -1,11 +1,11 @@
-import Config from "./Config";
-import GamePad from "./GamePad";
-import GameBox from "./GameBox";
-import paramalama from "paramalama";
+const Config = require( "./Config" );
+const GamePad = require( "./GamePad" );
+const GameBox = require( "./GameBox" );
+const paramalama = require( "paramalama" );
 
 
 
-export default class Player {
+class Player {
     constructor ( data ) {
         this.data = data;
         this.paused = true;
@@ -126,3 +126,7 @@ export default class Player {
         this.hero.player = this;
     }
 }
+
+
+
+module.exports = Player;

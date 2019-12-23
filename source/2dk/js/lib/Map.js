@@ -1,5 +1,5 @@
-import Loader from "./Loader";
-import Config from "./Config";
+const Loader = require( "./Loader" );
+const Config = require( "./Config" );
 
 
 
@@ -168,7 +168,7 @@ class MapLocation {
 
 
 
-export default class Map {
+class Map {
     constructor ( data ) {
         this.data = data;
         this.loader = new Loader();
@@ -321,3 +321,11 @@ export default class Map {
         this.element.appendChild( this.layers.debug.canvas );
     }
 }
+
+
+
+module.exports = {
+    Map,
+    drawMapTiles,
+    drawGridLines
+};

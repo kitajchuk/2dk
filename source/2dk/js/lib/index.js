@@ -1,11 +1,13 @@
-import Loader from "./Loader";
-import Player from "./Player";
-import { Hero, Sprite } from "./Sprite";
-import Map from "./Map";
+const Loader = require( "./Loader" );
+const Player = require( "./Player" );
+const { Hero, Sprite } = require( "./Sprite" );
+const { Map, drawMapTiles, drawGridLines } = require( "./Map" );
 
 
 
-export {
+module.exports = {
+    drawGridLines,
+    drawMapTiles,
     Loader,
     Player,
     Sprite,

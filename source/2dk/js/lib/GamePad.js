@@ -1,5 +1,5 @@
-import Config from "./Config";
-import Controller from "properjs-controller";
+const Config = require( "./Config" );
+const Controller = require( "properjs-controller" );
 
 
 
@@ -321,7 +321,7 @@ const handleTouchEnd = ( control ) => {
 
 
 
-export default class GamePad extends Controller {
+class GamePad extends Controller {
     constructor () {
         super();
 
@@ -366,3 +366,7 @@ export default class GamePad extends Controller {
         }
     }
 }
+
+
+
+module.exports = GamePad;

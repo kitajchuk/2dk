@@ -1,8 +1,8 @@
-import Config from "./Config";
+const Config = require( "./Config" );
 
 
 
-export default class GameBox {
+class GameBox {
     // Player
     constructor ( player ) {
         this.player = player;
@@ -194,3 +194,7 @@ export default class GameBox {
         return ret;
     };
 }
+
+
+
+module.exports = GameBox;

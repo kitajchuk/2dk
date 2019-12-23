@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     keys: {
         A: 88,
         B: 90,
@@ -42,4 +42,4 @@ export default {
         fpspx: 1.333333333333,
         cycle: 240,
     }
-}
+};
