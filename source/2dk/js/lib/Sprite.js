@@ -28,6 +28,7 @@ class Sprite {
         };
         this.loader = new Loader();
         this.dir = "none";
+        this.cycling = false;
         this.build();
     }
 
@@ -94,13 +95,17 @@ class Sprite {
 
 
     cycle ( dir ) {
-        this.dir = dir;
-        this.$element.removeClass( "up down right left" );
-        this.$element.addClass( `walk ${dir}` );
+        if ( !this.cycling ) {
+            this.cycling = true;
+            this.dir = dir;
+            this.$element.removeClass( "up down right left" );
+            this.$element.addClass( `walk ${dir}` );
+        }
     }
 
 
     face ( dir ) {
+        this.cycling = false;
         this.dir = dir;
         this.$element.removeClass( "walk up down right left" );
         this.$element.addClass( dir );
