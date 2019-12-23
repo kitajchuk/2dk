@@ -18,13 +18,13 @@ class Sprite {
             x: data.spawn.x + this.data.boxes.hit.x,
             y: data.spawn.y + this.data.boxes.hit.y,
             width: this.data.boxes.hit.width,
-            height: this.data.boxes.hit.height
+            height: this.data.boxes.hit.height,
         };
         this.collisionbox = {
             x: data.spawn.x + this.data.boxes.collision.x,
             y: data.spawn.y + this.data.boxes.collision.y,
             width: this.data.boxes.collision.width,
-            height: this.data.boxes.collision.height
+            height: this.data.boxes.collision.height,
         };
         this.loader = new Loader();
         this.dir = "none";
@@ -38,6 +38,24 @@ class Sprite {
         this.element.style.height = `${this.height}px`;
         this.element.className = `_2dk__${this.data.id}`;
         this.$element = $( this.element );
+        this.element.innerHTML = `
+            <style>
+                /* Hitbox */
+                ._2dk__${this.data.id}:after {
+                    left: ${this.data.boxes.hit.x}px;
+                    top: ${this.data.boxes.hit.y}px;
+                    width: ${this.data.boxes.hit.width}px;
+                    height: ${this.data.boxes.hit.height}px;
+                }
+                /* Collisionbox */
+                ._2dk__${this.data.id}:before {
+                    left: ${this.data.boxes.collision.x}px;
+                    top: ${this.data.boxes.collision.y}px;
+                    width: ${this.data.boxes.collision.width}px;
+                    height: ${this.data.boxes.collision.height}px;
+                }
+            </style>
+        `;
     }
 
 

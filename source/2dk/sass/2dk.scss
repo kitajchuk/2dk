@@ -44,7 +44,7 @@ $hero-h: $hero-height / 2;
 $hero-w: $hero-width / 2;
 $hero-sw: $hero-sprite-width / 2;
 $hero-sh: $hero-sprite-height / 2;
-$hero-speed: 240ms;
+$hero-speed: 320ms;
 $tile-size: 32px;
 
 
@@ -187,6 +187,26 @@ $tile-size: 32px;
 
     ._2dk--debug & {
         outline: 1px solid $teal;
+    }
+
+    &:after,
+    &:before {
+        position: absolute;
+        content: "";
+    }
+
+    // Hitbox
+    &:after {
+        ._2dk--debug & {
+            outline: 1px solid $red;
+        }
+    }
+
+    // Collisionbox
+    &:before {
+        ._2dk--debug & {
+            outline: 1px solid $yellow;
+        }
     }
 
     &.down {
