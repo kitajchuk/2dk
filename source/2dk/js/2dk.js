@@ -27,7 +27,6 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // TEST: NPC hypothesis is that NPCs will work now that positions are absolute!
 // TEST: Retina canvas for map tiles. Design 64x64 and render 32x32...?
 
-// NOTE: Use top-down player state for literal on/off hardware > software.
 // NOTE: Use Artificial General Intelligence for NPC base class.
 // NOTE: Hero sprite needs to be square for all conditions, Rely on hitbox etc.
 ////////////////////////////////////////////////////////////////////////////////
