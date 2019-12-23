@@ -350,12 +350,12 @@ export default class GamePad extends Controller {
 
     build () {
         this.element = document.createElement( "div" );
-        this.element.className = "_2dk__controls";
+        this.element.className = "_2dk__gamepad";
 
         for ( let btn in touchControls ) {
             touchControls[ btn ].btn = btn;
             touchControls[ btn ].elem = document.createElement( "div" );
-            touchControls[ btn ].elem.className = `_2dk__controls__${btn}`;
+            touchControls[ btn ].elem.className = `_2dk__gamepad__${btn}`;
             touchControls[ btn ].elem.dataset.key = touchControls[ btn ].key;
 
             if ( touchControls[ btn ].text ) {

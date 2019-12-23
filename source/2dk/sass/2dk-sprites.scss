@@ -1,0 +1,75 @@
+._2dk__hero {
+    height: $hero-h;
+    width: $hero-w;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    background-repeat: no-repeat;
+    background-size: $hero-sw $hero-sh;
+
+    ._2dk--debug & {
+        outline: 1px solid $teal;
+    }
+
+    &:after,
+    &:before {
+        position: absolute;
+        content: "";
+    }
+
+    // Hitbox
+    &:after {
+        ._2dk--debug & {
+            outline: 1px solid $red;
+        }
+    }
+
+    // Collisionbox
+    &:before {
+        ._2dk--debug & {
+            outline: 1px solid $yellow;
+        }
+    }
+
+    &.down {
+        background-position: 0 0;
+    }
+    &.up {
+        background-position: 0 (-$hero-h);
+    }
+    &.left {
+        background-position: 0 (-$hero-h * 2);
+    }
+    &.right {
+        background-position: (-$hero-w * 8) (-$hero-h * 3);
+    }
+
+    &.walk.down {
+        animation: walk-down $hero-speed steps( 8 ) infinite;
+    }
+    &.walk.up {
+        animation: walk-up $hero-speed steps( 8 ) infinite;
+    }
+    &.walk.left {
+        animation: walk-left $hero-speed steps( 8 ) infinite;
+    }
+    &.walk.right {
+        animation: walk-right $hero-speed steps( 8 ) infinite;
+    }
+}
+
+
+
+@keyframes walk-down {
+    100% { background-position: (-$hero-w * 8) 0; }
+}
+@keyframes walk-up {
+    100% { background-position: (-$hero-w * 8) (-$hero-h); }
+}
+@keyframes walk-left {
+    100% { background-position: (-$hero-w * 8) (-$hero-h * 2); }
+}
+@keyframes walk-right {
+    100% { background-position: 0 (-$hero-h * 3); }
+}

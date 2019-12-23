@@ -1,0 +1,23 @@
+._2dk__map,
+._2dk__map__layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    &[data-layer="debug"],
+    &[data-layer="background"] {
+        z-index: 1;
+    }
+
+    &[data-layer="foreground"] {
+        z-index: 3;
+    }
+}
+._2dk__obj {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+}
