@@ -106,11 +106,11 @@ $tile-size: 32px;
 
 
 @keyframes bounce {
-    0% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 4px; }
-    49.99999% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 8px; }
-    50% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 8px; }
-    99.99999% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 4px; }
-    100% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0}; }
+    0% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 4px ); }
+    49.99999% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 8px ); }
+    50% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 8px ); }
+    99.99999% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 4px ); }
+    100% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} ); }
 }
 
 
@@ -125,11 +125,6 @@ $tile-size: 32px;
     top: 50%;
     left: 50%;
     transform: translate3d( -50%, -50%, 0 );
-
-    ._2dk--debug & {
-        background-color: $charcoal;
-        outline: 1px solid $teal;
-    }
 }
 
 
@@ -262,8 +257,9 @@ $tile-size: 32px;
     background: rgba( 255, 255, 255, 0.25 );
     text-align: center;
     color: rgba( 0, 0, 0, 0.25 );
-    -webkit-text-stroke: 1px rgba( 0, 0, 0, 0.1 );
+    -webkit-text-stroke: 1px rgba( 0, 0, 0, 0.25 );
     line-height: 1;
+    border: 1px solid rgba( 0, 0, 0, 0.25 );
 
     > span {
         display: block;

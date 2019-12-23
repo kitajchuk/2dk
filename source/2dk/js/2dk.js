@@ -20,7 +20,6 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // TODO: Precise tile collision detection objects (x, y, width, height) 4x4?
 // TODO: ^2D-game maker needs hacking...
 
-// TODO: Fullscreen game screen.
 // TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused)
 // TODO: Debug visuals: hitbox, collisionbox, collision tiles.
 
