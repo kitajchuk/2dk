@@ -2,7 +2,8 @@
     "game": {
         "width": 480,
         "height": 320,
-        "tilesize": 32
+        "tilesize": 32,
+        "fullscreen": true
     },
     "hero": {
         "id": "link",

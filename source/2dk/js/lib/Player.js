@@ -1,6 +1,5 @@
-import KeysInterface from "./KeysInterface";
-import TouchInterface from "./TouchInterface";
 import Config from "./Config";
+import GamePad from "./GamePad";
 import GameBox from "./GameBox";
 import paramalama from "paramalama";
 
@@ -12,6 +11,7 @@ export default class Player {
         this.paused = true;
         this.query = paramalama( window.location.search );
         this.debug = this.query.debug ? true : false;
+        this.gamepad = new GamePad();
         this.detect();
         this.build();
         this.bind();
@@ -32,12 +32,9 @@ export default class Player {
 
 
     build () {
-        this.interfaces = {};
-        this.interfaces.keys = new KeysInterface();
-        this.interfaces.touch = new TouchInterface();
         this.element = document.createElement( "div" );
         this.element.className = `_2dk _2dk--${this.debug ? "debug" : "play"}`;
-        this.element.appendChild( this.interfaces.touch.element );
+        this.element.appendChild( this.gamepad.element );
         document.body.appendChild( this.element );
     }
 
@@ -48,36 +45,31 @@ export default class Player {
         this._startPress = this.startPress.bind( this );
 
         // Standard 4 point d-pad
-        this.interfaces.keys.on( "left-press", this._dPadPress );
-        this.interfaces.touch.on( "left-press", this._dPadPress );
-        this.interfaces.keys.on( "right-press", this._dPadPress );
-        this.interfaces.touch.on( "right-press", this._dPadPress );
-        this.interfaces.keys.on( "up-press", this._dPadPress );
-        this.interfaces.touch.on( "up-press", this._dPadPress );
-        this.interfaces.keys.on( "down-press", this._dPadPress );
-        this.interfaces.touch.on( "down-press", this._dPadPress );
+        this.gamepad.on( "left-press", this._dPadPress );
+        this.gamepad.on( "right-press", this._dPadPress );
+        this.gamepad.on( "up-press", this._dPadPress );
+        this.gamepad.on( "down-press", this._dPadPress );
 
         // Standard 4 point d-pad on release
-        this.interfaces.keys.on( "left-release", this._dPadRelease );
-        this.interfaces.touch.on( "left-release", this._dPadRelease );
-        this.interfaces.keys.on( "right-release", this._dPadRelease );
-        this.interfaces.touch.on( "right-release", this._dPadRelease );
-        this.interfaces.keys.on( "up-release", this._dPadRelease );
-        this.interfaces.touch.on( "up-release", this._dPadRelease );
-        this.interfaces.keys.on( "down-release", this._dPadRelease );
-        this.interfaces.touch.on( "down-release", this._dPadRelease );
+        this.gamepad.on( "left-release", this._dPadRelease );
+        this.gamepad.on( "right-release", this._dPadRelease );
+        this.gamepad.on( "up-release", this._dPadRelease );
+        this.gamepad.on( "down-release", this._dPadRelease );
 
         // Start button (pause)
-        this.interfaces.touch.on( "start-press", this._startPress );
+        this.gamepad.on( "start-press", this._startPress );
+    }
+
+
+    init () {
+        this.gamebox = new GameBox( this );
+        this.paused = false;
     }
 
 
     start () {
         this.hero.load().then(() => {
-            this.map.load().then(() => {
-                this.gamebox = new GameBox( this );
-                this.paused = false;
-            });
+            this.map.load().then( this.init.bind( this ) );
         });
     }
 

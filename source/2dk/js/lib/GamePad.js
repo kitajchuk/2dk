@@ -3,6 +3,7 @@ import Controller from "properjs-controller";
 
 
 
+const inputStream = [];
 const touchInterval = Config.values.speed;
 const touchRepeated = Config.values.repeat;
 const touchControls = {
@@ -196,6 +197,34 @@ const onTouchEnd = ( e ) => {
 
 
 
+const onKeyDown = ( e ) => {
+    if ( inputStream.indexOf( e.which ) === -1 ) {
+        inputStream.push( e.which );
+
+        const control = getControl( e.which );
+
+        if ( control ) {
+            startTouch( control );
+        }
+    }
+};
+
+
+
+const onKeyUp = ( e ) => {
+    if ( inputStream.indexOf( e.which ) !== -1 ) {
+        inputStream.splice( inputStream.indexOf( e.which ), 1 );
+
+        const control = getControl( e.which );
+
+        if ( control ) {
+            cancelTouch( control );
+        }
+    }
+};
+
+
+
 const clearTouches = () => {
     for ( let btn in touchControls ) {
         touchControls[ btn ].elem.classList.remove( "is-active" );
@@ -247,7 +276,7 @@ const startTouch = ( control ) => {
 const handleTouchStart = ( control ) => {
     if ( control.touched && control.menu && control.hold > 0 ) {
         control.hold++;
-        console.log( `suspended ${control.btn}` );
+        // console.log( `suspended ${control.btn}` );
         return;
     }
 
@@ -256,11 +285,11 @@ const handleTouchStart = ( control ) => {
 
         if ( control.hold > touchRepeated ) {
             instance.fire( `${control.btn}-longpress` );
-            console.log( `${control.btn}-longpress` );
+            // console.log( `${control.btn}-longpress` );
 
         } else {
             instance.fire( `${control.btn}-press` );
-            console.log( `${control.btn}-press` );
+            // console.log( `${control.btn}-press` );
         }
 
     } else {
@@ -292,7 +321,7 @@ const handleTouchEnd = ( control ) => {
 
 
 
-export default class TouchInterface extends Controller {
+export default class GamePad extends Controller {
     constructor () {
         super();
 
@@ -308,9 +337,14 @@ export default class TouchInterface extends Controller {
 
 
     bind () {
+        // Main interface is Touch
         this.element.addEventListener( "touchstart", onTouchStart, false );
         this.element.addEventListener( "touchmove", onTouchMove, false );
         this.element.addEventListener( "touchend", onTouchEnd, false );
+
+        // Support keys for Desktop
+        document.addEventListener( "keyup", onKeyUp, false );
+        document.addEventListener( "keydown", onKeyDown, false );
     }
 
 

@@ -13,22 +13,21 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 ////////////////////////////////////////////////////////////////////////////////
 // TODO: Sandbox development Map for ease of testing/experimenting...
 // TODO: Sandbox development Hero ALTTP sprite cycle from spritesheet.
+
 // TODO: Better boxes for hit and collision.
 // TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
 // TODO: Bounce physics so Hero does not get tile collision locked, clip edges.
-// TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused)
 // TODO: Precise tile collision detection objects (x, y, width, height) 4x4?
-//       2D-game maker needs hacking...
-// TODO: Debug visuals: hitbox, collisionbox, collision tiles.
+// TODO: ^2D-game maker needs hacking...
 
-// BUGS: KeysInterface refactor to match TouchInterface.
+// TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused)
+// TODO: Debug visuals: hitbox, collisionbox, collision tiles.
 
 // TEST: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
 // TEST: NPC hypothesis is that NPCs will work now that positions are absolute!
 // TEST: Retina canvas for map tiles. Design 64x64 and render 32x32...?
 
 // NOTE: Use Artificial General Intelligence for NPC base class.
-// NOTE: Hero sprite needs to be square for all conditions, Rely on hitbox etc.
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 class App {
