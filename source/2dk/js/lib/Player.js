@@ -67,8 +67,8 @@ export default class Player {
 
         // Screen size / Orientation change
         window.onresize = () => {
-            this.width = this.data.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : this.data.width;
-            this.height = this.data.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : this.data.height;
+            this.width = this.data.fullscreen ? (this.sac ? screen.height : Math.max( window.innerWidth, window.innerHeight )) : this.data.width;
+            this.height = this.data.fullscreen ? (this.sac ? screen.width : Math.min( window.innerWidth, window.innerHeight )) : this.data.height;
             this.map.updateLayers( this.width, this.height );
         };
     }

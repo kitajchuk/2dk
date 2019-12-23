@@ -11,21 +11,18 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 ////////////////////////////////////////////////////////////////////////////////
 // Build Notes: ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// TODO: Sandbox development Map for ease of testing/experimenting...
-// TODO: Sandbox development Hero ALTTP sprite cycle from spritesheet.
+// HACK: 2D-game maker needs hacking:
+//       Precise tile collision detection objects (x, y, width, height) 4x4?
+//       Sandbox development Map for ease of testing/experimenting...
+//       Retina canvas for map tiles. Design 64x64 and render 32x32...?
+//       Debug visuals for collision tiles.
 
-// TODO: Use collisionbox to determine hero gamebox bounds colliders.
 // TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
-// TODO: Bounce physics so Hero does not get tile collision locked, clip edges.
-// TODO: Precise tile collision detection objects (x, y, width, height) 4x4?
-// TODO: ^2D-game maker needs hacking...
+// TODO: Bounce physics so Hero does not get tile collision locked.
+// TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused).
 
-// TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused)
-// TODO: Debug visuals: collision tiles.
-
-// TEST: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
-// TEST: NPC hypothesis is that NPCs will work now that positions are absolute!
-// TEST: Retina canvas for map tiles. Design 64x64 and render 32x32...?
+// IDEA: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
+// IDEA: NPC hypothesis is that NPCs will work now that positions are absolute!
 
 // NOTE: Use Artificial General Intelligence for NPC base class.
 ////////////////////////////////////////////////////////////////////////////////
