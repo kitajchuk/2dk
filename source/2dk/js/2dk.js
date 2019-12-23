@@ -21,7 +21,7 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // TODO: ^2D-game maker needs hacking...
 
 // TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused)
-// TODO: Debug visuals: hitbox, collisionbox, collision tiles.
+// TODO: Debug visuals: collision tiles.
 
 // TEST: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
 // TEST: NPC hypothesis is that NPCs will work now that positions are absolute!

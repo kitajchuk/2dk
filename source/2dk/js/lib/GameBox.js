@@ -13,13 +13,13 @@ export default class GameBox {
             top: 0,
             bottom: this.map.height - this.player.height,
             left: 0,
-            right: this.map.width - this.player.width
+            right: this.map.width - this.player.width,
         };
         this.playbox = {
-            top: 0,
-            bottom: this.map.height - this.hero.height,
-            left: 0,
-            right: this.map.width - this.hero.width
+            top: -this.hero.data.boxes.hit.y,
+            bottom: this.map.height - (this.hero.height - (this.hero.height - (this.hero.data.boxes.hit.y + this.hero.data.boxes.hit.height))),
+            left: -this.hero.data.boxes.hit.x,
+            right: this.map.width - (this.hero.width - (this.hero.width - (this.hero.data.boxes.hit.x + this.hero.data.boxes.hit.width))),
         };
         this.transform = {
             x: 0,
