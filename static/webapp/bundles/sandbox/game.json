@@ -3,12 +3,12 @@
         "width": 480,
         "height": 320,
         "tilesize": 32,
-        "fullscreen": true
+        "fullscreen": false
     },
     "hero": {
         "id": "link",
         "name": "BK",
-        "width": 64,
+        "width": 70,
         "height": 70,
         "image": "/webapp/bundles/sandbox/sprites/hero.png",
         "spawn": {
@@ -18,14 +18,14 @@
         },
         "boxes": {
             "hit": {
-                "x": 20,
-                "y": 27,
+                "x": 23,
+                "y": 29,
                 "width": 24,
                 "height": 30
             },
             "collision": {
-                "x": 20,
-                "y": 35,
+                "x": 23,
+                "y": 37,
                 "width": 24,
                 "height": 22
             }

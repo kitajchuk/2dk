@@ -5,7 +5,7 @@
     "width": 1024,
     "height": 1024,
     "image": "/webapp/bundles/sandbox/tiles/zelda.png",
-    "audio": "/webapp/bundles/sandbox/audio/TownTheme.mp3",
+    "audio": "",
     "textures": {
         "background": [
             [

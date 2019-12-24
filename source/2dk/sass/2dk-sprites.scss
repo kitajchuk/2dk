@@ -9,7 +9,7 @@
     background-size: $hero-sw $hero-sh;
 
     ._2dk--debug & {
-        outline: 1px solid $teal;
+        outline: 1px solid $yellow;
     }
 
     &:after,
@@ -28,7 +28,7 @@
     // Collisionbox
     &:before {
         ._2dk--debug & {
-            outline: 1px solid $yellow;
+            outline: 1px solid $teal;
         }
     }
 
@@ -42,7 +42,7 @@
         background-position: 0 (-$hero-h * 2);
     }
     &.right {
-        background-position: (-$hero-w * 8) (-$hero-h * 3);
+        background-position: 0 (-$hero-h * 3);
     }
 
     &.walk.down {
@@ -71,5 +71,5 @@
     100% { background-position: (-$hero-w * 8) (-$hero-h * 2); }
 }
 @keyframes walk-right {
-    100% { background-position: 0 (-$hero-h * 3); }
+    100% { background-position: (-$hero-w * 8) (-$hero-h * 3); }
 }
