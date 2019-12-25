@@ -36,6 +36,7 @@ module.exports = {
         yellow: "#EEFD02",
         purple: "#6441A4",
         greyDark: "#333",
+        blueDart: "#004080",
     },
     animation: {
         fps: 24,

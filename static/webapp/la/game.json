@@ -1,8 +1,9 @@
 {
     "game": {
+        "id": "la",
+        "name": "LA",
         "width": 480,
         "height": 320,
-        "tilesize": 32,
         "fullscreen": false
     },
     "hero": {
@@ -10,11 +11,11 @@
         "name": "BK",
         "width": 70,
         "height": 70,
-        "image": "/webapp/bundles/sandbox/sprites/hero.png",
+        "image": "/webapp/la/assets/sprites/hero.png",
         "spawn": {
             "x": 256,
             "y": 256,
-            "map": "/webapp/bundles/sandbox/maps/sandbox.json"
+            "map": "/webapp/la/maps/mabe-village.json"
         },
         "boxes": {
             "hit": {

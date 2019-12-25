@@ -21,14 +21,14 @@
     // Hitbox
     &:after {
         ._2dk--debug & {
-            outline: 1px solid $red;
+            outline: 1px solid $yellow;
         }
     }
 
     // Collisionbox
     &:before {
         ._2dk--debug & {
-            outline: 1px solid $teal;
+            outline: 1px solid $yellow;
         }
     }
 

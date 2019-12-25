@@ -30,7 +30,7 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 class App {
     constructor () {
         this.loader = new Loader();
-        this.loader.loadJson( "/webapp/bundles/sandbox/game.json" ).then(( json ) => {
+        this.loader.loadJson( "/webapp/la/game.json" ).then(( json ) => {
             // Player
             this.player = new Player( json.game );
 

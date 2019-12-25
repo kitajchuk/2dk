@@ -161,10 +161,10 @@ class GameBox {
             for ( let x = this.map.data.collision[ y ].length; x--; ) {
                 if ( this.map.data.collision[ y ][ x ] === 1 ) {
                     const tile = {
-                        width: this.map.data.tilesize,
-                        height: this.map.data.tilesize,
-                        x: x * this.map.data.tilesize,
-                        y: y * this.map.data.tilesize
+                        width: this.map.data.gridsize,
+                        height: this.map.data.gridsize,
+                        x: x * this.map.data.gridsize,
+                        y: y * this.map.data.gridsize
                     };
 
                     if ( this.collide( hitbox, tile ) ) {
