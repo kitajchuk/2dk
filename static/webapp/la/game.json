@@ -4,7 +4,7 @@
         "name": "LA",
         "width": 480,
         "height": 320,
-        "fullscreen": false
+        "fullscreen": true
     },
     "hero": {
         "id": "link",
@@ -15,7 +15,7 @@
         "spawn": {
             "x": 256,
             "y": 256,
-            "map": "/webapp/la/maps/mabe-village.json"
+            "map": "/webapp/la/maps/mabe-village-west.json"
         },
         "boxes": {
             "hit": {

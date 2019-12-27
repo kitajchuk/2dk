@@ -12,10 +12,11 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 // Build Notes: ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // HACK: 2D-game maker needs hacking:
-//       Precise tile collision detection objects (x, y, width, height) 4x4?
-//       Sandbox development Map for ease of testing/experimenting...
-//       Retina canvas for map tiles. Design 64x64 and render 32x32...?
-//       Debug visuals for collision tiles.
+//       Collision layer (x, y, width, height) 4x4?
+//       Debug collision layer
+//       Pipeline to Save / Load game packages HERE from builder
+//       Sprite builder...
+//       Objects layer (tile interactions)...
 
 // TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
 // TODO: Bounce physics so Hero does not get tile collision locked.
