@@ -35,7 +35,7 @@ class Player {
 
     build () {
         this.element = document.createElement( "div" );
-        this.element.className = `_2dk _2dk--${this.debug ? "debug" : "play"}`;
+        this.element.className = "_2dk";
         this.splash = document.createElement( "div" );
         this.splash.className = "_2dk__splash";
         this.splash.innerHTML = "<div>Rotate to Landscape.</div><div>+Webapp</div>";
@@ -49,6 +49,7 @@ class Player {
         this._dPadPress = this.dPadPress.bind( this );
         this._dPadRelease = this.dPadRelease.bind( this );
         this._startPress = this.startPress.bind( this );
+        this._aPress = this.aPress.bind( this );
 
         // Standard 4 point d-pad
         this.gamepad.on( "left-press", this._dPadPress );
@@ -64,6 +65,9 @@ class Player {
 
         // Start button (pause)
         this.gamepad.on( "start-press", this._startPress );
+
+        // A button (action)
+        this.gamepad.on( "a-press", this._aPress );
 
         // Screen size / Orientation change
         window.onresize = () => {
@@ -93,6 +97,11 @@ class Player {
         if ( this.paused ) {
             this.hero.face( this.hero.dir );
         }
+    }
+
+
+    aPress () {
+        this.gamebox.pressA();
     }
 
 

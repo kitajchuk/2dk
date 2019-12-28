@@ -1,4 +1,5 @@
 const Config = require( "./Config" );
+const { NPC } = require( "./Sprite" );
 
 
 
@@ -25,7 +26,9 @@ class GameBox {
             x: 0,
             y: 0
         };
+        this.npcs = [];
         this.build();
+        this.apply();
         this.init();
     }
 
@@ -45,6 +48,15 @@ class GameBox {
 
         this.screen.appendChild( this.map.element );
         this.player.element.appendChild( this.screen );
+    }
+
+
+    apply () {
+        this.map.data.objects.forEach(( data ) => {
+            const npc = new NPC( data, this );
+
+            this.npcs.push( npc );
+        });
     }
 
 
@@ -91,10 +103,13 @@ class GameBox {
         const poi = this.getPoi( dir, Config.values.step );
         const collision = {
             map: this.checkMap( poi ),
-            box: this.checkBox( poi )
+            box: this.checkBox( poi ),
+            npc: this.checkNPC( poi ),
         };
 
-        if ( collision.map || collision.box ) {
+        this.awareNPC( poi );
+
+        if ( collision.map || collision.box || collision.npc ) {
             this.hero.cycle( dir );
             return;
         }
@@ -104,6 +119,16 @@ class GameBox {
         this.hero.move( dir, poi );
         this.hero.cycle( dir );
         this.map.move( dir, transform );
+    }
+
+
+    pressA () {
+        const poi = this.getPoi( this.hero.dir, Config.values.step );
+        const npc = this.checkNPC( poi );
+
+        if ( npc && npc.checkCon( this.hero ) ) {
+            npc.shift();
+        }
     }
 
 
@@ -131,6 +156,31 @@ class GameBox {
         }
 
         return poi;
+    }
+
+
+    awareNPC ( poi ) {
+        for ( let i = this.npcs.length; i--; ) {
+            this.npcs[ i ].checkPoi( poi );
+            this.npcs[ i ].checkBox( poi );
+        }
+    }
+
+
+    checkNPC ( poi ) {
+        let ret = null;
+        const hitbox = this.hero.getBox( poi, "collision" );
+
+        for ( let i = this.npcs.length; i--; ) {
+            const hitnpc = this.npcs[ i ].getBox( this.npcs[ i ].offset, "collision" );
+
+            if ( this.collide( hitbox, hitnpc ) ) {
+                ret = this.npcs[ i ];
+                break;
+            }
+        }
+
+        return ret;
     }
 
 

@@ -6,11 +6,11 @@
     width: 100%;
     height: 100%;
 
-    &[data-layer="debug"],
     &[data-layer="background"] {
         z-index: 1;
     }
 
+    &[data-layer="debug"],
     &[data-layer="foreground"] {
         z-index: 3;
     }

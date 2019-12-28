@@ -4,7 +4,7 @@
         "name": "LA",
         "width": 480,
         "height": 320,
-        "fullscreen": true
+        "fullscreen": false
     },
     "hero": {
         "id": "link",
@@ -13,8 +13,8 @@
         "height": 70,
         "image": "/webapp/la/assets/sprites/hero.png",
         "spawn": {
-            "x": 256,
-            "y": 256,
+            "x": 960,
+            "y": 480,
             "map": "/webapp/la/maps/mabe-village-west.json"
         },
         "boxes": {

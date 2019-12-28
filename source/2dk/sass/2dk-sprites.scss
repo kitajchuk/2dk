@@ -1,36 +1,27 @@
+._2dk__obj {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 0;
+
+    &.fg {
+        z-index: 3;
+    }
+    &.bg {
+        z-index: 1;
+    }
+
+    > div {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
 ._2dk__hero {
     height: $hero-h;
     width: $hero-w;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 2;
     background-repeat: no-repeat;
     background-size: $hero-sw $hero-sh;
-
-    ._2dk--debug & {
-        outline: 1px solid $yellow;
-    }
-
-    &:after,
-    &:before {
-        position: absolute;
-        content: "";
-    }
-
-    // Hitbox
-    &:after {
-        ._2dk--debug & {
-            outline: 1px solid $yellow;
-        }
-    }
-
-    // Collisionbox
-    &:before {
-        ._2dk--debug & {
-            outline: 1px solid $yellow;
-        }
-    }
 
     &.down {
         background-position: 0 0;

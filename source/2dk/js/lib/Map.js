@@ -295,6 +295,11 @@ class Map {
     }
 
 
+    removeSprite ( sprite ) {
+        this.objects.removeChild( sprite.element );
+    }
+
+
     updateLayers ( width, height ) {
         for ( let id in this.layers ) {
             this.layers[ id ].update( width, height );
