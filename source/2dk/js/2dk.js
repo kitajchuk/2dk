@@ -48,7 +48,7 @@ NOTE: Use Artificial General Intelligence for NPC base class.
 (
     ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit, collision)
     collider?:  0, 1
-    states:     [(background-position, repeat?, animated?, steps[background-position...], timing, sound, conditions?)]
+    states:     [(background-position, repeat?, animated?, pushable?, steps[background-position...], timing, sound, conditions?)]
     active?:    0, 1
     position:   (x, y)
     layer?:     fg/bg

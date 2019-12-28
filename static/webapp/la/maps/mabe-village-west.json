@@ -44,6 +44,7 @@
                         "x": 0,
                         "y": 1152
                     },
+                    "pushable": 1,
                     "animated": 1,
                     "steps": [
                         {

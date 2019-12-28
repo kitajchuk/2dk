@@ -203,6 +203,7 @@ class GameBox {
 
             if ( this.collide( hitbox, hitnpc ) ) {
                 ret = this.npcs[ i ];
+                ret.checkPush( poi );
                 break;
             }
         }

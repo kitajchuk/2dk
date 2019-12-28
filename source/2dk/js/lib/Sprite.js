@@ -71,12 +71,17 @@ class Sprite {
     }
 
 
-    move ( dir, poi ) {
+    pos ( poi ) {
         this.offset = poi;
         this.hitbox.x = this.offset.x + this.data.boxes.hit.x;
         this.hitbox.y = this.offset.y + this.data.boxes.hit.y;
         this.collisionbox.x = this.offset.x + this.data.boxes.collision.x;
         this.collisionbox.y = this.offset.y + this.data.boxes.collision.y;
+    }
+
+
+    move ( dir, poi ) {
+        this.pos( poi );
         this.element.style.webkitTransform = `translate3d(
             ${this.offset.x}px,
             ${this.offset.y}px,
@@ -130,6 +135,13 @@ class NPC extends Sprite {
         super( data );
         this.gamebox = gamebox;
         this.styles = document.createElement( "style" );
+        this.pushed = {
+            timer: null,
+            pushes: 0,
+            needed: 64,
+            pushing: false,
+            bounce: 300
+        };
         this.load().then(() => {
             this.shift();
             this.element.appendChild( this.styles );
@@ -195,6 +207,58 @@ class NPC extends Sprite {
                 this.$element.removeClass( "animate" );
             }
         }
+    }
+
+
+    checkPush ( poi ) {
+        if ( !this.state.pushable || this.pushed.pushing ) {
+            return;
+        }
+
+        clearTimeout( this.pushed.timer );
+
+        this.pushed.pushes++;
+
+        if ( this.pushed.pushes >= this.pushed.needed ) {
+            this.pushed.pushing = true;
+            // this.state.pushable = false;
+
+            const css = {};
+
+            if ( this.gamebox.hero.dir === Config.moves.LEFT ) {
+                css.x = this.offset.x - this.gamebox.map.data.gridsize;
+            }
+
+            if ( this.gamebox.hero.dir === Config.moves.RIGHT ) {
+                css.x = this.offset.x + this.gamebox.map.data.gridsize;
+            }
+
+            if ( this.gamebox.hero.dir === Config.moves.UP ) {
+                css.y = this.offset.y - this.gamebox.map.data.gridsize;
+            }
+
+            if ( this.gamebox.hero.dir === Config.moves.DOWN ) {
+                css.y = this.offset.y + this.gamebox.map.data.gridsize;
+            }
+
+            this.tween = window.TweenLite.to( this.element, 0.5, {
+                css,
+                onUpdate: () => {
+                    this.pos({
+                        x: this.tween.target._gsTransform.x,
+                        y: this.tween.target._gsTransform.y
+                    });
+                },
+                onComplete: () => {
+                    this.pushed.pushing = false;
+                }
+            });
+        }
+
+        this.pushed.timer = setTimeout(() => {
+            this.pushed.pushes = 0;
+
+        }, this.pushed.bounce );
     }
 
 
