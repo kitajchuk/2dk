@@ -45,6 +45,7 @@
                         "y": 1152
                     },
                     "pushable": 1,
+                    "pushdir": "up",
                     "animated": 1,
                     "steps": [
                         {
@@ -65,7 +66,11 @@
                         }
                     ],
                     "timing": 240,
-                    "sound": ""
+                    "sounds": {
+                        "active": "",
+                        "pushed": "",
+                        "lifted": ""
+                    }
                 }
             ]
         },
@@ -103,9 +108,14 @@
                         "y": 384
                     },
                     "animated": 0,
+                    "pushable": 0,
                     "steps": [],
                     "timing": 0,
-                    "sound": ""
+                    "sounds": {
+                        "active": "",
+                        "pushed": "",
+                        "lifted": ""
+                    }
                 },
                 {
                     "bgp": {
@@ -113,9 +123,14 @@
                         "y": 416
                     },
                     "animated": 0,
+                    "pushable": 0,
                     "steps": [],
                     "timing": 0,
-                    "sound": ""
+                    "sounds": {
+                        "active": "",
+                        "pushed": "",
+                        "lifted": ""
+                    }
                 }
             ]
         }

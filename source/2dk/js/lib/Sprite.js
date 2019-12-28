@@ -71,6 +71,16 @@ class Sprite {
     }
 
 
+    // General positioning method
+    // Useful for keeping sprite position updated with TweenLite animations
+    /*
+        onUpdate: () => {
+            this.pos({
+                x: this.tween.target._gsTransform.x,
+                y: this.tween.target._gsTransform.y
+            });
+        }
+    */
     pos ( poi ) {
         this.offset = poi;
         this.hitbox.x = this.offset.x + this.data.boxes.hit.x;
@@ -138,9 +148,9 @@ class NPC extends Sprite {
         this.pushed = {
             timer: null,
             pushes: 0,
-            needed: 64,
+            needed: gamebox.map.data.tilesize,
             pushing: false,
-            bounce: 300
+            bounce: Config.animation.bounce
         };
         this.load().then(() => {
             this.shift();
@@ -163,8 +173,7 @@ class NPC extends Sprite {
                 const lastStep = this.state.steps[ this.state.steps.length - 1 ];
 
                 this.styles.innerHTML = `
-                    ._2dk__${this.data.id}.animate,
-                    ._2dk__${this.data.id}.animate > div {
+                    ._2dk__${this.data.id}.animate {
                         animation: ${this.data.id}-anim ${this.state.timing}ms steps(${this.state.steps.length}) infinite;
                     }
                     @keyframes ${this.data.id}-anim {
@@ -211,7 +220,7 @@ class NPC extends Sprite {
 
 
     checkPush ( poi ) {
-        if ( !this.state.pushable || this.pushed.pushing ) {
+        if ( !this.state.pushable || (this.state.pushdir && this.gamebox.hero.dir !== this.state.pushdir) || this.pushed.pushing ) {
             return;
         }
 
@@ -220,8 +229,9 @@ class NPC extends Sprite {
         this.pushed.pushes++;
 
         if ( this.pushed.pushes >= this.pushed.needed ) {
+            this.pushed.pushes = 0;
             this.pushed.pushing = true;
-            // this.state.pushable = false;
+            this.state.pushable--;
 
             const css = {};
 
@@ -241,18 +251,22 @@ class NPC extends Sprite {
                 css.y = this.offset.y + this.gamebox.map.data.gridsize;
             }
 
-            this.tween = window.TweenLite.to( this.element, 0.5, {
-                css,
-                onUpdate: () => {
-                    this.pos({
-                        x: this.tween.target._gsTransform.x,
-                        y: this.tween.target._gsTransform.y
-                    });
-                },
-                onComplete: () => {
-                    this.pushed.pushing = false;
+            this.tween = window.TweenLite.to(
+                this.element,
+                Config.animation.duration.pushed,
+                {
+                    css,
+                    onUpdate: () => {
+                        this.pos({
+                            x: this.tween.target._gsTransform.x,
+                            y: this.tween.target._gsTransform.y
+                        });
+                    },
+                    onComplete: () => {
+                        this.pushed.pushing = false;
+                    }
                 }
-            });
+            );
         }
 
         this.pushed.timer = setTimeout(() => {

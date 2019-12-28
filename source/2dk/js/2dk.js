@@ -16,7 +16,6 @@ HACK: 2D-game maker needs hacking:
       Pipeline to Save / Load game packages HERE from builder
       Sprite builder...
       Objects layer (tile interactions)...
-      Snapshot PNG of map render
 
 TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
 TODO: Bounce physics so Hero does not get tile collision locked.
@@ -39,7 +38,10 @@ NOTE: Use Artificial General Intelligence for NPC base class.
 ********************************************************************************
 * Animated Tiles (canvas, render on location, tileset, groups)
 ********************************************************************************
-
+* Paint tile groups UI
+* Saves Array of animated-tile Objects
+* Adhere to map resolution scaling
+* Render to either background or foreground
 
 
 ********************************************************************************

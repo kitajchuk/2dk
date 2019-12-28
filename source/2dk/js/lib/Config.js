@@ -11,7 +11,6 @@ module.exports = {
     },
     moves: {
         UP: "up",
-        NONE: "none",
         LEFT: "left",
         DOWN: "down",
         RIGHT: "right",
@@ -42,5 +41,9 @@ module.exports = {
         fps: 24,
         fpspx: 1.333333333333,
         cycle: 240,
+        bounce: 300,
+        duration: {
+            pushed: 0.5,
+        }
     }
 };
