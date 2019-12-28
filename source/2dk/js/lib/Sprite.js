@@ -195,25 +195,27 @@ class NPC extends Sprite {
     }
 
 
-    // Need math-based collider check with screen
-    // Display none breaks getBoundingClientRect()
-    // And we would like to be able to use display none!
-    checkBox () {
-        const screen = this.gamebox.screen.getBoundingClientRect();
-        const sprite = this.element.getBoundingClientRect();
+    checkBox ( poi ) {
+        const offset = {
+            top: this.offset.y + this.gamebox.map.offset.y,
+            bottom: (this.offset.y + this.height) + this.gamebox.map.offset.y,
+            left: this.offset.x + this.gamebox.map.offset.x,
+            right: (this.offset.x + this.width) + this.gamebox.map.offset.x,
+        };
 
-        if ( this.gamebox.collide( sprite, screen ) ) {
-            // this.element.style.display = "block";
-
-            if ( this.state.animated ) {
-                this.$element.addClass( "animate" );
-            }
-
-        } else {
-            // this.element.style.display = "none";
+        // Object is offscreen...
+        if ( offset.bottom <= 0 || offset.top >= this.gamebox.player.height || offset.right <= 0 || offset.left >= this.gamebox.player.width ) {
+            this.element.style.display = "none";
 
             if ( this.state.animated ) {
                 this.$element.removeClass( "animate" );
+            }
+
+        } else {
+            this.element.style.display = "block";
+
+            if ( this.state.animated ) {
+                this.$element.addClass( "animate" );
             }
         }
     }
