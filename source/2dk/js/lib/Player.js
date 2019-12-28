@@ -93,10 +93,7 @@ class Player {
 
     startPress () {
         this.paused = !this.paused;
-
-        if ( this.paused ) {
-            this.hero.face( this.hero.dir );
-        }
+        this.gamebox.pause( this.paused );
     }
 
 

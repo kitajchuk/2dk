@@ -147,21 +147,6 @@ class NPC extends Sprite {
             this.element.style.backgroundSize = `${this.image.naturalWidth / this.gamebox.map.data.resolution}px ${this.image.naturalHeight / this.gamebox.map.data.resolution}px`;
             this.element.style.backgroundRepeat = `${this.state.repeat ? "repeat" : "no-repeat"}`;
 
-            if ( this.data.adjacent ) {
-                this.data.adjacent.forEach(( obj ) => {
-                    obj.el = document.createElement( "div" );
-                    obj.el.style.left = `${obj.x - this.offset.x}px`;
-                    obj.el.style.top = `${obj.y - this.offset.y}px`;
-                    obj.el.style.width = `${obj.width}px`;
-                    obj.el.style.height = `${obj.height}px`;
-                    obj.el.style.backgroundImage = `url(${this.data.image})`;
-                    obj.el.style.backgroundPosition = `-${this.state.bgp.x}px -${this.state.bgp.y}px`;
-                    obj.el.style.backgroundSize = `${this.image.naturalWidth / this.gamebox.map.data.resolution}px ${this.image.naturalHeight / this.gamebox.map.data.resolution}px`;
-                    obj.el.style.backgroundRepeat = `${this.state.repeat ? "repeat" : "no-repeat"}`;
-                    this.element.appendChild( obj.el );
-                });
-            }
-
             if ( this.state.animated ) {
                 const lastStep = this.state.steps[ this.state.steps.length - 1 ];
 
@@ -179,8 +164,19 @@ class NPC extends Sprite {
     }
 
 
+    pause ( paused ) {
+        if ( paused && this.state.animated ) {
+            this.$element.removeClass( "animate" );
+
+        } else if ( this.state.animated ) {
+            this.$element.addClass( "animate" );
+        }
+    }
+
+
     // Need math-based collider check with screen
     // Display none breaks getBoundingClientRect()
+    // And we would like to be able to use display none!
     checkBox () {
         const screen = this.gamebox.screen.getBoundingClientRect();
         const sprite = this.element.getBoundingClientRect();

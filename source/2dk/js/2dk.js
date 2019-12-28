@@ -37,7 +37,13 @@ NOTE: Use Artificial General Intelligence for NPC base class.
 
 
 ********************************************************************************
-* Map Objects (animated tiles, colliders, state shifting, sprite OR tileset)
+* Animated Tiles (canvas, render on location, tileset, groups)
+********************************************************************************
+
+
+
+********************************************************************************
+* Map Objects (colliders, state shifting, sprite OR tileset)
 ********************************************************************************
 (
     ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit, collision)
@@ -45,7 +51,7 @@ NOTE: Use Artificial General Intelligence for NPC base class.
     states:     [(background-position, repeat?, animated?, steps[background-position...], timing, sound, conditions?)]
     active?:    0, 1
     position:   (x, y)
-    layer:      fg/bg
+    layer?:     fg/bg
 )
 
 

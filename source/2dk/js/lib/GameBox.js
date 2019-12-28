@@ -99,6 +99,33 @@ class GameBox {
     }
 
 
+    pause ( paused ) {
+        if ( paused ) {
+            this.hero.face( this.hero.dir );
+        }
+
+        this.npcs.forEach(( npc ) => {
+            npc.pause( paused );
+        });
+    }
+
+
+    release ( dir ) {
+        this.hero.face( dir );
+    }
+
+
+    collide ( box1, box2 ) {
+        let ret = false;
+
+        if ( box1.x < box2.x + box2.width && box1.x + box1.width > box2.x && box1.y < box2.y + box2.height && box1.height + box1.y > box2.y ) {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+
     press ( dir ) {
         const poi = this.getPoi( dir, Config.values.step );
         const collision = {
@@ -227,22 +254,6 @@ class GameBox {
 
         return ret;
     }
-
-
-    release ( dir ) {
-        this.hero.face( dir );
-    }
-
-
-    collide ( box1, box2 ) {
-        let ret = false;
-
-        if ( box1.x < box2.x + box2.width && box1.x + box1.width > box2.x && box1.y < box2.y + box2.height && box1.height + box1.y > box2.y ) {
-            ret = true;
-        }
-
-        return ret;
-    };
 }
 
 
