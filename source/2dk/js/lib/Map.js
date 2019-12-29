@@ -92,7 +92,7 @@ class MapLayer {
 
     build () {
         this.canvas = document.createElement( "canvas" );
-        this.canvas.className = "_2dk__map__layer";
+        this.canvas.className = "_2dk__layer";
         this.canvas.dataset.layer = this.data.id;
         this.context = this.canvas.getContext( "2d" );
 
@@ -103,10 +103,10 @@ class MapLayer {
     update ( width, height ) {
         this.data.width = width;
         this.data.height = height;
-        this.canvas.style.width = `${this.data.width}px`;
-        this.canvas.style.height = `${this.data.height}px`;
-        this.canvas.width = this.data.width;
-        this.canvas.height = this.data.height;
+        this.canvas.style.width = `${width}px`;
+        this.canvas.style.height = `${height}px`;
+        this.canvas.width = width;
+        this.canvas.height = height;
     }
 }
 
@@ -124,10 +124,6 @@ class MapLocation {
     build () {
         for ( let id in this.map.data.textures ) {
             this.setLayer( id );
-
-            if ( this.map.player.debug ) {
-                this.setDebugLayer();
-            }
         }
     }
 
@@ -139,33 +135,14 @@ class MapLocation {
             height: this.map.height
         });
 
-        if ( this.map.data.resolution ) {
-            this.layers[ id ].canvas.width = this.map.width * this.map.data.resolution;
-            this.layers[ id ].canvas.height = this.map.height * this.map.data.resolution;
-            this.layers[ id ].context.scale( (1 / this.map.data.resolution), (1 / this.map.data.resolution) );
-        }
+        this.layers[ id ].canvas.width = this.map.width * this.map.data.resolution;
+        this.layers[ id ].canvas.height =  this.map.height * this.map.data.resolution;
 
         drawMapTiles(
             this.layers[ id ].context,
             this.map.image,
             this.map.data.textures[ id ],
             this.map.data.tilesize
-        );
-    }
-
-
-    setDebugLayer () {
-        this.layers.debug = new MapLayer({
-            id: "debug",
-            width: this.map.width,
-            height: this.map.height
-        });
-
-        drawGridLines(
-            this.layers.debug.context,
-            this.map.width,
-            this.map.height,
-            this.map.data.gridsize
         );
     }
 }
@@ -176,10 +153,9 @@ class Map {
     constructor ( data ) {
         this.data = data;
         this.loader = new Loader();
-        this.layers = {};
         this.location = null;
-        this.width = data.width / (data.resolution || 1);
-        this.height = data.height / (data.resolution || 1);
+        this.width = data.width / data.resolution;
+        this.height = data.height / data.resolution;
         this.offset = {
             x: 0,
             y: 0
@@ -192,10 +168,15 @@ class Map {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__map";
         this.objects = document.createElement( "div" );
-        this.objects.className = `_2dk__obj`;
+        this.objects.className = `_2dk__objects`;
         this.objects.style.width = `${this.width}px`;
         this.objects.style.height = `${this.height}px`;
-        this.element.appendChild( this.objects );
+        this.layers = document.createElement( "div" );
+        this.layers.className = `_2dk__layers`;
+        this.layers.style.width = `${this.width}px`;
+        this.layers.style.height = `${this.height}px`;
+        this.layers.appendChild( this.objects );
+        this.element.appendChild( this.layers );
     }
 
 
@@ -206,11 +187,11 @@ class Map {
                 this.location = new MapLocation( this );
 
                 for ( let id in this.data.textures ) {
-                    this.setLayer( id );
+                    this.addLayer( id );
                 }
 
                 if ( this.player.debug ) {
-                    this.setDebugLayer();
+                    this.addDebugLayer();
                 }
 
                 resolve();
@@ -232,61 +213,11 @@ class Map {
 
 
     render () {
-        this.clear();
-
-        this.objects.style.webkitTransform = `translate3d(
+        this.layers.style.webkitTransform = `translate3d(
             ${this.offset.x}px,
             ${this.offset.y}px,
             0
         )`;
-
-        for ( let id in this.layers ) {
-            /*
-            ctx.drawImage(
-                img/cvs,
-                mask-x,
-                mask-y,
-                mask-width,
-                mask-height,
-                x-position,
-                y-position,
-                width,
-                height
-            )
-            */
-            this.layers[ id ].context.drawImage(
-                this.location.layers[ id ].canvas,
-                0,
-                0,
-                this.location.layers[ id ].data.width,
-                this.location.layers[ id ].data.height,
-                this.offset.x,
-                this.offset.y,
-                this.location.layers[ id ].data.width,
-                this.location.layers[ id ].data.height
-            );
-        }
-    }
-
-
-    clear () {
-        for ( let id in this.layers ) {
-            this.layers[ id ].context.clearRect(
-                0,
-                0,
-                this.layers[ id ].data.width,
-                this.layers[ id ].data.height
-            );
-        }
-
-        if ( this.debugLayer ) {
-            this.debugLayer.context.clearRect(
-                0,
-                0,
-                this.debugLayer.data.width,
-                this.debugLayer.data.height
-            );
-        }
     }
 
 
@@ -309,25 +240,26 @@ class Map {
     }
 
 
-    setLayer ( id ) {
-        this.layers[ id ] = new MapLayer({
-            id,
-            width: this.player.width,
-            height: this.player.height
-        });
-
-        this.element.appendChild( this.layers[ id ].canvas );
+    addLayer ( id ) {
+        this.layers.appendChild( this.location.layers[ id ].canvas );
     }
 
 
-    setDebugLayer () {
+    addDebugLayer () {
         this.layers.debug = new MapLayer({
             id: "debug",
-            width: this.player.width,
-            height: this.player.height
+            width: this.width,
+            height: this.height
         });
 
-        this.element.appendChild( this.layers.debug.canvas );
+        drawGridLines(
+            this.layers.debug.context,
+            this.width,
+            this.height,
+            this.data.gridsize
+        );
+
+        this.layers.appendChild( this.layers.debug.canvas );
     }
 }
 
