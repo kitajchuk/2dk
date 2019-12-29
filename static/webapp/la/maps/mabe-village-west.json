@@ -8,15 +8,57 @@
     "height": 2048,
     "tilewidth": 40,
     "tileheight": 32,
-    "image": "/webapp/la/assets/tiles/zelda.png",
+    "image": "/webapp/la/assets/tiles/tiles.png",
     "sound": "/webapp/la/assets/sounds/11-mabe-village.mp3",
+    "tiles": [],
     "objects": [
+        {
+            "id": "chimney-smoke",
+            "name": "Chimney Smoke",
+            "width": 32,
+            "height": 32,
+            "image": "/webapp/la/assets/sprites/smoke.png",
+            "spawn": {
+                "x": 448,
+                "y": 832
+            },
+            "layer": "fg",
+            "resolution": 1,
+            "states": [
+                {
+                    "bgp": {
+                        "x": 0,
+                        "y": 0
+                    },
+                    "animated": 1,
+                    "steps": [
+                        {
+                            "x": 32,
+                            "y": 0
+                        },
+                        {
+                            "x": 64,
+                            "y": 0
+                        },
+                        {
+                            "x": 96,
+                            "y": 0
+                        },
+                        {
+                            "x": 128,
+                            "y": 0
+                        }
+                    ],
+                    "timing": 2000
+                }
+            ]
+        },
         {
             "id": "bird-statue",
             "name": "Bird Statue",
             "width": 32,
             "height": 64,
-            "image": "/webapp/la/assets/tiles/zelda.png",
+            "image": "/webapp/la/assets/tiles/tiles.png",
             "spawn": {
                 "x": 800,
                 "y": 352
@@ -36,17 +78,24 @@
                 }
             },
             "layer": "fg",
-            "collider": 1,
-            "active": 0,
+            "resolution": 2,
             "states": [
                 {
                     "bgp": {
                         "x": 0,
                         "y": 1152
                     },
-                    "pushable": 1,
-                    "pushdir": "up",
                     "animated": 1,
+                    "action": {
+                        "verb": "push",
+                        "require": {
+                            "dir": "up"
+                        },
+                        "payload": {
+                            "txt": "You pushed the bird statue!"
+                        },
+                        "counter": 1
+                    },
                     "steps": [
                         {
                             "x": 32,
@@ -65,12 +114,7 @@
                             "y": 1152
                         }
                     ],
-                    "timing": 240,
-                    "sounds": {
-                        "active": "",
-                        "pushed": "",
-                        "lifted": ""
-                    }
+                    "timing": 240
                 }
             ]
         },
@@ -79,7 +123,7 @@
             "name": "Chest",
             "width": 32,
             "height": 32,
-            "image": "/webapp/la/assets/tiles/zelda.png",
+            "image": "/webapp/la/assets/tiles/tiles.png",
             "spawn": {
                 "x": 928,
                 "y": 288
@@ -99,42 +143,34 @@
                 }
             },
             "layer": "bg",
-            "collider": 1,
-            "active": 0,
+            "resolution": 2,
             "states": [
                 {
                     "bgp": {
                         "x": 352,
                         "y": 384
                     },
-                    "animated": 0,
-                    "pushable": 0,
-                    "steps": [],
-                    "timing": 0,
-                    "sounds": {
-                        "active": "",
-                        "pushed": "",
-                        "lifted": ""
+                    "action": {
+                        "verb": "open",
+                        "require": {
+                            "button": 1
+                        },
+                        "payload": {
+                            "txt": "You opened the chest!"
+                        },
+                        "shift": 1
                     }
                 },
                 {
                     "bgp": {
                         "x": 352,
                         "y": 416
-                    },
-                    "animated": 0,
-                    "pushable": 0,
-                    "steps": [],
-                    "timing": 0,
-                    "sounds": {
-                        "active": "",
-                        "pushed": "",
-                        "lifted": ""
                     }
                 }
             ]
         }
     ],
+    "collision": [],
     "textures": {
         "background": [
             [
@@ -13146,6 +13182,5 @@
                 0
             ]
         ]
-    },
-    "collision": []
+    }
 }
