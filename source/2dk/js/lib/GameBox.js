@@ -153,8 +153,8 @@ class GameBox {
         const poi = this.getPoi( this.hero.dir, Config.values.step );
         const npc = this.checkNPC( poi );
 
-        if ( npc && npc.checkCon( this.hero ) ) {
-            npc.shift();
+        if ( npc ) {
+            npc.checkAct( poi, true );
         }
     }
 
@@ -203,7 +203,7 @@ class GameBox {
 
             if ( this.collide( hitbox, hitnpc ) ) {
                 ret = this.npcs[ i ];
-                ret.checkPush( poi );
+                ret.checkAct( poi, false );
                 break;
             }
         }

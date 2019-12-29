@@ -136,6 +136,11 @@ class Hero extends Sprite {
         data.id = "hero";
         super( data );
     }
+
+
+    payload ( payload ) {
+        console.log( "Hero Payload", payload );
+    }
 }
 
 
@@ -166,7 +171,7 @@ class NPC extends Sprite {
         if ( this.data.states.length ) {
             this.state = this.data.states.shift();
             this.element.style.backgroundPosition = `-${this.state.bgp.x}px -${this.state.bgp.y}px`;
-            this.element.style.backgroundSize = `${this.image.naturalWidth / this.gamebox.map.data.resolution}px ${this.image.naturalHeight / this.gamebox.map.data.resolution}px`;
+            this.element.style.backgroundSize = `${this.image.naturalWidth / this.data.resolution}px ${this.image.naturalHeight / this.data.resolution}px`;
             this.element.style.backgroundRepeat = `${this.state.repeat ? "repeat" : "no-repeat"}`;
 
             if ( this.state.animated ) {
@@ -191,6 +196,20 @@ class NPC extends Sprite {
 
         } else if ( this.state.animated ) {
             this.$element.addClass( "animate" );
+        }
+    }
+
+
+    checkPoi ( poi ) {
+        if ( (this.collisionbox.width === 0 && this.collisionbox.height === 0) || (this.collisionbox.width === this.width && this.collisionbox.height === this.height) ) {
+            return;
+        }
+
+        if ( poi.y > this.offset.y ) {
+            this.$element.removeClass( "fg" ).addClass( "bg" );
+
+        } else {
+            this.$element.removeClass( "bg" ).addClass( "fg" );
         }
     }
 
@@ -221,8 +240,47 @@ class NPC extends Sprite {
     }
 
 
-    checkPush ( poi ) {
-        if ( !this.state.pushable || (this.state.pushdir && this.gamebox.hero.dir !== this.state.pushdir) || this.pushed.pushing ) {
+    open ( poi, btn ) {
+        if ( !this.state.action ) {
+            return;
+        }
+
+        if ( this.state.action.verb !== Config.verbs.OPEN ) {
+            return;
+        }
+
+        if ( this.state.action.require.button && !btn ) {
+            return;
+        }
+
+        if ( this.state.action.shift ) {
+            if ( this.state.action.payload ) {
+                this.gamebox.hero.payload( this.state.action.payload );
+            }
+
+            this.shift();
+        }
+    }
+
+
+    push ( poi, btn ) {
+        if ( !this.state.action ) {
+            return;
+        }
+
+        if ( this.state.action.verb !== Config.verbs.PUSH ) {
+            return;
+        }
+
+        if ( !this.state.action.counter ) {
+            return;
+        }
+
+        if ( this.pushed.pushing ) {
+            return;
+        }
+
+        if ( this.state.action.require.dir && this.gamebox.hero.dir !== this.state.action.require.dir ) {
             return;
         }
 
@@ -233,7 +291,7 @@ class NPC extends Sprite {
         if ( this.pushed.pushes >= this.pushed.needed ) {
             this.pushed.pushes = 0;
             this.pushed.pushing = true;
-            this.state.pushable--;
+            this.state.action.counter--;
 
             const css = {};
 
@@ -266,6 +324,10 @@ class NPC extends Sprite {
                     },
                     onComplete: () => {
                         this.pushed.pushing = false;
+
+                        if ( this.state.action.payload ) {
+                            this.gamebox.hero.payload( this.state.action.payload );
+                        }
                     }
                 }
             );
@@ -278,22 +340,13 @@ class NPC extends Sprite {
     }
 
 
-    checkPoi ( poi ) {
-        if ( (this.collisionbox.width === 0 && this.collisionbox.height === 0) || (this.collisionbox.width === this.width && this.collisionbox.height === this.height) ) {
-            return;
+    checkAct ( poi, btn ) {
+        if ( this.state.action && this.state.action.verb === Config.verbs.PUSH ) {
+            this.push( poi, btn );
+
+        } else if ( this.state.action && this.state.action.verb === Config.verbs.OPEN ) {
+            this.open( poi, btn );
         }
-
-        if ( poi.y > this.offset.y ) {
-            this.$element.removeClass( "fg" ).addClass( "bg" );
-
-        } else {
-            this.$element.removeClass( "bg" ).addClass( "fg" );
-        }
-    }
-
-
-    checkCon ( hero ) {
-        return true;
     }
 }
 

@@ -27,6 +27,15 @@ module.exports = {
         // ms
         repeat: 50,
     },
+    verbs: {
+        PUSH: "push",
+        PULL: "pull",
+        LIFT: "lift",
+        TOSS: "toss",
+        READ: "read",
+        OPEN: "open",
+        HIT: "hit",
+    },
     colors: {
         grey: "#959595",
         red: "#F30541",

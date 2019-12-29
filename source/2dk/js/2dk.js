@@ -20,7 +20,6 @@ HACK: 2D-game maker needs hacking:
 TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
 TODO: Bounce physics so Hero does not get tile collision locked.
 TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused).
-TODO: 8-point touch D-Pad for diagonal movement.
 
 IDEA: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
 IDEA: NPC hypothesis is that NPCs will work now that positions are absolute!
@@ -36,12 +35,14 @@ NOTE: Use Artificial General Intelligence for NPC base class.
 
 
 ********************************************************************************
-* Animated Tiles (canvas, render on location, tileset, groups)
+* Tiles (animated?, canvas, render to layer (bg, fg), tileset, groups)
 ********************************************************************************
 * Paint tile groups UI
-* Saves Array of animated-tile Objects
+* Saves Array of tile Objects
 * Adhere to map resolution scaling
 * Render to either background or foreground
+* NOUN system for Hero
+* NOUNS: GRASS, WATER, STAIRS, LEDGE, QUICK-SAND?
 
 
 ********************************************************************************
@@ -50,11 +51,24 @@ NOTE: Use Artificial General Intelligence for NPC base class.
 (
     ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit, collision)
     collider?:  0, 1
-    states:     [(background-position, repeat?, animated?, pushable?, steps[background-position...], timing, sound, conditions?)]
+    states:     [(background-position, repeat?, animated?, action?(verb, response, payload), steps[background-position...], timing, sound)]
     active?:    0, 1
     position:   (x, y)
     layer?:     fg/bg
+    resolution: 1, 2
 )
+
+* VERB system for Hero Actions and Object(NPC) Reactions
+* VERBS: Push, Pull, Lift, Toss, Read, Open, Hit
+* Object(NPC) looks at Hero conditions (dir, act, etc...) to determine response
+* Object(NPC) notifys Hero when an action meets conditions for a response
+* Hero can perform a reciprical action (sprite cycle?, animation?) in return
+
+* Companion NPC
+* Try Navi the fairy as a test-run, or Dark Link!
+
+* NPCs look at collision layer, object layer colliders, and Hero colliders
+* Hero looks at collision layer and NPC colliders
 
 
 ********************************************************************************
