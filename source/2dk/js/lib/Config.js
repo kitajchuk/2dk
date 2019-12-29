@@ -8,6 +8,10 @@ module.exports = {
         RIGHT: 39,
         START: 13,
         SELECT: 32,
+        UPLEFT: 111,
+        UPRIGHT: 222,
+        DOWNLEFT: 333,
+        DOWNRIGHT: 444,
     },
     moves: {
         UP: "up",

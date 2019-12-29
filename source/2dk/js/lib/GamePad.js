@@ -42,33 +42,68 @@ const touchControls = {
         menu: true,
     },
     // D-Pad
+    "up-left": {
+        key: Config.keys.UPLEFT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: [Config.moves.UP, Config.moves.LEFT],
+    },
     up: {
         key: Config.keys.UP,
         elem: null,
         timer: null,
         touched: false,
-        dpad: Config.moves.UP,
+        dpad: [Config.moves.UP],
     },
-    down: {
-        key: Config.keys.DOWN,
+    "up-right": {
+        key: Config.keys.UPRIGHT,
         elem: null,
         timer: null,
         touched: false,
-        dpad: Config.moves.DOWN,
-    },
-    right: {
-        key: Config.keys.RIGHT,
-        elem: null,
-        timer: null,
-        touched: false,
-        dpad: Config.moves.RIGHT,
+        dpad: [Config.moves.UP, Config.moves.RIGHT],
     },
     left: {
         key: Config.keys.LEFT,
         elem: null,
         timer: null,
         touched: false,
-        dpad: Config.moves.LEFT,
+        dpad: [Config.moves.LEFT],
+    },
+    neutral: {
+        key: null,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: [],
+    },
+    right: {
+        key: Config.keys.RIGHT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: [Config.moves.RIGHT],
+    },
+    "down-left": {
+        key: Config.keys.DOWNLEFT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: [Config.moves.DOWN, Config.moves.LEFT],
+    },
+    down: {
+        key: Config.keys.DOWN,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: [Config.moves.DOWN],
+    },
+    "down-right": {
+        key: Config.keys.DOWNRIGHT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: [Config.moves.DOWN, Config.moves.RIGHT],
     },
 };
 let instance = null;
@@ -284,17 +319,23 @@ const handleTouchStart = ( control ) => {
         control.hold++;
 
         if ( control.hold > touchRepeated ) {
-            instance.fire( `${control.btn}-longpress` );
-            // console.log( `${control.btn}-longpress` );
+            instance.fire( `${control.btn[ 0 ]}-longpress` );
+            // console.log( `${control.btn[ 0 ]}-longpress` );
 
         } else {
-            instance.fire( `${control.btn}-press` );
-            // console.log( `${control.btn}-press` );
+            instance.fire( `${control.btn[ 0 ]}-press` );
+            // console.log( `${control.btn[ 0 ]}-press` );
         }
 
+    } else if ( control.dpad ) {
+        control.dpad.forEach(( dpad, i ) => {
+            instance.fire( `${control.btn[ i ]}-press`, dpad );
+            // console.log( `${control.btn[ i ]}-press` );
+        });
+
     } else {
-        instance.fire( `${control.btn}-press`, (control.dpad || null) );
-        // console.log( `${control.btn}-press` );
+        instance.fire( `${control.btn[ 0 ]}-press`, null );
+        // console.log( `${control.btn[ 0 ]}-press` );
     }
 };
 
@@ -303,19 +344,23 @@ const handleTouchStart = ( control ) => {
 const handleTouchEnd = ( control ) => {
     if ( control.hasOwnProperty( "hold" ) ) {
         if ( control.hold > touchRepeated ) {
-            instance.fire( `${control.btn}-longrelease` );
-            console.log( `${control.btn}-longrelease` );
+            instance.fire( `${control.btn[ 0 ]}-longrelease` );
+            console.log( `${control.btn[ 0 ]}-longrelease` );
 
         } else {
-            instance.fire( `${control.btn}-release` );
-            console.log( `${control.btn}-release` );
+            instance.fire( `${control.btn[ 0 ]}-release` );
+            console.log( `${control.btn[ 0 ]}-release` );
         }
 
         control.hold = 0;
 
+    } else if ( control.dpad ) {
+        instance.fire( `${control.btn[ 0 ]}-release`, control.dpad[ 0 ] );
+        // console.log( `${control.btn[ i ]}-release` );
+
     } else {
-        instance.fire( `${control.btn}-release`, (control.dpad || null) );
-        // console.log( `${control.btn}-release` );
+        instance.fire( `${control.btn[ 0 ]}-release`, null );
+        // console.log( `${control.btn[ 0 ]}-release` );
     }
 };
 
@@ -350,10 +395,16 @@ class GamePad extends Controller {
 
     build () {
         this.element = document.createElement( "div" );
+        this.dpad = document.createElement( "div" );
+        this.btns = document.createElement( "div" );
         this.element.className = "_2dk__gamepad";
+        this.dpad.className = "_2dk__gamepad__dpad";
+        this.btns.className = "_2dk__gamepad__btns";
+        this.element.appendChild( this.dpad );
+        this.element.appendChild( this.btns );
 
         for ( let btn in touchControls ) {
-            touchControls[ btn ].btn = btn;
+            touchControls[ btn ].btn = btn.split( "-" );
             touchControls[ btn ].elem = document.createElement( "div" );
             touchControls[ btn ].elem.className = `_2dk__gamepad__${btn}`;
             touchControls[ btn ].elem.dataset.key = touchControls[ btn ].key;
@@ -362,7 +413,12 @@ class GamePad extends Controller {
                 touchControls[ btn ].elem.innerHTML = `<span>${touchControls[ btn ].text}</span>`;
             }
 
-            this.element.appendChild( touchControls[ btn ].elem );
+            if ( touchControls[ btn ].dpad ) {
+                this.dpad.appendChild( touchControls[ btn ].elem );
+
+            } else {
+                this.btns.appendChild( touchControls[ btn ].elem );
+            }
         }
     }
 }

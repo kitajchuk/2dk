@@ -7,17 +7,22 @@
     height: 100%;
     z-index: 10;
 }
-._2dk__gamepad > div {
-    position: absolute;
+._2dk__gamepad__dpad div,
+._2dk__gamepad__btns div {
     display: block;
-    background: rgba( 255, 255, 255, 0.25 );
     text-align: center;
     color: rgba( 0, 0, 0, 0.25 );
     -webkit-text-stroke: 1px rgba( 0, 0, 0, 0.25 );
     line-height: 1;
+    background: rgba( 255, 255, 255, 0.25 );
     border: 1px solid rgba( 0, 0, 0, 0.25 );
 
-    > span {
+    &.is-active {
+        background: rgba( 255, 255, 255, 0.5 );
+        color: rgba( 0, 0, 0, 0.5 );
+    }
+
+    span {
         display: block;
         position: absolute;
         width: 100%;
@@ -26,37 +31,93 @@
         pointer-events: none;
     }
 }
-._2dk__gamepad .is-active {
-    background: rgba( 255, 255, 255, 0.5 );
-    color: rgba( 0, 0, 0, 0.5 );
+._2dk__gamepad__btns {
+    div {
+        position: absolute;
+    }
 }
-._2dk__gamepad__up {
-    height: 62px;
-    width: 52px;
-    border-radius: 10px;
-    left: 80px;
-    bottom: 150px;
-}
-._2dk__gamepad__down {
-    height: 62px;
-    width: 52px;
-    border-radius: 10px;
-    left: 80px;
-    bottom: 40px;
-}
-._2dk__gamepad__right {
-    width: 62px;
-    height: 52px;
-    border-radius: 10px;
-    left: 130px;
-    bottom: 100px;
-}
-._2dk__gamepad__left {
-    width: 62px;
-    height: 52px;
-    border-radius: 10px;
+._2dk__gamepad__dpad {
+    height: 176px;
+    width: 176px;
+    position: absolute;
     left: 20px;
-    bottom: 100px;
+    bottom: 40px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+
+    div {
+        border-radius: 10px;
+        position: relative;
+    }
+}
+._2dk__gamepad__up,
+._2dk__gamepad__down {
+    width: 52px;
+    height: 62px;
+}
+._2dk__gamepad__right,
+._2dk__gamepad__left {
+    height: 52px;
+    width: 62px;
+}
+._2dk__gamepad__neutral {
+    height: 52px;
+    width: 52px;
+    opacity: 0;
+}
+._2dk__gamepad__up-right,
+._2dk__gamepad__up-left,
+._2dk__gamepad__down-right,
+._2dk__gamepad__down-left {
+    width: 62px;
+    height: 62px;
+    background: none !important;
+    border: none !important;
+
+    &:after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 32px solid transparent;
+        border-right: 32px solid transparent;
+        border-top: 40px solid rgba( 255, 255, 255, 0.25 );
+        border-radius: 50%;
+    }
+
+    &.is-active:after {
+        border-top-color: rgba( 255, 255, 255, 0.5 );
+    }
+}
+._2dk__gamepad__up-left {
+    &:after {
+        bottom: 17px;
+        right: 5px;
+        transform: rotate( -45deg ) translate3d( 0, 16px, 0 );
+    }
+}
+._2dk__gamepad__up-right {
+    &:after {
+        bottom: 17px;
+        left: 5px;
+        transform: rotate( 45deg ) translate3d( 0, 16px, 0 );
+    }
+}
+._2dk__gamepad__down-left {
+    &:after {
+        top: 17px;
+        right: 5px;
+        transform: rotate( -135deg ) translate3d( 0, 16px, 0 );
+    }
+}
+._2dk__gamepad__down-right {
+    &:after {
+        top: 17px;
+        left: 5px;
+        transform: rotate( 135deg ) translate3d( 0, 16px, 0 );
+    }
 }
 ._2dk__gamepad__a {
     width: 64px;
