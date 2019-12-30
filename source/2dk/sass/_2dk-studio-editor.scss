@@ -1,0 +1,445 @@
+// body {
+//     opacity: 0;
+//     transition: opacity 400ms ease;
+//
+//     &.is-loaded {
+//         opacity: 1;
+//     }
+//     &.is-saving:after {
+//         content: "";
+//         position: fixed;
+//         left: 0;
+//         top: 0;
+//         width: 100%;
+//         height: 100%;
+//         z-index: 999;
+//         cursor: wait !important;
+//         background-color: rgba( 0, 0, 0, 0.25 );
+//     }
+// }
+
+
+
+/* IDs */
+#editor-delmap,
+#editor-delgame {
+    cursor: pointer;
+    display: none;
+}
+#editor-preview,
+#editor-tileset {
+    box-sizing: border-box;
+    position: relative;
+    height: 100%;
+    overflow: auto;
+    outline: 1px solid $grey-dark;
+    background-color: $charcoal2;
+
+    .layer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        cursor: pointer;
+    }
+    .layer--preview {
+        width: 32px;
+        height: 32px;
+        left: 50%;
+        top: 50%;
+        transform: translate3d( -50%, -50%, 0 );
+        outline: 1px solid $teal;
+    }
+    .layer--tilepaint {
+        z-index: 4;
+    }
+    .layer--tilegrid {
+        pointer-events: none;
+    }
+}
+#editor-preview {
+    overflow: hidden;
+}
+#editor-tileset-box {
+    height: 384px;
+}
+#editor-preview-box {
+    height: 128px;
+}
+#editor-active-map-menu {
+    bottom: auto;
+    top: 50px;
+    border-top: 0;
+    border-bottom: 1px solid $grey-dark;
+    border-right: 1px solid $grey-dark;
+    padding: 20px;
+}
+
+
+
+/* Top panel */
+.editor__panel {
+    background-color: $black;
+    border-bottom: 1px solid $grey-dark;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
+    font-size: 0;
+    height: 50px;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: $grey;
+
+    a {
+        color: $grey;
+    }
+
+    span:not( .icon ) {
+        font-size: 11px;
+    }
+}
+.editor__panel__home {
+    display: flex;
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid $grey-dark;
+}
+.editor__panel__xy,
+.editor__panel__map,
+.editor__panel__game {
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid $grey-dark;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+.editor__panel__xy {
+    border-right: 0;
+    justify-content: flex-start;
+}
+
+
+
+/* Sidebar */
+.editor__sidebar {
+    background-color: $black;
+    box-sizing: content-box;
+    right: 0;
+    width: calc( 384px + 32px );
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    height: 100%;
+    box-shadow: 0 0 2px 2px rgba( 0, 0, 0, 0.25 );
+}
+.editor__sidebar__layers {
+    height: 100%;
+    position: relative;
+    z-index: 3;
+}
+.editor__sidebar__tools {
+    background-color: $black;
+    box-sizing: border-box;
+    width: auto;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    left: 0;
+    height: 100%;
+    border-left: 1px solid $grey-dark;
+    border-right: 1px solid $grey-dark;
+    box-shadow: 0 0 2px 2px rgba( 0, 0, 0, 0.25 );
+    transform: translate3d( -100%, 0, 0 );
+}
+.editor__toolbar {
+    padding: 5px;
+}
+.editor__toolbar__tools {
+    border-bottom: 1px solid $grey-dark;
+}
+.editor__toolbar__menus {
+    border-top: 1px solid $grey-dark;
+    position: absolute;
+    bottom: 0;
+}
+.editor__canvas {
+    box-sizing: border-box;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: calc( 416px + 44px + 1px );
+    top: 50px;
+    z-index: 1;
+    overflow: hidden;
+    background-color: $charcoal2;
+}
+
+
+
+/* Canvas */
+.editor__canvas__pane {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+
+    &.is-active-tiles {
+        cursor: pointer !important;
+    }
+
+    &.is-drag {
+        cursor: grab !important;
+    }
+
+    &.is-dragging {
+        cursor: grabbing !important;
+    }
+}
+.editor__canvas__layer {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+
+    &.is-hidden {
+        display: none;
+    }
+}
+.editor__background {
+    z-index: 1;
+    pointer-events: none;
+}
+.editor__foreground {
+    z-index: 2;
+    pointer-events: none;
+}
+.editor__collision {
+    z-index: 3;
+    pointer-events: none;
+}
+.editor__gridlines {
+    z-index: 4;
+}
+
+
+
+/* Actions */
+.editor__action {
+    background-color: $charcoal2;
+    border: 1px solid $grey-dark;
+    cursor: pointer;
+    position: relative;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    color: $grey;
+
+    & + .editor__action {
+        margin-top: 5px;
+    }
+
+    &:hover {
+        color: $white;
+    }
+
+    &.is-active,
+    &.is-active:hover {
+        color: $white;
+        background-color: $blue;
+        border-color: $blue;
+    }
+}
+
+
+
+/* Layers */
+.editor__box {
+    border-bottom: 1px solid $grey-dark;
+}
+.editor__label {
+    margin-bottom: 16px;
+    font-size: 11px;
+}
+.editor__layer {
+    font-size: 11px;
+    cursor: pointer;
+    padding: 16px;
+    position: relative;
+    color: $grey;
+    border-bottom: 1px solid $grey-dark;
+
+    &:last-child {
+        border-bottom: 0;
+    }
+
+    &.-merge-down {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    &.is-active,
+    &.is-active:hover {
+        background-color: $charcoal;
+        color: $blue;
+    }
+}
+.editor__layer__hide {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY( -50% );
+    color: $grey !important;
+
+    &.is-active:before {
+        content: "\e9d1";
+    }
+}
+.editor__layer__label {
+    font-size: 11px;
+    position: relative;
+}
+.editor__layer__content {
+    margin-top: 10px;
+}
+
+
+
+/* Forms / Fields */
+.editor__setting {
+    .select,
+    .select__field {
+        width: 100%;
+    }
+}
+.editor__setting--append {
+    border-top: 1px solid $grey-dark;
+    padding-top: 10px;
+}
+.editor__setting + .editor__setting {
+    margin-top: 10px;
+}
+.editor__field {}
+.editor__field--area {
+    height: 100px;
+}
+.editor__field--half {
+    display: inline-block;
+    width: calc( 50% - 5px );
+
+    &:last-child {
+        float: right;
+    }
+}
+.editor__field--half:nth-child(1) {
+    margin-right: 10px;
+}
+.editor__field--third {
+    width: calc( 33.33333% - 6.666667px );
+}
+.editor__field--third:nth-child(1),
+.editor__field--third:nth-child(2) {
+    margin-right: 10px;
+}
+.editor__field--quarter {
+    width: calc( 25% - 7.5px );
+}
+.editor__field--quarter:nth-child(1),
+.editor__field--quarter:nth-child(2),
+.editor__field--quarter:nth-child(3) {
+    margin-right: 10px;
+}
+
+
+
+/* Buttons */
+.editor__button {
+    width: calc( 50% - 5px );
+
+    & + .editor__cancel-button {
+        margin-left: 10px;
+    }
+}
+.editor__upload-button {}
+.editor__delete-button {
+    width: 100%;
+}
+.editor__cancel-button {}
+
+
+
+/* Menus */
+.editor__menu {
+    background-color: $black;
+    border-left: 1px solid $grey-dark;
+    border-top: 1px solid $grey-dark;
+    box-sizing: border-box;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    padding: 32px;
+    position: fixed;
+    bottom: 0;
+    right: calc( 416px + 44px + 2px );
+    width: 480px;
+    z-index: -1;
+    pointer-events: none;
+
+    &.is-active {
+        opacity: 1;
+        z-index: 10;
+        transition: opacity 240ms ease;
+        pointer-events: auto;
+    }
+}
+
+
+
+/* File Uploads */
+.editor__upload {
+    cursor: pointer;
+    position: relative;
+}
+.editor__upload__button {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    text-align: center;
+    width: 25%;
+    height: 40px;
+}
+.editor__upload__field {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    width: 75%;
+    height: 40px;
+}
+.editor__upload__mask {
+    cursor: pointer;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.editor__sound__select {
+    width: 90%;
+}
+.editor__sound__player {
+    width: 10%;
+    text-align: center;
+    cursor: pointer;
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <title>2dk Studio</title>
+        <link href="./static/css/2dk-studio.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div id="root" class="root">
+            <div class="root__form">
+                <div class="root__label">
+                    <span class="icon icon--nudge icon--mobile2"></span><span>New Game</span>
+                </div>
+                <div class="root__wrap">
+                    <input type="text" name="name" class="input root__field root__field--name" placeholder="Game name" />
+                </div>
+                <div class="root__wrap">
+                    <input type="text" name="width" class="input root__field root__field--grid" placeholder="Screen width" value="" />
+                    <input type="text" name="height" class="input root__field root__field--grid" placeholder="Screen height" value="" />
+                </div>
+                <div class="root__wrap">
+                    <button type="submit" class="button root__button" id="root-game-button">Create</button>
+                </div>
+                <div class="root__select">
+                    <div class="txt">
+                        Load a game:<br />
+                        Select a game you've already created to load the 2dk Studio builder.
+                    </div>
+                    <div class="select root__game__select">
+                        <select class="select__field" id="root-game-select" name="game">
+                            <option value="">Select Game...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- You can also require other files to run in this process -->
+        <script src="./renderer-index.js"></script>
+    </body>
+</html>

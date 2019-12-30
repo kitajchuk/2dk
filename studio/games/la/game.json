@@ -1,0 +1,35 @@
+{
+    "game": {
+        "id": "la",
+        "name": "LA",
+        "width": 480,
+        "height": 320,
+        "fullscreen": false
+    },
+    "hero": {
+        "id": "link",
+        "name": "BK",
+        "width": 70,
+        "height": 70,
+        "image": "/games/la/assets/sprites/hero.png",
+        "spawn": {
+            "x": 960,
+            "y": 480,
+            "map": "/games/la/maps/mabe-village-west.json"
+        },
+        "boxes": {
+            "hit": {
+                "x": 23,
+                "y": 29,
+                "width": 24,
+                "height": 30
+            },
+            "collision": {
+                "x": 23,
+                "y": 37,
+                "width": 24,
+                "height": 22
+            }
+        }
+    }
+}

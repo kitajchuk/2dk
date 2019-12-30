@@ -6,17 +6,20 @@
   "version": "1.0.0",
   "main": "./builder/main.js",
   "scripts": {
+    "prestart": "npm run static:games",
     "start": "(npm run server & npm run watch)",
-    "builder": "./node_modules/.bin/electron ./builder/main.js",
+    "studio": "cd studio && npm start",
     "bootstrap": "node clutch.install.js",
     "bootstrap:hobo": "cd ./node_modules/properjs-hobo && npm install && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
     "watch": "export NODE_ENV=sandbox ; ./node_modules/.bin/webpack --env.sandbox --hide-modules --colors --watch",
     "server": "export NODE_ENV=sandbox ; ./node_modules/.bin/pm2 --no-daemon --watch -a start ./ecosystem.config.js",
     "server:stop": "./node_modules/.bin/pm2 stop 'all' --watch",
-    "build": "npm rebuild node-sass ; npm run bootstrap ; npm run build:netlify ; npm run static:build",
+    "build": "npm rebuild node-sass ; npm run bootstrap ; npm run build:netlify ; npm run static:build ; npm run static:games",
+    "build:dev": "export NODE_ENV=sandbox ; ./node_modules/.bin/webpack --env.sandbox --hide-modules --colors",
     "build:netlify": "export NODE_ENV=netlify ; ./node_modules/.bin/webpack --env.netlify --progress --profile --display-modules --colors -p",
     "static:build": "export NODE_ENV=netlify ; export CLUTCH_CLEAN=0 ; node clutch.static.js",
-    "static:clean": "export NODE_ENV=netlify ; export CLUTCH_CLEAN=1 ; node clutch.static.js"
+    "static:clean": "export NODE_ENV=netlify ; export CLUTCH_CLEAN=1 ; node clutch.static.js",
+    "static:games": "cp -R ./studio/games ./static"
   },
   "devDependencies": {
     "autoprefixer": "^8.6.2",
@@ -32,7 +35,6 @@
     "css-loader": "^0.28.11",
     "csurf": "^1.9.0",
     "ejs": "^2.6.1",
-    "electron": "^7.1.7",
     "eslint": "^4.19.1",
     "eslint-loader": "^2.0.0",
     "expose-loader": "^0.7.5",

@@ -15,9 +15,9 @@
                 "slug": "/"
             },
             {
-                "uid": "webapp",
-                "text": "Webapp",
-                "slug": "/webapp/"
+                "uid": "games",
+                "text": "Games",
+                "slug": "/games/"
             }
         ]
     },
@@ -28,14 +28,6 @@
             "data": {
                 "title": "2dK",
                 "description": "A Javascript 2d game development SDK."
-            }
-        },
-        {
-            "uid": "sprites",
-            "type": "page",
-            "data": {
-                "title": "2dK Sprites",
-                "description": "A unique style of CSS sprite that works with JS canvas maps."
             }
         }
     ]

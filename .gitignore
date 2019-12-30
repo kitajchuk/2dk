@@ -20,6 +20,7 @@
 static/js
 static/css
 static/svg
+static/games
 static/robots.txt
 static/sitemap.xml
 static/*.html
@@ -28,7 +29,11 @@ static/*.json
 static/**/*.json
 !static/img/icon/manifest.json
 !static/api/data.json
-!static/webapp/**/*.json
+
+
+# 2dk Studio
+studio/static/js
+studio/static/css
 
 
 # Node / npm

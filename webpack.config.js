@@ -17,6 +17,15 @@ const webpackConfig = {
     devtool: "source-map",
 
 
+    resolve: {
+        modules: [root, source, nodeModules],
+        mainFields: ["webpack", "browserify", "web", "clutch", "hobo", "main"]
+    }
+};
+
+
+
+const clutchConfig = Object.assign( {}, webpackConfig, {
     plugins: [
         new webpack.LoaderOptionsPlugin({
             options: {
@@ -32,15 +41,9 @@ const webpackConfig = {
                 "template/**/*.html",
                 "template/**/*.json"
             ],
-            startPath: "/webapp/?debug=1"
+            startPath: "/games/?game=la&debug=1"
         })
     ],
-
-
-    resolve: {
-        modules: [root, source, nodeModules],
-        mainFields: ["webpack", "browserify", "web", "clutch", "hobo", "main"]
-    },
 
 
     entry: {
@@ -108,10 +111,45 @@ const webpackConfig = {
             }
         ]
     }
-};
+});
 
 
 
-module.exports = () => {
-    return webpackConfig;
-};
+const studioConfig = Object.assign( {}, webpackConfig, {
+    entry: {
+        "2dk-studio": path.resolve( __dirname, `source/2dk/js/2dk-studio.js` )
+    },
+
+
+    output: {
+        path: path.resolve( __dirname, "studio/static/js" ),
+        filename: `[name].js`
+    },
+
+
+    module: {
+        rules: [
+            {
+                test: /\.(sass|scss)$/,
+                exclude: /node_modules|vendor/,
+                use: [
+                    `file-loader?name=../css/[name].css`,
+                    "postcss-loader",
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            outputStyle: (config.env.sandbox ? "uncompressed" : "compressed")
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+});
+
+
+
+module.exports = [
+    clutchConfig,
+    studioConfig
+];

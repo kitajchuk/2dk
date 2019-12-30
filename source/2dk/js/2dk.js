@@ -5,6 +5,7 @@ require( "../sass/2dk.scss" );
 
 // Load the JS
 import { Loader, Player, Hero, Map } from "./lib/index";
+const paramalama = require( "paramalama" );
 
 
 
@@ -13,9 +14,10 @@ import { Loader, Player, Hero, Map } from "./lib/index";
 ********************************************************************************
 HACK: 2D-game maker needs hacking:
       Collision layer (x, y, width, height) 4x4? debug?
-      Pipeline to Save / Load game packages HERE from builder
+      Pipeline to game data: needs to be in static for webapp to work remote...?
       Sprite builder...
       Objects layer (tile interactions)...
+      Refactor event bindings with Hobo
 
 TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
 TODO: Bounce physics so Hero does not get tile collision locked.
@@ -81,8 +83,9 @@ NOTE: Use Artificial General Intelligence for NPC base class.
 *******************************************************************************/
 class App {
     constructor () {
+        this.query = paramalama( window.location.search );
         this.loader = new Loader();
-        this.loader.loadJson( "/webapp/la/game.json" ).then(( json ) => {
+        this.loader.loadJson( `/games/${this.query.game}/game.json` ).then(( json ) => {
             // Player
             this.player = new Player( json.game );
 
