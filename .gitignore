@@ -35,6 +35,7 @@ static/**/*.json
 # 2dk Studio
 studio/static/js
 studio/static/css
+studio/games/assets/snapshots
 
 
 # Node / npm
