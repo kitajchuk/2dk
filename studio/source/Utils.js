@@ -2,11 +2,12 @@ const fs = require( "fs" );
 const fse = require( "fs-extra" );
 
 
-const isFile = function ( file, cb ) {
+
+const isFile = ( file, cb ) => {
     let ret = null;
 
     if ( cb ) {
-        fs.exists( file, function ( exists ) {
+        fs.exists( file, ( exists ) => {
             cb( exists );
         });
 
@@ -17,11 +18,13 @@ const isFile = function ( file, cb ) {
     return ret;
 };
 
-const readDir = function ( dir, cb ) {
+
+
+const readDir = ( dir, cb ) => {
     let ret = null;
 
     if ( cb ) {
-        fs.readdir( dir, function ( err, files ) {
+        fs.readdir( dir, ( err, files ) => {
             if ( !err ) {
                 const reals = [];
 
@@ -45,11 +48,13 @@ const readDir = function ( dir, cb ) {
     return ret;
 };
 
-const makeDir = function ( dir, cb ) {
+
+
+const makeDir = ( dir, cb ) => {
     let ret = null;
 
     if ( cb ) {
-        fs.mkdir( dir, function ( err ) {
+        fs.mkdir( dir, ( err ) => {
             if ( !err ) {
                 cb();
             }
@@ -62,11 +67,13 @@ const makeDir = function ( dir, cb ) {
     return ret;
 };
 
-const readFile = function ( file, cb ) {
+
+
+const readFile = ( file, cb ) => {
     let ret = null;
 
     if ( cb ) {
-        fs.readFile( file, "utf8", function ( err, data ) {
+        fs.readFile( file, "utf8", ( err, data ) => {
             if ( !err ) {
                 cb( data );
             }
@@ -79,11 +86,13 @@ const readFile = function ( file, cb ) {
     return ret;
 };
 
-const readJson = function ( file, cb ) {
+
+
+const readJson = ( file, cb ) => {
     let ret = null;
 
     if ( cb ) {
-        readFile( file, function ( data ) {
+        readFile( file, ( data ) => {
             cb( JSON.parse( String( data ) ) );
         });
 
@@ -94,9 +103,11 @@ const readJson = function ( file, cb ) {
     return ret;
 };
 
-const writeFile = function ( file, cont, cb ) {
+
+
+const writeFile = ( file, cont, cb ) => {
     if ( cb ) {
-        fs.writeFile( file, cont, "utf8", function ( err ) {
+        fs.writeFile( file, cont, "utf8", ( err ) => {
             if ( !err ) {
                 cb();
             }
@@ -107,13 +118,17 @@ const writeFile = function ( file, cont, cb ) {
     }
 };
 
-const writeJson = function ( file, json, cb ) {
+
+
+const writeJson = ( file, json, cb ) => {
     writeFile( file, JSON.stringify( json, null, 4 ), cb );
 };
 
-const removeFile = function ( file, cb ) {
+
+
+const removeFile = ( file, cb ) => {
     if ( cb ) {
-        fs.unlink( file, function ( err ) {
+        fs.unlink( file, ( err ) => {
             if ( !err ) {
                 cb();
             }
@@ -124,9 +139,11 @@ const removeFile = function ( file, cb ) {
     }
 };
 
-const removeDir = function ( dir, cb ) {
+
+
+const removeDir = ( dir, cb ) => {
     if ( cb ) {
-        fse.remove( dir, function ( err ) {
+        fse.remove( dir, ( err ) => {
             if ( !err ) {
                 cb();
             }
@@ -137,7 +154,9 @@ const removeDir = function ( dir, cb ) {
     }
 };
 
-const copyObj = function ( obj ) {
+
+
+const copyObj = ( obj ) => {
     return JSON.parse( JSON.stringify( obj ) );
 };
 

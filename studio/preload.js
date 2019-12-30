@@ -5,13 +5,15 @@ process.once( "loaded", () => {
     // console.log( global );
     // Setup global 2dk package for renderers
     const db = require( "./source/db" );
+    const Editor = require( "./source/Editor" );
 
     global._2dk = {
-        DB: db.DB,
-        db: new db.DB(),
-        js: require( "../source/2dk/js/lib/index" ),
+        src: {
+            db,
+            Editor,
+        },
         lib: {
-            paramalama: require( "paramalama" )
+            paramalama: require( "paramalama" ),
         },
     };
 

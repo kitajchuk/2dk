@@ -5,6 +5,7 @@
 // selectively enable features needed in the rendering
 // process.
 window.onload = () => {
+    const _2dk = window._2dk;
     const select = document.getElementById( "root-game-select" );
     const button = document.getElementById( "root-game-button" );
     const fields = {
@@ -13,7 +14,7 @@ window.onload = () => {
         height: document.querySelector( `input[name="height"]` ),
     };
 
-    window._2dk.games.forEach(( game ) => {
+    _2dk.games.forEach(( game ) => {
         const option = document.createElement( "option" );
 
         option.value = game.id;
@@ -30,7 +31,7 @@ window.onload = () => {
                 height: fields.height.value,
             };
 
-            window._2dk.DB.addGame( data ).then(( game ) => {
+            _2dk.src.db.DB.addGame( data ).then(( game ) => {
                 window.location.href = `editor.html?game=${game.game.id}`;
             });
         }
@@ -38,7 +39,14 @@ window.onload = () => {
     }, false );
 
     select.addEventListener( "change", () => {
-        window.location.href = `editor.html?game=${select.value}`;
+        document.body.className = "is-not-loaded";
+
+        setTimeout(() => {
+            window.location.href = `editor.html?game=${select.value}`;
+
+        }, 1000 );
 
     }, false );
+
+    document.body.className = "";
 };

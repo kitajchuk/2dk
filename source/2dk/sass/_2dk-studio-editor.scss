@@ -1,22 +1,21 @@
-// body {
-//     opacity: 0;
-//     transition: opacity 400ms ease;
-//
-//     &.is-loaded {
-//         opacity: 1;
-//     }
-//     &.is-saving:after {
-//         content: "";
-//         position: fixed;
-//         left: 0;
-//         top: 0;
-//         width: 100%;
-//         height: 100%;
-//         z-index: 999;
-//         cursor: wait !important;
-//         background-color: rgba( 0, 0, 0, 0.25 );
-//     }
-// }
+body {
+    transition: opacity 1000ms ease-in-out;
+
+    &.is-not-loaded {
+        opacity: 0;
+    }
+    &.is-saving:after {
+        content: "";
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        cursor: wait !important;
+        background-color: rgba( 0, 0, 0, 0.25 );
+    }
+}
 
 
 
@@ -393,7 +392,7 @@
     padding: 32px;
     position: fixed;
     bottom: 0;
-    right: calc( 416px + 44px + 2px );
+    right: calc( 416px + 44px );
     width: 480px;
     z-index: -1;
     pointer-events: none;

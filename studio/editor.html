@@ -8,7 +8,7 @@
         <title>2dk Studio</title>
         <link href="./static/css/2dk-studio.css" rel="stylesheet" />
     </head>
-    <body>
+    <body class="is-not-loaded">
         <!-- Canvas -->
         <div class="editor__canvas">
             <div class="editor__canvas__pane" id="editor-canvas-pane">
@@ -184,7 +184,7 @@
                     </div>
                 </div>
                 <div class="editor__setting">
-                    <div class="editor__sound__sampler js-sound-sampler" data-spot="addmapmenu">
+                    <div class="editor__sound__sampler js-sound-sampler" data-spot="addmap">
                         <div class="editor__sound__select inline editor__setting">
                             <div class="select">
                                 <select class="select__field js-addmap-field js-select js-select-sound" name="sound" data-label="Sound"></select>
@@ -222,7 +222,7 @@
                     </div>
                 </div>
                 <div class="editor__setting">
-                    <div class="editor__sound__sampler js-sound-sampler" data-spot="sidebar">
+                    <div class="editor__sound__sampler js-sound-sampler" data-spot="mapsettings">
                         <div class="editor__sound__select inline editor__setting">
                             <div class="select">
                                 <select class="select__field js-map-field js-select js-select-sound" name="sound" data-label="Sound"></select>
@@ -259,7 +259,7 @@
                     Remove sounds:<br />
                     You can delete a sounds you've uploaded by selecting it here and using the delete button. You get one confirmation for your delete action.
                 </div>
-                <div class="editor__setting editor__sound__sampler js-sound-sampler" data-spot="addmapmenu">
+                <div class="editor__setting editor__sound__sampler js-sound-sampler" data-spot="uploadsound">
                     <div class="editor__sound__select inline">
                         <div class="select">
                             <select class="select__field js-select js-select-delete js-select-sound" data-label="Delete sound..."></select>

@@ -5,14 +5,9 @@
 // selectively enable features needed in the rendering
 // process.
 window.onload = () => {
-    const query = window._2dk.lib.paramalama( window.location.search );
-    const editorGameName = document.getElementById( "editor-gamename" );
+    const _2dk = window._2dk;
+    const _db = new _2dk.src.db.DB();
+    const query =_2dk.lib.paramalama( window.location.search );
 
-    window._2dk.db.open( query.game ).then(() => {
-        window._2dk.db.getGame().then(( game ) => {
-            console.log( "Game", game );
-
-            editorGameName.innerHTML = game.game.name;
-        });
-    });
+    window.editor = new _2dk.src.Editor( query.game );
 };
