@@ -12,39 +12,35 @@ const paramalama = require( "paramalama" );
 /*******************************************************************************
 * 2dk Development Notes
 ********************************************************************************
-HACK: 2D-game maker needs hacking:
-      Collision layer (x, y, width, height) 4x4? debug?
-      Pipeline to game data: needs to be in static for webapp to work remote...?
-      Sprite builder...
-      Objects layer (tile interactions)...
-      Refactor event bindings with Hobo
-
 TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
 TODO: Bounce physics so Hero does not get tile collision locked.
 TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused).
+TODO: Port studio Editor to renderer-editor.
 
-IDEA: Blit animation engine for game render, 24 FPS, 1.333333333px/frame.
 IDEA: NPC hypothesis is that NPCs will work now that positions are absolute!
+IDEA: Use Artificial General Intelligence for NPC base class.
 
-NOTE: Use Artificial General Intelligence for NPC base class.
 
 ********************************************************************************
 * Collision (1/8 grid, in-memory, read-only)
 ********************************************************************************
-* Small canvas tile painter UI
-* Saves Array of collision-tile Objects
+* Saves Array of collision Objects
 * Adhere to map resolution scaling
 
 
 ********************************************************************************
 * Tiles (animated?, canvas, render to layer (bg, fg), tileset, groups)
 ********************************************************************************
-* Paint tile groups UI
 * Saves Array of tile Objects
 * Adhere to map resolution scaling
 * Render to either background or foreground
+
 * NOUN system for Hero
-* NOUNS: GRASS, WATER, STAIRS, LEDGE, QUICK-SAND?
+* NOUNS: GRASS, WATER, STAIRS, LEDGE(jump...?), SWITCH(actions...?), QUICK-SAND?
+
+* Event tiles for doors, locatin switching etc...
+* Animated flower tiles
+* Animated water tiles
 
 
 ********************************************************************************
@@ -52,25 +48,35 @@ NOTE: Use Artificial General Intelligence for NPC base class.
 ********************************************************************************
 (
     ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit, collision)
-    collider?:  0, 1
-    states:     [(background-position, repeat?, animated?, action?(verb, response, payload), steps[background-position...], timing, sound)]
-    active?:    0, 1
-    position:   (x, y)
     layer?:     fg/bg
     resolution: 1, 2
+    states:     [(
+                    background-position,
+                    repeat?,
+                    animated?,
+                    action?(verb, require, payload, counter),
+                    steps[background-position...],
+                    timing,
+                    sound
+                )]
 )
 
 * VERB system for Hero Actions and Object(NPC) Reactions
-* VERBS: Push, Pull, Lift, Toss, Read, Open, Hit
-* Object(NPC) looks at Hero conditions (dir, act, etc...) to determine response
-* Object(NPC) notifys Hero when an action meets conditions for a response
+* VERBS: Push, Open, Pull, Lift, Toss, Read, Hit
+
+* Object(NPC) looks at Hero conditions (dir, act, etc...) to determine payload
+* Object(NPC) notifys Hero when an action meets conditions for a payload
 * Hero can perform a reciprical action (sprite cycle?, animation?) in return
 
 * Companion NPC
-* Try Navi the fairy as a test-run, or Dark Link!
+* Try Navi the fairy as a test-run, or bow-wow, or Dark Link!
+
+* Butterflies, Cucco's
 
 * NPCs look at collision layer, object layer colliders, and Hero colliders
 * Hero looks at collision layer and NPC colliders
+
+* CSS shadow rather than pixel-art shadow...
 
 
 ********************************************************************************

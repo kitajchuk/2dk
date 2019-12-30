@@ -1,6 +1,7 @@
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
 const $ = require( "properjs-hobo" );
+const { TweenLite } = require( "gsap" );
 
 
 
@@ -12,6 +13,7 @@ class Sprite {
         this.height = data.height;
         this.loader = new Loader();
         this.cycling = false;
+        this.jumping = false;
         this.dir = "";
         this.offset = {
             x: data.spawn.x,
@@ -45,8 +47,12 @@ class Sprite {
         this.element = document.createElement( "div" );
         this.element.style.width = `${this.width}px`;
         this.element.style.height = `${this.height}px`;
-        this.element.className = `_2dk__obj _2dk__${this.data.id}`;
+        this.element.className = `_2dk__sprite _2dk__${this.data.id}`;
+        this.child = document.createElement( "div" );
+        this.child.className = `_2dk__child`;
+        this.element.appendChild( this.child );
         this.$element = $( this.element );
+        this.$child = $( this.child );
     }
 
 
@@ -54,7 +60,7 @@ class Sprite {
         return new Promise(( resolve ) => {
             this.loader.loadImg( this.data.image ).then(( image ) => {
                 this.image = image;
-                this.element.style.backgroundImage = `url(${this.data.image})`;
+                this.child.style.backgroundImage = `url(${this.data.image})`;
                 this.init();
                 resolve();
             });
@@ -104,8 +110,8 @@ class Sprite {
         if ( !this.cycling ) {
             this.cycling = true;
             this.dir = dir;
-            this.$element.removeClass( "up down right left" );
-            this.$element.addClass( `walk ${dir}` );
+            this.$child.removeClass( "up down right left" );
+            this.$child.addClass( `walk ${dir}` );
         }
     }
 
@@ -113,8 +119,8 @@ class Sprite {
     face ( dir ) {
         this.cycling = false;
         this.dir = dir;
-        this.$element.removeClass( "walk up down right left" );
-        this.$element.addClass( dir );
+        this.$child.removeClass( "walk up down right left" );
+        this.$child.addClass( dir );
     }
 
 
@@ -150,6 +156,8 @@ class NPC extends Sprite {
         super( data );
         this.gamebox = gamebox;
         this.styles = document.createElement( "style" );
+        // Copy so we can cooldown and re-spawn objects with fresh states
+        this.states = JSON.parse( JSON.stringify( data.states ) );
         this.pushed = {
             timer: null,
             pushes: 0,
@@ -159,8 +167,8 @@ class NPC extends Sprite {
         };
         this.load().then(() => {
             this.shift();
-            this.element.appendChild( this.styles );
             this.$element.addClass( this.data.layer );
+            this.element.appendChild( this.styles );
             this.gamebox.map.addSprite( this );
             this.checkBox();
         });
@@ -168,17 +176,17 @@ class NPC extends Sprite {
 
 
     shift () {
-        if ( this.data.states.length ) {
-            this.state = this.data.states.shift();
-            this.element.style.backgroundPosition = `-${this.state.bgp.x}px -${this.state.bgp.y}px`;
-            this.element.style.backgroundSize = `${this.image.naturalWidth / this.data.resolution}px ${this.image.naturalHeight / this.data.resolution}px`;
-            this.element.style.backgroundRepeat = `${this.state.repeat ? "repeat" : "no-repeat"}`;
+        if ( this.states.length ) {
+            this.state = this.states.shift();
+            this.child.style.backgroundPosition = `-${this.state.bgp.x}px -${this.state.bgp.y}px`;
+            this.child.style.backgroundSize = `${this.image.naturalWidth / this.data.resolution}px ${this.image.naturalHeight / this.data.resolution}px`;
+            this.child.style.backgroundRepeat = `${this.state.repeat ? "repeat" : "no-repeat"}`;
 
             if ( this.state.animated ) {
                 const lastStep = this.state.steps[ this.state.steps.length - 1 ];
 
                 this.styles.innerHTML = `
-                    ._2dk__${this.data.id}.animate {
+                    ._2dk__${this.data.id} ._2dk__child.animate {
                         animation: ${this.data.id}-anim ${this.state.timing}ms steps(${this.state.steps.length}) infinite;
                     }
                     @keyframes ${this.data.id}-anim {
@@ -192,10 +200,10 @@ class NPC extends Sprite {
 
     pause ( paused ) {
         if ( paused && this.state.animated ) {
-            this.$element.removeClass( "animate" );
+            this.$child.removeClass( "animate" );
 
         } else if ( this.state.animated ) {
-            this.$element.addClass( "animate" );
+            this.$child.addClass( "animate" );
         }
     }
 
@@ -227,14 +235,14 @@ class NPC extends Sprite {
             this.element.style.display = "none";
 
             if ( this.state.animated ) {
-                this.$element.removeClass( "animate" );
+                this.$child.removeClass( "animate" );
             }
 
         } else {
             this.element.style.display = "block";
 
             if ( this.state.animated ) {
-                this.$element.addClass( "animate" );
+                this.$child.addClass( "animate" );
             }
         }
     }
@@ -264,6 +272,10 @@ class NPC extends Sprite {
 
 
     push ( poi, btn ) {
+        if ( btn ) {
+            return;
+        }
+
         if ( !this.state.action ) {
             return;
         }
@@ -311,15 +323,15 @@ class NPC extends Sprite {
                 css.y = this.offset.y + this.gamebox.map.data.gridsize;
             }
 
-            this.tween = window.TweenLite.to(
+            this.tween = TweenLite.to(
                 this.element,
                 Config.animation.duration.pushed,
                 {
                     css,
                     onUpdate: () => {
                         this.pos({
-                            x: this.tween.target._gsTransform.x,
-                            y: this.tween.target._gsTransform.y
+                            x: parseInt( this.tween._targets[ 0 ]._gsap.x, 10 ),
+                            y: parseInt( this.tween._targets[ 0 ]._gsap.y, 10 )
                         });
                     },
                     onComplete: () => {

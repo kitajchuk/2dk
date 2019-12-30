@@ -17,6 +17,7 @@
 # Clutch
 .notes
 .clutch
+source/vendor
 static/js
 static/css
 static/svg

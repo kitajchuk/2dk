@@ -134,9 +134,16 @@ class GameBox {
             npc: this.checkNPC( poi ),
         };
 
+        // Stuff that should always happen during Hero movement
         this.awareNPC( poi );
 
-        if ( collision.map || collision.box || collision.npc ) {
+        // Stuff that should only happen if conditions are met
+        if ( collision.npc ) {
+            collision.npc.checkAct( poi, false );
+            return;
+        }
+
+        if ( collision.map || collision.box ) {
             this.hero.cycle( dir );
             return;
         }
@@ -203,7 +210,6 @@ class GameBox {
 
             if ( this.collide( hitbox, hitnpc ) ) {
                 ret = this.npcs[ i ];
-                ret.checkAct( poi, false );
                 break;
             }
         }

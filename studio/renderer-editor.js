@@ -1,4 +1,4 @@
-// This file is required by the index.html file and will
+// This file is required by the editor.html file and will
 // be executed in the renderer process for that window.
 // No Node.js APIs are available in this process because
 // `nodeIntegration` is turned off. Use `preload.js` to

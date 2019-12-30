@@ -41,14 +41,14 @@ const clutchConfig = Object.assign( {}, webpackConfig, {
                 "template/**/*.html",
                 "template/**/*.json"
             ],
-            startPath: "/games/?game=la&debug=1"
+            startPath: "/games/?game=la"
         })
     ],
 
 
     entry: {
         "app": path.resolve( __dirname, `source/${config.theme}/js/app.js` ),
-        "2dk": path.resolve( __dirname, `source/2dk/js/2dk.js` )
+        "2dk": path.resolve( __dirname, `source/2dk/js/2dk.js` ),
     },
 
 

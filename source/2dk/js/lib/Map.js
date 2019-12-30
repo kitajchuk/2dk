@@ -232,8 +232,8 @@ class Map {
 
 
     updateLayers ( width, height ) {
-        for ( let id in this.layers ) {
-            this.layers[ id ].update( width, height );
+        for ( let id in this.location.layers ) {
+            this.location.layers[ id ].update( width, height );
         }
 
         this.render();
