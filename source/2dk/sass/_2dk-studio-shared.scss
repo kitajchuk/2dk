@@ -24,9 +24,44 @@ a {
 
 
 
+#root,
+#editor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: opacity 500ms ease-in-out;
+
+    &.is-not-loaded {
+        opacity: 0;
+    }
+    &.is-saving:after {
+        content: "Just a sec...saving your map...";
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        background-color: rgba( 0, 0, 0, 0.5 );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: $white;
+        font-size: 32px;
+    }
+}
+
+
+
 .icon {
     font-size: 14px;
     cursor: pointer;
+    pointer-events: none;
+
+    &.js-hide-layer,
+    &.js-sound-button {
+        pointer-events: auto;
+    }
 }
 .icon--nudge {
     margin-right: 10px;

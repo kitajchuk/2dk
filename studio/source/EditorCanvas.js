@@ -42,6 +42,7 @@ class EditorCanvas {
             canvasPane: document.getElementById( "editor-canvas-pane" ),
             $canvasPane: $( "#editor-canvas-pane" ),
             tileset: document.getElementById( "editor-tileset-image" ),
+            tilebox: document.getElementById( "editor-tileset-box" ),
         };
         this.layers = {
             background: document.getElementById( "editor-bg" ),
@@ -161,6 +162,13 @@ class EditorCanvas {
             this.map.width,
             this.map.height
         );
+    }
+
+
+    setTileboxBounds () {
+        const boxBounds = this.dom.tilebox.getBoundingClientRect();
+
+        this.dom.tilebox.style.height = `${window.innerHeight - boxBounds.y - 16}px`;
     }
 
 

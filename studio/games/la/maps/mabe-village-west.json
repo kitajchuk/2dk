@@ -10,7 +10,7 @@
     "tileheight": 32,
     "image": "/games/la/assets/tiles/tiles.png",
     "snapshot": "/games/la/assets/snapshots/mabe-village-west.png",
-    "sound": "/games/la/assets/sounds/10-overworld.mp3",
+    "sound": "/games/la/assets/sounds/46-tal-tal-mountain-range.mp3",
     "tiles": [],
     "objects": [
         {

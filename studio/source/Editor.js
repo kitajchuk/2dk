@@ -17,6 +17,7 @@ class Editor {
         this.canvas = new EditorCanvas( this );
         this.actions = new EditorActions( this );
         this.dom = {
+            root: $( "#editor" ),
             gameName: $( "#editor-gamename" ),
             mapPanel: $( "#editor-map-panel" ),
             mapSettings: $( "#editor-mapsettings" ),
@@ -32,6 +33,8 @@ class Editor {
             deleteMap: $( "#editor-delmap" ),
             deleteGame: $( "#editor-delgame" ),
             saveMap: $( "#editor-savemap" ),
+            // masterSound: $( "#editor-master-sound" ),
+            // masterSong: $( "#editor-master-song" ),
         };
         this.selects = {
             maps: $( ".js-select-map" ),
@@ -115,13 +118,21 @@ class Editor {
 
     display () {
         this.dom.gameName[ 0 ].innerHTML = this.data.game.name;
-        document.body.className = "";
+
+        setTimeout(() => {
+            this.dom.root[ 0 ].className = "";
+
+        }, 1000 );
     }
 
 
     done () {
         this.mode = null;
-        document.body.className = "";
+
+        setTimeout(() => {
+            this.dom.root[ 0 ].className = "";
+
+        }, 1000 );
     }
 
 
@@ -324,7 +335,7 @@ class Editor {
     postMap ( postData ) {
         postData.fileName = `${Cache.slugify( postData.name )}.json`;
         this.mode = Config.Editor.modes.SAVING;
-        document.body.className = "is-saving";
+        this.dom.root[ 0 ].className = "is-saving";
 
         this.db.addMap( postData ).then(( map ) => {
             this.closeMenus();
@@ -435,7 +446,7 @@ class Editor {
 
             if ( confirm( `Sure you want to delete the file "${select[ 0 ].value}"? This may affect other data referencing this file.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
-                document.body.className = "is-saving";
+                this.dom.root[ 0 ].className = "is-saving";
 
                 this.db.deleteFile( postData ).then(() => {
                     this.loadAssets();
@@ -461,7 +472,7 @@ class Editor {
 
             if ( fileData ) {
                 this.mode = Config.Editor.modes.SAVING;
-                document.body.className = "is-saving";
+                this.dom.root[ 0 ].className = "is-saving";
                 postData.fileName = fileData.name;
 
                 fileReader.onload = ( fe ) => {
@@ -540,9 +551,15 @@ class Editor {
                 button.removeClass( "icon--pause" );
                 button.addClass( "icon--play2" );
 
+                // this.dom.masterSound.removeClass( "icon--pause" );
+                // this.dom.masterSound.addClass( "icon--play2" );
+
             } else {
                 button.removeClass( "icon--play2" );
                 button.addClass( "icon--pause" );
+
+                // this.dom.masterSound.removeClass( "icon--play2" );
+                // this.dom.masterSound.addClass( "icon--pause" );
             }
 
             EditorUtils.processSound( sampler, this.data.game.id );
@@ -553,7 +570,7 @@ class Editor {
             if ( this.canFunction() && this.data.map ) {
                 if ( confirm( `Sure you want to delete the map "${active.map.name}"?` ) ) {
                     this.mode = Config.Editor.modes.SAVING;
-                    document.body.className = "is-saving";
+                    this.dom.root[ 0 ].className = "is-saving";
 
                     this.db.deleteMap( this.data.map ).then(() => {
                         window.location.reload();
@@ -566,7 +583,7 @@ class Editor {
         this.dom.deleteGame.on( "click", ( e ) => {
             if ( confirm( `Sure you want to delete the game "${this.data.game.name}"?` ) ) {
                 this.mode = Library.Editor.modes.SAVING;
-                document.body.className = "is-saving";
+                this.dom.root[ 0 ].className = "is-saving";
 
                 db.DB.deleteGame( this.data.game ).then(() => {
                     window.location.href = "index.html";
@@ -578,7 +595,7 @@ class Editor {
         this.dom.saveMap.on( "click", ( e ) => {
             if ( this.canFunction() && this.data.map ) {
                 this.mode = Config.Editor.modes.SAVING;
-                document.body.className = "is-saving";
+                this.dom.root[ 0 ].className = "is-saving";
                 this.cleanMap();
 
                 // Save map JSON

@@ -6,6 +6,7 @@
 // process.
 window.onload = () => {
     const _2dk = window._2dk;
+    const root = document.getElementById( "root" );
     const select = document.getElementById( "root-game-select" );
     const button = document.getElementById( "root-game-button" );
     const fields = {
@@ -39,7 +40,7 @@ window.onload = () => {
     }, false );
 
     select.addEventListener( "change", () => {
-        document.body.className = "is-not-loaded";
+        root.className = "is-not-loaded";
 
         setTimeout(() => {
             window.location.href = `editor.html?game=${select.value}`;
@@ -48,5 +49,5 @@ window.onload = () => {
 
     }, false );
 
-    document.body.className = "";
+    root.className = "";
 };
