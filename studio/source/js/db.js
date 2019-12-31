@@ -278,7 +278,10 @@ class DB {
 }
 
 
-DB.mergeModel = function ( pin, model ) {
+/******************************************************************************
+ * STATIC methods...
+*******************************************************************************/
+DB.mergeModel = ( pin, model ) => {
     for ( const i in model ) {
         // Don't override ID property or Name property
         if ( i !== "id" && i !== "name" ) {
@@ -290,17 +293,17 @@ DB.mergeModel = function ( pin, model ) {
 };
 
 
-DB.getUID = function () {
+DB.getUID = () => {
     return String( Math.random() * Date.now() ).replace( /\D/, "" );
 };
 
 
-DB.getModel = function ( model ) {
+DB.getModel = ( model ) => {
     return Utils.copyObj( require( `../../models/${model}` ) );
 };
 
 
-DB.getGames = function () {
+DB.getGames = () => {
     return new Promise(( resolve ) => {
         Utils.readJson( path.join( process.cwd(), "games.json" ), ( json ) => {
             resolve( json );
@@ -309,7 +312,24 @@ DB.getGames = function () {
 };
 
 
-DB.addGame = function ( data ) {
+DB.getMaps = ( gameId ) => {
+    return new Promise(( resolve ) => {
+        const mapsPath = path.join( process.cwd(), "games", gameId, "maps" );
+
+        Utils.readDir( mapsPath, ( files ) => {
+            const maps = [];
+
+            files.forEach(( file ) => {
+                maps.push( Utils.readJson( path.join( mapsPath, file ) ) );
+            });
+
+            resolve( maps );
+        });
+    });
+};
+
+
+DB.addGame = ( data ) => {
     return new Promise(( resolve ) => {
         let games = path.join( process.cwd(), "games.json" );
         let gameJson = null;
@@ -350,7 +370,7 @@ DB.addGame = function ( data ) {
 };
 
 
-DB.deleteGame = function ( data ) {
+DB.deleteGame = ( data ) => {
     return new Promise(( resolve ) => {
         const jsonPath = path.join( process.cwd(), "games.json" );
         const gamePath = path.join( process.cwd(), "games", data.id );

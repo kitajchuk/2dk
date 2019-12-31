@@ -1,15 +1,129 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu } = require( "electron" );
+const { app, ipcMain, BrowserWindow, Menu } = require( "electron" );
+const isMac = (process.platform === "darwin");
 const path = require( "path" );
-const isMac = (process.platform !== "darwin");
+const db = require( "./source/js/db" );
 
 // Keep a global reference of the window object, if you don"t, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-// Create application menus
-Menu.setApplicationMenu( Menu.buildFromTemplate([
-    ...(isMac ? [{
+// Keep a global reference to the active game and map objects
+let activeGame;
+let activeMap;
+
+// Getter methods for application menus
+// The Games and Maps menus will dynamically update their load submenus
+const getGamesMenu = () => {
+    return new Promise(( resolve ) => {
+        const gamesLoadout = {
+            label: "Load Game",
+            submenu: [],
+        };
+
+        db.DB.getGames().then(( games ) => {
+            games.forEach(( game ) => {
+                gamesLoadout.submenu.push({
+                    label: game.name,
+                    click ( menuItem, browserWindow, event ) {
+                        mainWindow.webContents.send( "loadgame", game );
+                        activeGame = game;
+                        setMenu();
+                    }
+                });
+            });
+
+            resolve({
+                label: "Games",
+                submenu: [
+                    {
+                        label: "New Game",
+                        click () {
+                            mainWindow.webContents.send( "newgame" );
+                        }
+                    },
+                    gamesLoadout,
+                ]
+            });
+        });
+    });
+};
+const getMapsMenu = () => {
+    return new Promise(( resolve ) => {
+        const mapsLoadout = {
+            label: "Load Map",
+            submenu: [],
+        };
+        const resolveMaps = () => {
+            resolve({
+                label: "Maps",
+                submenu: [
+                    {
+                        label: "New Map",
+                        click () {
+                            mainWindow.webContents.send( "newmap" );
+                        }
+                    },
+                    mapsLoadout,
+                    {
+                        label: "Add Tileset",
+                        click () {
+                            mainWindow.webContents.send( "addtileset" );
+                        }
+                    },
+                    {
+                        label: "Add Sound",
+                        click () {
+                            mainWindow.webContents.send( "addsound" );
+                        }
+                    },
+                    {
+                        label: "Save Map",
+                        accelerator: "CmdOrCtrl+S",
+                        click () {
+                            mainWindow.webContents.send( "savemap" );
+                        }
+                    },
+                    {
+                        label: "Undo Map Paint",
+                        accelerator: "CmdOrCtrl+Z",
+                        click () {
+                            mainWindow.webContents.send( "undomap" );
+                        }
+                    },
+                    {
+                        label: "Redo Map Paint",
+                        accelerator: "Shift+CmdOrCtrl+Z",
+                        click () {
+                            mainWindow.webContents.send( "redomap" );
+                        }
+                    },
+                ]
+            });
+        };
+
+        if ( activeGame ) {
+            db.DB.getMaps( activeGame.id ).then(( maps ) => {
+                maps.forEach(( map ) => {
+                    mapsLoadout.submenu.push({
+                        label: map.name,
+                        click ( menuItem, browserWindow, event ) {
+                            activeMap = map;
+                            mainWindow.webContents.send( "loadmap", map );
+                        }
+                    });
+                });
+
+                resolveMaps();
+            });
+
+        } else {
+            resolveMaps();
+        }
+    });
+};
+const getAppMenu = () => {
+    return (isMac ? {
         label: app.name,
         submenu: [
             { role: "about" },
@@ -22,40 +136,18 @@ Menu.setApplicationMenu( Menu.buildFromTemplate([
             { type: "separator" },
             { role: "quit" }
         ]
-    }] : []),
-    {
+    } : {});
+};
+const getFileMenu = () => {
+    return {
         label: "File",
         submenu: [
             isMac ? { role: "close" } : { role: "quit" }
         ]
-    },
-    {
-        label: "Edit",
-        submenu: [
-            {
-                label: "Save",
-                accelerator: "CmdOrCtrl+S",
-                click () {
-                    mainWindow.webContents.send( "save" );
-                }
-            },
-            {
-                label: "Undo",
-                accelerator: "CmdOrCtrl+Z",
-                click () {
-                    mainWindow.webContents.send( "undo" );
-                }
-            },
-            {
-                label: "Redo",
-                accelerator: "Shift+CmdOrCtrl+Z",
-                click () {
-                    mainWindow.webContents.send( "redo" );
-                }
-            },
-        ]
-    },
-    {
+    };
+};
+const getViewMenu = () => {
+    return {
         label: "View",
         submenu: [
             { role: "reload" },
@@ -68,8 +160,10 @@ Menu.setApplicationMenu( Menu.buildFromTemplate([
             { type: "separator" },
             { role: "togglefullscreen" }
         ]
-    },
-    {
+    };
+};
+const getWindowMenu = () => {
+    return {
         label: "Window",
         submenu: [
             { role: "minimize" },
@@ -83,8 +177,10 @@ Menu.setApplicationMenu( Menu.buildFromTemplate([
             { role: "close" }
             ])
         ]
-    },
-    {
+    };
+};
+const getHelpMenu = () => {
+    return {
         role: "help",
         submenu: [
             {
@@ -95,8 +191,25 @@ Menu.setApplicationMenu( Menu.buildFromTemplate([
                 }
             }
         ]
-    }
-]));
+    };
+};
+const setMenu = () => {
+    getGamesMenu().then(( gamesMenu ) => {
+        getMapsMenu().then(( mapsMenu ) => {
+            Menu.setApplicationMenu( Menu.buildFromTemplate([
+                getAppMenu(),
+                getFileMenu(),
+                gamesMenu,
+                mapsMenu,
+                getViewMenu(),
+                getWindowMenu(),
+                getHelpMenu(),
+            ]));
+        });
+    });
+}
+
+
 
 const createWindow = () => {
     // Create the browser window.
@@ -109,6 +222,18 @@ const createWindow = () => {
         webPreferences: {
             preload: path.join( __dirname, "preload.js" ),
         }
+    });
+
+    // Set application menus
+    setMenu();
+
+    // Listen for events from the ipcRenderer
+    ipcMain.on( "newgame", ( event, game ) => {
+        setMenu();
+    });
+
+    ipcMain.on( "newmap", ( event, map ) => {
+        setMenu();
     });
 
     // and load the index.html of the app.

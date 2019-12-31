@@ -121,6 +121,10 @@ a {
         right: 14px;
         top: 50%;
     }
+
+    &[disabled]:after {
+        display: none;
+    }
 }
 .select__field {
     border-radius: 0;

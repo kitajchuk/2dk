@@ -29,7 +29,6 @@ class EditorCanvas {
         this.editor = editor;
         this.mode = null;
         this.map = null;
-        this.draggable = null;
         this.tilesetCoords = [];
         this.isSpacebar = false;
         this.isMouseDownTiles = false;
@@ -59,6 +58,8 @@ class EditorCanvas {
             tilepaint: document.getElementById( "editor-tilepaint-canvas" ),
             preview: document.getElementById( "editor-preview-canvas" ),
         };
+        this.draggable = this.getDraggable();
+        this.draggable.disable();
 
         this.bindEvents();
     }
@@ -92,9 +93,8 @@ class EditorCanvas {
                     this.isDraggableAlive = false;
                     this.dom.$canvasPane.removeClass( "is-dragging" );
 
-                    if ( !this.isSpacebar && this.draggable ) {
-                        this.draggable.kill();
-                        this.draggable = null;
+                    if ( !this.isSpacebar ) {
+                        this.draggable.disable();
                     }
                 }
             }
@@ -109,6 +109,13 @@ class EditorCanvas {
             this.clear( this.canvases.tilegrid.getContext( "2d" ) );
             this.clearTileset();
             this.resetPreview();
+
+            this.isSpacebar = false;
+            this.isMouseDownTiles = false;
+            this.isMouseMovedTiles = false;
+            this.isMouseDownCanvas = false;
+            this.isDraggableAlive = false;
+            this.currentTileCoord = null;
             this.tilesetCoords = [];
             this.map = null;
             this.mode = null;
@@ -155,6 +162,10 @@ class EditorCanvas {
 
         this.dom.canvasPane.style.width = `${this.map.width}px`;
         this.dom.canvasPane.style.height = `${this.map.height}px`;
+
+        this.draggable.update({
+            applyBounds: true
+        });
 
         // Load the tileset
         this.loader.loadImg( `.${this.map.image}` ).then(( img ) => {
@@ -475,25 +486,30 @@ class EditorCanvas {
         const $mapgrid = $( this.canvases.mapgrid );
 
         $document.on( "keydown", ( e ) => {
+            const activeMenu = $( ".js-menu.is-active" );
+
+            if ( activeMenu.length ) {
+                return;
+            }
+
             this.isSpacebar = (e.which === 32);
 
             if ( this.editor.getMode() !== Config.Editor.modes.SAVING && (this.isSpacebar && this.mode !== Config.EditorCanvas.modes.DRAG) ) {
                 e.preventDefault();
 
+                this.draggable.enable();
+
                 this.mode = Config.EditorCanvas.modes.DRAG;
 
                 this.dom.$canvasPane.addClass( "is-drag" );
-
-                this.draggable = this.getDraggable();
             }
         });
 
         $document.on( "keyup", ( e ) => {
             this.isSpacebar = false;
 
-            if ( !this.isSpacebar && !this.isDraggableAlive && this.draggable ) {
-                this.draggable.kill();
-                this.draggable = null;
+            if ( !this.isSpacebar && !this.isDraggableAlive ) {
+                this.draggable.disable();
             }
 
             if ( this.editor.getMode() !== Config.Editor.modes.SAVING && this.mode === Config.EditorCanvas.modes.DRAG ) {

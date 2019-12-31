@@ -27,8 +27,6 @@ class Editor {
             settings: $( ".js-settings" ),
             mapSettings: $( "#editor-mapsettings" ),
             gameSettings: $( "#editor-gamesettings" ),
-            postActions: $( ".js-post-action" ),
-            uploadActions: $( ".js-upload-action" ),
             cancelPost: $( ".js-post-cancel" ),
             savePost: $( ".js-post-save" ),
             uploadFiles: $( ".js-upload-file" ),
@@ -112,8 +110,8 @@ class Editor {
                 // Prefill the game data fields
                 this.prefillGameFields( this.data.game );
 
-                // Position game settings menu
-                this.menus.activeGame[ 0 ].style.width = `${this.dom.gamePanel[ 0 ].clientWidth + 1}px`;
+                // Set active game to menu
+                this.selects.gameLoad[ 0 ].selectedIndex = this.selects.gameLoad.find( `option[value="${id}"]` ).index();
             });
         });
     }
@@ -140,9 +138,8 @@ class Editor {
         // Display the map canvas
         this.canvas.loadMap( this.data.map );
 
-        // Position map settings menu
-        this.menus.activeMap[ 0 ].style.left = `${this.dom.mapPanel[ 0 ].offsetLeft - 1}px`;
-        this.menus.activeMap[ 0 ].style.width = `${this.dom.mapPanel[ 0 ].clientWidth + 2}px`;
+        // Set active map to menu
+        this.selects.mapLoad[ 0 ].selectedIndex = this.selects.mapLoad.find( `option[value="${id}"]` ).index();
     }
 
 
@@ -155,6 +152,7 @@ class Editor {
             this.closeMenus();
             this.data.maps.push( map );
             EditorUtils.buildSelectMenu( this.selects.maps, this.data.maps );
+            ipcRenderer.send( "newmap", map );
             this.done();
         });
     }
@@ -168,8 +166,8 @@ class Editor {
             this.closeMenus();
             this.data.games.push( game.game );
             EditorUtils.buildSelectMenu( this.selects.gameLoad, this.data.games );
-            this.selects.gameLoad[ 0 ].selectedIndex = this.selects.gameLoad.find( `option[value="${game.game.id}"]` ).index();
-            this.loadGame( game.game.id );
+            // this.loadGame( game.game.id );
+            ipcRenderer.send( "newgame", game.game );
             this.done();
         });
     }
@@ -439,9 +437,70 @@ class Editor {
     }
 
 
+    _openMenu ( type, target ) {
+        const canFunction = (type === "game") || this.canGameFunction();
+
+        if ( !canFunction ) {
+            return false;
+        }
+
+        const menu = $( `#${target}` );
+
+        if ( menu.is( ".is-active" ) ) {
+            this.closeMenus();
+            this.clearMenu( menu );
+
+        } else {
+            this.closeMenus();
+            menu.addClass( "is-active" );
+        }
+    }
+
+
+    _openUpload ( type, target ) {
+        if ( !this.canGameFunction() ) {
+            return false;
+        }
+
+        const menu = $( `#${target}` );
+
+        if ( menu.is( ".is-active" ) ) {
+            this.closeMenus();
+
+        } else {
+            this.closeMenus();
+            menu.addClass( "is-active" );
+        }
+    }
+
+
     bindMenuEvents () {
-        ipcRenderer.on( "save", ( event, message ) => {
+        ipcRenderer.on( "savemap", ( event, message ) => {
             this._saveMap();
+        });
+
+        ipcRenderer.on( "newgame", ( event, message ) => {
+            this._openMenu( "game", "editor-addgame-menu" );
+        });
+
+        ipcRenderer.on( "newmap", ( event, message ) => {
+            this._openMenu( "map", "editor-addmap-menu" );
+        });
+
+        ipcRenderer.on( "addtileset", ( event, message ) => {
+            this._openUpload( "tileset", "editor-addtiles-menu" );
+        });
+
+        ipcRenderer.on( "addsound", ( event, message ) => {
+            this._openUpload( "sound", "editor-addsound-menu" );
+        });
+
+        ipcRenderer.on( "loadgame", ( event, game ) => {
+            this.loadGame( game.id );
+        });
+
+        ipcRenderer.on( "loadmap", ( event, map ) => {
+            this.loadMap( map.id );
         });
     }
 
@@ -455,18 +514,18 @@ class Editor {
             });
         });
 
-        this.selects.gameLoad.on( "change", ( e ) => {
-            if ( this.selects.gameLoad[ 0 ].value ) {
-                this.loadGame( this.selects.gameLoad[ 0 ].value );
-            }
-        });
+        // this.selects.gameLoad.on( "change", ( e ) => {
+        //     if ( this.selects.gameLoad[ 0 ].value ) {
+        //         this.loadGame( this.selects.gameLoad[ 0 ].value );
+        //     }
+        // });
 
 
-        this.selects.mapLoad.on( "change", ( e ) => {
-            if ( this.selects.mapLoad[ 0 ].value ) {
-                this.loadMap( this.selects.mapLoad[ 0 ].value );
-            }
-        });
+        // this.selects.mapLoad.on( "change", ( e ) => {
+        //     if ( this.selects.mapLoad[ 0 ].value ) {
+        //         this.loadMap( this.selects.mapLoad[ 0 ].value );
+        //     }
+        // });
 
         this.dom.uploadFiles.on( "change", ( e ) => {
             if ( !this.canGameFunction() ) {
@@ -519,56 +578,6 @@ class Editor {
         });
 
 
-        this.dom.postActions.on( "click", ( e ) => {
-            const targ = $( e.target );
-            const elem = targ.is( ".js-post-action" ) ? targ : targ.closest( ".js-post-action" );
-            const elemData = elem.data();
-            const canFunction = (elemData.type === "game") || this.canGameFunction();
-
-            if ( !canFunction ) {
-                return false;
-            }
-
-            const menu = $( `#${elem.data().target}` );
-
-            if ( elem.is( ".is-active" ) ) {
-                this.dom.postActions.removeClass( "is-active" );
-                this.closeMenus();
-                this.clearMenu( menu );
-
-            } else {
-                this.dom.postActions.removeClass( "is-active" );
-                this.dom.uploadActions.removeClass( "is-active" );
-                this.closeMenus();
-                elem.addClass( "is-active" );
-                menu.addClass( "is-active" );
-            }
-        });
-
-
-        this.dom.uploadActions.on( "click", ( e ) => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
-
-            const targ = $( e.target );
-            const elem = targ.is( ".js-upload-action" ) ? targ : targ.closest( ".js-upload-action" );
-            const menu = $( `#${elem.data().target}` );
-
-            if ( elem.is( ".is-active" ) ) {
-                this.dom.uploadActions.removeClass( "is-active" );
-                this.closeMenus();
-
-            } else {
-                this.dom.postActions.removeClass( "is-active" );
-                this.dom.uploadActions.removeClass( "is-active" );
-                this.closeMenus();
-                elem.addClass( "is-active" );
-                menu.addClass( "is-active" );
-            }
-        });
-
-
         this.dom.cancelPost.on( "click", ( e ) => {
             const targ = $( e.target );
             const elem = targ.is( ".js-post-cancel" ) ? targ : targ.closest( ".js-post-cancel" );
@@ -578,8 +587,6 @@ class Editor {
             if ( !canFunction ) {
                 return false;
             }
-
-            this.dom.postActions.removeClass( "is-active" );
 
             this.closeMenus();
             this.clearMenu( elem.closest( ".js-menu" ) );
@@ -593,8 +600,6 @@ class Editor {
 
             const targ = $( e.target );
             const elem = targ.is( ".js-upload-cancel" ) ? targ : targ.closest( ".js-upload-cancel" );
-
-            this.dom.uploadActions.removeClass( "is-active" );
 
             this.closeMenus();
             this.clearMenu( elem.closest( ".js-menu" ) );
@@ -654,8 +659,6 @@ class Editor {
                     postData.fileData = fe.target.result;
 
                     this.db.addFile( postData ).then(() => {
-                        this.dom.postActions.removeClass( "is-active" );
-                        this.dom.uploadActions.removeClass( "is-active" );
                         fileField[ 0 ].value = "";
                         this.loadAssets();
                         this.closeMenus();
@@ -688,9 +691,6 @@ class Editor {
                 } else {
                     this.postMap( postData );
                 }
-
-                this.dom.postActions.removeClass( "is-active" );
-                this.dom.uploadActions.removeClass( "is-active" );
 
                 this.clearMenu( elem.closest( ".js-menu" ) );
             }

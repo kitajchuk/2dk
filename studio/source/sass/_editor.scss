@@ -49,23 +49,6 @@
     height: 128px;
     pointer-events: none;
 }
-#editor-active-map-menu {
-    bottom: auto;
-    top: 50px;
-    border-top: 0;
-    border-bottom: 1px solid $grey-dark;
-    border-right: 1px solid $grey-dark;
-    padding: 20px;
-}
-#editor-active-game-menu {
-    bottom: auto;
-    top: 50px;
-    left: 0;
-    border-top: 0;
-    border-bottom: 1px solid $grey-dark;
-    border-right: 1px solid $grey-dark;
-    padding: 20px;
-}
 #editor-gamesettings,
 #editor-mapsettings {
     cursor: pointer;
@@ -196,6 +179,7 @@
     position: absolute;
     top: 0;
     width: 100%;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.25);
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
     user-select: none !important;
@@ -399,13 +383,13 @@
 /* Menus */
 .editor__menu {
     background-color: $black;
-    border-left: 1px solid $grey-dark;
-    border-top: 1px solid $grey-dark;
-    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.25);
+    border: 1px solid $grey-dark;
+    box-shadow: 0 0 2px 2px rgba( 0, 0, 0, 0.25 );
     padding: 32px;
     position: fixed;
-    bottom: 0;
-    right: calc( 416px + 44px );
+    left: 50%;
+    top: 50%;
+    transform: translate3d( -50%, -50%, 0 );
     width: 480px;
     z-index: -1;
     pointer-events: none;
