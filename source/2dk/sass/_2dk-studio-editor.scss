@@ -34,11 +34,15 @@
         pointer-events: none;
     }
 }
+#editor-move-coords {
+    width: 55px;
+    text-align: center;
+}
 #editor-preview {
     overflow: hidden;
 }
 #editor-tileset-box {
-    height: calc( 100vh - 47px - 47px - 47px - 47px - 32px - 32px - 161px - 16px - 16px );
+    height: calc( 100vh - 47px - 47px - 47px - 47px - 32px - 32px - 161px - 16px - 16px - 50px );
 }
 #editor-preview-box {
     height: 128px;
@@ -74,7 +78,7 @@
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -98,7 +102,8 @@
 }
 .editor__panel__xy,
 .editor__panel__map,
-.editor__panel__game {
+.editor__panel__game,
+.editor__panel__sound {
     display: flex;
     height: 50px;
     justify-content: center;
@@ -109,6 +114,10 @@
 .editor__panel__xy {
     border-right: 0;
     justify-content: flex-start;
+    border-right: 1px solid $grey-dark;
+}
+.editor__panel__sound {
+    border-right: 1px solid $grey-dark;
 }
 
 
@@ -128,11 +137,10 @@
     height: 100%;
     position: relative;
     z-index: 3;
-    // display: flex;
-    // flex-wrap: wrap;
-    // flex-direction: column;
+    padding-top: 50px;
 }
 .editor__sidebar__tools {
+    padding-top: 50px;
     background-color: $black;
     width: auto;
     overflow: hidden;
@@ -427,9 +435,6 @@
     position: absolute;
     top: 0;
     width: 100%;
-}
-.editor__sound__select {
-    width: 90%;
 }
 .editor__sound__player {
     width: 10%;

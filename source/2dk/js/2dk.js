@@ -19,6 +19,7 @@ TODO: Port studio Editor to renderer-editor.
 
 IDEA: NPC hypothesis is that NPCs will work now that positions are absolute!
 IDEA: Use Artificial General Intelligence for NPC base class.
+IDEA: Procedural map paint with cellauto JS.
 
 
 ********************************************************************************

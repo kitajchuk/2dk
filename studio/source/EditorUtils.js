@@ -54,7 +54,6 @@ const EditorUtil = {
                 addEvent( sound, soundId );
 
                 sampler.addClass( "is-playing" );
-                masterSound.addClass( "is-playing" );
 
             } else if ( (mediabox.getMedia( soundId ) && mediabox.isPlaying( soundId )) ) {
                 mediabox.fadeChannelOut( "bgm", duration );

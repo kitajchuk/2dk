@@ -581,7 +581,7 @@ class EditorCanvas {
         });
 
         $mapgrid.on( "mouseout", () => {
-            this.dom.moveCoords.innerHTML = "( x, y )";
+            this.dom.moveCoords.innerHTML = "( X, Y )";
         });
     }
 }
