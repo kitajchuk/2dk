@@ -38,7 +38,7 @@ class Player {
         this.element.className = "_2dk";
         this.splash = document.createElement( "div" );
         this.splash.className = "_2dk__splash";
-        this.splash.innerHTML = "<div>Rotate to Landscape.</div><div>+Webapp</div>";
+        this.splash.innerHTML = `<div>Rotate to Landscape.</div><div>${this.sac ? "Installed" : "+Webapp"}</div>`;
         this.element.appendChild( this.splash );
         this.element.appendChild( this.gamepad.element );
         document.body.appendChild( this.element );
@@ -73,7 +73,6 @@ class Player {
         window.onresize = () => {
             this.width = this.data.fullscreen ? (this.sac ? screen.height : Math.max( window.innerWidth, window.innerHeight )) : this.data.width;
             this.height = this.data.fullscreen ? (this.sac ? screen.width : Math.min( window.innerWidth, window.innerHeight )) : this.data.height;
-            this.map.updateLayers( this.width, this.height );
         };
     }
 

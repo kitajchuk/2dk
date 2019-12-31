@@ -231,15 +231,6 @@ class Map {
     }
 
 
-    updateLayers ( width, height ) {
-        for ( let id in this.location.layers ) {
-            this.location.layers[ id ].update( width, height );
-        }
-
-        this.render();
-    }
-
-
     addLayer ( id ) {
         this.layers.appendChild( this.location.layers[ id ].canvas );
     }
