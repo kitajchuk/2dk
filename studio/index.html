@@ -6,38 +6,311 @@
         <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
         <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
         <title>2dk Studio</title>
-        <link href="./static/css/2dk-studio.css" rel="stylesheet" />
+        <link href="./static/css/screen.css" rel="stylesheet" />
     </head>
     <body>
-        <div id="root" class="is-not-loaded">
-            <div class="root__form">
-                <div class="root__label">
-                    <span class="icon icon--nudge icon--mobile2"></span><span>New Game</span>
-                </div>
-                <div class="root__wrap">
-                    <input type="text" name="name" class="input root__field root__field--name" placeholder="Game name" />
-                </div>
-                <div class="root__wrap">
-                    <input type="text" name="width" class="input root__field root__field--grid" placeholder="Screen width" value="" />
-                    <input type="text" name="height" class="input root__field root__field--grid" placeholder="Screen height" value="" />
-                </div>
-                <div class="root__wrap">
-                    <button type="submit" class="button root__button" id="root-game-button">Create</button>
-                </div>
-                <div class="root__select">
-                    <div class="txt">
-                        Load a game:<br />
-                        Select a game you've already created to load the 2dk Studio builder.
+        <div id="editor" class="is-not-loaded">
+            <!-- Canvas -->
+            <div class="editor__canvas">
+                <div class="editor__canvas__pane" id="editor-canvas-pane">
+                    <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
+                    <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
+                    <div class="editor__canvas__layer editor__objects" id="editor-objects"></div>
+                    <div class="editor__canvas__layer editor__collision" id="editor-collision"></div>
+                    <div class="editor__canvas__layer editor__gridlines" id="editor-grid">
+                        <canvas class="canvas layer layer--grid" id="editor-mapgrid-canvas"></canvas>
                     </div>
-                    <div class="select root__game__select">
-                        <select class="select__field" id="root-game-select" name="game">
-                            <option value="">Select Game...</option>
+                </div>
+            </div>
+            <!-- Topbar -->
+            <div class="editor__panel">
+                <div class="editor__panel__game" id="editor-game-panel">
+                    <span class="icon icon--nudge icon--mobile2"></span>
+                    <span class="icon icon--nudge icon--bin" id="editor-delgame" title="Delete Game"></span>
+                    <div class="select icon--nudge">
+                        <select class="select__field js-select js-select-game" id="editor-game-load-select" name="game" data-label="Load Game...">
+                            <option value="">Load Game...</option>
                         </select>
+                    </div>
+                    <span class="icon icon--cogs js-settings" id="editor-gamesettings" data-type="game" title="Game Settings"></span>
+                </div>
+                <div class="editor__panel__map" id="editor-map-panel">
+                    <span class="icon icon--nudge icon--map2"></span>
+                    <span class="icon icon--nudge icon--bin" id="editor-delmap" title="Delete Map"></span>
+                    <div class="select icon--nudge">
+                        <select class="select__field js-select js-select-map" id="editor-map-load-select" name="map" data-label="Load Map...">
+                            <option value="">Load Map...</option>
+                        </select>
+                    </div>
+                    <span class="icon icon--cogs js-settings" id="editor-mapsettings" data-type="map" title="Map Settings"></span>
+                </div>
+                <div class="editor__panel__xy">
+                    <span class="icon icon--map icon--nudge"></span>
+                    <span id="editor-move-coords">( X, Y )</span>
+                </div>
+                <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
+                    <span class="icon icon--nudge icon--music"></span>
+                    <div class="select icon--nudge">
+                        <select class="select__field js-map-field js-select js-select-sound" data-label="Sample Sounds...">
+                            <option value="">Sample Sounds...</option>
+                        </select>
+                    </div>
+                    <span class="icon icon--play2 js-sound-button"></span>
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <div class="editor__sidebar">
+                <div class="editor__sidebar__layers">
+                    <div class="editor__layer js-edit-layer" data-layer="collision">
+                        <span class="icon icon--nudge icon--stack"></span>
+                        <span>Collision</span>
+                        <span class="editor__layer__hide icon icon--eye js-hide-layer is-active" data-layer="collision"></span>
+                    </div>
+                    <div class="editor__layer js-edit-layer" data-layer="objects">
+                        <span class="icon icon--nudge icon--stack"></span>
+                        <span>Objects</span>
+                        <span class="editor__layer__hide icon icon--eye js-hide-layer" data-layer="objects"></span>
+                    </div>
+                    <div class="editor__layer js-edit-layer" data-layer="foreground">
+                        <span class="icon icon--nudge icon--stack"></span>
+                        <span>Foreground</span>
+                        <span class="editor__layer__hide icon icon--eye js-hide-layer" data-layer="foreground"></span>
+                    </div>
+                    <div class="editor__layer js-edit-layer" data-layer="background">
+                        <span class="icon icon--nudge icon--stack"></span>
+                        <span>Background</span>
+                        <span class="editor__layer__hide icon icon--eye js-hide-layer" data-layer="background"></span>
+                    </div>
+                    <div class="editor__layer -merge-down">
+                        <div class="editor__layer__label">
+                            <span class="icon icon--nudge icon--image"></span>
+                            <span>Paint Preview</span>
+                        </div>
+                    </div>
+                    <div class="editor__layer -preview">
+                        <div id="editor-preview-box">
+                            <div id="editor-preview">
+                                <canvas class="canvas layer layer--preview" id="editor-preview-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="editor__layer -merge-down">
+                        <div class="editor__layer__label">
+                            <span class="icon icon--nudge icon--images"></span>
+                            <span>Tile Picker</span>
+                        </div>
+                    </div>
+                    <div class="editor__layer -tileset">
+                        <div id="editor-tileset-box">
+                            <div id="editor-tileset">
+                                <img id="editor-tileset-image" />
+                                <canvas class="canvas layer layer--tilepaint" id="editor-tilepaint-canvas"></canvas>
+                                <canvas class="canvas layer layer--tilegrid" id="editor-tilegrid-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="editor__sidebar__tools">
+                    <div class="editor__toolbar editor__toolbar__tools">
+                        <div class="editor__action js-edit-action" data-action="brush" title="Paint Map Tiles">
+                            <span class="icon icon--pencil2"></span>
+                        </div>
+                        <div class="editor__action js-edit-action" data-action="bucket" title="Fill Map with Tile">
+                            <span class="icon icon--paint-format"></span>
+                        </div>
+                        <div class="editor__action js-edit-action" data-action="trash" title="Erase Map Tiles">
+                            <span class="icon icon--scissors"></span>
+                        </div>
+                    </div>
+                    <div class="editor__toolbar editor__toolbar__menus">
+                        <div class="editor__action js-post-action" data-type="game" data-target="editor-addgame-menu" title="Add Game">
+                            <span class="icon icon--mobile2"></span>
+                        </div>
+                        <div class="editor__action js-post-action" data-type="map" data-target="editor-addmap-menu" title="Add Map">
+                            <span class="icon icon--map2"></span>
+                        </div>
+                        <div class="editor__action js-upload-action" data-type="tileset" data-target="editor-addtiles-menu" title="Upload Tileset">
+                            <span class="icon icon--file-picture"></span>
+                        </div>
+                        <div class="editor__action js-upload-action" data-type="sound" data-target="editor-addsound-menu" title="Upload Sound">
+                            <span class="icon icon--file-music"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Menus -->
+            <div class="editor__menus">
+                <!-- New game -->
+                <div class="editor__menu js-menu" id="editor-addgame-menu">
+                    <div class="editor__label"><span class="icon icon--nudge icon--nudge icon--mobile2"></span><span>Make a new game</span></div>
+                    <div class="txt">
+                        How games work:<br />
+                        Screen width and height define the visible play area for your game. We call this the GameBox and your maps scroll within these bounds.
+                    </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field js-addgame-field" type="text" placeholder="Game name" name="name" />
+                    </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field editor__field--half inline js-addgame-field" type="text" placeholder="Screen width" name="width" />
+                        <input class="input editor__field editor__field--half inline js-addgame-field" type="text" placeholder="Screen height" name="height" />
+                    </div>
+                    <div class="editor__setting">
+                        <div class="button editor__button inline editor__upload-button js-post-save" data-type="game">Create</div>
+                        <div class="button button--grey editor__button inline editor__cancel-button js-post-cancel" data-type="game">Cancel</div>
+                    </div>
+                </div>
+                <!-- Active game -->
+                <div class="editor__menu js-menu" id="editor-active-game-menu">
+                    <div class="editor__setting">
+                        <input class="input editor__field js-game-field" type="text" name="name" readonly />
+                    </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field editor__field--half inline js-game-field" type="text" name="width" readonly />
+                        <input class="input editor__field editor__field--half inline js-game-field" type="text" name="height" readonly />
+                    </div>
+                </div>
+                <!-- New map -->
+                <div class="editor__menu js-menu js-post-menu" id="editor-addmap-menu">
+                    <div class="editor__label"><span class="icon icon--nudge icon--nudge icon--map2"></span><span>Make a new map</span></div>
+                    <div class="txt">
+                        How maps work:<br />
+                        Tilesize is your raw editing size. Resolution determines how JS canvas displays on retina devices. For high-res JS canvas, set a tilesize of 64px and a resolution of 2. This will create gameplay at a sharp 32px.
+                    </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field js-addmap-field" type="text" placeholder="Map Name" name="name" />
+                    </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field js-addmap-field" type="text" placeholder="Canvas Resolution" name="resolution" />
+                    </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field editor__field--third inline js-addmap-field" type="text" placeholder="Tilesize" name="tilesize" />
+                        <input class="input editor__field editor__field--third inline js-addmap-field" type="text" placeholder="Tile width" name="tilewidth" />
+                        <input class="input editor__field editor__field--third inline js-addmap-field" type="text" placeholder="Tile height" name="tileheight" />
+                    </div>
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-addmap-field js-select js-select-tiles" name="image" data-label="Tileset">
+                                <option value="">Tileset</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-addmap-field js-select js-select-sound" name="sound" data-label="Sound">
+                                <option value="">Sound</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="button editor__button inline editor__upload-button js-post-save" data-type="map">Create</div>
+                        <div class="button button--grey editor__button inline editor__cancel-button js-post-cancel">Cancel</div>
+                    </div>
+                </div>
+                <!-- Active map -->
+                <div class="editor__menu js-menu" id="editor-active-map-menu">
+                    <div class="editor__setting">
+                        <input class="input editor__field js-map-field" type="text" name="name" />
+                    </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field js-map-field" type="text" name="resolution" />
+                    </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field editor__field--half inline js-map-field" type="text" name="tilesize" />
+                        <input class="input editor__field editor__field--half inline js-map-field" type="text" name="gridsize" />
+                    </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field editor__field--half inline js-map-field" type="text" name="tilewidth" />
+                        <input class="input editor__field editor__field--half inline js-map-field" type="text" name="tileheight" />
+                    </div>
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-map-field js-select js-select-tiles" name="image" data-label="Tileset">
+                                <option value="">Tileset</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-map-field js-select js-select-sound" name="sound" data-label="Sound">
+                                <option value="">Sound</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tileset -->
+                <div class="editor__menu js-menu js-upload-menu" id="editor-addtiles-menu">
+                    <div class="editor__setting">
+                        <div class="editor__label"><span class="icon icon--nudge icon--image"></span><span>Upload a new tileset</span></div>
+                        <div class="txt">
+                            How tilesets work:<br />
+                            Tiles are your swatches for painting maps. You should design your tiles with the same tilesize as your maps. You can upload tile images here and select which tileset you want to use when making a new map. You must use PNG format (.png).
+                        </div>
+                        <div class="editor__upload">
+                            <div class="button editor__upload__button editor__button inline">
+                                <span class="icon icon--upload2 icon--nudge"></span>
+                                <span>PNG</span>
+                            </div>
+                            <input class="input editor__upload__field inline editor__field js-upload-field" id="editor-addtiles-file-copy" type="text" placeholder="Choose a file" name="new_tiles_copy" />
+                            <input class="editor__upload__mask js-upload-file" id="editor-addtiles-file" type="file" name="new_tiles" data-target="editor-addtiles-file-copy" />
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="button editor__button inline editor__upload-button js-upload-save" data-type="tiles">Upload</div>
+                        <div class="button button--grey editor__button inline editor__cancel-button js-upload-cancel">Cancel</div>
+                    </div>
+                    <div class="txt">
+                        Remove tileset:<br />
+                        You can delete a tileset you've uploaded by selecting it here and using the delete button. You get one confirmation for your delete action.
+                    </div>
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-select js-select-delete js-select-tiles" data-label="Delete tileset..."></select>
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="button button--red editor__button inline editor__delete-button js-upload-delete" data-type="tiles">Delete tileset...</div>
+                    </div>
+                </div>
+                <!-- Sounds -->
+                <div class="editor__menu js-menu js-upload-menu" id="editor-addsound-menu">
+                    <div class="editor__setting">
+                        <div class="editor__label"><span class="icon icon--nudge icon--music"></span><span>Upload a new sound</span></div>
+                        <div class="txt">
+                            How sounds work:<br />
+                            Sounds are the background music that will play for a map. You must use MP3 format (.mp3).
+                        </div>
+                        <div class="editor__upload">
+                            <div class="button editor__upload__button editor__button inline">
+                                <span class="icon icon--upload2 icon--nudge"></span>
+                                <span>MP3</span>
+                            </div>
+                            <input class="input editor__upload__field inline editor__field js-upload-field" id="editor-addsound-file-copy" type="text" placeholder="Choose a file" name="new_sound_copy" />
+                            <input class="editor__upload__mask js-upload-file" id="editor-addsound-file" type="file" name="new_sound" data-target="editor-addsound-file-copy" />
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="button editor__button inline editor__upload-button js-upload-save" data-type="sounds">Upload</div>
+                        <div class="button button--grey editor__button inline editor__cancel-button js-upload-cancel">Cancel</div>
+                    </div>
+                    <div class="txt">
+                        Remove sounds:<br />
+                        You can delete a sounds you've uploaded by selecting it here and using the delete button. You get one confirmation for your delete action.
+                    </div>
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-select js-select-delete js-select-sound" data-label="Delete sound...">
+                                <option value="">Delete sound...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="button button--red editor__button inline editor__delete-button js-upload-delete" data-type="sounds">Delete sound...</div>
                     </div>
                 </div>
             </div>
         </div>
         <!-- You can also require other files to run in this process -->
-        <script src="./renderer-index.js"></script>
+        <script src="./static/js/greensock.js"></script>
+        <script src="./renderer.js"></script>
     </body>
 </html>

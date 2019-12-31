@@ -1,5 +1,5 @@
 const Config = require( "./Config" );
-const $ = require( "../node_modules/properjs-hobo/dist/hobo.build" );
+const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 
 
 
@@ -25,7 +25,7 @@ class EditorLayers {
         $document.on( "click", ".js-edit-layer", ( e ) => {
             const targ = $( e.target );
 
-            if ( this.editor.canFunction() && !targ.is( ".js-hide-layer" ) ) {
+            if ( this.editor.canMapFunction() && !targ.is( ".js-hide-layer" ) ) {
                 const elem = targ.is( ".js-edit-layer" ) ? targ : targ.closest( ".js-edit-layer" );
                 const layer = elem.data().layer.toUpperCase();
                 const mode = Config.EditorLayers.modes[ layer ];
@@ -46,8 +46,7 @@ class EditorLayers {
         });
 
         $document.on( "click", ".js-hide-layer", ( e ) => {
-            console.log( e );
-            if ( editor.canFunction() ) {
+            if ( editor.canMapFunction() ) {
                 const targ = $( e.target );
                 const elem = targ.is( ".js-hide-layer" ) ? targ : targ.closest( ".js-hide-layer" );
                 const layer = elem.data().layer;

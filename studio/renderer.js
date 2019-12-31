@@ -9,5 +9,5 @@ window.onload = () => {
     const _db = new _2dk.src.db.DB();
     const query =_2dk.lib.paramalama( window.location.search );
 
-    window.editor = new _2dk.src.Editor( query.game );
+    window.editor = new _2dk.src.Editor();
 };

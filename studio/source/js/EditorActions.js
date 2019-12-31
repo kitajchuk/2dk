@@ -1,5 +1,5 @@
 const Config = require( "./Config" );
-const $ = require( "../node_modules/properjs-hobo/dist/hobo.build" );
+const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 
 
 
@@ -21,7 +21,7 @@ class EditorActions {
 
     bind () {
         $( document ).on( "click", ".js-edit-action", ( e ) => {
-            if ( this.editor.canFunction() ) {
+            if ( this.editor.canMapFunction() ) {
                 const targ = $( e.target );
                 const elem = targ.is( ".js-edit-action" ) ? targ : targ.closest( ".js-edit-action" );
                 const action = elem.data().action.toUpperCase();

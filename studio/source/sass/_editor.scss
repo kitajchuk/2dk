@@ -14,9 +14,10 @@
 
     .layer {
         position: absolute;
-        left: 0;
+        left: 50%;
         top: 0;
         cursor: pointer;
+        transform: translateX( -50% );
     }
     .layer--preview {
         width: 32px;
@@ -56,6 +57,16 @@
     border-right: 1px solid $grey-dark;
     padding: 20px;
 }
+#editor-active-game-menu {
+    bottom: auto;
+    top: 50px;
+    left: 0;
+    border-top: 0;
+    border-bottom: 1px solid $grey-dark;
+    border-right: 1px solid $grey-dark;
+    padding: 20px;
+}
+#editor-gamesettings,
 #editor-mapsettings {
     cursor: pointer;
     pointer-events: auto;
@@ -63,6 +74,10 @@
 #editor-master-sound {
     cursor: pointer;
     pointer-events: auto;
+}
+#editor-tileset-image {
+    display: block;
+    margin: 0 auto;
 }
 
 
@@ -84,6 +99,10 @@
     justify-content: flex-start;
     color: $grey;
 
+    .select__field {
+        max-width: 185px;
+    }
+
     a {
         color: $grey;
     }
@@ -91,14 +110,6 @@
     span:not( .icon ) {
         font-size: 11px;
     }
-}
-.editor__panel__home {
-    display: flex;
-    width: 50px;
-    height: 50px;
-    justify-content: center;
-    align-items: center;
-    border-right: 1px solid $grey-dark;
 }
 .editor__panel__xy,
 .editor__panel__map,

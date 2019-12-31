@@ -25,7 +25,7 @@ const webpackConfig = {
 
 
 
-const clutchConfig = Object.assign( {}, webpackConfig, {
+const siteConfig = Object.assign( {}, webpackConfig, {
     plugins: [
         new webpack.LoaderOptionsPlugin({
             options: {
@@ -117,7 +117,7 @@ const clutchConfig = Object.assign( {}, webpackConfig, {
 
 const studioConfig = Object.assign( {}, webpackConfig, {
     entry: {
-        "2dk-studio": path.resolve( __dirname, `source/2dk/js/2dk-studio.js` )
+        "studio": path.resolve( __dirname, `studio/source/js/screen.js` )
     },
 
 
@@ -150,6 +150,6 @@ const studioConfig = Object.assign( {}, webpackConfig, {
 
 
 module.exports = [
-    clutchConfig,
+    siteConfig,
     studioConfig
 ];

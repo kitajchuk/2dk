@@ -1,9 +1,9 @@
 const EditorUtils = require( "./EditorUtils" );
 const Config = require( "./Config" );
 const Cache = require( "./Cache" );
-const $ = require( "../node_modules/properjs-hobo/dist/hobo.build" );
-const { MapLayer, drawMapTiles, drawGridLines } = require( "../../source/2dk/js/lib/Map" );
-const Loader = require( "../../source/2dk/js/lib/Loader" );
+const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
+const { MapLayer, drawMapTiles, drawGridLines } = require( "../../../source/2dk/js/lib/Map" );
+const Loader = require( "../../../source/2dk/js/lib/Loader" );
 
 
 
@@ -31,7 +31,7 @@ class EditorCanvas {
         this.map = null;
         this.draggable = null;
         this.tilesetCoords = [];
-        this.isMetaKey = false;
+        this.isSpacebar = false;
         this.isMouseDownTiles = false;
         this.isMouseMovedTiles = false;
         this.isMouseDownCanvas = false;
@@ -92,7 +92,7 @@ class EditorCanvas {
                     this.isDraggableAlive = false;
                     this.dom.$canvasPane.removeClass( "is-dragging" );
 
-                    if ( !this.isMetaKey && this.draggable ) {
+                    if ( !this.isSpacebar && this.draggable ) {
                         this.draggable.kill();
                         this.draggable = null;
                     }
@@ -100,6 +100,25 @@ class EditorCanvas {
             }
 
         )[ 0 ];
+    }
+
+
+    reset () {
+        if ( this.map ) {
+            this.clear( this.canvases.mapgrid.getContext( "2d" ) );
+            this.clear( this.canvases.tilegrid.getContext( "2d" ) );
+            this.clearTileset();
+            this.resetPreview();
+            this.tilesetCoords = [];
+            this.map = null;
+            this.mode = null;
+            this.contexts.background = null;
+            this.contexts.foreground = null;
+            this.dom.tileset.src = "";
+            this.layers.background.innerHTML = "";
+            this.layers.foreground.innerHTML = "";
+            this.layers.collision.innerHTML = "";
+        }
     }
 
 
@@ -401,8 +420,8 @@ class EditorCanvas {
             this.canvases.preview.width
         );
 
-        this.canvases.preview.width = width * 2;
-        this.canvases.preview.height = height * 2;
+        this.canvases.preview.width = width * this.map.resolution;
+        this.canvases.preview.height = height * this.map.resolution;
         this.canvases.preview.style.width = `${width}px`;
         this.canvases.preview.style.height = `${height}px`;
 
@@ -456,9 +475,9 @@ class EditorCanvas {
         const $mapgrid = $( this.canvases.mapgrid );
 
         $document.on( "keydown", ( e ) => {
-            this.isMetaKey = e.metaKey;
+            this.isSpacebar = (e.which === 32);
 
-            if ( this.editor.getMode() !== Config.Editor.modes.SAVING && (this.isMetaKey && this.mode !== Config.EditorCanvas.modes.DRAG) ) {
+            if ( this.editor.getMode() !== Config.Editor.modes.SAVING && (this.isSpacebar && this.mode !== Config.EditorCanvas.modes.DRAG) ) {
                 e.preventDefault();
 
                 this.mode = Config.EditorCanvas.modes.DRAG;
@@ -470,9 +489,9 @@ class EditorCanvas {
         });
 
         $document.on( "keyup", ( e ) => {
-            this.isMetaKey = e.metaKey;
+            this.isSpacebar = false;
 
-            if ( !this.isMetaKey && !this.isDraggableAlive && this.draggable ) {
+            if ( !this.isSpacebar && !this.isDraggableAlive && this.draggable ) {
                 this.draggable.kill();
                 this.draggable = null;
             }
@@ -491,7 +510,7 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mousedown", ( e ) => {
-            if ( this.editor.canFunction() && this.editor.actions.getMode() !== Config.EditorActions.modes.TRASH ) {
+            if ( this.editor.canMapFunction() && this.editor.actions.getMode() !== Config.EditorActions.modes.TRASH ) {
                 this.isMouseDownTiles = true;
                 this.isMouseMovedTiles = false;
 
@@ -519,7 +538,7 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mousemove", ( e ) => {
-            if ( this.editor.canFunction() ) {
+            if ( this.editor.canMapFunction() ) {
                 if ( this.isMouseDownTiles && this.editor.actions.getMode() !== Config.EditorActions.modes.TRASH && this.editor.actions.getMode() !== Config.EditorActions.modes.BUCKET ) {
                     const coords = [ Math.floor( e.offsetX / this.map.gridsize ), Math.floor( e.offsetY / this.map.gridsize ) ];
                     const foundCoord = this.tilesetCoords.find( ( coord ) => coord[ 0 ] === coords[ 0 ] && coord[ 1 ] === coords[ 1 ] );
@@ -547,7 +566,7 @@ class EditorCanvas {
         });
 
         $mapgrid.on( "mousedown", ( e ) => {
-            if ( this.editor.canFunction() ) {
+            if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCanvas = true;
             }
         });
@@ -561,7 +580,7 @@ class EditorCanvas {
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
-            if ( this.editor.canFunction() && this.isMouseDownCanvas ) {
+            if ( this.editor.canMapFunction() && this.isMouseDownCanvas ) {
                 if ( this.editor.layers.getMode() === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.getMode() === Config.EditorLayers.modes.FOREGROUND ) {
                     this.applyLayer( this.editor.layers.getMode(), coords );
                 }
@@ -569,7 +588,7 @@ class EditorCanvas {
         });
 
         $mapgrid.on( "mouseup", ( e ) => {
-            if ( this.editor.canFunction() ) {
+            if ( this.editor.canMapFunction() ) {
                 const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
 
                 if ( this.editor.layers.getMode() === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.getMode() === Config.EditorLayers.modes.FOREGROUND ) {

@@ -24,7 +24,6 @@ a {
 
 
 
-#root,
 #editor {
     position: relative;
     width: 100%;
@@ -33,8 +32,11 @@ a {
     &.is-not-loaded {
         display: none;
     }
-    &.is-saving:after {
-        content: "Just a sec...saving your map...";
+
+    &.is-saving-map:after,
+    &.is-saving-game:after,
+    &.is-saving-file:after,
+    &.is-deleting-file:after {
         position: fixed;
         left: 0;
         top: 0;
@@ -47,6 +49,18 @@ a {
         align-items: center;
         color: $white;
         font-size: 32px;
+    }
+    &.is-saving-map:after {
+        content: "Saving your map...";
+    }
+    &.is-saving-game:after {
+        content: "Saving your game...";
+    }
+    &.is-saving-file:after {
+        content: "Saving the file...";
+    }
+    &.is-deleting-file:after {
+        content: "Deleting the file...";
     }
 }
 
@@ -76,7 +90,6 @@ a {
     vertical-align: middle;
 }
 .input {
-    // border-radius: 2px;
     background-color: $charcoal;
     border: 1px solid $grey-dark;
     color: $white;
@@ -121,6 +134,11 @@ a {
     min-width: 185px;
     width: 100%;
     -webkit-appearance: none;
+
+    &:focus {
+        outline: none;
+        border: 1px solid $grey;
+    }
 }
 .checkbox {
     font-size: 0;

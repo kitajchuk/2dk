@@ -296,7 +296,7 @@ DB.getUID = function () {
 
 
 DB.getModel = function ( model ) {
-    return Utils.copyObj( require( `../models/${model}` ) );
+    return Utils.copyObj( require( `../../models/${model}` ) );
 };
 
 
