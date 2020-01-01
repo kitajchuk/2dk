@@ -5,7 +5,9 @@ const lager = require( "properjs-lager" );
 
 
 class DB {
-    constructor () {}
+    constructor () {
+        lager.info( "DB constructor initialization" );
+    }
 
     /******************************************************************************
      * OPEN DB
@@ -89,7 +91,9 @@ class DB {
     *******************************************************************************/
     getGame () {
         return new Promise(( resolve ) => {
-            resolve( this.cache.get( "game" ) );
+            resolve({
+                game: this.cache.get( "game" ),
+            });
         });
     }
 
@@ -99,13 +103,17 @@ class DB {
                 return this._getMergedMap( map.id );
             });
 
-            resolve( maps );
+            resolve({
+                maps,
+            });
         });
     }
 
     getMap ( data ) {
         return new Promise(( resolve ) => {
-            resolve( this._getMergedMap( data.id ) );
+            resolve({
+                map: this._getMergedMap( data.id ),
+            });
         });
     }
 
@@ -114,13 +122,19 @@ class DB {
             const files = this.cache.get( type );
 
             if ( files ) {
-                resolve( files );
+                resolve({
+                    type,
+                    files,
+                });
 
             } else {
                 Utils.readDir( this.files[ type ], ( theFiles ) => {
                     this.cache.set( type, theFiles );
 
-                    resolve( theFiles );
+                    resolve({
+                        type,
+                        files: theFiles,
+                    });
                 });
             }
         });
@@ -152,7 +166,10 @@ class DB {
                 this.cache.set( data.type, files );
 
                 Utils.writeFile( file, buffer, () => {
-                    resolve();
+                    resolve({
+                        type: data.type,
+                        files,
+                    });
                 });
             });
         });
@@ -195,7 +212,10 @@ class DB {
 
                 this.cache.set( "maps", maps );
 
-                resolve( map );
+                resolve({
+                    map,
+                    maps,
+                });
             });
         });
     }
@@ -231,7 +251,10 @@ class DB {
 
                 lager.info( `Updated Map: ${map.name}` );
 
-                resolve( this._getMergedMap( map.id ) );
+                resolve({
+                    map: this._getMergedMap( map.id ),
+                    maps,
+                });
             });
         });
     }
@@ -253,7 +276,10 @@ class DB {
 
                 lager.info( `Deleted Map: ${map.name}` );
 
-                resolve( map );
+                resolve({
+                    map,
+                    maps,
+                });
             });
         });
     }
@@ -271,7 +297,10 @@ class DB {
 
                 lager.info( `Deleted ${data.type} file ${data.fileName}` );
 
-                resolve();
+                resolve({
+                    type: data.type,
+                    files,
+                });
             });
         });
     }
@@ -306,24 +335,9 @@ DB.getModel = ( model ) => {
 DB.getGames = () => {
     return new Promise(( resolve ) => {
         Utils.readJson( path.join( process.cwd(), "games.json" ), ( json ) => {
-            resolve( json );
-        });
-    });
-};
-
-
-DB.getMaps = ( gameId ) => {
-    return new Promise(( resolve ) => {
-        const mapsPath = path.join( process.cwd(), "games", gameId, "maps" );
-
-        Utils.readDir( mapsPath, ( files ) => {
-            const maps = [];
-
-            files.forEach(( file ) => {
-                maps.push( Utils.readJson( path.join( mapsPath, file ) ) );
+            resolve({
+                games: json,
             });
-
-            resolve( maps );
         });
     });
 };
@@ -350,7 +364,10 @@ DB.addGame = ( data ) => {
                 games = path.join( gameDir, "game.json" );
 
                 Utils.writeJson( games, game, () => {
-                    resolve( game );
+                    resolve({
+                        game,
+                        games: gameJson,
+                    });
                 });
             });
         };
@@ -384,7 +401,9 @@ DB.deleteGame = ( data ) => {
 
             Utils.writeJson( jsonPath, json );
             Utils.removeDir( gamePath, () => {
-                resolve( data );
+                resolve({
+                    games: json,
+                });
             });
         });
     });

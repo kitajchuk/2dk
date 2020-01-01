@@ -10,10 +10,7 @@ module.exports = {
     "tileheight": 32,
     "image": "",
     "snapshot": "",
-    "renders": {
-        "bg": "",
-        "fg": ""
-    },
+    "thumbnail": "",
     "sound": "",
     "tiles": [],
     "objects": [],

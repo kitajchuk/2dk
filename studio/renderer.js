@@ -6,8 +6,6 @@
 // process.
 window.onload = () => {
     const _2dk = window._2dk;
-    const _db = new _2dk.src.db.DB();
-    const query =_2dk.lib.paramalama( window.location.search );
 
-    window.editor = new _2dk.src.Editor();
+    window.editor = new _2dk.Editor();
 };

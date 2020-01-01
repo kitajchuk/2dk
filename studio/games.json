@@ -4,13 +4,15 @@
         "name": "LA",
         "width": 480,
         "height": 320,
-        "fullscreen": false
+        "fullscreen": false,
+        "icon": "/img/icon/apple-icon.png"
     },
     {
         "id": "pokemon",
         "name": "Pokemon",
         "width": 480,
         "height": 320,
-        "fullscreen": false
+        "fullscreen": false,
+        "icon": "/img/icon/apple-icon.png"
     }
 ]

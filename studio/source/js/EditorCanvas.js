@@ -494,6 +494,10 @@ class EditorCanvas {
 
             this.isSpacebar = (e.which === 32);
 
+            if ( this.isSpacebar ) {
+                this.editor.blurSelectMenus();
+            }
+
             if ( this.editor.getMode() !== Config.Editor.modes.SAVING && (this.isSpacebar && this.mode !== Config.EditorCanvas.modes.DRAG) ) {
                 e.preventDefault();
 
@@ -555,7 +559,7 @@ class EditorCanvas {
 
         $tilepaint.on( "mousemove", ( e ) => {
             if ( this.editor.canMapFunction() ) {
-                if ( this.isMouseDownTiles && this.editor.actions.getMode() !== Config.EditorActions.modes.TRASH && this.editor.actions.getMode() !== Config.EditorActions.modes.BUCKET ) {
+                if ( this.canApplyTiles() ) {
                     const coords = [ Math.floor( e.offsetX / this.map.gridsize ), Math.floor( e.offsetY / this.map.gridsize ) ];
                     const foundCoord = this.tilesetCoords.find( ( coord ) => coord[ 0 ] === coords[ 0 ] && coord[ 1 ] === coords[ 1 ] );
                     const sameCoord = coords[ 0 ] === this.currentTileCoord[ 0 ] && coords[ 1 ] === this.currentTileCoord[ 1 ];
@@ -597,7 +601,7 @@ class EditorCanvas {
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
             if ( this.editor.canMapFunction() && this.isMouseDownCanvas ) {
-                if ( this.editor.layers.getMode() === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.getMode() === Config.EditorLayers.modes.FOREGROUND ) {
+                if ( this.canApplyLayer() ) {
                     this.applyLayer( this.editor.layers.getMode(), coords );
                 }
             }
@@ -607,7 +611,7 @@ class EditorCanvas {
             if ( this.editor.canMapFunction() ) {
                 const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
 
-                if ( this.editor.layers.getMode() === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.getMode() === Config.EditorLayers.modes.FOREGROUND ) {
+                if ( this.canApplyLayer() ) {
                     this.applyLayer( this.editor.layers.getMode(), coords );
                 }
             }
@@ -618,6 +622,26 @@ class EditorCanvas {
         $mapgrid.on( "mouseout", () => {
             this.dom.moveCoords.innerHTML = "( X, Y )";
         });
+    }
+
+
+    canApplyTiles () {
+        return (
+            this.isMouseDownTiles &&
+            this.editor.actions.getMode() !== Config.EditorActions.modes.TRASH &&
+            this.editor.actions.getMode() !== Config.EditorActions.modes.BUCKET
+        );
+    }
+
+
+    canApplyLayer () {
+        return (
+            this.tilesetCoords.length &&
+            (this.editor.layers.getMode() === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.getMode() === Config.EditorLayers.modes.FOREGROUND)
+        ) || (
+            this.editor.actions.getMode() === Config.EditorActions.modes.TRASH &&
+            (this.editor.layers.getMode() === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.getMode() === Config.EditorLayers.modes.FOREGROUND)
+        );
     }
 }
 

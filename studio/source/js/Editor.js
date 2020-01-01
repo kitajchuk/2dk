@@ -5,7 +5,6 @@ const EditorUtils = require( "./EditorUtils" );
 const Config = require( "./Config" );
 const Cache = require( "./Cache" );
 const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
-const db = require( "./db" );
 const { ipcRenderer } = require( "electron" );
 
 
@@ -13,7 +12,6 @@ const { ipcRenderer } = require( "electron" );
 class Editor {
     constructor () {
         this.mode = null;
-        this.db = new db.DB();
         this.data = {};
         this.layers = new EditorLayers( this );
         this.canvas = new EditorCanvas( this );
@@ -21,9 +19,6 @@ class Editor {
         this.utils = EditorUtils;
         this.dom = {
             root: $( "#editor" ),
-            gameName: $( "#editor-gamename" ),
-            mapPanel: $( "#editor-map-panel" ),
-            gamePanel: $( "#editor-game-panel" ),
             settings: $( ".js-settings" ),
             mapSettings: $( "#editor-mapsettings" ),
             gameSettings: $( "#editor-gamesettings" ),
@@ -55,7 +50,14 @@ class Editor {
             addGame: $( ".js-addgame-field" ),
         };
 
-        this.loadGames();
+        // Show UI
+        this.display();
+
+        // bind events
+        this.bindEvents();
+
+        // bind menu events from Electron
+        this.bindMenuEvents();
     }
 
 
@@ -69,68 +71,37 @@ class Editor {
     }
 
 
-    loadGames () {
-        db.DB.getGames().then(( games ) => {
-            this.data.games = games;
-
-            // load games
-            EditorUtils.buildSelectMenu( this.selects.gameLoad, games );
-
-            // Show UI
-            this.display();
-
-            // bind events
-            this.bindEvents();
-
-            // bind menu events from Electron
-            this.bindMenuEvents();
-        });
+    setTitle () {
+        // Set document title
+        document.title = `${this.data.map ? this.data.map.name : this.data.game.name} | 2dk Studio`;
     }
 
 
-    loadGame ( id ) {
-        this.db.open( id ).then(() => {
-            this.db.getGame().then(( data ) => {
-                this.data.game = data.game;
-                this.data.hero = data.hero;
-                this.data.map = null;
+    loadGame ( game ) {
+        this.data.game = game.game;
+        this.data.hero = game.hero;
+        this.data.map = null;
 
-                // load files
-                this.loadAssets();
+        // reset canvas in case we had a map loaded...
+        this.canvas.reset();
 
-                // load maps
-                this.loadMaps();
+        // Kill any MediaBox audio that is playing...
+        EditorUtils.destroySound();
 
-                // reset canvas in case we had a map loaded...
-                this.canvas.reset();
+        // Prefill the game data fields
+        this.prefillGameFields( this.data.game );
 
-                // Kill any MediaBox audio that is playing...
-                EditorUtils.destroySound();
+        // Set active game to menu
+        this.selects.gameLoad.find( "option" )[ 0 ].innerText = this.data.game.name;
+        this.selects.mapLoad.find( "option" )[ 0 ].innerText = this.selects.mapLoad[ 0 ].dataset.label;
 
-                // Prefill the game data fields
-                this.prefillGameFields( this.data.game );
-
-                // Set active game to menu
-                this.selects.gameLoad[ 0 ].selectedIndex = this.selects.gameLoad.find( `option[value="${id}"]` ).index();
-            });
-        });
+        this.setTitle();
     }
 
 
-    loadMaps () {
-        this.db.getMaps().then(( maps ) => {
-            this.data.maps = maps;
-
-            EditorUtils.buildSelectMenu( this.selects.maps, maps );
-        });
-    }
-
-
-    loadMap ( id ) {
+    loadMap ( map ) {
         // Set active map
-        this.data.map = this.data.maps.find(( map ) => {
-            return (map.id === id);
-        });
+        this.data.map = map;
 
         // Prefill the map data fields
         this.prefillMapFields( this.data.map );
@@ -139,7 +110,9 @@ class Editor {
         this.canvas.loadMap( this.data.map );
 
         // Set active map to menu
-        this.selects.mapLoad[ 0 ].selectedIndex = this.selects.mapLoad.find( `option[value="${id}"]` ).index();
+        this.selects.mapLoad.find( "option" )[ 0 ].innerText = map.name;
+
+        this.setTitle();
     }
 
 
@@ -148,13 +121,9 @@ class Editor {
         this.mode = Config.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-map";
 
-        this.db.addMap( postData ).then(( map ) => {
-            this.closeMenus();
-            this.data.maps.push( map );
-            EditorUtils.buildSelectMenu( this.selects.maps, this.data.maps );
-            ipcRenderer.send( "newmap", map );
-            this.done();
-        });
+        ipcRenderer.send( "renderer-newmap", postData );
+        this.closeMenus();
+        this.done();
     }
 
 
@@ -162,43 +131,17 @@ class Editor {
         this.mode = Config.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-game";
 
-        db.DB.addGame( postData ).then(( game ) => {
-            this.closeMenus();
-            this.data.games.push( game.game );
-            EditorUtils.buildSelectMenu( this.selects.gameLoad, this.data.games );
-            // this.loadGame( game.game.id );
-            ipcRenderer.send( "newgame", game.game );
-            this.done();
-        });
+
+        ipcRenderer.send( "renderer-newgame", postData );
+        this.closeMenus();
+        this.done();
     }
 
 
-    loadAssets () {
-        const assets = [
-            {
-                type: "tiles",
-                elem: this.selects.tiles
-            },
-            {
-                type: "sounds",
-                elem: this.selects.sounds
-            },
-            // {
-            //     type: "sprites",
-            //     elem: this.selects.sprites
-            // },
-        ];
-        const _getAssets = ( obj ) => {
-            this.db.getFiles( obj.type ).then(( files ) => {
-                EditorUtils.buildSelectMenu( obj.elem, files );
-
-                if ( assets.length ) {
-                    _getAssets( assets.shift() );
-                }
-            });
-        };
-
-        _getAssets( assets.shift() );
+    loadAssets ( assets ) {
+        if ( this.selects[ assets.type ] ) {
+            EditorUtils.buildSelectMenu( this.selects[ assets.type ], assets.files );
+        }
     }
 
 
@@ -256,6 +199,13 @@ class Editor {
         if ( map.sound ) {
             this.menus.activeMap.find( ".js-map-field[name='sound']" )[ 0 ].value = map.sound.split( "/" ).pop();
         }
+    }
+
+
+    blurSelectMenus () {
+        this.selects.all.forEach(( select ) => {
+            select.blur();
+        });
     }
 
 
@@ -337,16 +287,6 @@ class Editor {
     }
 
 
-    updateMap ( map ) {
-        this.data.map = map;
-        this.data.maps.forEach(( m, i ) => {
-            if ( m.id === this.data.map.id ) {
-                this.data.maps[ i ] = this.data.map;
-            }
-        });
-    }
-
-
     closeMenus () {
         this.menus.all.removeClass( "is-active" );
     }
@@ -361,35 +301,7 @@ class Editor {
     }
 
 
-    _saveMap () {
-        if ( !this.canMapFunction() ) {
-            return false;
-        }
-
-        this.mode = Config.Editor.modes.SAVING;
-        this.dom.root[ 0 ].className = "is-saving-map";
-        this.cleanMap();
-
-        // Save map JSON
-        const postData = this.data.map;
-        const mapData = EditorUtils.parseFields( this.fields.map );
-
-        for ( const i in mapData ) {
-            if ( mapData.hasOwnProperty( i ) ) {
-                postData[ i ] = mapData[ i ];
-            }
-        }
-
-        this.db.updateMap( postData ).then(( map ) => {
-            this.updateMap( map );
-            this.closeMenus();
-            this.done();
-
-            this.canvas.loadMap( this.data.map );
-
-            document.querySelector( `option[value="${map.id}"]` ).innerHTML = map.name;
-        });
-
+    _saveSnapshot () {
         // Upload map PNG snapshot
         const uploadSnap = {
             id: this.data.game.id,
@@ -433,11 +345,40 @@ class Editor {
         uploadSnap.fileData = snapshot.toDataURL( "image/png" );
 
         // Upload & save to disk in the background...
-        this.db.addFile( uploadSnap );
+        ipcRenderer.send( "renderer-newfile", uploadSnap );
+    }
+
+
+    _saveMap () {
+        if ( !this.canMapFunction() ) {
+            return false;
+        }
+
+        this.mode = Config.Editor.modes.SAVING;
+        this.dom.root[ 0 ].className = "is-saving-map";
+        this.cleanMap();
+
+        // Save map JSON
+        const postData = this.data.map;
+        const mapData = EditorUtils.parseFields( this.fields.map );
+
+        for ( const i in mapData ) {
+            if ( mapData.hasOwnProperty( i ) ) {
+                postData[ i ] = mapData[ i ];
+            }
+        }
+
+        ipcRenderer.send( "renderer-savemap", postData );
+        this.closeMenus();
+        this.done();
+        // this.canvas.loadMap( this.data.map );
+
+        this._saveSnapshot();
     }
 
 
     _openMenu ( type, target ) {
+        console.log( type, target );
         const canFunction = (type === "game") || this.canGameFunction();
 
         if ( !canFunction ) {
@@ -475,32 +416,41 @@ class Editor {
 
 
     bindMenuEvents () {
-        ipcRenderer.on( "savemap", ( event, message ) => {
+        ipcRenderer.send( "renderer-loadgames" );
+        ipcRenderer.on( "menu-loadgames", () => {
+            console.log( "ping-pong games loaded" );
+        });
+
+        ipcRenderer.on( "menu-savemap", () => {
             this._saveMap();
         });
 
-        ipcRenderer.on( "newgame", ( event, message ) => {
+        ipcRenderer.on( "menu-newgame", () => {
             this._openMenu( "game", "editor-addgame-menu" );
         });
 
-        ipcRenderer.on( "newmap", ( event, message ) => {
+        ipcRenderer.on( "menu-newmap", () => {
             this._openMenu( "map", "editor-addmap-menu" );
         });
 
-        ipcRenderer.on( "addtileset", ( event, message ) => {
+        ipcRenderer.on( "menu-newtileset", () => {
             this._openUpload( "tileset", "editor-addtiles-menu" );
         });
 
-        ipcRenderer.on( "addsound", ( event, message ) => {
+        ipcRenderer.on( "menu-newsound", () => {
             this._openUpload( "sound", "editor-addsound-menu" );
         });
 
-        ipcRenderer.on( "loadgame", ( event, game ) => {
-            this.loadGame( game.id );
+        ipcRenderer.on( "menu-loadgame", ( e, game ) => {
+            this.loadGame( game );
         });
 
-        ipcRenderer.on( "loadmap", ( event, map ) => {
-            this.loadMap( map.id );
+        ipcRenderer.on( "menu-loadmap", ( e, map ) => {
+            this.loadMap( map );
+        });
+
+        ipcRenderer.on( "menu-assets", ( e, assets ) => {
+            this.loadAssets( assets );
         });
     }
 
@@ -509,23 +459,8 @@ class Editor {
         const $document = $( document );
 
         this.selects.all.on( "change", ( e ) => {
-            this.selects.all.forEach(( select ) => {
-                select.blur();
-            });
+            this.blurSelectMenus();
         });
-
-        // this.selects.gameLoad.on( "change", ( e ) => {
-        //     if ( this.selects.gameLoad[ 0 ].value ) {
-        //         this.loadGame( this.selects.gameLoad[ 0 ].value );
-        //     }
-        // });
-
-
-        // this.selects.mapLoad.on( "change", ( e ) => {
-        //     if ( this.selects.mapLoad[ 0 ].value ) {
-        //         this.loadMap( this.selects.mapLoad[ 0 ].value );
-        //     }
-        // });
 
         this.dom.uploadFiles.on( "change", ( e ) => {
             if ( !this.canGameFunction() ) {
@@ -624,11 +559,9 @@ class Editor {
                 this.mode = Config.Editor.modes.SAVING;
                 this.dom.root[ 0 ].className = "is-deleting-file";
 
-                this.db.deleteFile( postData ).then(() => {
-                    this.loadAssets();
-                    this.closeMenus();
-                    this.done();
-                });
+                ipcRenderer.send( "renderer-deletefile", postData );
+                this.closeMenus();
+                this.done();
             }
         });
 
@@ -657,13 +590,11 @@ class Editor {
 
                 fileReader.onload = ( fe ) => {
                     postData.fileData = fe.target.result;
+                    ipcRenderer.send( "renderer-newfile", postData );
+                    fileField[ 0 ].value = "";
+                    this.closeMenus();
+                    this.done();
 
-                    this.db.addFile( postData ).then(() => {
-                        fileField[ 0 ].value = "";
-                        this.loadAssets();
-                        this.closeMenus();
-                        this.done();
-                    });
                 };
 
                 fileReader.readAsDataURL( fileData );
@@ -728,9 +659,8 @@ class Editor {
                 this.mode = Config.Editor.modes.SAVING;
                 this.dom.root[ 0 ].className = "is-deleting-map";
 
-                this.db.deleteMap( this.data.map ).then(() => {
-                    window.location.reload();
-                });
+                ipcRenderer.send( "renderer-deletemap", this.data.map );
+                // window.location.reload();
             }
         });
 
@@ -744,9 +674,8 @@ class Editor {
                 this.mode = Library.Editor.modes.SAVING;
                 this.dom.root[ 0 ].className = "is-deleting-game";
 
-                db.DB.deleteGame( this.data.game ).then(() => {
-                    window.location.href = "index.html";
-                });
+                ipcRenderer.send( "renderer-deletegame", this.data.game );
+                // window.location.reload();
             }
         });
     }
