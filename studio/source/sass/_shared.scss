@@ -30,7 +30,8 @@ a {
     height: 100%;
 
     &.is-not-loaded {
-        display: none;
+        visibility: hidden;
+        pointer-events: none;
     }
 
     &.is-saving-map:after,
