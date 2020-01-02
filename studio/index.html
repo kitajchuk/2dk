@@ -24,60 +24,60 @@
             <!-- Topbar -->
             <div class="editor__panel">
                 <div class="editor__panel__game">
-                    <span class="icon icon--nudge icon--mobile2"></span>
+                    <span class="icon icon--nudge icon--sports_esports"></span>
                     <span class="icon icon--nudge icon--bin" id="editor-delgame" title="Delete Game"></span>
                     <div class="select icon--nudge" disabled>
                         <select class="select__field js-select js-select-game" id="editor-game-load-select" name="game" data-label="Game..." disabled>
                             <option value="">Game...</option>
                         </select>
                     </div>
-                    <span class="icon icon--cogs js-settings" id="editor-gamesettings" data-type="game" title="Game Settings"></span>
+                    <span class="icon icon--settings js-settings" id="editor-gamesettings" data-type="game" title="Game Settings"></span>
                 </div>
                 <div class="editor__panel__map">
-                    <span class="icon icon--nudge icon--map2"></span>
-                    <span class="icon icon--nudge icon--bin" id="editor-delmap" title="Delete Map"></span>
+                    <span class="icon icon--nudge icon--map"></span>
+                    <span class="icon icon--nudge icon--delete" id="editor-delmap" title="Delete Map"></span>
                     <div class="select icon--nudge" disabled>
                         <select class="select__field js-select js-select-map" id="editor-map-load-select" name="map" data-label="Map..." disabled>
                             <option value="">Map...</option>
                         </select>
                     </div>
-                    <span class="icon icon--cogs js-settings" id="editor-mapsettings" data-type="map" title="Map Settings"></span>
+                    <span class="icon icon--settings js-settings" id="editor-mapsettings" data-type="map" title="Map Settings"></span>
                 </div>
                 <div class="editor__panel__xy">
-                    <span class="icon icon--map icon--nudge"></span>
+                    <span class="icon icon--pin_drop icon--nudge"></span>
                     <span id="editor-move-coords">( X, Y )</span>
                 </div>
                 <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
-                    <span class="icon icon--nudge icon--music"></span>
+                    <span class="icon icon--nudge icon--library_music"></span>
                     <div class="select icon--nudge">
                         <select class="select__field js-map-field js-select js-select-sound" data-label="Sample Sounds...">
                             <option value="">Sample Sounds...</option>
                         </select>
                     </div>
-                    <span class="icon icon--play2 js-sound-button"></span>
+                    <span class="icon icon--play_circle_outline js-sound-button"></span>
                 </div>
             </div>
             <!-- Sidebar -->
             <div class="editor__sidebar">
                 <div class="editor__sidebar__layers">
                     <div class="editor__layer js-edit-layer" data-layer="collision">
-                        <span class="icon icon--nudge icon--stack"></span>
+                        <span class="icon icon--nudge icon--layers"></span>
                         <span>Collision</span>
-                        <span class="editor__layer__hide icon icon--eye js-hide-layer is-active" data-layer="collision"></span>
+                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer is-active" data-layer="collision"></span>
                     </div>
                     <div class="editor__layer js-edit-layer" data-layer="foreground">
-                        <span class="icon icon--nudge icon--stack"></span>
+                        <span class="icon icon--nudge icon--layers"></span>
                         <span>Foreground</span>
-                        <span class="editor__layer__hide icon icon--eye js-hide-layer" data-layer="foreground"></span>
+                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer" data-layer="foreground"></span>
                     </div>
                     <div class="editor__layer js-edit-layer" data-layer="background">
-                        <span class="icon icon--nudge icon--stack"></span>
+                        <span class="icon icon--nudge icon--layers"></span>
                         <span>Background</span>
-                        <span class="editor__layer__hide icon icon--eye js-hide-layer" data-layer="background"></span>
+                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer" data-layer="background"></span>
                     </div>
                     <div class="editor__layer -merge-down">
                         <div class="editor__layer__label">
-                            <span class="icon icon--nudge icon--image"></span>
+                            <span class="icon icon--nudge icon--panorama"></span>
                             <span>Paint Preview</span>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                     </div>
                     <div class="editor__layer -merge-down">
                         <div class="editor__layer__label">
-                            <span class="icon icon--nudge icon--images"></span>
+                            <span class="icon icon--nudge icon--collectionsphoto_library"></span>
                             <span>Tile Picker</span>
                         </div>
                     </div>
@@ -107,13 +107,13 @@
                 <div class="editor__sidebar__tools">
                     <div class="editor__toolbar editor__toolbar__tools">
                         <div class="editor__action js-edit-action" data-action="brush" title="Paint Map Tiles">
-                            <span class="icon icon--pencil2"></span>
+                            <span class="icon icon--brush"></span>
                         </div>
                         <div class="editor__action js-edit-action" data-action="bucket" title="Fill Map with Tile">
-                            <span class="icon icon--paint-format"></span>
+                            <span class="icon icon--format_color_fill"></span>
                         </div>
                         <div class="editor__action js-edit-action" data-action="trash" title="Erase Map Tiles">
-                            <span class="icon icon--scissors"></span>
+                            <span class="icon icon--content_cut"></span>
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
             <div class="editor__menus">
                 <!-- New game -->
                 <div class="editor__menu js-menu" id="editor-addgame-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--mobile2"></span><span>Make a new game</span></div>
+                    <div class="editor__label"><span class="icon icon--nudge icon--sports_esports"></span><span>Make a new game</span></div>
                     <div class="txt">
                         How games work:<br />
                         Screen width and height define the visible play area for your game. We call this the GameBox and your maps scroll within these bounds.
@@ -141,7 +141,7 @@
                 </div>
                 <!-- Active game -->
                 <div class="editor__menu js-menu" id="editor-active-game-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--mobile2"></span><span>Game Settings</span></div>
+                    <div class="editor__label"><span class="icon icon--nudge icon--sports_esports"></span><span>Game Settings</span></div>
                     <div class="editor__setting">
                         <input class="input editor__field js-game-field" type="text" name="name" readonly />
                     </div>
@@ -152,7 +152,7 @@
                 </div>
                 <!-- New map -->
                 <div class="editor__menu js-menu js-post-menu" id="editor-addmap-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--map2"></span><span>Make a new map</span></div>
+                    <div class="editor__label"><span class="icon icon--nudge icon--map"></span><span>Make a new map</span></div>
                     <div class="txt">
                         How maps work:<br />
                         Tilesize is your raw editing size. Resolution determines how JS canvas displays on retina devices. For high-res JS canvas, set a tilesize of 64px and a resolution of 2. This will create gameplay at a sharp 32px.
@@ -189,7 +189,7 @@
                 </div>
                 <!-- Active map -->
                 <div class="editor__menu js-menu" id="editor-active-map-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--map2"></span><span>Map Settings</span></div>
+                    <div class="editor__label"><span class="icon icon--nudge icon--map"></span><span>Map Settings</span></div>
                     <div class="editor__setting">
                         <input class="input editor__field js-map-field" type="text" name="name" />
                     </div>
@@ -222,7 +222,7 @@
                 <!-- Tileset -->
                 <div class="editor__menu js-menu js-upload-menu" id="editor-addtiles-menu">
                     <div class="editor__setting">
-                        <div class="editor__label"><span class="icon icon--nudge icon--image"></span><span>Upload a new tileset</span></div>
+                        <div class="editor__label"><span class="icon icon--nudge icon--collectionsphoto_library"></span><span>Upload a new tileset</span></div>
                         <div class="txt">
                             How tilesets work:<br />
                             Tiles are your swatches for painting maps. You should design your tiles with the same tilesize as your maps. You can upload tile images here and select which tileset you want to use when making a new map. You must use PNG format (.png).
@@ -256,7 +256,7 @@
                 <!-- Sounds -->
                 <div class="editor__menu js-menu js-upload-menu" id="editor-addsound-menu">
                     <div class="editor__setting">
-                        <div class="editor__label"><span class="icon icon--nudge icon--music"></span><span>Upload a new sound</span></div>
+                        <div class="editor__label"><span class="icon icon--nudge icon--library_music"></span><span>Upload a new sound</span></div>
                         <div class="txt">
                             How sounds work:<br />
                             Sounds are the background music that will play for a map. You must use MP3 format (.mp3).

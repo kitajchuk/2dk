@@ -645,13 +645,13 @@ class Editor {
             const button = targ.is( ".js-sound-button" ) ? targ : targ.closest( ".js-sound-button" );
             const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
 
-            if ( button.is( ".icon--pause" ) ) {
-                button.removeClass( "icon--pause" );
-                button.addClass( "icon--play2" );
+            if ( button.is( ".icon--pause_circle_outline" ) ) {
+                button.removeClass( "icon--pause_circle_outline" );
+                button.addClass( "icon--play_circle_outline" );
 
             } else {
-                button.removeClass( "icon--play2" );
-                button.addClass( "icon--pause" );
+                button.removeClass( "icon--play_circle_outline" );
+                button.addClass( "icon--pause_circle_outline" );
             }
 
             EditorUtils.processSound( sampler, this.data.game.id );
