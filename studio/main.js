@@ -16,6 +16,7 @@ const createWindow = () => {
         width: 1440,
         height: 900,
         backgroundColor: "#000",
+        fullscreen: true,
         webPreferences: {
             preload: path.join( __dirname, "preload.js" ),
         }
@@ -25,7 +26,7 @@ const createWindow = () => {
     mainWindow.loadFile( "index.html" );
 
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     mainWindow.on( "closed", () => {

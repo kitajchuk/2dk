@@ -113,6 +113,7 @@ const getMapsMenu = () => {
                 }
             },
             mapsLoadout,
+            { type: "separator" },
             {
                 label: "Add Tileset",
                 click () {
@@ -125,6 +126,7 @@ const getMapsMenu = () => {
                     mainWindow.webContents.send( "menu-newsound", null );
                 }
             },
+            { type: "separator" },
             {
                 label: "Save Map",
                 accelerator: "CmdOrCtrl+S",

@@ -78,6 +78,10 @@ class Editor {
 
 
     loadGame ( game ) {
+        if ( this.data.game && this.data.game.id === game.game.id ) {
+            return;
+        }
+
         this.data.game = game.game;
         this.data.hero = game.hero;
         this.data.map = null;
@@ -100,6 +104,10 @@ class Editor {
 
 
     loadMap ( map ) {
+        if ( this.data.map && this.data.map.id === map.id ) {
+            return;
+        }
+
         // Set active map
         this.data.map = map;
 
