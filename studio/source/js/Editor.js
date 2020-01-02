@@ -314,7 +314,7 @@ class Editor {
         const uploadSnap = {
             id: this.data.game.id,
             type: "snapshots",
-            fileName: `${this.data.map.id}.png`
+            fileName: `${this.data.map.id}.png`,
         };
         const snapshot = document.createElement( "canvas" );
         const snapshotCtx = snapshot.getContext( "2d" );
@@ -350,6 +350,8 @@ class Editor {
             snapshot.height
         );
 
+        this.snapshot = snapshot;
+
         uploadSnap.fileData = snapshot.toDataURL( "image/png" );
 
         // Upload & save to disk in the background...
@@ -379,8 +381,8 @@ class Editor {
         ipcRenderer.send( "renderer-savemap", postData );
         this.closeMenus();
         this.done();
-        // this.canvas.loadMap( this.data.map );
 
+        // Save snapshot images
         this._saveSnapshot();
     }
 
@@ -425,8 +427,9 @@ class Editor {
 
     bindMenuEvents () {
         ipcRenderer.send( "renderer-loadgames" );
-        ipcRenderer.on( "menu-loadgames", () => {
-            console.log( "ping-pong games loaded" );
+
+        ipcRenderer.on( "menu-togglegrid", () => {
+            this.canvas.toggleGrid();
         });
 
         ipcRenderer.on( "menu-savemap", () => {

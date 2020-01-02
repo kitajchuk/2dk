@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "fs-extra": "^8.1.0",
+    "jimp": "^0.9.3",
     "paramalama": "^0.2.0",
     "properjs-hobo": "^0.3.26",
     "properjs-lager": "^0.1.2",

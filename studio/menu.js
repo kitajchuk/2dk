@@ -148,6 +148,13 @@ const getMapsMenu = () => {
                     mainWindow.webContents.send( "menu-redomap", null );
                 }
             },
+            {
+                label: "Toggle Map Grid",
+                accelerator: "CmdOrCtrl+;",
+                click () {
+                    mainWindow.webContents.send( "menu-togglegrid", null );
+                }
+            },
         ]
     };
 };

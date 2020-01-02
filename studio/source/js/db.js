@@ -2,6 +2,7 @@ const path = require( "path" );
 const Utils = require( "./Utils" );
 const Cache = require( "./Cache" );
 const lager = require( "properjs-lager" );
+const jimp = require( "jimp" );
 
 
 class DB {
@@ -166,6 +167,17 @@ class DB {
                 this.cache.set( data.type, files );
 
                 Utils.writeFile( file, buffer, () => {
+                    if ( data.type === "snapshots" ) {
+                        jimp.read( file ).then(( snapshot ) => {
+                            const thumbFile = file.replace( /\.png$/, "-thumb.png" );
+
+                            snapshot.resize( 512, jimp.AUTO );
+                            snapshot.quality( 100 );
+                            snapshot.write( thumbFile );
+                            lager.info( `Writing file ${thumbFile.split( "/" ).pop()}` );
+                        });
+                    }
+
                     resolve({
                         type: data.type,
                         files,

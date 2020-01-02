@@ -8,28 +8,28 @@
         "icon": "/img/icon/apple-icon.png"
     },
     "hero": {
-        "id": "",
-        "name": "",
-        "width": 32,
-        "height": 64,
-        "image": "",
+        "id": "link",
+        "name": "BK",
+        "width": 70,
+        "height": 70,
+        "image": "/games/la/assets/sprites/hero.png",
         "spawn": {
-            "x": 0,
-            "y": 0,
-            "map": ""
+            "x": 396,
+            "y": 484,
+            "map": "/games/pokemon/maps/pallet-town.json"
         },
         "boxes": {
             "hit": {
-                "x": 0,
-                "y": 32,
-                "width": 32,
-                "height": 32
+                "x": 23,
+                "y": 29,
+                "width": 24,
+                "height": 30
             },
             "collision": {
-                "x": 0,
-                "y": 32,
-                "width": 32,
-                "height": 32
+                "x": 23,
+                "y": 37,
+                "width": 24,
+                "height": 22
             }
         }
     }

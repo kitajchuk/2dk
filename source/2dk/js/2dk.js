@@ -23,6 +23,18 @@ IDEA: Procedural map paint with cellauto JS.
 
 
 ********************************************************************************
+* Studio editor
+********************************************************************************
+* Studio app icon
+* Game icons and tile view (default icon)
+* Maps tile view (thumbnail PNGs for savemap, default map placeholder)
+* Export map PNG
+* Canvas resolution zoom in/out
+* History states for painting
+* Refined icon set...
+
+
+********************************************************************************
 * Collision (1/8 grid, in-memory, read-only)
 ********************************************************************************
 * Saves Array of collision Objects

@@ -47,6 +47,7 @@ class EditorCanvas {
             background: document.getElementById( "editor-bg" ),
             foreground: document.getElementById( "editor-fg" ),
             collision: document.getElementById( "editor-collision" ),
+            mapgrid: document.getElementById( "editor-grid" ),
         };
         this.contexts = {
             background: null,
@@ -62,6 +63,18 @@ class EditorCanvas {
         this.draggable.disable();
 
         this.bindEvents();
+    }
+
+
+    toggleGrid () {
+        const $mapgrid = $( this.layers.mapgrid );
+
+        if ( $mapgrid.is( ".is-hidden" ) ) {
+            this.show( "mapgrid" );
+
+        } else {
+            this.hide( "mapgrid" );
+        }
     }
 
 

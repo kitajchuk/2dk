@@ -32,7 +32,7 @@
 
     > div:last-child {
         @include wrap();
-        background-image: url( "/img/icon/css-icon.png" );
+        background-image: url( "/img/icon/apple-icon.png" );
         background-repeat: no-repeat;
         background-size: 64px 64px;
         background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} );
