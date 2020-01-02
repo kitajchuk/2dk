@@ -46,7 +46,7 @@
     height: calc( 100vh - 47px - 47px - 47px - 47px - 32px - 32px - 161px - 16px - 16px - 50px );
 }
 #editor-preview-box {
-    height: 128px;
+    height: calc( 128px + 47px );
     pointer-events: none;
 }
 #editor-gamesettings,
@@ -287,7 +287,7 @@
     }
 
     &.-preview {
-        height: 161px;
+        height: calc( 161px + 47px );
     }
 
     &.is-active,
