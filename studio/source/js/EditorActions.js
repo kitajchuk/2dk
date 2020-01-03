@@ -13,27 +13,44 @@ class EditorActions {
 
 
     bind () {
-        $( document ).on( "click", ".js-edit-action", ( e ) => {
+        const $document = $( document );
+
+        $document.on( "keydown", ( e ) => {
             if ( this.editor.canMapFunction() ) {
-                const targ = $( e.target );
-                const elem = targ.is( ".js-edit-action" ) ? targ : targ.closest( ".js-edit-action" );
-                const action = elem.data().action.toUpperCase();
+                const test = $( `.js-edit-action[data-key="${e.which}"]` );
 
-                if ( elem.is( ".is-active" ) ) {
-                    this.mode = null;
-                    this.elements.removeClass( "is-active" );
-
-                } else {
-                    this.elements.removeClass( "is-active" );
-                    elem.addClass( "is-active" );
-                    this.mode = Config.EditorActions.modes[ action ];
-
-                    if ( this.mode === Config.EditorActions.modes.BUCKET || this.mode === Config.EditorActions.modes.ERASE ) {
-                        this.editor.canvas.clearTileset();
-                    }
+                if ( test.length ) {
+                    this._handleAction( test );
                 }
+
             }
         });
+
+        $document.on( "click", ".js-edit-action", ( e ) => {
+            if ( this.editor.canMapFunction() ) {
+                this._handleAction( $( e.target ) );
+            }
+        });
+    }
+
+
+    _handleAction ( targ ) {
+        const elem = targ.is( ".js-edit-action" ) ? targ : targ.closest( ".js-edit-action" );
+        const action = elem.data().action.toUpperCase();
+
+        if ( elem.is( ".is-active" ) ) {
+            this.mode = null;
+            this.elements.removeClass( "is-active" );
+
+        } else {
+            this.elements.removeClass( "is-active" );
+            elem.addClass( "is-active" );
+            this.mode = Config.EditorActions.modes[ action ];
+
+            if ( this.mode === Config.EditorActions.modes.BUCKET || this.mode === Config.EditorActions.modes.ERASE ) {
+                this.editor.canvas.clearTileset();
+            }
+        }
     }
 }
 

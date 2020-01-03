@@ -25,17 +25,9 @@ IDEA: Procedural map paint with cellauto JS.
 ********************************************************************************
 * Studio editor
 ********************************************************************************
-* Hot keys for Brush (B), Erase (E)
-* Export map PNG
 * Canvas resolution zoom in/out
 * History states for painting
-
-
-********************************************************************************
-* Collision (1/16 grid, in-memory, read-only)
-********************************************************************************
-* Saves Array of collision Objects
-* Adhere to map resolution scaling
+* Export map PNG
 
 
 ********************************************************************************

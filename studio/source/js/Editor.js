@@ -378,7 +378,6 @@ class Editor {
 
 
     _openMenu ( type, target ) {
-        console.log( type, target );
         const canFunction = (type === "game") || this.canGameFunction();
 
         if ( !canFunction ) {
@@ -708,34 +707,34 @@ class Editor {
         });
 
 
-        this.dom.deleteMap.on( "click", ( e ) => {
-            if ( !this.canMapFunction() ) {
-                return false;
-            }
+        // this.dom.deleteMap.on( "click", ( e ) => {
+        //     if ( !this.canMapFunction() ) {
+        //         return false;
+        //     }
+        //
+        //     if ( confirm( `Sure you want to delete the map "${active.map.name}"?` ) ) {
+        //         this.mode = Config.Editor.modes.SAVING;
+        //         this.dom.root[ 0 ].className = "is-deleting-map";
+        //
+        //         ipcRenderer.send( "renderer-deletemap", this.data.map );
+        //         // window.location.reload();
+        //     }
+        // });
 
-            if ( confirm( `Sure you want to delete the map "${active.map.name}"?` ) ) {
-                this.mode = Config.Editor.modes.SAVING;
-                this.dom.root[ 0 ].className = "is-deleting-map";
 
-                ipcRenderer.send( "renderer-deletemap", this.data.map );
-                // window.location.reload();
-            }
-        });
-
-
-        this.dom.deleteGame.on( "click", ( e ) => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
-
-            if ( confirm( `Sure you want to delete the game "${this.data.game.name}"?` ) ) {
-                this.mode = Library.Editor.modes.SAVING;
-                this.dom.root[ 0 ].className = "is-deleting-game";
-
-                ipcRenderer.send( "renderer-deletegame", this.data.game );
-                // window.location.reload();
-            }
-        });
+        // this.dom.deleteGame.on( "click", ( e ) => {
+        //     if ( !this.canGameFunction() ) {
+        //         return false;
+        //     }
+        //
+        //     if ( confirm( `Sure you want to delete the game "${this.data.game.name}"?` ) ) {
+        //         this.mode = Library.Editor.modes.SAVING;
+        //         this.dom.root[ 0 ].className = "is-deleting-game";
+        //
+        //         ipcRenderer.send( "renderer-deletegame", this.data.game );
+        //         // window.location.reload();
+        //     }
+        // });
     }
 }
 

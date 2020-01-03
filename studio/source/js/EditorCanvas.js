@@ -113,6 +113,7 @@ class EditorCanvas {
         if ( this.map ) {
             this.clear( this.canvases.mapgrid.getContext( "2d" ) );
             this.clear( this.canvases.tilegrid.getContext( "2d" ) );
+            this.clear( this.canvases.collider.getContext( "2d" ) );
             this.clearTileset();
             this.resetPreview();
 
@@ -127,6 +128,7 @@ class EditorCanvas {
             this.mode = null;
             this.contexts.background = null;
             this.contexts.foreground = null;
+            this.contexts.collision = null;
             this.dom.tileset.src = "";
             this.layers.background.innerHTML = "";
             this.layers.foreground.innerHTML = "";
@@ -142,7 +144,7 @@ class EditorCanvas {
         // Empty tileset tiles
         this.tilesetCoords = [];
 
-        // Clean up last map in DOM
+        // Clean up last map in DOM, prolly already happened with this.reset()
         this.layers.background.innerHTML = "";
         this.layers.foreground.innerHTML = "";
         this.layers.collision.innerHTML = "";
@@ -570,7 +572,7 @@ class EditorCanvas {
                 return;
             }
 
-            this.isSpacebar = (e.which === 32);
+            this.isSpacebar = (e.which === Config.keys.SPACEBAR);
 
             if ( this.isSpacebar ) {
                 this.editor.blurSelectMenus();

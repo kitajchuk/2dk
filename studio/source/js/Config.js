@@ -25,6 +25,12 @@ const Config = {
             COLLISION: "collision",
         }
     },
+    keys: {
+        B: 66,
+        F: 70,
+        E: 69,
+        SPACEBAR: 32,
+    },
     colors: {
         grey: "#959595",
         red: "#F30541",
