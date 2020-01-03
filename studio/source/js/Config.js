@@ -9,6 +9,7 @@ const Config = {
             BRUSH: "brush",
             BUCKET: "bucket",
             ERASE: "erase",
+            ZOOM: "zoom",
         }
     },
     EditorCanvas: {
@@ -29,6 +30,7 @@ const Config = {
         B: 66,
         F: 70,
         E: 69,
+        Z: 90,
         SPACEBAR: 32,
     },
     colors: {

@@ -1,4 +1,47 @@
 /* IDs */
+#editor {
+    color: $grey;
+    font-size: $font-size-editor;
+    font-family: $font-sans-bold;
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    &.is-not-loaded {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    &.is-saving-map:after,
+    &.is-saving-game:after,
+    &.is-saving-file:after,
+    &.is-deleting-file:after {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        background-color: rgba( 0, 0, 0, 0.75 );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: $teal;
+        font-size: $font-size-overlay;
+    }
+    &.is-saving-map:after {
+        content: "Saving map...";
+    }
+    &.is-saving-game:after {
+        content: "Saving game...";
+    }
+    &.is-saving-file:after {
+        content: "Saving file...";
+    }
+    &.is-deleting-file:after {
+        content: "Removing file...";
+    }
+}
 #editor-delmap,
 #editor-delgame {
     display: none;
@@ -161,6 +204,7 @@
 }
 .editor__panel__xy,
 .editor__panel__map,
+.editor__panel__res,
 .editor__panel__game,
 .editor__panel__sound {
     display: flex;
@@ -254,7 +298,7 @@
     &.is-background,
     &.is-foreground,
     &.is-collision {
-        cursor: pointer;
+        cursor: crosshair;
     }
 
     &.is-background,
@@ -332,6 +376,10 @@
         color: $white;
         background-color: $blue;
         border-color: $blue;
+    }
+
+    &[disabled]:hover {
+        color: $grey;
     }
 }
 
@@ -414,7 +462,8 @@
     justify-content: space-between;
 
     > div,
-    > input {
+    > input,
+    > button {
         width: calc( 50% - 5px );
     }
 }

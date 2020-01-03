@@ -1,4 +1,4 @@
-$font-uid: "x8a7vj";
+$font-uid: "i9jedv";
 $font-icons: "editor-icons";
 $font-size-icons: 18px;
 
@@ -33,26 +33,11 @@ $font-size-icons: 18px;
 .icon--library_music:before {
   content: "\e901";
 }
-.icon--pause:before {
-  content: "\e902";
-}
-.icon--pause_circle_filled:before {
-  content: "\e903";
-}
 .icon--pause_circle_outline:before {
   content: "\e904";
 }
-.icon--play_arrow:before {
-  content: "\e905";
-}
-.icon--play_circle_filled:before {
-  content: "\e906";
-}
 .icon--play_circle_outline:before {
   content: "\e907";
-}
-.icon--music_video:before {
-  content: "\e908";
 }
 .icon--location_onplaceroom:before {
   content: "\e909";
@@ -75,9 +60,6 @@ $font-size-icons: 18px;
 .icon--format_color_fill:before {
   content: "\e90f";
 }
-.icon--format_paint:before {
-  content: "\e910";
-}
 .icon--cloud_uploadbackup:before {
   content: "\e923";
 }
@@ -96,32 +78,20 @@ $font-size-icons: 18px;
 .icon--remove_red_eyevisibility:before {
   content: "\e915";
 }
-.icon--photo_size_select_actual:before {
-  content: "\e916";
-}
 .icon--layers:before {
   content: "\e917";
 }
 .icon--map:before {
   content: "\e918";
 }
-.icon--pin_drop:before {
-  content: "\e919";
-}
-.icon--near_me:before {
-  content: "\e91a";
+.icon--zoom_out_map:before {
+  content: "\e924";
 }
 .icon--category:before {
   content: "\e91b";
 }
 .icon--arrow_drop_down:before {
   content: "\e91c";
-}
-.icon--arrow_drop_down_circle:before {
-  content: "\e91d";
-}
-.icon--build:before {
-  content: "\e91e";
 }
 .icon--delete:before {
   content: "\e91f";
@@ -131,7 +101,4 @@ $font-size-icons: 18px;
 }
 .icon--visibility_off:before {
   content: "\e921";
-}
-.icon--sports_esports:before {
-  content: "\e922";
 }

@@ -25,11 +25,11 @@
             <!-- Topbar -->
             <div class="editor__panel">
                 <div class="editor__panel__game">
-                    <span class="icon icon--nudge icon--sports_esports"></span>
+                    <span class="icon icon--nudge icon--stay_current_landscapestay_primary_landscape"></span>
                     <span class="icon icon--nudge icon--bin" id="editor-delgame" title="Delete Game"></span>
                     <div class="select icon--nudge" disabled>
-                        <select class="select__field js-select js-select-game" id="editor-game-load-select" name="game" data-label="Project..." disabled>
-                            <option value="">Project...</option>
+                        <select class="select__field js-select js-select-game" id="editor-game-load-select" name="game" data-label="Project" disabled>
+                            <option value="">Project</option>
                         </select>
                     </div>
                     <span class="icon icon--settings js-settings" id="editor-gamesettings" data-type="game" title="Game Settings"></span>
@@ -38,21 +38,29 @@
                     <span class="icon icon--nudge icon--map"></span>
                     <span class="icon icon--nudge icon--delete" id="editor-delmap" title="Delete Map"></span>
                     <div class="select icon--nudge" disabled>
-                        <select class="select__field js-select js-select-map" id="editor-map-load-select" name="map" data-label="Map..." disabled>
-                            <option value="">Map...</option>
+                        <select class="select__field js-select js-select-map" id="editor-map-load-select" name="map" data-label="Map" disabled>
+                            <option value="">Map</option>
                         </select>
                     </div>
                     <span class="icon icon--settings js-settings" id="editor-mapsettings" data-type="map" title="Map Settings"></span>
                 </div>
+                <div class="editor__panel__res">
+                    <span class="icon icon--nudge icon--zoom_out_map"></span>
+                    <div class="select">
+                        <select class="select__field js-select js-select-resolution" id="editor-map-resolution" name="resolution" data-label="Resolution">
+                            <option value="">Resolution</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="editor__panel__xy">
-                    <span class="icon icon--pin_drop icon--nudge"></span>
+                    <span class="icon icon--location_onplaceroom icon--nudge"></span>
                     <span id="editor-move-coords">( X, Y )</span>
                 </div>
                 <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
                     <span class="icon icon--nudge icon--music_note"></span>
                     <div class="select icon--nudge">
-                        <select class="select__field js-map-field js-select js-select-sound" data-label="Sample Sounds...">
-                            <option value="">Sample Sounds...</option>
+                        <select class="select__field js-map-field js-select js-select-sound" data-label="Sample Sounds">
+                            <option value="">Sample Sounds</option>
                         </select>
                     </div>
                     <span class="icon icon--play_circle_outline js-sound-button"></span>
@@ -107,15 +115,15 @@
                 </div>
                 <div class="editor__sidebar__tools">
                     <div class="editor__toolbar editor__toolbar__tools">
-                        <div class="editor__action js-edit-action" data-action="brush" data-key="66" title="Brush (B)">
+                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Brush (B)">
                             <span class="icon icon--brush"></span>
-                        </div>
-                        <div class="editor__action js-edit-action" data-action="bucket" data-key="70" title="Fill (F)">
+                        </button>
+                        <button class="editor__action js-edit-action" data-action="bucket" data-key="70" title="Fill (F)">
                             <span class="icon icon--format_color_fill"></span>
-                        </div>
-                        <div class="editor__action js-edit-action" data-action="erase" data-key="69" title="Erase (E)">
+                        </button>
+                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Erase (E)">
                             <span class="icon icon--content_cut"></span>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -125,7 +133,7 @@
             <div class="editor__menus">
                 <!-- New game -->
                 <div class="editor__menu js-menu" id="editor-addgame-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--sports_esports"></span><span>Make a new game</span></div>
+                    <div class="editor__label"><span class="icon icon--nudge icon--stay_current_landscapestay_primary_landscape"></span><span>Make a new game</span></div>
                     <div class="txt">
                         How games work:<br />
                         Screen width and height define the visible play area for your game. We call this the GameBox and your maps scroll within these bounds.
@@ -138,13 +146,13 @@
                         <input class="input editor__field js-addgame-field" type="text" placeholder="Screen height" name="height" />
                     </div>
                     <div class="editor__setting editor__setting--multi">
-                        <div class="button editor__button editor__upload-button js-post-save" data-type="game">Create</div>
-                        <div class="button button--grey editor__button editor__cancel-button js-post-cancel" data-type="game">Cancel</div>
+                        <button class="button editor__button editor__upload-button js-post-save" data-type="game">Create</button>
+                        <button class="button button--grey editor__button editor__cancel-button js-post-cancel" data-type="game">Cancel</button>
                     </div>
                 </div>
                 <!-- Active game -->
                 <div class="editor__menu js-menu" id="editor-active-game-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--sports_esports"></span><span>Game Settings</span></div>
+                    <div class="editor__label"><span class="icon icon--nudge icon--stay_current_landscapestay_primary_landscape"></span><span>Game Settings</span></div>
                     <div class="editor__setting">
                         <input class="input editor__field js-game-field" type="text" name="name" readonly />
                     </div>
@@ -186,8 +194,8 @@
                         </div>
                     </div>
                     <div class="editor__setting editor__setting--multi">
-                        <div class="button editor__button editor__upload-button js-post-save" data-type="map">Create</div>
-                        <div class="button button--grey editor__button editor__cancel-button js-post-cancel">Cancel</div>
+                        <button class="button editor__button editor__upload-button js-post-save" data-type="map">Create</button>
+                        <button class="button button--grey editor__button editor__cancel-button js-post-cancel">Cancel</button>
                     </div>
                 </div>
                 <!-- Active map -->
@@ -228,17 +236,17 @@
                             Tiles are your swatches for painting maps. You should design your tiles with the same tilesize as your maps. You can upload tile images here and select which tileset you want to use when making a new map. You must use PNG format (.png).
                         </div>
                         <div class="editor__upload">
-                            <div class="button editor__upload__button editor__button">
+                            <button class="button editor__upload__button editor__button">
                                 <span class="icon icon--cloud_uploadbackup icon--nudge"></span>
                                 <span>PNG</span>
-                            </div>
+                            </button>
                             <input class="input editor__upload__field editor__field js-upload-field" id="editor-addtiles-file-copy" type="text" placeholder="Choose a file" name="new_tiles_copy" />
                             <input class="editor__upload__mask js-upload-file" id="editor-addtiles-file" type="file" name="new_tiles" data-target="editor-addtiles-file-copy" />
                         </div>
                     </div>
                     <div class="editor__setting editor__setting--multi">
-                        <div class="button editor__button editor__upload-button js-upload-save" data-type="tiles">Upload</div>
-                        <div class="button button--grey editor__button editor__cancel-button js-upload-cancel">Cancel</div>
+                        <button class="button editor__button editor__upload-button js-upload-save" data-type="tiles">Upload</button>
+                        <button class="button button--grey editor__button editor__cancel-button js-upload-cancel">Cancel</button>
                     </div>
                     <div class="txt">
                         Remove tileset:<br />
@@ -250,7 +258,7 @@
                         </div>
                     </div>
                     <div class="editor__setting">
-                        <div class="button button--red editor__button editor__delete-button js-upload-delete" data-type="tiles">Delete tileset...</div>
+                        <button class="button button--red editor__button editor__delete-button js-upload-delete" data-type="tiles">Delete tileset...</button>
                     </div>
                 </div>
                 <!-- Sounds -->
@@ -262,17 +270,17 @@
                             Sounds are the background music that will play for a map. You must use MP3 format (.mp3).
                         </div>
                         <div class="editor__upload">
-                            <div class="button editor__upload__button editor__button">
+                            <button class="button editor__upload__button editor__button">
                                 <span class="icon icon--cloud_uploadbackup icon--nudge"></span>
                                 <span>MP3</span>
-                            </div>
+                            </button>
                             <input class="input editor__upload__field editor__field js-upload-field" id="editor-addsound-file-copy" type="text" placeholder="Choose a file" name="new_sound_copy" />
                             <input class="editor__upload__mask js-upload-file" id="editor-addsound-file" type="file" name="new_sound" data-target="editor-addsound-file-copy" />
                         </div>
                     </div>
                     <div class="editor__setting editor__setting--multi">
-                        <div class="button editor__button editor__upload-button js-upload-save" data-type="sounds">Upload</div>
-                        <div class="button button--grey editor__button editor__cancel-button js-upload-cancel">Cancel</div>
+                        <button class="button editor__button editor__upload-button js-upload-save" data-type="sounds">Upload</button>
+                        <button class="button button--grey editor__button editor__cancel-button js-upload-cancel">Cancel</button>
                     </div>
                     <div class="txt">
                         Remove sounds:<br />
@@ -286,7 +294,7 @@
                         </div>
                     </div>
                     <div class="editor__setting">
-                        <div class="button button--red editor__button editor__delete-button js-upload-delete" data-type="sounds">Delete sound...</div>
+                        <button class="button button--red editor__button editor__delete-button js-upload-delete" data-type="sounds">Delete sound...</button>
                     </div>
                 </div>
             </div>

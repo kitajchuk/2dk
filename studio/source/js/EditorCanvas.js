@@ -29,7 +29,9 @@ class EditorCanvas {
         this.editor = editor;
         this.mode = null;
         this.map = null;
+        this.resolution = 1;
         this.tilesetCoords = [];
+        this.isZoomable = false;
         this.isSpacebar = false;
         this.isMouseDownTiles = false;
         this.isMouseMovedTiles = false;
@@ -111,12 +113,13 @@ class EditorCanvas {
 
     reset () {
         if ( this.map ) {
-            this.clear( this.canvases.mapgrid.getContext( "2d" ) );
-            this.clear( this.canvases.tilegrid.getContext( "2d" ) );
-            this.clear( this.canvases.collider.getContext( "2d" ) );
+            this.clear( this.canvases.mapgrid );
+            this.clear( this.canvases.tilegrid );
+            this.clear( this.canvases.collider );
             this.clearTileset();
             this.resetPreview();
 
+            this.isZoomable = false;
             this.isSpacebar = false;
             this.isMouseDownTiles = false;
             this.isMouseMovedTiles = false;
@@ -126,6 +129,7 @@ class EditorCanvas {
             this.tilesetCoords = [];
             this.map = null;
             this.mode = null;
+            this.resolution = 1;
             this.contexts.background = null;
             this.contexts.foreground = null;
             this.contexts.collision = null;
@@ -138,6 +142,9 @@ class EditorCanvas {
     }
 
 
+/******************************************************************************
+ * BEGIN: Use this.scale for draw maths
+*******************************************************************************/
     loadMap ( map ) {
         this.map = map;
 
@@ -166,22 +173,30 @@ class EditorCanvas {
             height: this.map.height
         });
 
+        this.contexts.background.canvas.style.width = `${this.map.width / this.resolution}px`;
+        this.contexts.background.canvas.style.height = `${this.map.height / this.resolution}px`;
+        this.contexts.foreground.canvas.style.width = `${this.map.width / this.resolution}px`;
+        this.contexts.foreground.canvas.style.height = `${this.map.height / this.resolution}px`;
+        this.contexts.collision.canvas.style.width = `${this.map.width / this.resolution}px`;
+        this.contexts.collision.canvas.style.height = `${this.map.height / this.resolution}px`;
+
         this.layers.background.appendChild( this.contexts.background.canvas );
         this.layers.foreground.appendChild( this.contexts.foreground.canvas );
         this.layers.collision.appendChild( this.contexts.collision.canvas );
 
         this.canvases.mapgrid.width = this.map.width;
         this.canvases.mapgrid.height = this.map.height;
-        this.canvases.mapgrid.style.width = `${this.map.width}px`;
-        this.canvases.mapgrid.style.height = `${this.map.height}px`;
+        this.canvases.mapgrid.style.width = `${this.map.width / this.resolution}px`;
+        this.canvases.mapgrid.style.height = `${this.map.height / this.resolution}px`;
 
         this.canvases.collider.width = this.map.width;
         this.canvases.collider.height = this.map.height;
-        this.canvases.collider.style.width = `${this.map.width}px`;
-        this.canvases.collider.style.height = `${this.map.height}px`;
+        this.canvases.collider.style.width = `${this.map.width / this.resolution}px`;
+        this.canvases.collider.style.height = `${this.map.height / this.resolution}px`;
 
-        this.dom.canvasPane.style.width = `${this.map.width}px`;
-        this.dom.canvasPane.style.height = `${this.map.height}px`;
+        this.dom.canvasPane.style.width = `${this.map.width / this.resolution}px`;
+        this.dom.canvasPane.style.height = `${this.map.height / this.resolution}px`;
+
         this.dom.$canvasPane.addClass( "is-loaded" );
 
         this.draggable.update({
@@ -196,6 +211,116 @@ class EditorCanvas {
     }
 
 
+    addCanvas () {
+        this.clear( this.contexts.background.canvas );
+        this.clear( this.contexts.foreground.canvas );
+        this.clear( this.contexts.collision.canvas );
+        this.clear( this.canvases.mapgrid );
+
+        drawGridLines(
+            this.canvases.collider.getContext( "2d" ),
+            this.canvases.collider.width,
+            this.canvases.collider.height,
+            this.map.collider
+        );
+        drawGridLines(
+            this.canvases.mapgrid.getContext( "2d" ),
+            this.canvases.mapgrid.width,
+            this.canvases.mapgrid.height,
+            this.map.tilesize
+        );
+        drawMapTiles(
+            this.contexts.background.context,
+            this.dom.tileset,
+            this.map.textures.background,
+            this.map.tilesize
+        );
+        drawMapTiles(
+            this.contexts.foreground.context,
+            this.dom.tileset,
+            this.map.textures.foreground,
+            this.map.tilesize
+        );
+        this.drawColliders();
+    }
+
+
+    clear ( canvas ) {
+        canvas.getContext( "2d" ).clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+    }
+
+
+    refresh ( layer ) {
+        this.clear( this.contexts[ layer ].canvas );
+
+        drawMapTiles(
+            this.contexts[ layer ].context,
+            this.dom.tileset,
+            this.map.textures[ layer ],
+            this.map.tilesize
+        );
+    }
+
+
+    drawColliders () {
+        this.map.collision.forEach(( collider ) => {
+            renderTile(
+                this.contexts.collision.context,
+                collider[ 0 ] * this.map.collider,
+                collider[ 1 ] * this.map.collider,
+                this.map.collider,
+                this.map.collider,
+            );
+        });
+    }
+
+
+    removeCollider ( coord ) {
+        const collider = this.map.collision.find(( collider ) => {
+            return (collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ]);
+        });
+
+        if ( collider ) {
+            this.map.collision.splice( this.map.collision.indexOf( collider ), 1 );
+
+            clearTile(
+                this.contexts.collision.context,
+                coord[ 0 ] * this.map.collider,
+                coord[ 1 ] * this.map.collider,
+                this.map.collider,
+                this.map.collider,
+            );
+        }
+    }
+
+
+    applyCollider ( coord ) {
+        const collider = this.map.collision.find(( collider ) => {
+            return (collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ]);
+        });
+
+        if ( !collider ) {
+            this.map.collision.push( coord );
+
+            renderTile(
+                this.contexts.collision.context,
+                coord[ 0 ] * this.map.collider,
+                coord[ 1 ] * this.map.collider,
+                this.map.collider,
+                this.map.collider,
+            );
+        }
+    }
+/******************************************************************************
+ * END: Use this.scale for draw maths
+*******************************************************************************/
+
+
     hide ( l ) {
         $( this.layers[ l ] ).addClass( "is-hidden" );
     }
@@ -203,16 +328,6 @@ class EditorCanvas {
 
     show ( l ) {
         $( this.layers[ l ] ).removeClass( "is-hidden" );
-    }
-
-
-    clear ( ctx ) {
-        ctx.clearRect(
-            0,
-            0,
-            this.map.width,
-            this.map.height
-        );
     }
 
 
@@ -245,8 +360,8 @@ class EditorCanvas {
         this.canvases.preview.style.width = `${this.map.gridsize}px`;
         this.canvases.preview.style.height = `${this.map.gridsize}px`;
 
-        this.clear( this.canvases.tilepaint.getContext( "2d" ) );
-        this.clear( this.canvases.tilegrid.getContext( "2d" ) );
+        this.clear( this.canvases.tilepaint );
+        this.clear( this.canvases.tilegrid );
 
         drawGridLines(
             this.canvases.tilegrid.getContext( "2d" ),
@@ -257,37 +372,14 @@ class EditorCanvas {
     }
 
 
-    addCanvas () {
-        this.clear( this.contexts.background.context );
-        this.clear( this.contexts.foreground.context );
-        this.clear( this.contexts.collision.context );
-        this.clear( this.canvases.mapgrid.getContext( "2d" ) );
-
-        drawGridLines(
-            this.canvases.collider.getContext( "2d" ),
-            this.canvases.collider.width,
-            this.canvases.collider.height,
-            this.map.collider
+    applyTile ( coord ) {
+        renderTile(
+            this.canvases.tilepaint.getContext( "2d" ),
+            coord[ 0 ] * this.map.gridsize,
+            coord[ 1 ] * this.map.gridsize,
+            this.map.gridsize,
+            this.map.gridsize
         );
-        drawGridLines(
-            this.canvases.mapgrid.getContext( "2d" ),
-            this.canvases.mapgrid.width,
-            this.canvases.mapgrid.height,
-            this.map.tilesize
-        );
-        drawMapTiles(
-            this.contexts.background.context,
-            this.dom.tileset,
-            this.map.textures.background,
-            this.map.tilesize
-        );
-        drawMapTiles(
-            this.contexts.foreground.context,
-            this.dom.tileset,
-            this.map.textures.foreground,
-            this.map.tilesize
-        );
-        this.drawColliders();
     }
 
 
@@ -325,18 +417,6 @@ class EditorCanvas {
     trash ( layer, coords ) {
         this.tilesetCoords = [];
         this.map.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ] = 0;
-    }
-
-
-    refresh ( layer ) {
-        this.clear( this.contexts[ layer ].context );
-
-        drawMapTiles(
-            this.contexts[ layer ].context,
-            this.dom.tileset,
-            this.map.textures[ layer ],
-            this.map.tilesize
-        );
     }
 
 
@@ -482,68 +562,6 @@ class EditorCanvas {
     }
 
 
-    drawColliders () {
-        this.map.collision.forEach(( collider ) => {
-            renderTile(
-                this.contexts.collision.context,
-                collider[ 0 ] * this.map.collider,
-                collider[ 1 ] * this.map.collider,
-                this.map.collider,
-                this.map.collider,
-            );
-        });
-    }
-
-
-    removeCollider ( coord ) {
-        const collider = this.map.collision.find(( collider ) => {
-            return (collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ]);
-        });
-
-        if ( collider ) {
-            this.map.collision.splice( this.map.collision.indexOf( collider ), 1 );
-
-            clearTile(
-                this.contexts.collision.context,
-                collider[ 0 ] * this.map.collider,
-                collider[ 1 ] * this.map.collider,
-                this.map.collider,
-                this.map.collider,
-            );
-        }
-    }
-
-
-    applyCollider ( coord ) {
-        const collider = this.map.collision.find(( collider ) => {
-            return (collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ]);
-        });
-
-        if ( !collider ) {
-            this.map.collision.push( coord );
-
-            renderTile(
-                this.contexts.collision.context,
-                coord[ 0 ] * this.map.collider,
-                coord[ 1 ] * this.map.collider,
-                this.map.collider,
-                this.map.collider,
-            );
-        }
-    }
-
-
-    applyTile ( coord ) {
-        renderTile(
-            this.canvases.tilepaint.getContext( "2d" ),
-            coord[ 0 ] * this.map.gridsize,
-            coord[ 1 ] * this.map.gridsize,
-            this.map.gridsize,
-            this.map.gridsize
-        );
-    }
-
-
     applyLayer ( layer, coords ) {
         if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
             this.brush( layer, coords );
@@ -673,7 +691,8 @@ class EditorCanvas {
                 return;
             }
 
-            const coords = [ Math.floor( e.offsetX / this.map.collider ), Math.floor( e.offsetY / this.map.collider ) ];
+            // Need to use this.scale?
+            const coords = [ Math.floor( e.offsetX / (this.map.collider / this.resolution) ), Math.floor( e.offsetY / (this.map.collider / this.resolution) ) ];
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
@@ -708,7 +727,8 @@ class EditorCanvas {
                 return;
             }
 
-            const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
+            // Need to use this.scale?
+            const coords = [ Math.floor( e.offsetX / (this.map.tilesize / this.resolution) ), Math.floor( e.offsetY / (this.map.tilesize / this.resolution) ) ];
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
@@ -721,7 +741,8 @@ class EditorCanvas {
 
         $mapgrid.on( "mouseup", ( e ) => {
             if ( this.editor.canMapFunction() ) {
-                const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
+                // Need to use this.scale?
+                const coords = [ Math.floor( e.offsetX / (this.map.tilesize / this.resolution) ), Math.floor( e.offsetY / (this.map.tilesize / this.resolution) ) ];
 
                 if ( this.canApplyLayer() ) {
                     this.applyLayer( this.editor.layers.mode, coords );
