@@ -237,25 +237,18 @@ class GameBox {
         let ret = false;
         const hitbox = this.hero.getBox( poi, "collision" );
 
-        for ( let y = this.map.data.collision.length; y--; ) {
-            if ( ret ) {
+        for ( let i = this.map.data.collision.length; i--; ) {
+            const collider = this.map.data.collider / this.map.data.resolution;
+            const tile = {
+                width: collider,
+                height: collider,
+                x: this.map.data.collision[ i ][ 0 ] * collider,
+                y: this.map.data.collision[ i ][ 1 ] * collider
+            };
+
+            if ( this.collide( hitbox, tile ) ) {
+                ret = true;
                 break;
-            }
-
-            for ( let x = this.map.data.collision[ y ].length; x--; ) {
-                if ( this.map.data.collision[ y ][ x ] === 1 ) {
-                    const tile = {
-                        width: this.map.data.gridsize,
-                        height: this.map.data.gridsize,
-                        x: x * this.map.data.gridsize,
-                        y: y * this.map.data.gridsize
-                    };
-
-                    if ( this.collide( hitbox, tile ) ) {
-                        ret = true;
-                        break;
-                    }
-                }
             }
         }
 

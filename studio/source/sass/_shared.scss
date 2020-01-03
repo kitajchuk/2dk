@@ -1,14 +1,16 @@
+$font-size-overlay: 32px;
+$font-size-editor: 11px;
+$font-size-forms: 11px;
+
+
+
 html,
 body {
-    font-size: 0;
     height: 100%;
     width: 100%;
     overflow: hidden;
-}
-body {
+    font-size: 0;
     background-color: $black;
-    color: $white;
-    font-family: $font-sans-bold;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
@@ -19,12 +21,17 @@ span {
 }
 a {
     color: $white;
+    display: inline-block;
+    vertical-align: middle;
     text-decoration: none;
 }
 
 
 
 #editor {
+    color: $grey;
+    font-size: $font-size-editor;
+    font-family: $font-sans-bold;
     position: relative;
     width: 100%;
     height: 100%;
@@ -44,31 +51,31 @@ a {
         width: 100%;
         height: 100%;
         z-index: 999;
-        background-color: rgba( 0, 0, 0, 0.5 );
+        background-color: rgba( 0, 0, 0, 0.75 );
         display: flex;
         justify-content: center;
         align-items: center;
-        color: $white;
-        font-size: 32px;
+        color: $teal;
+        font-size: $font-size-overlay;
     }
     &.is-saving-map:after {
-        content: "Saving your map...";
+        content: "Saving map...";
     }
     &.is-saving-game:after {
-        content: "Saving your game...";
+        content: "Saving game...";
     }
     &.is-saving-file:after {
-        content: "Saving the file...";
+        content: "Saving file...";
     }
     &.is-deleting-file:after {
-        content: "Deleting the file...";
+        content: "Removing file...";
     }
 }
 
 
 
 .icon {
-    font-size: 18px;
+    font-size: $font-size-icons;
     cursor: pointer;
     pointer-events: none;
 
@@ -81,14 +88,9 @@ a {
     margin-right: 10px;
 }
 .txt {
-    font-size: 11px;
     line-height: 1.75;
     padding: 10px 0;
     color: $grey;
-}
-.inline {
-    display: inline-block;
-    vertical-align: middle;
 }
 .input {
     background-color: $charcoal;
@@ -140,6 +142,7 @@ a {
     min-width: 185px;
     width: 100%;
     -webkit-appearance: none;
+    font-size: $font-size-forms;
 
     &:focus {
         outline: none;
@@ -147,7 +150,10 @@ a {
     }
 }
 .checkbox {
-    font-size: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: $font-size-forms;
 
     span,
     input {
@@ -156,8 +162,6 @@ a {
     }
 
     span {
-        font-size: 12px;
-        color: $white;
         margin-left: 5px;
     }
 
@@ -175,11 +179,11 @@ a {
     padding: 14px;
     width: 100%;
     cursor: pointer;
-    font-size: 11px;
     text-align: center;
     background-color: $blue;
     color: mix( black, $blue, 90% );
     transition: background-color 240ms ease;
+    font-size: $font-size-forms;
 
     &:hover {
         background-color: mix( black, $blue, 25% );

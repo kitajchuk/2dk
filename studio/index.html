@@ -15,9 +15,10 @@
                 <div class="editor__canvas__pane" id="editor-canvas-pane">
                     <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
                     <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
-                    <div class="editor__canvas__layer editor__collision" id="editor-collision"></div>
-                    <div class="editor__canvas__layer editor__gridlines" id="editor-grid">
+                    <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
+                    <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
                         <canvas class="canvas layer layer--grid" id="editor-mapgrid-canvas"></canvas>
+                        <canvas class="canvas layer layer--grid" id="editor-collider-canvas"></canvas>
                     </div>
                 </div>
             </div>
@@ -27,8 +28,8 @@
                     <span class="icon icon--nudge icon--sports_esports"></span>
                     <span class="icon icon--nudge icon--bin" id="editor-delgame" title="Delete Game"></span>
                     <div class="select icon--nudge" disabled>
-                        <select class="select__field js-select js-select-game" id="editor-game-load-select" name="game" data-label="Game..." disabled>
-                            <option value="">Game...</option>
+                        <select class="select__field js-select js-select-game" id="editor-game-load-select" name="game" data-label="Project..." disabled>
+                            <option value="">Project...</option>
                         </select>
                     </div>
                     <span class="icon icon--settings js-settings" id="editor-gamesettings" data-type="game" title="Game Settings"></span>
@@ -48,7 +49,7 @@
                     <span id="editor-move-coords">( X, Y )</span>
                 </div>
                 <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
-                    <span class="icon icon--nudge icon--library_music"></span>
+                    <span class="icon icon--nudge icon--music_note"></span>
                     <div class="select icon--nudge">
                         <select class="select__field js-map-field js-select js-select-sound" data-label="Sample Sounds...">
                             <option value="">Sample Sounds...</option>
@@ -63,7 +64,7 @@
                     <div class="editor__layer js-edit-layer" data-layer="collision">
                         <span class="icon icon--nudge icon--layers"></span>
                         <span>Collision</span>
-                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer is-active" data-layer="collision"></span>
+                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer" data-layer="collision"></span>
                     </div>
                     <div class="editor__layer js-edit-layer" data-layer="foreground">
                         <span class="icon icon--nudge icon--layers"></span>
@@ -112,12 +113,14 @@
                         <div class="editor__action js-edit-action" data-action="bucket" title="Fill Map with Tile">
                             <span class="icon icon--format_color_fill"></span>
                         </div>
-                        <div class="editor__action js-edit-action" data-action="trash" title="Erase Map Tiles">
+                        <div class="editor__action js-edit-action" data-action="erase" title="Erase Map Tiles">
                             <span class="icon icon--content_cut"></span>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- Loadouts -->
+            <div class="editor__loadout" id="editor-loadout"></div>
             <!-- Menus -->
             <div class="editor__menus">
                 <!-- New game -->
@@ -130,13 +133,13 @@
                     <div class="editor__setting">
                         <input class="input editor__field js-addgame-field" type="text" placeholder="Game name" name="name" />
                     </div>
-                    <div class="editor__setting">
-                        <input class="input editor__field editor__field--half inline js-addgame-field" type="text" placeholder="Screen width" name="width" />
-                        <input class="input editor__field editor__field--half inline js-addgame-field" type="text" placeholder="Screen height" name="height" />
+                    <div class="editor__setting editor__setting--multi">
+                        <input class="input editor__field js-addgame-field" type="text" placeholder="Screen width" name="width" />
+                        <input class="input editor__field js-addgame-field" type="text" placeholder="Screen height" name="height" />
                     </div>
-                    <div class="editor__setting">
-                        <div class="button editor__button inline editor__upload-button js-post-save" data-type="game">Create</div>
-                        <div class="button button--grey editor__button inline editor__cancel-button js-post-cancel" data-type="game">Cancel</div>
+                    <div class="editor__setting editor__setting--multi">
+                        <div class="button editor__button editor__upload-button js-post-save" data-type="game">Create</div>
+                        <div class="button button--grey editor__button editor__cancel-button js-post-cancel" data-type="game">Cancel</div>
                     </div>
                 </div>
                 <!-- Active game -->
@@ -145,9 +148,9 @@
                     <div class="editor__setting">
                         <input class="input editor__field js-game-field" type="text" name="name" readonly />
                     </div>
-                    <div class="editor__setting">
-                        <input class="input editor__field editor__field--half inline js-game-field" type="text" name="width" readonly />
-                        <input class="input editor__field editor__field--half inline js-game-field" type="text" name="height" readonly />
+                    <div class="editor__setting editor__setting--multi">
+                        <input class="input editor__field js-game-field" type="text" name="width" readonly />
+                        <input class="input editor__field js-game-field" type="text" name="height" readonly />
                     </div>
                 </div>
                 <!-- New map -->
@@ -160,13 +163,13 @@
                     <div class="editor__setting">
                         <input class="input editor__field js-addmap-field" type="text" placeholder="Map Name" name="name" />
                     </div>
-                    <div class="editor__setting">
+                    <div class="editor__setting editor__setting--multi">
                         <input class="input editor__field js-addmap-field" type="text" placeholder="Canvas Resolution" name="resolution" />
+                        <input class="input editor__field js-addmap-field" type="text" placeholder="Tilesize" name="tilesize" />
                     </div>
-                    <div class="editor__setting">
-                        <input class="input editor__field editor__field--third inline js-addmap-field" type="text" placeholder="Tilesize" name="tilesize" />
-                        <input class="input editor__field editor__field--third inline js-addmap-field" type="text" placeholder="Tile width" name="tilewidth" />
-                        <input class="input editor__field editor__field--third inline js-addmap-field" type="text" placeholder="Tile height" name="tileheight" />
+                    <div class="editor__setting editor__setting--multi">
+                        <input class="input editor__field js-addmap-field" type="text" placeholder="Tile width" name="tilewidth" />
+                        <input class="input editor__field js-addmap-field" type="text" placeholder="Tile height" name="tileheight" />
                     </div>
                     <div class="editor__setting">
                         <div class="select">
@@ -182,9 +185,9 @@
                             </select>
                         </div>
                     </div>
-                    <div class="editor__setting">
-                        <div class="button editor__button inline editor__upload-button js-post-save" data-type="map">Create</div>
-                        <div class="button button--grey editor__button inline editor__cancel-button js-post-cancel">Cancel</div>
+                    <div class="editor__setting editor__setting--multi">
+                        <div class="button editor__button editor__upload-button js-post-save" data-type="map">Create</div>
+                        <div class="button button--grey editor__button editor__cancel-button js-post-cancel">Cancel</div>
                     </div>
                 </div>
                 <!-- Active map -->
@@ -195,14 +198,11 @@
                     </div>
                     <div class="editor__setting">
                         <input class="input editor__field js-map-field" type="text" name="resolution" />
+                        <input class="input editor__field js-map-field" type="text" name="tilesize" />
                     </div>
-                    <div class="editor__setting">
-                        <input class="input editor__field editor__field--half inline js-map-field" type="text" name="tilesize" />
-                        <input class="input editor__field editor__field--half inline js-map-field" type="text" name="gridsize" />
-                    </div>
-                    <div class="editor__setting">
-                        <input class="input editor__field editor__field--half inline js-map-field" type="text" name="tilewidth" />
-                        <input class="input editor__field editor__field--half inline js-map-field" type="text" name="tileheight" />
+                    <div class="editor__setting editor__setting--multi">
+                        <input class="input editor__field js-map-field" type="text" name="tilewidth" />
+                        <input class="input editor__field js-map-field" type="text" name="tileheight" />
                     </div>
                     <div class="editor__setting">
                         <div class="select">
@@ -228,17 +228,17 @@
                             Tiles are your swatches for painting maps. You should design your tiles with the same tilesize as your maps. You can upload tile images here and select which tileset you want to use when making a new map. You must use PNG format (.png).
                         </div>
                         <div class="editor__upload">
-                            <div class="button editor__upload__button editor__button inline">
-                                <span class="icon icon--upload2 icon--nudge"></span>
+                            <div class="button editor__upload__button editor__button">
+                                <span class="icon icon--cloud_uploadbackup icon--nudge"></span>
                                 <span>PNG</span>
                             </div>
-                            <input class="input editor__upload__field inline editor__field js-upload-field" id="editor-addtiles-file-copy" type="text" placeholder="Choose a file" name="new_tiles_copy" />
+                            <input class="input editor__upload__field editor__field js-upload-field" id="editor-addtiles-file-copy" type="text" placeholder="Choose a file" name="new_tiles_copy" />
                             <input class="editor__upload__mask js-upload-file" id="editor-addtiles-file" type="file" name="new_tiles" data-target="editor-addtiles-file-copy" />
                         </div>
                     </div>
-                    <div class="editor__setting">
-                        <div class="button editor__button inline editor__upload-button js-upload-save" data-type="tiles">Upload</div>
-                        <div class="button button--grey editor__button inline editor__cancel-button js-upload-cancel">Cancel</div>
+                    <div class="editor__setting editor__setting--multi">
+                        <div class="button editor__button editor__upload-button js-upload-save" data-type="tiles">Upload</div>
+                        <div class="button button--grey editor__button editor__cancel-button js-upload-cancel">Cancel</div>
                     </div>
                     <div class="txt">
                         Remove tileset:<br />
@@ -250,7 +250,7 @@
                         </div>
                     </div>
                     <div class="editor__setting">
-                        <div class="button button--red editor__button inline editor__delete-button js-upload-delete" data-type="tiles">Delete tileset...</div>
+                        <div class="button button--red editor__button editor__delete-button js-upload-delete" data-type="tiles">Delete tileset...</div>
                     </div>
                 </div>
                 <!-- Sounds -->
@@ -262,17 +262,17 @@
                             Sounds are the background music that will play for a map. You must use MP3 format (.mp3).
                         </div>
                         <div class="editor__upload">
-                            <div class="button editor__upload__button editor__button inline">
-                                <span class="icon icon--upload2 icon--nudge"></span>
+                            <div class="button editor__upload__button editor__button">
+                                <span class="icon icon--cloud_uploadbackup icon--nudge"></span>
                                 <span>MP3</span>
                             </div>
-                            <input class="input editor__upload__field inline editor__field js-upload-field" id="editor-addsound-file-copy" type="text" placeholder="Choose a file" name="new_sound_copy" />
+                            <input class="input editor__upload__field editor__field js-upload-field" id="editor-addsound-file-copy" type="text" placeholder="Choose a file" name="new_sound_copy" />
                             <input class="editor__upload__mask js-upload-file" id="editor-addsound-file" type="file" name="new_sound" data-target="editor-addsound-file-copy" />
                         </div>
                     </div>
-                    <div class="editor__setting">
-                        <div class="button editor__button inline editor__upload-button js-upload-save" data-type="sounds">Upload</div>
-                        <div class="button button--grey editor__button inline editor__cancel-button js-upload-cancel">Cancel</div>
+                    <div class="editor__setting editor__setting--multi">
+                        <div class="button editor__button editor__upload-button js-upload-save" data-type="sounds">Upload</div>
+                        <div class="button button--grey editor__button editor__cancel-button js-upload-cancel">Cancel</div>
                     </div>
                     <div class="txt">
                         Remove sounds:<br />
@@ -286,7 +286,7 @@
                         </div>
                     </div>
                     <div class="editor__setting">
-                        <div class="button button--red editor__button inline editor__delete-button js-upload-delete" data-type="sounds">Delete sound...</div>
+                        <div class="button button--red editor__button editor__delete-button js-upload-delete" data-type="sounds">Delete sound...</div>
                     </div>
                 </div>
             </div>

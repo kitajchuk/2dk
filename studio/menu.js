@@ -32,13 +32,14 @@ const loadAssets = () => {
 const loadMaps = () => {
     dBase.getMaps().then(( response ) => {
         activeMaps = response.maps;
+        mainWindow.webContents.send( "menu-loadmaps", activeMaps );
         setMenu();
     });
 };
 const loadGames = () => {
     db.DB.getGames().then(( response ) => {
         activeGames = response.games;
-        mainWindow.webContents.send( "menu-loadgames" );
+        mainWindow.webContents.send( "menu-loadgames", activeGames );
         setMenu();
     });
 };
@@ -244,6 +245,20 @@ const setMenu = () => {
 // Listen for events from the ipcRenderer
 ipcMain.on( "renderer-loadgames", ( event, data ) => {
     loadGames();
+});
+
+ipcMain.on( "renderer-loadgame", ( event, data ) => {
+    activeGame = activeGames.find(( game ) => {
+        return (game.id === data.game);
+    });
+    loadGame();
+});
+
+ipcMain.on( "renderer-loadmap", ( event, data ) => {
+    activeMap = activeMaps.find(( map ) => {
+        return (map.id === data.map);
+    });
+    loadMap();
 });
 
 ipcMain.on( "renderer-newgame", ( event, data ) => {

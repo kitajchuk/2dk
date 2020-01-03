@@ -8,6 +8,7 @@ module.exports = {
     "height": 2048,
     "tilewidth": 40,
     "tileheight": 32,
+    "collider": 16,
     "image": "",
     "snapshot": "",
     "thumbnail": "",

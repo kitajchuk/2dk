@@ -11,13 +11,6 @@ class EditorActions {
         this.bind();
     }
 
-    setMode ( mode ) {
-        this.mode = mode;
-    }
-
-    getMode () {
-        return this.mode;
-    }
 
     bind () {
         $( document ).on( "click", ".js-edit-action", ( e ) => {
@@ -27,27 +20,20 @@ class EditorActions {
                 const action = elem.data().action.toUpperCase();
 
                 if ( elem.is( ".is-active" ) ) {
-                    this.reset();
-                    this.editor.canvas.setActiveTiles( false );
+                    this.mode = null;
+                    this.elements.removeClass( "is-active" );
 
                 } else {
                     this.elements.removeClass( "is-active" );
                     elem.addClass( "is-active" );
+                    this.mode = Config.EditorActions.modes[ action ];
 
-                    this.setMode( Config.EditorActions.modes[ action ] );
-                    this.editor.canvas.setActiveTiles( true );
-
-                    if ( this.mode === Config.EditorActions.modes.BUCKET || this.mode === Config.EditorActions.modes.TRASH ) {
+                    if ( this.mode === Config.EditorActions.modes.BUCKET || this.mode === Config.EditorActions.modes.ERASE ) {
                         this.editor.canvas.clearTileset();
                     }
                 }
             }
         });
-    }
-
-    reset () {
-        this.mode = null;
-        this.elements.removeClass( "is-active" );
     }
 }
 

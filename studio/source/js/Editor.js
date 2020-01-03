@@ -30,6 +30,7 @@ class Editor {
             saveUpload: $( ".js-upload-save" ),
             deleteMap: $( "#editor-delmap" ),
             deleteGame: $( "#editor-delgame" ),
+            loadout: $( "#editor-loadout" ),
         };
         this.selects = {
             all: $( ".js-select" ),
@@ -58,16 +59,6 @@ class Editor {
 
         // bind menu events from Electron
         this.bindMenuEvents();
-    }
-
-
-    setMode ( mode ) {
-        this.mode = mode;
-    }
-
-
-    getMode () {
-        return this.mode;
     }
 
 
@@ -199,7 +190,6 @@ class Editor {
         this.menus.activeMap.find( ".js-map-field[name='name']" )[ 0 ].value = map.name;
         this.menus.activeMap.find( ".js-map-field[name='resolution']" )[ 0 ].value = map.resolution;
         this.menus.activeMap.find( ".js-map-field[name='tilesize']" )[ 0 ].value = map.tilesize;
-        this.menus.activeMap.find( ".js-map-field[name='gridsize']" )[ 0 ].value = map.gridsize;
         this.menus.activeMap.find( ".js-map-field[name='tilewidth']" )[ 0 ].value = map.tilewidth;
         this.menus.activeMap.find( ".js-map-field[name='tileheight']" )[ 0 ].value = map.tileheight;
         this.menus.activeMap.find( ".js-map-field[name='image']" )[ 0 ].value = map.image.split( "/" ).pop();
@@ -425,8 +415,56 @@ class Editor {
     }
 
 
+    _loadoutGames ( games ) {
+        this.dom.loadout[ 0 ].innerHTML = games.map(( game ) => {
+            return `<div class="js-game-tile" data-game="${game.id}">
+                <div>
+                    <div>
+                        <img src="./static${game.icon}" />
+                        <div>${game.name}</div>
+                    </div>
+                </div>
+            </div>`;
+
+        }).join( "" );
+
+        this.dom.loadout.addClass( "is-loaded" );
+    }
+
+
+    _loadoutMaps ( maps ) {
+        this.dom.loadout[ 0 ].innerHTML = maps.map(( map ) => {
+            return `<div class="js-map-tile" data-map="${map.id}">
+                <div>
+                    <div>
+                        <img src="./${map.thumbnail}" />
+                        <div>${map.name}</div>
+                    </div>
+                </div>
+            </div>`;
+
+        }).join( "" );
+
+        this.dom.loadout.addClass( "is-loaded" );
+    }
+
+
+    _loadoutClear () {
+        this.dom.loadout[ 0 ].innerHTML = "";
+        this.dom.loadout.removeClass( "is-loaded" );
+    }
+
+
     bindMenuEvents () {
         ipcRenderer.send( "renderer-loadgames" );
+
+        ipcRenderer.on( "menu-loadgames", ( e, games ) => {
+            this._loadoutGames( games );
+        });
+
+        ipcRenderer.on( "menu-loadmaps", ( e, maps ) => {
+            this._loadoutMaps( maps );
+        });
 
         ipcRenderer.on( "menu-togglegrid", () => {
             this.canvas.toggleGrid();
@@ -468,6 +506,15 @@ class Editor {
 
     bindEvents () {
         const $document = $( document );
+
+        $document.on( "click", ".js-game-tile", ( e ) => {
+            ipcRenderer.send( "renderer-loadgame", e.target.dataset );
+        });
+
+        $document.on( "click", ".js-map-tile", ( e ) => {
+            ipcRenderer.send( "renderer-loadmap", e.target.dataset );
+            this._loadoutClear();
+        });
 
         this.selects.all.on( "change", ( e ) => {
             this.blurSelectMenus();

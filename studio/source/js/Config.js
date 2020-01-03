@@ -8,7 +8,7 @@ const Config = {
         modes: {
             BRUSH: "brush",
             BUCKET: "bucket",
-            TRASH: "delete",
+            ERASE: "erase",
         }
     },
     EditorCanvas: {
@@ -23,7 +23,6 @@ const Config = {
             BACKGROUND: "background",
             FOREGROUND: "foreground",
             COLLISION: "collision",
-            OBJECTS: "objects",
         }
     },
     colors: {

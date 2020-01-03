@@ -1,5 +1,6 @@
-$font-uid: "tthx7y";
+$font-uid: "x8a7vj";
 $font-icons: "editor-icons";
+$font-size-icons: 18px;
 
 @font-face {
     font-family: $font-icons;
@@ -76,6 +77,9 @@ $font-icons: "editor-icons";
 }
 .icon--format_paint:before {
   content: "\e910";
+}
+.icon--cloud_uploadbackup:before {
+  content: "\e923";
 }
 .icon--brush:before {
   content: "\e911";

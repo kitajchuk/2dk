@@ -16,7 +16,7 @@ const createWindow = () => {
         width: 1440,
         height: 900,
         backgroundColor: "#000",
-        fullscreen: true,
+        // fullscreen: true,
         webPreferences: {
             preload: path.join( __dirname, "preload.js" ),
         }

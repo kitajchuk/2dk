@@ -6,9 +6,7 @@ const jimp = require( "jimp" );
 
 
 class DB {
-    constructor () {
-        lager.info( "DB constructor initialization" );
-    }
+    constructor () {}
 
     /******************************************************************************
      * OPEN DB
@@ -28,24 +26,26 @@ class DB {
             this.cache = new Cache();
             this.cache.clear();
 
+            lager.info( `DB-${this.gameId}: opened` );
+
             Utils.readDir( this.files.tiles, ( files ) => {
                 this.cache.set( "tiles", files );
-                lager.info( "Cached tiles data" );
+                lager.info( `DB-${this.gameId}: cached tiles` );
             });
 
             Utils.readDir( this.files.sprites, ( files ) => {
                 this.cache.set( "sprites", files );
-                lager.info( "Cached sprites data" );
+                lager.info( `DB-${this.gameId}: cached sprites` );
             });
 
             Utils.readDir( this.files.snapshots, ( files ) => {
                 this.cache.set( "snapshots", files );
-                lager.info( "Cached snapshots data" );
+                lager.info( `DB-${this.gameId}: cached snapshots` );
             });
 
             Utils.readDir( this.files.sounds, ( files ) => {
                 this.cache.set( "sounds", files );
-                lager.info( "Cached sounds data" );
+                lager.info( `DB-${this.gameId}: cached sounds` );
             });
 
             Utils.readDir( this.mapsPath, ( files ) => {
@@ -56,12 +56,12 @@ class DB {
                 });
 
                 this.cache.set( "maps", maps );
-                lager.info( "Cached maps data" );
+                lager.info( `DB-${this.gameId}: cached maps` );
             });
 
             Utils.readJson( this.gamePath, ( data ) => {
                 this.cache.set( "game", data );
-                lager.info( "Cached game data" );
+                lager.info( `DB-${this.gameId}: cached game` );
                 resolve();
             });
         });
@@ -157,10 +157,10 @@ class DB {
                 files = this.cache.get( data.type );
 
                 if ( exists ) {
-                    lager.info( `Overwriting file ${name}` );
+                    lager.info( `DB-${this.gameId}: overwrite file ${name}` );
 
                 } else {
-                    lager.info( `Writing new file ${name}` );
+                    lager.info( `DB-${this.gameId}: create new file ${name}` );
                     files.push( name );
                 }
 
@@ -174,7 +174,7 @@ class DB {
                             snapshot.resize( 512, jimp.AUTO );
                             snapshot.quality( 100 );
                             snapshot.write( thumbFile );
-                            lager.info( `Writing file ${thumbFile.split( "/" ).pop()}` );
+                            lager.info( `DB-${this.gameId}: write file ${thumbFile.split( "/" ).pop()}` );
                         });
                     }
 
@@ -204,6 +204,8 @@ class DB {
             map.width = map.tilewidth * map.tilesize;
             map.image = `/games/${this.gameId}/assets/tiles/${data.image}`;
             map.sound = data.sound ? `/games/${this.gameId}/assets/sounds/${data.sound}` : map.sound;
+            map.snapshot = `/games/${this.gameId}/assets/snapshots/${map.id}.png`;
+            map.thumbnail = `/games/${this.gameId}/assets/snapshots/${map.id}-thumb.png`;
 
             for ( let y = map.tileheight; y--; ) {
                 map.textures.background[ y ] = [];
@@ -216,7 +218,7 @@ class DB {
             }
 
             Utils.writeJson( mapjson, map, () => {
-                lager.info( `Add Map ${map.name}` );
+                lager.info( `DB-${this.gameId}: create map ${map.id}` );
 
                 const maps = this.cache.get( "maps" );
 
@@ -253,6 +255,8 @@ class DB {
             map.width = map.tilewidth * map.tilesize;
             map.image = `/games/${this.gameId}/assets/tiles/${data.image}`;
             map.sound = data.sound ? `/games/${this.gameId}/assets/sounds/${data.sound}` : map.sound;
+            map.snapshot = `/games/${this.gameId}/assets/snapshots/${map.id}.png`;
+            map.thumbnail = `/games/${this.gameId}/assets/snapshots/${map.id}-thumb.png`;
             map.collision = data.collision;
             map.textures = data.textures;
 
@@ -261,7 +265,7 @@ class DB {
 
                 this.cache.set( "maps", maps );
 
-                lager.info( `Updated Map: ${map.name}` );
+                lager.info( `DB-${this.gameId}: update map ${map.id}` );
 
                 resolve({
                     map: this._getMergedMap( map.id ),
@@ -286,7 +290,7 @@ class DB {
 
                 this.cache.set( "maps", maps );
 
-                lager.info( `Deleted Map: ${map.name}` );
+                lager.info( `DB-${this.gameId}: deleted map ${map.id}` );
 
                 resolve({
                     map,
@@ -307,7 +311,7 @@ class DB {
 
                 this.cache.set( data.type, files );
 
-                lager.info( `Deleted ${data.type} file ${data.fileName}` );
+                lager.info( `DB-${this.gameId}: deleted ${data.type} file ${data.fileName}` );
 
                 resolve({
                     type: data.type,
@@ -376,6 +380,8 @@ DB.addGame = ( data ) => {
                 games = path.join( gameDir, "game.json" );
 
                 Utils.writeJson( games, game, () => {
+                    lager.info( `DB-static: created game ${game.id}` );
+
                     resolve({
                         game,
                         games: gameJson,
@@ -413,6 +419,8 @@ DB.deleteGame = ( data ) => {
 
             Utils.writeJson( jsonPath, json );
             Utils.removeDir( gamePath, () => {
+                lager.info( `DB-static: deleted game ${game.id}` );
+
                 resolve({
                     games: json,
                 });

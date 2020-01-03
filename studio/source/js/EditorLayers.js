@@ -11,13 +11,6 @@ class EditorLayers {
         this.bind();
     }
 
-    setMode ( mode ) {
-        this.mode = mode;
-    }
-
-    getMode () {
-        return this.mode;
-    }
 
     bind () {
         const $document = $( document );
@@ -31,12 +24,15 @@ class EditorLayers {
                 const mode = Config.EditorLayers.modes[ layer ];
 
                 if ( elem.is( ".is-active" ) ) {
-                    this.reset();
+                    this.mode = null;
+                    this.elements.removeClass( "is-active" );
+                    this.editor.canvas.setActiveLayer( null );
 
                 } else {
                     this.elements.removeClass( "is-active" );
                     elem.addClass( "is-active" );
-                    this.setMode( mode );
+                    this.mode = mode;
+                    this.editor.canvas.setActiveLayer( mode );
                 }
 
                 if ( mode === Config.EditorLayers.modes.COLLISION ) {
@@ -61,11 +57,6 @@ class EditorLayers {
                 }
             }
         });
-    }
-
-    reset () {
-        this.mode = null;
-        this.elements.removeClass( "is-active" );
     }
 }
 

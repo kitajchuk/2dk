@@ -7,9 +7,9 @@ const Loader = require( "../../../source/2dk/js/lib/Loader" );
 
 
 
-const renderTile = ( ctx, x, y, w, h ) => {
-    ctx.globalAlpha = 0.5;
-    ctx.fillStyle = Config.colors.teal;
+const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
+    ctx.globalAlpha = alpha || 0.75;
+    ctx.fillStyle = color || Config.colors.blue;
     ctx.fillRect( x, y, w, h );
 };
 const clearTile = ( ctx, x, y, w, h ) => {
@@ -34,6 +34,7 @@ class EditorCanvas {
         this.isMouseDownTiles = false;
         this.isMouseMovedTiles = false;
         this.isMouseDownCanvas = false;
+        this.isMouseDownCollider = false;
         this.isDraggableAlive = false;
         this.currentTileCoord = null;
         this.dom = {
@@ -46,14 +47,16 @@ class EditorCanvas {
         this.layers = {
             background: document.getElementById( "editor-bg" ),
             foreground: document.getElementById( "editor-fg" ),
-            collision: document.getElementById( "editor-collision" ),
-            mapgrid: document.getElementById( "editor-grid" ),
+            collision: document.getElementById( "editor-c" ),
+            mapgrid: document.getElementById( "editor-mapgrid" ),
         };
         this.contexts = {
             background: null,
             foreground: null,
+            collision: null,
         };
         this.canvases = {
+            collider: document.getElementById( "editor-collider-canvas" ),
             mapgrid: document.getElementById( "editor-mapgrid-canvas" ),
             tilegrid: document.getElementById( "editor-tilegrid-canvas" ),
             tilepaint: document.getElementById( "editor-tilepaint-canvas" ),
@@ -78,16 +81,6 @@ class EditorCanvas {
     }
 
 
-    setMode ( mode ) {
-        this.mode = mode;
-    }
-
-
-    getMode () {
-        return this.mode;
-    }
-
-
     getDraggable () {
         return window.Draggable.create( this.dom.canvasPane,
             {
@@ -97,14 +90,14 @@ class EditorCanvas {
                 throwProps: true,
                 dragResistance: 0.3,
                 edgeResistance: 0.5,
+                cursor: "grab",
+                activeCursor: "grabbing",
                 onDragStart: () => {
                     this.isDraggableAlive = true;
-                    this.dom.$canvasPane.addClass( "is-dragging" );
                 },
                 onThrowComplete: () => {
                     this.isMouseDownCanvas = false;
                     this.isDraggableAlive = false;
-                    this.dom.$canvasPane.removeClass( "is-dragging" );
 
                     if ( !this.isSpacebar ) {
                         this.draggable.disable();
@@ -138,6 +131,7 @@ class EditorCanvas {
             this.layers.background.innerHTML = "";
             this.layers.foreground.innerHTML = "";
             this.layers.collision.innerHTML = "";
+            this.dom.$canvasPane.removeClass( "is-loaded" );
         }
     }
 
@@ -164,17 +158,29 @@ class EditorCanvas {
             width: this.map.width,
             height: this.map.height
         });
+        this.contexts.collision = new MapLayer({
+            id: "collision",
+            width: this.map.width,
+            height: this.map.height
+        });
 
         this.layers.background.appendChild( this.contexts.background.canvas );
         this.layers.foreground.appendChild( this.contexts.foreground.canvas );
+        this.layers.collision.appendChild( this.contexts.collision.canvas );
 
         this.canvases.mapgrid.width = this.map.width;
         this.canvases.mapgrid.height = this.map.height;
         this.canvases.mapgrid.style.width = `${this.map.width}px`;
         this.canvases.mapgrid.style.height = `${this.map.height}px`;
 
+        this.canvases.collider.width = this.map.width;
+        this.canvases.collider.height = this.map.height;
+        this.canvases.collider.style.width = `${this.map.width}px`;
+        this.canvases.collider.style.height = `${this.map.height}px`;
+
         this.dom.canvasPane.style.width = `${this.map.width}px`;
         this.dom.canvasPane.style.height = `${this.map.height}px`;
+        this.dom.$canvasPane.addClass( "is-loaded" );
 
         this.draggable.update({
             applyBounds: true
@@ -252,8 +258,15 @@ class EditorCanvas {
     addCanvas () {
         this.clear( this.contexts.background.context );
         this.clear( this.contexts.foreground.context );
+        this.clear( this.contexts.collision.context );
         this.clear( this.canvases.mapgrid.getContext( "2d" ) );
 
+        drawGridLines(
+            this.canvases.collider.getContext( "2d" ),
+            this.canvases.collider.width,
+            this.canvases.collider.height,
+            this.map.collider
+        );
         drawGridLines(
             this.canvases.mapgrid.getContext( "2d" ),
             this.canvases.mapgrid.width,
@@ -272,15 +285,15 @@ class EditorCanvas {
             this.map.textures.foreground,
             this.map.tilesize
         );
+        this.drawColliders();
     }
 
 
-    setActiveTiles ( bool ) {
-        if ( bool ) {
-            this.dom.$canvasPane.addClass( "is-active-tiles" );
+    setActiveLayer ( layer ) {
+        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision" );
 
-        } else {
-            this.dom.$canvasPane.removeClass( "is-active-tiles" );
+        if ( layer ) {
+            this.dom.$canvasPane.addClass( `is-${layer}` );
         }
     }
 
@@ -467,6 +480,57 @@ class EditorCanvas {
     }
 
 
+    drawColliders () {
+        this.map.collision.forEach(( collider ) => {
+            renderTile(
+                this.contexts.collision.context,
+                collider[ 0 ] * this.map.collider,
+                collider[ 1 ] * this.map.collider,
+                this.map.collider,
+                this.map.collider,
+            );
+        });
+    }
+
+
+    removeCollider ( coord ) {
+        const collider = this.map.collision.find(( collider ) => {
+            return (collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ]);
+        });
+
+        if ( collider ) {
+            this.map.collision.splice( this.map.collision.indexOf( collider ), 1 );
+
+            clearTile(
+                this.contexts.collision.context,
+                collider[ 0 ] * this.map.collider,
+                collider[ 1 ] * this.map.collider,
+                this.map.collider,
+                this.map.collider,
+            );
+        }
+    }
+
+
+    applyCollider ( coord ) {
+        const collider = this.map.collision.find(( collider ) => {
+            return (collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ]);
+        });
+
+        if ( !collider ) {
+            this.map.collision.push( coord );
+
+            renderTile(
+                this.contexts.collision.context,
+                coord[ 0 ] * this.map.collider,
+                coord[ 1 ] * this.map.collider,
+                this.map.collider,
+                this.map.collider,
+            );
+        }
+    }
+
+
     applyTile ( coord ) {
         renderTile(
             this.canvases.tilepaint.getContext( "2d" ),
@@ -479,13 +543,13 @@ class EditorCanvas {
 
 
     applyLayer ( layer, coords ) {
-        if ( this.editor.actions.getMode() === Config.EditorActions.modes.BRUSH ) {
+        if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
             this.brush( layer, coords );
 
-        } else if ( editor.actions.getMode() === Config.EditorActions.modes.BUCKET ) {
+        } else if ( editor.actions.mode === Config.EditorActions.modes.BUCKET ) {
             this.bucket( layer, coords );
 
-        } else if ( editor.actions.getMode() === Config.EditorActions.modes.TRASH ) {
+        } else if ( editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             this.trash( layer, coords );
         }
 
@@ -497,6 +561,7 @@ class EditorCanvas {
         const $document = $( document );
         const $tilepaint = $( this.canvases.tilepaint );
         const $mapgrid = $( this.canvases.mapgrid );
+        const $collider = $( this.canvases.collider );
 
         $document.on( "keydown", ( e ) => {
             const activeMenu = $( ".js-menu.is-active" );
@@ -511,14 +576,12 @@ class EditorCanvas {
                 this.editor.blurSelectMenus();
             }
 
-            if ( this.editor.getMode() !== Config.Editor.modes.SAVING && (this.isSpacebar && this.mode !== Config.EditorCanvas.modes.DRAG) ) {
+            if ( this.editor.mode !== Config.Editor.modes.SAVING && (this.isSpacebar && this.mode !== Config.EditorCanvas.modes.DRAG) ) {
                 e.preventDefault();
 
                 this.draggable.enable();
 
                 this.mode = Config.EditorCanvas.modes.DRAG;
-
-                this.dom.$canvasPane.addClass( "is-drag" );
             }
         });
 
@@ -529,21 +592,20 @@ class EditorCanvas {
                 this.draggable.disable();
             }
 
-            if ( this.editor.getMode() !== Config.Editor.modes.SAVING && this.mode === Config.EditorCanvas.modes.DRAG ) {
+            if ( this.editor.mode !== Config.Editor.modes.SAVING && this.mode === Config.EditorCanvas.modes.DRAG ) {
                 e.preventDefault();
 
                 this.mode = null;
-
-                this.dom.$canvasPane.removeClass( "is-drag is-dragging" );
             }
         });
 
         $document.on( "mouseup", () => {
             this.isMouseDownCanvas = false;
+            this.isMouseDownCollider = false;
         });
 
         $tilepaint.on( "mousedown", ( e ) => {
-            if ( this.editor.canMapFunction() && this.editor.actions.getMode() !== Config.EditorActions.modes.TRASH ) {
+            if ( this.editor.canMapFunction() && this.editor.actions.mode !== Config.EditorActions.modes.ERASE ) {
                 this.isMouseDownTiles = true;
                 this.isMouseMovedTiles = false;
 
@@ -598,6 +660,41 @@ class EditorCanvas {
             this.isMouseMovedTiles = false;
         });
 
+        $collider.on( "mousedown", ( e ) => {
+            if ( this.editor.canMapFunction() ) {
+                this.isMouseDownCollider = true;
+            }
+        });
+
+        $collider.on( "mousemove", ( e ) => {
+            if ( !this.map ) {
+                return;
+            }
+
+            const coords = [ Math.floor( e.offsetX / this.map.collider ), Math.floor( e.offsetY / this.map.collider ) ];
+
+            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
+
+            if ( this.editor.canMapFunction() && this.isMouseDownCollider ) {
+                if ( this.canApplyCollider() ) {
+                    if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
+                        this.applyCollider( coords );
+
+                    } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+                        this.removeCollider( coords );
+                    }
+                }
+            }
+        });
+
+        $collider.on( "mouseup", ( e ) => {
+            this.isMouseDownCollider = false;
+        });
+
+        $collider.on( "mouseout", () => {
+            this.dom.moveCoords.innerHTML = "( X, Y )";
+        });
+
         $mapgrid.on( "mousedown", ( e ) => {
             if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCanvas = true;
@@ -615,7 +712,7 @@ class EditorCanvas {
 
             if ( this.editor.canMapFunction() && this.isMouseDownCanvas ) {
                 if ( this.canApplyLayer() ) {
-                    this.applyLayer( this.editor.layers.getMode(), coords );
+                    this.applyLayer( this.editor.layers.mode, coords );
                 }
             }
         });
@@ -625,7 +722,7 @@ class EditorCanvas {
                 const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
 
                 if ( this.canApplyLayer() ) {
-                    this.applyLayer( this.editor.layers.getMode(), coords );
+                    this.applyLayer( this.editor.layers.mode, coords );
                 }
             }
 
@@ -638,22 +735,31 @@ class EditorCanvas {
     }
 
 
-    canApplyTiles () {
+    canApplyLayer () {
         return (
-            this.isMouseDownTiles &&
-            this.editor.actions.getMode() !== Config.EditorActions.modes.TRASH &&
-            this.editor.actions.getMode() !== Config.EditorActions.modes.BUCKET
+            this.tilesetCoords.length &&
+            (this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND)
+        ) || (
+            this.editor.actions.mode === Config.EditorActions.modes.ERASE &&
+            (this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND)
         );
     }
 
 
-    canApplyLayer () {
+    canApplyCollider () {
         return (
-            this.tilesetCoords.length &&
-            (this.editor.layers.getMode() === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.getMode() === Config.EditorLayers.modes.FOREGROUND)
-        ) || (
-            this.editor.actions.getMode() === Config.EditorActions.modes.TRASH &&
-            (this.editor.layers.getMode() === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.getMode() === Config.EditorLayers.modes.FOREGROUND)
+            this.isMouseDownCollider &&
+            this.editor.layers.mode === Config.EditorLayers.modes.COLLISION &&
+            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
+        );
+    }
+
+
+    canApplyTiles () {
+        return (
+            this.isMouseDownTiles &&
+            this.editor.actions.mode !== Config.EditorActions.modes.ERASE &&
+            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
         );
     }
 }
