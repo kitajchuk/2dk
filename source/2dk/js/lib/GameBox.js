@@ -206,6 +206,13 @@ class GameBox {
         if ( npc ) {
             npc.checkAct( poi, true );
         }
+
+        this.hero.checkDialogue( true, false );
+    }
+
+
+    pressB () {
+        this.hero.checkDialogue( false, true );
     }
 
 

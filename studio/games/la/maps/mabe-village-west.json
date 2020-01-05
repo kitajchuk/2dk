@@ -161,7 +161,13 @@
                             "dir": "up"
                         },
                         "payload": {
-                            "txt": "You pushed the bird statue!"
+                            "dialogue": {
+                                "type": "text",
+                                "text": [
+                                    "You pushed the bird statue!",
+                                    "But...It doesn't look like there's anything here..."
+                                ]
+                            }
                         },
                         "counter": 1
                     },
@@ -225,7 +231,12 @@
                             "button": 1
                         },
                         "payload": {
-                            "txt": "You opened the chest!"
+                            "dialogue": {
+                                "type": "prompt",
+                                "text": [
+                                    "You found someone's treasure! Are you gonna keep it?"
+                                ]
+                            }
                         },
                         "shift": 1
                     }

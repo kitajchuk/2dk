@@ -4,6 +4,7 @@ const Player = require( "./Player" );
 const GameBox = require( "./GameBox" );
 const GamePad = require( "./GamePad" );
 const GameSFX = require( "./GameSFX" );
+const Dialogue = require( "./Dialogue" );
 const { Sprite, Hero, NPC } = require( "./Sprite" );
 const { Map, MapLayer, MapLocation, drawMapTiles, drawGridLines } = require( "./Map" );
 
@@ -17,6 +18,7 @@ module.exports = {
     GameBox,
     GamePad,
     GameSFX,
+    Dialogue,
 
     // Sprites
     Sprite,

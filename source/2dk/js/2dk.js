@@ -83,7 +83,7 @@ IDEA: Procedural map paint with cellauto JS.
 * NPCs look at collision layer, object layer colliders, and Hero colliders
 * Hero looks at collision layer and NPC colliders
 
-* CSS shadow rather than pixel-art shadow...
+* Object interaction hints (A Open, A Check, etc...)
 
 
 ********************************************************************************

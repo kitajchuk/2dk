@@ -1,5 +1,6 @@
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
+const Dialogue = require( "./Dialogue" );
 const $ = require( "properjs-hobo" );
 const { TweenLite } = require( "gsap" );
 
@@ -154,7 +155,24 @@ class Hero extends Sprite {
 
 
     payload ( payload ) {
-        console.log( "Hero Payload", payload );
+        if ( payload.dialogue ) {
+            this.dialogue = new Dialogue( payload.dialogue, this.gamebox );
+            this.dialogue.play().then(() => {
+                this.dialogue = null;
+                console.log( "dialogue resolved with A" );
+
+            }).catch(() => {
+                this.dialogue = null;
+                console.log( "dialogue rejected with B" );
+            });
+        }
+    }
+
+
+    checkDialogue ( a, b ) {
+        if ( this.dialogue && this.dialogue.ready ) {
+            this.dialogue.press( a, b );
+        }
     }
 }
 

@@ -53,6 +53,7 @@ class Player {
         this._dPadRelease = this.dPadRelease.bind( this );
         this._startPress = this.startPress.bind( this );
         this._aPress = this.aPress.bind( this );
+        this._bPress = this.bPress.bind( this );
 
         // Standard 4 point d-pad
         this.gamepad.on( "left-press", this._dPadPress );
@@ -71,6 +72,9 @@ class Player {
 
         // A button (action)
         this.gamepad.on( "a-press", this._aPress );
+
+        // B button (cancel)
+        this.gamepad.on( "b-press", this._bPress );
 
         // Screen size / Orientation change
         window.onresize = () => {
@@ -117,6 +121,19 @@ class Player {
         }
 
         this.gamebox.pressA();
+    }
+
+
+    bPress () {
+        if ( this.stopped ) {
+            return;
+        }
+
+        if ( this.paused ) {
+            return;
+        }
+
+        this.gamebox.pressB();
     }
 
 

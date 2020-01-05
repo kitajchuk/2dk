@@ -64,6 +64,7 @@ module.exports = {
         duration: {
             pushed: 0.5,
             boundary: 1.0,
+            dialogue: 0.5,
         }
     }
 };
