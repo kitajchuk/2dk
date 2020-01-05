@@ -1,3 +1,7 @@
+$tile-size: 32px;
+
+
+
 // @2x sizes
 $hero-height: 140px;
 $hero-width: 140px;
@@ -8,5 +12,20 @@ $hero-h: $hero-height / 2;
 $hero-w: $hero-width / 2;
 $hero-sw: $hero-sprite-width / 2;
 $hero-sh: $hero-sprite-height / 2;
-$hero-speed: 240ms;
-$tile-size: 32px;
+$hero-speed: 320ms;
+$hero-steps: 8;
+
+
+
+// @2x sizes
+$hero-la-height: 64px;
+$hero-la-width: 64px;
+$hero-la-sprite-width: 768px;
+$hero-la-sprite-height: 320px;
+// @1x sizes
+$hero-la-h: $hero-la-height / 2;
+$hero-la-w: $hero-la-width / 2;
+$hero-la-sw: $hero-la-sprite-width / 2;
+$hero-la-sh: $hero-la-sprite-height / 2;
+$hero-la-speed: 160ms;
+$hero-la-steps: 2;

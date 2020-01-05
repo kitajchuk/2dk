@@ -13,8 +13,8 @@ const createWindow = () => {
     mainWindow = new BrowserWindow({
         title: "2dk Studio",
         center: true,
-        width: 1440,
-        height: 900,
+        width: 2560,
+        height: 1440,
         backgroundColor: "#000",
         // fullscreen: true,
         webPreferences: {

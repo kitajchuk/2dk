@@ -77,10 +77,10 @@
         pointer-events: none;
     }
 }
-#editor-move-coords {
-    width: 72px;;
-    text-align: center;
-}
+// #editor-move-coords {
+//     width: 72px;;
+//     text-align: center;
+// }
 #editor-preview {
     overflow: hidden;
 }
@@ -135,7 +135,7 @@
         display: inline-block;
         text-align: center;
         cursor: pointer;
-        width: 25%;
+        width: 20%;
         justify-content: center;
         align-items: center;
         position: relative;
@@ -145,7 +145,7 @@
         }
 
         &.js-map-tile img {
-            width: 100%;
+            width: 160px;
         }
 
         &:before {
@@ -169,7 +169,7 @@
             img {
                 margin-bottom: 16px;
                 max-width: 100%;
-                box-shadow: 0 0 2px 2px rgba( 0, 0, 0, 0.25 );
+                box-shadow: $box-shadow;
             }
         }
     }
@@ -187,7 +187,7 @@
 .editor__panel {
     background-color: $black;
     border-bottom: 1px solid $grey-dark;
-    box-shadow: 0 0 2px 2px rgba( 0, 0, 0, 0.25 );
+    box-shadow: $box-shadow;
     height: 50px;
     left: 0;
     position: fixed;
@@ -215,10 +215,8 @@
     padding: 0 20px;
 }
 .editor__panel__xy {
-    border-right: 0;
     justify-content: flex-start;
-    border-right: 1px solid $grey-dark;
-    display: none;
+    border-right: 0;
 }
 .editor__panel__sound {
     border-right: 1px solid $grey-dark;
@@ -235,7 +233,7 @@
     top: 0;
     z-index: 2;
     height: 100%;
-    box-shadow: 0 0 2px 2px rgba( 0, 0, 0, 0.25 );
+    box-shadow: $box-shadow;
 }
 .editor__sidebar__layers {
     height: 100%;
@@ -255,7 +253,7 @@
     height: 100%;
     border-left: 1px solid $grey-dark;
     border-right: 1px solid $grey-dark;
-    box-shadow: 0 0 2px 2px rgba( 0, 0, 0, 0.25 );
+    box-shadow: $box-shadow;
     transform: translate3d( -100%, 0, 0 );
 }
 .editor__toolbar {
@@ -474,7 +472,7 @@
 .editor__menu {
     background-color: $black;
     border: 1px solid $grey-dark;
-    box-shadow: 0 0 2px 2px rgba( 0, 0, 0, 0.25 );
+    box-shadow: $box-shadow;
     padding: 32px;
     position: fixed;
     left: 50%;

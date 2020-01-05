@@ -1,16 +1,32 @@
+const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const Player = require( "./Player" );
-const { Hero, Sprite } = require( "./Sprite" );
-const { Map, drawMapTiles, drawGridLines } = require( "./Map" );
+const GameBox = require( "./GameBox" );
+const GamePad = require( "./GamePad" );
+const GameSFX = require( "./GameSFX" );
+const { Sprite, Hero, NPC } = require( "./Sprite" );
+const { Map, MapLayer, MapLocation, drawMapTiles, drawGridLines } = require( "./Map" );
 
 
 
 module.exports = {
-    drawGridLines,
-    drawMapTiles,
+    // Engine
+    Config,
     Loader,
     Player,
+    GameBox,
+    GamePad,
+    GameSFX,
+
+    // Sprites
     Sprite,
     Hero,
+    NPC,
+
+    // Maps
     Map,
+    MapLayer,
+    MapLocation,
+    drawMapTiles,
+    drawGridLines,
 };

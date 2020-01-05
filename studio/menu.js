@@ -264,6 +264,7 @@ ipcMain.on( "renderer-loadmap", ( event, data ) => {
 ipcMain.on( "renderer-newgame", ( event, data ) => {
     db.DB.addGame( data ).then(( response ) => {
         activeGames = response.games;
+        mainWindow.webContents.send( "menu-loadgames", activeGames );
         setMenu();
     });
 });
@@ -271,6 +272,7 @@ ipcMain.on( "renderer-newgame", ( event, data ) => {
 ipcMain.on( "renderer-newmap", ( event, data ) => {
     dBase.addMap( data ).then(( response ) => {
         activeMaps = response.maps;
+        mainWindow.webContents.send( "menu-loadmaps", activeMaps );
         setMenu();
     });
 });

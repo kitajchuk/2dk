@@ -1,14 +1,14 @@
 [
     {
         "id": "la",
-        "name": "Links Awakening",
+        "name": "Links Reawakening",
         "width": 480,
         "height": 320,
         "fullscreen": false,
         "icon": "/img/icon/apple-icon.png"
     },
     {
-        "id": "pokemon",
+        "id": "pk",
         "name": "Pokemon",
         "width": 480,
         "height": 320,

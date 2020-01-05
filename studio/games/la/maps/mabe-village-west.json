@@ -10,10 +10,76 @@
     "tileheight": 32,
     "collider": 16,
     "image": "/games/la/assets/tiles/tiles.png",
-    "thumbnail": "/games/la/assets/snapshots/mabe-village-west-thumb.png",
     "snapshot": "/games/la/assets/snapshots/mabe-village-west.png",
-    "sound": "/games/la/assets/sounds/46-tal-tal-mountain-range.mp3",
+    "thumbnail": "/games/la/assets/snapshots/mabe-village-west-thumb.png",
+    "sound": "/games/la/assets/sounds/11-mabe-village.mp3",
+    "spawn": {
+        "x": 0,
+        "y": 0
+    },
     "tiles": [],
+    "events": [
+        {
+            "coords": [4, 31],
+            "type": "boundary",
+            "map": "/games/la/maps/toronbo-shores-west.json",
+            "dir": "down"
+        },
+        {
+            "coords": [5, 31],
+            "type": "boundary",
+            "map": "/games/la/maps/toronbo-shores-west.json",
+            "dir": "down"
+        },
+        {
+            "coords": [6, 31],
+            "type": "boundary",
+            "map": "/games/la/maps/toronbo-shores-west.json",
+            "dir": "down"
+        },
+        {
+            "coords": [4, 0],
+            "type": "boundary",
+            "map": "/games/la/maps/mysterious-forest.json",
+            "dir": "up"
+        },
+        {
+            "coords": [5, 0],
+            "type": "boundary",
+            "map": "/games/la/maps/mysterious-forest.json",
+            "dir": "up"
+        },
+        {
+            "coords": [6, 0],
+            "type": "boundary",
+            "map": "/games/la/maps/mysterious-forest.json",
+            "dir": "up"
+        },
+        {
+            "coords": [7, 0],
+            "type": "boundary",
+            "map": "/games/la/maps/mysterious-forest.json",
+            "dir": "up"
+        },
+        {
+            "coords": [39, 10],
+            "type": "boundary",
+            "map": "/games/la/maps/mabe-village-east.json",
+            "dir": "right"
+        },
+        {
+            "coords": [39, 2],
+            "type": "boundary",
+            "map": "/games/la/maps/mabe-village-east.json",
+            "dir": "right"
+        },
+        {
+            "coords": [39, 3],
+            "type": "boundary",
+            "map": "/games/la/maps/mabe-village-east.json",
+            "dir": "right"
+        }
+    ],
     "objects": [
         {
             "id": "chimney-smoke",

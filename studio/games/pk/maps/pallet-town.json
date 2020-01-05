@@ -9,11 +9,16 @@
     "tilewidth": 38,
     "tileheight": 32,
     "collider": 16,
-    "image": "/games/pokemon/assets/tiles/tiles.png",
-    "thumbnail": "/games/pokemon/assets/snapshots/pallet-town-thumb.png",
-    "snapshot": "/games/pokemon/assets/snapshots/pallet-town.png",
+    "image": "/games/pk/assets/tiles/tiles.png",
+    "snapshot": "/games/pk/assets/snapshots/pallet-town.png",
+    "thumbnail": "/games/pk/assets/snapshots/pallet-town-thumb.png",
     "sound": "",
+    "spawn": {
+        "x": 0,
+        "y": 0
+    },
     "tiles": [],
+    "events": [],
     "objects": [],
     "collision": [
         [

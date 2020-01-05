@@ -1,6 +1,6 @@
 {
     "game": {
-        "id": "pokemon",
+        "id": "pk",
         "name": "Pokemon",
         "width": 480,
         "height": 320,
@@ -16,7 +16,7 @@
         "spawn": {
             "x": 396,
             "y": 484,
-            "map": "/games/pokemon/maps/pallet-town.json"
+            "map": "/games/pk/maps/pallet-town.json"
         },
         "boxes": {
             "hit": {

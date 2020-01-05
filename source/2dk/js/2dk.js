@@ -1,14 +1,3 @@
-// Load the SASS
-require( "../sass/2dk.scss" );
-
-
-
-// Load the JS
-import { Loader, Player, Hero, Map } from "./lib/index";
-const paramalama = require( "paramalama" );
-
-
-
 /*******************************************************************************
 * 2dk Development Notes
 ********************************************************************************
@@ -25,13 +14,29 @@ IDEA: Procedural map paint with cellauto JS.
 ********************************************************************************
 * Studio editor
 ********************************************************************************
-* Canvas resolution zoom in/out
+* Credits text file (tiles, sprites, sounds, etc...)
 * History states for painting
-* Export map PNG
+* Export map PNGs
+* Hero sprite pins (sets map.spawn(x, y))
 
 
 ********************************************************************************
-* Tiles (animated?, canvas, render to layer (bg, fg), tileset, groups)
+* Events
+********************************************************************************
+* NOUN system for events
+* NOUNS: DOOR, BOUNDARY, CUTSCENE, LOADSCREEN?, INTRO?, OUTRO?
+
+
+********************************************************************************
+* Dialogues
+********************************************************************************
+* Screen dialogues, Array of dialogue objects
+* Plain text dialogues advance with A
+* Response-based prompt dialogues with A: yes, B: no
+
+
+********************************************************************************
+* Map Tiles (animated?, canvas, render to layer (bg, fg), tileset, groups)
 ********************************************************************************
 * Saves Array of tile Objects
 * Adhere to map resolution scaling
@@ -82,41 +87,36 @@ IDEA: Procedural map paint with cellauto JS.
 
 
 ********************************************************************************
-* Map Sound (crossfade, dim on pause)
-********************************************************************************
-
-
-********************************************************************************
 ********************************************************************************
 *******************************************************************************/
+// Load CSS
+require( "../sass/2dk.scss" );
+
+
+
+// Load JS
+import { Loader, Player } from "./lib/index";
+const paramalama = require( "paramalama" );
+
+
+
+// App Class
 class App {
     constructor () {
         this.query = paramalama( window.location.search );
         this.loader = new Loader();
-        this.loader.loadJson( `/games/${this.query.game}/game.json` ).then(( json ) => {
-            // Player
-            this.player = new Player( json.game );
-
-            // Hero
-            this.hero = new Hero( json.hero );
-            this.player.setHero( this.hero );
-
-            // Map
-            this.loader.loadJson( json.hero.spawn.map ).then(( data ) => {
-                this.map = new Map( data );
-                this.player.setMap( this.map );
-
-                // START!
-                this.player.start();
-            });
+        this.loader.loadUrl( `/games/${this.query.game}/game.json` ).then(( json ) => {
+            this.player = new Player( json );
         });
     }
 }
 
 
-// Create {app} instance
+
+// App Instace
 window.app = new App();
 
 
-// Export {app} instance
+
+// App Export
 export default window.app;

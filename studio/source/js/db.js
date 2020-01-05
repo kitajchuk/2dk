@@ -204,8 +204,8 @@ class DB {
             map.width = map.tilewidth * map.tilesize;
             map.image = `/games/${this.gameId}/assets/tiles/${data.image}`;
             map.sound = data.sound ? `/games/${this.gameId}/assets/sounds/${data.sound}` : map.sound;
-            map.snapshot = `/games/${this.gameId}/assets/snapshots/${map.id}.png`;
-            map.thumbnail = `/games/${this.gameId}/assets/snapshots/${map.id}-thumb.png`;
+            // map.snapshot = `/games/${this.gameId}/assets/snapshots/${map.id}.png`;
+            // map.thumbnail = `/games/${this.gameId}/assets/snapshots/${map.id}-thumb.png`;
 
             for ( let y = map.tileheight; y--; ) {
                 map.textures.background[ y ] = [];

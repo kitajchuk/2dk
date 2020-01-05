@@ -6,6 +6,27 @@
     width: 100%;
     height: 100%;
     z-index: 10;
+
+    &:before {
+        content: "Press Start";
+        background-color: $black;
+        transition: opacity 1000ms ease-in-out;
+        pointer-events: none;
+        position: absolute;
+        left: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: $teal;
+    }
+
+    .is-started &:before {
+        content: "";
+        opacity: 0;
+    }
 }
 ._2dk__gamepad__dpad div,
 ._2dk__gamepad__btns div {

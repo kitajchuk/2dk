@@ -571,7 +571,7 @@ class Editor {
             const targ = $( e.target );
             const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
 
-            if ( sampler.is( ".is-playing" ) ) {
+            if ( sampler.length && sampler.is( ".is-playing" ) ) {
                 EditorUtils.processSound( sampler, this.data.game.id );
             }
         });

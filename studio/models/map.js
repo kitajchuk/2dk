@@ -10,10 +10,15 @@ module.exports = {
     "tileheight": 32,
     "collider": 16,
     "image": "",
-    "snapshot": "",
-    "thumbnail": "",
+    "snapshot": "/static/img/icon/apple-icon.png",
+    "thumbnail": "/static/img/icon/apple-icon.png",
     "sound": "",
+    "spawn": {
+        "x": 0,
+        "y": 0
+    },
     "tiles": [],
+    "events": [],
     "objects": [],
     "collision": [],
     "textures": {

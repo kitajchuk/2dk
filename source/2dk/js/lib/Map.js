@@ -125,6 +125,26 @@ class MapLocation {
         for ( let id in this.map.data.textures ) {
             this.setLayer( id );
         }
+
+        if ( this.map.gamebox.player.debug ) {
+            this.setDebug();
+        }
+    }
+
+
+    setDebug () {
+        this.layers.debug = new MapLayer({
+            id: "debug",
+            width: this.map.width,
+            height: this.map.height
+        });
+
+        drawGridLines(
+            this.layers.debug.context,
+            this.map.width,
+            this.map.height,
+            this.map.data.gridsize
+        );
     }
 
 
@@ -150,8 +170,9 @@ class MapLocation {
 
 
 class Map {
-    constructor ( data ) {
+    constructor ( data, gamebox ) {
         this.data = data;
+        this.gamebox = gamebox;
         this.loader = new Loader();
         this.location = null;
         this.width = data.width / data.resolution;
@@ -161,6 +182,17 @@ class Map {
             y: 0
         };
         this.build();
+    }
+
+
+    destroy () {
+        this.data = null;
+        this.element.parentNode.removeChild( this.element );
+        this.element = null;
+        this.objects = null;
+        this.layers = null;
+        this.image = null;
+        this.location = null;
     }
 
 
@@ -190,8 +222,8 @@ class Map {
                     this.addLayer( id );
                 }
 
-                if ( this.player.debug ) {
-                    this.addDebugLayer();
+                if ( this.gamebox.player.debug ) {
+                    this.addLayer( "debug" );
                 }
 
                 resolve();
@@ -234,24 +266,6 @@ class Map {
     addLayer ( id ) {
         this.layers.appendChild( this.location.layers[ id ].canvas );
     }
-
-
-    addDebugLayer () {
-        this.layers.debug = new MapLayer({
-            id: "debug",
-            width: this.width,
-            height: this.height
-        });
-
-        drawGridLines(
-            this.layers.debug.context,
-            this.width,
-            this.height,
-            this.data.gridsize
-        );
-
-        this.layers.appendChild( this.layers.debug.canvas );
-    }
 }
 
 
@@ -259,6 +273,7 @@ class Map {
 module.exports = {
     Map,
     MapLayer,
+    MapLocation,
     drawMapTiles,
     drawGridLines
 };

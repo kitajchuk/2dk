@@ -13,7 +13,6 @@ class Sprite {
         this.height = data.height;
         this.loader = new Loader();
         this.cycling = false;
-        this.jumping = false;
         this.dir = "";
         this.offset = {
             x: data.spawn.x,
@@ -40,6 +39,17 @@ class Sprite {
         }
 
         this.build();
+    }
+
+
+    destroy () {
+        this.data = null;
+        this.element.parentNode.removeChild( this.element );
+        this.element = null;
+        this.child = null;
+        this.image = null;
+        this.$element = null;
+        this.$child = null;
     }
 
 
@@ -137,10 +147,9 @@ class Sprite {
 
 
 class Hero extends Sprite {
-    constructor ( data ) {
-        // Enfore the heroes journey
-        data.id = "hero";
+    constructor ( data, gamebox ) {
         super( data );
+        this.gamebox = gamebox;
     }
 
 
@@ -307,19 +316,19 @@ class NPC extends Sprite {
 
             const css = {};
 
-            if ( this.gamebox.hero.dir === Config.moves.LEFT ) {
+            if ( this.gamebox.hero.dir === "left" ) {
                 css.x = this.offset.x - this.gamebox.map.data.gridsize;
             }
 
-            if ( this.gamebox.hero.dir === Config.moves.RIGHT ) {
+            if ( this.gamebox.hero.dir === "right" ) {
                 css.x = this.offset.x + this.gamebox.map.data.gridsize;
             }
 
-            if ( this.gamebox.hero.dir === Config.moves.UP ) {
+            if ( this.gamebox.hero.dir === "up" ) {
                 css.y = this.offset.y - this.gamebox.map.data.gridsize;
             }
 
-            if ( this.gamebox.hero.dir === Config.moves.DOWN ) {
+            if ( this.gamebox.hero.dir === "down" ) {
                 css.y = this.offset.y + this.gamebox.map.data.gridsize;
             }
 

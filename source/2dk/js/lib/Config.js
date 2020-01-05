@@ -13,20 +13,6 @@ module.exports = {
         DOWNLEFT: 333,
         DOWNRIGHT: 444,
     },
-    moves: {
-        UP: "up",
-        LEFT: "left",
-        DOWN: "down",
-        RIGHT: "right",
-    },
-    values: {
-        // px
-        step: 1,
-        // ms
-        speed: 6,
-        // ms
-        repeat: 50,
-    },
     verbs: {
         PUSH: "push",
         PULL: "pull",
@@ -35,6 +21,26 @@ module.exports = {
         READ: "read",
         OPEN: "open",
         HIT: "hit",
+    },
+    events: {
+        DOOR: "door",
+        BOUNDARY: "boundary",
+        CUTSCENE: "cutscene",
+    },
+    tiles: {
+        GRASS: "grass",
+        WATER: "water",
+        STAIRS: "stairs",
+        LEDGE: "ledge",
+        SWITCH: "switch",
+    },
+    values: {
+        // px
+        step: 1,
+        // ms
+        speed: 6,
+        // ms
+        repeat: 50,
     },
     colors: {
         grey: "#959595",
@@ -57,6 +63,7 @@ module.exports = {
         bounce: 300,
         duration: {
             pushed: 0.5,
+            boundary: 1.0,
         }
     }
 };

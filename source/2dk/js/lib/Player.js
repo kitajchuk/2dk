@@ -6,14 +6,17 @@ const paramalama = require( "paramalama" );
 
 
 class Player {
+    // game, hero
     constructor ( data ) {
         this.data = data;
+        this.ready = false;
         this.paused = true;
-        this.query = paramalama( window.location.search );
-        this.debug = this.query.debug ? true : false;
-        this.gamepad = new GamePad();
-        this.width = data.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.width;
-        this.height = data.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.height;
+        this.stopped = false;
+        this.debug = paramalama( window.location.search ).debug ? true : false;
+        this.width = data.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
+        this.height = data.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
+        this.gamepad = new GamePad( this );
+        this.gamebox = new GameBox( this );
         this.detect();
         this.build();
         this.bind();
@@ -71,64 +74,75 @@ class Player {
 
         // Screen size / Orientation change
         window.onresize = () => {
-            this.width = this.data.fullscreen ? (this.sac ? screen.height : Math.max( window.innerWidth, window.innerHeight )) : this.data.width;
-            this.height = this.data.fullscreen ? (this.sac ? screen.width : Math.min( window.innerWidth, window.innerHeight )) : this.data.height;
+            this.width = this.data.game.fullscreen ? (this.sac ? screen.height : Math.max( window.innerWidth, window.innerHeight )) : this.data.game.width;
+            this.height = this.data.game.fullscreen ? (this.sac ? screen.width : Math.min( window.innerWidth, window.innerHeight )) : this.data.game.height;
         };
     }
 
 
-    init () {
-        this.gamebox = new GameBox( this );
-        this.paused = false;
+    stop () {
+        this.stopped = true;
+        this.gamebox.pause( this.stopped );
     }
 
 
-    start () {
-        this.hero.load().then(() => {
-            this.map.load().then( this.init.bind( this ) );
-        });
+    resume () {
+        this.stopped = false;
+        this.gamebox.pause( this.stopped );
     }
 
 
     startPress () {
+        if ( this.stopped ) {
+            return;
+        }
+
+        if ( !this.ready ) {
+            this.element.classList.add( "is-started" );
+            this.ready = true;
+        }
+
         this.paused = !this.paused;
         this.gamebox.pause( this.paused );
     }
 
 
     aPress () {
+        if ( this.stopped ) {
+            return;
+        }
+
+        if ( this.paused ) {
+            return;
+        }
+
         this.gamebox.pressA();
     }
 
 
     dPadPress ( dir ) {
+        if ( this.stopped ) {
+            return;
+        }
+
         if ( this.paused ) {
             return;
         }
 
-        this.gamebox.press( dir );
+        this.gamebox.pressD( dir );
     }
 
 
     dPadRelease ( dir ) {
+        if ( this.stopped ) {
+            return;
+        }
+
         if ( this.paused ) {
             return;
         }
 
-        this.gamebox.release( dir );
-    }
-
-
-    setMap ( map ) {
-        this.map = map;
-        this.map.player = this;
-        this.map.addSprite( this.hero );
-    }
-
-
-    setHero ( hero ) {
-        this.hero = hero;
-        this.hero.player = this;
+        this.gamebox.releaseD( dir );
     }
 }
 

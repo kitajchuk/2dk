@@ -1,7 +1,3 @@
-const $ = require( "properjs-hobo" );
-
-
-
 class Loader {
     constructor () {}
 
@@ -22,22 +18,13 @@ class Loader {
     }
 
 
-    loadJson ( url ) {
+    loadUrl ( url ) {
+        const isJson = /\.json$/.test( url );
+
         return new Promise(( resolve ) => {
-            $.ajax({
-                url: url,
-                dataType: "text"
-
-            }).then(( json ) => {
-                try {
-                    json = JSON.parse( json );
-
-                } catch ( error ) {
-                    throw error;
-                }
-
-                resolve( json );
-            })
+            fetch( url ).then(( response ) => {
+                resolve( (isJson ? response.json() : response) );
+            });
         });
     }
 }
