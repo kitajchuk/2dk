@@ -10,13 +10,14 @@ const CACHE_URLS = [
 
 
 
-self.addEventListener( "install", ( event ) => {
-    event.waitUntil(
-        caches.open( CACHE_NAME ).then(( cache ) => {
-            return cache.addAll( CACHE_URLS );
-        })
-    );
-});
+// Using the client-js to preload the asset bundle so this would be redundant...
+// self.addEventListener( "install", ( event ) => {
+//     event.waitUntil(
+//         caches.open( CACHE_NAME ).then(( cache ) => {
+//             return cache.addAll( CACHE_URLS );
+//         })
+//     );
+// });
 
 
 
