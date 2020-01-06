@@ -1,4 +1,4 @@
-const CACHE_NAME = "v7";
+const CACHE_NAME = "v8";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     // "/css/2dk.css",

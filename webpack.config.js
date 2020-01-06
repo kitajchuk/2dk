@@ -32,17 +32,17 @@ const siteConfig = Object.assign( {}, webpackConfig, {
                 postcss: [autoprefixer( { browsers: ["last 2 versions"] } )]
             }
         }),
-        // new BrowserSyncPlugin({
-        //     open: true,
-        //     host: "localhost",
-        //     port: config.browser.port,
-        //     proxy: `http://localhost:${config.express.port}`,
-        //     files: [
-        //         "template/**/*.html",
-        //         "template/**/*.json"
-        //     ],
-        //     startPath: "/games/la/"
-        // })
+        new BrowserSyncPlugin({
+            open: true,
+            host: "localhost",
+            port: config.browser.port,
+            proxy: `http://localhost:${config.express.port}`,
+            files: [
+                "template/**/*.html",
+                "template/**/*.json"
+            ],
+            startPath: "/games/la/"
+        })
     ],
 
 

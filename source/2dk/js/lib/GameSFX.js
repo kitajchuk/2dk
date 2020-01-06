@@ -20,7 +20,10 @@ class GameSFX {
                 this.element[ prop ] = this.sounds[ id ].props[ prop ];
             }
 
-            this.element.src = this.sounds[ id ].src;
+            if ( this.element.src.split( "/" ).pop() !== this.sounds[ id ].src.split( "/" ).pop() ) {
+                this.element.src = this.sounds[ id ].src;
+            }
+
             this.element.play();
         }
     }
