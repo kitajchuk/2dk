@@ -11,8 +11,6 @@ const envVars = {
     webhookSecret: rootConfig.prismic.webhookSecret || process.env.PRISMIC_API_SECRET
 };
 const config = {
-    // App name
-    app: "games",
     // The URL of your actual site, Netlify domain: `kitajchuk.com`
     url: "https://2dk.kitajchuk.com",
     // Theme to load from ./source and ./template

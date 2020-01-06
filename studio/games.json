@@ -3,16 +3,18 @@
         "id": "la",
         "name": "Links Reawakening",
         "width": 480,
-        "height": 320,
+        "height": 270,
         "fullscreen": false,
-        "icon": "/img/icon/apple-icon.png"
+        "icon": "/img/icon/apple-icon.png",
+        "version": 3
     },
     {
         "id": "pk",
         "name": "Pokemon",
         "width": 480,
-        "height": 320,
+        "height": 270,
         "fullscreen": false,
-        "icon": "/img/icon/apple-icon.png"
+        "icon": "/img/icon/apple-icon.png",
+        "version": 2
     }
 ]

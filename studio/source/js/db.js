@@ -176,6 +176,9 @@ class DB {
                             snapshot.write( thumbFile );
                             lager.info( `DB-${this.gameId}: write file ${thumbFile.split( "/" ).pop()}` );
                         });
+
+                    } else {
+                        this.updateWorker();
                     }
 
                     resolve({
@@ -226,6 +229,8 @@ class DB {
 
                 this.cache.set( "maps", maps );
 
+                this.updateWorker();
+
                 resolve({
                     map,
                     maps,
@@ -267,6 +272,8 @@ class DB {
 
                 lager.info( `DB-${this.gameId}: update map ${map.id}` );
 
+                this.updateWorker();
+
                 resolve({
                     map: this._getMergedMap( map.id ),
                     maps,
@@ -292,6 +299,8 @@ class DB {
 
                 lager.info( `DB-${this.gameId}: deleted map ${map.id}` );
 
+                this.updateWorker();
+
                 resolve({
                     map,
                     maps,
@@ -313,11 +322,53 @@ class DB {
 
                 lager.info( `DB-${this.gameId}: deleted ${data.type} file ${data.fileName}` );
 
+                this.updateWorker();
+
                 resolve({
                     type: data.type,
                     files,
                 });
             });
+        });
+    }
+
+    /******************************************************************************
+     * Service Worker CACHE LIST
+    *******************************************************************************/
+    updateWorker () {
+        let worker = DB.getTemplate( "worker.js" );
+        const file = path.join( this.gameRoot, "worker.js" );
+        const game = this.cache.get( "game" );
+        const caches = [
+            `"/games/${this.gameId}/game.json",`,
+        ];
+
+        this.cache.get( "tiles" ).forEach(( tile ) => {
+            caches.push( `    "/games/${this.gameId}/assets/tiles/${tile}",` );
+        });
+
+        this.cache.get( "sprites" ).forEach(( sprite ) => {
+            caches.push( `    "/games/${this.gameId}/assets/sprites/${sprite}",` );
+        });
+
+        this.cache.get( "sounds" ).forEach(( sound ) => {
+            caches.push( `    "/games/${this.gameId}/assets/sounds/${sound}",` );
+        });
+
+        this.cache.get( "maps" ).forEach(( map ) => {
+            caches.push( `    "/games/${this.gameId}/maps/${map.id}.json",` );
+        });
+
+        game.game.version = game.game.version + 1;
+
+        worker = worker.replace( "{__CACHE_VERSION__}", `v${game.game.version}` );
+        worker = worker.replace( "{__CACHE_LIST__}", caches.join( "\n" ) );
+
+        Utils.writeFile( file, worker, () => {
+            lager.info( `DB-${this.gameId}: worker updated` );
+            lager.data( caches );
+
+            DB.updateGame( game );
         });
     }
 }
@@ -348,6 +399,11 @@ DB.getModel = ( model ) => {
 };
 
 
+DB.getTemplate = ( template ) => {
+    return Utils.readFile( path.join( __dirname, `../../templates/${template}` ) );
+};
+
+
 DB.getGames = () => {
     return new Promise(( resolve ) => {
         Utils.readJson( path.join( process.cwd(), "games.json" ), ( json ) => {
@@ -355,6 +411,26 @@ DB.getGames = () => {
                 games: json,
             });
         });
+    });
+};
+
+
+DB.updateGame = ( data ) => {
+    let games = path.join( process.cwd(), "games.json" );
+    const game = path.join( process.cwd(), "games", data.game.id, "game.json" );
+
+    // Save new game data
+    Utils.writeJson( game, data );
+
+    // Update games.json root
+    Utils.readJson( games, ( json ) => {
+        json.forEach(( gm, i ) => {
+            if ( gm.id === data.game.id ) {
+                json[ i ] = data.game;
+            }
+        });
+
+        Utils.writeJson( games, json );
     });
 };
 
@@ -368,6 +444,7 @@ DB.addGame = ( data ) => {
             const gameDir = path.join( process.cwd(), "games", game.game.id );
             const mapsDir = path.join( gameDir, "maps" );
             const assetsDir = path.join( gameDir, "assets" );
+            const index = DB.getTemplate( "index.html" ).replace( "{__GAME_NAME__}", game.game.name );
 
             Utils.makeDir( gameDir );
             Utils.makeDir( mapsDir );
@@ -376,6 +453,7 @@ DB.addGame = ( data ) => {
             Utils.makeDir( path.join( assetsDir, "sprites" ) );
             Utils.makeDir( path.join( assetsDir, "sounds" ) );
             Utils.makeDir( path.join( assetsDir, "snapshots" ) );
+            Utils.writeFile( path.join( gameDir, "index.html" ), index );
             Utils.writeJson( games, gameJson, () => {
                 games = path.join( gameDir, "game.json" );
 

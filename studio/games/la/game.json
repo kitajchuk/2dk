@@ -5,40 +5,15 @@
         "width": 480,
         "height": 270,
         "fullscreen": false,
-        "icon": "/img/icon/apple-icon.png"
+        "icon": "/img/icon/apple-icon.png",
+        "version": 3
     },
     "hero": {
         "id": "hero",
         "name": "BK",
-        "width": 70,
-        "height": 70,
-        "image": "/games/la/assets/sprites/hero.png",
-        "spawn": {
-            "x": 1152,
-            "y": 256,
-            "map": "/games/la/maps/mabe-village-west.json"
-        },
-        "boxes": {
-            "hit": {
-                "x": 23,
-                "y": 29,
-                "width": 24,
-                "height": 30
-            },
-            "collision": {
-                "x": 23,
-                "y": 37,
-                "width": 24,
-                "height": 22
-            }
-        }
-    },
-    "hero_la": {
-        "id": "hero--la",
-        "name": "BK",
         "width": 46,
         "height": 46,
-        "image": "/games/la/assets/sprites/hero_la.png",
+        "image": "/games/la/assets/sprites/hero.png",
         "spawn": {
             "x": 960,
             "y": 480,

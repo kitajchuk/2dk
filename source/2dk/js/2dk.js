@@ -22,8 +22,9 @@ IDEA: Procedural map paint with cellauto JS.
 
 ********************************************************************************
 * Player
+* https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
+* https://developers.google.com/web/fundamentals/primers/service-workers
 ********************************************************************************
-* Service Workers for cache+offline? (AppCache is DEAD!)
 * Async loadImg with fetch() rather than Image.onload...?
 * Pack JSON for smaller file size...
 
@@ -41,6 +42,7 @@ IDEA: Procedural map paint with cellauto JS.
 * Screen dialogues, Array of dialogue objects
 * Plain text dialogues advance with A
 * Response-based prompt dialogues with A: yes, B: no
+* Move dialogue to the GameBox or Player level...?
 
 
 ********************************************************************************
@@ -53,6 +55,7 @@ IDEA: Procedural map paint with cellauto JS.
 * NOUN system for Hero
 * NOUNS: GRASS, WATER, STAIRS, LEDGE(jump...?), SWITCH(actions...?), QUICK-SAND?
 
+* Interaction tiles like cutting grass and plants or pickin up rocks or plants
 * Event tiles for doors, locatin switching etc...
 * Animated flower tiles
 * Animated water tiles
@@ -104,18 +107,39 @@ require( "../sass/2dk.scss" );
 
 // Load JS
 import { Loader, Player } from "./lib/index";
-const paramalama = require( "paramalama" );
 
 
 
 // App Class
 class App {
     constructor () {
-        this.query = paramalama( window.location.search );
-        this.loader = new Loader();
-        this.loader.loadUrl( `/games/${this.query.game}/game.json` ).then(( json ) => {
-            this.player = new Player( json );
-        });
+        this.gameId = window.location.pathname.replace( /^\/|\/$/g, "" ).split( "/" ).pop();
+        this.worker = `/games/${this.gameId}/worker.js`;
+        this.scope = `/games/${this.gameId}/`;
+
+        if ( "serviceWorker" in navigator ) {
+            navigator.serviceWorker.register( this.worker, {scope: this.scope} ).then(( register ) => {
+                if ( register.installing ) {
+                    console.log( "[2dk] Service worker installing." );
+
+                } else if ( register.waiting ) {
+                    console.log( "[2dk] Service worker installed." );
+
+                } else if ( register.active ) {
+                    console.log( "[2dk] Service worker active!" );
+                }
+
+            }).catch(( error ) => {
+                console.log( "[2dk] Service worker failed", error );
+            });
+        }
+
+        window.onload = () => {
+            this.loader = new Loader();
+            this.loader.loadUrl( "./game.json" ).then(( json ) => {
+                this.player = new Player( json );
+            });
+        };
     }
 }
 

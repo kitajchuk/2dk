@@ -5,7 +5,8 @@ module.exports = {
         "width": 480,
         "height": 270,
         "fullscreen": false,
-        "icon": "/img/icon/apple-icon.png"
+        "icon": "/img/icon/apple-icon.png",
+        "version": 1
     },
     "hero": {
         "id": "",

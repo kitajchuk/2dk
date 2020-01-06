@@ -13,11 +13,6 @@
                 "uid": "home",
                 "text": "Home",
                 "slug": "/"
-            },
-            {
-                "uid": "games",
-                "text": "Games",
-                "slug": "/games/"
             }
         ]
     },

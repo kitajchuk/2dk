@@ -22,7 +22,7 @@
 
 
 /******************************************************************************
- * Hero (ALTTP style)
+ * Hero (LA style)
 *******************************************************************************/
 ._2dk__hero {
     height: $hero-h;
@@ -36,95 +36,42 @@
             background-position: 0 0;
         }
         &.up {
+            background-position: (-$hero-w) 0;
+        }
+        &.left {
+            background-position: (-$hero-w * 2) 0;
+        }
+        &.right {
+            background-position: (-$hero-w * 3) 0;
+        }
+
+        &.walk.down {
             background-position: 0 (-$hero-h);
+            animation: hero-la-down $hero-speed steps( $hero-steps ) infinite;
         }
-        &.left {
+        &.walk.up {
             background-position: 0 (-$hero-h * 2);
+            animation: hero-la-up $hero-speed steps( $hero-steps ) infinite;
         }
-        &.right {
+        &.walk.left {
             background-position: 0 (-$hero-h * 3);
-        }
-
-        &.walk.down {
-            animation: hero-down $hero-speed steps( $hero-steps ) infinite;
-        }
-        &.walk.up {
-            animation: hero-up $hero-speed steps( $hero-steps ) infinite;
-        }
-        &.walk.left {
-            animation: hero-left $hero-speed steps( $hero-steps ) infinite;
+            animation: hero-la-left $hero-speed steps( $hero-steps ) infinite;
         }
         &.walk.right {
-            animation: hero-right $hero-speed steps( $hero-steps ) infinite;
-        }
-    }
-}
-@keyframes hero-down {
-    100% { background-position: (-$hero-w * $hero-steps) 0; }
-}
-@keyframes hero-up {
-    100% { background-position: (-$hero-w * $hero-steps) (-$hero-h); }
-}
-@keyframes hero-left {
-    100% { background-position: (-$hero-w * $hero-steps) (-$hero-h * 2); }
-}
-@keyframes hero-right {
-    100% { background-position: (-$hero-w * $hero-steps) (-$hero-h * 3); }
-}
-
-
-
-/******************************************************************************
- * Hero (LA style)
-*******************************************************************************/
-._2dk__hero--la {
-    height: $hero-la-h;
-    width: $hero-la-w;
-
-    ._2dk__child {
-        background-repeat: no-repeat;
-        background-size: $hero-la-sw $hero-la-sh;
-
-        &.down {
-            background-position: 0 0;
-        }
-        &.up {
-            background-position: (-$hero-la-w) 0;
-        }
-        &.left {
-            background-position: (-$hero-la-w * 2) 0;
-        }
-        &.right {
-            background-position: (-$hero-la-w * 3) 0;
-        }
-
-        &.walk.down {
-            background-position: 0 (-$hero-la-h);
-            animation: hero-la-down $hero-la-speed steps( $hero-la-steps ) infinite;
-        }
-        &.walk.up {
-            background-position: 0 (-$hero-la-h * 2);
-            animation: hero-la-up $hero-la-speed steps( $hero-la-steps ) infinite;
-        }
-        &.walk.left {
-            background-position: 0 (-$hero-la-h * 3);
-            animation: hero-la-left $hero-la-speed steps( $hero-la-steps ) infinite;
-        }
-        &.walk.right {
-            background-position: 0 (-$hero-la-h * 4);
-            animation: hero-la-right $hero-la-speed steps( $hero-la-steps ) infinite;
+            background-position: 0 (-$hero-h * 4);
+            animation: hero-la-right $hero-speed steps( $hero-steps ) infinite;
         }
     }
 }
 @keyframes hero-la-down {
-    100% { background-position: (-$hero-la-w * $hero-la-steps) (-$hero-la-h); }
+    100% { background-position: (-$hero-w * $hero-steps) (-$hero-h); }
 }
 @keyframes hero-la-up {
-    100% { background-position: (-$hero-la-w * $hero-la-steps) (-$hero-la-h * 2); }
+    100% { background-position: (-$hero-w * $hero-steps) (-$hero-h * 2); }
 }
 @keyframes hero-la-left {
-    100% { background-position: (-$hero-la-w * $hero-la-steps) (-$hero-la-h * 3); }
+    100% { background-position: (-$hero-w * $hero-steps) (-$hero-h * 3); }
 }
 @keyframes hero-la-right {
-    100% { background-position: (-$hero-la-w * $hero-la-steps) (-$hero-la-h * 4); }
+    100% { background-position: (-$hero-w * $hero-steps) (-$hero-h * 4); }
 }

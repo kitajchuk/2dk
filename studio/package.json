@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "npm run hobo",
     "start": "electron .",
-    "hobo": "cd ./node_modules/properjs-hobo && npm install && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'"
+    "hobo": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [

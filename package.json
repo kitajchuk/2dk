@@ -6,11 +6,12 @@
   "version": "1.0.0",
   "main": "./builder/main.js",
   "scripts": {
+    "postinstall": "npm run hobo",
     "prestart": "npm run static:games",
     "start": "(npm run server & npm run watch)",
     "studio": "cd studio && npm start",
     "bootstrap": "node clutch.install.js",
-    "bootstrap:hobo": "cd ./node_modules/properjs-hobo && npm install && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
+    "hobo": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
     "watch": "export NODE_ENV=sandbox ; ./node_modules/.bin/webpack --env.sandbox --hide-modules --colors --watch",
     "server": "export NODE_ENV=sandbox ; ./node_modules/.bin/pm2 --no-daemon --watch -a start ./ecosystem.config.js",
     "server:stop": "./node_modules/.bin/pm2 stop 'all' --watch",

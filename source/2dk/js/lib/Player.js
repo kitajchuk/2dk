@@ -6,7 +6,7 @@ const paramalama = require( "paramalama" );
 
 
 class Player {
-    // game, hero
+    // game, hero, etc...
     constructor ( data ) {
         this.data = data;
         this.ready = false;

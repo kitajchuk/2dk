@@ -5,31 +5,32 @@
         "width": 480,
         "height": 270,
         "fullscreen": false,
-        "icon": "/img/icon/apple-icon.png"
+        "icon": "/img/icon/apple-icon.png",
+        "version": 2
     },
     "hero": {
-        "id": "link",
+        "id": "hero",
         "name": "BK",
-        "width": 70,
-        "height": 70,
-        "image": "/games/la/assets/sprites/hero.png",
+        "width": 46,
+        "height": 46,
+        "image": "/games/la/assets/sprites/hero_la.png",
         "spawn": {
-            "x": 396,
-            "y": 484,
+            "x": 960,
+            "y": 480,
             "map": "/games/pk/maps/pallet-town.json"
         },
         "boxes": {
             "hit": {
-                "x": 23,
-                "y": 29,
-                "width": 24,
-                "height": 30
+                "x": 10,
+                "y": 24,
+                "width": 26,
+                "height": 18
             },
             "collision": {
-                "x": 23,
-                "y": 37,
-                "width": 24,
-                "height": 22
+                "x": 10,
+                "y": 24,
+                "width": 26,
+                "height": 18
             }
         }
     }
