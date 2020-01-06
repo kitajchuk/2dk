@@ -1,35 +1,52 @@
+const MediaBox = require( "properjs-mediabox" );
+
+
+
 class GameSFX {
     constructor ( gamebox ) {
+        this.channel = "bgm";
         this.gamebox = gamebox;
-        this.sounds = {};
+        this.mediabox = new MediaBox();
     }
 
 
     // id, src, props(loop, etc...)
     addSound ( data ) {
-        if ( !this.sounds[ data.id ] ) {
-            this.sounds[ data.id ] = {
-                node: new Audio( data.src ),
-                props: data.props,
-            };
+        return new Promise(( resolve ) => {
+            const sound = this.mediabox.getMedia( data.id );
 
-            for ( let prop in data.props ) {
-                this.sounds[ data.id ].node[ prop ] = data.props[ prop ];
+            if ( !sound ) {
+                this.mediabox.addAudio({
+                    id: data.id,
+                    src: [data.src],
+                    channel: data.channel || this.channel,
+                    onloaded: () => {
+                        for ( let prop in data.props ) {
+                            this.mediabox.setMediaProp( data.id, prop, data.props[ prop ] );
+                        }
+
+                        resolve();
+                    }
+                });
             }
-        }
+        });
     }
 
 
     playSound ( id ) {
-        if ( this.sounds[ id ] ) {
-            this.sounds[ id ].node.play();
+        const sound = this.mediabox.getMedia( id );
+
+        if ( sound ) {
+            this.mediabox.fadeMediaIn( id, 500 );
         }
     }
 
 
     stopSound ( id ) {
-        if ( this.sounds[ id ] ) {
-            this.sounds[ id ].node.pause();
+        const sound = this.mediabox.getMedia( id );
+
+        if ( sound ) {
+            this.mediabox.fadeMediaOut( id, 500 );
         }
     }
 }

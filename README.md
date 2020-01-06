@@ -14,10 +14,16 @@
 
 ### Getting started
 
-Install the packages for the project:
+Install the packages for Clutch:
 
 ```shell
 npm run bootstrap
+```
+
+Install the packages for the studio software:
+
+```shell
+cd studio && npm i
 ```
 
 Start the Clutch local development kit:

@@ -106,7 +106,7 @@ require( "../sass/2dk.scss" );
 
 
 // Load JS
-import { Loader, Player } from "./lib/index";
+import { Player } from "./lib/index";
 
 
 
@@ -135,10 +135,8 @@ class App {
         }
 
         window.onload = () => {
-            this.loader = new Loader();
-            this.loader.loadUrl( "./game.json" ).then(( json ) => {
-                this.player = new Player( json );
-            });
+            this.player = new Player();
+            this.player.load();
         };
     }
 }

@@ -1,4 +1,5 @@
 const Config = require( "./Config" );
+const Loader = require( "./Loader" );
 const GamePad = require( "./GamePad" );
 const GameBox = require( "./GameBox" );
 const paramalama = require( "paramalama" );
@@ -6,21 +7,40 @@ const paramalama = require( "paramalama" );
 
 
 class Player {
-    // game, hero, etc...
-    constructor ( data ) {
-        this.data = data;
+    constructor () {
         this.ready = false;
         this.paused = true;
         this.stopped = false;
         this.query = paramalama( window.location.search );
         this.debug = this.query.debug ? true : false;
-        this.width = data.game.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
-        this.height = data.game.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
-        this.gamepad = new GamePad( this );
-        this.gamebox = new GameBox( this );
         this.detect();
         this.build();
-        this.bind();
+    }
+
+
+    load () {
+        this.loader = new Loader();
+        this.loader.loadUrl( "./game.json" ).then(( data ) => {
+            this.data = data;
+            this.width = data.game.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
+            this.height = data.game.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
+
+            let counter = 0;
+
+            Promise.all(data.bundle.map(( url ) => {
+                return this.loader.loadUrl( url ).then(() => {
+                    counter++;
+
+                    this.splashLoad.innerHTML = `<div>Loaded ${counter} of ${data.bundle.length} game resources...</div>`;
+                });
+
+            })).then(( values ) => {
+                this.splashLoad.innerHTML = `<div>Press Start</div>`;
+                this.gamepad = new GamePad( this );
+                this.gamebox = new GameBox( this );
+                this.bind();
+            });
+        });
     }
 
 
@@ -42,9 +62,15 @@ class Player {
         this.element.className = "_2dk";
         this.splash = document.createElement( "div" );
         this.splash.className = "_2dk__splash";
-        this.splash.innerHTML = `<div>Rotate to Landscape.</div><div>${this.sac ? "Installed" : "+Webapp"}</div>`;
+        this.splashInfo = document.createElement( "div" );
+        this.splashInfo.className = "_2dk__splash__info";
+        this.splashInfo.innerHTML = `<div>Rotate to Landscape.</div><div>${this.sac ? "Installed" : "+Webapp"}</div>`;
+        this.splashLoad = document.createElement( "div" );
+        this.splashLoad.className = "_2dk__splash__load";
+        this.splashLoad.innerHTML = `<div>Loading game bundle...</div>`;
+        this.splash.appendChild( this.splashInfo );
+        this.splash.appendChild( this.splashLoad );
         this.element.appendChild( this.splash );
-        this.element.appendChild( this.gamepad.element );
         document.body.appendChild( this.element );
     }
 

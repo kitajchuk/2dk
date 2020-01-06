@@ -367,12 +367,13 @@ const handleTouchEnd = ( control ) => {
 
 
 class GamePad extends Controller {
-    constructor () {
+    constructor ( player ) {
         super();
 
         if ( !instance ) {
             instance = this;
 
+            this.player = player;
             this.build();
             this.bind();
         }
@@ -420,6 +421,8 @@ class GamePad extends Controller {
                 this.btns.appendChild( touchControls[ btn ].elem );
             }
         }
+
+        this.player.element.appendChild( this.element );
     }
 }
 

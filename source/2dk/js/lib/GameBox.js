@@ -59,7 +59,6 @@ class GameBox {
             src: this.map.data.sound,
             props: {
                 loop: true,
-                volume: 0.25,
             },
         });
         this.map.data.objects.forEach(( data ) => {

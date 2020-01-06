@@ -7,7 +7,6 @@ const rootNodeModules = path.join( root, "node_modules" );
 const rootClutch = path.join( root, ".clutch" );
 const rootNotes = path.join( root, ".notes" );
 const rootHobo = path.join( rootNodeModules, "properjs-hobo" );
-const rootStudio = path.join( root, "studio" );
 // Leave this alone! You put your values in .clutch/config.json
 // Netlify environment variables need to be set:
 // PRISMIC_API_ACCESS
@@ -21,13 +20,6 @@ const rootConfig = require( "./clutch.root" );
 console.log( "[Clutch] Installing node_modules..." );
 
 child_process.execSync( "npm i" );
-
-
-
-// 6.0 server install
-console.log( "[Clutch] Installing studio node_modules..." );
-
-child_process.execSync( `cd ${rootStudio} && npm i` );
 
 
 

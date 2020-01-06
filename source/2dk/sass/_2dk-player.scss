@@ -5,14 +5,33 @@
     overflow: hidden;
 }
 ._2dk__splash {
+    color: $teal;
+    background-color: $charcoal;
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: 12;
+    z-index: 10;
+    transition: opacity 1000ms ease-in-out;
+
+    .is-started & {
+        opacity: 0;
+    }
+}
+._2dk__splash__load,
+._2dk__splash__info {
     display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    .is-started & {
+        display: none;
+    }
 
     > div:first-child {
         @include wrap();
@@ -21,15 +40,15 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: $charcoal;
-        color: $teal;
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 12;
         text-align: center;
     }
+}
 
+._2dk__splash__info {
     > div:last-child {
         @include wrap();
         background-image: url( "/img/icon/apple-icon.png" );
@@ -42,7 +61,6 @@
         width: 100%;
         height: 100%;
         background-color: transparent;
-        color: $teal;
         display: flex;
         justify-content: center;
         align-items: flex-end;
@@ -89,7 +107,7 @@
 
 
 @media only screen and ( orientation: portrait ) {
-    ._2dk__splash {
+    ._2dk__splash__info {
         display: block;
 
         > div:last-child {
@@ -97,6 +115,14 @@
             transition: all $hero-speed $ease;
             transform: translate3d( 0, 0, 0 );
         }
+    }
+}
+
+
+
+@media only screen and ( orientation: landscape ) {
+    ._2dk__splash__load {
+        display: block;
     }
 }
 

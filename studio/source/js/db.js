@@ -339,27 +339,33 @@ class DB {
         let worker = DB.getTemplate( "worker.js" );
         const file = path.join( this.gameRoot, "worker.js" );
         const game = this.cache.get( "game" );
+        const bundle = [];
         const caches = [
             `"/games/${this.gameId}/game.json",`,
         ];
 
         this.cache.get( "tiles" ).forEach(( tile ) => {
             caches.push( `    "/games/${this.gameId}/assets/tiles/${tile}",` );
+            bundle.push( `/games/${this.gameId}/assets/tiles/${tile}` );
         });
 
         this.cache.get( "sprites" ).forEach(( sprite ) => {
             caches.push( `    "/games/${this.gameId}/assets/sprites/${sprite}",` );
+            bundle.push( `/games/${this.gameId}/assets/sprites/${sprite}` );
         });
 
         this.cache.get( "sounds" ).forEach(( sound ) => {
             caches.push( `    "/games/${this.gameId}/assets/sounds/${sound}",` );
+            bundle.push( `/games/${this.gameId}/assets/sounds/${sound}` );
         });
 
         this.cache.get( "maps" ).forEach(( map ) => {
             caches.push( `    "/games/${this.gameId}/maps/${map.id}.json",` );
+            bundle.push( `/games/${this.gameId}/maps/${map.id}.json` );
         });
 
         game.game.version = game.game.version + 1;
+        game.bundle = bundle;
 
         worker = worker.replace( "{__CACHE_VERSION__}", `v${game.game.version}` );
         worker = worker.replace( "{__CACHE_LIST__}", caches.join( "\n" ) );
