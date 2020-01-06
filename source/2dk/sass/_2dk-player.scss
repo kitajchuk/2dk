@@ -107,6 +107,10 @@
 
 
 @media only screen and ( orientation: portrait ) {
+    ._2dk__splash {
+        z-index: 11;
+    }
+
     ._2dk__splash__info {
         display: block;
 
