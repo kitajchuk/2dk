@@ -24,7 +24,7 @@ class GameBox {
         this.gamesfx = new GameSFX( this );
 
         // Hero
-        this.hero = new Hero( this.player.data.hero, this );
+        this.hero = new Hero( this.player.data.hero_la, this );
 
         // Map
         this.loader.loadUrl( this.hero.data.spawn.map ).then(( data ) => {

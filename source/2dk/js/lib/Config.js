@@ -38,7 +38,7 @@ module.exports = {
         // px
         step: 1,
         // ms
-        speed: 6,
+        speed: 8,
         // ms
         repeat: 50,
     },

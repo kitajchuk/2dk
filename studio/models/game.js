@@ -3,7 +3,7 @@ module.exports = {
         "id": "",
         "name": "",
         "width": 480,
-        "height": 320,
+        "height": 270,
         "fullscreen": false,
         "icon": "/img/icon/apple-icon.png"
     },

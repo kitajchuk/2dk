@@ -12,9 +12,10 @@ class Player {
         this.ready = false;
         this.paused = true;
         this.stopped = false;
-        this.debug = paramalama( window.location.search ).debug ? true : false;
-        this.width = data.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
-        this.height = data.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
+        this.query = paramalama( window.location.search );
+        this.debug = this.query.debug ? true : false;
+        this.width = data.game.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
+        this.height = data.game.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
         this.gamepad = new GamePad( this );
         this.gamebox = new GameBox( this );
         this.detect();

@@ -12,12 +12,20 @@ IDEA: Procedural map paint with cellauto JS.
 
 
 ********************************************************************************
-* Studio editor
+* Studio
 ********************************************************************************
 * Credits text file (tiles, sprites, sounds, etc...)
 * History states for painting
 * Export map PNGs
 * Hero sprite pins (sets map.spawn(x, y))
+
+
+********************************************************************************
+* Player
+********************************************************************************
+* Service Workers for cache+offline? (AppCache is DEAD!)
+* Async loadImg with fetch() rather than Image.onload...?
+* Pack JSON for smaller file size...
 
 
 ********************************************************************************

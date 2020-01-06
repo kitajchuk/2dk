@@ -3,7 +3,7 @@
         "id": "la",
         "name": "Links Reawakening",
         "width": 480,
-        "height": 320,
+        "height": 270,
         "fullscreen": false,
         "icon": "/img/icon/apple-icon.png"
     },
@@ -36,8 +36,8 @@
     "hero_la": {
         "id": "hero--la",
         "name": "BK",
-        "width": 32,
-        "height": 32,
+        "width": 46,
+        "height": 46,
         "image": "/games/la/assets/sprites/hero_la.png",
         "spawn": {
             "x": 960,
@@ -46,16 +46,16 @@
         },
         "boxes": {
             "hit": {
-                "x": 4,
-                "y": 12,
-                "width": 24,
-                "height": 20
+                "x": 10,
+                "y": 24,
+                "width": 26,
+                "height": 18
             },
             "collision": {
-                "x": 4,
-                "y": 12,
-                "width": 24,
-                "height": 20
+                "x": 10,
+                "y": 24,
+                "width": 26,
+                "height": 18
             }
         }
     }
