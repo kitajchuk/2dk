@@ -34,6 +34,32 @@
             }
         }
     },
+    "hero_alttp": {
+        "id": "hero",
+        "name": "BK",
+        "width": 64,
+        "height": 64,
+        "image": "/games/la/assets/sprites/hero_alttp.png",
+        "spawn": {
+            "x": 160,
+            "y": 896,
+            "map": "/games/la/maps/mabe-village-west.json"
+        },
+        "boxes": {
+            "hit": {
+                "x": 17,
+                "y": 26,
+                "width": 30,
+                "height": 28
+            },
+            "collision": {
+                "x": 17,
+                "y": 26,
+                "width": 30,
+                "height": 28
+            }
+        }
+    },
     "bundle": [
         "/games/la/assets/tiles/tiles.png",
         "/games/la/assets/sprites/smoke.png",

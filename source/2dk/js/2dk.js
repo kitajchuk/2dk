@@ -53,14 +53,14 @@ IDEA: Procedural map paint with cellauto JS.
 * NOUN system for Hero
 * NOUNS: GRASS, WATER, STAIRS, LEDGE(jump...?), SWITCH(actions...?), QUICK-SAND?
 
-* Interaction tiles like cutting grass and plants or pickin up rocks or plants
+* Interaction tiles like cutting grass and plants or picking up rocks or plants
 * Event tiles for doors, locatin switching etc...
 * Animated flower tiles
 * Animated water tiles
 
 
 ********************************************************************************
-* Map Objects (colliders, state shifting, sprite OR tileset)
+* Map Objects, Sprites (colliders, state shifting, sprite/tileset)
 ********************************************************************************
 (
     ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit, collision)
@@ -78,7 +78,7 @@ IDEA: Procedural map paint with cellauto JS.
 )
 
 * VERB system for Hero Actions and Object(NPC) Reactions
-* VERBS: Push, Open, Pull, Lift, Toss, Read, Hit
+* VERBS: Face, Walk, Push, Open, Pull, Lift, Toss... Read, Hit?
 
 * Object(NPC) looks at Hero conditions (dir, act, etc...) to determine payload
 * Object(NPC) notifys Hero when an action meets conditions for a payload
@@ -89,10 +89,13 @@ IDEA: Procedural map paint with cellauto JS.
 
 * Butterflies, Cucco's
 
+* Object interaction hints (A Open, A Check, etc...)
+
 * NPCs look at collision layer, object layer colliders, and Hero colliders
 * Hero looks at collision layer and NPC colliders
-
-* Object interaction hints (A Open, A Check, etc...)
+* Sprite packager system
+* Sprites can have a perception box to activate a little before entering screen
+* Remove collision box and resolve to a single hitbox
 
 
 ********************************************************************************
