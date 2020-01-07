@@ -2,8 +2,8 @@
     {
         "id": "la",
         "name": "Links Reawakening",
-        "width": 480,
-        "height": 270,
+        "width": 320,
+        "height": 256,
         "fullscreen": false,
         "icon": "/img/icon/apple-icon.png",
         "version": 8

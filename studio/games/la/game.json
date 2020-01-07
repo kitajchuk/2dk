@@ -2,8 +2,8 @@
     "game": {
         "id": "la",
         "name": "Links Reawakening",
-        "width": 480,
-        "height": 270,
+        "width": 320,
+        "height": 256,
         "fullscreen": false,
         "icon": "/img/icon/apple-icon.png",
         "version": 8
@@ -15,22 +15,22 @@
         "height": 46,
         "image": "/games/la/assets/sprites/hero.png",
         "spawn": {
-            "x": 960,
-            "y": 480,
+            "x": 160,
+            "y": 896,
             "map": "/games/la/maps/mabe-village-west.json"
         },
         "boxes": {
             "hit": {
-                "x": 10,
-                "y": 24,
-                "width": 26,
-                "height": 18
+                "x": 14,
+                "y": 22,
+                "width": 18,
+                "height": 20
             },
             "collision": {
-                "x": 10,
-                "y": 24,
-                "width": 26,
-                "height": 18
+                "x": 14,
+                "y": 22,
+                "width": 18,
+                "height": 20
             }
         }
     },

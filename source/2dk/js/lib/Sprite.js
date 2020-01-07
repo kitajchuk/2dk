@@ -1,6 +1,5 @@
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
-const Dialogue = require( "./Dialogue" );
 const $ = require( "properjs-hobo" );
 const { TweenLite } = require( "gsap" );
 
@@ -14,7 +13,9 @@ class Sprite {
         this.height = data.height;
         this.loader = new Loader();
         this.cycling = false;
-        this.dir = "";
+        this.locked = false;
+        this.dir = null;
+        this.verb = null;
         this.offset = {
             x: data.spawn.x,
             y: data.spawn.y
@@ -72,19 +73,10 @@ class Sprite {
             this.loader.loadImg( this.data.image ).then(( image ) => {
                 this.image = image;
                 this.child.style.backgroundImage = `url(${this.data.image})`;
-                this.init();
+                this.move( null, this.offset );
                 resolve();
             });
         });
-    }
-
-
-    init () {
-        this.element.style.webkitTransform = `translate3d(
-            ${this.offset.x}px,
-            ${this.offset.y}px,
-            0
-        )`;
     }
 
 
@@ -108,6 +100,10 @@ class Sprite {
 
 
     move ( dir, poi ) {
+        if ( this.locked ) {
+            return;
+        }
+
         this.pos( poi );
         this.element.style.webkitTransform = `translate3d(
             ${this.offset.x}px,
@@ -117,21 +113,50 @@ class Sprite {
     }
 
 
-    cycle ( dir ) {
-        if ( !this.cycling ) {
+    cycle ( verb, dir ) {
+        if ( this.locked ) {
+            return;
+        }
+
+        if ( verb !== this.verb ) {
+            this.cycling = true;
+            this.$child.removeClass( `${this.verb} up down right left` );
+            this.dir = dir;
+            this.verb = verb;
+            this.$child.addClass( `${verb} ${dir}` );
+
+        } else if ( !this.cycling ) {
             this.cycling = true;
             this.dir = dir;
+            this.verb = verb;
             this.$child.removeClass( "up down right left" );
-            this.$child.addClass( `walk ${dir}` );
+            this.$child.addClass( `${verb} ${dir}` );
         }
+    }
+
+    lockCycle ( verb, dir ) {
+        this.cycling = true;
+        this.$child.removeClass( `${this.verb} up down right left` );
+        this.dir = dir;
+        this.verb = verb;
+        this.$child.addClass( `${verb} ${dir}` );
     }
 
 
     face ( dir ) {
+        if ( this.locked ) {
+            return;
+        }
+
+        this.$child.removeClass( `${this.verb} up down right left` );
+        this.$child.addClass( dir );
         this.cycling = false;
         this.dir = dir;
-        this.$child.removeClass( "walk up down right left" );
-        this.$child.addClass( dir );
+    }
+
+
+    lock ( bool ) {
+        this.locked = bool;
     }
 
 
@@ -154,25 +179,12 @@ class Hero extends Sprite {
     }
 
 
-    payload ( payload ) {
-        if ( payload.dialogue ) {
-            this.dialogue = new Dialogue( payload.dialogue, this.gamebox );
-            this.dialogue.play().then(() => {
-                this.dialogue = null;
-                console.log( "dialogue resolved with A" );
-
-            }).catch(() => {
-                this.dialogue = null;
-                console.log( "dialogue rejected with B" );
-            });
-        }
-    }
-
-
-    checkDialogue ( a, b ) {
-        if ( this.dialogue && this.dialogue.ready ) {
-            this.dialogue.press( a, b );
-        }
+    render () {
+        this.element.style.webkitTransform = `translate3d(
+            ${this.offset.x}px,
+            ${this.offset.y}px,
+            0
+        )`;
     }
 }
 
@@ -192,13 +204,15 @@ class NPC extends Sprite {
             pushing: false,
             bounce: Config.animation.bounce
         };
-        this.load().then(() => {
-            this.shift();
-            this.$element.addClass( this.data.layer );
-            this.element.appendChild( this.styles );
-            this.gamebox.map.addSprite( this );
-            this.checkBox();
-        });
+    }
+
+
+    init () {
+        this.shift();
+        this.$element.addClass( this.data.layer );
+        this.element.appendChild( this.styles );
+        this.gamebox.map.addSprite( this );
+        this.checkBox();
     }
 
 
@@ -231,6 +245,16 @@ class NPC extends Sprite {
 
         } else if ( this.state.animated ) {
             this.$child.addClass( "animate" );
+        }
+    }
+
+
+    checkAct ( poi, btn ) {
+        if ( this.state.action && this.state.action.verb === Config.verbs.PUSH ) {
+            this.push( poi, btn );
+
+        } else if ( this.state.action && this.state.action.verb === Config.verbs.OPEN ) {
+            this.open( poi, btn );
         }
     }
 
@@ -290,7 +314,7 @@ class NPC extends Sprite {
 
         if ( this.state.action.shift ) {
             if ( this.state.action.payload ) {
-                this.gamebox.hero.payload( this.state.action.payload );
+                this.gamebox.payload( this.state.action.payload );
             }
 
             this.shift();
@@ -365,7 +389,7 @@ class NPC extends Sprite {
                         this.pushed.pushing = false;
 
                         if ( this.state.action.payload ) {
-                            this.gamebox.hero.payload( this.state.action.payload );
+                            this.gamebox.payload( this.state.action.payload );
                         }
                     }
                 }
@@ -376,16 +400,6 @@ class NPC extends Sprite {
             this.pushed.pushes = 0;
 
         }, this.pushed.bounce );
-    }
-
-
-    checkAct ( poi, btn ) {
-        if ( this.state.action && this.state.action.verb === Config.verbs.PUSH ) {
-            this.push( poi, btn );
-
-        } else if ( this.state.action && this.state.action.verb === Config.verbs.OPEN ) {
-            this.open( poi, btn );
-        }
     }
 }
 

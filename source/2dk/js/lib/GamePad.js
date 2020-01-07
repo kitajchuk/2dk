@@ -382,6 +382,12 @@ class GamePad extends Controller {
     }
 
 
+    clear () {
+        clearTouches();
+        cancelTouches();
+    }
+
+
     bind () {
         // Main interface is Touch
         this.element.addEventListener( "touchstart", onTouchStart, false );

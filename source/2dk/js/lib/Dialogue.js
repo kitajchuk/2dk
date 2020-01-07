@@ -1,16 +1,16 @@
-const { TweenLite } = require( "gsap" );
-
-
-
 class Dialogue {
-    constructor ( data, gamebox ) {
-        this.data = data;
+    constructor ( gamebox ) {
         this.gamebox = gamebox;
         this.ready = false;
         this.async = 10;
-        this.timeout = 1200;
+        this.timeout = 1000;
+        this.build();
+    }
+
+
+    build () {
         this.element = document.createElement( "div" );
-        this.element.className = `_2dk__dialogue _2dk__dialogue--${data.type}`;
+        this.element.className = "_2dk__dialogue";
     }
 
 
@@ -24,14 +24,16 @@ class Dialogue {
     }
 
 
-    play () {
+    play ( data ) {
+        this.data = data;
+
         return new Promise(( resolve, reject ) => {
             this.resolve = resolve;
             this.reject = reject;
             this.element.innerHTML = this.data.text.shift();
-            this.gamebox.screen.appendChild( this.element );
 
             setTimeout(() => {
+                this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
                 this.element.classList.add( "is-texting" );
 
             }, this.async );
@@ -41,7 +43,11 @@ class Dialogue {
     }
 
 
-    press ( a, b ) {
+    check ( a, b ) {
+        if ( !this.data || !this.ready ) {
+            return;
+        }
+
         if ( this.data.type === "text" ) {
             if ( this.data.text.length ) {
                 this.element.innerHTML = this.data.text.shift();
@@ -49,7 +55,7 @@ class Dialogue {
 
             } else {
                 this.resolve();
-                this.destroy();
+                this.teardown();
             }
 
         } else if ( this.data.type === "prompt" ) {
@@ -60,21 +66,23 @@ class Dialogue {
 
                 } else {
                     this.resolve();
-                    this.destroy();
+                    this.teardown();
                 }
 
             } else if ( b ) {
                 this.reject();
-                this.destroy();
+                this.teardown();
             }
         }
     }
 
 
-    destroy () {
-        this.element.parentNode.removeChild( this.element );
-        this.element = null;
+    teardown () {
+        this.element.classList.remove( `_2dk__dialogue--${this.data.type}` );
+        this.element.classList.remove( "is-texting" );
+        this.element.innerHTML = "";
         this.data = null;
+        this.ready = false;
     }
 }
 

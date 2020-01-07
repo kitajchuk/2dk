@@ -18,32 +18,6 @@ class Player {
     }
 
 
-    load () {
-        this.loader = new Loader();
-        this.loader.loadUrl( "./game.json" ).then(( data ) => {
-            this.data = data;
-            this.width = data.game.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
-            this.height = data.game.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
-
-            let counter = 0;
-
-            Promise.all(data.bundle.map(( url ) => {
-                return this.loader.loadUrl( url ).then(() => {
-                    counter++;
-
-                    this.splashLoad.innerHTML = `<div>Loaded ${counter} of ${data.bundle.length} game resources...</div>`;
-                });
-
-            })).then(( values ) => {
-                this.splashLoad.innerHTML = `<div>Press Start</div>`;
-                this.gamepad = new GamePad( this );
-                this.gamebox = new GameBox( this );
-                this.bind();
-            });
-        });
-    }
-
-
     detect () {
         const rDevice = /Android|iPhone/;
 
@@ -75,11 +49,39 @@ class Player {
     }
 
 
+    load () {
+        this.loader = new Loader();
+        this.loader.loadUrl( "./game.json" ).then(( data ) => {
+            this.data = data;
+            this.width = data.game.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
+            this.height = data.game.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
+
+            let counter = 0;
+
+            Promise.all(data.bundle.map(( url ) => {
+                return this.loader.loadUrl( url ).then(() => {
+                    counter++;
+
+                    this.splashLoad.innerHTML = `<div>Loaded ${counter} of ${data.bundle.length} game resources...</div>`;
+                });
+
+            })).then(( values ) => {
+                this.splashLoad.innerHTML = `<div>Press Start</div>`;
+                this.gamepad = new GamePad( this );
+                this.gamebox = new GameBox( this );
+                this.bind();
+            });
+        });
+    }
+
+
     bind () {
         this._dPadPress = this.dPadPress.bind( this );
         this._dPadRelease = this.dPadRelease.bind( this );
         this._startPress = this.startPress.bind( this );
         this._aPress = this.aPress.bind( this );
+        this._aRelease = this.aRelease.bind( this );
+        this._aLongRelease = this.aLongRelease.bind( this );
         this._bPress = this.bPress.bind( this );
 
         // Standard 4 point d-pad
@@ -99,6 +101,8 @@ class Player {
 
         // A button (action)
         this.gamepad.on( "a-press", this._aPress );
+        this.gamepad.on( "a-release", this._aRelease );
+        this.gamepad.on( "a-longrelease", this._aLongRelease );
 
         // B button (cancel)
         this.gamepad.on( "b-press", this._bPress );
@@ -113,6 +117,7 @@ class Player {
 
     stop () {
         this.stopped = true;
+        this.gamepad.clear();
         this.gamebox.pause( this.stopped );
     }
 
@@ -148,6 +153,32 @@ class Player {
         }
 
         this.gamebox.pressA();
+    }
+
+
+    aRelease () {
+        if ( this.stopped ) {
+            return;
+        }
+
+        if ( this.paused ) {
+            return;
+        }
+
+        this.gamebox.releaseA();
+    }
+
+
+    aLongRelease () {
+        if ( this.stopped ) {
+            return;
+        }
+
+        if ( this.paused ) {
+            return;
+        }
+
+        this.gamebox.longReleaseA();
     }
 
 

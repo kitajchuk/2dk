@@ -1,10 +1,6 @@
 const CACHE_NAME = "{__CACHE_VERSION__}";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
-    // "/css/2dk.css",
-    // "/js/2dk.js",
-    // "/fonts/Calamity-Bold.woff",
-    // "/fonts/Calamity-Bold.woff2",
     {__CACHE_LIST__}
 ];
 

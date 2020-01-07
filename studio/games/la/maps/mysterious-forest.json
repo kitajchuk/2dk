@@ -18,7 +18,44 @@
         "y": 0
     },
     "tiles": [],
-    "events": [],
+    "events": [
+        {
+            "coords": [
+                4,
+                31
+            ],
+            "type": "boundary",
+            "map": "/games/la/maps/mabe-village-west.json",
+            "dir": "down"
+        },
+        {
+            "coords": [
+                5,
+                31
+            ],
+            "type": "boundary",
+            "map": "/games/la/maps/mabe-village-west.json",
+            "dir": "down"
+        },
+        {
+            "coords": [
+                6,
+                31
+            ],
+            "type": "boundary",
+            "map": "/games/la/maps/mabe-village-west.json",
+            "dir": "down"
+        },
+        {
+            "coords": [
+                7,
+                31
+            ],
+            "type": "boundary",
+            "map": "/games/la/maps/mabe-village-west.json",
+            "dir": "down"
+        }
+    ],
     "objects": [],
     "collision": [
         [

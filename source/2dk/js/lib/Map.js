@@ -233,8 +233,7 @@ class Map {
 
 
     init ( transform ) {
-        this.offset = transform;
-        this.render();
+        this.move( null, transform );
     }
 
 

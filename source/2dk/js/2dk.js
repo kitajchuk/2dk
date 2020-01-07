@@ -14,7 +14,6 @@ IDEA: Procedural map paint with cellauto JS.
 ********************************************************************************
 * Studio
 ********************************************************************************
-* Credits text file (tiles, sprites, sounds, etc...)
 * History states for painting
 * Export map PNGs
 * Hero sprite pins (sets map.spawn(x, y))
@@ -25,8 +24,8 @@ IDEA: Procedural map paint with cellauto JS.
 * https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 * https://developers.google.com/web/fundamentals/primers/service-workers
 ********************************************************************************
-* Async loadImg with fetch() rather than Image.onload...?
 * Pack JSON for smaller file size...
+* Intro / Outro
 
 
 ********************************************************************************
@@ -42,7 +41,6 @@ IDEA: Procedural map paint with cellauto JS.
 * Screen dialogues, Array of dialogue objects
 * Plain text dialogues advance with A
 * Response-based prompt dialogues with A: yes, B: no
-* Move dialogue to the GameBox or Player level...?
 
 
 ********************************************************************************
@@ -118,19 +116,28 @@ class App {
         this.scope = `/games/${this.gameId}/`;
 
         if ( "serviceWorker" in navigator ) {
-            navigator.serviceWorker.register( this.worker, {scope: this.scope} ).then(( register ) => {
-                if ( register.installing ) {
-                    console.log( "[2dk] Service worker installing." );
+            // navigator.serviceWorker.register( this.worker, {scope: this.scope} ).then(( register ) => {
+            //     if ( register.installing ) {
+            //         console.log( "[2dk] Service worker installing." );
+            //
+            //     } else if ( register.waiting ) {
+            //         console.log( "[2dk] Service worker installed." );
+            //
+            //     } else if ( register.active ) {
+            //         console.log( "[2dk] Service worker active!" );
+            //     }
+            //
+            // }).catch(( error ) => {
+            //     console.log( "[2dk] Service worker failed", error );
+            // });
 
-                } else if ( register.waiting ) {
-                    console.log( "[2dk] Service worker installed." );
-
-                } else if ( register.active ) {
-                    console.log( "[2dk] Service worker active!" );
-                }
-
-            }).catch(( error ) => {
-                console.log( "[2dk] Service worker failed", error );
+            // Keeping service workers off during GameBox development...
+            navigator.serviceWorker.getRegistrations().then(( registrations ) => {
+                registrations.forEach(( registration ) => {
+                    registration.unregister().then(( bool ) => {
+                        console.log( "Unregistered Service Worker", bool );
+                    });
+                });
             });
         }
 

@@ -80,20 +80,19 @@
 }
 ._2dk__dialogue {
     box-shadow: $box-shadow;
-    border: 1px solid $black;
-    background-color: rgba( 0, 0, 0, 0.7 );
+    background-color: rgba( 0, 0, 0, 1.0 );
     position: absolute;
     left: 50%;
-    top: $tile-size / 2;
+    top: 0;
     height: auto;
-    width: 384px;
-    border-radius: $tile-size / 2;
+    width: 100%;
     overflow: hidden;
-    padding: $tile-size;
+    padding: 24px $tile-size;
     text-align: left;
     font-size: 12px;
     line-height: 1.5;
     opacity: 0;
+    z-index: 1;
     transform: translate3d( -50%, 0, 0 ) scale( 0.5 );
     transition: opacity 240ms ease,
                 transform 240ms ease;

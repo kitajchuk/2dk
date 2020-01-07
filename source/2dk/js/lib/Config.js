@@ -20,6 +20,7 @@ module.exports = {
         TOSS: "toss",
         READ: "read",
         OPEN: "open",
+        WALK: "walk",
         HIT: "hit",
     },
     events: {
@@ -33,6 +34,12 @@ module.exports = {
         STAIRS: "stairs",
         LEDGE: "ledge",
         SWITCH: "switch",
+    },
+    opposites: {
+        left: "right",
+        right: "left",
+        down: "up",
+        up: "down",
     },
     values: {
         // px
@@ -57,14 +64,10 @@ module.exports = {
         blueDark: "#004080",
     },
     animation: {
-        fps: 24,
-        fpspx: 1.333333333333,
-        cycle: 240,
         bounce: 300,
         duration: {
             pushed: 0.5,
-            boundary: 1.0,
-            dialogue: 0.5,
+            boundary: 500,
         }
     }
 };
