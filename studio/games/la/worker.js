@@ -1,4 +1,4 @@
-const CACHE_NAME = "v18";
+const CACHE_NAME = "v33";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/la/game.json",
@@ -22,14 +22,14 @@ const CACHE_URLS = [
 
 
 
-// Using the client-js to preload the asset bundle so this would be redundant...
-// self.addEventListener( "install", ( event ) => {
-//     event.waitUntil(
-//         caches.open( CACHE_NAME ).then(( cache ) => {
-//             return cache.addAll( CACHE_URLS );
-//         })
-//     );
-// });
+// Using the client-js to preload the asset bundle so this is redundant?
+self.addEventListener( "install", ( event ) => {
+    event.waitUntil(
+        caches.open( CACHE_NAME ).then(( cache ) => {
+            return cache.addAll( CACHE_URLS );
+        })
+    );
+});
 
 
 

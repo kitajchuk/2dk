@@ -63,7 +63,7 @@ class Sprite {
 
     load () {
         return new Promise(( resolve ) => {
-            this.loader.loadImg( this.data.image ).then(( image ) => {
+            this.loader.loadImage( this.data.image ).then(( image ) => {
                 this.image = image;
                 this.child.style.backgroundImage = `url(${this.data.image})`;
                 this.move( null, this.offset );

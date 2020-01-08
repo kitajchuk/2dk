@@ -204,7 +204,7 @@ class EditorCanvas {
         });
 
         // Load the tileset
-        this.loader.loadImg( `.${this.map.image}` ).then(( img ) => {
+        this.loader.loadImage( `.${this.map.image}` ).then(( img ) => {
             this.addTileset( img );
             this.addCanvas();
         });

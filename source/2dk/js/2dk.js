@@ -28,9 +28,6 @@ IDEA: Procedural map paint with cellauto JS.
 * Audio performance on mobile...
 
 * GameBox order of operations for press/release events!
-* Package versioning for index.html
-* Client caching with Loader
-* Load by type with Loader (may improve audio on mobile?)
 * Attacking & Weapons
 * Enemy AIs (Baddies)
 * Grab > Push/Pull for VERBS

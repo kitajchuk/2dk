@@ -214,7 +214,7 @@ class Map {
 
     load () {
         return new Promise(( resolve ) => {
-            this.loader.loadImg( this.data.image ).then(( image ) => {
+            this.loader.loadImage( this.data.image ).then(( image ) => {
                 this.image = image;
                 this.location = new MapLocation( this );
 

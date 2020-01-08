@@ -37,7 +37,7 @@ class GameBox {
         this.hero = new Hero( this.heroData, this );
 
         // Map
-        this.loader.loadUrl( this.hero.data.spawn.map ).then(( data ) => {
+        this.loader.loadJson( this.hero.data.spawn.map ).then(( data ) => {
             this.map = new Map( data, this );
             this.mapbounds = {
                 top: 0,
@@ -453,7 +453,7 @@ class GameBox {
         // Stop player, this is a HARD stop!
         // Player can only come back online with .resume()
         this.player.stop();
-        this.loader.loadUrl( evt.map ).then(( data ) => {
+        this.loader.loadJson( evt.map ).then(( data ) => {
             this.teardown();
 
             // Create new Map

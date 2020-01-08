@@ -51,7 +51,7 @@ class Player {
 
     load () {
         this.loader = new Loader();
-        this.loader.loadUrl( "./game.json" ).then(( data ) => {
+        this.loader.loadJson( "game.json" ).then(( data ) => {
             this.data = data;
             this.width = data.game.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
             this.height = data.game.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
@@ -59,7 +59,7 @@ class Player {
             let counter = 0;
 
             Promise.all(data.bundle.map(( url ) => {
-                return this.loader.loadUrl( url ).then(() => {
+                return this.loader.load( url ).then(() => {
                     counter++;
 
                     this.splashLoad.innerHTML = `<div>Loaded ${counter} of ${data.bundle.length} game resources...</div>`;

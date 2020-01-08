@@ -423,10 +423,14 @@ DB.getGames = () => {
 
 DB.updateGame = ( data ) => {
     let games = path.join( process.cwd(), "games.json" );
-    const game = path.join( process.cwd(), "games", data.game.id, "game.json" );
+    const gameDir = path.join( process.cwd(), "games", data.game.id );
+    const index = DB.getTemplate( "index.html" ).replace( "{__GAME_NAME__}", data.game.name ).replace( /\{__GAME_VERSION__\}/g, data.game.version );
+
+    // Update game index.html
+    Utils.writeFile( path.join( gameDir, "index.html" ), index );
 
     // Save new game data
-    Utils.writeJson( game, data );
+    Utils.writeJson( path.join( gameDir, "game.json" ), data );
 
     // Update games.json root
     Utils.readJson( games, ( json ) => {
@@ -450,7 +454,7 @@ DB.addGame = ( data ) => {
             const gameDir = path.join( process.cwd(), "games", game.game.id );
             const mapsDir = path.join( gameDir, "maps" );
             const assetsDir = path.join( gameDir, "assets" );
-            const index = DB.getTemplate( "index.html" ).replace( "{__GAME_NAME__}", game.game.name );
+            const index = DB.getTemplate( "index.html" ).replace( "{__GAME_NAME__}", game.game.name ).replace( "{__GAME_VERSION__}", game.game.version );
 
             Utils.makeDir( gameDir );
             Utils.makeDir( mapsDir );
