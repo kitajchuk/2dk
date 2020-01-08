@@ -1,14 +1,11 @@
-const CACHE_NAME = "v8";
+const CACHE_NAME = "v18";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
-    // "/css/2dk.css",
-    // "/js/2dk.js",
-    // "/fonts/Calamity-Bold.woff",
-    // "/fonts/Calamity-Bold.woff2",
     "/games/la/game.json",
     "/games/la/assets/tiles/tiles.png",
     "/games/la/assets/sprites/smoke.png",
-    "/games/la/assets/sprites/hero.png",
+    "/games/la/assets/sprites/hero_la.png",
+    "/games/la/assets/sprites/hero_alttp.png",
     "/games/la/assets/sounds/46-tal-tal-mountain-range.mp3",
     "/games/la/assets/sounds/40-animal-village.mp3",
     "/games/la/assets/sounds/30-richard-s-villa.mp3",

@@ -25,7 +25,18 @@ IDEA: Procedural map paint with cellauto JS.
 * https://developers.google.com/web/fundamentals/primers/service-workers
 ********************************************************************************
 * Pack JSON for smaller file size...
-* Intro / Outro
+* Audio performance on mobile...
+
+* GameBox order of operations for press/release events!
+* Package versioning for index.html
+* Client caching with Loader
+* Load by type with Loader (may improve audio on mobile?)
+* Attacking & Weapons
+* Enemy AIs (Baddies)
+* Grab > Push/Pull for VERBS
+* Charged Hero + Release Attack
+* Collider events?
+* Move resistance (pushing, tiles, etc...)
 
 
 ********************************************************************************
@@ -63,16 +74,18 @@ IDEA: Procedural map paint with cellauto JS.
 * Map Objects, Sprites (colliders, state shifting, sprite/tileset)
 ********************************************************************************
 (
-    ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit, collision)
+    ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit)
     layer?:     fg/bg
-    resolution: 1, 2
+    scale:      1, 2
     states:     [(
                     background-position,
                     repeat?,
                     animated?,
                     action?(verb, require, payload, counter),
-                    steps[background-position...],
-                    timing,
+                    offsetX,
+                    offsetY,
+                    stepsX,
+                    dur,
                     sound
                 )]
 )
@@ -93,9 +106,7 @@ IDEA: Procedural map paint with cellauto JS.
 
 * NPCs look at collision layer, object layer colliders, and Hero colliders
 * Hero looks at collision layer and NPC colliders
-* Sprite packager system
 * Sprites can have a perception box to activate a little before entering screen
-* Remove collision box and resolve to a single hitbox
 
 
 ********************************************************************************

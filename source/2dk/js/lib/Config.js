@@ -1,4 +1,4 @@
-module.exports = {
+const Config = {
     keys: {
         A: 88,
         B: 90,
@@ -21,6 +21,7 @@ module.exports = {
         READ: "read",
         OPEN: "open",
         WALK: "walk",
+        FACE: "face",
         HIT: "hit",
     },
     events: {
@@ -69,5 +70,26 @@ module.exports = {
             pushed: 0.5,
             boundary: 500,
         }
+    },
+    utils: {
+        copy ( obj ) {
+            return JSON.parse( JSON.stringify( obj ) );
+        },
+        merge ( base, pr, f ) {
+            base = Config.utils.copy( base );
+            pr = Config.utils.copy( pr );
+
+            for ( let i in pr ) {
+                if ( !base[ i ] || f ) {
+                    base[ i ] = pr[ i ];
+                }
+            }
+
+            return base;
+        }
     }
 };
+
+
+
+module.exports = Config;

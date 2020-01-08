@@ -31,7 +31,10 @@ class GameBox {
         this.gamesfx = new GameSFX( this );
 
         // Hero
-        this.hero = new Hero( this.player.data.hero, this );
+        this.heroRef = this.player.data.hero;
+        this.heroPick = this.player.data.heroes[ this.heroRef.sprite ];
+        this.heroData = Config.utils.merge( this.heroPick, this.heroRef );
+        this.hero = new Hero( this.heroData, this );
 
         // Map
         this.loader.loadUrl( this.hero.data.spawn.map ).then(( data ) => {
@@ -50,6 +53,7 @@ class GameBox {
             };
 
             this.hero.load().then(() => {
+                this.hero.init();
                 this.map.load().then(() => {
                     this.build();
                     this.initMap();
@@ -69,7 +73,12 @@ class GameBox {
             },
         });
         this.map.data.objects.forEach(( data ) => {
-            const npc = new NPC( data, this );
+            const npcRef = data;
+            const npcPick = this.player.data.objects.find(( obj ) => {
+                return (obj.id === data.id);
+            });
+            const npcData = Config.utils.merge( npcPick, npcRef );
+            const npc = new NPC( npcData, this );
 
             npc.load().then(() => {
                 npc.init();
@@ -113,7 +122,6 @@ class GameBox {
             this.screen.style.height = `${this.player.height}px`;
         }
 
-        this.map.addSprite( this.hero );
         this.screen.appendChild( this.map.element );
         this.screen.appendChild( this.dialogue.element );
         this.player.element.appendChild( this.screen );
@@ -281,10 +289,10 @@ class GameBox {
 
     checkNPC ( poi ) {
         let ret = null;
-        const hitbox = this.hero.getBox( poi, "collision" );
+        const hitbox = this.hero.getBox( poi, "hit" );
 
         for ( let i = this.npcs.length; i--; ) {
-            const hitnpc = this.npcs[ i ].getBox( this.npcs[ i ].offset, "collision" );
+            const hitnpc = this.npcs[ i ].getBox( this.npcs[ i ].offset, "hit" );
 
             if ( this.collide( hitbox, hitnpc ) ) {
                 ret = this.npcs[ i ];
@@ -313,7 +321,7 @@ class GameBox {
 
     checkMap ( poi ) {
         let ret = false;
-        const hitbox = this.hero.getBox( poi, "collision" );
+        const hitbox = this.hero.getBox( poi, "hit" );
 
         for ( let i = this.map.data.collision.length; i--; ) {
             const collider = this.map.data.collider / this.map.data.resolution;

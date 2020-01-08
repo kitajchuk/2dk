@@ -372,7 +372,7 @@ class DB {
 
         Utils.writeFile( file, worker, () => {
             lager.info( `DB-${this.gameId}: worker updated` );
-            lager.data( caches );
+            // lager.data( caches );
 
             DB.updateGame( game );
         });

@@ -9,8 +9,8 @@ class Sprite {
     // width, height, image, name
     constructor ( data ) {
         this.data = data;
-        this.width = data.width;
-        this.height = data.height;
+        this.width = data.width / data.scale;
+        this.height = data.height / data.scale;
         this.loader = new Loader();
         this.cycling = false;
         this.locked = false;
@@ -21,22 +21,15 @@ class Sprite {
             y: data.spawn.y
         };
         this.hitbox = {
-            x: !data.boxes ? 0 : data.spawn.x + data.boxes.hit.x,
-            y: !data.boxes ? 0 : data.spawn.y + data.boxes.hit.y,
-            width: !data.boxes ? 0 : data.boxes.hit.width,
-            height: !data.boxes ? 0 : data.boxes.hit.height,
-        };
-        this.collisionbox = {
-            x: !data.boxes ? 0 : data.spawn.x + data.boxes.collision.x,
-            y: !data.boxes ? 0 : data.spawn.y + data.boxes.collision.y,
-            width: !data.boxes ? 0 : data.boxes.collision.width,
-            height: !data.boxes ? 0 : data.boxes.collision.height,
+            x: !data.boxes ? 0 : data.spawn.x + (data.boxes.hit.x / data.scale),
+            y: !data.boxes ? 0 : data.spawn.y + (data.boxes.hit.y / data.scale),
+            width: !data.boxes ? 0 : (data.boxes.hit.width / data.scale),
+            height: !data.boxes ? 0 : (data.boxes.hit.height / data.scale),
         };
 
         if ( !this.data.boxes ) {
             this.data.boxes = {
                 hit: this.hitbox,
-                collision: this.collisionbox
             };
         }
 
@@ -92,10 +85,8 @@ class Sprite {
     */
     pos ( poi ) {
         this.offset = poi;
-        this.hitbox.x = this.offset.x + this.data.boxes.hit.x;
-        this.hitbox.y = this.offset.y + this.data.boxes.hit.y;
-        this.collisionbox.x = this.offset.x + this.data.boxes.collision.x;
-        this.collisionbox.y = this.offset.y + this.data.boxes.collision.y;
+        this.hitbox.x = this.offset.x + (this.data.boxes.hit.x / this.data.scale);
+        this.hitbox.y = this.offset.y + (this.data.boxes.hit.y / this.data.scale);
     }
 
 
@@ -162,10 +153,10 @@ class Sprite {
 
     getBox ( poi, box ) {
         return {
-            x: poi.x + this.data.boxes[ box ].x,
-            y: poi.y + this.data.boxes[ box ].y,
-            width: this.data.boxes[ box ].width,
-            height: this.data.boxes[ box ].height
+            x: poi.x + (this.data.boxes[ box ].x / this.data.scale),
+            y: poi.y + (this.data.boxes[ box ].y / this.data.scale),
+            width: this.data.boxes[ box ].width / this.data.scale,
+            height: this.data.boxes[ box ].height / this.data.scale
         };
     }
 }
@@ -176,6 +167,70 @@ class Hero extends Sprite {
     constructor ( data, gamebox ) {
         super( data );
         this.gamebox = gamebox;
+        this.styles = document.createElement( "style" );
+    }
+
+
+    init () {
+        this.element.appendChild( this.styles );
+        this.gamebox.map.addSprite( this );
+        // this.child.style.backgroundPosition = `${this.data.verbs.face.down.offsetX / this.data.scale}px ${this.data.verbs.face.down.offsetY / this.data.scale}px`;
+        this.child.style.backgroundSize = `${this.image.naturalWidth / this.data.scale}px ${this.image.naturalHeight / this.data.scale}px`;
+        this.child.style.backgroundRepeat = "no-repeat";
+        this.stylePacks = [];
+
+        for ( let verb in this.data.verbs ) {
+            if ( verb === Config.verbs.FACE ) {
+                this.stylePacks.push(`
+                    ._2dk__${this.data.id} ._2dk__child.down {
+                        background-position: ${this.data.verbs.face.down.offsetX / this.data.scale}px ${this.data.verbs.face.down.offsetY / this.data.scale}px;
+                    }
+                    ._2dk__${this.data.id} ._2dk__child.up {
+                        background-position: ${this.data.verbs.face.up.offsetX / this.data.scale}px ${this.data.verbs.face.up.offsetY / this.data.scale}px;
+                    }
+                    ._2dk__${this.data.id} ._2dk__child.left {
+                        background-position: ${this.data.verbs.face.left.offsetX / this.data.scale}px ${this.data.verbs.face.left.offsetY / this.data.scale}px;
+                    }
+                    ._2dk__${this.data.id} ._2dk__child.right {
+                        background-position: ${this.data.verbs.face.right.offsetX / this.data.scale}px ${this.data.verbs.face.right.offsetY / this.data.scale}px;
+                    }
+                `);
+
+            } else {
+                this.stylePacks.push(`
+                    ._2dk__${this.data.id} ._2dk__child.${verb}.down {
+                        background-position: ${this.data.verbs[ verb ].down.offsetX / this.data.scale}px ${this.data.verbs[ verb ].down.offsetY / this.data.scale}px;
+                        animation: ${this.data.id}-${verb}-down ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].down.stepsX} ) infinite;
+                    }
+                    @keyframes ${this.data.id}-${verb}-down {
+                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].down.offsetX / this.data.scale ) + (this.width * this.data.verbs[ verb ].down.stepsX)}px ${this.data.verbs[ verb ].down.offsetY / this.data.scale}px; }
+                    }
+                    ._2dk__${this.data.id} ._2dk__child.${verb}.up {
+                        background-position: ${this.data.verbs[ verb ].up.offsetX / this.data.scale}px ${this.data.verbs[ verb ].up.offsetY / this.data.scale}px;
+                        animation: ${this.data.id}-${verb}-up ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].up.stepsX} ) infinite;
+                    }
+                    @keyframes ${this.data.id}-${verb}-up {
+                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].up.offsetX / this.data.scale ) + (this.width * this.data.verbs[ verb ].up.stepsX)}px ${this.data.verbs[ verb ].up.offsetY / this.data.scale}px; }
+                    }
+                    ._2dk__${this.data.id} ._2dk__child.${verb}.left {
+                        background-position: ${this.data.verbs[ verb ].left.offsetX / this.data.scale}px ${this.data.verbs[ verb ].left.offsetY / this.data.scale}px;
+                        animation: ${this.data.id}-${verb}-left ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].left.stepsX} ) infinite;
+                    }
+                    @keyframes ${this.data.id}-${verb}-left {
+                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].left.offsetX / this.data.scale ) + (this.width * this.data.verbs[ verb ].left.stepsX)}px ${this.data.verbs[ verb ].left.offsetY / this.data.scale}px; }
+                    }
+                    ._2dk__${this.data.id} ._2dk__child.${verb}.right {
+                        background-position: ${this.data.verbs[ verb ].right.offsetX / this.data.scale}px ${this.data.verbs[ verb ].right.offsetY / this.data.scale}px;
+                        animation: ${this.data.id}-${verb}-right ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].right.stepsX} ) infinite;
+                    }
+                    @keyframes ${this.data.id}-${verb}-right {
+                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].right.offsetX / this.data.scale ) + (this.width * this.data.verbs[ verb ].right.stepsX)}px ${this.data.verbs[ verb ].right.offsetY / this.data.scale}px; }
+                    }
+                `);
+            }
+        }
+
+        this.styles.innerHTML = this.stylePacks.join( "" );
     }
 
 
@@ -196,7 +251,7 @@ class NPC extends Sprite {
         this.gamebox = gamebox;
         this.styles = document.createElement( "style" );
         // Copy so we can cooldown and re-spawn objects with fresh states
-        this.states = JSON.parse( JSON.stringify( data.states ) );
+        this.states = Config.utils.copy( data.states );
         this.pushed = {
             timer: null,
             pushes: 0,
@@ -219,19 +274,18 @@ class NPC extends Sprite {
     shift () {
         if ( this.states.length ) {
             this.state = this.states.shift();
-            this.child.style.backgroundPosition = `-${this.state.bgp.x}px -${this.state.bgp.y}px`;
-            this.child.style.backgroundSize = `${this.image.naturalWidth / this.data.resolution}px ${this.image.naturalHeight / this.data.resolution}px`;
+            this.child.style.backgroundPosition = `${this.state.bgp.x / this.data.scale}px ${this.state.bgp.y / this.data.scale}px`;
+            this.child.style.backgroundSize = `${this.image.naturalWidth / this.data.scale}px ${this.image.naturalHeight / this.data.scale}px`;
             this.child.style.backgroundRepeat = `${this.state.repeat ? "repeat" : "no-repeat"}`;
 
             if ( this.state.animated ) {
-                const lastStep = this.state.steps[ this.state.steps.length - 1 ];
-
                 this.styles.innerHTML = `
                     ._2dk__${this.data.id} ._2dk__child.animate {
-                        animation: ${this.data.id}-anim ${this.state.timing}ms steps(${this.state.steps.length}) infinite;
+                        background-position: ${this.state.bgp.x / this.data.scale}px ${this.state.bgp.y / this.data.scale}px;
+                        animation: ${this.data.id}-anim ${this.state.dur}ms steps(${this.state.stepsX}) infinite;
                     }
                     @keyframes ${this.data.id}-anim {
-                        100% { background-position: -${lastStep.x}px -${lastStep.y}px; }
+                        100% { background-position: -${Math.abs( this.state.offsetX / this.data.scale ) + (this.width * this.state.stepsX)}px ${this.state.offsetY / this.data.scale}px; }
                     }
                 `;
             }
@@ -260,7 +314,7 @@ class NPC extends Sprite {
 
 
     checkPoi ( poi ) {
-        if ( (this.collisionbox.width === 0 && this.collisionbox.height === 0) || (this.collisionbox.width === this.width && this.collisionbox.height === this.height) ) {
+        if ( (this.hitbox.width === 0 && this.hitbox.height === 0) || (this.hitbox.width === this.width && this.hitbox.height === this.height) ) {
             return;
         }
 

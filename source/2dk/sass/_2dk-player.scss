@@ -114,8 +114,8 @@
         display: block;
 
         > div:last-child {
-            animation: bounce ($hero-speed * 2) infinite;
-            transition: all $hero-speed $ease;
+            animation: bounce (240ms * 2) infinite;
+            transition: all 240ms $ease;
             transform: translate3d( 0, 0, 0 );
         }
     }
