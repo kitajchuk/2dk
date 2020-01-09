@@ -1,7 +1,7 @@
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const GamePad = require( "./GamePad" );
-const GameBox = require( "./GameBox" );
+const TopView = require( "./TopView" );
 const paramalama = require( "paramalama" );
 
 
@@ -68,7 +68,7 @@ class Player {
             })).then(( values ) => {
                 this.splashLoad.innerHTML = `<div>Press Start</div>`;
                 this.gamepad = new GamePad( this );
-                this.gamebox = new GameBox( this );
+                this.gamebox = new TopView( this );
                 this.bind();
             });
         });

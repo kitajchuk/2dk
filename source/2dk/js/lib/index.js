@@ -1,3 +1,4 @@
+const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const Player = require( "./Player" );
@@ -12,6 +13,7 @@ const { Map, MapLayer, MapLocation, drawMapTiles, drawGridLines } = require( "./
 
 module.exports = {
     // Engine
+    Utils,
     Config,
     Loader,
     Player,

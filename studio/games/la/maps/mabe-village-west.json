@@ -140,6 +140,9 @@
                     "animated": 1,
                     "action": {
                         "verb": "move",
+                        "require": {
+                            "dir": "up"
+                        },
                         "payload": {
                             "dialogue": {
                                 "type": "text",

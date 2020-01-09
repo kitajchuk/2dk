@@ -1,8 +1,7 @@
+const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
 const $ = require( "properjs-hobo" );
-const Tween = require( "properjs-tween" );
-const Easing = require( "properjs-easing" );
 
 
 
@@ -212,7 +211,7 @@ class NPC extends Sprite {
         this.gamebox = gamebox;
         this.styles = document.createElement( "style" );
         // Copy so we can cooldown and re-spawn objects with fresh states
-        this.states = Config.utils.copy( data.states );
+        this.states = Utils.copy( data.states );
         this.pushed = {
             timer: null,
             pushes: 0,
@@ -269,7 +268,7 @@ class NPC extends Sprite {
             return;
         }
 
-        if ( poi.y > this.offset.y ) {
+        if ( (poi.y + this.gamebox.hero.height) > (this.offset.y + this.height) ) {
             this.$element.removeClass( "fg" ).addClass( "bg" );
 
         } else {
@@ -301,130 +300,6 @@ class NPC extends Sprite {
                 this.$child.addClass( "animate" );
             }
         }
-    }
-
-
-    checkAct ( poi, btn ) {
-        // MOVE covers the idea of PUSH/PULL because it supports GRAB
-        if ( this.state.action && this.state.action.verb === Config.verbs.MOVE && !btn ) {
-            this.push( poi, btn );
-
-        } else if ( this.state.action && this.state.action.verb === Config.verbs.MOVE && btn ) {
-            this.grab( poi, btn );
-
-        } else if ( this.state.action && this.state.action.verb === Config.verbs.OPEN ) {
-            this.open( poi, btn );
-        }
-    }
-
-
-    grab ( poi, btn ) {
-        if ( !this.state.action ) {
-            return;
-        }
-
-        if ( this.state.action.verb !== Config.verbs.MOVE ) {
-            return;
-        }
-
-        if ( this.gamebox.grabbed ) {
-            return;
-        }
-
-        this.gamebox.grab( this );
-    }
-
-
-    open ( poi, btn ) {
-        if ( !this.state.action ) {
-            return;
-        }
-
-        if ( this.state.action.verb !== Config.verbs.OPEN ) {
-            return;
-        }
-
-        if ( this.state.action.require.button && !btn ) {
-            return;
-        }
-
-        if ( this.state.action.shift ) {
-            if ( this.state.action.payload ) {
-                this.gamebox.payload( this.state.action.payload );
-            }
-
-            this.shift();
-        }
-    }
-
-
-    push ( poi, btn ) {
-        if ( btn ) {
-            return;
-        }
-
-        if ( !this.state.action ) {
-            return;
-        }
-
-        if ( this.state.action.verb !== Config.verbs.MOVE ) {
-            return;
-        }
-
-        if ( !this.state.action.counter ) {
-            return;
-        }
-
-        if ( this.pushed.pushing ) {
-            return;
-        }
-
-        clearTimeout( this.pushed.timer );
-
-        this.pushed.pushes++;
-
-        if ( this.pushed.pushes >= this.pushed.needed ) {
-            this.pushed.pushes = 0;
-            this.pushed.pushing = true;
-            this.state.action.counter--;
-
-            const css = this.gamebox.getCss( this.gamebox.hero.dir, this );
-            const pos = {};
-
-            pos[ css.axis ] = css.to;
-            pos[ Config.opposites[ css.axis ] ] = this.offset[ Config.opposites[ css.axis ] ];
-
-            // Map collider layer
-            if ( this.gamebox.checkMap( pos, this ) ) {
-                this.pushed.pushing = false;
-                return;
-            }
-
-            this.tween = new Tween({
-                ease: Easing.swing,
-                duration: Config.animation.duration.pushed,
-                from: css.from,
-                to: css.to,
-                update: ( t ) => {
-                    this.offset[ css.axis ] = t;
-                    this.move( null, this.offset );
-                },
-                complete: ( t ) => {
-                    this.offset[ css.axis ] = t;
-                    this.move( null, this.offset );
-                    this.pushed.pushing = false;
-
-                    if ( this.state.action.payload ) {
-                        this.gamebox.payload( this.state.action.payload );
-                    }
-                }
-            });
-        }
-
-        this.pushed.timer = setTimeout(() => {
-            this.pushed.pushes = 0;
-
-        }, this.pushed.bounce );
     }
 }
 

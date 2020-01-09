@@ -23,23 +23,20 @@ IDEA: Procedural map paint with cellauto JS.
 * Player
 * https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 * https://developers.google.com/web/fundamentals/primers/service-workers
+* https://github.com/Akihabara/akihabara/blob/master/src/trigo.js
 ********************************************************************************
 * Pack JSON for smaller file size...
-* Audio performance on mobile...
 
-* Grab > Push/Pull for VERBS
-    Need to store facing direction when grab happens
-    Need to to lock Hero on axis (x or y) for grab+pull
-    Need to check poi direction compared to facing direction
-    If poi direction is not on lock axis, release grab or suppress...?
-
-* GameBox order of operations for press/release events!
-* Move resistance (pushing, tiles, etc...)
+* Physics-based Z for movement?
+* GameCycle manager for states (intro, title, credits, etc...)
+* Projectiles, FX in general
+* Math functions (arc animations?, see Akihabara Trigo)
 
 * Attacking & Weapons
 * Enemy AIs (Baddies)
 * Charged Hero + Release Attack
 * Collider events?
+* Move resistance (pushing, tiles, etc...)
 
 
 ********************************************************************************

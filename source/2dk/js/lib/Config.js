@@ -23,6 +23,8 @@ const Config = {
         OPEN: "open",
         WALK: "walk",
         FACE: "face",
+        TALK: "talk",
+        READ: "read",
     },
     events: {
         DOOR: "door",
@@ -72,23 +74,6 @@ const Config = {
             pushed: 720,
             pulled: 360,
             boundary: 500,
-        }
-    },
-    utils: {
-        copy ( obj ) {
-            return JSON.parse( JSON.stringify( obj ) );
-        },
-        merge ( base, pr, f ) {
-            base = Config.utils.copy( base );
-            pr = Config.utils.copy( pr );
-
-            for ( let i in pr ) {
-                if ( !base[ i ] || f ) {
-                    base[ i ] = pr[ i ];
-                }
-            }
-
-            return base;
         }
     }
 };

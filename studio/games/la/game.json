@@ -158,9 +158,9 @@
             "image": "/games/la/assets/sprites/hero_alttp.png",
             "boxes": {
                 "hit": {
-                    "x": 38,
+                    "x": 48,
                     "y": 58,
-                    "width": 64,
+                    "width": 44,
                     "height": 60
                 }
             },
@@ -212,49 +212,71 @@
                     }
                 },
                 "push": {
-                    "dur": 320,
+                    "dur": 720,
                     "down": {
-                        "offsetX": 0,
+                        "offsetX": -1120,
                         "offsetY": -140,
-                        "stepsX": 8
+                        "stepsX": 2
                     },
                     "up": {
-                        "offsetX": 0,
+                        "offsetX": -1120,
                         "offsetY": -280,
-                        "stepsX": 8
+                        "stepsX": 2
                     },
                     "left": {
-                        "offsetX": 0,
+                        "offsetX": -1120,
                         "offsetY": -420,
-                        "stepsX": 8
+                        "stepsX": 2
                     },
                     "right": {
-                        "offsetX": 0,
+                        "offsetX": -1120,
                         "offsetY": -560,
-                        "stepsX": 8
+                        "stepsX": 2
                     }
                 },
                 "pull": {
-                    "dur": 320,
+                    "dur": 720,
                     "down": {
-                        "offsetX": 0,
+                        "offsetX": -1400,
                         "offsetY": -140,
-                        "stepsX": 8
+                        "stepsX": 2
                     },
                     "up": {
-                        "offsetX": 0,
+                        "offsetX": -1400,
                         "offsetY": -280,
-                        "stepsX": 8
+                        "stepsX": 2
                     },
                     "left": {
-                        "offsetX": 0,
+                        "offsetX": -1400,
                         "offsetY": -420,
-                        "stepsX": 8
+                        "stepsX": 2
                     },
                     "right": {
-                        "offsetX": 0,
+                        "offsetX": -1400,
                         "offsetY": -560,
-                        "stepsX": 8
+                        "stepsX": 2
+                    }
+                },
+                "grab": {
+                    "down": {
+                        "offsetX": -1400,
+                        "offsetY": -280,
+                        "stepsX": 0
+                    },
+                    "up": {
+                        "offsetX": -1400,
+                        "offsetY": -140,
+                        "stepsX": 0
+                    },
+                    "left": {
+                        "offsetX": -1400,
+                        "offsetY": -560,
+                        "stepsX": 0
+                    },
+                    "right": {
+                        "offsetX": -1400,
+                        "offsetY": -420,
+                        "stepsX": 0
                     }
                 }
             }
@@ -294,9 +316,9 @@
             "boxes": {
                 "hit": {
                     "x": 0,
-                    "y": 64,
+                    "y": 72,
                     "width": 64,
-                    "height": 64
+                    "height": 56
                 }
             }
         },
@@ -323,14 +345,14 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "bg",
+            "layer": "fg",
             "scale": 2,
             "boxes": {
                 "hit": {
                     "x": 0,
-                    "y": 0,
+                    "y": 16,
                     "width": 64,
-                    "height": 64
+                    "height": 48
                 }
             },
             "states": [
@@ -341,7 +363,6 @@
                     },
                     "action": {
                         "verb": "move",
-                        "payload": {},
                         "counter": 999
                     }
                 }
