@@ -345,11 +345,11 @@ const handleTouchEnd = ( control ) => {
     if ( control.hasOwnProperty( "hold" ) ) {
         if ( control.hold > touchRepeated ) {
             instance.fire( `${control.btn[ 0 ]}-longrelease` );
-            console.log( `${control.btn[ 0 ]}-longrelease` );
+            // console.log( `${control.btn[ 0 ]}-longrelease` );
 
         } else {
             instance.fire( `${control.btn[ 0 ]}-release` );
-            console.log( `${control.btn[ 0 ]}-release` );
+            // console.log( `${control.btn[ 0 ]}-release` );
         }
 
         control.hold = 0;
@@ -429,6 +429,19 @@ class GamePad extends Controller {
         }
 
         this.player.element.appendChild( this.element );
+    }
+
+
+    checkDpad () {
+        const ctrls = [];
+
+        for ( let btn in touchControls ) {
+            if ( touchControls[ btn ].touched && touchControls[ btn ].dpad ) {
+                ctrls.push( touchControls[ btn ] );
+            }
+        }
+
+        return ctrls;
     }
 }
 

@@ -6,10 +6,10 @@
         "height": 270,
         "fullscreen": false,
         "icon": "/img/icon/apple-icon.png",
-        "version": 33
+        "version": 35
     },
     "hero": {
-        "sprite": 1,
+        "sprite": 0,
         "spawn": {
             "x": 768,
             "y": 736,
@@ -103,7 +103,7 @@
                     }
                 },
                 "pull": {
-                    "dur": 240,
+                    "dur": 720,
                     "down": {
                         "offsetX": -368,
                         "offsetY": -92,
@@ -123,6 +123,28 @@
                         "offsetX": -368,
                         "offsetY": -368,
                         "stepsX": 2
+                    }
+                },
+                "grab": {
+                    "down": {
+                        "offsetX": -368,
+                        "offsetY": -184,
+                        "stepsX": 0
+                    },
+                    "up": {
+                        "offsetX": -368,
+                        "offsetY": -92,
+                        "stepsX": 0
+                    },
+                    "left": {
+                        "offsetX": -368,
+                        "offsetY": -368,
+                        "stepsX": 0
+                    },
+                    "right": {
+                        "offsetX": -368,
+                        "offsetY": -276,
+                        "stepsX": 0
                     }
                 }
             }
@@ -294,6 +316,36 @@
                     "height": 64
                 }
             }
+        },
+        {
+            "id": "pot",
+            "name": "Pot",
+            "width": 64,
+            "height": 64,
+            "image": "/games/la/assets/tiles/tiles.png",
+            "layer": "bg",
+            "scale": 2,
+            "boxes": {
+                "hit": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 64,
+                    "height": 64
+                }
+            },
+            "states": [
+                {
+                    "bgp": {
+                        "x": -640,
+                        "y": -384
+                    },
+                    "action": {
+                        "verb": "move",
+                        "payload": {},
+                        "counter": 999
+                    }
+                }
+            ]
         }
     ],
     "bundle": [

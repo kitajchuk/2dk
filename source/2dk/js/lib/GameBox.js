@@ -18,8 +18,12 @@ class GameBox {
             x: 0,
             y: 0
         };
-        this.pushing = 0;
-        this.pulling = 0;
+
+        // VERBS stuff
+        this.locked = false;
+        this.grabbed = null;
+        this.pulling = null;
+        this.pushing = false;
 
         // Teardown stuff
         this.npcs = [];
@@ -187,103 +191,236 @@ class GameBox {
     }
 
 
+    grab ( npc ) {
+        this.grabbed = npc;
+        this.pulling = Config.opposites[ this.hero.dir ];
+        this.hero.cycling = false;
+        this.hero.verb = Config.verbs.GRAB;
+        this.hero.child.classList.add( Config.verbs.GRAB );
+    }
+
+
+    ungrab () {
+        this.grabbed = null;
+        this.pulling = null;
+        this.hero.cycling = false;
+        this.hero.child.classList.remove( Config.verbs.GRAB );
+    }
+
+
     pressD ( dir ) {
-        const poi = this.getPoi( dir, Config.values.step );
+        const poi = this.getPoi( dir, Config.values.step, this.hero );
         const collision = {
             evt: this.checkEvt( poi ),
             npc: this.checkNPC( poi ),
-            map: this.checkMap( poi ),
+            map: this.checkMap( poi, this.hero ),
             box: this.checkBox( poi ),
         };
 
-        // Stuff that should stop everything!!!
+        this.awareNPC( poi, dir );
+
+        if ( this.locked ) {
+            return;
+        }
+
+        if ( this.grabbed && (dir === this.pulling) ) {
+            this.handlePull( poi, dir, collision );
+            return;
+
+        } else if ( this.grabbed && (dir !== this.pulling) ) {
+            this.ungrab();
+        }
+
+        if ( collision.npc ) {
+            this.handleNPC( collision.npc, poi, dir );
+            return;
+        }
+
         if ( collision.evt ) {
             this.handleEvt( collision.evt );
             return;
         }
 
-        // Stuff that should always happen during Hero movement
-        this.awareNPC( poi, dir );
-
-        // Stuff that should only happen if conditions are met
-        if ( collision.npc ) {
-            collision.npc.checkAct( poi, false );
-            this.handleMap( poi, dir );
-            return;
-
-        }
-
-        // Stuff like colliders. General solid objects. Virtual layer.
         if ( collision.map ) {
             this.handleMap( poi, dir );
             return;
         }
 
-        // Stuff at the edge of the Earth! This is the Camera boundry
         if ( collision.box ) {
             this.handleBox( poi, dir );
             return;
         }
 
-        // Hero is locked...
-        if ( this.hero.locked ) {
-            this.handleLock( poi, dir );
-            return;
-        }
-
-        this.transform = this.update( poi );
-
-        this.hero.move( dir, poi );
-        this.hero.cycle( Config.verbs.WALK, dir );
-        this.map.move( dir, this.transform );
-    }
-
-
-    releaseD ( dir ) {
-        if ( this.hero.locked && !this.pulling ) {
-            return;
-        }
-
-        // Set static Hero
-        this.hero.lock( false );
-        this.hero.face( dir );
-
-        // Reset VERBS
-        this.pushing = 0;
-        this.pulling = 0;
+        this.handleWalk( poi, dir );
     }
 
 
     pressA () {
-        const poi = this.getPoi( this.hero.dir, Config.values.step );
+        const poi = this.getPoi( this.hero.dir, Config.values.step, this.hero );
         const npc = this.checkNPC( poi );
 
         if ( npc ) {
             npc.checkAct( poi, true );
         }
 
-        if ( this.pushing ) {
-            this.hero.lock( true );
-        }
-
         this.dialogue.check( true, false );
-    }
-
-
-    releaseA () {
-        this.hero.lock( false );
-        this.hero.face( this.hero.dir );
-    }
-
-
-    longReleaseA () {
-        this.hero.lock( false );
-        this.hero.face( this.hero.dir );
     }
 
 
     pressB () {
         this.dialogue.check( false, true );
+    }
+
+
+    releaseD ( dir ) {
+        if ( !this.grabbed ) {
+            this.hero.face( dir );
+
+            if ( this.pulling ) {
+                this.pulling = null;
+            }
+        }
+
+        if ( this.pushing ) {
+            this.pushing = false;
+        }
+
+        if ( this.grabbed && (this.heroTween && this.grabTween) ) {
+            this.heroTween.stop();
+            this.grabTween.stop();
+            this.heroTween = null;
+            this.grabTween = null;
+            this.locked = false;
+            this.hero.face( Config.opposites[ dir ] );
+            this.hero.cycle( Config.verbs.GRAB, Config.opposites[ dir ] );
+        }
+    }
+
+
+    releaseA () {
+        this.handleReleaseA();
+    }
+
+
+    longReleaseA () {
+        this.handleReleaseA();
+    }
+
+
+    handleReleaseA () {
+        const poi = this.getPoi( this.hero.dir, Config.values.step, this.hero );
+        const npc = this.checkNPC( poi );
+
+        this.hero.face( this.hero.dir );
+
+        if ( this.grabbed ) {
+            this.ungrab();
+        }
+
+        if ( this.locked ) {
+            this.locked = false;
+        }
+    }
+
+
+    handleWalk ( poi, dir ) {
+        this.transform = this.update( poi );
+        this.hero.move( dir, poi );
+        this.map.move( dir, this.transform );
+        this.hero.cycle( this.pushing ? Config.verbs.PUSH : Config.verbs.WALK, dir );
+    }
+
+
+    handlePull ( poi, dir, collision ) {
+        this.locked = true;
+        this.pushing = false;
+        this.pulling = dir;
+        this.hero.child.classList.remove( Config.verbs.GRAB );
+
+        if ( collision.map || collision.box || collision.npc ) {
+            return;
+        }
+
+        const heroCss = this.getCss( dir, this.hero );
+        const grabCss = this.getCss( dir, this.grabbed );
+
+        this.hero.cycle( Config.verbs.PULL, dir );
+
+        this.heroTween = new Tween({
+            ease: Easing.swing,
+            duration: Config.animation.duration.pulled,
+            delay: Config.animation.duration.pulled,
+            from: heroCss.from,
+            to: heroCss.to,
+            update: ( t ) => {
+                this.hero.offset[ heroCss.axis ] = t;
+                this.transform = this.update( this.hero.offset );
+                this.hero.move( dir, this.hero.offset );
+                this.map.move( dir, this.transform );
+            },
+            complete: ( t ) => {
+                this.hero.offset[ heroCss.axis ] = t;
+                this.transform = this.update( this.hero.offset );
+                this.hero.move( dir, this.hero.offset );
+                this.map.move( dir, this.transform );
+                this.locked = false;
+            }
+        });
+
+        this.grabTween = new Tween({
+            ease: Easing.swing,
+            duration: Config.animation.duration.pulled,
+            delay: Config.animation.duration.pulled,
+            from: grabCss.from,
+            to: grabCss.to,
+            update: ( t ) => {
+                this.grabbed.offset[ grabCss.axis ] = t;
+                this.grabbed.move( dir, this.grabbed.offset );
+            },
+            complete: ( t ) => {
+                this.grabbed.offset[ grabCss.axis ] = t;
+                this.grabbed.move( dir, this.grabbed.offset );
+            }
+        });
+    }
+
+
+    handleNPC ( npc, poi, dir ) {
+        npc.checkAct( poi, false );
+        this.handlePush( poi, dir );
+    }
+
+
+    handleMap ( poi, dir ) {
+        this.hero.cycle( Config.verbs.WALK, dir );
+    }
+
+
+    handlePush ( poi, dir ) {
+        this.pulling = null;
+        this.pushing = true;
+        this.hero.child.classList.remove( Config.verbs.GRAB );
+        this.hero.cycle( Config.verbs.PUSH, dir );
+    }
+
+
+    handleEvt ( evt ) {
+        if ( evt.type === Config.events.BOUNDARY ) {
+            this.switchMap( evt );
+        }
+    }
+
+
+    handleBox ( poi, dir ) {
+        this.hero.cycle( Config.verbs.WALK, dir );
+    }
+
+
+    awareNPC ( poi, dir ) {
+        for ( let i = this.npcs.length; i--; ) {
+            this.npcs[ i ].checkPoi( poi );
+            this.npcs[ i ].checkBox( poi );
+        }
     }
 
 
@@ -319,9 +456,9 @@ class GameBox {
     }
 
 
-    checkMap ( poi ) {
+    checkMap ( poi, sprite ) {
         let ret = false;
-        const hitbox = this.hero.getBox( poi, "hit" );
+        const hitbox = sprite.getBox( poi, "hit" );
 
         for ( let i = this.map.data.collision.length; i--; ) {
             const collider = this.map.data.collider / this.map.data.resolution;
@@ -364,67 +501,61 @@ class GameBox {
     }
 
 
-    handleBox ( poi, dir ) {
-        this.hero.cycle( Config.verbs.WALK, dir );
-    }
-
-
-    handleLock ( poi, dir ) {
-        if ( dir === Config.opposites[ this.hero.dir ] ) {
-            this.pulling = 1;
-            this.hero.lockCycle( Config.verbs.PULL, dir );
-        }
-    }
-
-
-    handleMap ( poi, dir ) {
-        this.pushing++;
-
-        if ( this.pushing >= (this.map.data.gridsize / 2) ) {
-            this.hero.cycle( Config.verbs.PUSH, dir );
-        }
-    }
-
-
-    handleEvt ( evt ) {
-        if ( evt.type === Config.events.BOUNDARY ) {
-            this.switchMap( evt );
-        }
-    }
-
-
-    awareNPC ( poi, dir ) {
-        for ( let i = this.npcs.length; i--; ) {
-            this.npcs[ i ].checkPoi( poi );
-            this.npcs[ i ].checkBox( poi );
-        }
-    }
-
-
-    getPoi ( dir, step ) {
+    getPoi ( dir, step, sprite ) {
         const poi = {};
 
         if ( dir === "left" ) {
-            poi.x = this.hero.offset.x - step;
-            poi.y = this.hero.offset.y;
+            poi.x = sprite.offset.x - step;
+            poi.y = sprite.offset.y;
         }
 
         if ( dir === "right" ) {
-            poi.x = this.hero.offset.x + step;
-            poi.y = this.hero.offset.y;
+            poi.x = sprite.offset.x + step;
+            poi.y = sprite.offset.y;
         }
 
         if ( dir === "up" ) {
-            poi.x = this.hero.offset.x;
-            poi.y = this.hero.offset.y - step;
+            poi.x = sprite.offset.x;
+            poi.y = sprite.offset.y - step;
         }
 
         if ( dir === "down" ) {
-            poi.x = this.hero.offset.x;
-            poi.y = this.hero.offset.y + step;
+            poi.x = sprite.offset.x;
+            poi.y = sprite.offset.y + step;
         }
 
         return poi;
+    }
+
+
+    getCss ( dir, sprite ) {
+        const css = {};
+
+        if ( dir === "left" ) {
+            css.axis = "x";
+            css.from = sprite.offset.x;
+            css.to = sprite.offset.x - this.map.data.gridsize;
+        }
+
+        if ( dir === "right" ) {
+            css.axis = "x";
+            css.from = sprite.offset.x;
+            css.to = sprite.offset.x + this.map.data.gridsize;
+        }
+
+        if ( dir === "up" ) {
+            css.axis = "y";
+            css.from = sprite.offset.y;
+            css.to = sprite.offset.y - this.map.data.gridsize;
+        }
+
+        if ( dir === "down" ) {
+            css.axis = "y";
+            css.from = sprite.offset.y;
+            css.to = sprite.offset.y + this.map.data.gridsize;
+        }
+
+        return css;
     }
 
 

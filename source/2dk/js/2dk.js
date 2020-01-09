@@ -27,13 +27,19 @@ IDEA: Procedural map paint with cellauto JS.
 * Pack JSON for smaller file size...
 * Audio performance on mobile...
 
+* Grab > Push/Pull for VERBS
+    Need to store facing direction when grab happens
+    Need to to lock Hero on axis (x or y) for grab+pull
+    Need to check poi direction compared to facing direction
+    If poi direction is not on lock axis, release grab or suppress...?
+
 * GameBox order of operations for press/release events!
+* Move resistance (pushing, tiles, etc...)
+
 * Attacking & Weapons
 * Enemy AIs (Baddies)
-* Grab > Push/Pull for VERBS
 * Charged Hero + Release Attack
 * Collider events?
-* Move resistance (pushing, tiles, etc...)
 
 
 ********************************************************************************
@@ -88,7 +94,7 @@ IDEA: Procedural map paint with cellauto JS.
 )
 
 * VERB system for Hero Actions and Object(NPC) Reactions
-* VERBS: Face, Walk, Push, Open, Pull, Lift, Toss... Read, Hit?
+* VERBS: Face, Walk, Push, Open, Pull, Lift, Toss, Grab
 
 * Object(NPC) looks at Hero conditions (dir, act, etc...) to determine payload
 * Object(NPC) notifys Hero when an action meets conditions for a payload

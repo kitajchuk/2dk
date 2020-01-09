@@ -1,7 +1,8 @@
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
 const $ = require( "properjs-hobo" );
-const { TweenLite } = require( "gsap" );
+const Tween = require( "properjs-tween" );
+const Easing = require( "properjs-easing" );
 
 
 
@@ -13,7 +14,6 @@ class Sprite {
         this.height = data.height / data.scale;
         this.loader = new Loader();
         this.cycling = false;
-        this.locked = false;
         this.dir = null;
         this.verb = null;
         this.offset = {
@@ -73,16 +73,6 @@ class Sprite {
     }
 
 
-    // General positioning method
-    // Useful for keeping sprite position updated with TweenLite animations
-    /*
-        onUpdate: () => {
-            this.pos({
-                x: this.tween.target._gsTransform.x,
-                y: this.tween.target._gsTransform.y
-            });
-        }
-    */
     pos ( poi ) {
         this.offset = poi;
         this.hitbox.x = this.offset.x + (this.data.boxes.hit.x / this.data.scale);
@@ -91,24 +81,12 @@ class Sprite {
 
 
     move ( dir, poi ) {
-        if ( this.locked ) {
-            return;
-        }
-
         this.pos( poi );
-        this.element.style.webkitTransform = `translate3d(
-            ${this.offset.x}px,
-            ${this.offset.y}px,
-            0
-        )`;
+        this.render();
     }
 
 
     cycle ( verb, dir ) {
-        if ( this.locked ) {
-            return;
-        }
-
         if ( verb !== this.verb ) {
             this.cycling = true;
             this.$child.removeClass( `${this.verb} up down right left` );
@@ -125,20 +103,8 @@ class Sprite {
         }
     }
 
-    lockCycle ( verb, dir ) {
-        this.cycling = true;
-        this.$child.removeClass( `${this.verb} up down right left` );
-        this.dir = dir;
-        this.verb = verb;
-        this.$child.addClass( `${verb} ${dir}` );
-    }
-
 
     face ( dir ) {
-        if ( this.locked ) {
-            return;
-        }
-
         this.$child.removeClass( `${this.verb} up down right left` );
         this.$child.addClass( dir );
         this.cycling = false;
@@ -146,8 +112,12 @@ class Sprite {
     }
 
 
-    lock ( bool ) {
-        this.locked = bool;
+    render () {
+        this.element.style.webkitTransform = `translate3d(
+            ${this.offset.x}px,
+            ${this.offset.y}px,
+            0
+        )`;
     }
 
 
@@ -232,15 +202,6 @@ class Hero extends Sprite {
 
         this.styles.innerHTML = this.stylePacks.join( "" );
     }
-
-
-    render () {
-        this.element.style.webkitTransform = `translate3d(
-            ${this.offset.x}px,
-            ${this.offset.y}px,
-            0
-        )`;
-    }
 }
 
 
@@ -303,16 +264,6 @@ class NPC extends Sprite {
     }
 
 
-    checkAct ( poi, btn ) {
-        if ( this.state.action && this.state.action.verb === Config.verbs.PUSH ) {
-            this.push( poi, btn );
-
-        } else if ( this.state.action && this.state.action.verb === Config.verbs.OPEN ) {
-            this.open( poi, btn );
-        }
-    }
-
-
     checkPoi ( poi ) {
         if ( (this.hitbox.width === 0 && this.hitbox.height === 0) || (this.hitbox.width === this.width && this.hitbox.height === this.height) ) {
             return;
@@ -353,6 +304,37 @@ class NPC extends Sprite {
     }
 
 
+    checkAct ( poi, btn ) {
+        // MOVE covers the idea of PUSH/PULL because it supports GRAB
+        if ( this.state.action && this.state.action.verb === Config.verbs.MOVE && !btn ) {
+            this.push( poi, btn );
+
+        } else if ( this.state.action && this.state.action.verb === Config.verbs.MOVE && btn ) {
+            this.grab( poi, btn );
+
+        } else if ( this.state.action && this.state.action.verb === Config.verbs.OPEN ) {
+            this.open( poi, btn );
+        }
+    }
+
+
+    grab ( poi, btn ) {
+        if ( !this.state.action ) {
+            return;
+        }
+
+        if ( this.state.action.verb !== Config.verbs.MOVE ) {
+            return;
+        }
+
+        if ( this.gamebox.grabbed ) {
+            return;
+        }
+
+        this.gamebox.grab( this );
+    }
+
+
     open ( poi, btn ) {
         if ( !this.state.action ) {
             return;
@@ -385,7 +367,7 @@ class NPC extends Sprite {
             return;
         }
 
-        if ( this.state.action.verb !== Config.verbs.PUSH ) {
+        if ( this.state.action.verb !== Config.verbs.MOVE ) {
             return;
         }
 
@@ -394,10 +376,6 @@ class NPC extends Sprite {
         }
 
         if ( this.pushed.pushing ) {
-            return;
-        }
-
-        if ( this.state.action.require.dir && this.gamebox.hero.dir !== this.state.action.require.dir ) {
             return;
         }
 
@@ -410,44 +388,37 @@ class NPC extends Sprite {
             this.pushed.pushing = true;
             this.state.action.counter--;
 
-            const css = {};
+            const css = this.gamebox.getCss( this.gamebox.hero.dir, this );
+            const pos = {};
 
-            if ( this.gamebox.hero.dir === "left" ) {
-                css.x = this.offset.x - this.gamebox.map.data.gridsize;
+            pos[ css.axis ] = css.to;
+            pos[ Config.opposites[ css.axis ] ] = this.offset[ Config.opposites[ css.axis ] ];
+
+            // Map collider layer
+            if ( this.gamebox.checkMap( pos, this ) ) {
+                this.pushed.pushing = false;
+                return;
             }
 
-            if ( this.gamebox.hero.dir === "right" ) {
-                css.x = this.offset.x + this.gamebox.map.data.gridsize;
-            }
+            this.tween = new Tween({
+                ease: Easing.swing,
+                duration: Config.animation.duration.pushed,
+                from: css.from,
+                to: css.to,
+                update: ( t ) => {
+                    this.offset[ css.axis ] = t;
+                    this.move( null, this.offset );
+                },
+                complete: ( t ) => {
+                    this.offset[ css.axis ] = t;
+                    this.move( null, this.offset );
+                    this.pushed.pushing = false;
 
-            if ( this.gamebox.hero.dir === "up" ) {
-                css.y = this.offset.y - this.gamebox.map.data.gridsize;
-            }
-
-            if ( this.gamebox.hero.dir === "down" ) {
-                css.y = this.offset.y + this.gamebox.map.data.gridsize;
-            }
-
-            this.tween = TweenLite.to(
-                this.element,
-                Config.animation.duration.pushed,
-                {
-                    css,
-                    onUpdate: () => {
-                        this.pos({
-                            x: parseInt( this.tween._targets[ 0 ]._gsap.x, 10 ),
-                            y: parseInt( this.tween._targets[ 0 ]._gsap.y, 10 )
-                        });
-                    },
-                    onComplete: () => {
-                        this.pushed.pushing = false;
-
-                        if ( this.state.action.payload ) {
-                            this.gamebox.payload( this.state.action.payload );
-                        }
+                    if ( this.state.action.payload ) {
+                        this.gamebox.payload( this.state.action.payload );
                     }
                 }
-            );
+            });
         }
 
         this.pushed.timer = setTimeout(() => {

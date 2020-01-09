@@ -14,15 +14,15 @@ const Config = {
         DOWNRIGHT: 444,
     },
     verbs: {
+        MOVE: "move",
+        GRAB: "grab",
         PUSH: "push",
         PULL: "pull",
         LIFT: "lift",
         TOSS: "toss",
-        READ: "read",
         OPEN: "open",
         WALK: "walk",
         FACE: "face",
-        HIT: "hit",
     },
     events: {
         DOOR: "door",
@@ -41,6 +41,8 @@ const Config = {
         right: "left",
         down: "up",
         up: "down",
+        y: "x",
+        x: "y",
     },
     values: {
         // px
@@ -67,7 +69,8 @@ const Config = {
     animation: {
         bounce: 300,
         duration: {
-            pushed: 0.5,
+            pushed: 720,
+            pulled: 360,
             boundary: 500,
         }
     },
