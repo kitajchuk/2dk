@@ -125,26 +125,6 @@ class MapLocation {
         for ( let id in this.map.data.textures ) {
             this.setLayer( id );
         }
-
-        if ( this.map.gamebox.player.debug ) {
-            this.setDebug();
-        }
-    }
-
-
-    setDebug () {
-        this.layers.debug = new MapLayer({
-            id: "debug",
-            width: this.map.width,
-            height: this.map.height
-        });
-
-        drawGridLines(
-            this.layers.debug.context,
-            this.map.width,
-            this.map.height,
-            this.map.data.gridsize
-        );
     }
 
 
@@ -173,10 +153,12 @@ class Map {
     constructor ( data, gamebox ) {
         this.data = data;
         this.gamebox = gamebox;
-        this.loader = new Loader();
         this.location = null;
+        this.layers = {};
         this.width = data.width / data.resolution;
         this.height = data.height / data.resolution;
+        this.image = Loader.cash( data.image );
+        this.location = new MapLocation( this );
         this.offset = {
             x: 0,
             y: 0
@@ -190,7 +172,6 @@ class Map {
         this.element.parentNode.removeChild( this.element );
         this.element = null;
         this.objects = null;
-        this.layers = null;
         this.image = null;
         this.location = null;
     }
@@ -200,55 +181,50 @@ class Map {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__map";
         this.objects = document.createElement( "div" );
-        this.objects.className = `_2dk__objects`;
-        this.objects.style.width = `${this.width}px`;
-        this.objects.style.height = `${this.height}px`;
-        this.layers = document.createElement( "div" );
-        this.layers.className = `_2dk__layers`;
-        this.layers.style.width = `${this.width}px`;
-        this.layers.style.height = `${this.height}px`;
-        this.layers.appendChild( this.objects );
-        this.element.appendChild( this.layers );
+        this.objects.className = `_2dk__layer`;
+        this.objects.dataset.layer = "objects";
+        this.element.appendChild( this.objects );
+
+        for ( let id in this.data.textures ) {
+            this.addLayer( id );
+        }
     }
 
 
-    load () {
-        return new Promise(( resolve ) => {
-            this.loader.loadImage( this.data.image ).then(( image ) => {
-                this.image = image;
-                this.location = new MapLocation( this );
-
-                for ( let id in this.data.textures ) {
-                    this.addLayer( id );
-                }
-
-                if ( this.gamebox.player.debug ) {
-                    this.addLayer( "debug" );
-                }
-
-                resolve();
-            });
-        });
-    }
-
-
-    init ( transform ) {
-        this.move( null, transform );
-    }
-
-
-    move ( dir, transform ) {
-        this.offset = transform;
+    update ( offset ) {
+        this.offset = offset;
         this.render();
     }
 
 
     render () {
-        this.layers.style.webkitTransform = `translate3d(
-            ${this.offset.x}px,
-            ${this.offset.y}px,
-            0
-        )`;
+        this.clear();
+
+        for ( let id in this.layers ) {
+            this.layers[ id ].context.drawImage(
+                this.location.layers[ id ].canvas,
+                0,
+                0,
+                this.location.layers[ id ].data.width * this.data.resolution,
+                this.location.layers[ id ].data.height * this.data.resolution,
+                this.offset.x,
+                this.offset.y,
+                this.location.layers[ id ].data.width,
+                this.location.layers[ id ].data.height,
+            );
+        }
+    }
+
+
+    clear () {
+        for ( let id in this.layers ) {
+            this.layers[ id ].context.clearRect(
+                0,
+                0,
+                this.layers[ id ].data.width,
+                this.layers[ id ].data.height
+            );
+        }
     }
 
 
@@ -263,7 +239,13 @@ class Map {
 
 
     addLayer ( id ) {
-        this.layers.appendChild( this.location.layers[ id ].canvas );
+        this.layers[ id ] = new MapLayer({
+            id,
+            width: this.gamebox.player.width,
+            height: this.gamebox.player.height
+        });
+
+        this.element.appendChild( this.layers[ id ].canvas );
     }
 }
 

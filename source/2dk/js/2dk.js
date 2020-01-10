@@ -1,53 +1,29 @@
 /*******************************************************************************
-* 2dk Development Notes
+* 2dk Dev Notes
 ********************************************************************************
-TODO: Diagonal wall move physics. A left-down wall moves Hero left down.
-TODO: Bounce physics so Hero does not get tile collision locked.
-TODO: Knockbacks Hero_Slide(free) and Hero_Hit(paused).
-TODO: Port studio Editor to renderer-editor.
 
-IDEA: NPC hypothesis is that NPCs will work now that positions are absolute!
-IDEA: Use Artificial General Intelligence for NPC base class.
-IDEA: Procedural map paint with cellauto JS.
+* Use 2 user initiated Audio() streams for GameSFX
+* Refactor Player, add GameCycle
 
 
 ********************************************************************************
-* Studio
+* Studio Maker
 ********************************************************************************
 * History states for painting
-* Export map PNGs
-* Hero sprite pins (sets map.spawn(x, y))
+* Hero Pins (sets map.spawn(x, y))
+* Map Objects (background, foreground)
+* Active Tiles (background, foreground)
 
 
 ********************************************************************************
-* Player
-* https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-* https://developers.google.com/web/fundamentals/primers/service-workers
-* https://github.com/Akihabara/akihabara/blob/master/src/trigo.js
-********************************************************************************
-* Pack JSON for smaller file size...
-
-* Physics-based Z for movement?
-* GameCycle manager for states (intro, title, credits, etc...)
-* Projectiles, FX in general
-* Math functions (arc animations?, see Akihabara Trigo)
-
-* Attacking & Weapons
-* Enemy AIs (Baddies)
-* Charged Hero + Release Attack
-* Collider events?
-* Move resistance (pushing, tiles, etc...)
-
-
-********************************************************************************
-* Events
+* Map Events
 ********************************************************************************
 * NOUN system for events
-* NOUNS: DOOR, BOUNDARY, CUTSCENE, LOADSCREEN?, INTRO?, OUTRO?
+* NOUNS: DOOR, BOUNDARY, CUTSCENE
 
 
 ********************************************************************************
-* Dialogues
+* Game Dialogues
 ********************************************************************************
 * Screen dialogues, Array of dialogue objects
 * Plain text dialogues advance with A
@@ -68,6 +44,9 @@ IDEA: Procedural map paint with cellauto JS.
 * Event tiles for doors, locatin switching etc...
 * Animated flower tiles
 * Animated water tiles
+
+* Only Render visible tiles....?
+* Would require true Camera logic.
 
 
 ********************************************************************************
@@ -111,6 +90,27 @@ IDEA: Procedural map paint with cellauto JS.
 
 ********************************************************************************
 ********************************************************************************
+********************************************************************************
+* Thoughts Bank:
+* Random thoughts we want to keep track of...for now...
+********************************************************************************
+* Physics-based Z for movement?
+* GameCycle manager for states (intro, title, credits, etc...)
+* Projectiles, FX in general
+* Math functions (arc animations?, see Akihabara Trigo)
+
+* Attacking & Weapons
+* Enemy AIs (Baddies)
+* Charged Hero + Release Attack
+* Collider events?
+* Move resistance (pushing, tiles, etc...)
+
+* LOADSCREEN?, INTRO?, OUTRO?
+* Diagonal wall move physics. A left-down wall moves Hero left down.
+* Bounce physics so Hero does not get tile collision locked.
+* Knockbacks Hero_Slide(free) and Hero_Hit(paused).
+* Use Artificial General Intelligence for NPC base class.
+* Procedural map paint with cellauto JS.
 *******************************************************************************/
 // Load CSS
 require( "../sass/2dk.scss" );
@@ -118,7 +118,7 @@ require( "../sass/2dk.scss" );
 
 
 // Load JS
-import { Player } from "./lib/index";
+import Player from "./lib/Player";
 
 
 

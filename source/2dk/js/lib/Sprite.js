@@ -1,23 +1,26 @@
-const Utils = require( "./Utils" );
-const Loader = require( "./Loader" );
 const Config = require( "./Config" );
+const Loader = require( "./Loader" );
 const $ = require( "properjs-hobo" );
 
 
 
 class Sprite {
     // width, height, image, name
-    constructor ( data ) {
+    constructor ( data, gamebox ) {
         this.data = data;
+        this.gamebox = gamebox;
         this.width = data.width / data.scale;
         this.height = data.height / data.scale;
-        this.loader = new Loader();
         this.cycling = false;
         this.dir = null;
         this.verb = null;
-        this.offset = {
+        this.position = {
             x: data.spawn.x,
-            y: data.spawn.y
+            y: data.spawn.y,
+        };
+        this.offset = {
+            x: 0,
+            y: 0,
         };
         this.hitbox = {
             x: !data.boxes ? 0 : data.spawn.x + (data.boxes.hit.x / data.scale),
@@ -25,6 +28,7 @@ class Sprite {
             width: !data.boxes ? 0 : (data.boxes.hit.width / data.scale),
             height: !data.boxes ? 0 : (data.boxes.hit.height / data.scale),
         };
+        this.image = Loader.cash( data.image );
 
         if ( !this.data.boxes ) {
             this.data.boxes = {
@@ -54,34 +58,31 @@ class Sprite {
         this.element.className = `_2dk__sprite _2dk__${this.data.id}`;
         this.child = document.createElement( "div" );
         this.child.className = `_2dk__child`;
+        this.child.style.backgroundImage = `url(${this.data.image})`;
+        this.styles = document.createElement( "style" );
+        this.element.appendChild( this.styles );
         this.element.appendChild( this.child );
         this.$element = $( this.element );
         this.$child = $( this.child );
     }
 
 
-    load () {
-        return new Promise(( resolve ) => {
-            this.loader.loadImage( this.data.image ).then(( image ) => {
-                this.image = image;
-                this.child.style.backgroundImage = `url(${this.data.image})`;
-                this.move( null, this.offset );
-                resolve();
-            });
-        });
+    render () {
+        this.element.style.webkitTransform = `translate3d(
+            ${this.offset.x}px,
+            ${this.offset.y}px,
+            0
+        )`;
     }
 
 
-    pos ( poi ) {
-        this.offset = poi;
-        this.hitbox.x = this.offset.x + (this.data.boxes.hit.x / this.data.scale);
-        this.hitbox.y = this.offset.y + (this.data.boxes.hit.y / this.data.scale);
-    }
-
-
-    move ( dir, poi ) {
-        this.pos( poi );
-        this.render();
+    getHitbox ( poi ) {
+        return {
+            x: poi.x + (this.data.boxes.hit.x / this.data.scale),
+            y: poi.y + (this.data.boxes.hit.y / this.data.scale),
+            width: this.hitbox.width,
+            height: this.hitbox.height,
+        };
     }
 
 
@@ -108,25 +109,7 @@ class Sprite {
         this.$child.addClass( dir );
         this.cycling = false;
         this.dir = dir;
-    }
-
-
-    render () {
-        this.element.style.webkitTransform = `translate3d(
-            ${this.offset.x}px,
-            ${this.offset.y}px,
-            0
-        )`;
-    }
-
-
-    getBox ( poi, box ) {
-        return {
-            x: poi.x + (this.data.boxes[ box ].x / this.data.scale),
-            y: poi.y + (this.data.boxes[ box ].y / this.data.scale),
-            width: this.data.boxes[ box ].width / this.data.scale,
-            height: this.data.boxes[ box ].height / this.data.scale
-        };
+        this.verb = null;
     }
 }
 
@@ -134,16 +117,47 @@ class Sprite {
 
 class Hero extends Sprite {
     constructor ( data, gamebox ) {
-        super( data );
-        this.gamebox = gamebox;
-        this.styles = document.createElement( "style" );
+        super( data, gamebox );
+        this.package();
     }
 
 
-    init () {
-        this.element.appendChild( this.styles );
-        this.gamebox.map.addSprite( this );
-        // this.child.style.backgroundPosition = `${this.data.verbs.face.down.offsetX / this.data.scale}px ${this.data.verbs.face.down.offsetY / this.data.scale}px`;
+    update ( poi, offset ) {
+        this.position = poi;
+        this.hitbox.x = this.position.x + (this.data.boxes.hit.x / this.data.scale);
+        this.hitbox.y = this.position.y + (this.data.boxes.hit.y / this.data.scale);
+
+        const absolute = {
+            x: Math.abs( offset.x ),
+            y: Math.abs( offset.y ),
+        };
+
+        this.offset = {
+            x: this.gamebox.camera.width / 2,
+            y: this.gamebox.camera.height / 2,
+        };
+
+        if ( absolute.x <= 0 ) {
+            this.offset.x = Math.max( 0, poi.x );
+        }
+
+        if ( absolute.x >= (this.gamebox.map.width - this.gamebox.camera.width) ) {
+            this.offset.x = poi.x + offset.x;
+        }
+
+        if ( absolute.y <= 0 ) {
+            this.offset.y = Math.max( 0, poi.y );
+        }
+
+        if ( absolute.y >= (this.gamebox.map.height - this.gamebox.camera.height) ) {
+            this.offset.y = poi.y + offset.y;
+        }
+
+        this.render();
+    }
+
+
+    package () {
         this.child.style.backgroundSize = `${this.image.naturalWidth / this.data.scale}px ${this.image.naturalHeight / this.data.scale}px`;
         this.child.style.backgroundRepeat = "no-repeat";
         this.stylePacks = [];
@@ -205,108 +219,7 @@ class Hero extends Sprite {
 
 
 
-class NPC extends Sprite {
-    constructor ( data, gamebox ) {
-        super( data );
-        this.gamebox = gamebox;
-        this.styles = document.createElement( "style" );
-        // Copy so we can cooldown and re-spawn objects with fresh states
-        this.states = Utils.copy( data.states );
-        this.pushed = {
-            timer: null,
-            pushes: 0,
-            needed: gamebox.map.data.tilesize,
-            pushing: false,
-            bounce: Config.animation.bounce
-        };
-    }
-
-
-    init () {
-        this.shift();
-        this.$element.addClass( this.data.layer );
-        this.element.appendChild( this.styles );
-        this.gamebox.map.addSprite( this );
-        this.checkBox();
-    }
-
-
-    shift () {
-        if ( this.states.length ) {
-            this.state = this.states.shift();
-            this.child.style.backgroundPosition = `${this.state.bgp.x / this.data.scale}px ${this.state.bgp.y / this.data.scale}px`;
-            this.child.style.backgroundSize = `${this.image.naturalWidth / this.data.scale}px ${this.image.naturalHeight / this.data.scale}px`;
-            this.child.style.backgroundRepeat = `${this.state.repeat ? "repeat" : "no-repeat"}`;
-
-            if ( this.state.animated ) {
-                this.styles.innerHTML = `
-                    ._2dk__${this.data.id} ._2dk__child.animate {
-                        background-position: ${this.state.bgp.x / this.data.scale}px ${this.state.bgp.y / this.data.scale}px;
-                        animation: ${this.data.id}-anim ${this.state.dur}ms steps(${this.state.stepsX}) infinite;
-                    }
-                    @keyframes ${this.data.id}-anim {
-                        100% { background-position: -${Math.abs( this.state.offsetX / this.data.scale ) + (this.width * this.state.stepsX)}px ${this.state.offsetY / this.data.scale}px; }
-                    }
-                `;
-            }
-        }
-    }
-
-
-    pause ( paused ) {
-        if ( paused && this.state.animated ) {
-            this.$child.removeClass( "animate" );
-
-        } else if ( this.state.animated ) {
-            this.$child.addClass( "animate" );
-        }
-    }
-
-
-    checkPoi ( poi ) {
-        if ( (this.hitbox.width === 0 && this.hitbox.height === 0) || (this.hitbox.width === this.width && this.hitbox.height === this.height) ) {
-            return;
-        }
-
-        if ( (poi.y + this.gamebox.hero.height) > (this.offset.y + this.height) ) {
-            this.$element.removeClass( "fg" ).addClass( "bg" );
-
-        } else {
-            this.$element.removeClass( "bg" ).addClass( "fg" );
-        }
-    }
-
-
-    checkBox ( poi ) {
-        const offset = {
-            top: this.offset.y + this.gamebox.map.offset.y,
-            bottom: (this.offset.y + this.height) + this.gamebox.map.offset.y,
-            left: this.offset.x + this.gamebox.map.offset.x,
-            right: (this.offset.x + this.width) + this.gamebox.map.offset.x,
-        };
-
-        // Object is offscreen...
-        if ( offset.bottom <= 0 || offset.top >= this.gamebox.player.height || offset.right <= 0 || offset.left >= this.gamebox.player.width ) {
-            this.element.style.display = "none";
-
-            if ( this.state.animated ) {
-                this.$child.removeClass( "animate" );
-            }
-
-        } else {
-            this.element.style.display = "block";
-
-            if ( this.state.animated ) {
-                this.$child.addClass( "animate" );
-            }
-        }
-    }
-}
-
-
-
 module.exports = {
-    NPC,
     Hero,
     Sprite
 };

@@ -1,3 +1,4 @@
+const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const GamePad = require( "./GamePad" );
@@ -11,10 +12,8 @@ class Player {
         this.ready = false;
         this.paused = true;
         this.stopped = false;
-        this.query = paramalama( window.location.search );
-        this.debug = this.query.debug ? true : false;
+        this.Loader = Loader;
         this.detect();
-        this.build();
     }
 
 
@@ -31,30 +30,14 @@ class Player {
     }
 
 
-    build () {
-        this.element = document.createElement( "div" );
-        this.element.className = "_2dk";
-        this.splash = document.createElement( "div" );
-        this.splash.className = "_2dk__splash";
-        this.splashInfo = document.createElement( "div" );
-        this.splashInfo.className = "_2dk__splash__info";
-        this.splashInfo.innerHTML = `<div>Rotate to Landscape.</div><div>${this.sac ? "Installed" : "+Webapp"}</div>`;
-        this.splashLoad = document.createElement( "div" );
-        this.splashLoad.className = "_2dk__splash__load";
-        this.splashLoad.innerHTML = `<div>Loading game bundle...</div>`;
-        this.splash.appendChild( this.splashInfo );
-        this.splash.appendChild( this.splashLoad );
-        this.element.appendChild( this.splash );
-        document.body.appendChild( this.element );
-    }
-
-
     load () {
         this.loader = new Loader();
         this.loader.loadJson( "game.json" ).then(( data ) => {
             this.data = data;
+            this.data.hero = Utils.merge( data.heroes[ data.hero.sprite ], data.hero );
             this.width = data.game.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
             this.height = data.game.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
+            this.build();
 
             let counter = 0;
 
@@ -72,6 +55,29 @@ class Player {
                 this.bind();
             });
         });
+    }
+
+
+    build () {
+        this.element = document.createElement( "div" );
+        this.element.className = "_2dk";
+        this.screen = document.createElement( "div" );
+        this.screen.className = `_2dk__screen`;
+        this.screen.style.width = `${this.width}px`;
+        this.screen.style.height = `${this.height}px`;
+        this.splash = document.createElement( "div" );
+        this.splash.className = "_2dk__splash";
+        this.splashInfo = document.createElement( "div" );
+        this.splashInfo.className = "_2dk__splash__info";
+        this.splashInfo.innerHTML = `<div>Rotate to Landscape.</div><div>${this.sac ? "Installed" : "+Webapp"}</div>`;
+        this.splashLoad = document.createElement( "div" );
+        this.splashLoad.className = "_2dk__splash__load";
+        this.splashLoad.innerHTML = `<div>Loading game bundle...</div>`;
+        this.splash.appendChild( this.splashInfo );
+        this.splash.appendChild( this.splashLoad );
+        this.element.appendChild( this.splash );
+        this.element.appendChild( this.screen );
+        document.body.appendChild( this.element );
     }
 
 

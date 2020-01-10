@@ -4,6 +4,37 @@
     height: 100%;
     overflow: hidden;
 }
+._2dk__screen {
+    width: 480px;
+    height: 320px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d( -50%, -50%, 0 );
+    overflow: hidden;
+}
+._2dk__dialogue {
+    box-shadow: $box-shadow;
+    background-color: rgba( 0, 0, 0, 1.0 );
+    position: absolute;
+    left: 50%;
+    top: 0;
+    height: auto;
+    width: 100%;
+    overflow: hidden;
+    padding: 24px $tile-size;
+    text-align: left;
+    font-size: 12px;
+    line-height: 1.5;
+    opacity: 0;
+    z-index: 1;
+    transform: translate3d( -50%, 0, 0 );
+    transition: opacity 240ms ease;
+
+    &.is-texting {
+        opacity: 1;
+    }
+}
 ._2dk__splash {
     color: $teal;
     background-color: $charcoal;
@@ -67,39 +98,6 @@
         z-index: 13;
         text-align: center;
         padding-bottom: $padding-1;
-    }
-}
-._2dk__screen {
-    width: 480px;
-    height: 320px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate3d( -50%, -50%, 0 );
-    overflow: hidden;
-}
-._2dk__dialogue {
-    box-shadow: $box-shadow;
-    background-color: rgba( 0, 0, 0, 1.0 );
-    position: absolute;
-    left: 50%;
-    top: 0;
-    height: auto;
-    width: 100%;
-    overflow: hidden;
-    padding: 24px $tile-size;
-    text-align: left;
-    font-size: 12px;
-    line-height: 1.5;
-    opacity: 0;
-    z-index: 1;
-    transform: translate3d( -50%, 0, 0 ) scale( 0.5 );
-    transition: opacity 240ms ease,
-                transform 240ms ease;
-
-    &.is-texting {
-        opacity: 1;
-        transform: translate3d( -50%, 0, 0 ) scale( 1.0 );
     }
 }
 

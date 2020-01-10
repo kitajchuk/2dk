@@ -6,11 +6,6 @@ class Loader {
     constructor () {}
 
 
-    cash () {
-        return cache;
-    }
-
-
     load ( url ) {
         const type = url.split( "/" ).pop().split( "." ).pop();
 
@@ -77,12 +72,20 @@ class Loader {
             }
 
             fetch( url ).then(( response ) => {
-                cache[ url ] = response.json();
-                resolve( cache[ url ] );
+                response.json().then(( json ) => {
+                    cache[ url ] = json;
+                    resolve( cache[ url ] );
+                });
             });
         });
     }
 }
+
+
+
+Loader.cash = ( id ) => {
+    return (id ? cache[ id ] : cache);
+};
 
 
 
