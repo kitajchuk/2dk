@@ -29,62 +29,62 @@ const Utils = {
     },
 
 
-    getPoi ( dir, step, sprite ) {
-        const poi = {};
+    // getPoi ( dir, step, sprite ) {
+    //     const poi = {};
+    //
+    //     if ( dir === "left" ) {
+    //         poi.x = sprite.position.x - step;
+    //         poi.y = sprite.position.y;
+    //     }
+    //
+    //     if ( dir === "right" ) {
+    //         poi.x = sprite.position.x + step;
+    //         poi.y = sprite.position.y;
+    //     }
+    //
+    //     if ( dir === "up" ) {
+    //         poi.x = sprite.position.x;
+    //         poi.y = sprite.position.y - step;
+    //     }
+    //
+    //     if ( dir === "down" ) {
+    //         poi.x = sprite.position.x;
+    //         poi.y = sprite.position.y + step;
+    //     }
+    //
+    //     return poi;
+    // },
 
-        if ( dir === "left" ) {
-            poi.x = sprite.position.x - step;
-            poi.y = sprite.position.y;
-        }
 
-        if ( dir === "right" ) {
-            poi.x = sprite.position.x + step;
-            poi.y = sprite.position.y;
-        }
-
-        if ( dir === "up" ) {
-            poi.x = sprite.position.x;
-            poi.y = sprite.position.y - step;
-        }
-
-        if ( dir === "down" ) {
-            poi.x = sprite.position.x;
-            poi.y = sprite.position.y + step;
-        }
-
-        return poi;
-    },
-
-
-    getAni ( dir, step, sprite ) {
-        const css = {};
-
-        if ( dir === "left" ) {
-            css.axis = "x";
-            css.from = sprite.offset.x;
-            css.to = sprite.offset.x - step;
-        }
-
-        if ( dir === "right" ) {
-            css.axis = "x";
-            css.from = sprite.offset.x;
-            css.to = sprite.offset.x + step;
-        }
-
-        if ( dir === "up" ) {
-            css.axis = "y";
-            css.from = sprite.offset.y;
-            css.to = sprite.offset.y - step;
-        }
-
-        if ( dir === "down" ) {
-            css.axis = "y";
-            css.from = sprite.offset.y;
-            css.to = sprite.offset.y + step;
-        }
-
-        return css;
-    },
+    // getAni ( dir, step, sprite ) {
+    //     const css = {};
+    //
+    //     if ( dir === "left" ) {
+    //         css.axis = "x";
+    //         css.from = sprite.offset.x;
+    //         css.to = sprite.offset.x - step;
+    //     }
+    //
+    //     if ( dir === "right" ) {
+    //         css.axis = "x";
+    //         css.from = sprite.offset.x;
+    //         css.to = sprite.offset.x + step;
+    //     }
+    //
+    //     if ( dir === "up" ) {
+    //         css.axis = "y";
+    //         css.from = sprite.offset.y;
+    //         css.to = sprite.offset.y - step;
+    //     }
+    //
+    //     if ( dir === "down" ) {
+    //         css.axis = "y";
+    //         css.from = sprite.offset.y;
+    //         css.to = sprite.offset.y + step;
+    //     }
+    //
+    //     return css;
+    // },
 
 
     // From Akihabara helpers

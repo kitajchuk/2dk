@@ -4,15 +4,14 @@ const Controller = require( "properjs-controller" );
 
 
 const inputStream = [];
-const touchInterval = Config.values.speed;
-const touchRepeated = Config.values.repeat;
+const touchInterval = 8;
+const touchRepeated = 50;
 const touchControls = {
     a: {
         key: Config.keys.A,
         elem: null,
         timer: null,
         touched: false,
-        hold: 0,
         text: "A",
     },
     b: {
@@ -47,7 +46,7 @@ const touchControls = {
         elem: null,
         timer: null,
         touched: false,
-        dpad: ["up", "left"],
+        dpad: ["left", "up"],
     },
     up: {
         key: Config.keys.UP,
@@ -61,7 +60,7 @@ const touchControls = {
         elem: null,
         timer: null,
         touched: false,
-        dpad: ["up", "right"],
+        dpad: ["right", "up"],
     },
     left: {
         key: Config.keys.LEFT,
@@ -89,7 +88,7 @@ const touchControls = {
         elem: null,
         timer: null,
         touched: false,
-        dpad: ["down", "left"],
+        dpad: ["left", "down"],
     },
     down: {
         key: Config.keys.DOWN,
@@ -103,7 +102,7 @@ const touchControls = {
         elem: null,
         timer: null,
         touched: false,
-        dpad: ["down", "right"],
+        dpad: ["right", "down"],
     },
 };
 let instance = null;
@@ -270,7 +269,7 @@ const clearTouches = () => {
 
 const cancelTouches = () => {
     for ( let btn in touchControls ) {
-        if ( touchControls[ btn ].timer ) {
+        if ( touchControls[ btn ].touched ) {
             cancelTouch( touchControls[ btn ] );
         }
     }
@@ -299,10 +298,12 @@ const startTouch = ( control ) => {
 
         handleTouchStart( control );
 
-        control.timer = setInterval(() => {
-            handleTouchStart( control );
+        if ( control.hasOwnProperty( "hold" ) && !control.menu ) {
+            control.timer = setInterval(() => {
+                handleTouchStart( control );
 
-        }, touchInterval );
+            }, touchInterval );
+        }
     }
 };
 
@@ -319,8 +320,8 @@ const handleTouchStart = ( control ) => {
         control.hold++;
 
         if ( control.hold > touchRepeated ) {
-            instance.fire( `${control.btn[ 0 ]}-longpress` );
-            // console.log( `${control.btn[ 0 ]}-longpress` );
+            instance.fire( `${control.btn[ 0 ]}-holdpress` );
+            // console.log( `${control.btn[ 0 ]}-holdpress` );
 
         } else {
             instance.fire( `${control.btn[ 0 ]}-press` );
@@ -344,8 +345,8 @@ const handleTouchStart = ( control ) => {
 const handleTouchEnd = ( control ) => {
     if ( control.hasOwnProperty( "hold" ) ) {
         if ( control.hold > touchRepeated ) {
-            instance.fire( `${control.btn[ 0 ]}-longrelease` );
-            // console.log( `${control.btn[ 0 ]}-longrelease` );
+            instance.fire( `${control.btn[ 0 ]}-holdrelease` );
+            // console.log( `${control.btn[ 0 ]}-holdrelease` );
 
         } else {
             instance.fire( `${control.btn[ 0 ]}-release` );

@@ -2,7 +2,8 @@ const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const GamePad = require( "./GamePad" );
-const TopView = require( "./TopView" );
+const GameCycle = require( "./GameCycle" );
+const { TopView } = require( "./GameBox" );
 const paramalama = require( "paramalama" );
 
 
@@ -13,6 +14,15 @@ class Player {
         this.paused = true;
         this.stopped = false;
         this.Loader = Loader;
+        this.controls = {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+            a: false,
+            b: false,
+            bHold: false,
+        };
         this.detect();
     }
 
@@ -52,6 +62,7 @@ class Player {
                 this.splashLoad.innerHTML = `<div>Press Start</div>`;
                 this.gamepad = new GamePad( this );
                 this.gamebox = new TopView( this );
+                this.gamecycle = new GameCycle( this );
                 this.bind();
             });
         });
@@ -87,8 +98,10 @@ class Player {
         this._startPress = this.startPress.bind( this );
         this._aPress = this.aPress.bind( this );
         this._aRelease = this.aRelease.bind( this );
-        this._aLongRelease = this.aLongRelease.bind( this );
         this._bPress = this.bPress.bind( this );
+        this._bHoldPress = this.bHoldPress.bind( this );
+        this._bRelease = this.bRelease.bind( this );
+        this._bHoldRelease = this.bHoldRelease.bind( this );
 
         // Standard 4 point d-pad
         this.gamepad.on( "left-press", this._dPadPress );
@@ -108,10 +121,12 @@ class Player {
         // A button (action)
         this.gamepad.on( "a-press", this._aPress );
         this.gamepad.on( "a-release", this._aRelease );
-        this.gamepad.on( "a-longrelease", this._aLongRelease );
 
         // B button (cancel)
         this.gamepad.on( "b-press", this._bPress );
+        this.gamepad.on( "b-holdpress", this._bHoldPress );
+        this.gamepad.on( "b-release", this._bRelease );
+        this.gamepad.on( "b-holdrelease", this._bHoldRelease );
 
         // Screen size / Orientation change
         window.onresize = () => {
@@ -150,80 +165,44 @@ class Player {
 
 
     aPress () {
-        if ( this.stopped ) {
-            return;
-        }
-
-        if ( this.paused ) {
-            return;
-        }
-
-        this.gamebox.pressA();
+        this.controls.a = true;
     }
 
 
     aRelease () {
-        if ( this.stopped ) {
-            return;
-        }
-
-        if ( this.paused ) {
-            return;
-        }
-
-        this.gamebox.releaseA();
-    }
-
-
-    aLongRelease () {
-        if ( this.stopped ) {
-            return;
-        }
-
-        if ( this.paused ) {
-            return;
-        }
-
-        this.gamebox.longReleaseA();
+        this.controls.a = false;
     }
 
 
     bPress () {
-        if ( this.stopped ) {
-            return;
-        }
+        this.controls.b = true;
+    }
 
-        if ( this.paused ) {
-            return;
-        }
 
-        this.gamebox.pressB();
+    bHoldPress () {
+        this.controls.bHold = true;
+    }
+
+
+    bRelease () {
+        this.controls.b = false;
+        this.controls.bHold = false;
+    }
+
+
+    bHoldRelease () {
+        this.controls.b = false;
+        this.controls.bHold = false;
     }
 
 
     dPadPress ( dir ) {
-        if ( this.stopped ) {
-            return;
-        }
-
-        if ( this.paused ) {
-            return;
-        }
-
-        this.gamebox.pressD( dir );
+        this.controls[ dir ] = true;
     }
 
 
     dPadRelease ( dir ) {
-        if ( this.stopped ) {
-            return;
-        }
-
-        if ( this.paused ) {
-            return;
-        }
-
-        this.gamebox.releaseD( dir );
+        this.controls[ dir ] = false;
     }
 }
 

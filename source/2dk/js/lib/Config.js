@@ -46,14 +46,6 @@ const Config = {
         y: "x",
         x: "y",
     },
-    values: {
-        // px
-        step: 1,
-        // ms
-        speed: 8,
-        // ms
-        repeat: 50,
-    },
     colors: {
         grey: "#959595",
         red: "#F30541",

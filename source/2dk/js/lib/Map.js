@@ -256,5 +256,5 @@ module.exports = {
     MapLayer,
     MapLocation,
     drawMapTiles,
-    drawGridLines
+    drawGridLines,
 };

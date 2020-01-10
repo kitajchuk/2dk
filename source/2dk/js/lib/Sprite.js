@@ -5,15 +5,14 @@ const $ = require( "properjs-hobo" );
 
 
 class Sprite {
-    // width, height, image, name
     constructor ( data, gamebox ) {
         this.data = data;
         this.gamebox = gamebox;
         this.width = data.width / data.scale;
         this.height = data.height / data.scale;
         this.cycling = false;
-        this.dir = null;
-        this.verb = null;
+        this.dir = "down";
+        this.verb = Config.verbs.FACE;
         this.position = {
             x: data.spawn.x,
             y: data.spawn.y,
@@ -37,17 +36,6 @@ class Sprite {
         }
 
         this.build();
-    }
-
-
-    destroy () {
-        this.data = null;
-        this.element.parentNode.removeChild( this.element );
-        this.element = null;
-        this.child = null;
-        this.image = null;
-        this.$element = null;
-        this.$child = null;
     }
 
 
@@ -76,6 +64,26 @@ class Sprite {
     }
 
 
+    cycle ( verb, dir ) {
+        if ( verb !== this.verb ) {
+            this.$child.removeClass( this.verb );
+        }
+
+        this.$child.removeClass( "up down right left" );
+        this.dir = dir;
+        this.verb = verb;
+        this.$child.addClass( `${verb} ${dir}` );
+    }
+
+
+    face ( dir ) {
+        this.$child.removeClass( `${this.verb} up down right left` );
+        this.$child.addClass( dir );
+        this.dir = dir;
+        this.verb = Config.verbs.FACE;
+    }
+
+
     getHitbox ( poi ) {
         return {
             x: poi.x + (this.data.boxes.hit.x / this.data.scale),
@@ -86,30 +94,14 @@ class Sprite {
     }
 
 
-    cycle ( verb, dir ) {
-        if ( verb !== this.verb ) {
-            this.cycling = true;
-            this.$child.removeClass( `${this.verb} up down right left` );
-            this.dir = dir;
-            this.verb = verb;
-            this.$child.addClass( `${verb} ${dir}` );
-
-        } else if ( !this.cycling ) {
-            this.cycling = true;
-            this.dir = dir;
-            this.verb = verb;
-            this.$child.removeClass( "up down right left" );
-            this.$child.addClass( `${verb} ${dir}` );
-        }
-    }
-
-
-    face ( dir ) {
-        this.$child.removeClass( `${this.verb} up down right left` );
-        this.$child.addClass( dir );
-        this.cycling = false;
-        this.dir = dir;
-        this.verb = null;
+    destroy () {
+        this.data = null;
+        this.element.parentNode.removeChild( this.element );
+        this.element = null;
+        this.child = null;
+        this.image = null;
+        this.$element = null;
+        this.$child = null;
     }
 }
 
@@ -221,5 +213,5 @@ class Hero extends Sprite {
 
 module.exports = {
     Hero,
-    Sprite
+    Sprite,
 };
