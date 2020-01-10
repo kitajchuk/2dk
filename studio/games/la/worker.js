@@ -1,4 +1,4 @@
-const CACHE_NAME = "v39";
+const CACHE_NAME = "v41";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/la/game.json",
@@ -6,6 +6,8 @@ const CACHE_URLS = [
     "/games/la/assets/sprites/smoke.png",
     "/games/la/assets/sprites/hero_la.png",
     "/games/la/assets/sprites/hero_alttp.png",
+    "/games/la/assets/sounds/Sword.mp3",
+    "/games/la/assets/sounds/Steps.mp3",
     "/games/la/assets/sounds/46-tal-tal-mountain-range.mp3",
     "/games/la/assets/sounds/40-animal-village.mp3",
     "/games/la/assets/sounds/30-richard-s-villa.mp3",

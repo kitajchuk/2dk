@@ -22,6 +22,7 @@ class GameCycle {
         window.requestAnimationFrame( this._blit );
 
         if ( this.player.stopped || this.player.paused ) {
+            this._previousElapsed = elapsed;
             return;
         }
 

@@ -2,8 +2,7 @@
 * 2dk Dev Notes
 ********************************************************************************
 
-* Use 2 user initiated Audio() streams for GameSFX
-* Refactor Player, add GameCycle
+* ???
 
 
 ********************************************************************************
@@ -94,7 +93,6 @@
 * Thoughts Bank:
 * Random thoughts we want to keep track of...for now...
 ********************************************************************************
-* Physics-based Z for movement?
 * GameCycle manager for states (intro, title, credits, etc...)
 * Projectiles, FX in general
 * Math functions (arc animations?, see Akihabara Trigo)

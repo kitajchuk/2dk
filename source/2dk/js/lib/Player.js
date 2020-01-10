@@ -3,6 +3,7 @@ const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const GamePad = require( "./GamePad" );
 const GameCycle = require( "./GameCycle" );
+const GameSound = require( "./GameSound" );
 const { TopView } = require( "./GameBox" );
 const paramalama = require( "paramalama" );
 
@@ -60,9 +61,10 @@ class Player {
 
             })).then(( values ) => {
                 this.splashLoad.innerHTML = `<div>Press Start</div>`;
+                this.gamecycle = new GameCycle( this );
+                this.gamesound = new GameSound( this );
                 this.gamepad = new GamePad( this );
                 this.gamebox = new TopView( this );
-                this.gamecycle = new GameCycle( this );
                 this.bind();
             });
         });
@@ -138,14 +140,18 @@ class Player {
 
     stop () {
         this.stopped = true;
-        this.gamepad.clear();
+        // this.gamepad.clear();
         this.gamebox.pause( this.stopped );
     }
 
 
     resume () {
-        this.stopped = false;
-        this.gamebox.pause( this.stopped );
+        // Async resume
+        setTimeout(() => {
+            this.stopped = false;
+            this.gamebox.pause( this.stopped );
+
+        }, 256 );
     }
 
 

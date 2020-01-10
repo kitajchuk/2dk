@@ -43,12 +43,26 @@ class GameBox {
         this.offset = this.update( this.hero.position );
         this.map.update( this.offset );
         this.hero.update( this.hero.position, this.offset );
+        this.player.gamesound.addSound({
+            id: this.map.data.id,
+            src: this.map.data.sound,
+            channel: "bgm",
+        });
+        this.player.gamesound.addSound({
+            id: this.hero.data.id,
+            src: this.hero.data.sounds.walk,
+            channel: "sfx",
+        });
     }
 
 
     pause ( paused ) {
         if ( paused ) {
             this.hero.face( this.hero.dir );
+            this.player.gamesound.stopSound( this.map.data.id );
+
+        } else {
+            this.player.gamesound.playSound( this.map.data.id );
         }
     }
 
@@ -434,10 +448,6 @@ class TopView extends GameBox {
 
         ]).then(() => {
             // Stage Hero with correct position on new Map
-            // this.hero.offset = {
-            //     x: _hero.x,
-            //     y: _hero.y,
-            // };
             this.hero.element.style.position = "absolute";
             this.hero.update( _hero, _map.offset );
             _map.addSprite( this.hero );
