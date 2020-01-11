@@ -46,8 +46,8 @@ class Player {
         this.loader.loadJson( "game.json" ).then(( data ) => {
             this.data = data;
             this.data.hero = Utils.merge( data.heroes[ data.hero.sprite ], data.hero );
-            this.width = data.game.fullscreen ? Math.max( window.innerWidth, window.innerHeight ) : data.game.width;
-            this.height = data.game.fullscreen ? Math.min( window.innerWidth, window.innerHeight ) : data.game.height;
+            this.width = data.game.width;
+            this.height = data.game.height;
             this.build();
 
             let counter = 0;
@@ -131,10 +131,7 @@ class Player {
         this.gamepad.on( "b-holdrelease", this._bHoldRelease );
 
         // Screen size / Orientation change
-        window.onresize = () => {
-            this.width = this.data.game.fullscreen ? (this.sac ? screen.height : Math.max( window.innerWidth, window.innerHeight )) : this.data.game.width;
-            this.height = this.data.game.fullscreen ? (this.sac ? screen.width : Math.min( window.innerWidth, window.innerHeight )) : this.data.game.height;
-        };
+        // window.onresize = () => {};
     }
 
 

@@ -48,11 +48,6 @@ class GameBox {
             src: this.map.data.sound,
             channel: "bgm",
         });
-        this.player.gamesound.addSound({
-            id: this.hero.data.id,
-            src: this.hero.data.sounds.walk,
-            channel: "sfx",
-        });
     }
 
 

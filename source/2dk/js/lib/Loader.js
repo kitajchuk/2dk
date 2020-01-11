@@ -49,10 +49,11 @@ class Loader {
                 return resolve( cache[ src ] );
             }
 
-            const audio = new Audio();
+            let audio = new Audio();
 
             audio.addEventListener( "loadedmetadata", ( event ) => {
-                cache[ src ] = audio;
+                cache[ src ] = true;
+                audio = null;
                 resolve( cache[ src ] );
 
             }, false );
@@ -83,7 +84,11 @@ class Loader {
 
 
 
-Loader.cash = ( id ) => {
+Loader.cash = ( id, val ) => {
+    if ( val ) {
+        cache[ id ] = val;
+    }
+
     return (id ? cache[ id ] : cache);
 };
 

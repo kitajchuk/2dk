@@ -4,7 +4,7 @@
         "name": "Links Reawakening",
         "width": 480,
         "height": 270,
-        "fullscreen": false,
+        "fullscreen": true,
         "icon": "/img/icon/apple-icon.png",
         "version": 41
     },

@@ -86,17 +86,28 @@ class MapLayer {
     // id, width, height
     constructor ( data ) {
         this.data = data;
+        this.cashId = `${this.data.map.data.id}-${this.data.id}`;
         this.build();
     }
 
 
     build () {
-        this.canvas = document.createElement( "canvas" );
-        this.canvas.className = "_2dk__layer";
-        this.canvas.dataset.layer = this.data.id;
-        this.context = this.canvas.getContext( "2d" );
+        const cashLayer = Loader.cash( this.cashId );
 
-        this.update( this.data.width, this.data.height );
+        if ( cashLayer && this.data.cash ) {
+            this.canvas = cashLayer;
+            this.context = this.canvas.getContext( "2d" );
+
+        } else {
+            this.canvas = document.createElement( "canvas" );
+            this.canvas.className = "_2dk__layer";
+            this.canvas.dataset.layer = this.data.id;
+            this.context = this.canvas.getContext( "2d" );
+
+            this.update( this.data.width, this.data.height );
+
+            Loader.cash( this.cashId, this.canvas );
+        }
     }
 
 
@@ -107,6 +118,31 @@ class MapLayer {
         this.canvas.style.height = `${height}px`;
         this.canvas.width = width;
         this.canvas.height = height;
+    }
+
+
+    clear () {
+        // Don't clear cashed <canvas> elements
+        if ( !this.data.cash ) {
+            this.context.clearRect(
+                0,
+                0,
+                this.canvas.width,
+                this.canvas.height
+            );
+        }
+    }
+
+
+    destroy () {
+        // Don't destroy cashed <canvas> elements
+        if ( !this.data.cash ) {
+            this.clear();
+            this.canvas.width = 0;
+            this.canvas.height = 0;
+            this.context = null;
+            this.canvas = null;
+        }
     }
 }
 
@@ -131,12 +167,14 @@ class MapLocation {
     setLayer ( id ) {
         this.layers[ id ] = new MapLayer({
             id,
+            map: this.map,
+            cash: true,
             width: this.map.width,
             height: this.map.height
         });
 
         this.layers[ id ].canvas.width = this.map.width * this.map.data.resolution;
-        this.layers[ id ].canvas.height =  this.map.height * this.map.data.resolution;
+        this.layers[ id ].canvas.height = this.map.height * this.map.data.resolution;
 
         drawMapTiles(
             this.layers[ id ].context,
@@ -144,6 +182,15 @@ class MapLocation {
             this.map.data.textures[ id ],
             this.map.data.tilesize
         );
+    }
+
+
+    destroy () {
+        for ( let id in this.layers ) {
+            this.layers[ id ].destroy();
+        }
+
+        this.layers = null;
     }
 }
 
@@ -173,7 +220,10 @@ class Map {
         this.element = null;
         this.objects = null;
         this.image = null;
+
+        this.location.destroy();
         this.location = null;
+        this.layers = null;
     }
 
 
@@ -218,12 +268,7 @@ class Map {
 
     clear () {
         for ( let id in this.layers ) {
-            this.layers[ id ].context.clearRect(
-                0,
-                0,
-                this.layers[ id ].data.width,
-                this.layers[ id ].data.height
-            );
+            this.layers[ id ].clear();
         }
     }
 
@@ -241,6 +286,8 @@ class Map {
     addLayer ( id ) {
         this.layers[ id ] = new MapLayer({
             id,
+            map: this,
+            cash: false,
             width: this.gamebox.player.width,
             height: this.gamebox.player.height
         });
