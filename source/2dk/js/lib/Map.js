@@ -218,9 +218,7 @@ class Map {
         this.data = null;
         this.element.parentNode.removeChild( this.element );
         this.element = null;
-        this.objects = null;
         this.image = null;
-
         this.location.destroy();
         this.location = null;
         this.layers = null;
@@ -230,10 +228,6 @@ class Map {
     build () {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__map";
-        this.objects = document.createElement( "div" );
-        this.objects.className = `_2dk__layer`;
-        this.objects.dataset.layer = "objects";
-        this.element.appendChild( this.objects );
 
         for ( let id in this.data.textures ) {
             this.addLayer( id );
@@ -270,16 +264,6 @@ class Map {
         for ( let id in this.layers ) {
             this.layers[ id ].clear();
         }
-    }
-
-
-    addSprite ( sprite ) {
-        this.objects.appendChild( sprite.element );
-    }
-
-
-    removeSprite ( sprite ) {
-        this.objects.removeChild( sprite.element );
     }
 
 

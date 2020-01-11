@@ -35,7 +35,7 @@ class GameBox {
 
 
     build () {
-        this.map.addSprite( this.hero );
+        this.map.element.appendChild( this.hero.element );
         this.player.screen.appendChild( this.map.element );
     }
 
@@ -445,7 +445,7 @@ class TopView extends GameBox {
             // Stage Hero with correct position on new Map
             this.hero.element.style.position = "absolute";
             this.hero.update( _hero, _map.offset );
-            _map.addSprite( this.hero );
+            _map.element.appendChild( this.hero.element );
 
             // Destroy old Map
             // Teardown GameBox stuff (npcs, etc...)

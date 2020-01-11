@@ -86,6 +86,9 @@
 * Hero looks at collision layer and NPC colliders
 * Sprites can have a perception box to activate a little before entering screen
 
+* HOW to handle NPCs with new Camera and Hero GameBox setup...?
+* 
+
 
 ********************************************************************************
 ********************************************************************************
