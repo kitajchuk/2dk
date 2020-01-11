@@ -47,6 +47,8 @@ class EditorActions {
             elem.addClass( "is-active" );
             this.mode = Config.EditorActions.modes[ action ];
 
+            // This may be too much
+            // Consider: You want to select a tile and then go through your map erasing tiles and painting the new tile
             if ( this.mode === Config.EditorActions.modes.BUCKET || this.mode === Config.EditorActions.modes.ERASE ) {
                 this.editor.canvas.clearTileset();
             }

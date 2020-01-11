@@ -20,7 +20,7 @@ class GameBox {
             y: 0,
             width: this.player.width,
             height: this.player.height,
-            speed: 128,
+            speed: 96,
         };
 
         // Hero

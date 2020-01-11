@@ -86,7 +86,7 @@ class MapLayer {
     // id, width, height
     constructor ( data ) {
         this.data = data;
-        this.cashId = `${this.data.map.data.id}-${this.data.id}`;
+        this.cashId = `${this.data.map.id}-${this.data.id}`;
         this.build();
     }
 
@@ -167,7 +167,7 @@ class MapLocation {
     setLayer ( id ) {
         this.layers[ id ] = new MapLayer({
             id,
-            map: this.map,
+            map: this.map.data,
             cash: true,
             width: this.map.width,
             height: this.map.height

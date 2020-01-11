@@ -159,16 +159,22 @@ class EditorCanvas {
         // Create new map layers
         this.contexts.background = new MapLayer({
             id: "background",
+            map: this.map,
+            cash: false,
             width: this.map.width,
             height: this.map.height
         });
         this.contexts.foreground = new MapLayer({
             id: "foreground",
+            map: this.map,
+            cash: false,
             width: this.map.width,
             height: this.map.height
         });
         this.contexts.collision = new MapLayer({
             id: "collision",
+            map: this.map,
+            cash: false,
             width: this.map.width,
             height: this.map.height
         });

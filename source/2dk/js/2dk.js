@@ -30,7 +30,7 @@
 
 
 ********************************************************************************
-* Map Tiles (animated?, canvas, render to layer (bg, fg), tileset, groups)
+* Active Tiles (animated?, canvas, render to layer (bg, fg), tileset, groups)
 ********************************************************************************
 * Saves Array of tile Objects
 * Adhere to map resolution scaling
@@ -49,7 +49,7 @@
 
 
 ********************************************************************************
-* Map Objects, Sprites (colliders, state shifting, sprite/tileset)
+* Sprites (NPCs, Enemies, colliders, state shifting, sprite/tileset)
 ********************************************************************************
 (
     ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit)
@@ -87,7 +87,7 @@
 * Sprites can have a perception box to activate a little before entering screen
 
 * HOW to handle NPCs with new Camera and Hero GameBox setup...?
-* 
+* Treat collider blocks as circles...?
 
 
 ********************************************************************************
