@@ -1,23 +1,29 @@
 {
   "name": "2dk-studio",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "version": "0.1.0",
+  "description": "A Javascript 2d game development SDK.",
+  "repository": "https://github.com/kitajchuk/2dk",
+  "author": {
+    "name": "Brandon Lee Kitajchuk",
+    "email": "bk@kitajchuk.com",
+    "url": "https://kitajchuk.com"
+  },
+  "license": "CC0-1.0",
+  "keywords": [
+    "Electron",
+    "2dk",
+    "2d",
+    "games",
+    "gaming",
+    "video games",
+    "game development"
+  ],
   "main": "main.js",
   "scripts": {
     "postinstall": "npm run hobo",
     "start": "electron .",
     "hobo": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'"
   },
-  "repository": "https://github.com/kitajchuk/2dk",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^7.1.7"
   },

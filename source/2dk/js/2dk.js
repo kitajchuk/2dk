@@ -3,11 +3,9 @@
 ********************************************************************************
 
 * ?debug=1&map=ukuku-prairie-west.json&spawn=288,320
-* Native GamePad interface?
 * Use game icon for mobile installed
 * Game version vs iteration-counter
 * Use game version/iteration-counter for index.html URLs
-* Package.json needs to be properly filled out (both)
 
 
 ********************************************************************************
