@@ -13,10 +13,13 @@
     "snapshot": "/games/la/assets/snapshots/ukuku-prairie-west.png",
     "thumbnail": "/games/la/assets/snapshots/ukuku-prairie-west-thumb.png",
     "sound": "/games/la/assets/sounds/10-overworld.mp3",
-    "spawn": {
-        "x": 0,
-        "y": 0
-    },
+    "spawn": [
+        {
+            "x": 0,
+            "y": 0,
+            "dir": ""
+        }
+    ],
     "tiles": [],
     "events": [
         {

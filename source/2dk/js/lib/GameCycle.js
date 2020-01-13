@@ -6,11 +6,11 @@ class GameCycle {
     constructor ( player ) {
         this.step = 1;
         this.player = player;
-        this.run();
+        this.start();
     }
 
 
-    run () {
+    start () {
         this._blit = this.blit.bind( this );
         this._previousElapsed = 0;
 

@@ -55,9 +55,11 @@ class GameBox {
         if ( paused ) {
             this.hero.face( this.hero.dir );
             this.player.gamesound.stopSound( this.map.data.id );
+            this.map.stopTiles();
 
         } else {
             this.player.gamesound.playSound( this.map.data.id );
+            this.map.playTiles();
         }
     }
 

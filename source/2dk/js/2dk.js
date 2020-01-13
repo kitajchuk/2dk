@@ -9,7 +9,7 @@
 
 
 ********************************************************************************
-* Studio Maker
+* Studio Software
 ********************************************************************************
 * History states for painting
 * Hero Pins (sets map.spawn(x, y))
@@ -19,39 +19,14 @@
 * Upload icon PNG when creating a new game
 
 
-
-********************************************************************************
-* Map Events
-********************************************************************************
-* NOUN system for events
-* NOUNS: DOOR, BOUNDARY, CUTSCENE
-
-
-********************************************************************************
-* Game Dialogues
-********************************************************************************
-* Screen dialogues, Array of dialogue objects
-* Plain text dialogues advance with A
-* Response-based prompt dialogues with A: yes, B: no
-
-
 ********************************************************************************
 * Active Tiles (animated?, canvas, render to layer (bg, fg), tileset, groups)
 ********************************************************************************
-* Saves Array of tile Objects
-* Adhere to map resolution scaling
-* Render to either background or foreground
-
 * NOUN system for Hero
-* NOUNS: GRASS, WATER, STAIRS, LEDGE(jump...?), SWITCH(actions...?), QUICK-SAND?
+* NOUNS: GRASS, WATER(depth...?), STAIRS, LEDGE(jump...?), SWITCH(actions...?), QUICK-SAND?
 
 * Interaction tiles like cutting grass and plants or picking up rocks or plants
 * Event tiles for doors, locatin switching etc...
-* Animated flower tiles
-* Animated water tiles
-
-* Only Render visible tiles....?
-* Would require true Camera logic.
 
 
 ********************************************************************************
@@ -95,7 +70,20 @@
 * HOW to handle NPCs with new Camera and Hero GameBox setup...?
 * Treat collider blocks as circles...?
 
-* SpriteFactory (Contextual blit for sprites and active tile groups)
+
+********************************************************************************
+* Map Events
+********************************************************************************
+* NOUN system for events
+* NOUNS: DOOR, BOUNDARY, CUTSCENE
+
+
+********************************************************************************
+* Game Dialogues
+********************************************************************************
+* Screen dialogues, Array of dialogue objects
+* Plain text dialogues advance with A
+* Response-based prompt dialogues with A: yes, B: no
 
 
 ********************************************************************************

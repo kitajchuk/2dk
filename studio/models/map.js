@@ -13,10 +13,13 @@ module.exports = {
     "snapshot": "/static/img/icon/apple-icon.png",
     "thumbnail": "/static/img/icon/apple-icon.png",
     "sound": "",
-    "spawn": {
-        "x": 0,
-        "y": 0
-    },
+    "spawn": [
+        {
+            "x": 0,
+            "y": 0,
+            "dir": ""
+        }
+    ],
     "tiles": [],
     "events": [],
     "objects": [],

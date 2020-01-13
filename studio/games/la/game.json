@@ -6,7 +6,7 @@
         "height": 270,
         "fullscreen": true,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 179
+        "version": 183
     },
     "hero": {
         "sprite": 1,
@@ -290,7 +290,7 @@
             "width": 48,
             "height": 48,
             "image": "/games/la/assets/sprites/smoke.png",
-            "layer": "fg",
+            "layer": "foreground",
             "scale": 1,
             "states": [
                 {
@@ -299,7 +299,6 @@
                         "y": 0
                     },
                     "animated": 1,
-                    "drift": 1,
                     "offsetX": 0,
                     "offsetY": 0,
                     "stepsX": 5,
@@ -313,7 +312,7 @@
             "width": 64,
             "height": 128,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "fg",
+            "layer": "foreground",
             "scale": 2,
             "boxes": {
                 "hit": {
@@ -322,7 +321,36 @@
                     "width": 64,
                     "height": 56
                 }
-            }
+            },
+            "states": [
+                {
+                    "bgp": {
+                        "x": 0,
+                        "y": -2304
+                    },
+                    "animated": 1,
+                    "action": {
+                        "verb": "move",
+                        "require": {
+                            "dir": "up"
+                        },
+                        "payload": {
+                            "dialogue": {
+                                "type": "text",
+                                "text": [
+                                    "You pushed the <span class='teal'>bird statue</span>!",
+                                    "But...It doesn't look like there's anything here..."
+                                ]
+                            }
+                        },
+                        "counter": 1
+                    },
+                    "offsetX": 0,
+                    "offsetY": -2304,
+                    "stepsX": 4,
+                    "dur": 240
+                }
+            ]
         },
         {
             "id": "chest",
@@ -330,7 +358,7 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "bg",
+            "layer": "background",
             "scale": 2,
             "boxes": {
                 "hit": {
@@ -339,7 +367,36 @@
                     "width": 64,
                     "height": 64
                 }
-            }
+            },
+            "states": [
+                {
+                    "bgp": {
+                        "x": -704,
+                        "y": -768
+                    },
+                    "action": {
+                        "verb": "open",
+                        "require": {
+                            "button": 1
+                        },
+                        "payload": {
+                            "dialogue": {
+                                "type": "prompt",
+                                "text": [
+                                    "It's some treasure! Are you gonna keep it?"
+                                ]
+                            }
+                        },
+                        "shift": 1
+                    }
+                },
+                {
+                    "bgp": {
+                        "x": -704,
+                        "y": -832
+                    }
+                }
+            ]
         },
         {
             "id": "pot",
@@ -347,7 +404,7 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "fg",
+            "layer": "foreground",
             "scale": 2,
             "boxes": {
                 "hit": {

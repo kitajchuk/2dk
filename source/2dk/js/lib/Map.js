@@ -1,5 +1,6 @@
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
+const Blit = require( "properjs-blit" );
 
 
 
@@ -196,6 +197,94 @@ class MapLocation {
 
 
 
+class ActiveTiles {
+    constructor ( data, map ) {
+        this.data = data;
+        this.map = map;
+        this.fps = ((data.stepsX / data.dur) * 1000);
+        this.blit = new Blit({
+            fps: this.fps,
+            paused: true,
+        });
+        this.bind();
+    }
+
+
+    destroy () {
+        this.stop();
+        this.data = null;
+        this.blit = null;
+    }
+
+
+    bind () {
+        this._onBlit = this.onBlit.bind( this );
+
+        this.blit.blit( this._onBlit );
+    }
+
+
+    onBlit ( f ) {
+        // Get only tiles that are visible in the camera box
+        const active = this.data.coords.filter(( coord ) => {
+            const offset = {
+                top: (coord[ 1 ] * this.map.data.gridsize) + this.map.offset.y,
+                bottom: ((coord[ 1 ] * this.map.data.gridsize) + this.map.data.gridsize) + this.map.offset.y,
+                left: (coord[ 0 ] * this.map.data.gridsize) + this.map.offset.x,
+                right: ((coord[ 0 ] * this.map.data.gridsize) + this.map.data.gridsize) + this.map.offset.x,
+            };
+
+            // Tile is offscreen
+            if ( offset.bottom <= 0 || offset.top >= this.map.gamebox.camera.height || offset.right <= 0 || offset.left >= this.map.gamebox.camera.width ) {
+                return false;
+
+            // Tile is onscreen
+            } else {
+                return true;
+            }
+        });
+
+        if ( active.length ) {
+            const activeX = (this.data.offsetX + (f % this.data.stepsX) * this.map.data.tilesize);
+
+            active.forEach(( coord ) => {
+                this.map.location.layers[ this.data.layer ].context.clearRect(
+                    this.map.data.tilesize * coord[ 0 ],
+                    this.map.data.tilesize * coord[ 1 ],
+                    this.map.data.tilesize,
+                    this.map.data.tilesize,
+                );
+
+                this.map.location.layers[ this.data.layer ].context.drawImage(
+                    this.map.image,
+                    activeX,
+                    this.data.offsetY,
+                    this.map.data.tilesize,
+                    this.map.data.tilesize,
+                    this.map.data.tilesize * coord[ 0 ],
+                    this.map.data.tilesize * coord[ 1 ],
+                    this.map.data.tilesize,
+                    this.map.data.tilesize,
+                );
+            });
+
+            this.map.render();
+        }
+    }
+
+
+    play () {
+        this.blit.start().play();
+    }
+
+
+    stop () {
+        this.blit.pause();
+    }
+}
+
+
+
 class Map {
     constructor ( data, gamebox ) {
         this.data = data;
@@ -206,6 +295,7 @@ class Map {
         this.height = data.height / data.resolution;
         this.image = Loader.cash( data.image );
         this.location = new MapLocation( this );
+        this.activeTiles = [];
         this.offset = {
             x: 0,
             y: 0
@@ -222,6 +312,10 @@ class Map {
         this.location.destroy();
         this.location = null;
         this.layers = null;
+        this.activeTiles.forEach(( activeTiles ) => {
+            activeTiles.destroy();
+        });
+        this.activeTiles = null;
     }
 
 
@@ -232,6 +326,24 @@ class Map {
         for ( let id in this.data.textures ) {
             this.addLayer( id );
         }
+
+        this.data.tiles.forEach(( data ) => {
+            this.activeTiles.push( new ActiveTiles( data, this ) );
+        });
+    }
+
+
+    playTiles () {
+        this.activeTiles.forEach(( activeTiles ) => {
+            activeTiles.play();
+        });
+    }
+
+
+    stopTiles () {
+        this.activeTiles.forEach(( activeTiles ) => {
+            activeTiles.stop();
+        });
     }
 
 
