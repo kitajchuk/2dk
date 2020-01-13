@@ -2,7 +2,8 @@
 * 2dk Dev Notes
 ********************************************************************************
 
-* Cache canvas with Loader.cash( id, thing )?
+* ?debug=1&map=ukuku-prairie-west.json&spawn=288,320
+* Native GamePad interface?
 
 
 ********************************************************************************
@@ -10,8 +11,11 @@
 ********************************************************************************
 * History states for painting
 * Hero Pins (sets map.spawn(x, y))
-* Map Objects (background, foreground)
+* Sprites (background, foreground)
 * Active Tiles (background, foreground)
+* Copy games to ../static when maps are saved?
+* Upload icon PNG when creating a new game
+
 
 
 ********************************************************************************
@@ -88,6 +92,8 @@
 
 * HOW to handle NPCs with new Camera and Hero GameBox setup...?
 * Treat collider blocks as circles...?
+
+* SpriteFactory (Contextual blit for sprites and active tile groups)
 
 
 ********************************************************************************

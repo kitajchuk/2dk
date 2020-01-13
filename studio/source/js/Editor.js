@@ -438,7 +438,7 @@ class Editor {
             return `<div class="js-game-tile" data-game="${game.id}">
                 <div>
                     <div>
-                        <img src="./static${game.icon}" />
+                        <img src=".${game.icon}" />
                         <div>${game.name}</div>
                     </div>
                 </div>

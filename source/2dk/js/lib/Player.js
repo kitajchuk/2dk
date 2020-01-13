@@ -24,6 +24,7 @@ class Player {
             b: false,
             bHold: false,
         };
+        this.query = paramalama( window.location.search );
         this.detect();
     }
 
@@ -46,8 +47,9 @@ class Player {
         this.loader.loadJson( "game.json" ).then(( data ) => {
             this.data = data;
             this.data.hero = Utils.merge( data.heroes[ data.hero.sprite ], data.hero );
-            this.width = data.game.width;
-            this.height = data.game.height;
+            this.width = (this.device && data.game.fullscreen) ? screen.height : data.game.width;
+            this.height = (this.device && data.game.fullscreen) ? screen.width : data.game.height;
+            this.debug();
             this.build();
 
             let counter = 0;
@@ -68,6 +70,20 @@ class Player {
                 this.bind();
             });
         });
+    }
+
+
+    debug () {
+        if ( this.query.map ) {
+            this.data.hero.spawn.map = `/games/${this.data.game.id}/maps/${this.query.map}`;
+        }
+
+        if ( this.query.spawn ) {
+            const coords = this.query.spawn.split( "," );
+
+            this.data.hero.spawn.x = Number( coords[ 0 ] );
+            this.data.hero.spawn.y = Number( coords[ 1 ] );
+        }
     }
 
 

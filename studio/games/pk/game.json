@@ -5,7 +5,7 @@
         "width": 480,
         "height": 270,
         "fullscreen": false,
-        "icon": "/img/icon/apple-icon.png",
+        "icon": "/games/pk/assets/icons/pk.png",
         "version": 2
     },
     "hero": {

@@ -5,8 +5,8 @@
         "width": 480,
         "height": 270,
         "fullscreen": true,
-        "icon": "/img/icon/apple-icon.png",
-        "version": 116
+        "icon": "/games/la/assets/icons/la.png",
+        "version": 179
     },
     {
         "id": "pk",
@@ -14,7 +14,7 @@
         "width": 480,
         "height": 270,
         "fullscreen": false,
-        "icon": "/img/icon/apple-icon.png",
+        "icon": "/games/pk/assets/icons/pk.png",
         "version": 2
     }
 ]

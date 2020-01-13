@@ -77,10 +77,6 @@
         pointer-events: none;
     }
 }
-// #editor-move-coords {
-//     width: 72px;;
-//     text-align: center;
-// }
 #editor-preview {
     overflow: hidden;
 }
@@ -113,6 +109,10 @@
         top: 0;
     }
 }
+#editor-cursor-canvas {
+    position: absolute;
+    pointer-events: none;
+}
 #editor-mapgrid-canvas {
     display: none;
 }
@@ -135,33 +135,14 @@
         display: inline-block;
         text-align: center;
         cursor: pointer;
-        width: 20%;
+        width: auto;
         justify-content: center;
         align-items: center;
         position: relative;
-
-        &.js-game-tile img {
-            width: 160px;
-        }
-
-        &.js-map-tile img {
-            width: 160px;
-        }
-
-        &:before {
-            content: "";
-            padding-bottom: 100%;
-            display: block;
-            width: 100%;
-        }
+        padding: 20px;
 
         > div {
             display: flex;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
             pointer-events: none;
             align-items: center;
             justify-content: center;
@@ -170,6 +151,9 @@
                 margin-bottom: 16px;
                 max-width: 100%;
                 box-shadow: $box-shadow;
+                width: auto;
+                height: 160px;
+                background-color: $black;
             }
         }
     }
@@ -213,6 +197,9 @@
     align-items: center;
     border-right: 1px solid $grey-dark;
     padding: 0 20px;
+}
+.editor__panel__res {
+    display: none;
 }
 .editor__panel__xy {
     justify-content: flex-start;
@@ -508,7 +495,7 @@
     justify-content: center;
 
     .icon {
-        margin-bottom: 3px;
+        margin-top: -3px;
     }
 }
 .editor__upload__field {

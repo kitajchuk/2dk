@@ -5,20 +5,17 @@
         "width": 480,
         "height": 270,
         "fullscreen": true,
-        "icon": "/img/icon/apple-icon.png",
-        "version": 116
+        "icon": "/games/la/assets/icons/la.png",
+        "version": 179
     },
     "hero": {
         "sprite": 1,
         "spawn": {
             "x": 384,
             "y": 765,
-            "map": "/games/la/maps/mabe-village-west.json"
+            "map": "/games/la/maps/mabe-village.json"
         },
-        "sounds": {
-            "walk": "/games/la/assets/sounds/Steps.mp3",
-            "attack": "/games/la/assets/sounds/Sword.mp3"
-        }
+        "sounds": {}
     },
     "heroes": [
         {
@@ -389,9 +386,7 @@
         "/games/la/assets/sounds/10-overworld.mp3",
         "/games/la/assets/sounds/07-koholint-island.mp3",
         "/games/la/maps/ukuku-prairie-west.json",
-        "/games/la/maps/toronbo-shores-west.json",
-        "/games/la/maps/toronbo-shores-east.json",
         "/games/la/maps/mysterious-forest.json",
-        "/games/la/maps/mabe-village-west.json"
+        "/games/la/maps/mabe-village.json"
     ]
 }

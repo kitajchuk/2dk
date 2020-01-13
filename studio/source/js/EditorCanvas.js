@@ -63,6 +63,7 @@ class EditorCanvas {
             tilegrid: document.getElementById( "editor-tilegrid-canvas" ),
             tilepaint: document.getElementById( "editor-tilepaint-canvas" ),
             preview: document.getElementById( "editor-preview-canvas" ),
+            cursor: document.getElementById( "editor-cursor-canvas" ),
         };
         this.draggable = this.getDraggable();
         this.draggable.disable();
@@ -118,6 +119,7 @@ class EditorCanvas {
             this.clear( this.canvases.collider );
             this.clearTileset();
             this.resetPreview();
+            this.resetCursor();
 
             this.isZoomable = false;
             this.isSpacebar = false;
@@ -366,6 +368,11 @@ class EditorCanvas {
         this.canvases.preview.style.width = `${this.map.gridsize}px`;
         this.canvases.preview.style.height = `${this.map.gridsize}px`;
 
+        this.canvases.cursor.width = this.map.tilesize;
+        this.canvases.cursor.height = this.map.tilesize;
+        this.canvases.cursor.style.width = `${this.map.tilesize}px`;
+        this.canvases.cursor.style.height = `${this.map.tilesize}px`;
+
         this.clear( this.canvases.tilepaint );
         this.clear( this.canvases.tilegrid );
 
@@ -451,6 +458,7 @@ class EditorCanvas {
         this.tilesetCoords = [];
 
         this.resetPreview();
+        this.resetCursor();
     }
 
 
@@ -532,6 +540,23 @@ class EditorCanvas {
     }
 
 
+    resetCursor () {
+        const ctx = this.canvases.cursor.getContext( "2d" );
+
+        ctx.clearRect(
+            0,
+            0,
+            this.canvases.cursor.width,
+            this.canvases.cursor.width
+        );
+
+        this.canvases.cursor.width = this.map.tilesize;
+        this.canvases.cursor.height = this.map.tilesize;
+        this.canvases.cursor.style.width = `${this.map.tilesize}px`;
+        this.canvases.cursor.style.height = `${this.map.tilesize}px`;
+    }
+
+
     applyPreview () {
         const ctx = this.canvases.preview.getContext( "2d" );
         const coordMap = this.getCoordMap();
@@ -549,6 +574,42 @@ class EditorCanvas {
         this.canvases.preview.height = height * this.map.resolution;
         this.canvases.preview.style.width = `${width}px`;
         this.canvases.preview.style.height = `${height}px`;
+
+        coordMap.tiles.forEach(( tile ) => {
+            if ( tile.paintTile ) {
+                ctx.drawImage(
+                    this.dom.tileset,
+                    (tile.tileCoord[ 0 ] * this.map.tilesize),
+                    (tile.tileCoord[ 1 ] * this.map.tilesize),
+                    this.map.tilesize,
+                    this.map.tilesize,
+                    (tile.drawCoord[ 0 ] * this.map.tilesize),
+                    (tile.drawCoord[ 1 ] * this.map.tilesize),
+                    this.map.tilesize,
+                    this.map.tilesize
+                );
+            }
+        });
+    }
+
+
+    applyCursor () {
+        const ctx = this.canvases.cursor.getContext( "2d" );
+        const coordMap = this.getCoordMap();
+        const width = coordMap.width * this.map.tilesize;
+        const height = coordMap.height * this.map.tilesize;
+
+        ctx.clearRect(
+            0,
+            0,
+            this.canvases.cursor.width,
+            this.canvases.cursor.width
+        );
+
+        this.canvases.cursor.width = width;
+        this.canvases.cursor.height = height;
+        this.canvases.cursor.style.width = `${width}px`;
+        this.canvases.cursor.style.height = `${height}px`;
 
         coordMap.tiles.forEach(( tile ) => {
             if ( tile.paintTile ) {
@@ -649,9 +710,11 @@ class EditorCanvas {
 
                 if ( this.tilesetCoords.length ) {
                     this.applyPreview();
+                    this.applyCursor();
 
                 } else {
                     this.resetPreview();
+                    this.resetCursor();
                 }
 
                 this.currentTileCoord = coords;
@@ -672,9 +735,11 @@ class EditorCanvas {
 
                     if ( this.tilesetCoords.length ) {
                         this.applyPreview();
+                        this.applyCursor();
 
                     } else {
                         this.resetPreview();
+                        this.resetCursor();
                     }
                 }
             }
@@ -738,6 +803,15 @@ class EditorCanvas {
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
+            this.canvases.cursor.style.opacity = 0.5;
+            this.canvases.cursor.style.zIndex = 9999;
+            this.canvases.cursor.style.webkitTransform = `translate3d(
+                    ${coords[ 0 ] * this.map.tilesize}px,
+                    ${coords[ 1 ] * this.map.tilesize}px,
+                    0
+                )
+            `;
+
             if ( this.editor.canMapFunction() && this.isMouseDownCanvas ) {
                 if ( this.canApplyLayer() ) {
                     this.applyLayer( this.editor.layers.mode, coords );
@@ -760,6 +834,15 @@ class EditorCanvas {
 
         $mapgrid.on( "mouseout", () => {
             this.dom.moveCoords.innerHTML = "( X, Y )";
+
+            this.canvases.cursor.style.opacity = 0;
+            this.canvases.cursor.style.zIndex = -1;
+            this.canvases.cursor.style.webkitTransform = `translate3d(
+                    0,
+                    0,
+                    0
+                )
+            `;
         });
     }
 
