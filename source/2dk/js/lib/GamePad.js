@@ -13,6 +13,7 @@ const touchControls = {
         timer: null,
         touched: false,
         text: "A",
+        gamepad: [0],
     },
     b: {
         key: Config.keys.B,
@@ -21,6 +22,7 @@ const touchControls = {
         touched: false,
         hold: 0,
         text: "B",
+        gamepad: [1],
     },
     start: {
         key: Config.keys.START,
@@ -30,6 +32,7 @@ const touchControls = {
         hold: 0,
         text: "Start",
         menu: true,
+        gamepad: [9],
     },
     select: {
         key: Config.keys.SELECT,
@@ -39,6 +42,7 @@ const touchControls = {
         touched: false,
         text: "Select",
         menu: true,
+        gamepad: [8],
     },
     // D-Pad
     "up-left": {
@@ -54,6 +58,7 @@ const touchControls = {
         timer: null,
         touched: false,
         dpad: ["up"],
+        axes: [0, -1],
     },
     "up-right": {
         key: Config.keys.UPRIGHT,
@@ -68,12 +73,10 @@ const touchControls = {
         timer: null,
         touched: false,
         dpad: ["left"],
+        axes: [-1, 0],
     },
     neutral: {
-        key: null,
         elem: null,
-        timer: null,
-        touched: false,
         dpad: [],
     },
     right: {
@@ -82,6 +85,7 @@ const touchControls = {
         timer: null,
         touched: false,
         dpad: ["right"],
+        axes: [1, 0],
     },
     "down-left": {
         key: Config.keys.DOWNLEFT,
@@ -96,6 +100,7 @@ const touchControls = {
         timer: null,
         touched: false,
         dpad: ["down"],
+        axes: [0, 1],
     },
     "down-right": {
         key: Config.keys.DOWNRIGHT,
@@ -129,6 +134,36 @@ const getDpad = ( key ) => {
 
     for ( let btn in touchControls ) {
         if ( touchControls[ btn ].key === key && touchControls[ btn ].dpad ) {
+            ret = touchControls[ btn ];
+            break;
+        }
+    }
+
+    return ret;
+};
+
+
+
+const getGamepad = ( val ) => {
+    let ret = null;
+
+    for ( let btn in touchControls ) {
+        if ( touchControls[ btn ].gamepad && touchControls[ btn ].gamepad.indexOf( val ) !== -1 ) {
+            ret = touchControls[ btn ];
+            break;
+        }
+    }
+
+    return ret;
+};
+
+
+
+const getAxes = ( xy, val ) => {
+    let ret = null;
+
+    for ( let btn in touchControls ) {
+        if ( touchControls[ btn ].axes && touchControls[ btn ].axes[ xy ] === val ) {
             ret = touchControls[ btn ];
             break;
         }
@@ -255,6 +290,56 @@ const onKeyUp = ( e ) => {
             cancelTouch( control );
         }
     }
+};
+
+
+
+const onGamepadConnected = ( e ) => {
+    instance.stop();
+    instance.go(() => {
+        const gamepad = navigator.getGamepads()[ 0 ];
+
+        // GamePad Axes (dpad): [x, y]
+        const controls = {
+            x: getAxes( 0, gamepad.axes[ 0 ] ),
+            y: getAxes( 1, gamepad.axes[ 1 ] ),
+        };
+
+        if ( controls.x ) {
+            startTouch( controls.x );
+
+        } else {
+            cancelTouch( touchControls.left );
+            cancelTouch( touchControls.right );
+        }
+
+        if ( controls.y ) {
+            startTouch( controls.y );
+
+        } else {
+            cancelTouch( touchControls.up );
+            cancelTouch( touchControls.down );
+        }
+
+        for ( let i = gamepad.buttons.length; i--; ) {
+            const control = getGamepad( i );
+
+            if ( control && gamepad.buttons[ i ].pressed ) {
+                startTouch( control );
+
+            } else if ( control ) {
+                cancelTouch( control );
+            }
+        }
+    });
+
+    console.log( `GamePad Connected: ${navigator.getGamepads()[ 0 ].id}` );
+};
+
+
+
+const onGamepadDisconnected = ( e ) => {
+    instance.stop();
 };
 
 
@@ -398,6 +483,10 @@ class GamePad extends Controller {
         // Support keys for Desktop
         document.addEventListener( "keyup", onKeyUp, false );
         document.addEventListener( "keydown", onKeyDown, false );
+
+        // Native GamePad interface (NES, SNES USB controllers)
+        window.addEventListener( "gamepadconnected", onGamepadConnected );
+        window.addEventListener( "gamepaddisconnected", onGamepadDisconnected );
     }
 
 
