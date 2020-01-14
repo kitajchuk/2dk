@@ -31,8 +31,8 @@ class GameCycle {
         delta = Math.min( delta, 0.25 ); // maximum delta of 250ms
         this._previousElapsed = elapsed;
 
-        // Persistent map rendering (Map.prototype.idle?)
-        this.player.gamebox.map.updateTiles();
+        // Map rendering at 60FPS to sync layers and active tiles...
+        this.player.gamebox.map.render();
 
         // D-Pad movement
         // Easier to check the gamepad than have player use event handlers...

@@ -166,7 +166,7 @@ class MapLocation {
     }
 
 
-    setLayer ( id ) {
+    setLayer ( id, cash ) {
         this.layers[ id ] = new MapLayer({
             id,
             map: this.map.data,
@@ -182,7 +182,7 @@ class MapLocation {
             this.layers[ id ].context,
             this.map.image,
             this.map.data.textures[ id ],
-            this.map.data.tilesize
+            this.map.data.tilesize,
         );
     }
 
@@ -209,6 +209,7 @@ class ActiveTiles {
         });
 
         this.bind();
+        this.init();
     }
 
 
@@ -216,6 +217,13 @@ class ActiveTiles {
         this.stop();
         this.data = null;
         this.blit = null;
+    }
+
+
+    init () {
+        // Pre-render first frame of animation
+        // This alleviates tile jank if the background tile is different...
+        this.renderActive( this.data.coords, 0 );
     }
 
 
@@ -279,30 +287,6 @@ class ActiveTiles {
                 this.map.data.tilesize * coord[ 1 ],
                 this.map.data.tilesize,
                 this.map.data.tilesize,
-            );
-        });
-    }
-
-
-    renderIdle ( active ) {
-        active.forEach(( coord ) => {
-            this.map.layers[ this.data.layer ].context.clearRect(
-                this.map.offset.x + (this.map.data.gridsize * coord[ 0 ]),
-                this.map.offset.y + (this.map.data.gridsize * coord[ 1 ]),
-                this.map.data.gridsize,
-                this.map.data.gridsize,
-            );
-
-            this.map.layers[ this.data.layer ].context.drawImage(
-                this.map.location.layers[ this.data.layer ].canvas,
-                this.map.data.tilesize * coord[ 0 ],
-                this.map.data.tilesize * coord[ 1 ],
-                this.map.data.tilesize,
-                this.map.data.tilesize,
-                this.map.offset.x + (this.map.data.gridsize * coord[ 0 ]),
-                this.map.offset.y + (this.map.data.gridsize * coord[ 1 ]),
-                this.map.data.gridsize,
-                this.map.data.gridsize,
             );
         });
     }
@@ -448,7 +432,6 @@ class Map {
             x: 0,
             y: 0
         };
-        this.lastOffset = this.offset;
         this.timeout = null;
         this.build();
     }
@@ -481,9 +464,10 @@ class Map {
             this.addLayer( id );
         }
 
-        this.data.tiles.forEach(( data ) => {
-            this.activeTiles.push( new ActiveTiles( data, this ) );
-        });
+        // Active tiles are really jank on mobile...
+        // this.data.tiles.forEach(( data ) => {
+        //     this.activeTiles.push( new ActiveTiles( data, this ) );
+        // });
 
         this.data.objects.forEach(( data ) => {
             this.activeObjects.push( new ActiveObject( data, this ) );
@@ -505,36 +489,16 @@ class Map {
     }
 
 
-    updateTiles () {
-        if ( !this.idle() ) {
-            return;
-        }
-
-        this.activeTiles.forEach(( activeTiles ) => {
-            activeTiles.renderIdle( activeTiles.getActive() );
-        });
-    }
-
-
     update ( offset ) {
-        clearTimeout( this.timeout );
         this.offset = offset;
-        this.render();
-        this.timeout = setTimeout(() => {
-            this.lastOffset = this.offset;
-
-        }, Config.values.debounceDur );
+        // this.render();
     }
 
 
     render () {
-        if ( this.idle() ) {
-            return;
-        }
-
         this.clear();
 
-        for ( let id in this.layers ) {
+        for ( let id in this.data.textures ) {
             this.layers[ id ].context.drawImage(
                 this.location.layers[ id ].canvas,
                 0,
@@ -556,13 +520,8 @@ class Map {
     }
 
 
-    idle () {
-        return (this.lastOffset.x === this.offset.x && this.lastOffset.y === this.offset.y);
-    }
-
-
     clear () {
-        for ( let id in this.layers ) {
+        for ( let id in this.data.textures ) {
             this.layers[ id ].clear();
         }
     }
