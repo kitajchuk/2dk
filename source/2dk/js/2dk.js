@@ -8,6 +8,8 @@
 * Use game version/iteration-counter for index.html URLs
 
 * Spawn points should be full resolution? (64x rather than 32x)
+    Hero.spawn, Object.spawn
+    Divide by Map.resolution to get render spawn
 
 
 ********************************************************************************

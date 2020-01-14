@@ -4,7 +4,7 @@
         "name": "Links Reawakening",
         "width": 480,
         "height": 270,
-        "fullscreen": true,
+        "fullscreen": false,
         "icon": "/games/la/assets/icons/la.png",
         "version": 190
     },

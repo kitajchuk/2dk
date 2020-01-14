@@ -146,7 +146,7 @@ class Player {
             this.stopped = false;
             this.gamebox.pause( this.stopped );
 
-        }, 256 );
+        }, Config.values.debounceDur );
     }
 
 

@@ -236,9 +236,9 @@ class ActiveTiles {
     }
 
 
-    onBlit ( f ) {
+    getActive () {
         // Get only tiles that are visible in the camera box
-        const active = this.data.coords.filter(( coord ) => {
+        return this.data.coords.filter(( coord ) => {
             const offset = {
                 top: (coord[ 1 ] * this.map.data.gridsize) + this.map.offset.y,
                 bottom: ((coord[ 1 ] * this.map.data.gridsize) + this.map.data.gridsize) + this.map.offset.y,
@@ -255,32 +255,64 @@ class ActiveTiles {
                 return true;
             }
         });
+    }
+
+
+    renderActive ( active, f ) {
+        const activeX = (this.data.offsetX + (f % this.data.stepsX) * this.map.data.tilesize);
+
+        active.forEach(( coord ) => {
+            this.map.location.layers[ this.data.layer ].context.clearRect(
+                this.map.data.tilesize * coord[ 0 ],
+                this.map.data.tilesize * coord[ 1 ],
+                this.map.data.tilesize,
+                this.map.data.tilesize,
+            );
+
+            this.map.location.layers[ this.data.layer ].context.drawImage(
+                this.map.image,
+                activeX,
+                this.data.offsetY,
+                this.map.data.tilesize,
+                this.map.data.tilesize,
+                this.map.data.tilesize * coord[ 0 ],
+                this.map.data.tilesize * coord[ 1 ],
+                this.map.data.tilesize,
+                this.map.data.tilesize,
+            );
+        });
+    }
+
+
+    renderIdle ( active ) {
+        active.forEach(( coord ) => {
+            this.map.layers[ this.data.layer ].context.clearRect(
+                this.map.offset.x + (this.map.data.gridsize * coord[ 0 ]),
+                this.map.offset.y + (this.map.data.gridsize * coord[ 1 ]),
+                this.map.data.gridsize,
+                this.map.data.gridsize,
+            );
+
+            this.map.layers[ this.data.layer ].context.drawImage(
+                this.map.location.layers[ this.data.layer ].canvas,
+                this.map.data.tilesize * coord[ 0 ],
+                this.map.data.tilesize * coord[ 1 ],
+                this.map.data.tilesize,
+                this.map.data.tilesize,
+                this.map.offset.x + (this.map.data.gridsize * coord[ 0 ]),
+                this.map.offset.y + (this.map.data.gridsize * coord[ 1 ]),
+                this.map.data.gridsize,
+                this.map.data.gridsize,
+            );
+        });
+    }
+
+
+    onBlit ( f ) {
+        const active = this.getActive();
 
         if ( active.length ) {
-            const activeX = (this.data.offsetX + (f % this.data.stepsX) * this.map.data.tilesize);
-
-            active.forEach(( coord ) => {
-                this.map.location.layers[ this.data.layer ].context.clearRect(
-                    this.map.data.tilesize * coord[ 0 ],
-                    this.map.data.tilesize * coord[ 1 ],
-                    this.map.data.tilesize,
-                    this.map.data.tilesize,
-                );
-
-                this.map.location.layers[ this.data.layer ].context.drawImage(
-                    this.map.image,
-                    activeX,
-                    this.data.offsetY,
-                    this.map.data.tilesize,
-                    this.map.data.tilesize,
-                    this.map.data.tilesize * coord[ 0 ],
-                    this.map.data.tilesize * coord[ 1 ],
-                    this.map.data.tilesize,
-                    this.map.data.tilesize,
-                );
-            });
-
-            this.map.render();
+            this.renderActive( active, f );
         }
     }
 }
@@ -291,6 +323,8 @@ class ActiveObject {
     constructor ( data, map ) {
         this.map = map;
         this.data = Utils.merge( map.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
+        this.image = new Image();
+        this.image.src = this.data.image;
         // Copy so we can cooldown and re-spawn objects with fresh states
         this.states = Utils.copy( this.data.states );
         this.hitbox = {
@@ -306,6 +340,7 @@ class ActiveObject {
 
     destroy () {
         this.data = null;
+        this.image = null;
 
         if ( this.blit ) {
             this.stop();
@@ -318,37 +353,35 @@ class ActiveObject {
         if ( this.states.length ) {
             this.state = this.states.shift();
 
-            if ( this.state.animated ) {
-                this.bind();
-
-            } else {
-                this.draw();
-            }
+            // if ( this.state.animated ) {
+            //     this.bind();
+            //
+            // } else {
+            //     this.draw();
+            // }
         }
     }
 
 
     draw () {
-        this.map.location.layers[ this.data.layer ].context.clearRect(
-            this.data.spawn.x * this.map.data.resolution,
-            this.data.spawn.y * this.map.data.resolution,
-            this.data.width,
-            this.data.height,
+        this.map.layers[ this.data.layer ].context.clearRect(
+            this.map.offset.x + this.data.spawn.x,
+            this.map.offset.y + this.data.spawn.y,
+            this.data.width / this.data.scale,
+            this.data.height / this.data.scale,
         );
 
-        this.map.location.layers[ this.data.layer ].context.drawImage(
-            this.map.image,
+        this.map.layers[ this.data.layer ].context.drawImage(
+            this.image,
             this.state.offsetX,
             this.state.offsetY,
             this.data.width,
             this.data.height,
-            this.data.spawn.x * this.map.data.resolution,
-            this.data.spawn.y * this.map.data.resolution,
-            this.data.width,
-            this.data.height,
+            this.map.offset.x + this.data.spawn.x,
+            this.map.offset.y + this.data.spawn.y,
+            this.data.width / this.data.scale,
+            this.data.height / this.data.scale,
         );
-
-        this.map.render();
     }
 
 
@@ -395,6 +428,8 @@ class Map {
             x: 0,
             y: 0
         };
+        this.lastOffset = this.offset;
+        this.timeout = null;
         this.build();
     }
 
@@ -409,6 +444,9 @@ class Map {
         this.layers = null;
         this.activeTiles.forEach(( activeTiles ) => {
             activeTiles.destroy();
+        });
+        this.activeObjects.forEach(( activeObject ) => {
+            activeObject.destroy();
         });
         this.activeTiles = null;
         this.activeObjects = null;
@@ -447,13 +485,33 @@ class Map {
     }
 
 
+    updateTiles () {
+        if ( !this.idle() ) {
+            return;
+        }
+
+        this.activeTiles.forEach(( activeTiles ) => {
+            activeTiles.renderIdle( activeTiles.getActive() );
+        });
+    }
+
+
     update ( offset ) {
+        clearTimeout( this.timeout );
         this.offset = offset;
         this.render();
+        this.timeout = setTimeout(() => {
+            this.lastOffset = this.offset;
+
+        }, Config.values.debounceDur );
     }
 
 
     render () {
+        if ( this.idle() ) {
+            return;
+        }
+
         this.clear();
 
         for ( let id in this.layers ) {
@@ -469,6 +527,17 @@ class Map {
                 this.location.layers[ id ].data.height,
             );
         }
+
+        this.activeObjects.forEach(( activeObject ) => {
+            if ( !activeObject.state.animated ) {
+                activeObject.draw();
+            }
+        });
+    }
+
+
+    idle () {
+        return (this.lastOffset.x === this.offset.x && this.lastOffset.y === this.offset.y);
     }
 
 

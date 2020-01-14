@@ -31,6 +31,9 @@ class GameCycle {
         delta = Math.min( delta, 0.25 ); // maximum delta of 250ms
         this._previousElapsed = elapsed;
 
+        // Persistent map rendering (Map.prototype.idle?)
+        this.player.gamebox.map.updateTiles();
+
         // D-Pad movement
         // Easier to check the gamepad than have player use event handlers...
         const dpad = this.player.gamepad.checkDpad();

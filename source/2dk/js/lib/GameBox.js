@@ -347,7 +347,7 @@ class TopView extends GameBox {
         return new Promise(( resolve ) => {
             return new Tween({
                 ease: Easing.swing,
-                duration: Config.animation.duration.boundary,
+                duration: Config.values.boundaryAnimDur,
                 from: css.from,
                 to: css.to,
                 update: ( t ) => {

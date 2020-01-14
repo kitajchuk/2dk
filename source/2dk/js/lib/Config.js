@@ -60,13 +60,9 @@ const Config = {
         greyDark: "#333",
         blueDark: "#004080",
     },
-    animation: {
-        bounce: 300,
-        duration: {
-            pushed: 720,
-            pulled: 360,
-            boundary: 500,
-        }
+    values: {
+        debounceDur: 256,
+        boundaryAnimDur: 500,
     }
 };
 
