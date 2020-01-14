@@ -7,16 +7,20 @@
 * Game version vs iteration-counter
 * Use game version/iteration-counter for index.html URLs
 
+* Spawn points should be full resolution? (64x rather than 32x)
+
 
 ********************************************************************************
 * Studio Software
 ********************************************************************************
 * History states for painting
 * Hero Pins (sets map.spawn(x, y))
-* Sprites (background, foreground)
+* Objects (background, foreground)
 * Active Tiles (background, foreground)
-* Copy games to ../static when maps are saved?
 * Upload icon PNG when creating a new game
+* Sync games to ../static when maps are saved?
+* Map spawn points (x, y, dir)
+* Map event points (coords, type, map, dir)
 
 
 ********************************************************************************
@@ -25,12 +29,14 @@
 * NOUN system for Hero
 * NOUNS: GRASS, WATER(depth...?), STAIRS, LEDGE(jump...?), SWITCH(actions...?), QUICK-SAND?
 
-* Interaction tiles like cutting grass and plants or picking up rocks or plants
+* Interaction tiles like cutting grass and plants
 * Event tiles for doors, locatin switching etc...
+
+* Check active tile collision (uses the NOUN system for FX)
 
 
 ********************************************************************************
-* Sprites (NPCs, Enemies, colliders, state shifting, sprite/tileset)
+* Objects (NPCs, Enemies, colliders, state shifting, sprite/tileset)
 ********************************************************************************
 (
     ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit)
@@ -51,6 +57,8 @@
 
 * VERB system for Hero Actions and Object(NPC) Reactions
 * VERBS: Face, Walk, Push, Open, Pull, Lift, Toss, Grab
+
+* Interactions like pushing pots, picking up rocks etc...
 
 * Object(NPC) looks at Hero conditions (dir, act, etc...) to determine payload
 * Object(NPC) notifys Hero when an action meets conditions for a payload

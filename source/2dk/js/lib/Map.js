@@ -1,3 +1,4 @@
+const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
 const Blit = require( "properjs-blit" );
@@ -206,6 +207,7 @@ class ActiveTiles {
             fps: this.fps,
             paused: true,
         });
+
         this.bind();
     }
 
@@ -221,6 +223,16 @@ class ActiveTiles {
         this._onBlit = this.onBlit.bind( this );
 
         this.blit.blit( this._onBlit );
+    }
+
+
+    play () {
+        this.blit.start().play();
+    }
+
+
+    stop () {
+        this.blit.pause();
     }
 
 
@@ -271,6 +283,85 @@ class ActiveTiles {
             this.map.render();
         }
     }
+}
+
+
+
+class ActiveObject {
+    constructor ( data, map ) {
+        this.map = map;
+        this.data = Utils.merge( map.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
+        // Copy so we can cooldown and re-spawn objects with fresh states
+        this.states = Utils.copy( this.data.states );
+        this.hitbox = {
+            x: !this.data.boxes ? 0 : this.data.spawn.x + (this.data.boxes.hit.x / this.data.scale),
+            y: !this.data.boxes ? 0 : this.data.spawn.y + (this.data.boxes.hit.y / this.data.scale),
+            width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.data.scale),
+            height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.data.scale),
+        };
+
+        this.shift();
+    }
+
+
+    destroy () {
+        this.data = null;
+
+        if ( this.blit ) {
+            this.stop();
+            this.blit = null;
+        }
+    }
+
+
+    shift () {
+        if ( this.states.length ) {
+            this.state = this.states.shift();
+
+            if ( this.state.animated ) {
+                this.bind();
+
+            } else {
+                this.draw();
+            }
+        }
+    }
+
+
+    draw () {
+        this.map.location.layers[ this.data.layer ].context.clearRect(
+            this.data.spawn.x * this.map.data.resolution,
+            this.data.spawn.y * this.map.data.resolution,
+            this.data.width,
+            this.data.height,
+        );
+
+        this.map.location.layers[ this.data.layer ].context.drawImage(
+            this.map.image,
+            this.state.offsetX,
+            this.state.offsetY,
+            this.data.width,
+            this.data.height,
+            this.data.spawn.x * this.map.data.resolution,
+            this.data.spawn.y * this.map.data.resolution,
+            this.data.width,
+            this.data.height,
+        );
+
+        this.map.render();
+    }
+
+
+    bind () {
+        this.fps = ((this.state.stepsX / this.state.dur) * 1000);
+        this.blit = new Blit({
+            fps: this.fps,
+            paused: true,
+        });
+        this._onBlit = this.onBlit.bind( this );
+
+        this.blit.blit( this._onBlit );
+    }
 
 
     play () {
@@ -281,6 +372,9 @@ class ActiveTiles {
     stop () {
         this.blit.pause();
     }
+
+
+    onBlit ( f ) {}
 }
 
 
@@ -296,6 +390,7 @@ class Map {
         this.image = Loader.cash( data.image );
         this.location = new MapLocation( this );
         this.activeTiles = [];
+        this.activeObjects = [];
         this.offset = {
             x: 0,
             y: 0
@@ -316,6 +411,7 @@ class Map {
             activeTiles.destroy();
         });
         this.activeTiles = null;
+        this.activeObjects = null;
     }
 
 
@@ -329,6 +425,10 @@ class Map {
 
         this.data.tiles.forEach(( data ) => {
             this.activeTiles.push( new ActiveTiles( data, this ) );
+        });
+
+        this.data.objects.forEach(( data ) => {
+            this.activeObjects.push( new ActiveObject( data, this ) );
         });
     }
 

@@ -22,7 +22,7 @@
     ],
     "tiles": [
         {
-            "group": "sea",
+            "group": "water",
             "layer": "background",
             "coords": [
                 [
@@ -13825,8 +13825,8 @@
                     ]
                 ],
                 [
-                    0,
-                    2176
+                    192,
+                    448
                 ],
                 [
                     [

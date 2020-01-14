@@ -21,6 +21,7 @@
         }
     ],
     "tiles": [],
+    "objects": [],
     "events": [
         {
             "coords": [
@@ -50,7 +51,6 @@
             "dir": "left"
         }
     ],
-    "objects": [],
     "collision": [
         [
             0,

@@ -6,7 +6,7 @@
         "height": 270,
         "fullscreen": true,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 183
+        "version": 190
     },
     "hero": {
         "sprite": 1,
@@ -160,9 +160,9 @@
             "boxes": {
                 "hit": {
                     "x": 48,
-                    "y": 58,
+                    "y": 70,
                     "width": 44,
-                    "height": 60
+                    "height": 48
                 }
             },
             "verbs": {
@@ -294,10 +294,6 @@
             "scale": 1,
             "states": [
                 {
-                    "bgp": {
-                        "x": 0,
-                        "y": 0
-                    },
                     "animated": 1,
                     "offsetX": 0,
                     "offsetY": 0,
@@ -324,10 +320,10 @@
             },
             "states": [
                 {
-                    "bgp": {
-                        "x": 0,
-                        "y": -2304
-                    },
+                    "offsetX": 0,
+                    "offsetY": -2304,
+                    "stepsX": 4,
+                    "dur": 240,
                     "animated": 1,
                     "action": {
                         "verb": "move",
@@ -344,11 +340,7 @@
                             }
                         },
                         "counter": 1
-                    },
-                    "offsetX": 0,
-                    "offsetY": -2304,
-                    "stepsX": 4,
-                    "dur": 240
+                    }
                 }
             ]
         },
@@ -370,14 +362,12 @@
             },
             "states": [
                 {
-                    "bgp": {
-                        "x": -704,
-                        "y": -768
-                    },
+                    "offsetX": 704,
+                    "offsetY": 768,
                     "action": {
                         "verb": "open",
                         "require": {
-                            "button": 1
+                            "dir": "up"
                         },
                         "payload": {
                             "dialogue": {
@@ -391,10 +381,8 @@
                     }
                 },
                 {
-                    "bgp": {
-                        "x": -704,
-                        "y": -832
-                    }
+                    "offsetX": 704,
+                    "offsetY": 832
                 }
             ]
         },
@@ -416,10 +404,8 @@
             },
             "states": [
                 {
-                    "bgp": {
-                        "x": -640,
-                        "y": -384
-                    },
+                    "offsetX": 640,
+                    "offsetY": 384,
                     "action": {
                         "verb": "move",
                         "counter": 999

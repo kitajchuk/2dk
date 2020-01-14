@@ -16,10 +16,6 @@ class Player {
         this.stopped = false;
         this.Loader = Loader;
         this.controls = {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
             a: false,
             b: false,
             bHold: false,
@@ -111,8 +107,6 @@ class Player {
 
 
     bind () {
-        this._dPadPress = this.dPadPress.bind( this );
-        this._dPadRelease = this.dPadRelease.bind( this );
         this._startPress = this.startPress.bind( this );
         this._aPress = this.aPress.bind( this );
         this._aRelease = this.aRelease.bind( this );
@@ -120,18 +114,6 @@ class Player {
         this._bHoldPress = this.bHoldPress.bind( this );
         this._bRelease = this.bRelease.bind( this );
         this._bHoldRelease = this.bHoldRelease.bind( this );
-
-        // Standard 4 point d-pad
-        this.gamepad.on( "left-press", this._dPadPress );
-        this.gamepad.on( "right-press", this._dPadPress );
-        this.gamepad.on( "up-press", this._dPadPress );
-        this.gamepad.on( "down-press", this._dPadPress );
-
-        // Standard 4 point d-pad on release
-        this.gamepad.on( "left-release", this._dPadRelease );
-        this.gamepad.on( "right-release", this._dPadRelease );
-        this.gamepad.on( "up-release", this._dPadRelease );
-        this.gamepad.on( "down-release", this._dPadRelease );
 
         // Start button (pause)
         this.gamepad.on( "start-press", this._startPress );
@@ -212,16 +194,6 @@ class Player {
     bHoldRelease () {
         this.controls.b = false;
         this.controls.bHold = false;
-    }
-
-
-    dPadPress ( dir ) {
-        this.controls[ dir ] = true;
-    }
-
-
-    dPadRelease ( dir ) {
-        this.controls[ dir ] = false;
     }
 }
 

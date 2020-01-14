@@ -100,28 +100,11 @@ class GameBox {
     }
 
 
-    pressD () {}
-
-
-    pressA () {}
-
-
-    pressB () {}
-
-
-    longPressB () {}
-
-
-    releaseD () {}
-
-
-    releaseA () {}
-
-
-    releaseB () {}
-
-
-    longReleaseB () {}
+    // pressD ( dir, delta, dirX, dirY ) {}
+    // releaseD () {}
+    // pressA () {}
+    // pressB () {}
+    // holdB () {}
 }
 
 
@@ -144,10 +127,17 @@ class TopView extends GameBox {
             evt: this.checkEvt( poi ),
             map: this.checkMap( poi, this.hero ),
             box: this.checkBox( poi ),
+            obj: this.checkObj( poi ),
+            tile: this.checkTile( poi ),
         };
 
         if ( collision.evt ) {
             this.handleEvt( collision.evt );
+            return;
+        }
+
+        if ( collision.obj ) {
+            this.handleObj( collision.obj );
             return;
         }
 
@@ -161,12 +151,41 @@ class TopView extends GameBox {
             return;
         }
 
+        if ( collision.tile ) {
+            this.handleTile( collision.tile );
+        }
+
         this.handleWalk( poi, dir );
     }
 
 
     releaseD () {
         this.hero.face( this.hero.dir );
+    }
+
+
+    pressA ( dir, delta, dirX, dirY ) {
+        const poi = {
+            x: this.hero.position.x + (dirX * this.camera.speed * delta),
+            y: this.hero.position.y + (dirY * this.camera.speed * delta),
+        };
+        const collision = {
+            obj: this.checkObj( poi ),
+        };
+
+        if ( collision.obj ) {
+            this.handleActObj( collision.obj, dir );
+        }
+    }
+
+
+    pressB () {
+        console.log( "B" );
+    }
+
+
+    holdB () {
+        console.log( "B Hold" );
     }
 
 
@@ -190,6 +209,25 @@ class TopView extends GameBox {
         if ( evt.type === Config.events.BOUNDARY ) {
             this.switchMap( evt );
         }
+    }
+
+
+    handleObj ( obj ) {
+        // console.log( obj );
+    }
+
+
+    handleActObj ( obj, dir ) {
+        if ( obj.state.action ) {
+            if ( obj.state.action.require && obj.state.action.require.dir && dir === obj.state.action.require.dir ) {
+                console.log( obj.state.action );
+            }
+        }
+    }
+
+
+    handleTile ( tile ) {
+        // console.log( tile );
     }
 
 
@@ -256,6 +294,47 @@ class TopView extends GameBox {
                 break;
             }
         }
+
+        return ret;
+    }
+
+
+    checkObj ( poi ) {
+        let ret = false;
+        const hitbox = this.hero.getHitbox( poi );
+
+        for ( let i = this.map.activeObjects.length; i--; ) {
+            if ( Utils.collide( hitbox, this.map.activeObjects[ i ].hitbox ) ) {
+                ret = this.map.activeObjects[ i ];
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+
+    checkTile ( poi ) {
+        let ret = false;
+        const hitbox = this.hero.getHitbox( poi );
+
+        loop1:
+            for ( let i = this.map.activeTiles.length; i--; ) {
+                loop2:
+                    for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
+                        const tile = {
+                            width: this.map.data.gridsize,
+                            height: this.map.data.gridsize,
+                            x: this.map.activeTiles[ i ].data.coords[ j ][ 0 ] * this.map.data.gridsize,
+                            y: this.map.activeTiles[ i ].data.coords[ j ][ 1 ] * this.map.data.gridsize
+                        };
+
+                        if ( Utils.collide( hitbox, tile ) ) {
+                            ret = tile;
+                            break loop1;
+                        }
+                    }
+            }
 
         return ret;
     }
