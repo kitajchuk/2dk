@@ -1,7 +1,6 @@
 const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
-const Blit = require( "properjs-blit" );
 
 
 
@@ -202,45 +201,35 @@ class ActiveTiles {
     constructor ( data, map ) {
         this.data = data;
         this.map = map;
-        this.fps = ((data.stepsX / data.dur) * 1000);
-        this.blit = new Blit({
-            fps: this.fps,
-            paused: true,
-        });
-
-        this.bind();
-        this.init();
+        // Pre-render first frame of animation
+        // This alleviates tile jank if the background tile is different...
+        // this.renderActive( this.data.coords, 0 );
     }
 
 
     destroy () {
-        this.stop();
         this.data = null;
-        this.blit = null;
     }
 
 
-    init () {
-        // Pre-render first frame of animation
-        // This alleviates tile jank if the background tile is different...
-        this.renderActive( this.data.coords, 0 );
-    }
+    draw ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
 
+        const diff = (elapsed - this.previousElapsed);
+        let frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
 
-    bind () {
-        this._onBlit = this.onBlit.bind( this );
+        if ( diff >= this.data.dur ) {
+            this.previousElapsed = elapsed;
+            frame = this.data.stepsX - 1;
+        }
 
-        this.blit.blit( this._onBlit );
-    }
+        const active = this.getActive();
 
-
-    play () {
-        this.blit.start().play();
-    }
-
-
-    stop () {
-        this.blit.pause();
+        if ( active.length ) {
+            this.renderActive( active, frame );
+        }
     }
 
 
@@ -266,8 +255,8 @@ class ActiveTiles {
     }
 
 
-    renderActive ( active, f ) {
-        const activeX = (this.data.offsetX + (f % this.data.stepsX) * this.map.data.tilesize);
+    renderActive ( active, frame ) {
+        const activeX = (this.data.offsetX + (frame * this.map.data.tilesize));
 
         active.forEach(( coord ) => {
             this.map.location.layers[ this.data.layer ].context.clearRect(
@@ -289,15 +278,6 @@ class ActiveTiles {
                 this.map.data.tilesize,
             );
         });
-    }
-
-
-    onBlit ( f ) {
-        const active = this.getActive();
-
-        if ( active.length ) {
-            this.renderActive( active, f );
-        }
     }
 }
 
@@ -325,11 +305,6 @@ class ActiveObject {
     destroy () {
         this.data = null;
         this.image = null;
-
-        if ( this.blit ) {
-            this.stop();
-            this.blit = null;
-        }
     }
 
 
@@ -367,7 +342,7 @@ class ActiveObject {
     }
 
 
-    draw () {
+    draw ( elapsed ) {
         this.map.layers[ this.data.layer ].context.clearRect(
             this.map.offset.x + this.data.spawn.x,
             this.map.offset.y + this.data.spawn.y,
@@ -387,31 +362,6 @@ class ActiveObject {
             this.data.height / this.data.scale,
         );
     }
-
-
-    bind () {
-        this.fps = ((this.state.stepsX / this.state.dur) * 1000);
-        this.blit = new Blit({
-            fps: this.fps,
-            paused: true,
-        });
-        this._onBlit = this.onBlit.bind( this );
-
-        this.blit.blit( this._onBlit );
-    }
-
-
-    play () {
-        this.blit.start().play();
-    }
-
-
-    stop () {
-        this.blit.pause();
-    }
-
-
-    onBlit ( f ) {}
 }
 
 
@@ -464,27 +414,12 @@ class Map {
             this.addLayer( id );
         }
 
-        // Active tiles are really jank on mobile...
-        // this.data.tiles.forEach(( data ) => {
-        //     this.activeTiles.push( new ActiveTiles( data, this ) );
-        // });
+        this.data.tiles.forEach(( data ) => {
+            this.activeTiles.push( new ActiveTiles( data, this ) );
+        });
 
         this.data.objects.forEach(( data ) => {
             this.activeObjects.push( new ActiveObject( data, this ) );
-        });
-    }
-
-
-    playTiles () {
-        this.activeTiles.forEach(( activeTiles ) => {
-            activeTiles.play();
-        });
-    }
-
-
-    stopTiles () {
-        this.activeTiles.forEach(( activeTiles ) => {
-            activeTiles.stop();
         });
     }
 
@@ -495,8 +430,12 @@ class Map {
     }
 
 
-    render () {
+    render ( elapsed ) {
         this.clear();
+
+        this.activeTiles.forEach(( activeTiles ) => {
+            activeTiles.draw( elapsed );
+        });
 
         for ( let id in this.data.textures ) {
             this.layers[ id ].context.drawImage(
@@ -514,7 +453,7 @@ class Map {
 
         this.activeObjects.forEach(( activeObject ) => {
             if ( !activeObject.state.animated ) {
-                activeObject.draw();
+                activeObject.draw( elapsed );
             }
         });
     }

@@ -32,7 +32,7 @@ class GameCycle {
         this._previousElapsed = elapsed;
 
         // Map rendering at 60FPS to sync layers and active tiles...
-        this.player.gamebox.map.render();
+        this.player.gamebox.map.render( elapsed );
 
         // D-Pad movement
         // Easier to check the gamepad than have player use event handlers...
