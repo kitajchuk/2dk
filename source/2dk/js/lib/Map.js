@@ -323,7 +323,7 @@ class ActiveObject {
 
     payload () {
         if ( this.state.action.payload.dialogue ) {
-            console.log( "PAYLOAD", this.state.action.payload.dialogue );
+            this.map.gamebox.dialogue.play( this.state.action.payload.dialogue );
         }
     }
 

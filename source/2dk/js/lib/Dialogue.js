@@ -1,6 +1,9 @@
+const Config = require( "./Config" );
+
+
+
 class Dialogue {
-    constructor ( gamebox ) {
-        this.gamebox = gamebox;
+    constructor () {
         this.ready = false;
         this.async = 10;
         this.timeout = 1000;
@@ -80,9 +83,13 @@ class Dialogue {
     teardown () {
         this.element.classList.remove( `_2dk__dialogue--${this.data.type}` );
         this.element.classList.remove( "is-texting" );
-        this.element.innerHTML = "";
-        this.data = null;
-        this.ready = false;
+
+        setTimeout(() => {
+            this.element.innerHTML = "";
+            this.data = null;
+            this.ready = false;
+
+        }, this.timeout );
     }
 }
 

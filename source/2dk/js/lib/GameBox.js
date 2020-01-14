@@ -1,6 +1,7 @@
 const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
+const Dialogue = require( "./Dialogue" );
 const { Map } = require( "./Map" );
 const { Hero } = require( "./Sprite" );
 const Tween = require( "properjs-tween" );
@@ -31,6 +32,9 @@ class GameBox {
         this.map = new Map( Loader.cash( this.hero.data.spawn.map ), this );
         this.map_ = null;
 
+        // Dialogues
+        this.dialogue = new Dialogue();
+
         this.build();
         this.initMap();
     }
@@ -39,6 +43,7 @@ class GameBox {
     build () {
         this.map.element.appendChild( this.hero.element );
         this.player.screen.appendChild( this.map.element );
+        this.player.screen.appendChild( this.dialogue.element );
     }
 
     initMap () {
@@ -213,11 +218,13 @@ class TopView extends GameBox {
         if ( collision.obj ) {
             this.handleActObj( collision.obj, dir );
         }
+
+        this.dialogue.check( true, false );
     }
 
 
     pressB () {
-        console.log( "B" );
+        this.dialogue.check( false, true );
     }
 
 

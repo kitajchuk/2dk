@@ -17,7 +17,7 @@
 ********************************************************************************
 * History states for painting
 * Hero Pins (sets map.spawn(x, y))
-* Objects (background, foreground)
+* Active Objects (background, foreground)
 * Active Tiles (background, foreground)
 * Upload icon PNG when creating a new game
 * Sync games to ../static when maps are saved?
@@ -38,7 +38,7 @@
 
 
 ********************************************************************************
-* Objects (NPCs, Enemies, colliders, state shifting, sprite/tileset)
+* Active Objects (NPCs, Enemies, colliders, state shifting, sprite/tileset)
 ********************************************************************************
 (
     ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit)
