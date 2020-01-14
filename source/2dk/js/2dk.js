@@ -2,7 +2,7 @@
 * 2dk Dev Notes
 ********************************************************************************
 
-* ?debug=1&map=ukuku-prairie-west.json&spawn=288,320
+* ?map=mysterious-forest.json&spawn=304,763
 * Use game icon for mobile installed
 * Game version vs iteration-counter
 * Use game version/iteration-counter for index.html URLs
@@ -10,8 +10,6 @@
 * Spawn points should be full resolution? (64x rather than 32x)
     Hero.spawn, Object.spawn
     Divide by Map.resolution to get render spawn
-
-* Draw Active Tiles using GameCycle RAF data to avoid jank?
 
 
 ********************************************************************************
@@ -36,7 +34,7 @@
 * Interaction tiles like cutting grass and plants
 * Event tiles for doors, locatin switching etc...
 
-* Check active tile collision (uses the NOUN system for FX)
+* Handle active tile collision (uses the NOUN system for FX)
 
 
 ********************************************************************************

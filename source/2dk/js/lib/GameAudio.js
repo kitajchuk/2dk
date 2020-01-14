@@ -1,6 +1,5 @@
 class GameSound {
-    constructor ( gamebox ) {
-        this.gamebox = gamebox;
+    constructor () {
         this.sounds = {};
         this.channels = {
             bgm: {

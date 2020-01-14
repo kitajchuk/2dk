@@ -11,6 +11,7 @@ const Easing = require( "properjs-easing" );
 class GameBox {
     constructor ( player ) {
         this.player = player;
+        this.step = 1;
         this.offset = {
             x: 0,
             y: 0,
@@ -28,6 +29,7 @@ class GameBox {
 
         // Map
         this.map = new Map( Loader.cash( this.hero.data.spawn.map ), this );
+        this.map_ = null;
 
         this.build();
         this.initMap();
@@ -43,7 +45,7 @@ class GameBox {
         this.offset = this.update( this.hero.position );
         this.map.update( this.offset );
         this.hero.update( this.hero.position, this.offset );
-        this.player.gamesound.addSound({
+        this.player.gameaudio.addSound({
             id: this.map.data.id,
             src: this.map.data.sound,
             channel: "bgm",
@@ -54,10 +56,10 @@ class GameBox {
     pause ( paused ) {
         if ( paused ) {
             this.hero.face( this.hero.dir );
-            this.player.gamesound.stopSound( this.map.data.id );
+            this.player.gameaudio.stopSound( this.map.data.id );
 
         } else {
-            this.player.gamesound.playSound( this.map.data.id );
+            this.player.gameaudio.playSound( this.map.data.id );
         }
     }
 
@@ -95,6 +97,43 @@ class GameBox {
         this.camera.y = Math.abs( offset.y );
 
         return offset;
+    }
+
+
+    render ( elapsed ) {
+        if ( this.map_ ) {
+            this.map_.render( elapsed );
+        }
+
+        this.map.render( elapsed );
+        this.hero.render( elapsed );
+    }
+
+
+    getStep ( dir ) {
+        let dirX = 0;
+        let dirY = 0;
+
+        if ( dir === "up" ) {
+            dirY = -this.step;
+        }
+
+        if ( dir === "down" ) {
+            dirY = this.step;
+        }
+
+        if ( dir === "left" ) {
+            dirX = -this.step;
+        }
+
+        if ( dir === "right" ) {
+            dirX = this.step;
+        }
+
+        return {
+            x: dirX,
+            y: dirY,
+        }
     }
 
 
@@ -348,11 +387,9 @@ class TopView extends GameBox {
                 to: css.to,
                 update: ( t ) => {
                     obj.offset[ css.axis ] = t;
-                    obj.render();
                 },
                 complete: ( t ) => {
                     obj.offset[ css.axis ] = t;
-                    obj.render();
                     resolve();
                 }
             });
@@ -366,7 +403,7 @@ class TopView extends GameBox {
         this.player.stop();
 
         // Create new Map
-        const _map = new Map( Loader.cash( evt.map ), this );
+        this.map_ = new Map( Loader.cash( evt.map ), this );
 
         // Stage Hero for animation
         let _hero = this.hero.position;
@@ -390,14 +427,14 @@ class TopView extends GameBox {
 
         // Stage new Map for animation
         if ( this.hero.dir === "down" ) {
-            _map.offset = {
+            this.map_.offset = {
                 x: this.map.offset.x,
                 y: this.player.height,
             };
 
             _css.newMap = {
                 axis: "y",
-                from: _map.offset.y,
+                from: this.map_.offset.y,
                 to: 0,
             };
 
@@ -419,15 +456,15 @@ class TopView extends GameBox {
             };
 
         } else if ( this.hero.dir === "up" ) {
-            _map.offset = {
+            this.map_.offset = {
                 x: this.map.offset.x,
-                y: -(_map.height),
+                y: -(this.map_.height),
             };
 
             _css.newMap = {
                 axis: "y",
-                from: _map.offset.y,
-                to: -(_map.height - this.player.height),
+                from: this.map_.offset.y,
+                to: -(this.map_.height - this.player.height),
             };
 
             _css.thisMap = {
@@ -444,18 +481,18 @@ class TopView extends GameBox {
 
             _hero = {
                 x: _hero.x,
-                y: _map.height - this.hero.height,
+                y: this.map_.height - this.hero.height,
             };
 
         } else if ( this.hero.dir === "right" ) {
-            _map.offset = {
+            this.map_.offset = {
                 x: this.player.width,
                 y: this.map.offset.y,
             };
 
             _css.newMap = {
                 axis: "x",
-                from: _map.offset.x,
+                from: this.map_.offset.x,
                 to: 0,
             };
 
@@ -477,15 +514,15 @@ class TopView extends GameBox {
             };
 
         } else if ( this.hero.dir === "left" ) {
-            _map.offset = {
-                x: -(_map.width),
+            this.map_.offset = {
+                x: -(this.map_.width),
                 y: this.map.offset.y,
             };
 
             _css.newMap = {
                 axis: "x",
-                from: _map.offset.x,
-                to: -(_map.width - this.player.width),
+                from: this.map_.offset.x,
+                to: -(this.map_.width - this.player.width),
             };
 
             _css.thisMap = {
@@ -501,33 +538,31 @@ class TopView extends GameBox {
             };
 
             _hero = {
-                x: _map.width - this.hero.width,
+                x: this.map_.width - this.hero.width,
                 y: _hero.y,
             };
         }
 
-        // Render new Map (this uses _map.offset)
-        _map.render();
-
         // Inject new Map into the player DOM
-        this.player.screen.appendChild( _map.element );
+        this.player.screen.appendChild( this.map_.element );
 
         // Animate Maps and Hero and resolve all tweens for clean-up
         Promise.all([
-            this.switchTween( _map, _css.newMap ),
+            this.switchTween( this.map_, _css.newMap ),
             this.switchTween( this.map, _css.thisMap ),
             this.switchTween( this.hero, _css.hero ),
 
         ]).then(() => {
             // Stage Hero with correct position on new Map
             this.hero.element.style.position = "absolute";
-            this.hero.update( _hero, _map.offset );
-            _map.element.appendChild( this.hero.element );
+            this.hero.update( _hero, this.map_.offset );
+            this.map_.element.appendChild( this.hero.element );
 
             // Destroy old Map
             // Teardown GameBox stuff (npcs, etc...)
             this.map.destroy();
-            this.map = _map;
+            this.map = this.map_;
+            this.map_ = null;
 
             // Initialize GameBox stuff (npcs, etc...)
             this.initMap();

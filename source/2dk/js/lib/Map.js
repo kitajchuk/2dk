@@ -201,9 +201,6 @@ class ActiveTiles {
     constructor ( data, map ) {
         this.data = data;
         this.map = map;
-        // Pre-render first frame of animation
-        // This alleviates tile jank if the background tile is different...
-        // this.renderActive( this.data.coords, 0 );
     }
 
 
@@ -382,7 +379,6 @@ class Map {
             x: 0,
             y: 0
         };
-        this.timeout = null;
         this.build();
     }
 
@@ -426,7 +422,6 @@ class Map {
 
     update ( offset ) {
         this.offset = offset;
-        // this.render();
     }
 
 

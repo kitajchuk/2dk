@@ -55,7 +55,7 @@ class Sprite {
     }
 
 
-    render () {
+    render ( elapsed ) {
         this.element.style.webkitTransform = `translate3d(
             ${this.offset.x}px,
             ${this.offset.y}px,
@@ -144,8 +144,6 @@ class Hero extends Sprite {
         if ( absolute.y >= (this.gamebox.map.height - this.gamebox.camera.height) ) {
             this.offset.y = poi.y + offset.y;
         }
-
-        this.render();
     }
 
 

@@ -2,10 +2,10 @@ const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const GamePad = require( "./GamePad" );
-const GameCycle = require( "./GameCycle" );
-const GameSound = require( "./GameSound" );
+const GameAudio = require( "./GameAudio" );
 const { TopView } = require( "./GameBox" );
 const paramalama = require( "paramalama" );
+const Controller = require( "properjs-controller" );
 
 
 
@@ -21,6 +21,8 @@ class Player {
             bHold: false,
         };
         this.query = paramalama( window.location.search );
+        this.gamecycle = new Controller();
+        this.previousElapsed = 0;
         this.detect();
     }
 
@@ -59,8 +61,7 @@ class Player {
 
             })).then(( values ) => {
                 this.splashLoad.innerHTML = `<div>Press Start</div>`;
-                this.gamecycle = new GameCycle( this );
-                this.gamesound = new GameSound( this );
+                this.gameaudio = new GameAudio();
                 this.gamepad = new GamePad( this );
                 this.gamebox = new TopView( this );
                 this.bind();
@@ -107,26 +108,21 @@ class Player {
 
 
     bind () {
-        this._startPress = this.startPress.bind( this );
-        this._aPress = this.aPress.bind( this );
-        this._aRelease = this.aRelease.bind( this );
-        this._bPress = this.bPress.bind( this );
-        this._bHoldPress = this.bHoldPress.bind( this );
-        this._bRelease = this.bRelease.bind( this );
-        this._bHoldRelease = this.bHoldRelease.bind( this );
+        // Game cycle (requestAnimationFrame)
+        this.gamecycle.go( this.onGameBlit.bind( this ) );
 
         // Start button (pause)
-        this.gamepad.on( "start-press", this._startPress );
+        this.gamepad.on( "start-press", this.onPressStart.bind( this ) );
 
         // A button (action)
-        this.gamepad.on( "a-press", this._aPress );
-        this.gamepad.on( "a-release", this._aRelease );
+        this.gamepad.on( "a-press", this.onPressA.bind( this ) );
+        this.gamepad.on( "a-release", this.onReleaseA.bind( this ) );
 
         // B button (cancel)
-        this.gamepad.on( "b-press", this._bPress );
-        this.gamepad.on( "b-holdpress", this._bHoldPress );
-        this.gamepad.on( "b-release", this._bRelease );
-        this.gamepad.on( "b-holdrelease", this._bHoldRelease );
+        this.gamepad.on( "b-press", this.onPressB.bind( this ) );
+        this.gamepad.on( "b-holdpress", this.onPressHoldB.bind( this ) );
+        this.gamepad.on( "b-release", this.onReleaseB.bind( this ) );
+        this.gamepad.on( "b-holdrelease", this.onReleaseHoldB.bind( this ) );
 
         // Screen size / Orientation change
         // window.onresize = () => {};
@@ -135,7 +131,6 @@ class Player {
 
     stop () {
         this.stopped = true;
-        // this.gamepad.clear();
         this.gamebox.pause( this.stopped );
     }
 
@@ -150,7 +145,56 @@ class Player {
     }
 
 
-    startPress () {
+    onGameBlit ( elapsed ) {
+        if ( this.stopped || this.paused ) {
+            this.previousElapsed = elapsed;
+            this.gamebox.render( elapsed );
+            return;
+        }
+
+        let delta = (elapsed - this.previousElapsed) / 1000.0;
+
+        delta = Math.min( delta, 0.25 ); // maximum delta of 250ms
+        this.previousElapsed = elapsed;
+
+        // Rendering at 60FPS to sync layers and active tiles...
+        this.gamebox.render( elapsed );
+
+        // D-Pad movement
+        // Easier to check the gamepad than have player use event handlers...
+        const dpad = this.gamepad.checkDpad();
+
+        if ( !dpad.length ) {
+            this.gamebox.releaseD();
+
+        } else {
+            dpad.forEach(( ctrl ) => {
+                ctrl.dpad.forEach(( dir ) => {
+                    const step = this.gamebox.getStep( dir );
+
+                    this.gamebox.pressD( dir, delta, step.x, step.y );
+                });
+            });
+        }
+
+        // Action buttons
+        // Easier to have the player use event handlers and check controls...
+        if ( this.controls.a ) {
+            const step = this.gamebox.getStep( this.gamebox.hero.dir );
+
+            this.gamebox.pressA( this.gamebox.hero.dir, delta, step.x, step.y );
+        }
+
+        if ( this.controls.bHold ) {
+            this.gamebox.holdB();
+
+        } else if ( this.controls.b ) {
+            this.gamebox.pressB();
+        }
+    }
+
+
+    onPressStart () {
         if ( this.stopped ) {
             return;
         }
@@ -165,33 +209,33 @@ class Player {
     }
 
 
-    aPress () {
+    onPressA () {
         this.controls.a = true;
     }
 
 
-    aRelease () {
+    onReleaseA () {
         this.controls.a = false;
     }
 
 
-    bPress () {
+    onPressB () {
         this.controls.b = true;
     }
 
 
-    bHoldPress () {
+    onPressHoldB () {
         this.controls.bHold = true;
     }
 
 
-    bRelease () {
+    onReleaseB () {
         this.controls.b = false;
         this.controls.bHold = false;
     }
 
 
-    bHoldRelease () {
+    onReleaseHoldB () {
         this.controls.b = false;
         this.controls.bHold = false;
     }
