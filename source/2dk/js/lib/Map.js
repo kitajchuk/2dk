@@ -349,16 +349,36 @@ class ActiveObject {
     }
 
 
+    canInteract ( dir ) {
+        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
+    }
+
+
+    doInteract ( dir ) {
+        if ( this.state.action.payload ) {
+            this.payload();
+        }
+
+        if ( this.state.action.shift ) {
+            this.shift();
+        }
+    }
+
+
+    payload () {
+        if ( this.state.action.payload.dialogue ) {
+            console.log( "PAYLOAD", this.state.action.payload.dialogue );
+        }
+    }
+
+
     shift () {
         if ( this.states.length ) {
             this.state = this.states.shift();
 
-            // if ( this.state.animated ) {
-            //     this.bind();
-            //
-            // } else {
-            //     this.draw();
-            // }
+            if ( !this.state.animated ) {
+                this.draw();
+            }
         }
     }
 

@@ -11,6 +11,9 @@
     Hero.spawn, Object.spawn
     Divide by Map.resolution to get render spawn
 
+* Draw Active Tiles to a dedicated canvas (background)
+    This should alleviate glitch issues and extraneous render logic
+
 
 ********************************************************************************
 * Studio Software

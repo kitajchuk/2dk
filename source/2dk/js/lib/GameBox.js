@@ -218,10 +218,8 @@ class TopView extends GameBox {
 
 
     handleActObj ( obj, dir ) {
-        if ( obj.state.action ) {
-            if ( obj.state.action.require && obj.state.action.require.dir && dir === obj.state.action.require.dir ) {
-                console.log( obj.state.action );
-            }
+        if ( obj.canInteract( dir ) ) {
+            obj.doInteract( dir );
         }
     }
 

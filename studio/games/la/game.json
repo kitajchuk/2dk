@@ -371,7 +371,7 @@
                         },
                         "payload": {
                             "dialogue": {
-                                "type": "prompt",
+                                "type": "text",
                                 "text": [
                                     "You got some rupees. Joy."
                                 ]
