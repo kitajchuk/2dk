@@ -349,7 +349,7 @@ class ActiveObject {
 
     renderObject ( frame ) {
         const offsetX = (this.state.offsetX + (frame * this.data.width));
-        let context = this.map.layers.objects.context;
+        let context = this.map.layers[ this.data.layer ].context;
 
         if ( this.relative && (this.hitbox.y > this.map.gamebox.hero.hitbox.y) ) {
             context = this.map.layers.foreground.context;

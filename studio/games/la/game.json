@@ -290,7 +290,7 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "background",
+            "layer": "objects",
             "scale": 2,
             "boxes": {
                 "hit": {
@@ -332,7 +332,7 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "background",
+            "layer": "objects",
             "scale": 2,
             "boxes": {
                 "hit": {
@@ -377,7 +377,7 @@
             "width": 64,
             "height": 128,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "background",
+            "layer": "objects",
             "scale": 2,
             "boxes": {
                 "hit": {
