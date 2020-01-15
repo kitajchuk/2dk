@@ -294,6 +294,8 @@ class ActiveObject {
             width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.data.scale),
             height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.data.scale),
         };
+        // Shift render between "objects" and "foreground" layers
+        this.relative = (this.hitbox.height !== this.data.height);
 
         this.shift();
     }
@@ -302,22 +304,6 @@ class ActiveObject {
     destroy () {
         this.data = null;
         this.image = null;
-    }
-
-
-    canInteract ( dir ) {
-        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
-    }
-
-
-    doInteract ( dir ) {
-        if ( this.state.action.payload ) {
-            this.payload();
-        }
-
-        if ( this.state.action.shift ) {
-            this.shift();
-        }
     }
 
 
@@ -340,16 +326,38 @@ class ActiveObject {
 
 
     draw ( elapsed ) {
-        this.map.layers[ this.data.layer ].context.clearRect(
-            this.map.offset.x + this.data.spawn.x,
-            this.map.offset.y + this.data.spawn.y,
-            this.data.width / this.data.scale,
-            this.data.height / this.data.scale,
-        );
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
 
-        this.map.layers[ this.data.layer ].context.drawImage(
+        let frame = 0;
+
+        if ( this.state.animated ) {
+            const diff = (elapsed - this.previousElapsed);
+
+            frame = Math.floor( (diff / this.state.dur) * this.state.stepsX );
+
+            if ( diff >= this.state.dur ) {
+                this.previousElapsed = elapsed;
+                frame = this.state.stepsX - 1;
+            }
+        }
+
+        this.renderObject( frame );
+    }
+
+
+    renderObject ( frame ) {
+        const offsetX = (this.state.offsetX + (frame * this.data.width));
+        let context = this.map.layers.objects.context;
+
+        if ( this.relative && (this.hitbox.y > this.map.gamebox.hero.hitbox.y) ) {
+            context = this.map.layers.foreground.context;
+        }
+
+        context.drawImage(
             this.image,
-            this.state.offsetX,
+            offsetX,
             this.state.offsetY,
             this.data.width,
             this.data.height,
@@ -358,6 +366,22 @@ class ActiveObject {
             this.data.width / this.data.scale,
             this.data.height / this.data.scale,
         );
+    }
+
+
+    canInteract ( dir ) {
+        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
+    }
+
+
+    doInteract ( dir ) {
+        if ( this.state.action.payload ) {
+            this.payload();
+        }
+
+        if ( this.state.action.shift ) {
+            this.shift();
+        }
     }
 }
 
@@ -410,6 +434,8 @@ class Map {
             this.addLayer( id );
         }
 
+        this.addLayer( "objects" );
+
         this.data.tiles.forEach(( data ) => {
             this.activeTiles.push( new ActiveTiles( data, this ) );
         });
@@ -447,15 +473,13 @@ class Map {
         }
 
         this.activeObjects.forEach(( activeObject ) => {
-            if ( !activeObject.state.animated ) {
-                activeObject.draw( elapsed );
-            }
+            activeObject.draw( elapsed );
         });
     }
 
 
     clear () {
-        for ( let id in this.data.textures ) {
+        for ( let id in this.layers ) {
             this.layers[ id ].clear();
         }
     }

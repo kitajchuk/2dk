@@ -390,9 +390,9 @@
             "states": [
                 {
                     "offsetX": 0,
-                    "offsetY": -2304,
+                    "offsetY": 2304,
                     "stepsX": 4,
-                    "dur": 240,
+                    "dur": 500,
                     "animated": 1,
                     "action": {
                         "verb": "move",

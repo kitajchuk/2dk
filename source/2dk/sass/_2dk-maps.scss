@@ -16,6 +16,10 @@
         z-index: 1;
     }
 
+    &[data-layer="objects"] {
+        z-index: 2;
+    }
+
     &[data-layer="foreground"] {
         z-index: 3;
     }
