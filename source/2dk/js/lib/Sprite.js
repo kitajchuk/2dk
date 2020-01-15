@@ -11,29 +11,23 @@ class Sprite {
         this.width = data.width / data.scale;
         this.height = data.height / data.scale;
         this.cycling = false;
-        this.dir = "down";
+        this.dir = data.spawn.dir;
         this.verb = Config.verbs.FACE;
+        this.image = Loader.cash( data.image );
         this.position = {
-            x: data.spawn.x,
-            y: data.spawn.y,
+            x: data.spawn.x / gamebox.map.data.resolution,
+            y: data.spawn.y / gamebox.map.data.resolution,
         };
         this.offset = {
             x: 0,
             y: 0,
         };
         this.hitbox = {
-            x: !data.boxes ? 0 : data.spawn.x + (data.boxes.hit.x / data.scale),
-            y: !data.boxes ? 0 : data.spawn.y + (data.boxes.hit.y / data.scale),
+            x: !data.boxes ? 0 : this.position.x + (data.boxes.hit.x / data.scale),
+            y: !data.boxes ? 0 : this.position.y + (data.boxes.hit.y / data.scale),
             width: !data.boxes ? 0 : (data.boxes.hit.width / data.scale),
             height: !data.boxes ? 0 : (data.boxes.hit.height / data.scale),
         };
-        this.image = Loader.cash( data.image );
-
-        if ( !this.data.boxes ) {
-            this.data.boxes = {
-                hit: this.hitbox,
-            };
-        }
 
         this.build();
     }

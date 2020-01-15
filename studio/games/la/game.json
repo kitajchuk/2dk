@@ -11,11 +11,11 @@
     "hero": {
         "sprite": 1,
         "spawn": {
-            "x": 384,
-            "y": 765,
+            "x": 1216,
+            "y": 1408,
+            "dir": "down",
             "map": "/games/la/maps/mabe-village.json"
-        },
-        "sounds": {}
+        }
     },
     "heroes": [
         {
@@ -153,7 +153,7 @@
         {
             "id": "alttp",
             "name": "BK",
-            "scale": 2.1875,
+            "scale": 2,
             "width": 140,
             "height": 140,
             "image": "/games/la/assets/sprites/hero_alttp.png",
@@ -411,8 +411,6 @@
         "/games/la/assets/sprites/smoke.png",
         "/games/la/assets/sprites/hero_la.png",
         "/games/la/assets/sprites/hero_alttp.png",
-        "/games/la/assets/sounds/Sword.mp3",
-        "/games/la/assets/sounds/Steps.mp3",
         "/games/la/assets/sounds/46-tal-tal-mountain-range.mp3",
         "/games/la/assets/sounds/40-animal-village.mp3",
         "/games/la/assets/sounds/30-richard-s-villa.mp3",

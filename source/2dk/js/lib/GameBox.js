@@ -25,12 +25,14 @@ class GameBox {
             speed: 96,
         };
 
+        // Map
+        this.map = new Map( Loader.cash( this.player.data.hero.spawn.map ), this );
+
+        // Map switch
+        this.map_ = null;
+
         // Hero
         this.hero = new Hero( this.player.data.hero, this );
-
-        // Map
-        this.map = new Map( Loader.cash( this.hero.data.spawn.map ), this );
-        this.map_ = null;
 
         // Dialogues
         this.dialogue = new Dialogue();
@@ -179,7 +181,7 @@ class TopView extends GameBox {
         }
 
         if ( collision.obj ) {
-            this.handleObj( collision.obj );
+            this.handleObj( collision.obj, dir );
             return;
         }
 
@@ -250,14 +252,15 @@ class TopView extends GameBox {
 
 
     handleEvt ( evt ) {
-        if ( evt.type === Config.events.BOUNDARY ) {
-            this.switchMap( evt );
-        }
+        // if ( evt.type === Config.events.BOUNDARY ) {
+        //     this.switchMap( evt );
+        // }
+        console.log( evt );
     }
 
 
-    handleObj ( obj ) {
-        // console.log( obj );
+    handleObj ( obj, dir ) {
+        this.hero.cycle( Config.verbs.WALK, dir );
     }
 
 

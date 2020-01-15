@@ -286,15 +286,19 @@ class ActiveObject {
         this.data = Utils.merge( map.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
         this.image = new Image();
         this.image.src = this.data.image;
-        // Copy so we can cooldown and re-spawn objects with fresh states
-        this.states = Utils.copy( this.data.states );
+        this.position = {
+            x: data.spawn.x / map.data.resolution,
+            y: data.spawn.y / map.data.resolution,
+        };
         this.hitbox = {
-            x: !this.data.boxes ? 0 : this.data.spawn.x + (this.data.boxes.hit.x / this.data.scale),
-            y: !this.data.boxes ? 0 : this.data.spawn.y + (this.data.boxes.hit.y / this.data.scale),
+            x: !this.data.boxes ? 0 : this.position.x + (this.data.boxes.hit.x / this.data.scale),
+            y: !this.data.boxes ? 0 : this.position.y + (this.data.boxes.hit.y / this.data.scale),
             width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.data.scale),
             height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.data.scale),
         };
-        // Shift render between "objects" and "foreground" layers
+        // Copy so we can cooldown and re-spawn objects with fresh states
+        this.states = Utils.copy( this.data.states );
+        // Render between "objects" and "foreground" layers relative to Hero
         this.relative = (this.hitbox.height !== this.data.height);
 
         this.shift();
@@ -361,8 +365,8 @@ class ActiveObject {
             this.state.offsetY,
             this.data.width,
             this.data.height,
-            this.map.offset.x + this.data.spawn.x,
-            this.map.offset.y + this.data.spawn.y,
+            this.map.offset.x + this.position.x,
+            this.map.offset.y + this.position.y,
             this.data.width / this.data.scale,
             this.data.height / this.data.scale,
         );

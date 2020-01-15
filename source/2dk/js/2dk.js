@@ -2,14 +2,11 @@
 * 2dk Dev Notes
 ********************************************************************************
 
-* ?map=mysterious-forest.json&spawn=304,763
 * Use game icon for mobile installed
 * Game version vs iteration-counter
 * Use game version/iteration-counter for index.html URLs
 
-* Spawn points should be full resolution? (64x rather than 32x)
-    Hero.spawn, Object.spawn
-    Divide by Map.resolution to get render spawn
+* 2.1875
 
 
 ********************************************************************************
@@ -76,9 +73,6 @@
 * NPCs look at collision layer, object layer colliders, and Hero colliders
 * Hero looks at collision layer and NPC colliders
 * Sprites can have a perception box to activate a little before entering screen
-
-* HOW to handle NPCs with new Camera and Hero GameBox setup...?
-* Treat collider blocks as circles...?
 
 
 ********************************************************************************
