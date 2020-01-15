@@ -5,33 +5,152 @@
         "width": 480,
         "height": 270,
         "fullscreen": false,
+        "resolution": 1,
         "icon": "/games/pk/assets/icons/pk.png",
         "version": 2
     },
     "hero": {
-        "id": "hero",
-        "name": "BK",
-        "width": 46,
-        "height": 46,
-        "image": "/games/la/assets/sprites/hero_la.png",
+        "sprite": 0,
         "spawn": {
             "x": 960,
             "y": 480,
+            "dir": "down",
             "map": "/games/pk/maps/pallet-town.json"
-        },
-        "boxes": {
-            "hit": {
-                "x": 10,
-                "y": 24,
-                "width": 26,
-                "height": 18
+        }
+    },
+    "heroes": [
+        {
+            "id": "ash",
+            "name": "BK",
+            "width": 140,
+            "height": 140,
+            "image": "/games/la/assets/sprites/hero_alttp.png",
+            "boxes": {
+                "hit": {
+                    "x": 48,
+                    "y": 70,
+                    "width": 44,
+                    "height": 48
+                }
             },
-            "collision": {
-                "x": 10,
-                "y": 24,
-                "width": 26,
-                "height": 18
+            "verbs": {
+                "face": {
+                    "dur": 480,
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": 0,
+                        "stepsX": 0
+                    },
+                    "up": {
+                        "offsetX": -140,
+                        "offsetY": 0,
+                        "stepsX": 0
+                    },
+                    "left": {
+                        "offsetX": -280,
+                        "offsetY": 0,
+                        "stepsX": 0
+                    },
+                    "right": {
+                        "offsetX": -420,
+                        "offsetY": 0,
+                        "stepsX": 0
+                    }
+                },
+                "walk": {
+                    "dur": 480,
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": -140,
+                        "stepsX": 8
+                    },
+                    "up": {
+                        "offsetX": 0,
+                        "offsetY": -280,
+                        "stepsX": 8
+                    },
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -420,
+                        "stepsX": 8
+                    },
+                    "right": {
+                        "offsetX": 0,
+                        "offsetY": -560,
+                        "stepsX": 8
+                    }
+                },
+                "push": {
+                    "dur": 720,
+                    "down": {
+                        "offsetX": -1120,
+                        "offsetY": -140,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": -1120,
+                        "offsetY": -280,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": -1120,
+                        "offsetY": -420,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -1120,
+                        "offsetY": -560,
+                        "stepsX": 2
+                    }
+                },
+                "pull": {
+                    "dur": 720,
+                    "down": {
+                        "offsetX": -1400,
+                        "offsetY": -140,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": -1400,
+                        "offsetY": -280,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": -1400,
+                        "offsetY": -420,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -1400,
+                        "offsetY": -560,
+                        "stepsX": 2
+                    }
+                },
+                "grab": {
+                    "down": {
+                        "offsetX": -1400,
+                        "offsetY": -280,
+                        "stepsX": 0
+                    },
+                    "up": {
+                        "offsetX": -1400,
+                        "offsetY": -140,
+                        "stepsX": 0
+                    },
+                    "left": {
+                        "offsetX": -1400,
+                        "offsetY": -560,
+                        "stepsX": 0
+                    },
+                    "right": {
+                        "offsetX": -1400,
+                        "offsetY": -420,
+                        "stepsX": 0
+                    }
+                }
             }
         }
-    }
+    ],
+    "objects": [],
+    "bundle": []
 }

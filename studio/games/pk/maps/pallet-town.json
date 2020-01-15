@@ -2,8 +2,6 @@
     "id": "pallet-town",
     "name": "Pallet Town",
     "tilesize": 32,
-    "gridsize": 32,
-    "resolution": 1,
     "width": 1216,
     "height": 1024,
     "tilewidth": 38,

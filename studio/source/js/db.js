@@ -199,8 +199,6 @@ class DB {
             map.id = Cache.slugify( data.name );
             map.name = data.name;
             map.tilesize = Number( data.tilesize );
-            map.resolution = Number( data.resolution );
-            map.gridsize = map.tilesize / map.resolution;
             map.tilewidth = Number( data.tilewidth );
             map.tileheight = Number( data.tileheight );
             map.height = map.tileheight * map.tilesize;
@@ -252,8 +250,6 @@ class DB {
             // map.id = Cache.slugify( data.name );
             map.name = data.name;
             map.tilesize = Number( data.tilesize );
-            map.resolution = Number( data.resolution );
-            map.gridsize = map.tilesize / map.resolution;
             map.tilewidth = Number( data.tilewidth );
             map.tileheight = Number( data.tileheight );
             map.height = map.tileheight * map.tilesize;
@@ -383,23 +379,6 @@ class DB {
 /******************************************************************************
  * STATIC methods...
 *******************************************************************************/
-DB.mergeModel = ( pin, model ) => {
-    for ( const i in model ) {
-        // Don't override ID property or Name property
-        if ( i !== "id" && i !== "name" ) {
-            pin[ i ] = model[ i ];
-        }
-    }
-
-    return pin;
-};
-
-
-DB.getUID = () => {
-    return String( Math.random() * Date.now() ).replace( /\D/, "" );
-};
-
-
 DB.getModel = ( model ) => {
     return Utils.copyObj( require( `../../models/${model}` ) );
 };
@@ -482,7 +461,7 @@ DB.addGame = ( data ) => {
         game.game.name = data.name;
         game.game.width = Number( data.width ) || game.game.width;
         game.game.height = Number( data.height ) || game.game.height;
-        // game.game.fullscreen = data.fullscreen ? true : false;
+        game.game.resolution = Number( data.resolution ) || game.game.resolution;
 
         Utils.readJson( games, ( json ) => {
             gameJson = json;

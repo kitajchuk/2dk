@@ -45,14 +45,6 @@
                     </div>
                     <span class="icon icon--settings js-settings" id="editor-mapsettings" data-type="map" title="Map Settings"></span>
                 </div>
-                <div class="editor__panel__res">
-                    <span class="icon icon--nudge icon--zoom_out_map"></span>
-                    <div class="select">
-                        <select class="select__field js-select js-select-resolution" id="editor-map-resolution" name="resolution" data-label="Resolution">
-                            <option value="">Resolution</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
                     <span class="icon icon--nudge icon--music_note"></span>
                     <div class="select icon--nudge">
@@ -142,6 +134,9 @@
                     <div class="editor__setting">
                         <input class="input editor__field js-addgame-field" type="text" placeholder="Game name" name="name" />
                     </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field js-addgame-field" type="text" placeholder="Resolution" name="resolution" />
+                    </div>
                     <div class="editor__setting editor__setting--multi">
                         <input class="input editor__field js-addgame-field" type="text" placeholder="Screen width" name="width" />
                         <input class="input editor__field js-addgame-field" type="text" placeholder="Screen height" name="height" />
@@ -157,6 +152,9 @@
                     <div class="editor__setting">
                         <input class="input editor__field js-game-field" type="text" name="name" readonly />
                     </div>
+                    <div class="editor__setting">
+                        <input class="input editor__field js-game-field" type="text" name="resolution" readonly />
+                    </div>
                     <div class="editor__setting editor__setting--multi">
                         <input class="input editor__field js-game-field" type="text" name="width" readonly />
                         <input class="input editor__field js-game-field" type="text" name="height" readonly />
@@ -167,13 +165,12 @@
                     <div class="editor__label"><span class="icon icon--nudge icon--map"></span><span>Make a new map</span></div>
                     <div class="txt">
                         How maps work:<br />
-                        Tilesize is your raw editing size. Resolution determines how JS canvas displays on retina devices. For high-res JS canvas, set a tilesize of 64px and a resolution of 2. This will create gameplay at a sharp 32px.
+                        Tilesize is your raw editing size. Resolution determines how JS canvas displays on retina devices. For high-res JS canvas, set a tilesize of 64px and a game resolution of 2. This will create gameplay at a sharp 32px on mobile.
                     </div>
                     <div class="editor__setting">
                         <input class="input editor__field js-addmap-field" type="text" placeholder="Map Name" name="name" />
                     </div>
-                    <div class="editor__setting editor__setting--multi">
-                        <input class="input editor__field js-addmap-field" type="text" placeholder="Canvas Resolution" name="resolution" />
+                    <div class="editor__setting">
                         <input class="input editor__field js-addmap-field" type="text" placeholder="Tilesize" name="tilesize" />
                     </div>
                     <div class="editor__setting editor__setting--multi">
@@ -206,7 +203,6 @@
                         <input class="input editor__field js-map-field" type="text" name="name" />
                     </div>
                     <div class="editor__setting">
-                        <input class="input editor__field js-map-field" type="text" name="resolution" />
                         <input class="input editor__field js-map-field" type="text" name="tilesize" />
                     </div>
                     <div class="editor__setting editor__setting--multi">

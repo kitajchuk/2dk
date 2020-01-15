@@ -36,7 +36,7 @@ class Player {
             return (match && match[ 0 ] ? true : false);
         })();
 
-        this.sac = (window.navigator.standalone || window.matchMedia( "(display-mode: standalone)" ).matches);
+        this.installed = (window.navigator.standalone || window.matchMedia( "(display-mode: standalone)" ).matches);
     }
 
 
@@ -44,10 +44,10 @@ class Player {
         this.loader = new Loader();
         this.loader.loadJson( "game.json" ).then(( data ) => {
             this.data = data;
-            this.data.hero = Utils.merge( data.heroes[ data.hero.sprite ], data.hero );
-            this.width = (this.device && data.game.fullscreen) ? screen.height : data.game.width;
-            this.height = (this.device && data.game.fullscreen) ? screen.width : data.game.height;
+            this.data.hero = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
             this.debug();
+            this.width = (this.device && this.data.game.fullscreen) ? screen.height : this.data.game.width / this.data.game.resolution;
+            this.height = (this.device && this.data.game.fullscreen) ? screen.width : this.data.game.height / this.data.game.resolution;
             this.build();
 
             let counter = 0;
@@ -81,6 +81,14 @@ class Player {
             this.data.hero.spawn.x = Number( coords[ 0 ] );
             this.data.hero.spawn.y = Number( coords[ 1 ] );
         }
+
+        if ( this.query.resolution ) {
+            this.data.game.resolution = Number( this.query.resolution );
+        }
+
+        if ( this.device ) {
+            this.data.game.resolution = 2;
+        }
     }
 
 
@@ -95,7 +103,7 @@ class Player {
         this.splash.className = "_2dk__splash";
         this.splashInfo = document.createElement( "div" );
         this.splashInfo.className = "_2dk__splash__info";
-        this.splashInfo.innerHTML = `<div>Rotate to Landscape.</div><div>${this.sac ? "Installed" : "+Webapp"}</div>`;
+        this.splashInfo.innerHTML = `<div>Rotate to Landscape.</div><div>${this.installed ? "Installed" : "+Webapp"}</div>`;
         this.splashLoad = document.createElement( "div" );
         this.splashLoad.className = "_2dk__splash__load";
         this.splashLoad.innerHTML = `<div>Loading game bundle...</div>`;

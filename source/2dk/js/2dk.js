@@ -2,11 +2,17 @@
 * 2dk Dev Notes
 ********************************************************************************
 
+* ALTTP Sprite scale: 2.1875
+
 * Use game icon for mobile installed
 * Game version vs iteration-counter
 * Use game version/iteration-counter for index.html URLs
+* Visually center the Hero on the screen (currently centering top left corner)
 
-* 2.1875
+* Refactor game resolution to easily switch between scaled down and standard!
+    Remove resolution toggle code from editor
+    Make resolution part of new game creation
+    Get pk pallet-town map working with ash sprite
 
 
 ********************************************************************************

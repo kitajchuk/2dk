@@ -39,7 +39,6 @@ class Editor {
             sounds: $( ".js-select-sound" ),
             mapLoad: $( "#editor-map-load-select" ),
             gameLoad: $( "#editor-game-load-select" ),
-            resolution: $( "#editor-map-resolution" ),
         };
         this.menus = {
             all: $( ".js-menu" ),
@@ -66,21 +65,6 @@ class Editor {
     setTitle () {
         // Set document title
         document.title = `${this.data.map ? this.data.map.name : this.data.game.name} | 2dk Studio`;
-    }
-
-
-    buildResolutionScale ( map ) {
-        let res = 1;
-        const resMap = [];
-
-        while ( res <= map.resolution ) {
-            resMap.push( res );
-            res++;
-        }
-
-        EditorUtils.buildSelectMenu( this.selects.resolution, resMap );
-
-        this.selects.resolution[ 0 ].selectedIndex = 1;
     }
 
 
@@ -117,9 +101,6 @@ class Editor {
 
         // Set active map
         this.data.map = map;
-
-        // Build resolution scale
-        this.buildResolutionScale( this.data.map );
 
         // Prefill the map data fields
         this.prefillMapFields( this.data.map );
@@ -207,7 +188,6 @@ class Editor {
 
     prefillMapFields ( map ) {
         this.menus.activeMap.find( ".js-map-field[name='name']" )[ 0 ].value = map.name;
-        this.menus.activeMap.find( ".js-map-field[name='resolution']" )[ 0 ].value = map.resolution;
         this.menus.activeMap.find( ".js-map-field[name='tilesize']" )[ 0 ].value = map.tilesize;
         this.menus.activeMap.find( ".js-map-field[name='tilewidth']" )[ 0 ].value = map.tilewidth;
         this.menus.activeMap.find( ".js-map-field[name='tileheight']" )[ 0 ].value = map.tileheight;
@@ -536,18 +516,6 @@ class Editor {
 
         this.selects.all.on( "change", ( e ) => {
             this.blurSelectMenus();
-        });
-
-        this.selects.resolution.on( "change", ( e ) => {
-            if ( this.selects.resolution[ 0 ].value ) {
-                const resolution = Number( this.selects.resolution[ 0 ].value );
-
-                // Update this.canvas...?
-                this.canvas.reset();
-                this.canvas.resolution = resolution;
-                this.canvas.loadMap( this.data.map );
-
-            }
         });
 
         this.dom.uploadFiles.on( "change", ( e ) => {

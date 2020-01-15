@@ -22,7 +22,7 @@ class GameBox {
             y: 0,
             width: this.player.width,
             height: this.player.height,
-            speed: 96,
+            speed: 192 / this.player.data.game.resolution,
         };
 
         // Map
@@ -304,7 +304,7 @@ class TopView extends GameBox {
         const hitbox = sprite.getHitbox( poi );
 
         for ( let i = this.map.data.collision.length; i--; ) {
-            const collider = this.map.data.collider / this.map.data.resolution;
+            const collider = this.map.data.collider / this.player.data.game.resolution;
             const tile = {
                 width: collider,
                 height: collider,

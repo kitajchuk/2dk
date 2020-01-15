@@ -174,8 +174,8 @@ class MapLocation {
             height: this.map.height
         });
 
-        this.layers[ id ].canvas.width = this.map.width * this.map.data.resolution;
-        this.layers[ id ].canvas.height = this.map.height * this.map.data.resolution;
+        this.layers[ id ].canvas.width = this.map.width * this.map.gamebox.player.data.game.resolution;
+        this.layers[ id ].canvas.height = this.map.height * this.map.gamebox.player.data.game.resolution;
 
         drawMapTiles(
             this.layers[ id ].context,
@@ -287,14 +287,14 @@ class ActiveObject {
         this.image = new Image();
         this.image.src = this.data.image;
         this.position = {
-            x: data.spawn.x / map.data.resolution,
-            y: data.spawn.y / map.data.resolution,
+            x: this.data.spawn.x / this.map.gamebox.player.data.game.resolution,
+            y: this.data.spawn.y / this.map.gamebox.player.data.game.resolution,
         };
         this.hitbox = {
-            x: !this.data.boxes ? 0 : this.position.x + (this.data.boxes.hit.x / this.data.scale),
-            y: !this.data.boxes ? 0 : this.position.y + (this.data.boxes.hit.y / this.data.scale),
-            width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.data.scale),
-            height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.data.scale),
+            x: !this.data.boxes ? 0 : this.position.x + (this.data.boxes.hit.x / this.map.gamebox.player.data.game.resolution),
+            y: !this.data.boxes ? 0 : this.position.y + (this.data.boxes.hit.y / this.map.gamebox.player.data.game.resolution),
+            width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.map.gamebox.player.data.game.resolution),
+            height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.map.gamebox.player.data.game.resolution),
         };
         // Copy so we can cooldown and re-spawn objects with fresh states
         this.states = Utils.copy( this.data.states );
@@ -367,8 +367,8 @@ class ActiveObject {
             this.data.height,
             this.map.offset.x + this.position.x,
             this.map.offset.y + this.position.y,
-            this.data.width / this.data.scale,
-            this.data.height / this.data.scale,
+            this.data.width / this.map.gamebox.player.data.game.resolution,
+            this.data.height / this.map.gamebox.player.data.game.resolution,
         );
     }
 
@@ -397,8 +397,8 @@ class Map {
         this.gamebox = gamebox;
         this.location = null;
         this.layers = {};
-        this.width = data.width / data.resolution;
-        this.height = data.height / data.resolution;
+        this.width = data.width / gamebox.player.data.game.resolution;
+        this.height = data.height / gamebox.player.data.game.resolution;
         this.image = Loader.cash( data.image );
         this.location = new MapLocation( this );
         this.activeTiles = [];
@@ -467,8 +467,8 @@ class Map {
                 this.location.layers[ id ].canvas,
                 0,
                 0,
-                this.location.layers[ id ].data.width * this.data.resolution,
-                this.location.layers[ id ].data.height * this.data.resolution,
+                this.location.layers[ id ].data.width * this.gamebox.player.data.game.resolution,
+                this.location.layers[ id ].data.height * this.gamebox.player.data.game.resolution,
                 this.offset.x,
                 this.offset.y,
                 this.location.layers[ id ].data.width,
