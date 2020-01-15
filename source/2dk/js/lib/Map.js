@@ -234,10 +234,10 @@ class ActiveTiles {
         // Get only tiles that are visible in the camera box
         return this.data.coords.filter(( coord ) => {
             const offset = {
-                top: (coord[ 1 ] * this.map.data.gridsize) + this.map.offset.y,
-                bottom: ((coord[ 1 ] * this.map.data.gridsize) + this.map.data.gridsize) + this.map.offset.y,
-                left: (coord[ 0 ] * this.map.data.gridsize) + this.map.offset.x,
-                right: ((coord[ 0 ] * this.map.data.gridsize) + this.map.data.gridsize) + this.map.offset.x,
+                top: (coord[ 1 ] * this.map.gridsize) + this.map.offset.y,
+                bottom: ((coord[ 1 ] * this.map.gridsize) + this.map.gridsize) + this.map.offset.y,
+                left: (coord[ 0 ] * this.map.gridsize) + this.map.offset.x,
+                right: ((coord[ 0 ] * this.map.gridsize) + this.map.gridsize) + this.map.offset.x,
             };
 
             // Tile is offscreen
@@ -321,10 +321,6 @@ class ActiveObject {
     shift () {
         if ( this.states.length ) {
             this.state = this.states.shift();
-
-            if ( !this.state.animated ) {
-                this.draw();
-            }
         }
     }
 
@@ -397,8 +393,9 @@ class Map {
         this.gamebox = gamebox;
         this.location = null;
         this.layers = {};
-        this.width = data.width / gamebox.player.data.game.resolution;
-        this.height = data.height / gamebox.player.data.game.resolution;
+        this.width = this.data.width / this.gamebox.player.data.game.resolution;
+        this.height = this.data.height / this.gamebox.player.data.game.resolution;
+        this.gridsize = this.data.tilesize / this.gamebox.player.data.game.resolution;
         this.image = Loader.cash( data.image );
         this.location = new MapLocation( this );
         this.activeTiles = [];

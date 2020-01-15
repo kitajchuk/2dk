@@ -1,4 +1,4 @@
-const CACHE_NAME = "v191";
+const CACHE_NAME = "v193";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/la/game.json",
@@ -6,13 +6,9 @@ const CACHE_URLS = [
     "/games/la/assets/sprites/smoke.png",
     "/games/la/assets/sprites/hero_la.png",
     "/games/la/assets/sprites/hero_alttp.png",
-    "/games/la/assets/sounds/46-tal-tal-mountain-range.mp3",
-    "/games/la/assets/sounds/40-animal-village.mp3",
-    "/games/la/assets/sounds/30-richard-s-villa.mp3",
     "/games/la/assets/sounds/16-mysterious-forest.mp3",
     "/games/la/assets/sounds/11-mabe-village.mp3",
     "/games/la/assets/sounds/10-overworld.mp3",
-    "/games/la/assets/sounds/07-koholint-island.mp3",
     "/games/la/maps/ukuku-prairie-west.json",
     "/games/la/maps/mysterious-forest.json",
     "/games/la/maps/mabe-village.json",

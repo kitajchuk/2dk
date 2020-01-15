@@ -2,15 +2,15 @@
     "game": {
         "id": "la",
         "name": "Links Reawakening",
-        "width": 960,
-        "height": 540,
+        "width": 768,
+        "height": 576,
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 191
+        "version": 193
     },
     "hero": {
-        "sprite": 1,
+        "sprite": 0,
         "spawn": {
             "x": 1216,
             "y": 1408,
@@ -104,26 +104,25 @@
                     }
                 },
                 "pull": {
-                    "dur": 720,
                     "down": {
-                        "offsetX": -368,
+                        "offsetX": -460,
                         "offsetY": -92,
-                        "stepsX": 2
+                        "stepsX": 0
                     },
                     "up": {
-                        "offsetX": -368,
+                        "offsetX": -460,
                         "offsetY": -184,
-                        "stepsX": 2
+                        "stepsX": 0
                     },
                     "left": {
-                        "offsetX": -368,
+                        "offsetX": -460,
                         "offsetY": -276,
-                        "stepsX": 2
+                        "stepsX": 0
                     },
                     "right": {
-                        "offsetX": -368,
+                        "offsetX": -460,
                         "offsetY": -368,
-                        "stepsX": 2
+                        "stepsX": 0
                     }
                 },
                 "grab": {
@@ -387,7 +386,7 @@
                     "offsetX": 0,
                     "offsetY": 2304,
                     "stepsX": 4,
-                    "dur": 500,
+                    "dur": 1000,
                     "animated": 1,
                     "action": {
                         "verb": "move",
@@ -406,13 +405,9 @@
         "/games/la/assets/sprites/smoke.png",
         "/games/la/assets/sprites/hero_la.png",
         "/games/la/assets/sprites/hero_alttp.png",
-        "/games/la/assets/sounds/46-tal-tal-mountain-range.mp3",
-        "/games/la/assets/sounds/40-animal-village.mp3",
-        "/games/la/assets/sounds/30-richard-s-villa.mp3",
         "/games/la/assets/sounds/16-mysterious-forest.mp3",
         "/games/la/assets/sounds/11-mabe-village.mp3",
         "/games/la/assets/sounds/10-overworld.mp3",
-        "/games/la/assets/sounds/07-koholint-island.mp3",
         "/games/la/maps/ukuku-prairie-west.json",
         "/games/la/maps/mysterious-forest.json",
         "/games/la/maps/mabe-village.json"

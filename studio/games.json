@@ -2,21 +2,21 @@
     {
         "id": "la",
         "name": "Links Reawakening",
-        "width": 960,
-        "height": 540,
+        "width": 768,
+        "height": 576,
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 191
+        "version": 193
     },
     {
         "id": "pk",
-        "name": "Pokemon",
-        "width": 480,
-        "height": 270,
+        "name": "Pokemon Re-d",
+        "width": 768,
+        "height": 576,
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/pk/assets/icons/pk.png",
-        "version": 2
+        "version": 4
     }
 ]

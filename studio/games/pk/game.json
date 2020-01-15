@@ -1,19 +1,19 @@
 {
     "game": {
         "id": "pk",
-        "name": "Pokemon",
-        "width": 480,
-        "height": 270,
+        "name": "Pokemon Re-d",
+        "width": 768,
+        "height": 576,
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/pk/assets/icons/pk.png",
-        "version": 2
+        "version": 4
     },
     "hero": {
         "sprite": 0,
         "spawn": {
-            "x": 960,
-            "y": 480,
+            "x": 550,
+            "y": 500,
             "dir": "down",
             "map": "/games/pk/maps/pallet-town.json"
         }
@@ -21,136 +21,73 @@
     "heroes": [
         {
             "id": "ash",
-            "name": "BK",
-            "width": 140,
-            "height": 140,
-            "image": "/games/la/assets/sprites/hero_alttp.png",
+            "name": "ASH",
+            "width": 92,
+            "height": 92,
+            "scale": 2,
+            "image": "/games/pk/assets/sprites/hero_ash.png",
             "boxes": {
                 "hit": {
-                    "x": 48,
-                    "y": 70,
-                    "width": 44,
-                    "height": 48
+                    "x": 22,
+                    "y": 48,
+                    "width": 48,
+                    "height": 40
                 }
             },
             "verbs": {
                 "face": {
-                    "dur": 480,
+                    "dur": 240,
                     "down": {
                         "offsetX": 0,
                         "offsetY": 0,
                         "stepsX": 0
                     },
                     "up": {
-                        "offsetX": -140,
+                        "offsetX": -92,
                         "offsetY": 0,
                         "stepsX": 0
                     },
                     "left": {
-                        "offsetX": -280,
+                        "offsetX": -184,
                         "offsetY": 0,
                         "stepsX": 0
                     },
                     "right": {
-                        "offsetX": -420,
+                        "offsetX": -276,
                         "offsetY": 0,
                         "stepsX": 0
                     }
                 },
                 "walk": {
-                    "dur": 480,
+                    "dur": 240,
                     "down": {
                         "offsetX": 0,
-                        "offsetY": -140,
-                        "stepsX": 8
+                        "offsetY": -92,
+                        "stepsX": 2
                     },
                     "up": {
                         "offsetX": 0,
-                        "offsetY": -280,
-                        "stepsX": 8
+                        "offsetY": -184,
+                        "stepsX": 2
                     },
                     "left": {
                         "offsetX": 0,
-                        "offsetY": -420,
-                        "stepsX": 8
+                        "offsetY": -276,
+                        "stepsX": 2
                     },
                     "right": {
                         "offsetX": 0,
-                        "offsetY": -560,
-                        "stepsX": 8
-                    }
-                },
-                "push": {
-                    "dur": 720,
-                    "down": {
-                        "offsetX": -1120,
-                        "offsetY": -140,
+                        "offsetY": -368,
                         "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": -1120,
-                        "offsetY": -280,
-                        "stepsX": 2
-                    },
-                    "left": {
-                        "offsetX": -1120,
-                        "offsetY": -420,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": -1120,
-                        "offsetY": -560,
-                        "stepsX": 2
-                    }
-                },
-                "pull": {
-                    "dur": 720,
-                    "down": {
-                        "offsetX": -1400,
-                        "offsetY": -140,
-                        "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": -1400,
-                        "offsetY": -280,
-                        "stepsX": 2
-                    },
-                    "left": {
-                        "offsetX": -1400,
-                        "offsetY": -420,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": -1400,
-                        "offsetY": -560,
-                        "stepsX": 2
-                    }
-                },
-                "grab": {
-                    "down": {
-                        "offsetX": -1400,
-                        "offsetY": -280,
-                        "stepsX": 0
-                    },
-                    "up": {
-                        "offsetX": -1400,
-                        "offsetY": -140,
-                        "stepsX": 0
-                    },
-                    "left": {
-                        "offsetX": -1400,
-                        "offsetY": -560,
-                        "stepsX": 0
-                    },
-                    "right": {
-                        "offsetX": -1400,
-                        "offsetY": -420,
-                        "stepsX": 0
                     }
                 }
             }
         }
     ],
     "objects": [],
-    "bundle": []
+    "bundle": [
+        "/games/pk/assets/tiles/tiles.png",
+        "/games/pk/assets/sprites/hero_ash.png",
+        "/games/pk/maps/pallet-town.json"
+    ]
 }

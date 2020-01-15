@@ -62,7 +62,7 @@ const Config = {
     },
     values: {
         debounceDur: 256,
-        boundaryAnimDur: 500,
+        boundaryAnimDur: 512,
     }
 };
 

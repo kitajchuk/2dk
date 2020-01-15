@@ -22,7 +22,7 @@ class GameBox {
             y: 0,
             width: this.player.width,
             height: this.player.height,
-            speed: 192 / this.player.data.game.resolution,
+            speed: 256 / (this.player.data.hero.scale || this.player.data.game.resolution),
         };
 
         // Map
@@ -247,15 +247,14 @@ class TopView extends GameBox {
 
 
     handleMap ( poi, dir ) {
-        this.hero.cycle( Config.verbs.WALK, dir );
+        this.hero.cycle( Config.verbs.PUSH, dir );
     }
 
 
     handleEvt ( evt ) {
-        // if ( evt.type === Config.events.BOUNDARY ) {
-        //     this.switchMap( evt );
-        // }
-        console.log( evt );
+        if ( evt.type === Config.events.BOUNDARY ) {
+            this.switchMap( evt );
+        }
     }
 
 
@@ -328,10 +327,10 @@ class TopView extends GameBox {
 
         for ( let i = this.map.data.events.length; i--; ) {
             const tile = {
-                width: this.map.data.gridsize,
-                height: this.map.data.gridsize,
-                x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.gridsize,
-                y: this.map.data.events[ i ].coords[ 1 ] * this.map.data.gridsize
+                width: this.map.gridsize,
+                height: this.map.gridsize,
+                x: this.map.data.events[ i ].coords[ 0 ] * this.map.gridsize,
+                y: this.map.data.events[ i ].coords[ 1 ] * this.map.gridsize
             };
 
             if ( Utils.collide( hitbox, tile ) && this.hero.dir === this.map.data.events[ i ].dir ) {
@@ -368,10 +367,10 @@ class TopView extends GameBox {
                 loop2:
                     for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
                         const tile = {
-                            width: this.map.data.gridsize,
-                            height: this.map.data.gridsize,
-                            x: this.map.activeTiles[ i ].data.coords[ j ][ 0 ] * this.map.data.gridsize,
-                            y: this.map.activeTiles[ i ].data.coords[ j ][ 1 ] * this.map.data.gridsize
+                            width: this.map.gridsize,
+                            height: this.map.gridsize,
+                            x: this.map.activeTiles[ i ].data.coords[ j ][ 0 ] * this.map.gridsize,
+                            y: this.map.activeTiles[ i ].data.coords[ j ][ 1 ] * this.map.gridsize
                         };
 
                         if ( Utils.collide( hitbox, tile ) ) {
@@ -397,9 +396,11 @@ class TopView extends GameBox {
                 to: css.to,
                 update: ( t ) => {
                     obj.offset[ css.axis ] = t;
+                    obj.render( this.player.previousElapsed );
                 },
                 complete: ( t ) => {
                     obj.offset[ css.axis ] = t;
+                    obj.render( this.player.previousElapsed );
                     resolve();
                 }
             });
@@ -566,6 +567,7 @@ class TopView extends GameBox {
             // Stage Hero with correct position on new Map
             this.hero.element.style.position = "absolute";
             this.hero.update( _hero, this.map_.offset );
+            this.hero.render( this.player.previousElapsed );
             this.map_.element.appendChild( this.hero.element );
 
             // Destroy old Map

@@ -95,8 +95,9 @@ class Player {
     build () {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk";
+        this.element.dataset.resolution = this.data.game.resolution;
         this.screen = document.createElement( "div" );
-        this.screen.className = `_2dk__screen`;
+        this.screen.className = "_2dk__screen";
         this.screen.style.width = `${this.width}px`;
         this.screen.style.height = `${this.height}px`;
         this.splash = document.createElement( "div" );
@@ -156,7 +157,6 @@ class Player {
     onGameBlit ( elapsed ) {
         if ( this.stopped || this.paused ) {
             this.previousElapsed = elapsed;
-            this.gamebox.render( elapsed );
             return;
         }
 

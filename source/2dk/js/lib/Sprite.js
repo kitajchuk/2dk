@@ -8,8 +8,9 @@ class Sprite {
     constructor ( data, gamebox ) {
         this.data = data;
         this.gamebox = gamebox;
-        this.width = this.data.width / this.gamebox.player.data.game.resolution;
-        this.height = this.data.height / this.gamebox.player.data.game.resolution;
+        this.scale = this.data.scale || this.gamebox.player.data.game.resolution;
+        this.width = this.data.width / this.scale;
+        this.height = this.data.height / this.scale;
         this.cycling = false;
         this.dir = this.data.spawn.dir;
         this.verb = Config.verbs.FACE;
@@ -23,10 +24,10 @@ class Sprite {
             y: 0,
         };
         this.hitbox = {
-            x: !this.data.boxes ? 0 : this.position.x + (this.data.boxes.hit.x / this.gamebox.player.data.game.resolution),
-            y: !this.data.boxes ? 0 : this.position.y + (this.data.boxes.hit.y / this.gamebox.player.data.game.resolution),
-            width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.gamebox.player.data.game.resolution),
-            height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.gamebox.player.data.game.resolution),
+            x: !this.data.boxes ? 0 : this.position.x + (this.data.boxes.hit.x / this.scale),
+            y: !this.data.boxes ? 0 : this.position.y + (this.data.boxes.hit.y / this.scale),
+            width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.scale),
+            height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.scale),
         };
 
         this.build();
@@ -80,8 +81,8 @@ class Sprite {
 
     getHitbox ( poi ) {
         return {
-            x: poi.x + (this.data.boxes.hit.x / this.gamebox.player.data.game.resolution),
-            y: poi.y + (this.data.boxes.hit.y / this.gamebox.player.data.game.resolution),
+            x: poi.x + (this.data.boxes.hit.x / this.scale),
+            y: poi.y + (this.data.boxes.hit.y / this.scale),
             width: this.hitbox.width,
             height: this.hitbox.height,
         };
@@ -110,8 +111,8 @@ class Hero extends Sprite {
 
     update ( poi, offset ) {
         this.position = poi;
-        this.hitbox.x = this.position.x + (this.data.boxes.hit.x / this.gamebox.player.data.game.resolution);
-        this.hitbox.y = this.position.y + (this.data.boxes.hit.y / this.gamebox.player.data.game.resolution);
+        this.hitbox.x = this.position.x + (this.data.boxes.hit.x / this.scale);
+        this.hitbox.y = this.position.y + (this.data.boxes.hit.y / this.scale);
 
         const absolute = {
             x: Math.abs( offset.x ),
@@ -142,7 +143,7 @@ class Hero extends Sprite {
 
 
     package () {
-        this.child.style.backgroundSize = `${this.image.naturalWidth / this.gamebox.player.data.game.resolution}px ${this.image.naturalHeight / this.gamebox.player.data.game.resolution}px`;
+        this.child.style.backgroundSize = `${this.image.naturalWidth / this.scale}px ${this.image.naturalHeight / this.scale}px`;
         this.child.style.backgroundRepeat = "no-repeat";
         this.stylePacks = [];
 
@@ -150,48 +151,48 @@ class Hero extends Sprite {
             if ( verb === Config.verbs.FACE ) {
                 this.stylePacks.push(`
                     ._2dk__${this.data.id} ._2dk__child.down {
-                        background-position: ${this.data.verbs.face.down.offsetX / this.gamebox.player.data.game.resolution}px ${this.data.verbs.face.down.offsetY / this.gamebox.player.data.game.resolution}px;
+                        background-position: ${this.data.verbs.face.down.offsetX / this.scale}px ${this.data.verbs.face.down.offsetY / this.scale}px;
                     }
                     ._2dk__${this.data.id} ._2dk__child.up {
-                        background-position: ${this.data.verbs.face.up.offsetX / this.gamebox.player.data.game.resolution}px ${this.data.verbs.face.up.offsetY / this.gamebox.player.data.game.resolution}px;
+                        background-position: ${this.data.verbs.face.up.offsetX / this.scale}px ${this.data.verbs.face.up.offsetY / this.scale}px;
                     }
                     ._2dk__${this.data.id} ._2dk__child.left {
-                        background-position: ${this.data.verbs.face.left.offsetX / this.gamebox.player.data.game.resolution}px ${this.data.verbs.face.left.offsetY / this.gamebox.player.data.game.resolution}px;
+                        background-position: ${this.data.verbs.face.left.offsetX / this.scale}px ${this.data.verbs.face.left.offsetY / this.scale}px;
                     }
                     ._2dk__${this.data.id} ._2dk__child.right {
-                        background-position: ${this.data.verbs.face.right.offsetX / this.gamebox.player.data.game.resolution}px ${this.data.verbs.face.right.offsetY / this.gamebox.player.data.game.resolution}px;
+                        background-position: ${this.data.verbs.face.right.offsetX / this.scale}px ${this.data.verbs.face.right.offsetY / this.scale}px;
                     }
                 `);
 
             } else {
                 this.stylePacks.push(`
                     ._2dk__${this.data.id} ._2dk__child.${verb}.down {
-                        background-position: ${this.data.verbs[ verb ].down.offsetX / this.gamebox.player.data.game.resolution}px ${this.data.verbs[ verb ].down.offsetY / this.gamebox.player.data.game.resolution}px;
+                        background-position: ${this.data.verbs[ verb ].down.offsetX / this.scale}px ${this.data.verbs[ verb ].down.offsetY / this.scale}px;
                         animation: ${this.data.id}-${verb}-down ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].down.stepsX} ) infinite;
                     }
                     @keyframes ${this.data.id}-${verb}-down {
-                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].down.offsetX / this.gamebox.player.data.game.resolution ) + (this.width * this.data.verbs[ verb ].down.stepsX)}px ${this.data.verbs[ verb ].down.offsetY / this.gamebox.player.data.game.resolution}px; }
+                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].down.offsetX / this.scale ) + (this.width * this.data.verbs[ verb ].down.stepsX)}px ${this.data.verbs[ verb ].down.offsetY / this.scale}px; }
                     }
                     ._2dk__${this.data.id} ._2dk__child.${verb}.up {
-                        background-position: ${this.data.verbs[ verb ].up.offsetX / this.gamebox.player.data.game.resolution}px ${this.data.verbs[ verb ].up.offsetY / this.gamebox.player.data.game.resolution}px;
+                        background-position: ${this.data.verbs[ verb ].up.offsetX / this.scale}px ${this.data.verbs[ verb ].up.offsetY / this.scale}px;
                         animation: ${this.data.id}-${verb}-up ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].up.stepsX} ) infinite;
                     }
                     @keyframes ${this.data.id}-${verb}-up {
-                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].up.offsetX / this.gamebox.player.data.game.resolution ) + (this.width * this.data.verbs[ verb ].up.stepsX)}px ${this.data.verbs[ verb ].up.offsetY / this.gamebox.player.data.game.resolution}px; }
+                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].up.offsetX / this.scale ) + (this.width * this.data.verbs[ verb ].up.stepsX)}px ${this.data.verbs[ verb ].up.offsetY / this.scale}px; }
                     }
                     ._2dk__${this.data.id} ._2dk__child.${verb}.left {
-                        background-position: ${this.data.verbs[ verb ].left.offsetX / this.gamebox.player.data.game.resolution}px ${this.data.verbs[ verb ].left.offsetY / this.gamebox.player.data.game.resolution}px;
+                        background-position: ${this.data.verbs[ verb ].left.offsetX / this.scale}px ${this.data.verbs[ verb ].left.offsetY / this.scale}px;
                         animation: ${this.data.id}-${verb}-left ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].left.stepsX} ) infinite;
                     }
                     @keyframes ${this.data.id}-${verb}-left {
-                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].left.offsetX / this.gamebox.player.data.game.resolution ) + (this.width * this.data.verbs[ verb ].left.stepsX)}px ${this.data.verbs[ verb ].left.offsetY / this.gamebox.player.data.game.resolution}px; }
+                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].left.offsetX / this.scale ) + (this.width * this.data.verbs[ verb ].left.stepsX)}px ${this.data.verbs[ verb ].left.offsetY / this.scale}px; }
                     }
                     ._2dk__${this.data.id} ._2dk__child.${verb}.right {
-                        background-position: ${this.data.verbs[ verb ].right.offsetX / this.gamebox.player.data.game.resolution}px ${this.data.verbs[ verb ].right.offsetY / this.gamebox.player.data.game.resolution}px;
+                        background-position: ${this.data.verbs[ verb ].right.offsetX / this.scale}px ${this.data.verbs[ verb ].right.offsetY / this.scale}px;
                         animation: ${this.data.id}-${verb}-right ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].right.stepsX} ) infinite;
                     }
                     @keyframes ${this.data.id}-${verb}-right {
-                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].right.offsetX / this.gamebox.player.data.game.resolution ) + (this.width * this.data.verbs[ verb ].right.stepsX)}px ${this.data.verbs[ verb ].right.offsetY / this.gamebox.player.data.game.resolution}px; }
+                        100% { background-position: -${Math.abs( this.data.verbs[ verb ].right.offsetX / this.scale ) + (this.width * this.data.verbs[ verb ].right.stepsX)}px ${this.data.verbs[ verb ].right.offsetY / this.scale}px; }
                     }
                 `);
             }

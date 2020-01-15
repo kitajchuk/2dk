@@ -1,17 +1,15 @@
-const CACHE_NAME = "v2";
+const CACHE_NAME = "v4";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
-    // "/css/2dk.css",
-    // "/js/2dk.js",
-    // "/fonts/Calamity-Bold.woff",
-    // "/fonts/Calamity-Bold.woff2",
     "/games/pk/game.json",
     "/games/pk/assets/tiles/tiles.png",
+    "/games/pk/assets/sprites/hero_ash.png",
     "/games/pk/maps/pallet-town.json",
 ];
 
 
 
+// Using the client-js to preload the asset bundle so this is redundant?
 self.addEventListener( "install", ( event ) => {
     event.waitUntil(
         caches.open( CACHE_NAME ).then(( cache ) => {

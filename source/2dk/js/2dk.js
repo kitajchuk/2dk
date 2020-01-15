@@ -2,17 +2,23 @@
 * 2dk Dev Notes
 ********************************************************************************
 
-* ALTTP Sprite scale: 2.1875
+
+
+* Refactor Map Render: background, activetiles, objects(foreground?), hero, foreground
+    * Phase 1: Reduce canvas, camera bleed tile map, draw at 60FPS
+    * Phase 2: Canvas render hero to objects layer
+* Refactor Editor: Re-render painted tiles only, not entire map on each paint
+
+
+
+* ActiveObject jank (use location + screen layer for the fix)
+* Sprites, NPCs (ActiveObjects? Needs absolute positioning to work...)
 
 * Use game icon for mobile installed
 * Game version vs iteration-counter
 * Use game version/iteration-counter for index.html URLs
 * Visually center the Hero on the screen (currently centering top left corner)
-
-* Refactor game resolution to easily switch between scaled down and standard!
-    Remove resolution toggle code from editor
-    Make resolution part of new game creation
-    Get pk pallet-town map working with ash sprite
+* Better camera step checking (combine all dirs and map to an outcome...?)
 
 
 ********************************************************************************
@@ -102,6 +108,8 @@
 * Thoughts Bank:
 * Random thoughts we want to keep track of...for now...
 ********************************************************************************
+* ALTTP Sprite scale: 2.1875
+
 * GameCycle manager for states (intro, title, credits, etc...)
 * Projectiles, FX in general
 * Math functions (arc animations?, see Akihabara Trigo)
