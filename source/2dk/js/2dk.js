@@ -4,9 +4,6 @@
 
 
 
-* Refactor Map Render: background, activetiles, objects(foreground?), hero, foreground
-    * Phase 1: Reduce canvas, camera bleed tile map, draw at 60FPS
-    * Phase 2: Canvas render hero to objects layer
 * Refactor Editor: Re-render painted tiles only, not entire map on each paint
 
 

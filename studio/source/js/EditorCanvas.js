@@ -243,13 +243,15 @@ class EditorCanvas {
             this.contexts.background.context,
             this.dom.tileset,
             this.map.textures.background,
-            this.map.tilesize
+            this.map.tilesize,
+            this.map.tilesize,
         );
         drawMapTiles(
             this.contexts.foreground.context,
             this.dom.tileset,
             this.map.textures.foreground,
-            this.map.tilesize
+            this.map.tilesize,
+            this.map.tilesize,
         );
         this.drawColliders();
     }
@@ -272,7 +274,8 @@ class EditorCanvas {
             this.contexts[ layer ].context,
             this.dom.tileset,
             this.map.textures[ layer ],
-            this.map.tilesize
+            this.map.tilesize,
+            this.map.tilesize,
         );
     }
 

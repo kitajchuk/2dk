@@ -22,7 +22,8 @@ class GameBox {
             y: 0,
             width: this.player.width,
             height: this.player.height,
-            speed: 256 / (this.player.data.hero.scale || this.player.data.game.resolution),
+            speed: 256 / this.player.data.game.resolution,
+            resolution: this.player.data.game.resolution,
         };
 
         // Map

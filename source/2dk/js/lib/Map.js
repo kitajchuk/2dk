@@ -17,14 +17,14 @@ ctx.drawImage(
     height
 )
 */
-const drawMapTiles = ( ctx, img, data, grid ) => {
+const drawMapTiles = ( ctx, img, data, tile, grid ) => {
     const draw = ( mx, my, x, y ) => {
         ctx.drawImage(
             img,
             mx,
             my,
-            grid,
-            grid,
+            tile,
+            tile,
             (x * grid),
             (y * grid),
             grid,
@@ -80,6 +80,196 @@ const drawGridLines = ( ctx, w, h, g ) => {
         ctx.fillRect( (x * g), 0, 1, (g * h) );
     }
 };
+
+
+
+class ActiveTiles {
+    constructor ( data, map ) {
+        this.data = data;
+        this.map = map;
+    }
+
+
+    destroy () {
+        this.data = null;
+    }
+
+
+    draw ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
+
+        const diff = (elapsed - this.previousElapsed);
+        let frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
+
+        if ( diff >= this.data.dur ) {
+            this.previousElapsed = elapsed;
+            frame = this.data.stepsX - 1;
+        }
+
+        const active = this.getActive();
+
+        if ( active.length ) {
+            this.renderActive( active, frame );
+        }
+    }
+
+
+    getActive () {
+        // Get only tiles that are visible in the camera box
+        return this.data.coords.filter(( coord ) => {
+            const offset = {
+                top: (coord[ 1 ] * this.map.gridsize) + this.map.offset.y,
+                bottom: ((coord[ 1 ] * this.map.gridsize) + this.map.gridsize) + this.map.offset.y,
+                left: (coord[ 0 ] * this.map.gridsize) + this.map.offset.x,
+                right: ((coord[ 0 ] * this.map.gridsize) + this.map.gridsize) + this.map.offset.x,
+            };
+
+            // Tile is offscreen
+            if ( offset.bottom <= 0 || offset.top >= this.map.gamebox.camera.height || offset.right <= 0 || offset.left >= this.map.gamebox.camera.width ) {
+                return false;
+
+            // Tile is onscreen
+            } else {
+                return true;
+            }
+        });
+    }
+
+
+    renderActive ( active, frame ) {
+        const activeX = (this.data.offsetX + (frame * this.map.data.tilesize));
+
+        active.forEach(( coord ) => {
+            this.map.location.layers[ this.data.layer ].context.clearRect(
+                this.map.gridsize * coord[ 0 ],
+                this.map.gridsize * coord[ 1 ],
+                this.map.gridsize,
+                this.map.gridsize,
+            );
+
+            this.map.location.layers[ this.data.layer ].context.drawImage(
+                this.map.image,
+                activeX,
+                this.data.offsetY,
+                this.map.data.tilesize,
+                this.map.data.tilesize,
+                this.map.gridsize * coord[ 0 ],
+                this.map.gridsize * coord[ 1 ],
+                this.map.gridsize,
+                this.map.gridsize,
+            );
+        });
+    }
+}
+
+
+
+class ActiveObject {
+    constructor ( data, map ) {
+        this.map = map;
+        this.data = Utils.merge( map.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
+        this.image = new Image();
+        this.image.src = this.data.image;
+        this.position = {
+            x: this.data.spawn.x / this.map.gamebox.camera.resolution,
+            y: this.data.spawn.y / this.map.gamebox.camera.resolution,
+        };
+        this.hitbox = {
+            x: !this.data.boxes ? 0 : this.position.x + (this.data.boxes.hit.x / this.map.gamebox.camera.resolution),
+            y: !this.data.boxes ? 0 : this.position.y + (this.data.boxes.hit.y / this.map.gamebox.camera.resolution),
+            width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.map.gamebox.camera.resolution),
+            height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.map.gamebox.camera.resolution),
+        };
+        // Copy so we can cooldown and re-spawn objects with fresh states
+        this.states = Utils.copy( this.data.states );
+        // Render between "objects" and "foreground" layers relative to Hero
+        this.relative = (this.hitbox.height !== this.data.height);
+
+        this.shift();
+    }
+
+
+    destroy () {
+        this.data = null;
+        this.image = null;
+    }
+
+
+    payload () {
+        if ( this.state.action.payload.dialogue ) {
+            this.map.gamebox.dialogue.play( this.state.action.payload.dialogue );
+        }
+    }
+
+
+    shift () {
+        if ( this.states.length ) {
+            this.state = this.states.shift();
+        }
+    }
+
+
+    draw ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
+
+        let frame = 0;
+
+        if ( this.state.animated ) {
+            const diff = (elapsed - this.previousElapsed);
+
+            frame = Math.floor( (diff / this.state.dur) * this.state.stepsX );
+
+            if ( diff >= this.state.dur ) {
+                this.previousElapsed = elapsed;
+                frame = this.state.stepsX - 1;
+            }
+        }
+
+        this.renderObject( frame );
+    }
+
+
+    renderObject ( frame ) {
+        const offsetX = (this.state.offsetX + (frame * this.data.width));
+        let context = this.map.layers[ this.data.layer ].context;
+
+        if ( this.relative && (this.hitbox.y > this.map.gamebox.hero.hitbox.y) ) {
+            context = this.map.layers.foreground.context;
+        }
+
+        context.drawImage(
+            this.image,
+            offsetX,
+            this.state.offsetY,
+            this.data.width,
+            this.data.height,
+            this.map.offset.x + this.position.x,
+            this.map.offset.y + this.position.y,
+            this.data.width / this.map.gamebox.camera.resolution,
+            this.data.height / this.map.gamebox.camera.resolution,
+        );
+    }
+
+
+    canInteract ( dir ) {
+        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
+    }
+
+
+    doInteract ( dir ) {
+        if ( this.state.action.payload ) {
+            this.payload();
+        }
+
+        if ( this.state.action.shift ) {
+            this.shift();
+        }
+    }
+}
 
 
 
@@ -174,14 +364,12 @@ class MapLocation {
             height: this.map.height
         });
 
-        this.layers[ id ].canvas.width = this.map.width * this.map.gamebox.player.data.game.resolution;
-        this.layers[ id ].canvas.height = this.map.height * this.map.gamebox.player.data.game.resolution;
-
         drawMapTiles(
             this.layers[ id ].context,
             this.map.image,
             this.map.data.textures[ id ],
             this.map.data.tilesize,
+            this.map.gridsize,
         );
     }
 
@@ -197,205 +385,15 @@ class MapLocation {
 
 
 
-class ActiveTiles {
-    constructor ( data, map ) {
-        this.data = data;
-        this.map = map;
-    }
-
-
-    destroy () {
-        this.data = null;
-    }
-
-
-    draw ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
-            this.previousElapsed = elapsed;
-        }
-
-        const diff = (elapsed - this.previousElapsed);
-        let frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
-
-        if ( diff >= this.data.dur ) {
-            this.previousElapsed = elapsed;
-            frame = this.data.stepsX - 1;
-        }
-
-        const active = this.getActive();
-
-        if ( active.length ) {
-            this.renderActive( active, frame );
-        }
-    }
-
-
-    getActive () {
-        // Get only tiles that are visible in the camera box
-        return this.data.coords.filter(( coord ) => {
-            const offset = {
-                top: (coord[ 1 ] * this.map.gridsize) + this.map.offset.y,
-                bottom: ((coord[ 1 ] * this.map.gridsize) + this.map.gridsize) + this.map.offset.y,
-                left: (coord[ 0 ] * this.map.gridsize) + this.map.offset.x,
-                right: ((coord[ 0 ] * this.map.gridsize) + this.map.gridsize) + this.map.offset.x,
-            };
-
-            // Tile is offscreen
-            if ( offset.bottom <= 0 || offset.top >= this.map.gamebox.camera.height || offset.right <= 0 || offset.left >= this.map.gamebox.camera.width ) {
-                return false;
-
-            // Tile is onscreen
-            } else {
-                return true;
-            }
-        });
-    }
-
-
-    renderActive ( active, frame ) {
-        const activeX = (this.data.offsetX + (frame * this.map.data.tilesize));
-
-        active.forEach(( coord ) => {
-            this.map.location.layers[ this.data.layer ].context.clearRect(
-                this.map.data.tilesize * coord[ 0 ],
-                this.map.data.tilesize * coord[ 1 ],
-                this.map.data.tilesize,
-                this.map.data.tilesize,
-            );
-
-            this.map.location.layers[ this.data.layer ].context.drawImage(
-                this.map.image,
-                activeX,
-                this.data.offsetY,
-                this.map.data.tilesize,
-                this.map.data.tilesize,
-                this.map.data.tilesize * coord[ 0 ],
-                this.map.data.tilesize * coord[ 1 ],
-                this.map.data.tilesize,
-                this.map.data.tilesize,
-            );
-        });
-    }
-}
-
-
-
-class ActiveObject {
-    constructor ( data, map ) {
-        this.map = map;
-        this.data = Utils.merge( map.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
-        this.image = new Image();
-        this.image.src = this.data.image;
-        this.position = {
-            x: this.data.spawn.x / this.map.gamebox.player.data.game.resolution,
-            y: this.data.spawn.y / this.map.gamebox.player.data.game.resolution,
-        };
-        this.hitbox = {
-            x: !this.data.boxes ? 0 : this.position.x + (this.data.boxes.hit.x / this.map.gamebox.player.data.game.resolution),
-            y: !this.data.boxes ? 0 : this.position.y + (this.data.boxes.hit.y / this.map.gamebox.player.data.game.resolution),
-            width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.map.gamebox.player.data.game.resolution),
-            height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.map.gamebox.player.data.game.resolution),
-        };
-        // Copy so we can cooldown and re-spawn objects with fresh states
-        this.states = Utils.copy( this.data.states );
-        // Render between "objects" and "foreground" layers relative to Hero
-        this.relative = (this.hitbox.height !== this.data.height);
-
-        this.shift();
-    }
-
-
-    destroy () {
-        this.data = null;
-        this.image = null;
-    }
-
-
-    payload () {
-        if ( this.state.action.payload.dialogue ) {
-            this.map.gamebox.dialogue.play( this.state.action.payload.dialogue );
-        }
-    }
-
-
-    shift () {
-        if ( this.states.length ) {
-            this.state = this.states.shift();
-        }
-    }
-
-
-    draw ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
-            this.previousElapsed = elapsed;
-        }
-
-        let frame = 0;
-
-        if ( this.state.animated ) {
-            const diff = (elapsed - this.previousElapsed);
-
-            frame = Math.floor( (diff / this.state.dur) * this.state.stepsX );
-
-            if ( diff >= this.state.dur ) {
-                this.previousElapsed = elapsed;
-                frame = this.state.stepsX - 1;
-            }
-        }
-
-        this.renderObject( frame );
-    }
-
-
-    renderObject ( frame ) {
-        const offsetX = (this.state.offsetX + (frame * this.data.width));
-        let context = this.map.layers[ this.data.layer ].context;
-
-        if ( this.relative && (this.hitbox.y > this.map.gamebox.hero.hitbox.y) ) {
-            context = this.map.layers.foreground.context;
-        }
-
-        context.drawImage(
-            this.image,
-            offsetX,
-            this.state.offsetY,
-            this.data.width,
-            this.data.height,
-            this.map.offset.x + this.position.x,
-            this.map.offset.y + this.position.y,
-            this.data.width / this.map.gamebox.player.data.game.resolution,
-            this.data.height / this.map.gamebox.player.data.game.resolution,
-        );
-    }
-
-
-    canInteract ( dir ) {
-        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
-    }
-
-
-    doInteract ( dir ) {
-        if ( this.state.action.payload ) {
-            this.payload();
-        }
-
-        if ( this.state.action.shift ) {
-            this.shift();
-        }
-    }
-}
-
-
-
 class Map {
     constructor ( data, gamebox ) {
         this.data = data;
         this.gamebox = gamebox;
         this.location = null;
         this.layers = {};
-        this.width = this.data.width / this.gamebox.player.data.game.resolution;
-        this.height = this.data.height / this.gamebox.player.data.game.resolution;
-        this.gridsize = this.data.tilesize / this.gamebox.player.data.game.resolution;
+        this.width = this.data.width / this.gamebox.camera.resolution;
+        this.height = this.data.height / this.gamebox.camera.resolution;
+        this.gridsize = this.data.tilesize / this.gamebox.camera.resolution;
         this.image = Loader.cash( data.image );
         this.location = new MapLocation( this );
         this.activeTiles = [];
@@ -464,8 +462,8 @@ class Map {
                 this.location.layers[ id ].canvas,
                 0,
                 0,
-                this.location.layers[ id ].data.width * this.gamebox.player.data.game.resolution,
-                this.location.layers[ id ].data.height * this.gamebox.player.data.game.resolution,
+                this.location.layers[ id ].data.width,
+                this.location.layers[ id ].data.height,
                 this.offset.x,
                 this.offset.y,
                 this.location.layers[ id ].data.width,
