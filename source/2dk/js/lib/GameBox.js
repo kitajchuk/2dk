@@ -31,6 +31,7 @@ class GameBox {
 
         // Map switch
         this.map_ = null;
+        this.cam_ = null;
 
         // Hero
         this.hero = new Hero( this.player.data.hero, this );
@@ -109,11 +110,7 @@ class GameBox {
 
 
     render ( elapsed ) {
-        if ( this.map_ ) {
-            this.map_.render( elapsed );
-        }
-
-        this.map.render( elapsed );
+        this.map.render( elapsed, this.camera );
         this.hero.render( elapsed );
     }
 
@@ -248,7 +245,7 @@ class TopView extends GameBox {
 
 
     handleMap ( poi, dir ) {
-        this.hero.cycle( Config.verbs.PUSH, dir );
+        this.hero.cycle( Config.verbs.WALK, dir );
     }
 
 
@@ -324,7 +321,13 @@ class TopView extends GameBox {
 
     checkEvt ( poi ) {
         let ret = false;
-        const hitbox = this.hero.getHitbox( poi );
+        // const hitbox = this.hero.getHitbox( poi );
+        const hitbox = {
+            width: this.hero.width,
+            height: this.hero.height,
+            x: this.hero.position.x,
+            y: this.hero.position.y,
+        };
 
         for ( let i = this.map.data.events.length; i--; ) {
             const tile = {
@@ -390,18 +393,26 @@ class TopView extends GameBox {
 *******************************************************************************/
     switchTween ( obj, css ) {
         return new Promise(( resolve ) => {
+            const _update = ( t ) => {
+                const transform = Utils.getTransform( obj.element );
+
+                obj.element.style.webkitTransform = `translate3d(
+                    ${css.axis === "x" ? t : transform.x}px,
+                    ${css.axis === "y" ? t : transform.y}px,
+                    0
+                )`;
+            };
+
             return new Tween({
                 ease: Easing.swing,
                 duration: Config.values.boundaryAnimDur,
                 from: css.from,
                 to: css.to,
                 update: ( t ) => {
-                    obj.offset[ css.axis ] = t;
-                    obj.render( this.player.previousElapsed );
+                    _update( t );
                 },
                 complete: ( t ) => {
-                    obj.offset[ css.axis ] = t;
-                    obj.render( this.player.previousElapsed );
+                    _update( t );
                     resolve();
                 }
             });
@@ -416,19 +427,16 @@ class TopView extends GameBox {
 
         // Create new Map
         this.map_ = new Map( Loader.cash( evt.map ), this );
+        this.cam_ = Utils.copy( this.camera );
 
-        // Stage Hero for animation
-        let _hero = this.hero.position;
         const _css = {};
+        const _poi = Utils.copy( this.hero.position );
         const _rect = {
             hero: this.hero.element.getBoundingClientRect(),
             screen: this.player.screen.getBoundingClientRect(),
         };
 
-        this.hero.offset = {
-            x: _rect.hero.x,
-            y: _rect.hero.y,
-        };
+        // Stage Hero for animation
         document.body.appendChild( this.hero.element );
         this.hero.element.style.position = "fixed";
         this.hero.element.style.webkitTransform = `translate3d(
@@ -441,143 +449,145 @@ class TopView extends GameBox {
         if ( this.hero.dir === "down" ) {
             this.map_.offset = {
                 x: this.map.offset.x,
-                y: this.player.height,
+                y: 0,
             };
+            this.cam_.y = 0;
+            this.map_.element.style.webkitTransform = `translate3d(
+                0,
+                ${this.camera.height}px,
+                0
+            )`;
 
-            _css.newMap = {
+            _poi.y = 0;
+            _css.map_ = {
                 axis: "y",
-                from: this.map_.offset.y,
+                from: this.camera.height,
                 to: 0,
             };
-
-            _css.thisMap = {
+            _css.map = {
                 axis: "y",
-                from: this.map.offset.y,
-                to: -(this.map.height),
+                from: 0,
+                to: -this.camera.height,
             };
-
             _css.hero = {
                 axis: "y",
                 from: _rect.hero.y,
                 to: _rect.screen.y,
             };
 
-            _hero = {
-                x: _hero.x,
-                y: 0,
-            };
-
         } else if ( this.hero.dir === "up" ) {
             this.map_.offset = {
                 x: this.map.offset.x,
-                y: -(this.map_.height),
+                y: -(this.map_.height - this.camera.height),
             };
+            this.cam_.y = this.map_.height - this.camera.height;
+            this.map_.element.style.webkitTransform = `translate3d(
+                0,
+                ${-this.camera.height}px,
+                0
+            )`;
 
-            _css.newMap = {
+            _poi.y = this.map_.height - this.hero.height;
+            _css.map_ = {
                 axis: "y",
-                from: this.map_.offset.y,
-                to: -(this.map_.height - this.player.height),
+                from: -this.camera.height,
+                to: 0,
             };
-
-            _css.thisMap = {
+            _css.map = {
                 axis: "y",
-                from: this.map.offset.y,
-                to: this.player.height,
+                from: 0,
+                to: this.camera.height,
             };
-
             _css.hero = {
                 axis: "y",
                 from: _rect.hero.y,
                 to: _rect.screen.y + _rect.screen.height - this.hero.height,
             };
 
-            _hero = {
-                x: _hero.x,
-                y: this.map_.height - this.hero.height,
-            };
-
         } else if ( this.hero.dir === "right" ) {
             this.map_.offset = {
-                x: this.player.width,
+                x: 0,
                 y: this.map.offset.y,
             };
+            this.cam_.x = 0;
+            this.map_.element.style.webkitTransform = `translate3d(
+                ${this.camera.width}px,
+                0,
+                0
+            )`;
 
-            _css.newMap = {
+            _poi.x = 0;
+            _css.map_ = {
                 axis: "x",
-                from: this.map_.offset.x,
+                from: this.camera.width,
                 to: 0,
             };
-
-            _css.thisMap = {
+            _css.map = {
                 axis: "x",
-                from: this.map.offset.x,
-                to: -(this.map.width),
+                from: 0,
+                to: -this.camera.width,
             };
-
             _css.hero = {
                 axis: "x",
                 from: _rect.hero.x,
                 to: _rect.screen.x,
             };
 
-            _hero = {
-                x: 0,
-                y: _hero.y,
-            };
-
         } else if ( this.hero.dir === "left" ) {
             this.map_.offset = {
-                x: -(this.map_.width),
+                x: -(this.map_.width - this.camera.width),
                 y: this.map.offset.y,
             };
+            this.cam_.x = this.map_.width - this.camera.width;
+            this.map_.element.style.webkitTransform = `translate3d(
+                ${-this.camera.width}px,
+                0,
+                0
+            )`;
 
-            _css.newMap = {
+            _poi.x = this.map_.width - this.hero.width;
+            _css.map_ = {
                 axis: "x",
-                from: this.map_.offset.x,
-                to: -(this.map_.width - this.player.width),
+                from: -this.camera.width,
+                to: 0,
             };
-
-            _css.thisMap = {
+            _css.map = {
                 axis: "x",
-                from: this.map.offset.x,
-                to: this.player.width,
+                from: 0,
+                to: this.camera.width,
             };
-
             _css.hero = {
                 axis: "x",
                 from: _rect.hero.x,
                 to: _rect.screen.x + _rect.screen.width - this.hero.width,
             };
-
-            _hero = {
-                x: this.map_.width - this.hero.width,
-                y: _hero.y,
-            };
         }
 
-        // Inject new Map into the player DOM
+        // One-time initial render based on the camera we'll end up with
+        // after the transition is complete and the new Map becomes THE Map.
+        this.map_.render( this.player.previousElapsed, this.cam_ );
         this.player.screen.appendChild( this.map_.element );
 
         // Animate Maps and Hero and resolve all tweens for clean-up
         Promise.all([
-            this.switchTween( this.map_, _css.newMap ),
-            this.switchTween( this.map, _css.thisMap ),
+            this.switchTween( this.map_, _css.map_ ),
+            this.switchTween( this.map, _css.map ),
             this.switchTween( this.hero, _css.hero ),
 
         ]).then(() => {
             // Stage Hero with correct position on new Map
             this.hero.element.style.position = "absolute";
-            this.hero.update( _hero, this.map_.offset );
-            this.hero.render( this.player.previousElapsed );
             this.map_.element.appendChild( this.hero.element );
+            this.hero.update( _poi, this.map_.offset );
+            this.hero.render( this.player.previousElapsed );
 
-            // Destroy old Map
-            // Teardown GameBox stuff (npcs, etc...)
+            // Destroy old Map / Set new Map
             this.map.destroy();
             this.map = this.map_;
             this.map_ = null;
+            this.cam_ = null;
 
-            // Initialize GameBox stuff (npcs, etc...)
+            // Initialize
             this.initMap();
             this.player.resume();
         });

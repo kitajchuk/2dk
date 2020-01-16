@@ -10,7 +10,7 @@
         "version": 193
     },
     "hero": {
-        "sprite": 0,
+        "sprite": 1,
         "spawn": {
             "x": 1216,
             "y": 1408,

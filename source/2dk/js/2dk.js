@@ -4,6 +4,11 @@
 
 
 
+* ActiveTiles with new render system
+* ActiveObjects with new render system
+
+
+
 * Refactor Editor: Re-render painted tiles only, not entire map on each paint
 * Sprites, NPCs (ActiveObjects? Needs absolute positioning to work...)
 

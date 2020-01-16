@@ -87,6 +87,7 @@ class ActiveTiles {
     constructor ( data, map ) {
         this.data = data;
         this.map = map;
+        this.frame = 0;
     }
 
 
@@ -95,72 +96,27 @@ class ActiveTiles {
     }
 
 
-    draw ( elapsed ) {
+    blit ( elapsed ) {
         if ( typeof this.previousElapsed === "undefined" ) {
             this.previousElapsed = elapsed;
         }
 
         const diff = (elapsed - this.previousElapsed);
-        let frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
+
+        this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
 
         if ( diff >= this.data.dur ) {
             this.previousElapsed = elapsed;
-            frame = this.data.stepsX - 1;
-        }
-
-        const active = this.getActive();
-
-        if ( active.length ) {
-            this.renderActive( active, frame );
+            this.frame = this.data.stepsX - 1;
         }
     }
 
 
-    getActive () {
-        // Get only tiles that are visible in the camera box
-        return this.data.coords.filter(( coord ) => {
-            const offset = {
-                top: (coord[ 1 ] * this.map.gridsize) + this.map.offset.y,
-                bottom: ((coord[ 1 ] * this.map.gridsize) + this.map.gridsize) + this.map.offset.y,
-                left: (coord[ 0 ] * this.map.gridsize) + this.map.offset.x,
-                right: ((coord[ 0 ] * this.map.gridsize) + this.map.gridsize) + this.map.offset.x,
-            };
-
-            // Tile is offscreen
-            if ( offset.bottom <= 0 || offset.top >= this.map.gamebox.camera.height || offset.right <= 0 || offset.left >= this.map.gamebox.camera.width ) {
-                return false;
-
-            // Tile is onscreen
-            } else {
-                return true;
-            }
-        });
-    }
-
-
-    renderActive ( active, frame ) {
-        const activeX = (this.data.offsetX + (frame * this.map.data.tilesize));
-
-        active.forEach(( coord ) => {
-            this.map.location.layers.background.context.clearRect(
-                this.map.gridsize * coord[ 0 ],
-                this.map.gridsize * coord[ 1 ],
-                this.map.gridsize,
-                this.map.gridsize,
-            );
-
-            this.map.location.layers.background.context.drawImage(
-                this.map.image,
-                activeX,
-                this.data.offsetY,
-                this.map.data.tilesize,
-                this.map.data.tilesize,
-                this.map.gridsize * coord[ 0 ],
-                this.map.gridsize * coord[ 1 ],
-                this.map.gridsize,
-                this.map.gridsize,
-            );
-        });
+    getTile () {
+        return [
+            (this.data.offsetX + (this.frame * this.map.data.tilesize)),
+            this.data.offsetY,
+        ];
     }
 }
 
@@ -186,6 +142,7 @@ class ActiveObject {
         this.states = Utils.copy( this.data.states );
         // Render between "objects" and "foreground" layers relative to Hero
         this.relative = (this.hitbox.height !== this.data.height);
+        this.frame = 0;
 
         this.shift();
     }
@@ -194,6 +151,48 @@ class ActiveObject {
     destroy () {
         this.data = null;
         this.image = null;
+    }
+
+
+    blit ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
+
+        this.frame = 0;
+
+        if ( this.state.animated ) {
+            const diff = (elapsed - this.previousElapsed);
+
+            this.frame = Math.floor( (diff / this.state.dur) * this.state.stepsX );
+
+            if ( diff >= this.state.dur ) {
+                this.previousElapsed = elapsed;
+                this.frame = this.state.stepsX - 1;
+            }
+        }
+    }
+
+
+    render ( renderBox ) {
+        const offsetX = (this.state.offsetX + (this.frame * this.data.width));
+        let context = this.map.layers.background.offCanvas.context;
+
+        if ( this.relative && (this.hitbox.y > this.map.gamebox.hero.hitbox.y) ) {
+            context = this.map.layers.foreground.offCanvas.context;
+        }
+
+        context.drawImage(
+            this.image,
+            offsetX,
+            this.state.offsetY,
+            this.data.width,
+            this.data.height,
+            (renderBox.bleed.x + this.map.offset.x) + this.position.x,
+            (renderBox.bleed.y + this.map.offset.y) + this.position.y,
+            this.data.width / this.map.gamebox.camera.resolution,
+            this.data.height / this.map.gamebox.camera.resolution,
+        );
     }
 
 
@@ -208,57 +207,6 @@ class ActiveObject {
         if ( this.states.length ) {
             this.state = this.states.shift();
         }
-    }
-
-
-    draw ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
-            this.previousElapsed = elapsed;
-        }
-
-        let frame = 0;
-
-        if ( this.state.animated ) {
-            const diff = (elapsed - this.previousElapsed);
-
-            frame = Math.floor( (diff / this.state.dur) * this.state.stepsX );
-
-            if ( diff >= this.state.dur ) {
-                this.previousElapsed = elapsed;
-                frame = this.state.stepsX - 1;
-            }
-        }
-
-        this.renderObject( frame );
-    }
-
-
-    renderObject ( frame ) {
-        const offsetX = (this.state.offsetX + (frame * this.data.width));
-        let context = this.map.location.layers.objects.context;
-
-        if ( this.relative && (this.hitbox.y > this.map.gamebox.hero.hitbox.y) ) {
-            context = this.map.location.layers.foreground.context;
-        }
-
-        context.clearRect(
-            this.position.x,
-            this.position.y,
-            this.data.width / this.map.gamebox.camera.resolution,
-            this.data.height / this.map.gamebox.camera.resolution,
-        );
-
-        context.drawImage(
-            this.image,
-            offsetX,
-            this.state.offsetY,
-            this.data.width,
-            this.data.height,
-            this.position.x,
-            this.position.y,
-            this.data.width / this.map.gamebox.camera.resolution,
-            this.data.height / this.map.gamebox.camera.resolution,
-        );
     }
 
 
@@ -284,28 +232,16 @@ class MapLayer {
     // id, width, height
     constructor ( data ) {
         this.data = data;
-        this.cashId = `${this.data.map.id}-${this.data.id}`;
         this.build();
     }
 
 
     build () {
-        const cashLayer = Loader.cash( this.cashId );
-
-        if ( cashLayer && this.data.cash ) {
-            this.canvas = cashLayer;
-            this.context = this.canvas.getContext( "2d" );
-
-        } else {
-            this.canvas = document.createElement( "canvas" );
-            this.canvas.className = "_2dk__layer";
-            this.canvas.dataset.layer = this.data.id;
-            this.context = this.canvas.getContext( "2d" );
-
-            this.update( this.data.width, this.data.height );
-
-            Loader.cash( this.cashId, this.canvas );
-        }
+        this.canvas = document.createElement( "canvas" );
+        this.canvas.className = "_2dk__layer";
+        this.canvas.dataset.layer = this.data.id;
+        this.context = this.canvas.getContext( "2d" );
+        this.update( this.data.width, this.data.height );
     }
 
 
@@ -320,77 +256,21 @@ class MapLayer {
 
 
     clear () {
-        if ( !this.data.cash ) {
-            this.context.clearRect(
-                0,
-                0,
-                this.canvas.width,
-                this.canvas.height
-            );
-        }
-    }
-
-
-    destroy () {
-        if ( !this.data.cash ) {
-            this.clear();
-            this.canvas.width = 0;
-            this.canvas.height = 0;
-            this.context = null;
-            this.canvas = null;
-        }
-    }
-}
-
-
-
-class MapLocation {
-    // Map
-    constructor ( map ) {
-        this.map = map;
-        this.layers = {};
-        this.build();
-    }
-
-
-    build () {
-        for ( let id in this.map.data.textures ) {
-            this.addLayer( id, true );
-            this.drawLayer( id );
-        }
-
-        this.addLayer( "objects", false );
-    }
-
-
-    addLayer ( id, cash ) {
-        this.layers[ id ] = new MapLayer({
-            id,
-            map: this.map.data,
-            cash,
-            width: this.map.width,
-            height: this.map.height
-        });
-    }
-
-
-    drawLayer ( id ) {
-        drawMapTiles(
-            this.layers[ id ].context,
-            this.map.image,
-            this.map.data.textures[ id ],
-            this.map.data.tilesize,
-            this.map.gridsize,
+        this.context.clearRect(
+            0,
+            0,
+            this.canvas.width,
+            this.canvas.height
         );
     }
 
 
     destroy () {
-        for ( let id in this.layers ) {
-            this.layers[ id ].destroy();
-        }
-
-        this.layers = null;
+        this.clear();
+        this.canvas.width = 0;
+        this.canvas.height = 0;
+        this.context = null;
+        this.canvas = null;
     }
 }
 
@@ -400,13 +280,14 @@ class Map {
     constructor ( data, gamebox ) {
         this.data = data;
         this.gamebox = gamebox;
-        this.location = null;
-        this.layers = {};
         this.width = this.data.width / this.gamebox.camera.resolution;
         this.height = this.data.height / this.gamebox.camera.resolution;
         this.gridsize = this.data.tilesize / this.gamebox.camera.resolution;
         this.image = Loader.cash( data.image );
-        this.location = new MapLocation( this );
+        this.layers = {
+            background: null,
+            foreground: null,
+        };
         this.activeTiles = [];
         this.activeObjects = [];
         this.offset = {
@@ -418,21 +299,26 @@ class Map {
 
 
     destroy () {
-        this.data = null;
-        this.element.parentNode.removeChild( this.element );
-        this.element = null;
-        this.image = null;
-        this.location.destroy();
-        this.location = null;
-        this.layers = null;
+        for ( let id in this.layers ) {
+            this.layers[ id ].onCanvas.destroy();
+            this.layers[ id ].offCanvas.destroy();
+        }
+
         this.activeTiles.forEach(( activeTiles ) => {
             activeTiles.destroy();
         });
-        this.activeObjects.forEach(( activeObject ) => {
-            activeObject.destroy();
-        });
         this.activeTiles = null;
-        this.activeObjects = null;
+
+        // this.activeObjects.forEach(( activeObject ) => {
+        //     activeObject.destroy();
+        // });
+        // this.activeObjects = null;
+
+        this.element.parentNode.removeChild( this.element );
+        this.data = null;
+        this.element = null;
+        this.image = null;
+        this.layers = null;
     }
 
 
@@ -440,19 +326,17 @@ class Map {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__map";
 
-        for ( let id in this.data.textures ) {
+        for ( let id in this.layers ) {
             this.addLayer( id );
         }
-
-        this.addLayer( "objects" );
 
         this.data.tiles.forEach(( data ) => {
             this.activeTiles.push( new ActiveTiles( data, this ) );
         });
 
-        this.data.objects.forEach(( data ) => {
-            this.activeObjects.push( new ActiveObject( data, this ) );
-        });
+        // this.data.objects.forEach(( data ) => {
+        //     this.activeObjects.push( new ActiveObject( data, this ) );
+        // });
     }
 
 
@@ -461,28 +345,136 @@ class Map {
     }
 
 
-    render ( elapsed ) {
+    getRenderbox ( elapsed, camera ) {
+        const renderBox = {
+            x: Math.floor( camera.x / this.gridsize ) - 1,
+            y: Math.floor( camera.y / this.gridsize ) - 1,
+            width: camera.width + (this.gridsize * 2),
+            height: camera.height + (this.gridsize * 2),
+            bleed: {},
+            textures: {},
+        };
+
+        renderBox.bleed = this.getBleed( renderBox, elapsed, camera );
+        renderBox.textures = this.getTextures( renderBox, elapsed, camera );
+
+        return renderBox;
+    }
+
+
+    getBleed ( renderBox, elapsed, camera ) {
+        return {
+            x: -(camera.x - (renderBox.x * this.gridsize)),
+            y: -(camera.y - (renderBox.y * this.gridsize)),
+        };
+    }
+
+
+    getTextures ( renderBox, elapsed, camera ) {
+        let ret = {};
+
+        for ( let id in this.data.textures ) {
+            ret[ id ] = [];
+
+            const height = (renderBox.height / this.gridsize);
+            let y = 0;
+
+            while ( y < height ) {
+                ret[ id ][ y ] = [];
+
+                const lookupY = renderBox.y + y;
+
+                if ( this.data.textures[ id ][ lookupY ] ) {
+                    const width = (renderBox.width / this.gridsize);
+                    let x = 0;
+
+                    while ( x < width ) {
+                        const lookupX = renderBox.x + x;
+                        const activeTile = this.getActiveTile( lookupX, lookupY );
+
+                        if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
+                            // Either draw the texture or the correct frame for an ActiveTile
+                            ret[ id ][ y ][ x ] = activeTile || this.data.textures[ id ][ lookupY ][ lookupX ];
+
+                        } else {
+                            ret[ id ][ y ][ x ] = 0;
+                        }
+
+                        x++;
+                    }
+                }
+
+                y++;
+            }
+        }
+
+        return ret;
+    }
+
+
+    getActiveTiles ( group ) {
+        return this.activeTiles.find(( activeTiles ) => {
+            return (activeTiles.data.group === group);
+        });
+    }
+
+
+    getActiveTile ( lookupX, lookupY ) {
+        let ret = null;
+
+        this.data.tiles.forEach(( tiles ) => {
+            tiles.coords.forEach(( coord ) => {
+                if ( coord[ 0 ] === lookupX && coord[ 1 ] === lookupY ) {
+                    ret = this.getActiveTiles( tiles.group ).getTile();
+                }
+            });
+        });
+
+        return ret;
+    }
+
+
+    render ( elapsed, camera ) {
         this.clear();
 
         this.activeTiles.forEach(( activeTiles ) => {
-            activeTiles.draw( elapsed );
+            activeTiles.blit( elapsed );
         });
 
-        this.activeObjects.forEach(( activeObject ) => {
-            activeObject.draw( elapsed );
-        });
+        // this.activeObjects.forEach(( activeObject ) => {
+        //     activeObject.blit( elapsed );
+        // });
 
+        this.renderBox = this.getRenderbox( elapsed, camera );
+
+        // Draw textures to background / foreground
+        for ( let id in this.renderBox.textures ) {
+            drawMapTiles(
+                this.layers[ id ].offCanvas.context,
+                this.image,
+                this.renderBox.textures[ id ],
+                this.data.tilesize,
+                this.gridsize,
+            );
+        }
+
+        // Draw objects to background / foreground
+        // this.activeObjects.forEach(( activeObject ) => {
+        //     activeObject.render( this.renderBox );
+        // });
+
+        // Draw offscreen canvases to the onscreen canvases
         for ( let id in this.layers ) {
-            this.layers[ id ].context.drawImage(
-                this.location.layers[ id ].canvas,
+            this.layers[ id ].onCanvas.context.drawImage(
+                this.layers[ id ].offCanvas.canvas,
                 0,
                 0,
-                this.location.layers[ id ].data.width,
-                this.location.layers[ id ].data.height,
-                this.offset.x,
-                this.offset.y,
-                this.location.layers[ id ].data.width,
-                this.location.layers[ id ].data.height,
+                this.layers[ id ].offCanvas.canvas.width,
+                this.layers[ id ].offCanvas.canvas.height,
+                this.renderBox.bleed.x,
+                this.renderBox.bleed.y,
+                this.layers[ id ].offCanvas.canvas.width,
+                this.layers[ id ].offCanvas.canvas.height,
             );
         }
     }
@@ -490,21 +482,31 @@ class Map {
 
     clear () {
         for ( let id in this.layers ) {
-            this.layers[ id ].clear();
+            this.layers[ id ].onCanvas.clear();
+            this.layers[ id ].offCanvas.clear();
         }
     }
 
 
     addLayer ( id ) {
-        this.layers[ id ] = new MapLayer({
+        const offWidth = this.gamebox.camera.width + (this.gridsize * 2);
+        const offHeight = this.gamebox.camera.height + (this.gridsize * 2);
+
+        this.layers[ id ] = {};
+        this.layers[ id ].onCanvas = new MapLayer({
             id,
             map: this,
-            cash: false,
             width: this.gamebox.camera.width,
             height: this.gamebox.camera.height,
         });
+        this.layers[ id ].offCanvas = new MapLayer({
+            id,
+            map: this,
+            width: offWidth,
+            height: offHeight,
+        });
 
-        this.element.appendChild( this.layers[ id ].canvas );
+        this.element.appendChild( this.layers[ id ].onCanvas.canvas );
     }
 }
 
@@ -513,7 +515,6 @@ class Map {
 module.exports = {
     Map,
     MapLayer,
-    MapLocation,
     drawMapTiles,
     drawGridLines,
 };

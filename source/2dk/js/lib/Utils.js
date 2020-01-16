@@ -29,62 +29,31 @@ const Utils = {
     },
 
 
-    // getPoi ( dir, step, sprite ) {
-    //     const poi = {};
-    //
-    //     if ( dir === "left" ) {
-    //         poi.x = sprite.position.x - step;
-    //         poi.y = sprite.position.y;
-    //     }
-    //
-    //     if ( dir === "right" ) {
-    //         poi.x = sprite.position.x + step;
-    //         poi.y = sprite.position.y;
-    //     }
-    //
-    //     if ( dir === "up" ) {
-    //         poi.x = sprite.position.x;
-    //         poi.y = sprite.position.y - step;
-    //     }
-    //
-    //     if ( dir === "down" ) {
-    //         poi.x = sprite.position.x;
-    //         poi.y = sprite.position.y + step;
-    //     }
-    //
-    //     return poi;
-    // },
+    getTransform ( el ) {
+        const transform = window.getComputedStyle( el )[ "transform" ];
+        const values = transform.replace( /matrix|3d|\(|\)|\s/g, "" ).split( "," );
+        const ret = {};
 
+        // No Transform
+        if ( values[ 0 ] === "none" ) {
+            ret.x = 0;
+            ret.y = 0;
+            ret.z = 0;
 
-    // getAni ( dir, step, sprite ) {
-    //     const css = {};
-    //
-    //     if ( dir === "left" ) {
-    //         css.axis = "x";
-    //         css.from = sprite.offset.x;
-    //         css.to = sprite.offset.x - step;
-    //     }
-    //
-    //     if ( dir === "right" ) {
-    //         css.axis = "x";
-    //         css.from = sprite.offset.x;
-    //         css.to = sprite.offset.x + step;
-    //     }
-    //
-    //     if ( dir === "up" ) {
-    //         css.axis = "y";
-    //         css.from = sprite.offset.y;
-    //         css.to = sprite.offset.y - step;
-    //     }
-    //
-    //     if ( dir === "down" ) {
-    //         css.axis = "y";
-    //         css.from = sprite.offset.y;
-    //         css.to = sprite.offset.y + step;
-    //     }
-    //
-    //     return css;
-    // },
+        // Matrix 3D
+        } else if ( values.length === 16 ) {
+            ret.x = parseFloat( values[ 12 ] );
+            ret.y = parseFloat( values[ 13 ] );
+            ret.z = parseFloat( values[ 14 ] );
+
+        } else {
+            ret.x = parseFloat( values[ 4 ] );
+            ret.y = parseFloat( values[ 5 ] );
+            ret.z = 0;
+        }
+
+        return ret;
+    },
 
 
     // From Akihabara helpers
