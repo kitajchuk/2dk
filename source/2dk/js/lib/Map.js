@@ -142,14 +142,14 @@ class ActiveTiles {
         const activeX = (this.data.offsetX + (frame * this.map.data.tilesize));
 
         active.forEach(( coord ) => {
-            this.map.location.layers[ this.data.layer ].context.clearRect(
+            this.map.location.layers.background.context.clearRect(
                 this.map.gridsize * coord[ 0 ],
                 this.map.gridsize * coord[ 1 ],
                 this.map.gridsize,
                 this.map.gridsize,
             );
 
-            this.map.location.layers[ this.data.layer ].context.drawImage(
+            this.map.location.layers.background.context.drawImage(
                 this.map.image,
                 activeX,
                 this.data.offsetY,
@@ -235,11 +235,18 @@ class ActiveObject {
 
     renderObject ( frame ) {
         const offsetX = (this.state.offsetX + (frame * this.data.width));
-        let context = this.map.layers[ this.data.layer ].context;
+        let context = this.map.location.layers.objects.context;
 
         if ( this.relative && (this.hitbox.y > this.map.gamebox.hero.hitbox.y) ) {
-            context = this.map.layers.foreground.context;
+            context = this.map.location.layers.foreground.context;
         }
+
+        context.clearRect(
+            this.position.x,
+            this.position.y,
+            this.data.width / this.map.gamebox.camera.resolution,
+            this.data.height / this.map.gamebox.camera.resolution,
+        );
 
         context.drawImage(
             this.image,
@@ -247,8 +254,8 @@ class ActiveObject {
             this.state.offsetY,
             this.data.width,
             this.data.height,
-            this.map.offset.x + this.position.x,
-            this.map.offset.y + this.position.y,
+            this.position.x,
+            this.position.y,
             this.data.width / this.map.gamebox.camera.resolution,
             this.data.height / this.map.gamebox.camera.resolution,
         );
@@ -313,7 +320,6 @@ class MapLayer {
 
 
     clear () {
-        // Don't clear cashed <canvas> elements
         if ( !this.data.cash ) {
             this.context.clearRect(
                 0,
@@ -326,7 +332,6 @@ class MapLayer {
 
 
     destroy () {
-        // Don't destroy cashed <canvas> elements
         if ( !this.data.cash ) {
             this.clear();
             this.canvas.width = 0;
@@ -350,20 +355,26 @@ class MapLocation {
 
     build () {
         for ( let id in this.map.data.textures ) {
-            this.setLayer( id );
+            this.addLayer( id, true );
+            this.drawLayer( id );
         }
+
+        this.addLayer( "objects", false );
     }
 
 
-    setLayer ( id, cash ) {
+    addLayer ( id, cash ) {
         this.layers[ id ] = new MapLayer({
             id,
             map: this.map.data,
-            cash: true,
+            cash,
             width: this.map.width,
             height: this.map.height
         });
+    }
 
+
+    drawLayer ( id ) {
         drawMapTiles(
             this.layers[ id ].context,
             this.map.image,
@@ -457,7 +468,11 @@ class Map {
             activeTiles.draw( elapsed );
         });
 
-        for ( let id in this.data.textures ) {
+        this.activeObjects.forEach(( activeObject ) => {
+            activeObject.draw( elapsed );
+        });
+
+        for ( let id in this.layers ) {
             this.layers[ id ].context.drawImage(
                 this.location.layers[ id ].canvas,
                 0,
@@ -470,10 +485,6 @@ class Map {
                 this.location.layers[ id ].data.height,
             );
         }
-
-        this.activeObjects.forEach(( activeObject ) => {
-            activeObject.draw( elapsed );
-        });
     }
 
 
@@ -489,8 +500,8 @@ class Map {
             id,
             map: this,
             cash: false,
-            width: this.gamebox.player.width,
-            height: this.gamebox.player.height
+            width: this.gamebox.camera.width,
+            height: this.gamebox.camera.height,
         });
 
         this.element.appendChild( this.layers[ id ].canvas );

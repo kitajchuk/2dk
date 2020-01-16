@@ -5,11 +5,9 @@
 
 
 * Refactor Editor: Re-render painted tiles only, not entire map on each paint
-
-
-
-* ActiveObject jank (use location + screen layer for the fix)
 * Sprites, NPCs (ActiveObjects? Needs absolute positioning to work...)
+
+
 
 * Use game icon for mobile installed
 * Game version vs iteration-counter
