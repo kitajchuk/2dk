@@ -449,14 +449,10 @@ class Map {
             activeTiles.blit( elapsed );
         });
 
-        // this.activeObjects.forEach(( activeObject ) => {
-        //     activeObject.blit( elapsed );
-        // });
-
         this.renderBox = this.getRenderbox( elapsed, camera );
 
-        // Draw textures to background / foreground
-        for ( let id in this.renderBox.textures ) {
+        for ( let id in this.layers ) {
+            // Draw textures to background / foreground
             drawMapTiles(
                 this.layers[ id ].offCanvas.context,
                 this.image,
@@ -464,15 +460,8 @@ class Map {
                 this.data.tilesize,
                 this.gridsize,
             );
-        }
 
-        // Draw objects to background / foreground
-        // this.activeObjects.forEach(( activeObject ) => {
-        //     activeObject.render( this.renderBox );
-        // });
-
-        // Draw offscreen canvases to the onscreen canvases
-        for ( let id in this.layers ) {
+            // Draw offscreen canvases to the onscreen canvases
             this.layers[ id ].onCanvas.context.drawImage(
                 this.layers[ id ].offCanvas.canvas,
                 0,
