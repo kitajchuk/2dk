@@ -531,7 +531,15 @@ class GamePad extends Controller {
             }
         }
 
-        return ctrls;
+        // Sort UP and DOWN to be last the dispatch in a stream of directions
+        return ctrls.sort(( ctrl ) => {
+            if ( ctrl.key === Config.keys.UP || ctrl.key === Config.keys.DOWN ) {
+                return 1;
+
+            } else {
+                return -1;
+            }
+        });
     }
 }
 
