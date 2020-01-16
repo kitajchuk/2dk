@@ -2,7 +2,7 @@ const EditorUtils = require( "./EditorUtils" );
 const Config = require( "./Config" );
 const Cache = require( "./Cache" );
 const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
-const { MapLayer, drawMapTiles, drawGridLines } = require( "../../../source/2dk/js/lib/Map" );
+const { MapLayer, drawMapTile, drawMapTiles, drawGridLines } = require( "../../../source/2dk/js/lib/Map" );
 const Loader = require( "../../../source/2dk/js/lib/Loader" );
 
 
@@ -113,9 +113,9 @@ class EditorCanvas {
 
     reset () {
         if ( this.map ) {
-            this.clear( this.canvases.mapgrid );
-            this.clear( this.canvases.tilegrid );
-            this.clear( this.canvases.collider );
+            this.clearCanvas( this.canvases.mapgrid );
+            this.clearCanvas( this.canvases.tilegrid );
+            this.clearCanvas( this.canvases.collider );
             this.clearTileset();
             this.resetPreview();
             this.resetCursor();
@@ -222,10 +222,10 @@ class EditorCanvas {
 
 
     addCanvas () {
-        this.clear( this.contexts.background.canvas );
-        this.clear( this.contexts.foreground.canvas );
-        this.clear( this.contexts.collision.canvas );
-        this.clear( this.canvases.mapgrid );
+        this.clearCanvas( this.contexts.background.canvas );
+        this.clearCanvas( this.contexts.foreground.canvas );
+        this.clearCanvas( this.contexts.collision.canvas );
+        this.clearCanvas( this.canvases.mapgrid );
 
         drawGridLines(
             this.canvases.collider.getContext( "2d" ),
@@ -257,7 +257,7 @@ class EditorCanvas {
     }
 
 
-    clear ( canvas ) {
+    clearCanvas ( canvas ) {
         canvas.getContext( "2d" ).clearRect(
             0,
             0,
@@ -267,16 +267,34 @@ class EditorCanvas {
     }
 
 
-    refresh ( layer ) {
-        this.clear( this.contexts[ layer ].canvas );
+    refreshTile ( layer, coords, tile ) {
+        if ( tile.paintTile ) {
+            this.contexts[ layer ].context.clearRect(
+                (coords[ 0 ] + tile.drawCoord[ 0 ]) * this.map.tilesize,
+                (coords[ 1 ] + tile.drawCoord[ 1 ]) * this.map.tilesize,
+                this.map.tilesize,
+                this.map.tilesize,
+            );
 
-        drawMapTiles(
-            this.contexts[ layer ].context,
-            this.dom.tileset,
-            this.map.textures[ layer ],
-            this.map.tilesize,
-            this.map.tilesize,
-        );
+            drawMapTile(
+                this.contexts[ layer ].context,
+                this.dom.tileset,
+                tile.renderTree,
+                this.map.tilesize,
+                this.map.tilesize,
+                coords[ 0 ] + tile.drawCoord[ 0 ],
+                coords[ 1 ] + tile.drawCoord[ 1 ],
+            );
+        }
+    }
+
+
+    refreshTiles ( layer, coords, coordMap ) {
+        coordMap.tiles.forEach(( tile ) => {
+            if ( tile.paintTile ) {
+                this.refreshTile( layer, coords, tile );
+            }
+        });
     }
 
 
@@ -378,8 +396,8 @@ class EditorCanvas {
         this.canvases.cursor.style.width = `${this.map.tilesize}px`;
         this.canvases.cursor.style.height = `${this.map.tilesize}px`;
 
-        this.clear( this.canvases.tilepaint );
-        this.clear( this.canvases.tilegrid );
+        this.clearCanvas( this.canvases.tilepaint );
+        this.clearCanvas( this.canvases.tilegrid );
 
         drawGridLines(
             this.canvases.tilegrid.getContext( "2d" ),
@@ -414,19 +432,19 @@ class EditorCanvas {
         const coordMap = this.getCoordMap();
 
         this.editor.updateMapLayer( layer, coords, coordMap );
+        this.refreshTiles( layer, coords, coordMap );
     }
 
 
     bucket ( layer ) {
         for ( let y = this.map.textures[ layer ].length; y--; ) {
             for ( let x = this.map.textures[ layer ][ y ].length; x--; ) {
+                // Reset the entire texture map
                 this.map.textures[ layer ][ y ][ x ] = 0;
 
-                // Only one tile can bucket fill
-                if ( this.tilesetCoords.length ) {
-                    this.tilesetCoords = [this.tilesetCoords[ 0 ]];
-                    this.brush( layer, [x, y] );
-                }
+                // Apply only the selected tile
+                this.tilesetCoords = [this.tilesetCoords[ 0 ]];
+                this.brush( layer, [x, y] );
             }
         }
     }
@@ -435,6 +453,14 @@ class EditorCanvas {
     trash ( layer, coords ) {
         this.tilesetCoords = [];
         this.map.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ] = 0;
+
+        clearTile(
+            this.contexts[ layer ].context,
+            coords[ 0 ] * this.map.tilesize,
+            coords[ 1 ] * this.map.tilesize,
+            this.map.tilesize,
+            this.map.tilesize,
+        );
     }
 
 
@@ -644,8 +670,6 @@ class EditorCanvas {
         } else if ( editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             this.trash( layer, coords );
         }
-
-        this.refresh( layer );
     }
 
 

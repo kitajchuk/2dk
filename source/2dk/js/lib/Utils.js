@@ -30,7 +30,7 @@ const Utils = {
 
 
     getTransform ( el ) {
-        const transform = window.getComputedStyle( el )[ "transform" ];
+        const transform = el ? window.getComputedStyle( el )[ "transform" ] : "none";
         const values = transform.replace( /matrix|3d|\(|\)|\s/g, "" ).split( "," );
         const ret = {};
 

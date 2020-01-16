@@ -7,7 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/pk/assets/icons/pk.png",
-        "version": 4
+        "version": 6
     },
     "hero": {
         "sprite": 0,

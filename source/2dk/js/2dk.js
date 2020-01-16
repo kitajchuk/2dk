@@ -4,8 +4,7 @@
 
 
 
-* ActiveTiles with new render system
-* ActiveObjects with new render system
+* ActiveObjects with new render system!
 
 
 
@@ -32,6 +31,7 @@
 * Sync games to ../static when maps are saved?
 * Map spawn points (x, y, dir)
 * Map event points (coords, type, map, dir)
+* Erase one tile cel at a time?
 
 
 ********************************************************************************

@@ -233,8 +233,8 @@ class Editor {
             if ( this.data.map.textures.hasOwnProperty( l ) ) {
                 for ( let y = this.data.map.textures[ l ].length; y--; ) {
                     for ( let x = this.data.map.textures[ l ][ y ].length; x--; ) {
-                        // Position has more than one tile, [[x, y], [x, y]], so make sure the stack is purged of dupes
-                        if ( Array.isArray( this.data.map.textures[ l ][ y ][ x ] ) && Array.isArray( this.data.map.textures[ l ][ y ][ x ][ 0 ] ) ) {
+                        // Purge the tile cels ensuring no duplicates Array[Array[x, y], Array[x, y]]
+                        if ( Array.isArray( this.data.map.textures[ l ][ y ][ x ] ) ) {
                             this.data.map.textures[ l ][ y ][ x ] = this.cleanTiles( this.data.map.textures[ l ][ y ][ x ] );
                         }
                     }
@@ -251,36 +251,33 @@ class Editor {
             if ( tile.paintTile ) {
                 const cx = coords[ 0 ] + tile.drawCoord[ 0 ];
                 const cy = coords[ 1 ] + tile.drawCoord[ 1 ];
+                const px = this.data.map.tilesize * tile.tileCoord[ 0 ];
+                const py = this.data.map.tilesize * tile.tileCoord[ 1 ];
 
-                // Position has no tile, 0
+                // Position has no tile: 0
                 if ( this.data.map.textures[ layer ][ cy ][ cx ] === 0 ) {
                     this.data.map.textures[ layer ][ cy ][ cx ] = [
-                        this.data.map.tilesize * tile.tileCoord[ 0 ],
-                        this.data.map.tilesize * tile.tileCoord[ 1 ]
+                        [
+                            px,
+                            py,
+                        ]
                     ];
 
-                // Position has more than one tile, [[x, y], [x, y]]
-                } else if ( Array.isArray( this.data.map.textures[ layer ][ cy ][ cx ] ) && Array.isArray( this.data.map.textures[ layer ][ cy ][ cx ][ 0 ] ) ) {
+                // Position has tiles: Array[Array[x, y], Array[x, y]]
+                } else if ( Array.isArray( this.data.map.textures[ layer ][ cy ][ cx ] ) ) {
                     this.data.map.textures[ layer ][ cy ][ cx ].push([
-                        this.data.map.tilesize * tile.tileCoord[ 0 ],
-                        this.data.map.tilesize * tile.tileCoord[ 1 ]
-                    ]);
-
-                // Position has one tile, [x, y]
-                } else {
-                    tmp = this.data.map.textures[ layer ][ cy ][ cx ];
-
-                    this.data.map.textures[ layer ][ cy ][ cx ] = [];
-                    this.data.map.textures[ layer ][ cy ][ cx ].push( tmp );
-                    this.data.map.textures[ layer ][ cy ][ cx ].push([
-                        this.data.map.tilesize * tile.tileCoord[ 0 ],
-                        this.data.map.tilesize * tile.tileCoord[ 1 ]
+                        px,
+                        py,
                     ]);
                 }
+
+                // Clean tiles on draw so we don't have to scan the entire texture
+                this.data.map.textures[ layer ][ cy ][ cx ] = this.cleanTiles( this.data.map.textures[ layer ][ cy ][ cx ] );
+                tile.renderTree = this.data.map.textures[ layer ][ cy ][ cx ];
             }
         });
 
-        this.cleanMap();
+        // this.cleanMap();
     }
 
 
@@ -355,7 +352,7 @@ class Editor {
 
         this.mode = Config.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-map";
-        this.cleanMap();
+        // this.cleanMap();
 
         // Save map JSON
         const postData = this.data.map;

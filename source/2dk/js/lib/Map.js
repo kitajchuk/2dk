@@ -17,50 +17,56 @@ ctx.drawImage(
     height
 )
 */
-const drawMapTiles = ( ctx, img, data, tile, grid ) => {
-    const draw = ( mx, my, x, y ) => {
-        ctx.drawImage(
-            img,
-            mx,
-            my,
-            tile,
-            tile,
-            (x * grid),
-            (y * grid),
-            grid,
-            grid
-        );
-    };
+const drawTileCel = ( context, image, tileSize, gridSize, mx, my, px, py ) => {
+    context.drawImage(
+        image,
+        mx,
+        my,
+        tileSize,
+        tileSize,
+        (px * gridSize),
+        (py * gridSize),
+        gridSize,
+        gridSize
+    );
+};
+const drawMapTile = ( context, image, tile, tileSize, gridSize, x, y ) => {
+    let maskX = 0;
+    let maskY = 0;
 
-    for ( let y = data.length; y--; ) {
-        const row = data[ y ];
+    // Position has tiles: Array[Array[x, y], Array[x, y]]
+    if ( Array.isArray( tile ) ) {
+        for ( let i = 0, len = tile.length; i < len; i++ ) {
+            drawTileCel(
+                context,
+                image,
+                tileSize,
+                gridSize,
+                tile[ i ][ 0 ],
+                tile[ i ][ 1 ],
+                x,
+                y,
+            );
+        }
+
+    // Position has no tile: 0
+    } else {
+        context.clearRect(
+            (x * gridSize),
+            (y * gridSize),
+            gridSize,
+            gridSize
+        );
+    }
+};
+const drawMapTiles = ( context, image, textures, tileSize, gridSize ) => {
+    for ( let y = textures.length; y--; ) {
+        const row = textures[ y ];
 
         for ( let x = row.length; x--; ) {
             const tile = row[ x ];
-            let maskX = 0;
-            let maskY = 0;
 
-            if ( Array.isArray( tile ) ) {
-                maskX = tile[ 0 ];
-                maskY = tile[ 1 ];
-
-                if ( Array.isArray( maskX ) ) {
-                    for ( let i = 0, len = tile.length; i < len; i++ ) {
-                        draw( tile[ i ][ 0 ], tile[ i ][ 1 ], x, y );
-                    }
-
-                } else {
-                    draw( maskX, maskY, x, y );
-                }
-
-            } else {
-                ctx.clearRect(
-                    (x * grid),
-                    (y * grid),
-                    grid,
-                    grid
-                );
-            }
+            drawMapTile( context, image, tile, tileSize, gridSize, x, y );
         }
     }
 };
@@ -114,8 +120,10 @@ class ActiveTiles {
 
     getTile () {
         return [
-            (this.data.offsetX + (this.frame * this.map.data.tilesize)),
-            this.data.offsetY,
+            [
+                (this.data.offsetX + (this.frame * this.map.data.tilesize)),
+                this.data.offsetY,
+            ]
         ];
     }
 }
@@ -515,6 +523,8 @@ class Map {
 module.exports = {
     Map,
     MapLayer,
+    drawTileCel,
+    drawMapTile,
     drawMapTiles,
     drawGridLines,
 };
