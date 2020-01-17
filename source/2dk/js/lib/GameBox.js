@@ -146,7 +146,7 @@ class GameBox {
 
 
     getSpeed () {
-        return (Config.values.cameraSpeed / this.player.data.game.resolution);
+        return this.player.width * 0.333333;
     }
 
 

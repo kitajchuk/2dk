@@ -23,7 +23,29 @@
             "data": {
                 "title": "2dK",
                 "description": "A Javascript 2d game development SDK."
-            }
+            },
+            "games": [
+                {
+                    "id": "la",
+                    "name": "Links Reawakening",
+                    "width": 768,
+                    "height": 576,
+                    "fullscreen": false,
+                    "resolution": 1,
+                    "icon": "/games/la/assets/icons/la.png",
+                    "version": 214
+                },
+                {
+                    "id": "pk",
+                    "name": "Pokemon Re-d",
+                    "width": 768,
+                    "height": 576,
+                    "fullscreen": false,
+                    "resolution": 1,
+                    "icon": "/games/pk/assets/icons/pk.png",
+                    "version": 6
+                }
+            ]
         }
     ]
 }

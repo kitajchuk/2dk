@@ -1,11 +1,20 @@
 <%
 const site = locals.context.site;
+const games = locals.context.doc.games;
 %>
 <div class="home -exp">
     <div class="home__mast -wrap">
         <h1><em><%- site.data.title %></em></h1>
         <p><%- site.data.description %></p>
-        <p>Proof of concept dev game, Links Reawakening, <a href="/games/la/" target="_blank">HERE</a>.</p>
     </div>
-    <hr />
+    <div class="home__games -wrap -expt">
+        <h1><em>Test</em></h1>
+        <% games.forEach(( game ) => { %>
+            <p><%= game.name %> | <a href="/games/<%= game.id %>/?v=<%= game.version %>" target="_blank">DEMO</a></p>
+        <% }) %>
+    </div>
+    <div class="home__mast -wrap -expt">
+        <h1><em>Dev</em></h1>
+        <p>The project is in active development. The code is on Github <a href="https://github.com/kitajchuk/2dk" target="_blank">HERE</a>.</p>
+    </div>
 </div>

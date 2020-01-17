@@ -4,15 +4,14 @@
 
 
 
+* Fix Dialogues...
 * Finish action tiles for mabe-village & mysterious-forest
 * Explore NPC concepts with sprite sheets
 * Door events for entering and exiting interiors
-* Create TOC on Clutch homepage to link to versioned game endpoints
-
-
-
+* Make Editor Utils Promise-based... like clutch core files module
 * Use game icon for mobile installed
 * Visually center the Hero on the screen (currently centering top left corner)
+
 
 
 ********************************************************************************

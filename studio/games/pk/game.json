@@ -2,8 +2,8 @@
     "game": {
         "id": "pk",
         "name": "Pokemon Re-d",
-        "width": 768,
-        "height": 576,
+        "width": 384,
+        "height": 288,
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/pk/assets/icons/pk.png",
@@ -26,13 +26,11 @@
             "height": 92,
             "scale": 2,
             "image": "/games/pk/assets/sprites/hero_ash.png",
-            "boxes": {
-                "hit": {
-                    "x": 22,
-                    "y": 48,
-                    "width": 48,
-                    "height": 40
-                }
+            "hitbox": {
+                "x": 22,
+                "y": 48,
+                "width": 48,
+                "height": 40
             },
             "verbs": {
                 "face": {

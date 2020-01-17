@@ -40,8 +40,7 @@ const siteConfig = Object.assign( {}, webpackConfig, {
             files: [
                 "template/**/*.html",
                 "template/**/*.json"
-            ],
-            startPath: "/games/la/"
+            ]
         })
     ],
 

@@ -33,7 +33,7 @@
     "build:netlify": "export NODE_ENV=netlify ; ./node_modules/.bin/webpack --env.netlify --progress --profile --display-modules --colors -p",
     "static:build": "export NODE_ENV=netlify ; export CLUTCH_CLEAN=0 ; node clutch.static.js",
     "static:clean": "export NODE_ENV=netlify ; export CLUTCH_CLEAN=1 ; node clutch.static.js",
-    "static:games": "cp -R ./studio/games ./static"
+    "static:games": "export NODE_ENV=sandbox ; cp -R ./studio/games ./static ; node clutch.games.js"
   },
   "devDependencies": {
     "autoprefixer": "^8.6.2",

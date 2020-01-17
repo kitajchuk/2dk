@@ -62,7 +62,6 @@ const Config = {
         blueDark: "#004080",
     },
     values: {
-        cameraSpeed: 256,
         debounceDur: 256,
         boundaryAnimDur: 512,
     }
