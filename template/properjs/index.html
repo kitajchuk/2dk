@@ -11,10 +11,10 @@ context.pageTemplate = context.getTemplate();
 <html lang="en" class="is-site-intro">
     <head>
         <meta charset="utf-8" />
-        <title><%= context.pageTitle %></title>
-        <meta http-equiv="x-dns-prefetch-control" content="on" />
-        <meta name="description" content="<%= context.pageDescription %>" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="<%= context.pageTitle %>" />
         <meta name="google-site-verification" content="<%= context.site.data.googleVerify %>" />
         <link rel="apple-touch-icon" sizes="57x57" href="<%= context.config.url %>/img/icon/apple-icon-57x57.png" />
         <link rel="apple-touch-icon" sizes="60x60" href="<%= context.config.url %>/img/icon/apple-icon-60x60.png" />
@@ -25,32 +25,8 @@ context.pageTemplate = context.getTemplate();
         <link rel="apple-touch-icon" sizes="144x144" href="<%= context.config.url %>/img/icon/apple-icon-144x144.png" />
         <link rel="apple-touch-icon" sizes="152x152" href="<%= context.config.url %>/img/icon/apple-icon-152x152.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="<%= context.config.url %>/img/icon/apple-icon-180x180.png" />
-        <link rel="icon" type="image/png" sizes="192x192"  href="<%= context.config.url %>/img/icon/android-icon-192x192.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="<%= context.config.url %>/img/icon/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="96x96" href="<%= context.config.url %>/img/icon/favicon-96x96.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="<%= context.config.url %>/img/icon/favicon-16x16.png" />
-        <link rel="shortcut icon" type="image/x-icon" href="<%= context.config.url %>/img/icon/favicon.ico" />
-        <link rel="manifest" href="<%= context.config.url %>/img/icon/manifest.json" />
-        <meta name="msapplication-TileColor" content="#000000" />
-        <meta name="msapplication-TileImage" content="<%= context.config.url %>/img/icon/ms-icon-144x144.png" />
-        <meta name="theme-color" content="#000000" />
-        <meta property="og:site_name" content="<%= context.site.data.title %>" />
-        <meta property="og:title" content="<%= context.site.data.title %>" />
-        <meta property="og:url" content="<%= context.config.url %>" />
-        <meta property="og:type" content="website" />
-        <meta property="og:description" content="<%= context.pageDescription %>" />
-        <meta property="og:image" content="<%= context.config.url %>/img/share/Share_Graphic.jpeg" />
-        <meta itemprop="name" content="<%= context.site.data.title %>" />
-        <meta itemprop="description" content="<%= context.pageDescription %>" />
-        <meta itemprop="url" content="<%= context.config.url %>" />
-        <meta itemprop="thumbnailUrl" content="<%= context.config.url %>/img/share/Share_Graphic.jpeg" />
-        <meta itemprop="image" content="<%= context.config.url %>/img/share/Share_Graphic.jpeg" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@kitajchuk" />
-        <meta name="twitter:creator" content="@kitajchuk" />
-        <meta name="twitter:title" content="<%= context.site.data.title %>" />
-        <meta name="twitter:description" content="<%= context.pageDescription %>" />
-        <meta name="twitter:image" content="<%= context.config.url %>/img/share/Share_Graphic.jpeg" />
+        <title><%= context.pageTitle %></title>
+        <meta name="description" content="<%= context.pageDescription %>" />
         <link href="<%= sourceCSS %>" rel="stylesheet" />
         <script type="application/google-analytics"></script>
     </head>

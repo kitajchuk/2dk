@@ -155,13 +155,13 @@ class App {
             // });
 
             // Keeping service workers off during GameBox development...
-            navigator.serviceWorker.getRegistrations().then(( registrations ) => {
-                registrations.forEach(( registration ) => {
-                    registration.unregister().then(( bool ) => {
-                        console.log( "Unregistered Service Worker", bool );
-                    });
-                });
-            });
+            // navigator.serviceWorker.getRegistrations().then(( registrations ) => {
+            //     registrations.forEach(( registration ) => {
+            //         registration.unregister().then(( bool ) => {
+            //             console.log( "Unregistered Service Worker", bool );
+            //         });
+            //     });
+            // });
         }
 
         window.onload = () => {

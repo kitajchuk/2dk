@@ -7,14 +7,16 @@ const games = locals.context.doc.games;
         <h1><em><%- site.data.title %></em></h1>
         <p><%- site.data.description %></p>
     </div>
-    <div class="home__games -wrap -expt">
-        <h1><em>Test</em></h1>
+    <hr />
+    <div class="home__games -wrap">
+        <h3><em>Test</em></h3>
         <% games.forEach(( game ) => { %>
             <p><%= game.name %> | <a href="/games/<%= game.id %>/?v=<%= game.version %>" target="_blank">DEMO</a></p>
         <% }) %>
     </div>
     <div class="home__mast -wrap -expt">
-        <h1><em>Dev</em></h1>
-        <p>The project is in active development. The code is on Github <a href="https://github.com/kitajchuk/2dk" target="_blank">HERE</a>.</p>
+        <h3><em>Dev</em></h3>
+        <p>The project is in active development.</p>
+        <p>The code is on Github <a href="https://github.com/kitajchuk/2dk" target="_blank">HERE</a>.</p>
     </div>
 </div>

@@ -67,6 +67,8 @@
     top: 0;
     width: 100%;
     height: 100%;
+    justify-content: center;
+    align-items: center;
 
     .is-started & {
         display: none;
@@ -74,16 +76,12 @@
 
     > div:first-child {
         @include wrap();
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         z-index: 12;
         text-align: center;
+    }
+
+    > div > div {
+        padding: 8px 0;
     }
 }
 
@@ -117,7 +115,7 @@
     }
 
     ._2dk__splash__info {
-        display: block;
+        display: flex;
 
         > div:last-child {
             animation: bounce (240ms * 2) infinite;
@@ -131,7 +129,7 @@
 
 @media only screen and ( orientation: landscape ) {
     ._2dk__splash__load {
-        display: block;
+        display: flex;
     }
 }
 

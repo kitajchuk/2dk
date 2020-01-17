@@ -56,17 +56,27 @@ class Player {
                 return this.loader.load( url ).then(() => {
                     counter++;
 
-                    this.splashLoad.innerHTML = `<div>Loaded ${counter} of ${data.bundle.length} game resources...</div>`;
+                    this.splashLoad.innerHTML = this.getSplash( `Loaded ${counter} of ${data.bundle.length} game resources...` );
                 });
 
             })).then(( values ) => {
-                this.splashLoad.innerHTML = `<div>Press Start</div>`;
+                this.splashLoad.innerHTML = this.getSplash( "Press Start" );
                 this.gameaudio = new GameAudio();
                 this.gamepad = new GamePad( this );
                 this.gamebox = new TopView( this );
                 this.bind();
             });
         });
+    }
+
+
+    getSplash ( display ) {
+        return `
+            <div>
+                <div>Game ID: ${this.data.game.id} | version: ${this.data.game.version}</div>
+                <div>${display}</div>
+            </div>
+        `;
     }
 
 
@@ -107,7 +117,7 @@ class Player {
         this.splashInfo.innerHTML = `<div>Rotate to Landscape.</div><div>${this.installed ? "Installed" : "+Webapp"}</div>`;
         this.splashLoad = document.createElement( "div" );
         this.splashLoad.className = "_2dk__splash__load";
-        this.splashLoad.innerHTML = `<div>Loading game bundle...</div>`;
+        this.splashLoad.innerHTML = this.getSplash( "Loading game bundle..." );
         this.splash.appendChild( this.splashInfo );
         this.splash.appendChild( this.splashLoad );
         this.element.appendChild( this.splash );
