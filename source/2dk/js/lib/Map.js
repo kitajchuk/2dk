@@ -130,6 +130,106 @@ class ActiveTiles {
 
 
 
+class ActiveObject {
+    constructor ( data, map ) {
+        this.map = map;
+        this.data = Utils.merge( map.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
+        this.layer = this.data.layer;
+        this.width = this.data.width;
+        this.height = this.data.height;
+        this.position = {
+            x: this.data.coords[ 0 ][ 0 ] * this.map.gridsize,
+            y: this.data.coords[ 0 ][ 1 ] * this.map.gridsize,
+        };
+        this.hitbox = {
+            x: this.position.x + (this.data.hitbox.x / this.map.gamebox.camera.resolution),
+            y: this.position.y + (this.data.hitbox.y / this.map.gamebox.camera.resolution),
+            width: this.data.hitbox.width / this.map.gamebox.camera.resolution,
+            height: this.data.hitbox.height / this.map.gamebox.camera.resolution,
+        };
+        this.states = Utils.copy( this.data.states );
+        this.relative = (this.hitbox.height !== this.height);
+        this.frame = 0;
+        this.shift();
+    }
+
+
+    destroy () {
+        this.data = null;
+    }
+
+
+    shift () {
+        if ( this.states.length ) {
+            this.state = this.states.shift();
+        }
+    }
+
+
+    blit ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
+
+        this.frame = 0;
+
+        if ( this.state.animated ) {
+            const diff = (elapsed - this.previousElapsed);
+
+            this.frame = Math.floor( (diff / this.state.dur) * this.state.stepsX );
+
+            if ( diff >= this.state.dur ) {
+                this.previousElapsed = elapsed;
+                this.frame = this.state.stepsX - 1;
+            }
+        }
+
+        if ( this.relative ) {
+            if ( this.hitbox.y > this.map.gamebox.hero.hitbox.y ) {
+                this.layer = "foreground";
+
+            } else {
+                this.layer = "background";
+            }
+        }
+    }
+
+
+    getTile ( coords ) {
+        const offsetX = (this.state.offsetX + (this.frame * this.width));
+
+        return [
+            offsetX + ((coords[ 0 ] - this.data.coords[ 0 ][ 0 ]) * this.map.data.tilesize),
+            this.state.offsetY + ((coords[ 1 ] - this.data.coords[ 0 ][ 1 ]) * this.map.data.tilesize),
+        ];
+    }
+
+
+    payload () {
+        if ( this.state.action.payload.dialogue ) {
+            this.map.gamebox.dialogue.play( this.state.action.payload.dialogue );
+        }
+    }
+
+
+    canInteract ( dir ) {
+        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
+    }
+
+
+    doInteract ( dir ) {
+        if ( this.state.action.payload ) {
+            this.payload();
+        }
+
+        if ( this.state.action.shift ) {
+            this.shift();
+        }
+    }
+}
+
+
+
 class MapLayer {
     // id, width, height
     constructor ( data ) {
@@ -191,6 +291,7 @@ class Map {
             foreground: null,
         };
         this.activeTiles = [];
+        this.activeObjects = [];
         this.offset = {
             x: 0,
             y: 0
@@ -210,6 +311,11 @@ class Map {
         });
         this.activeTiles = null;
 
+        this.activeObjects.forEach(( activeObject ) => {
+            activeObject.destroy();
+        });
+        this.activeObjects = null;
+
         this.element.parentNode.removeChild( this.element );
         this.data = null;
         this.element = null;
@@ -228,6 +334,10 @@ class Map {
 
         this.data.tiles.forEach(( data ) => {
             this.activeTiles.push( new ActiveTiles( data, this ) );
+        });
+
+        this.data.objects.forEach(( data ) => {
+            this.activeObjects.push( new ActiveObject( data, this ) );
         });
     }
 
@@ -282,14 +392,21 @@ class Map {
 
                     while ( x < width ) {
                         const lookupX = renderBox.x + x;
-                        const activeTile = this.getActiveTile( lookupX, lookupY );
+                        const activeTile = this.getActiveTile( id, lookupX, lookupY );
+                        const activeObject = this.getActiveObject( id, lookupX, lookupY );
 
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
                             // Either draw the texture or the correct frame for an ActiveTile
-                            ret[ id ][ y ][ x ] = activeTile || this.data.textures[ id ][ lookupY ][ lookupX ];
+                            ret[ id ][ y ][ x ] = activeTile || Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
+
+                            // Push any ActiveObject tiles to the cel stack
+                            if ( activeObject ) {
+                                ret[ id ][ y ][ x ].push( activeObject );
+                            }
 
                         } else {
-                            ret[ id ][ y ][ x ] = 0;
+                            // ActiveObject tiles can move between background and foreground
+                            ret[ id ][ y ][ x ] = activeObject ? [activeObject] : 0;
                         }
 
                         x++;
@@ -311,15 +428,34 @@ class Map {
     }
 
 
-    getActiveTile ( lookupX, lookupY ) {
+    getActiveTile ( layer, lookupX, lookupY ) {
         let ret = null;
 
         this.data.tiles.forEach(( tiles ) => {
             tiles.coords.forEach(( coord ) => {
-                if ( coord[ 0 ] === lookupX && coord[ 1 ] === lookupY ) {
+                // Correct render layer AND correct tile coords
+                if ( layer === tiles.layer && coord[ 0 ] === lookupX && coord[ 1 ] === lookupY ) {
                     ret = this.getActiveTiles( tiles.group ).getTile();
                 }
             });
+        });
+
+        return ret;
+    }
+
+
+    getActiveObject ( layer, lookupX, lookupY ) {
+        let ret = null;
+
+        this.activeObjects.forEach(( activeObject ) => {
+            // Correct render layer AND correct tile coords
+            if ( layer === activeObject.layer ) {
+                activeObject.data.coords.forEach(( coord ) => {
+                    if ( coord[ 0 ] === lookupX && coord[ 1 ] === lookupY ) {
+                        ret = activeObject.getTile( coord );
+                    }
+                });
+            }
         });
 
         return ret;
@@ -331,6 +467,10 @@ class Map {
 
         this.activeTiles.forEach(( activeTiles ) => {
             activeTiles.blit( elapsed );
+        });
+
+        this.activeObjects.forEach(( activeObject ) => {
+            activeObject.blit( elapsed );
         });
 
         this.renderBox = this.getRenderbox( elapsed, camera );

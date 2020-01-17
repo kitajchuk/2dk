@@ -25,10 +25,10 @@ class Sprite {
             y: 0,
         };
         this.hitbox = {
-            x: this.position.x + (this.data.boxes.hit.x / this.scale),
-            y: this.position.y + (this.data.boxes.hit.y / this.scale),
-            width: this.data.boxes.hit.width / this.scale,
-            height: this.data.boxes.hit.height / this.scale,
+            x: this.position.x + (this.data.hitbox.x / this.scale),
+            y: this.position.y + (this.data.hitbox.y / this.scale),
+            width: this.data.hitbox.width / this.scale,
+            height: this.data.hitbox.height / this.scale,
         };
 
         this.build();
@@ -82,8 +82,8 @@ class Sprite {
 
     getHitbox ( poi ) {
         return {
-            x: poi.x + (this.data.boxes.hit.x / this.scale),
-            y: poi.y + (this.data.boxes.hit.y / this.scale),
+            x: poi.x + (this.data.hitbox.x / this.scale),
+            y: poi.y + (this.data.hitbox.y / this.scale),
             width: this.hitbox.width,
             height: this.hitbox.height,
         };
@@ -112,8 +112,8 @@ class Hero extends Sprite {
 
     update ( poi, offset ) {
         this.position = poi;
-        this.hitbox.x = this.position.x + (this.data.boxes.hit.x / this.scale);
-        this.hitbox.y = this.position.y + (this.data.boxes.hit.y / this.scale);
+        this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
+        this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
 
         const absolute = {
             x: Math.abs( offset.x ),
@@ -221,8 +221,8 @@ class NPC extends Sprite {
     update ( poi, offset ) {
         this.offset.x = offset.x + this.position.x;
         this.offset.y = offset.y + this.position.y;
-        this.hitbox.x = this.position.x + (this.data.boxes.hit.x / this.scale);
-        this.hitbox.y = this.position.y + (this.data.boxes.hit.y / this.scale);
+        this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
+        this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
     }
 
 

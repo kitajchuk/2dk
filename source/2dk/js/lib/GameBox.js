@@ -44,7 +44,7 @@ class GameBox {
 
         this.build();
         this.initMap();
-        this.initNPC();
+        // this.initNPC();
     }
 
 
@@ -67,25 +67,25 @@ class GameBox {
     }
 
 
-    initNPC () {
-        this.map.data.objects.forEach(( npc ) => {
-            npc = new NPC( Utils.merge( this.player.data.objects.find( ( obj ) => (obj.id === npc.id) ), npc ), this );
+    // initNPC () {
+    //     this.map.data.objects.forEach(( npc ) => {
+    //         npc = new NPC( Utils.merge( this.player.data.objects.find( ( obj ) => (obj.id === npc.id) ), npc ), this );
+    //
+    //         this.map.element.appendChild( npc.element );
+    //
+    //         this.npcs.push( npc );
+    //     });
+    // }
 
-            this.map.element.appendChild( npc.element );
 
-            this.npcs.push( npc );
-        });
-    }
-
-
-    killNPC () {
-        this.npcs.forEach(( npc ) => {
-            npc.destroy();
-            npc = null;
-        });
-
-        this.npcs = [];
-    }
+    // killNPC () {
+    //     this.npcs.forEach(( npc ) => {
+    //         npc.destroy();
+    //         npc = null;
+    //     });
+    //
+    //     this.npcs = [];
+    // }
 
 
     pause ( paused ) {
@@ -138,10 +138,10 @@ class GameBox {
     render ( elapsed ) {
         this.map.render( elapsed, this.camera );
         this.hero.render( elapsed );
-        this.npcs.forEach(( npc ) => {
-            npc.update( this.hero.position, this.offset );
-            npc.render( elapsed );
-        });
+        // this.npcs.forEach(( npc ) => {
+        //     npc.update( this.hero.position, this.offset );
+        //     npc.render( elapsed );
+        // });
     }
 
 
@@ -200,7 +200,8 @@ class TopView extends GameBox {
             evt: this.checkEvt( poi ),
             map: this.checkMap( poi, this.hero ),
             box: this.checkBox( poi ),
-            npc: this.checkNPC( poi ),
+            obj: this.checkObj( poi ),
+            // npc: this.checkNPC( poi ),
             tile: this.checkTile( poi ),
         };
     }
@@ -214,14 +215,21 @@ class TopView extends GameBox {
         const collision = this.getCollision( poi );
 
         if ( collision.evt ) {
-            this.handleEvt( collision.evt );
-            return;
+            if ( collision.evt.type === Config.events.BOUNDARY && collision.box ) {
+                this.handleEvtBoundary( collision.evt );
+                return;
+            }
         }
 
-        this.awareNPC( poi );
+        // this.awareNPC( poi );
+        //
+        // if ( collision.npc ) {
+        //     this.handleNPC( collision.npc, dir );
+        //     return;
+        // }
 
-        if ( collision.npc ) {
-            this.handleNPC( collision.npc, dir );
+        if ( collision.obj ) {
+            this.handleObj( poi, dir );
             return;
         }
 
@@ -252,8 +260,8 @@ class TopView extends GameBox {
         const poi = this.getPoi( delta, dirX, dirY );
         const collision = this.getCollision( poi );
 
-        if ( collision.npc ) {
-            this.handleActNPC( collision.npc, dir );
+        if ( collision.obj ) {
+            this.handleActObj( collision.obj, dir );
         }
 
         this.dialogue.check( true, false );
@@ -286,10 +294,8 @@ class TopView extends GameBox {
     }
 
 
-    handleEvt ( evt ) {
-        if ( evt.type === Config.events.BOUNDARY ) {
-            this.switchMap( evt );
-        }
+    handleEvtBoundary ( evt ) {
+        this.switchMap( evt );
     }
 
 
@@ -298,9 +304,14 @@ class TopView extends GameBox {
     }
 
 
-    handleActNPC ( npc, dir ) {
-        if ( npc.canInteract( dir ) ) {
-            npc.doInteract( dir );
+    handleObj ( obj, dir ) {
+        this.hero.cycle( Config.verbs.WALK, dir );
+    }
+
+
+    handleActObj ( obj, dir ) {
+        if ( obj.canInteract( dir ) ) {
+            obj.doInteract( dir );
         }
     }
 
@@ -358,7 +369,6 @@ class TopView extends GameBox {
 
     checkEvt ( poi ) {
         let ret = false;
-        // const hitbox = this.hero.getHitbox( poi );
         const hitbox = {
             width: this.hero.width,
             height: this.hero.height,
@@ -384,23 +394,38 @@ class TopView extends GameBox {
     }
 
 
-    awareNPC ( poi ) {
-        for ( let i = this.npcs.length; i--; ) {
-            this.npcs[ i ].checkHero( poi );
-            this.npcs[ i ].checkCamera( poi );
-        }
-    }
+    // awareNPC ( poi ) {
+    //     for ( let i = this.npcs.length; i--; ) {
+    //         this.npcs[ i ].checkHero( poi );
+    //         this.npcs[ i ].checkCamera( poi );
+    //     }
+    // }
 
 
-    checkNPC ( poi ) {
-        let ret = null;
+    // checkNPC ( poi ) {
+    //     let ret = null;
+    //     const hitbox = this.hero.getHitbox( poi );
+    //
+    //     for ( let i = this.npcs.length; i--; ) {
+    //         const hitnpc = this.npcs[ i ].getHitbox( this.npcs[ i ].position );
+    //
+    //         if ( Utils.collide( hitbox, hitnpc ) ) {
+    //             ret = this.npcs[ i ];
+    //             break;
+    //         }
+    //     }
+    //
+    //     return ret;
+    // }
+
+
+    checkObj ( poi ) {
+        let ret = false;
         const hitbox = this.hero.getHitbox( poi );
 
-        for ( let i = this.npcs.length; i--; ) {
-            const hitnpc = this.npcs[ i ].getHitbox( this.npcs[ i ].position );
-
-            if ( Utils.collide( hitbox, hitnpc ) ) {
-                ret = this.npcs[ i ];
+        for ( let i = this.map.activeObjects.length; i--; ) {
+            if ( Utils.collide( hitbox, this.map.activeObjects[ i ].hitbox ) ) {
+                ret = this.map.activeObjects[ i ];
                 break;
             }
         }
@@ -630,7 +655,7 @@ class TopView extends GameBox {
                 this.hero.render( this.player.previousElapsed );
 
                 // Destroy old Map / Set new Map
-                this.killNPC();
+                // this.killNPC();
                 this.map.destroy();
                 this.map = this.map_;
                 this.map_ = null;
@@ -638,7 +663,7 @@ class TopView extends GameBox {
 
                 // Initialize
                 this.initMap();
-                this.initNPC();
+                // this.initNPC();
                 this.player.resume();
 
             }, Config.values.debounceDur );

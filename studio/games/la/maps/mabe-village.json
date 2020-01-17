@@ -354,18 +354,11 @@
     ],
     "objects": [
         {
-            "id": "chimney-smoke",
-            "spawn": {
-                "x": 896,
-                "y": 1664
-            }
-        },
-        {
             "id": "bird-statue",
-            "spawn": {
-                "x": 1600,
-                "y": 704
-            }
+            "coords": [
+                [25, 11],
+                [25, 12]
+            ]
         }
     ],
     "events": [

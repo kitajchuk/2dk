@@ -5,6 +5,9 @@
 
 
 * Better event BOUNDARY collision handling
+* Explore NPC concepts with sprite sheets
+* Door events for entering and exiting interiors
+* Explore Map Objects again (rule can be they must adhere to tile coords...?)
 
 
 

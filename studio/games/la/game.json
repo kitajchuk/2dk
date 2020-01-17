@@ -25,13 +25,11 @@
             "width": 92,
             "height": 92,
             "image": "/games/la/assets/sprites/hero_la.png",
-            "boxes": {
-                "hit": {
-                    "x": 28,
-                    "y": 44,
-                    "width": 36,
-                    "height": 40
-                }
+            "hitbox": {
+                "x": 28,
+                "y": 44,
+                "width": 36,
+                "height": 40
             },
             "verbs": {
                 "face": {
@@ -155,13 +153,11 @@
             "width": 140,
             "height": 140,
             "image": "/games/la/assets/sprites/hero_alttp.png",
-            "boxes": {
-                "hit": {
-                    "x": 48,
-                    "y": 70,
-                    "width": 44,
-                    "height": 48
-                }
+            "hitbox": {
+                "x": 48,
+                "y": 70,
+                "width": 44,
+                "height": 48
             },
             "verbs": {
                 "face": {
@@ -287,15 +283,12 @@
             "name": "Chest",
             "width": 64,
             "height": 64,
-            "image": "/games/la/assets/tiles/tiles.png",
             "layer": "background",
-            "boxes": {
-                "hit": {
-                    "x": 0,
-                    "y": 0,
-                    "width": 64,
-                    "height": 64
-                }
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 64
             },
             "states": [
                 {
@@ -324,70 +317,16 @@
             ]
         },
         {
-            "id": "pot",
-            "name": "Pot",
-            "width": 64,
-            "height": 64,
-            "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "background",
-            "boxes": {
-                "hit": {
-                    "x": 0,
-                    "y": 16,
-                    "width": 64,
-                    "height": 48
-                }
-            },
-            "states": [
-                {
-                    "offsetX": 640,
-                    "offsetY": 384,
-                    "action": {
-                        "verb": "move",
-                        "counter": 999
-                    }
-                }
-            ]
-        },
-        {
-            "id": "chimney-smoke",
-            "name": "Chimney Smoke",
-            "width": 64,
-            "height": 64,
-            "image": "/games/la/assets/sprites/smoke.png",
-            "layer": "foreground",
-            "boxes": {
-                "hit": {
-                    "x": 0,
-                    "y": 0,
-                    "width": 0,
-                    "height": 0
-                }
-            },
-            "states": [
-                {
-                    "animated": 1,
-                    "offsetX": 0,
-                    "offsetY": 0,
-                    "stepsX": 5,
-                    "dur": 3000
-                }
-            ]
-        },
-        {
             "id": "bird-statue",
             "name": "Bird Statue",
             "width": 64,
             "height": 128,
-            "image": "/games/la/assets/tiles/tiles.png",
             "layer": "background",
-            "boxes": {
-                "hit": {
-                    "x": 0,
-                    "y": 72,
-                    "width": 64,
-                    "height": 56
-                }
+            "hitbox": {
+                "x": 0,
+                "y": 72,
+                "width": 64,
+                "height": 56
             },
             "states": [
                 {

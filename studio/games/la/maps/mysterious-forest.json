@@ -219,17 +219,15 @@
     "objects": [
         {
             "id": "chest",
-            "spawn": {
-                "x": 896,
-                "y": 1856
-            }
+            "coords": [
+                [14, 3]
+            ]
         },
         {
             "id": "chest",
-            "spawn": {
-                "x": 896,
-                "y": 192
-            }
+            "coords": [
+                [14, 29]
+            ]
         }
     ],
     "events": [
