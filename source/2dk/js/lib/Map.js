@@ -107,23 +107,25 @@ class ActiveTiles {
             this.previousElapsed = elapsed;
         }
 
-        const diff = (elapsed - this.previousElapsed);
+        this.frame = 0;
 
-        this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
+        if ( this.data.stepsX ) {
+            const diff = (elapsed - this.previousElapsed);
 
-        if ( diff >= this.data.dur ) {
-            this.previousElapsed = elapsed;
-            this.frame = this.data.stepsX - 1;
+            this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
+
+            if ( diff >= this.data.dur ) {
+                this.previousElapsed = elapsed;
+                this.frame = this.data.stepsX - 1;
+            }
         }
     }
 
 
     getTile () {
         return [
-            [
-                (this.data.offsetX + (this.frame * this.map.data.tilesize)),
-                this.data.offsetY,
-            ]
+            (this.data.offsetX + (this.frame * this.map.data.tilesize)),
+            this.data.offsetY,
         ];
     }
 }
@@ -173,7 +175,7 @@ class ActiveObject {
 
         this.frame = 0;
 
-        if ( this.state.animated ) {
+        if ( this.state.stepsX ) {
             const diff = (elapsed - this.previousElapsed);
 
             this.frame = Math.floor( (diff / this.state.dur) * this.state.stepsX );
@@ -396,8 +398,13 @@ class Map {
                         const activeObject = this.getActiveObject( id, lookupX, lookupY );
 
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
-                            // Either draw the texture or the correct frame for an ActiveTile
-                            ret[ id ][ y ][ x ] = activeTile || Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
+                            // Render the textures
+                            ret[ id ][ y ][ x ] = Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
+
+                            // Push any ActiveTiles to the cel stack
+                            if ( activeTile ) {
+                                ret[ id ][ y ][ x ].push( activeTile );
+                            }
 
                             // Push any ActiveObject tiles to the cel stack
                             if ( activeObject ) {

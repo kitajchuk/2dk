@@ -22,8 +22,8 @@ class GameBox {
             y: 0,
             width: this.player.width,
             height: this.player.height,
-            speed: 256 / this.player.data.game.resolution,
             resolution: this.player.data.game.resolution,
+            speed: this.getSpeed(),
         };
 
         // Map
@@ -145,6 +145,11 @@ class GameBox {
     }
 
 
+    getSpeed () {
+        return (Config.values.cameraSpeed / this.player.data.game.resolution);
+    }
+
+
     getPoi ( delta, dirX, dirY ) {
         return {
             x: this.hero.position.x + (dirX * this.camera.speed * delta),
@@ -245,6 +250,14 @@ class TopView extends GameBox {
 
         if ( collision.tile ) {
             this.handleTile( collision.tile );
+
+            if ( collision.tile.data.action ) {
+                this.hero.cycle( Config.verbs.WALK, dir );
+                return;
+            }
+
+        } else {
+            this.camera.speed = this.getSpeed();
         }
 
         this.handleWalk( poi, dir );
@@ -261,7 +274,11 @@ class TopView extends GameBox {
         const collision = this.getCollision( poi );
 
         if ( collision.obj ) {
-            this.handleActObj( collision.obj, dir );
+            this.handleObjAct( collision.obj, dir );
+        }
+
+        if ( collision.tile && collision.tile.data.action ) {
+            this.handleTileAct( collision.tile, dir );
         }
 
         this.dialogue.check( true, false );
@@ -294,11 +311,6 @@ class TopView extends GameBox {
     }
 
 
-    handleEvtBoundary ( evt ) {
-        this.switchMap( evt );
-    }
-
-
     handleNPC ( npc, dir ) {
         this.hero.cycle( Config.verbs.WALK, dir );
     }
@@ -309,7 +321,7 @@ class TopView extends GameBox {
     }
 
 
-    handleActObj ( obj, dir ) {
+    handleObjAct ( obj, dir ) {
         if ( obj.canInteract( dir ) ) {
             obj.doInteract( dir );
         }
@@ -317,12 +329,24 @@ class TopView extends GameBox {
 
 
     handleTile ( tile ) {
-        // console.log( tile );
+        if ( tile.data.group === Config.tiles.STAIRS ) {
+            this.camera.speed = this.getSpeed() / 2.5;
+        }
+    }
+
+
+    handleTileAct ( tile, dir ) {
+        // console.log( "ActiveTile action", tile );
     }
 
 
     handleBox ( poi, dir ) {
         this.hero.cycle( Config.verbs.WALK, dir );
+    }
+
+
+    handleEvtBoundary ( evt ) {
+        this.switchMap( evt );
     }
 
 
@@ -435,28 +459,31 @@ class TopView extends GameBox {
 
 
     checkTile ( poi ) {
-        let ret = false;
+        const tiles = [];
         const hitbox = this.hero.getHitbox( poi );
 
-        loop1:
-            for ( let i = this.map.activeTiles.length; i--; ) {
-                loop2:
-                    for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
-                        const tile = {
-                            width: this.map.gridsize,
-                            height: this.map.gridsize,
-                            x: this.map.activeTiles[ i ].data.coords[ j ][ 0 ] * this.map.gridsize,
-                            y: this.map.activeTiles[ i ].data.coords[ j ][ 1 ] * this.map.gridsize
-                        };
+        for ( let i = this.map.activeTiles.length; i--; ) {
+            for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
+                const tile = {
+                    width: this.map.gridsize,
+                    height: this.map.gridsize,
+                    x: this.map.activeTiles[ i ].data.coords[ j ][ 0 ] * this.map.gridsize,
+                    y: this.map.activeTiles[ i ].data.coords[ j ][ 1 ] * this.map.gridsize
+                };
 
-                        if ( Utils.collide( hitbox, tile ) ) {
-                            ret = tile;
-                            break loop1;
-                        }
-                    }
+                if ( Utils.collide( hitbox, tile ) ) {
+                    tiles.push( this.map.activeTiles[ i ] );
+                }
             }
+        }
 
-        return ret;
+        if ( tiles.length === 1 ) {
+            return tiles[ 0 ];
+        }
+
+        return tiles.find(( tile ) => {
+            return tile.data.action;
+        });
     }
 
 

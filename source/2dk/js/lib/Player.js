@@ -140,6 +140,7 @@ class Player {
 
     stop () {
         this.stopped = true;
+        this.gamepad.clear();
         this.gamebox.pause( this.stopped );
     }
 
@@ -147,6 +148,19 @@ class Player {
     resume () {
         this.stopped = false;
         this.gamebox.pause( this.stopped );
+    }
+
+
+    pause () {
+        this.paused = true;
+        this.gamepad.clear();
+        this.gamebox.pause( this.paused );
+    }
+
+
+    play () {
+        this.paused = false;
+        this.gamebox.pause( this.paused );
     }
 
 
@@ -208,8 +222,12 @@ class Player {
             this.ready = true;
         }
 
-        this.paused = !this.paused;
-        this.gamebox.pause( this.paused );
+        if ( this.paused ) {
+            this.play();
+
+        } else {
+            this.pause();
+        }
     }
 
 

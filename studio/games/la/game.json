@@ -7,7 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 209
+        "version": 214
     },
     "hero": {
         "sprite": 1,
@@ -279,6 +279,39 @@
     ],
     "objects": [
         {
+            "id": "sign",
+            "name": "Sign",
+            "width": 64,
+            "height": 64,
+            "layer": "background",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 64
+            },
+            "states": [
+                {
+                    "offsetX": 0,
+                    "offsetY": 384,
+                    "action": {
+                        "verb": "read",
+                        "require": {
+                            "dir": "up"
+                        },
+                        "payload": {
+                            "dialogue": {
+                                "type": "text",
+                                "text": [
+                                    "You can read signs. Good for you kid. You can read signs. Good for you kid. You can read signs. Good for you kid. You can read signs. Good for you kid."
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
             "id": "chest",
             "name": "Chest",
             "width": 64,
@@ -334,7 +367,6 @@
                     "offsetY": 2304,
                     "stepsX": 4,
                     "dur": 1000,
-                    "animated": 1,
                     "action": {
                         "verb": "move",
                         "require": {

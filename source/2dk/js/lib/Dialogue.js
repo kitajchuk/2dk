@@ -1,9 +1,11 @@
+const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 
 
 
 class Dialogue {
     constructor () {
+        this.pressed = false;
         this.ready = false;
         this.async = 10;
         this.timeout = 1000;
@@ -19,16 +21,22 @@ class Dialogue {
 
     setReady () {
         this.ready = false;
+        this.pressed = true;
 
         setTimeout(() => {
             this.ready = true;
+            this.pressed = false;
 
         }, this.timeout );
     }
 
 
     play ( data ) {
-        this.data = data;
+        if ( this.pressed ) {
+            return;
+        }
+
+        this.data = Utils.copy( data );
 
         return new Promise(( resolve, reject ) => {
             this.resolve = resolve;

@@ -751,11 +751,16 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mousemove", ( e ) => {
+            const coords = [ Math.floor( e.offsetX / this.gridsize ), Math.floor( e.offsetY / this.gridsize ) ];
+
+            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
+
             if ( this.editor.canMapFunction() ) {
                 if ( this.canApplyTiles() ) {
-                    const coords = [ Math.floor( e.offsetX / this.gridsize ), Math.floor( e.offsetY / this.gridsize ) ];
                     const foundCoord = this.tilesetCoords.find( ( coord ) => coord[ 0 ] === coords[ 0 ] && coord[ 1 ] === coords[ 1 ] );
                     const sameCoord = coords[ 0 ] === this.currentTileCoord[ 0 ] && coords[ 1 ] === this.currentTileCoord[ 1 ];
+
+
 
                     if ( !foundCoord && !sameCoord ) {
                         this.applyTile( coords );
@@ -780,6 +785,10 @@ class EditorCanvas {
             this.isMouseMovedTiles = false;
         });
 
+        $tilepaint.on( "mouseout", ( e ) => {
+            this.dom.moveCoords.innerHTML = "( X, Y )";
+        });
+
         $collider.on( "mousedown", ( e ) => {
             if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCollider = true;
@@ -791,7 +800,6 @@ class EditorCanvas {
                 return;
             }
 
-            // Need to use this.scale?
             const coords = [ Math.floor( e.offsetX / this.map.collider ), Math.floor( e.offsetY / this.map.collider ) ];
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;

@@ -4,18 +4,15 @@
 
 
 
-* Better event BOUNDARY collision handling
+* Finish action tiles for mabe-village & mysterious-forest
 * Explore NPC concepts with sprite sheets
 * Door events for entering and exiting interiors
-* Explore Map Objects again (rule can be they must adhere to tile coords...?)
+* Create TOC on Clutch homepage to link to versioned game endpoints
 
 
 
 * Use game icon for mobile installed
-* Game version vs iteration-counter
-* Use game version/iteration-counter for index.html URLs
 * Visually center the Hero on the screen (currently centering top left corner)
-* Better camera step checking (combine all dirs and map to an outcome...?)
 
 
 ********************************************************************************
