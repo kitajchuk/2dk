@@ -248,6 +248,7 @@ class Player {
 
     onReleaseA () {
         this.controls.a = false;
+        this.gamebox.releaseA && this.gamebox.releaseA();
     }
 
 
@@ -264,6 +265,7 @@ class Player {
     onReleaseB () {
         this.controls.b = false;
         this.controls.bHold = false;
+        this.gamebox.releaseB && this.gamebox.releaseB();
     }
 
 

@@ -280,12 +280,20 @@ class TopView extends GameBox {
         if ( collision.tile && collision.tile.data.action ) {
             this.handleTileAct( collision.tile, dir );
         }
+    }
 
+
+    releaseA () {
         this.dialogue.check( true, false );
     }
 
 
     pressB () {
+
+    }
+
+
+    releaseB () {
         this.dialogue.check( false, true );
     }
 
