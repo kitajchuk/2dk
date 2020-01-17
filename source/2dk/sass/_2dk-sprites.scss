@@ -4,10 +4,10 @@
     left: 0;
     top: 0;
 
-    &.fg {
+    &.foreground {
         z-index: 3;
     }
-    &.bg {
+    &.background {
         z-index: 1;
     }
 }

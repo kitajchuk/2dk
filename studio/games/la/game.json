@@ -288,7 +288,7 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "objects",
+            "layer": "background",
             "boxes": {
                 "hit": {
                     "x": 0,
@@ -329,7 +329,7 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "objects",
+            "layer": "background",
             "boxes": {
                 "hit": {
                     "x": 0,
@@ -356,6 +356,14 @@
             "height": 64,
             "image": "/games/la/assets/sprites/smoke.png",
             "layer": "foreground",
+            "boxes": {
+                "hit": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 0,
+                    "height": 0
+                }
+            },
             "states": [
                 {
                     "animated": 1,
@@ -372,7 +380,7 @@
             "width": 64,
             "height": 128,
             "image": "/games/la/assets/tiles/tiles.png",
-            "layer": "objects",
+            "layer": "background",
             "boxes": {
                 "hit": {
                     "x": 0,

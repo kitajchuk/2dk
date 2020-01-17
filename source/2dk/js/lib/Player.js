@@ -145,12 +145,8 @@ class Player {
 
 
     resume () {
-        // Async resume
-        setTimeout(() => {
-            this.stopped = false;
-            this.gamebox.pause( this.stopped );
-
-        }, Config.values.debounceDur );
+        this.stopped = false;
+        this.gamebox.pause( this.stopped );
     }
 
 

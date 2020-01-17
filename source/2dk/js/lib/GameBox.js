@@ -3,7 +3,7 @@ const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const Dialogue = require( "./Dialogue" );
 const { Map } = require( "./Map" );
-const { Hero } = require( "./Sprite" );
+const { Hero, NPC } = require( "./Sprite" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
 
@@ -36,11 +36,15 @@ class GameBox {
         // Hero
         this.hero = new Hero( this.player.data.hero, this );
 
+        // NPCs
+        this.npcs = [];
+
         // Dialogues
         this.dialogue = new Dialogue();
 
         this.build();
         this.initMap();
+        this.initNPC();
     }
 
 
@@ -49,6 +53,7 @@ class GameBox {
         this.player.screen.appendChild( this.map.element );
         this.player.screen.appendChild( this.dialogue.element );
     }
+
 
     initMap () {
         this.offset = this.update( this.hero.position );
@@ -59,6 +64,27 @@ class GameBox {
             src: this.map.data.sound,
             channel: "bgm",
         });
+    }
+
+
+    initNPC () {
+        this.map.data.objects.forEach(( npc ) => {
+            npc = new NPC( Utils.merge( this.player.data.objects.find( ( obj ) => (obj.id === npc.id) ), npc ), this );
+
+            this.map.element.appendChild( npc.element );
+
+            this.npcs.push( npc );
+        });
+    }
+
+
+    killNPC () {
+        this.npcs.forEach(( npc ) => {
+            npc.destroy();
+            npc = null;
+        });
+
+        this.npcs = [];
     }
 
 
@@ -112,6 +138,18 @@ class GameBox {
     render ( elapsed ) {
         this.map.render( elapsed, this.camera );
         this.hero.render( elapsed );
+        this.npcs.forEach(( npc ) => {
+            npc.update( this.hero.position, this.offset );
+            npc.render( elapsed );
+        });
+    }
+
+
+    getPoi ( delta, dirX, dirY ) {
+        return {
+            x: this.hero.position.x + (dirX * this.camera.speed * delta),
+            y: this.hero.position.y + (dirY * this.camera.speed * delta),
+        }
     }
 
 
@@ -157,29 +195,33 @@ class TopView extends GameBox {
     }
 
 
+    getCollision ( poi ) {
+        return {
+            evt: this.checkEvt( poi ),
+            map: this.checkMap( poi, this.hero ),
+            box: this.checkBox( poi ),
+            npc: this.checkNPC( poi ),
+            tile: this.checkTile( poi ),
+        };
+    }
+
+
 /*******************************************************************************
 * GamePad Inputs
 *******************************************************************************/
     pressD ( dir, delta, dirX, dirY ) {
-        const poi = {
-            x: this.hero.position.x + (dirX * this.camera.speed * delta),
-            y: this.hero.position.y + (dirY * this.camera.speed * delta),
-        };
-        const collision = {
-            evt: this.checkEvt( poi ),
-            map: this.checkMap( poi, this.hero ),
-            box: this.checkBox( poi ),
-            obj: this.checkObj( poi ),
-            tile: this.checkTile( poi ),
-        };
+        const poi = this.getPoi( delta, dirX, dirY );
+        const collision = this.getCollision( poi );
 
         if ( collision.evt ) {
             this.handleEvt( collision.evt );
             return;
         }
 
-        if ( collision.obj ) {
-            this.handleObj( collision.obj, dir );
+        this.awareNPC( poi );
+
+        if ( collision.npc ) {
+            this.handleNPC( collision.npc, dir );
             return;
         }
 
@@ -207,16 +249,11 @@ class TopView extends GameBox {
 
 
     pressA ( dir, delta, dirX, dirY ) {
-        const poi = {
-            x: this.hero.position.x + (dirX * this.camera.speed * delta),
-            y: this.hero.position.y + (dirY * this.camera.speed * delta),
-        };
-        const collision = {
-            obj: this.checkObj( poi ),
-        };
+        const poi = this.getPoi( delta, dirX, dirY );
+        const collision = this.getCollision( poi );
 
-        if ( collision.obj ) {
-            this.handleActObj( collision.obj, dir );
+        if ( collision.npc ) {
+            this.handleActNPC( collision.npc, dir );
         }
 
         this.dialogue.check( true, false );
@@ -256,14 +293,14 @@ class TopView extends GameBox {
     }
 
 
-    handleObj ( obj, dir ) {
+    handleNPC ( npc, dir ) {
         this.hero.cycle( Config.verbs.WALK, dir );
     }
 
 
-    handleActObj ( obj, dir ) {
-        if ( obj.canInteract( dir ) ) {
-            obj.doInteract( dir );
+    handleActNPC ( npc, dir ) {
+        if ( npc.canInteract( dir ) ) {
+            npc.doInteract( dir );
         }
     }
 
@@ -347,13 +384,23 @@ class TopView extends GameBox {
     }
 
 
-    checkObj ( poi ) {
-        let ret = false;
+    awareNPC ( poi ) {
+        for ( let i = this.npcs.length; i--; ) {
+            this.npcs[ i ].checkHero( poi );
+            this.npcs[ i ].checkCamera( poi );
+        }
+    }
+
+
+    checkNPC ( poi ) {
+        let ret = null;
         const hitbox = this.hero.getHitbox( poi );
 
-        for ( let i = this.map.activeObjects.length; i--; ) {
-            if ( Utils.collide( hitbox, this.map.activeObjects[ i ].hitbox ) ) {
-                ret = this.map.activeObjects[ i ];
+        for ( let i = this.npcs.length; i--; ) {
+            const hitnpc = this.npcs[ i ].getHitbox( this.npcs[ i ].position );
+
+            if ( Utils.collide( hitbox, hitnpc ) ) {
+                ret = this.npcs[ i ];
                 break;
             }
         }
@@ -575,21 +622,26 @@ class TopView extends GameBox {
             this.switchTween( this.hero, _css.hero ),
 
         ]).then(() => {
-            // Stage Hero with correct position on new Map
-            this.hero.element.style.position = "absolute";
-            this.map_.element.appendChild( this.hero.element );
-            this.hero.update( _poi, this.map_.offset );
-            this.hero.render( this.player.previousElapsed );
+            setTimeout(() => {
+                // Stage Hero with correct position on new Map
+                this.hero.element.style.position = "absolute";
+                this.map_.element.appendChild( this.hero.element );
+                this.hero.update( _poi, this.map_.offset );
+                this.hero.render( this.player.previousElapsed );
 
-            // Destroy old Map / Set new Map
-            this.map.destroy();
-            this.map = this.map_;
-            this.map_ = null;
-            this.cam_ = null;
+                // Destroy old Map / Set new Map
+                this.killNPC();
+                this.map.destroy();
+                this.map = this.map_;
+                this.map_ = null;
+                this.cam_ = null;
 
-            // Initialize
-            this.initMap();
-            this.player.resume();
+                // Initialize
+                this.initMap();
+                this.initNPC();
+                this.player.resume();
+
+            }, Config.values.debounceDur );
         });
     }
 }

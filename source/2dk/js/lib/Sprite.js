@@ -1,3 +1,4 @@
+const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const $ = require( "properjs-hobo" );
@@ -24,10 +25,10 @@ class Sprite {
             y: 0,
         };
         this.hitbox = {
-            x: !this.data.boxes ? 0 : this.position.x + (this.data.boxes.hit.x / this.scale),
-            y: !this.data.boxes ? 0 : this.position.y + (this.data.boxes.hit.y / this.scale),
-            width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.scale),
-            height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.scale),
+            x: this.position.x + (this.data.boxes.hit.x / this.scale),
+            y: this.position.y + (this.data.boxes.hit.y / this.scale),
+            width: this.data.boxes.hit.width / this.scale,
+            height: this.data.boxes.hit.height / this.scale,
         };
 
         this.build();
@@ -204,7 +205,130 @@ class Hero extends Sprite {
 
 
 
+class NPC extends Sprite {
+    constructor ( data, gamebox ) {
+        super( data, gamebox );
+        // Copy so we can cooldown and re-spawn objects with fresh states
+        this.states = Utils.copy( this.data.states );
+        // Render between "objects" and "foreground" layers relative to Hero
+        this.relative = (this.hitbox.height !== this.height);
+        this.$element.addClass( this.data.layer );
+        this.element.style.display = "none";
+        this.shift();
+    }
+
+
+    update ( poi, offset ) {
+        this.offset.x = offset.x + this.position.x;
+        this.offset.y = offset.y + this.position.y;
+        this.hitbox.x = this.position.x + (this.data.boxes.hit.x / this.scale);
+        this.hitbox.y = this.position.y + (this.data.boxes.hit.y / this.scale);
+    }
+
+
+    shift () {
+        if ( this.states.length ) {
+            this.state = this.states.shift();
+            this.child.style.backgroundPosition = `-${this.state.offsetX / this.scale}px -${this.state.offsetY / this.scale}px`;
+            this.child.style.backgroundSize = `${this.image.naturalWidth / this.scale}px ${this.image.naturalHeight / this.scale}px`;
+            this.child.style.backgroundRepeat = "no-repeat";
+
+            if ( this.state.animated ) {
+                this.styles.innerHTML = `
+                    ._2dk__${this.data.id} ._2dk__child.animate {
+                        animation: ${this.data.id}-anim ${this.state.dur}ms steps(${this.state.stepsX}) infinite;
+                    }
+                    @keyframes ${this.data.id}-anim {
+                        100% { background-position: -${(this.state.offsetX / this.scale) + (this.width * this.state.stepsX)}px -${this.state.offsetY / this.scale}px; }
+                    }
+                `;
+            }
+        }
+    }
+
+
+    payload () {
+        if ( this.state.action.payload.dialogue ) {
+            this.gamebox.dialogue.play( this.state.action.payload.dialogue );
+        }
+    }
+
+
+    pause ( paused ) {
+        if ( paused && this.state.animated ) {
+            this.$child.removeClass( "animate" );
+
+        } else if ( this.state.animated ) {
+            this.$child.addClass( "animate" );
+        }
+    }
+
+
+    checkHero ( poi ) {
+        if ( !this.relative ) {
+            return;
+        }
+
+        if ( this.hitbox.width === 0 && this.hitbox.height === 0 ) {
+            return;
+        }
+
+        const hitbox = this.gamebox.hero.getHitbox( poi );
+
+        if ( this.hitbox.y > hitbox.y ) {
+            this.$element.removeClass( "background" ).addClass( "foreground" );
+
+        } else {
+            this.$element.removeClass( "foreground" ).addClass( "background" );
+        }
+    }
+
+
+    checkCamera ( poi ) {
+        const npcRect = {
+            x: this.position.x,
+            y: this.position.y,
+            width: this.width,
+            height: this.height,
+        };
+
+        if ( Utils.collide( npcRect, this.gamebox.camera ) ) {
+            this.element.style.display = "block";
+
+            if ( this.state.animated ) {
+                this.$child.addClass( "animate" );
+            }
+
+        } else {
+            this.element.style.display = "none";
+
+            if ( this.state.animated ) {
+                this.$child.removeClass( "animate" );
+            }
+        }
+    }
+
+
+    canInteract ( dir ) {
+        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
+    }
+
+
+    doInteract ( dir ) {
+        if ( this.state.action.payload ) {
+            this.payload();
+        }
+
+        if ( this.state.action.shift ) {
+            this.shift();
+        }
+    }
+}
+
+
+
 module.exports = {
+    NPC,
     Hero,
     Sprite,
 };

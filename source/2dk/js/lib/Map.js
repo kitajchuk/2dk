@@ -130,112 +130,6 @@ class ActiveTiles {
 
 
 
-class ActiveObject {
-    constructor ( data, map ) {
-        this.map = map;
-        this.data = Utils.merge( map.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
-        this.image = new Image();
-        this.image.src = this.data.image;
-        this.position = {
-            x: this.data.spawn.x / this.map.gamebox.camera.resolution,
-            y: this.data.spawn.y / this.map.gamebox.camera.resolution,
-        };
-        this.hitbox = {
-            x: !this.data.boxes ? 0 : this.position.x + (this.data.boxes.hit.x / this.map.gamebox.camera.resolution),
-            y: !this.data.boxes ? 0 : this.position.y + (this.data.boxes.hit.y / this.map.gamebox.camera.resolution),
-            width: !this.data.boxes ? 0 : (this.data.boxes.hit.width / this.map.gamebox.camera.resolution),
-            height: !this.data.boxes ? 0 : (this.data.boxes.hit.height / this.map.gamebox.camera.resolution),
-        };
-        // Copy so we can cooldown and re-spawn objects with fresh states
-        this.states = Utils.copy( this.data.states );
-        // Render between "objects" and "foreground" layers relative to Hero
-        this.relative = (this.hitbox.height !== this.data.height);
-        this.frame = 0;
-
-        this.shift();
-    }
-
-
-    destroy () {
-        this.data = null;
-        this.image = null;
-    }
-
-
-    blit ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
-            this.previousElapsed = elapsed;
-        }
-
-        this.frame = 0;
-
-        if ( this.state.animated ) {
-            const diff = (elapsed - this.previousElapsed);
-
-            this.frame = Math.floor( (diff / this.state.dur) * this.state.stepsX );
-
-            if ( diff >= this.state.dur ) {
-                this.previousElapsed = elapsed;
-                this.frame = this.state.stepsX - 1;
-            }
-        }
-    }
-
-
-    render ( renderBox ) {
-        const offsetX = (this.state.offsetX + (this.frame * this.data.width));
-        let context = this.map.layers.background.offCanvas.context;
-
-        if ( this.relative && (this.hitbox.y > this.map.gamebox.hero.hitbox.y) ) {
-            context = this.map.layers.foreground.offCanvas.context;
-        }
-
-        context.drawImage(
-            this.image,
-            offsetX,
-            this.state.offsetY,
-            this.data.width,
-            this.data.height,
-            (renderBox.bleed.x + this.map.offset.x) + this.position.x,
-            (renderBox.bleed.y + this.map.offset.y) + this.position.y,
-            this.data.width / this.map.gamebox.camera.resolution,
-            this.data.height / this.map.gamebox.camera.resolution,
-        );
-    }
-
-
-    payload () {
-        if ( this.state.action.payload.dialogue ) {
-            this.map.gamebox.dialogue.play( this.state.action.payload.dialogue );
-        }
-    }
-
-
-    shift () {
-        if ( this.states.length ) {
-            this.state = this.states.shift();
-        }
-    }
-
-
-    canInteract ( dir ) {
-        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
-    }
-
-
-    doInteract ( dir ) {
-        if ( this.state.action.payload ) {
-            this.payload();
-        }
-
-        if ( this.state.action.shift ) {
-            this.shift();
-        }
-    }
-}
-
-
-
 class MapLayer {
     // id, width, height
     constructor ( data ) {
@@ -297,7 +191,6 @@ class Map {
             foreground: null,
         };
         this.activeTiles = [];
-        this.activeObjects = [];
         this.offset = {
             x: 0,
             y: 0
@@ -316,11 +209,6 @@ class Map {
             activeTiles.destroy();
         });
         this.activeTiles = null;
-
-        // this.activeObjects.forEach(( activeObject ) => {
-        //     activeObject.destroy();
-        // });
-        // this.activeObjects = null;
 
         this.element.parentNode.removeChild( this.element );
         this.data = null;
@@ -341,10 +229,6 @@ class Map {
         this.data.tiles.forEach(( data ) => {
             this.activeTiles.push( new ActiveTiles( data, this ) );
         });
-
-        // this.data.objects.forEach(( data ) => {
-        //     this.activeObjects.push( new ActiveObject( data, this ) );
-        // });
     }
 
 
