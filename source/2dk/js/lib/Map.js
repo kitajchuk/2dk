@@ -208,8 +208,8 @@ class ActiveObject {
 
 
     payload () {
-        if ( this.state.action.payload.dialogue ) {
-            this.map.gamebox.dialogue.play( this.state.action.payload.dialogue );
+        if ( this.data.payload.dialogue ) {
+            this.map.gamebox.dialogue.play( this.data.payload.dialogue );
         }
     }
 
@@ -220,7 +220,7 @@ class ActiveObject {
 
 
     doInteract ( dir ) {
-        if ( this.state.action.payload ) {
+        if ( this.data.payload ) {
             this.payload();
         }
 

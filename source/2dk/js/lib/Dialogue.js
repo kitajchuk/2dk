@@ -8,7 +8,8 @@ class Dialogue {
         this.pressed = false;
         this.ready = false;
         this.async = 10;
-        this.timeout = 1000;
+        this.timeout = null;
+        this.debounce = 1000;
         this.build();
     }
 
@@ -21,22 +22,23 @@ class Dialogue {
 
     setReady () {
         this.ready = false;
-        this.pressed = true;
 
-        setTimeout(() => {
+        this.timeout = setTimeout(() => {
             this.ready = true;
-            this.pressed = false;
 
-        }, this.timeout );
+        }, this.debounce );
     }
 
 
     play ( data ) {
-        if ( this.pressed ) {
+        if ( this.active ) {
             return;
         }
 
+        // console.log( "play", data );
+
         this.data = Utils.copy( data );
+        this.active = true;
 
         return new Promise(( resolve, reject ) => {
             this.resolve = resolve;
@@ -55,7 +57,14 @@ class Dialogue {
 
 
     check ( a, b ) {
-        if ( !this.data || !this.ready ) {
+        if ( !this.active ) {
+            return;
+        }
+
+        if ( !this.ready && this.timeout ) {
+            // console.log( "debounce ready timer" );
+            clearTimeout( this.timeout );
+            this.setReady();
             return;
         }
 
@@ -96,6 +105,7 @@ class Dialogue {
             this.element.innerHTML = "";
             this.data = null;
             this.ready = false;
+            this.active = false;
 
         }, this.timeout );
     }

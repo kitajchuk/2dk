@@ -224,7 +224,15 @@
                     14,
                     3
                 ]
-            ]
+            ],
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "You got some more rupees. Joy!"
+                    ]
+                }
+            }
         },
         {
             "id": "chest",
@@ -233,7 +241,33 @@
                     14,
                     29
                 ]
-            ]
+            ],
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "You got some rupees. Joy!"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "sign",
+            "coords": [
+                [
+                    25,
+                    20
+                ]
+            ],
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Beware of floors with cracks!",
+                        "A heavy person should not stand on them!"
+                    ]
+                }
+            }
         }
     ],
     "events": [
@@ -13736,7 +13770,7 @@
                 [
                     [
                         0,
-                        384
+                        2240
                     ]
                 ],
                 [

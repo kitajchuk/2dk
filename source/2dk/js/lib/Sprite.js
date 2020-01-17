@@ -248,8 +248,8 @@ class NPC extends Sprite {
 
 
     payload () {
-        if ( this.state.action.payload.dialogue ) {
-            this.gamebox.dialogue.play( this.state.action.payload.dialogue );
+        if ( this.data.payload.dialogue ) {
+            this.gamebox.dialogue.play( this.data.payload.dialogue );
         }
     }
 
@@ -315,7 +315,7 @@ class NPC extends Sprite {
 
 
     doInteract ( dir ) {
-        if ( this.state.action.payload ) {
+        if ( this.data.payload ) {
             this.payload();
         }
 

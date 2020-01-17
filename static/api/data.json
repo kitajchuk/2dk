@@ -33,13 +33,13 @@
                     "fullscreen": false,
                     "resolution": 1,
                     "icon": "/games/la/assets/icons/la.png",
-                    "version": 214
+                    "version": 216
                 },
                 {
                     "id": "pk",
                     "name": "Pokemon Re-d",
-                    "width": 768,
-                    "height": 576,
+                    "width": 384,
+                    "height": 288,
                     "fullscreen": false,
                     "resolution": 1,
                     "icon": "/games/pk/assets/icons/pk.png",

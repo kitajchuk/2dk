@@ -7,7 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 214
+        "version": 216
     },
     "hero": {
         "sprite": 1,
@@ -298,14 +298,6 @@
                         "verb": "read",
                         "require": {
                             "dir": "up"
-                        },
-                        "payload": {
-                            "dialogue": {
-                                "type": "text",
-                                "text": [
-                                    "You can read signs. Good for you kid. You can read signs. Good for you kid. You can read signs. Good for you kid. You can read signs. Good for you kid."
-                                ]
-                            }
                         }
                     }
                 }
@@ -331,14 +323,6 @@
                         "verb": "open",
                         "require": {
                             "dir": "up"
-                        },
-                        "payload": {
-                            "dialogue": {
-                                "type": "text",
-                                "text": [
-                                    "You got some rupees. Joy. You got some rupees. Joy. You got some rupees. Joy. You got some rupees. Joy. You got some rupees. Joy. You got some rupees. Joy."
-                                ]
-                            }
                         },
                         "shift": 1
                     }
@@ -372,7 +356,6 @@
                         "require": {
                             "dir": "up"
                         },
-                        "payload": {},
                         "counter": 1
                     }
                 }
