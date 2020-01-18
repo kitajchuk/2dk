@@ -4,11 +4,9 @@ require( "../sass/screen.scss" );
 
 
 // Load the JS
-// import Store from "./core/Store";
-import debounce from "properjs-debounce";
-import router from "./router";
+// import router from "./router";
 import * as core from "./core";
-import Analytics from "./services/Analytics";
+// import Analytics from "./services/Analytics";
 import intro from "./modules/intro";
 import navi from "./modules/navi";
 import Controllers from "./Controllers";
@@ -24,17 +22,11 @@ import Controllers from "./Controllers";
  */
 class App {
     constructor () {
-        // this.Store = Store;
         this.core = core;
         this.intro = intro;
         this.navi = navi;
-        this.router = router;
-        this.deBounce = 300;
-        this.scrollTimeout = null;
-        this.mobileWidth = 812;
-        this.isRaf = false;
-        this.isLoad = false;
-        this.analytics = new Analytics();
+        // this.router = router;
+        // this.analytics = new Analytics();
         this.controllers = new Controllers({
             el: this.core.dom.main
         });
@@ -46,23 +38,30 @@ class App {
     boot () {
         this.intro.init();
         this.navi.init();
-        this.router.init().load().then(() => {
-            this.bind();
-            this.init();
-
-        }).catch(( error ) => {
-            this.core.log( "warn", error );
-        });
+        this.init();
+        this.bind();
+        // this.router.init().load().then(() => {
+        //     this.bind();
+        //     this.init();
+        //
+        // }).catch(( error ) => {
+        //     this.core.log( "warn", error );
+        // });
     }
 
 
     init () {
-        // this.navi.load();
         this.intro.teardown();
     }
 
 
-    bind () {}
+    bind () {
+        this.core.dom.doc.on( "click", ".js-webapp-link", ( e ) => {
+            e.preventDefault();
+
+            window.location.href = e.target.href;
+        });
+    }
 }
 
 

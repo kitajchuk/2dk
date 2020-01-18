@@ -9,7 +9,7 @@ class Sprite {
     constructor ( data, gamebox ) {
         this.data = data;
         this.gamebox = gamebox;
-        this.scale = this.data.scale || this.gamebox.player.data.game.resolution;
+        this.scale = this.gamebox.player.data.game.resolution;
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
         this.cycling = false;

@@ -224,6 +224,7 @@ class TopView extends GameBox {
     pressD ( dir, delta, dirX, dirY ) {
         const poi = this.getPoi( delta, dirX, dirY );
         const collision = this.getCollision( poi );
+        const speed = this.getSpeed();
 
         if ( collision.evt ) {
             if ( collision.evt.type === Config.events.BOUNDARY && collision.box ) {
@@ -262,8 +263,8 @@ class TopView extends GameBox {
                 return;
             }
 
-        } else {
-            this.camera.speed = this.getSpeed();
+        } else if ( this.camera.speed !== speed ) {
+            this.camera.speed = speed;
         }
 
         this.handleWalk( poi, dir );
@@ -358,6 +359,7 @@ class TopView extends GameBox {
 
 
     handleTile ( tile ) {
+        // Stairs are hard, you can't go so fast here...
         if ( tile.data.group === Config.tiles.STAIRS ) {
             this.camera.speed = this.getSpeed() / 2.5;
         }
@@ -510,9 +512,11 @@ class TopView extends GameBox {
             return tiles[ 0 ];
         }
 
-        return tiles.find(( tile ) => {
+        // If there's no action tile, return one tile...
+        return (tiles.find(( tile ) => {
             return tile.data.action;
-        });
+
+        }) || tiles[ 0 ]);
     }
 
 

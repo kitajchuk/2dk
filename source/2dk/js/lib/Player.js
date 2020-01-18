@@ -74,7 +74,7 @@ class Player {
     getSplash ( display ) {
         return `
             <div>
-                <div>Game ID: ${this.data.game.id} | version: ${this.data.game.version}</div>
+                <div>${this.data.game.name} @v${this.data.game.version}</div>
                 <div>${display}</div>
             </div>
         `;
