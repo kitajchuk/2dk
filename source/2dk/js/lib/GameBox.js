@@ -185,11 +185,17 @@ class GameBox {
     }
 
 
-    // pressD ( dir, delta, dirX, dirY ) {}
-    // releaseD () {}
-    // pressA () {}
-    // pressB () {}
-    // holdB () {}
+    // Can all be handled in TopView or other play style Box
+    pressD () {}
+    releaseD () {}
+    pressA () {}
+    holdA () {}
+    releaseA () {}
+    releaseHoldA () {}
+    pressB () {}
+    holdB () {}
+    releaseB () {}
+    releaseHoldB () {}
 }
 
 
@@ -283,13 +289,28 @@ class TopView extends GameBox {
     }
 
 
+    holdA ( dir, delta, dirX, dirY ) {
+        console.log( "A Hold" );
+    }
+
+
     releaseA () {
         this.dialogue.check( true, false );
     }
 
 
-    pressB () {
+    releaseHoldA () {
+        console.log( "A Hold Release" );
+    }
 
+
+    pressB ( dir, delta, dirX, dirY ) {
+        console.log( "B Press" );
+    }
+
+
+    holdB ( dir, delta, dirX, dirY ) {
+        console.log( "B Hold" );
     }
 
 
@@ -298,8 +319,8 @@ class TopView extends GameBox {
     }
 
 
-    holdB () {
-        console.log( "B Hold" );
+    releaseHoldB () {
+        console.log( "B Hold Release" );
     }
 
 

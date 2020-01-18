@@ -11,7 +11,7 @@ const games = locals.context.doc.games;
     <div class="home__games -wrap">
         <h3><em>Test</em></h3>
         <% games.forEach(( game ) => { %>
-            <p><%= game.name %> | <a href="/games/<%= game.id %>/?v=<%= game.version %>" target="_blank">DEMO</a></p>
+            <p><%= game.name %> | <a href="/games/<%= game.id %>/?v=<%= game.version %>" class="js-router--ignore">DEMO</a></p>
         <% }) %>
     </div>
     <div class="home__mast -wrap -expt">

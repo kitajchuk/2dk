@@ -17,6 +17,7 @@ class Player {
         this.Loader = Loader;
         this.controls = {
             a: false,
+            aHold: false,
             b: false,
             bHold: false,
         };
@@ -136,6 +137,8 @@ class Player {
         // A button (action)
         this.gamepad.on( "a-press", this.onPressA.bind( this ) );
         this.gamepad.on( "a-release", this.onReleaseA.bind( this ) );
+        this.gamepad.on( "a-holdpress", this.onPressHoldA.bind( this ) );
+        this.gamepad.on( "a-holdrelease", this.onReleaseHoldA.bind( this ) );
 
         // B button (cancel)
         this.gamepad.on( "b-press", this.onPressB.bind( this ) );
@@ -181,6 +184,7 @@ class Player {
         }
 
         let delta = (elapsed - this.previousElapsed) / 1000.0;
+        let step;
 
         delta = Math.min( delta, 0.25 ); // maximum delta of 250ms
         this.previousElapsed = elapsed;
@@ -198,26 +202,29 @@ class Player {
         } else {
             dpad.forEach(( ctrl ) => {
                 ctrl.dpad.forEach(( dir ) => {
-                    const step = this.gamebox.getStep( dir );
+                    step = this.gamebox.getStep( dir );
 
                     this.gamebox.pressD( dir, delta, step.x, step.y );
                 });
             });
         }
 
+        step = this.gamebox.getStep( this.gamebox.hero.dir );
+
         // Action buttons
         // Easier to have the player use event handlers and check controls...
-        if ( this.controls.a ) {
-            const step = this.gamebox.getStep( this.gamebox.hero.dir );
+        if ( this.controls.aHold ) {
+            this.gamebox.holdA( this.gamebox.hero.dir, delta, step.x, step.y );
 
+        } else if ( this.controls.a ) {
             this.gamebox.pressA( this.gamebox.hero.dir, delta, step.x, step.y );
         }
 
         if ( this.controls.bHold ) {
-            this.gamebox.holdB();
+            this.gamebox.holdB( this.gamebox.hero.dir, delta, step.x, step.y );
 
         } else if ( this.controls.b ) {
-            this.gamebox.pressB();
+            this.gamebox.pressB( this.gamebox.hero.dir, delta, step.x, step.y );
         }
     }
 
@@ -246,9 +253,21 @@ class Player {
     }
 
 
+    onPressHoldA () {
+        this.controls.aHold = true;
+    }
+
+
     onReleaseA () {
         this.controls.a = false;
         this.gamebox.releaseA && this.gamebox.releaseA();
+    }
+
+
+    onReleaseHoldA () {
+        this.controls.a = false;
+        this.controls.aHold = false;
+        this.gamebox.releaseHoldA && this.gamebox.releaseHoldA();
     }
 
 
@@ -272,6 +291,7 @@ class Player {
     onReleaseHoldB () {
         this.controls.b = false;
         this.controls.bHold = false;
+        this.gamebox.releaseHoldB && this.gamebox.releaseHoldB();
     }
 }
 

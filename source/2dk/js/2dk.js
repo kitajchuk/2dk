@@ -4,7 +4,7 @@
 
 
 
-* Fix Dialogues...
+* Consider what should/could move from TopView up to GameBox core Class...
 * Finish action tiles for mabe-village & mysterious-forest
 * Explore NPC concepts with sprite sheets
 * Door events for entering and exiting interiors

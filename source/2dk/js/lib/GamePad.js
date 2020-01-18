@@ -12,6 +12,7 @@ const touchControls = {
         elem: null,
         timer: null,
         touched: false,
+        hold: 0,
         text: "A",
         gamepad: [0],
     },
