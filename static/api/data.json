@@ -2,7 +2,7 @@
     "site": {
         "data": {
             "title": "2dk",
-            "description": "A Javascript 2d game development SDK.",
+            "description": "For the love of 2D. A JavaScript SDK.",
             "googleUA": "",
             "googleVerify": ""
         }
@@ -22,7 +22,7 @@
             "type": "page",
             "data": {
                 "title": "2dK",
-                "description": "A Javascript 2d game development SDK."
+                "description": "For the love of 2D. A JavaScript SDK."
             },
             "games": [
                 {
@@ -33,7 +33,7 @@
                     "fullscreen": false,
                     "resolution": 1,
                     "icon": "/games/la/assets/icons/la.png",
-                    "version": 216
+                    "version": 228
                 },
                 {
                     "id": "pk",

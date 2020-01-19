@@ -9,6 +9,7 @@ body {
 body {
     @include font-family-sans-bold();
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: rgba( 0, 0, 0, 0 );
     -webkit-touch-callout: none;
     -webkit-user-select: none;

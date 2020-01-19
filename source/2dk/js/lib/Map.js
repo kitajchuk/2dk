@@ -394,12 +394,14 @@ class Map {
 
                     while ( x < width ) {
                         const lookupX = renderBox.x + x;
-                        const activeTile = this.getActiveTile( id, lookupX, lookupY );
                         const activeObject = this.getActiveObject( id, lookupX, lookupY );
 
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
+                            const celsCopy = Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
+                            const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
+
                             // Render the textures
-                            ret[ id ][ y ][ x ] = Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
+                            ret[ id ][ y ][ x ] = celsCopy;
 
                             // Push any ActiveTiles to the cel stack
                             if ( activeTile ) {
@@ -435,17 +437,61 @@ class Map {
     }
 
 
-    getActiveTile ( layer, lookupX, lookupY ) {
+    getActiveTile ( layer, celsCoords, celsCopy ) {
         let ret = null;
 
-        this.data.tiles.forEach(( tiles ) => {
-            tiles.coords.forEach(( coord ) => {
-                // Correct render layer AND correct tile coords
-                if ( layer === tiles.layer && coord[ 0 ] === lookupX && coord[ 1 ] === lookupY ) {
-                    ret = this.getActiveTiles( tiles.group ).getTile();
+        // Either return a tile or don't if it's a static thing...
+
+        loopTiles:
+            for ( let i = this.data.tiles.length; i--; ) {
+                const tiles = this.data.tiles[ i ];
+
+                // Skip if not even the right layer to begin with...
+                if ( layer !== tiles.layer ) {
+                    continue;
                 }
-            });
-        });
+
+                const topCel = celsCopy[ celsCopy.length - 1 ];
+
+                if ( tiles.coords.length ) {
+                    loopCoords:
+                        for ( let j = tiles.coords.length; j--; ) {
+                            const coord = tiles.coords[ j ];
+
+                            // Correct render layer AND correct tile coords
+                            if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] ) {
+                                // console.log( "Found ActiveTile coords", tiles.group );
+                                ret = this.getActiveTiles( tiles.group ).getTile();
+                                break loopTiles;
+                            }
+                        }
+                }
+
+                if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
+                    // Check if tile is pushed...
+                    const isTilePushed = tiles.coords.find(( coord ) => {
+                        return (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]);
+                    });
+
+                    // Push the tile to the coords Array...
+                    // This lets us generate ActiveTile groups that will
+                    // find their coordinates in real-time using background-position...
+                    /* This will find stairs tiles and push them into the coords stack...
+                        {
+                            "group": "stairs",
+                            "layer": "background",
+                            "coords": [],
+                            "offsetX": 256,
+                            "offsetY": 384
+                        }
+                    */
+                    if ( !isTilePushed ) {
+                        // console.log( "Pushed ActiveTile coords", tiles.group );
+                        tiles.coords.push( celsCoords );
+                        break loopTiles;
+                    }
+                }
+            }
 
         return ret;
     }

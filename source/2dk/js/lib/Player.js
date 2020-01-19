@@ -115,7 +115,7 @@ class Player {
         this.splash.className = "_2dk__splash";
         this.splashInfo = document.createElement( "div" );
         this.splashInfo.className = "_2dk__splash__info";
-        this.splashInfo.innerHTML = `<div>Rotate to Landscape.</div><div>${this.installed ? "Installed" : "+Webapp"}</div>`;
+        this.splashInfo.innerHTML = `<div>Rotate to Landscape.</div><div>${this.installed ? "Webapp Installed" : "Install Webapp"}</div>`;
         this.splashLoad = document.createElement( "div" );
         this.splashLoad.className = "_2dk__splash__load";
         this.splashLoad.innerHTML = this.getSplash( "Loading game bundle..." );

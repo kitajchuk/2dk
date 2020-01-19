@@ -403,7 +403,7 @@ DB.getGames = () => {
 DB.updateGame = ( data ) => {
     let games = path.join( process.cwd(), "games.json" );
     const gameDir = path.join( process.cwd(), "games", data.game.id );
-    const index = DB.getTemplate( "index.html" ).replace( "{__GAME_NAME__}", data.game.name ).replace( /\{__GAME_VERSION__\}/g, data.game.version );
+    const index = DB.getTemplate( "index.html" ).replace( /\{__GAME_NAME__\}/g, data.game.name ).replace( /\{__GAME_VERSION__\}/g, data.game.version );
 
     // Update game index.html
     Utils.writeFile( path.join( gameDir, "index.html" ), index );

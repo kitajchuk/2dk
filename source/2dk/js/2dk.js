@@ -4,9 +4,7 @@
 
 
 
-* Simplify clutch homepage (make webapp links stay in webapp...)
 * Consider what should/could move from TopView up to GameBox core Class...
-* Finish action tiles for mabe-village & mysterious-forest
 * Explore NPC concepts with sprite sheets
 * Door events for entering and exiting interiors
 * Make Editor Utils Promise-based... like clutch core files module

@@ -236,7 +236,7 @@ class TopView extends GameBox {
         // this.awareNPC( poi );
         //
         // if ( collision.npc ) {
-        //     this.handleNPC( collision.npc, dir );
+        //     this.handleNPC( poi, dir, collision.npc );
         //     return;
         // }
 
@@ -256,7 +256,7 @@ class TopView extends GameBox {
         }
 
         if ( collision.tile ) {
-            this.handleTile( collision.tile );
+            this.handleTile( poi, dir, collision.tile );
 
             if ( collision.tile.data.action ) {
                 this.hero.cycle( Config.verbs.WALK, dir );
@@ -281,11 +281,11 @@ class TopView extends GameBox {
         const collision = this.getCollision( poi );
 
         if ( collision.obj ) {
-            this.handleObjAct( collision.obj, dir );
+            this.handleObjAct( poi, dir, collision.obj );
         }
 
         if ( collision.tile && collision.tile.data.action ) {
-            this.handleTileAct( collision.tile, dir );
+            this.handleTileAct( poi, dir, collision.tile );
         }
     }
 
@@ -351,22 +351,27 @@ class TopView extends GameBox {
     }
 
 
-    handleObjAct ( obj, dir ) {
+    handleObjAct ( poi, dir, obj ) {
         if ( obj.canInteract( dir ) ) {
             obj.doInteract( dir );
         }
     }
 
 
-    handleTile ( tile ) {
+    handleTile ( poi, dir, tile ) {
         // Stairs are hard, you can't go so fast here...
         if ( tile.data.group === Config.tiles.STAIRS ) {
             this.camera.speed = this.getSpeed() / 2.5;
+
+        } else if ( tile.data.group === Config.tiles.GRASS ) {
+            this.camera.speed = this.getSpeed() / 1.75;
         }
+
+        // console.log( "ActiveTile", tile );
     }
 
 
-    handleTileAct ( tile, dir ) {
+    handleTileAct ( poi, dir, tile ) {
         // console.log( "ActiveTile action", tile );
     }
 
@@ -492,18 +497,26 @@ class TopView extends GameBox {
     checkTile ( poi ) {
         const tiles = [];
         const hitbox = this.hero.getHitbox( poi );
+        const footbox = this.hero.getFootbox( poi );
+        const footTiles = [
+            Config.tiles.STAIRS,
+            Config.tiles.GRASS,
+            Config.tiles.HOLE,
+        ]
 
         for ( let i = this.map.activeTiles.length; i--; ) {
             for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
-                const tile = {
+                const tile = this.map.activeTiles[ i ];
+                const tilebox = {
                     width: this.map.gridsize,
                     height: this.map.gridsize,
-                    x: this.map.activeTiles[ i ].data.coords[ j ][ 0 ] * this.map.gridsize,
-                    y: this.map.activeTiles[ i ].data.coords[ j ][ 1 ] * this.map.gridsize
+                    x: tile.data.coords[ j ][ 0 ] * this.map.gridsize,
+                    y: tile.data.coords[ j ][ 1 ] * this.map.gridsize
                 };
+                const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
 
-                if ( Utils.collide( hitbox, tile ) ) {
-                    tiles.push( this.map.activeTiles[ i ] );
+                if ( Utils.collide( lookbox, tilebox ) ) {
+                    tiles.push( tile );
                 }
             }
         }
