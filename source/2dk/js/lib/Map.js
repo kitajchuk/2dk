@@ -94,6 +94,7 @@ class ActiveTiles {
         this.data = data;
         this.map = map;
         this.frame = 0;
+        this.spliced = [];
     }
 
 
@@ -127,6 +128,23 @@ class ActiveTiles {
             (this.data.offsetX + (this.frame * this.map.data.tilesize)),
             this.data.offsetY,
         ];
+    }
+
+
+    canInteract () {
+        return this.data.action;
+    }
+
+
+    doInteract ( coords ) {
+        for ( let i = this.data.coords.length; i--; ) {
+            if ( this.data.coords[ i ][ 0 ] === coords[ 0 ] && this.data.coords[ i ][ 1 ] === coords[ 1 ] ) {
+                this.spliced.push( this.data.coords[ i ] );
+                this.data.coords.splice( i, 1 );
+                console.log( "spliced tile coords" );
+                break;
+            }
+        }
     }
 }
 
@@ -458,11 +476,16 @@ class Map {
                         for ( let j = tiles.coords.length; j--; ) {
                             const coord = tiles.coords[ j ];
 
-                            // Correct render layer AND correct tile coords
+                            // Correct tile coords
                             if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] ) {
-                                // console.log( "Found ActiveTile coords", tiles.group );
-                                ret = this.getActiveTiles( tiles.group ).getTile();
-                                break loopTiles;
+                                // (tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ])
+                                const isTileAnimated = tiles.stepsX;
+
+                                // Make sure we don't dupe a tile match if it's NOT animated...
+                                if ( isTileAnimated ) {
+                                    ret = this.getActiveTiles( tiles.group ).getTile();
+                                    break loopTiles;
+                                }
                             }
                         }
                 }
@@ -472,11 +495,14 @@ class Map {
                     const isTilePushed = tiles.coords.find(( coord ) => {
                         return (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]);
                     });
+                    const isTileSpliced = this.getActiveTiles( tiles.group ).spliced.find(( coord ) => {
+                        return (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]);
+                    });
 
                     // Push the tile to the coords Array...
                     // This lets us generate ActiveTile groups that will
                     // find their coordinates in real-time using background-position...
-                    /* This will find stairs tiles and push them into the coords stack...
+                    /* Example: This will find stairs tiles and push them into the coords stack...
                         {
                             "group": "stairs",
                             "layer": "background",
@@ -485,10 +511,13 @@ class Map {
                             "offsetY": 384
                         }
                     */
-                    if ( !isTilePushed ) {
-                        // console.log( "Pushed ActiveTile coords", tiles.group );
+                    if ( !isTilePushed && !isTileSpliced ) {
                         tiles.coords.push( celsCoords );
                         break loopTiles;
+
+                    } else if ( isTileSpliced ) {
+                        celsCopy.pop();
+                        ret = celsCopy;
                     }
                 }
             }

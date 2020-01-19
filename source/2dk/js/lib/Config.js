@@ -25,6 +25,7 @@ const Config = {
         WALK: "walk",
         FACE: "face",
         TOSS: "toss",
+        CUT: "cut",
     },
     events: {
         DOOR: "door",

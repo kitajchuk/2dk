@@ -49,15 +49,15 @@ class Sprite {
         this.child = document.createElement( "div" );
         this.child.className = `_2dk__child`;
         this.child.style.backgroundImage = `url(${this.data.image})`;
-        this.hitboxEl = document.createElement( "div" );
-        this.hitboxEl.className = "_2dk__hitbox";
-        this.footboxEl = document.createElement( "div" );
-        this.footboxEl.className = "_2dk__footbox";
+        // this.hitboxEl = document.createElement( "div" );
+        // this.hitboxEl.className = "_2dk__hitbox";
+        // this.footboxEl = document.createElement( "div" );
+        // this.footboxEl.className = "_2dk__footbox";
         this.styles = document.createElement( "style" );
         this.element.appendChild( this.styles );
         this.element.appendChild( this.child );
-        this.element.appendChild( this.hitboxEl );
-        this.element.appendChild( this.footboxEl );
+        // this.element.appendChild( this.hitboxEl );
+        // this.element.appendChild( this.footboxEl );
         this.$element = $( this.element );
         this.$child = $( this.child );
     }
@@ -137,7 +137,7 @@ class Hero extends Sprite {
         this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
         this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
         this.footbox.x = this.hitbox.x;
-        this.hitbox.y = this.data.hitbox.y + (this.hitbox.height / 2);
+        this.footbox.y = this.data.hitbox.y + (this.hitbox.height / 2);
 
         const absolute = {
             x: Math.abs( offset.x ),
@@ -170,28 +170,27 @@ class Hero extends Sprite {
     package () {
         this.child.style.backgroundSize = `${this.image.naturalWidth / this.scale}px ${this.image.naturalHeight / this.scale}px`;
         this.child.style.backgroundRepeat = "no-repeat";
-        this.stylePacks = [
-            `
-                ._2dk__hitbox {
-                    position: absolute;
-                    left: ${this.data.hitbox.x / this.scale}px;
-                    top: ${this.data.hitbox.y / this.scale}px;
-                    width: ${this.data.hitbox.width / this.scale}px;
-                    height: ${this.data.hitbox.height / this.scale}px;
-                    background-color: red;
-                    opacity: 0.5;
-                }
-                ._2dk__footbox {
-                    position: absolute;
-                    left: ${this.data.hitbox.x / this.scale}px;
-                    top: ${(this.data.hitbox.y / this.scale) + ((this.data.hitbox.height / this.scale) / 2)}px;
-                    width: ${this.footbox.width}px;
-                    height: ${this.footbox.height}px;
-                    background-color: blue;
-                    opacity: 0.5;
-                }
-            `
-        ];
+        this.stylePacks = [];
+        // this.stylePacks.push(`
+        //     ._2dk__hitbox {
+        //         position: absolute;
+        //         left: ${this.data.hitbox.x / this.scale}px;
+        //         top: ${this.data.hitbox.y / this.scale}px;
+        //         width: ${this.data.hitbox.width / this.scale}px;
+        //         height: ${this.data.hitbox.height / this.scale}px;
+        //         background-color: red;
+        //         opacity: 0.5;
+        //     }
+        //     ._2dk__footbox {
+        //         position: absolute;
+        //         left: ${this.data.hitbox.x / this.scale}px;
+        //         top: ${(this.data.hitbox.y / this.scale) + ((this.data.hitbox.height / this.scale) / 2)}px;
+        //         width: ${this.footbox.width}px;
+        //         height: ${this.footbox.height}px;
+        //         background-color: blue;
+        //         opacity: 0.5;
+        //     }
+        // `);
 
         for ( let verb in this.data.verbs ) {
             if ( verb === Config.verbs.FACE ) {

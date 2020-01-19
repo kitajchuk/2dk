@@ -38,6 +38,8 @@
 
 * Handle active tile collision (uses the NOUN system for FX)
 
+* Interact with tiles using weapon (sword)
+
 
 ********************************************************************************
 * Active Objects (NPCs, Enemies, colliders, state shifting, sprite/tileset)
