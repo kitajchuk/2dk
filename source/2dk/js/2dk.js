@@ -4,6 +4,12 @@
 
 
 
+* Tile Interactions (make lifted thing a sprite with companion properties?)
+* Object Interactions
+* Attack Ineractinos (weapon: sword)
+
+
+
 * Explore NPC concepts with sprite sheets
 * Door events for entering and exiting interiors
 * Make Editor Utils Promise-based... like clutch core files module
@@ -54,7 +60,7 @@
 * VERBS
 ********************************************************************************
 * VERB system for Hero Actions and Object(NPC) Reactions
-* VERBS: GRAB, MOVE, LIFT, OPEN, WALK, FACE, TOSS, CUT
+* VERBS: PUSH, PULL, GRAB, MOVE, LIFT, OPEN, WALK, FACE, TOSS, CUT
 
 * Interactions like pushing pots, picking up rocks etc...
 

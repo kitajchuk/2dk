@@ -96,7 +96,6 @@
         {
             "group": "shrubs",
             "layer": "background",
-            "type": "active",
             "coords": [],
             "offsetX": 0,
             "offsetY": 512,

@@ -76,22 +76,23 @@ class Sprite {
 
 
     cycle ( verb, dir ) {
-        if ( verb !== this.verb ) {
-            this.$child.removeClass( this.verb );
-        }
-
-        this.$child.removeClass( "up down right left" );
+        this.$child.removeClass( `${Config.verbs.WALK} ${Config.verbs.FACE} ${this.verb} up down right left` );
+        this.$child.addClass( `${Config.verbs.WALK} ${verb} ${dir}` );
         this.dir = dir;
         this.verb = verb;
+    }
+
+
+    act ( verb, dir ) {
+        this.$child.removeClass( `${Config.verbs.WALK} ${Config.verbs.FACE} ${this.verb} up down right left` );
         this.$child.addClass( `${verb} ${dir}` );
+        this.dir = dir;
+        this.verb = verb;
     }
 
 
     face ( dir ) {
-        this.$child.removeClass( `${this.verb} up down right left` );
-        this.$child.addClass( dir );
-        this.dir = dir;
-        this.verb = Config.verbs.FACE;
+        this.act( Config.verbs.FACE, dir );
     }
 
 
@@ -199,19 +200,19 @@ class Hero extends Sprite {
         }
 
         for ( let verb in this.data.verbs ) {
-            if ( verb === Config.verbs.FACE ) {
+            if ( !this.data.verbs[ verb ].dur ) {
                 this.stylePacks.push(`
-                    ._2dk__${this.data.id} ._2dk__child.down {
-                        background-position: ${this.data.verbs.face.down.offsetX / this.scale}px ${this.data.verbs.face.down.offsetY / this.scale}px;
+                    ._2dk__${this.data.id} ._2dk__child.${verb}.down {
+                        background-position: ${this.data.verbs[ verb ].down.offsetX / this.scale}px ${this.data.verbs[ verb ].down.offsetY / this.scale}px;
                     }
-                    ._2dk__${this.data.id} ._2dk__child.up {
-                        background-position: ${this.data.verbs.face.up.offsetX / this.scale}px ${this.data.verbs.face.up.offsetY / this.scale}px;
+                    ._2dk__${this.data.id} ._2dk__child.${verb}.up {
+                        background-position: ${this.data.verbs[ verb ].up.offsetX / this.scale}px ${this.data.verbs[ verb ].up.offsetY / this.scale}px;
                     }
-                    ._2dk__${this.data.id} ._2dk__child.left {
-                        background-position: ${this.data.verbs.face.left.offsetX / this.scale}px ${this.data.verbs.face.left.offsetY / this.scale}px;
+                    ._2dk__${this.data.id} ._2dk__child.${verb}.left {
+                        background-position: ${this.data.verbs[ verb ].left.offsetX / this.scale}px ${this.data.verbs[ verb ].left.offsetY / this.scale}px;
                     }
-                    ._2dk__${this.data.id} ._2dk__child.right {
-                        background-position: ${this.data.verbs.face.right.offsetX / this.scale}px ${this.data.verbs.face.right.offsetY / this.scale}px;
+                    ._2dk__${this.data.id} ._2dk__child.${verb}.right {
+                        background-position: ${this.data.verbs[ verb ].right.offsetX / this.scale}px ${this.data.verbs[ verb ].right.offsetY / this.scale}px;
                     }
                 `);
 
@@ -219,30 +220,30 @@ class Hero extends Sprite {
                 this.stylePacks.push(`
                     ._2dk__${this.data.id} ._2dk__child.${verb}.down {
                         background-position: ${this.data.verbs[ verb ].down.offsetX / this.scale}px ${this.data.verbs[ verb ].down.offsetY / this.scale}px;
-                        animation: ${this.data.id}-${verb}-down ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].down.stepsX} ) infinite;
+                        animation: ${this.data.id}-${verb.replace( /\./g, "-" )}-down ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].down.stepsX} ) infinite;
                     }
-                    @keyframes ${this.data.id}-${verb}-down {
+                    @keyframes ${this.data.id}-${verb.replace( /\./g, "-" )}-down {
                         100% { background-position: -${Math.abs( this.data.verbs[ verb ].down.offsetX / this.scale ) + (this.width * this.data.verbs[ verb ].down.stepsX)}px ${this.data.verbs[ verb ].down.offsetY / this.scale}px; }
                     }
                     ._2dk__${this.data.id} ._2dk__child.${verb}.up {
                         background-position: ${this.data.verbs[ verb ].up.offsetX / this.scale}px ${this.data.verbs[ verb ].up.offsetY / this.scale}px;
-                        animation: ${this.data.id}-${verb}-up ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].up.stepsX} ) infinite;
+                        animation: ${this.data.id}-${verb.replace( /\./g, "-" )}-up ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].up.stepsX} ) infinite;
                     }
-                    @keyframes ${this.data.id}-${verb}-up {
+                    @keyframes ${this.data.id}-${verb.replace( /\./g, "-" )}-up {
                         100% { background-position: -${Math.abs( this.data.verbs[ verb ].up.offsetX / this.scale ) + (this.width * this.data.verbs[ verb ].up.stepsX)}px ${this.data.verbs[ verb ].up.offsetY / this.scale}px; }
                     }
                     ._2dk__${this.data.id} ._2dk__child.${verb}.left {
                         background-position: ${this.data.verbs[ verb ].left.offsetX / this.scale}px ${this.data.verbs[ verb ].left.offsetY / this.scale}px;
-                        animation: ${this.data.id}-${verb}-left ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].left.stepsX} ) infinite;
+                        animation: ${this.data.id}-${verb.replace( /\./g, "-" )}-left ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].left.stepsX} ) infinite;
                     }
-                    @keyframes ${this.data.id}-${verb}-left {
+                    @keyframes ${this.data.id}-${verb.replace( /\./g, "-" )}-left {
                         100% { background-position: -${Math.abs( this.data.verbs[ verb ].left.offsetX / this.scale ) + (this.width * this.data.verbs[ verb ].left.stepsX)}px ${this.data.verbs[ verb ].left.offsetY / this.scale}px; }
                     }
                     ._2dk__${this.data.id} ._2dk__child.${verb}.right {
                         background-position: ${this.data.verbs[ verb ].right.offsetX / this.scale}px ${this.data.verbs[ verb ].right.offsetY / this.scale}px;
-                        animation: ${this.data.id}-${verb}-right ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].right.stepsX} ) infinite;
+                        animation: ${this.data.id}-${verb.replace( /\./g, "-" )}-right ${this.data.verbs[ verb ].dur}ms steps( ${this.data.verbs[ verb ].right.stepsX} ) infinite;
                     }
-                    @keyframes ${this.data.id}-${verb}-right {
+                    @keyframes ${this.data.id}-${verb.replace( /\./g, "-" )}-right {
                         100% { background-position: -${Math.abs( this.data.verbs[ verb ].right.offsetX / this.scale ) + (this.width * this.data.verbs[ verb ].right.stepsX)}px ${this.data.verbs[ verb ].right.offsetY / this.scale}px; }
                     }
                 `);

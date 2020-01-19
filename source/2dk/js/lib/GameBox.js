@@ -32,6 +32,7 @@ class GameBox {
         };
         this.interact = {};
         this.debounce = 1024;
+        this.locked = false;
 
         // Map
         this.map = new Map( Loader.cash( this.player.data.hero.spawn.map ), this );
@@ -288,31 +289,6 @@ class GameBox {
     }
 
 
-    // awareNPC ( poi ) {
-    //     for ( let i = this.npcs.length; i--; ) {
-    //         this.npcs[ i ].checkHero( poi );
-    //         this.npcs[ i ].checkCamera( poi );
-    //     }
-    // }
-
-
-    // checkNPC ( poi ) {
-    //     let ret = null;
-    //     const hitbox = this.hero.getHitbox( poi );
-    //
-    //     for ( let i = this.npcs.length; i--; ) {
-    //         const hitnpc = this.npcs[ i ].getHitbox( this.npcs[ i ].position );
-    //
-    //         if ( Utils.collide( hitbox, hitnpc ) ) {
-    //             ret = this.npcs[ i ];
-    //             break;
-    //         }
-    //     }
-    //
-    //     return ret;
-    // }
-
-
     checkObj ( poi ) {
         let ret = false;
         const hitbox = this.hero.getHitbox( poi );
@@ -361,6 +337,31 @@ class GameBox {
 
         }) || tiles[ 0 ]);
     }
+
+
+    // awareNPC ( poi ) {
+    //     for ( let i = this.npcs.length; i--; ) {
+    //         this.npcs[ i ].checkHero( poi );
+    //         this.npcs[ i ].checkCamera( poi );
+    //     }
+    // }
+
+
+    // checkNPC ( poi ) {
+    //     let ret = null;
+    //     const hitbox = this.hero.getHitbox( poi );
+    //
+    //     for ( let i = this.npcs.length; i--; ) {
+    //         const hitnpc = this.npcs[ i ].getHitbox( this.npcs[ i ].position );
+    //
+    //         if ( Utils.collide( hitbox, hitnpc ) ) {
+    //             ret = this.npcs[ i ];
+    //             break;
+    //         }
+    //     }
+    //
+    //     return ret;
+    // }
 }
 
 
@@ -378,6 +379,10 @@ class TopView extends GameBox {
         const poi = this.getPoi( delta, dirX, dirY );
         const collision = this.getCollision( poi );
         const speed = this.getSpeed();
+
+        if ( this.locked ) {
+            return;
+        }
 
         if ( collision.evt ) {
             if ( collision.evt.type === Config.events.BOUNDARY && collision.box ) {
@@ -408,11 +413,19 @@ class TopView extends GameBox {
             return;
         }
 
+        if ( this.hero.verb === Config.verbs.GRAB ) {
+            if ( dir === Config.opposites[ this.hero.dir ] ) {
+                this.handleLift( poi, dir );
+            }
+
+            return;
+        }
+
         if ( collision.tile ) {
             this.handleTile( poi, dir, collision.tile );
 
             if ( collision.tile.activeTile.data.action && stopTiles.indexOf( collision.tile.activeTile.data.action.verb ) !== -1 ) {
-                this.hero.cycle( Config.verbs.WALK, dir );
+                this.hero.cycle( this.hero.verb, dir );
                 return;
             }
 
@@ -420,12 +433,25 @@ class TopView extends GameBox {
             this.camera.speed = speed;
         }
 
+        if ( this.hero.verb === Config.verbs.FACE ) {
+            this.hero.verb = Config.verbs.WALK;
+        }
+
         this.handleWalk( poi, dir );
     }
 
 
     releaseD () {
-        this.hero.face( this.hero.dir );
+        if ( this.locked ) {
+            return;
+        }
+
+        if ( this.interact.tile ) {
+            this.hero.act( this.hero.verb, this.hero.dir );
+
+        } else {
+            this.hero.face( this.hero.dir );
+        }
     }
 
 
@@ -452,13 +478,34 @@ class TopView extends GameBox {
 
 
     releaseA () {
-        this.interact.tile = false;
         this.dialogue.check( true, false );
+
+        this.handleReleaseA();
     }
 
 
     releaseHoldA () {
-        console.log( "A Hold Release" );
+        this.handleReleaseA();
+    }
+
+
+    handleReleaseA () {
+        if ( this.hero.verb === Config.verbs.GRAB ) {
+            this.hero.face( this.hero.dir );
+        }
+
+        if ( this.hero.verb === Config.verbs.LIFT ) {
+            if ( this.interact.tile.toss ) {
+                this.hero.face( this.hero.dir );
+                this.handleToss();
+
+            } else {
+                this.interact.tile.toss = true;
+            }
+
+        } else {
+            this.interact.tile = null;
+        }
     }
 
 
@@ -497,29 +544,63 @@ class TopView extends GameBox {
         this.offset = this.update( poi );
         this.map.update( this.offset );
         this.hero.update( poi, this.offset );
-        this.hero.cycle( Config.verbs.WALK, dir );
+
+        if ( this.hero.verb !== Config.verbs.LIFT ) {
+            this.hero.cycle( Config.verbs.WALK, dir );
+
+        } else {
+            this.hero.cycle( this.hero.verb, dir );
+        }
     }
 
 
     handleMap ( poi, dir ) {
-        this.hero.cycle( Config.verbs.WALK, dir );
-    }
+        if ( this.hero.verb !== Config.verbs.LIFT ) {
+            this.hero.cycle( Config.verbs.PUSH, dir );
 
-
-    handleNPC ( npc, dir ) {
-        this.hero.cycle( Config.verbs.WALK, dir );
+        } else {
+            this.hero.cycle( this.hero.verb, dir );
+        }
     }
 
 
     handleObj ( obj, dir ) {
-        this.hero.cycle( Config.verbs.WALK, dir );
+        if ( this.hero.verb !== Config.verbs.LIFT ) {
+            this.hero.cycle( Config.verbs.PUSH, dir );
+
+        } else {
+            this.hero.cycle( this.hero.verb, dir );
+        }
     }
 
 
-    handleObjAct ( poi, dir, obj ) {
-        if ( obj.canInteract( dir ) ) {
-            obj.doInteract( dir );
-        }
+    handleBox ( poi, dir ) {
+        this.hero.cycle( this.hero.verb, dir );
+    }
+
+
+    handleEvtBoundary ( evt ) {
+        this.switchMap( evt );
+    }
+
+
+    handleLift ( poi, dir ) {
+        this.locked = true;
+        this.hero.act( Config.verbs.PULL, dir );
+        setTimeout(() => {
+            this.interact.tile.activeTile.doInteract( this.interact.tile.activeCoord );
+            this.interact.tile.sprite = this.interact.tile.activeTile.getSprite( this.interact.tile.activeCoord );
+            this.hero.element.appendChild( this.interact.tile.sprite );
+            this.hero.act( Config.verbs.LIFT, dir );
+            this.locked = false;
+
+        }, Config.values.debounceDur );
+    }
+
+
+    handleToss () {
+        this.hero.element.removeChild( this.interact.tile.sprite );
+        this.interact.tile = null;
     }
 
 
@@ -532,15 +613,28 @@ class TopView extends GameBox {
         } else if ( tile.activeTile.data.group === Config.tiles.GRASS ) {
             this.camera.speed = this.getSpeed() / 1.5;
         }
+    }
 
-        // console.log( "ActiveTile", tile );
+
+    // handleNPC ( npc, dir ) {
+    //     this.hero.cycle( this.hero.verb, dir );
+    // }
+
+
+    handleObjAct ( poi, dir, obj ) {
+        if ( obj.canInteract( dir ) ) {
+            obj.doInteract( dir );
+        }
     }
 
 
     handleTileAct ( poi, dir, tile ) {
         if ( tile.activeTile.canInteract() ) {
-            this.interact.tile = true;
-            tile.activeTile.doInteract( tile.activeCoord );
+            this.interact.tile = tile;
+
+            if ( tile.activeTile.data.action.verb === Config.verbs.LIFT ) {
+                this.hero.act( Config.verbs.GRAB, dir );
+            }
         }
     }
 
@@ -549,16 +643,6 @@ class TopView extends GameBox {
         if ( tile.activeTile.canAttack() ) {
             tile.activeTile.doInteract( tile.activeCoord );
         }
-    }
-
-
-    handleBox ( poi, dir ) {
-        this.hero.cycle( Config.verbs.WALK, dir );
-    }
-
-
-    handleEvtBoundary ( evt ) {
-        this.switchMap( evt );
     }
 
 

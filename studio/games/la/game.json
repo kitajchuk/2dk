@@ -10,7 +10,7 @@
         "version": 232
     },
     "hero": {
-        "sprite": 1,
+        "sprite": 0,
         "spawn": {
             "x": 1216,
             "y": 1408,
@@ -33,26 +33,21 @@
             },
             "verbs": {
                 "face": {
-                    "dur": 240,
                     "down": {
                         "offsetX": 0,
-                        "offsetY": 0,
-                        "stepsX": 0
+                        "offsetY": 0
                     },
                     "up": {
                         "offsetX": -92,
-                        "offsetY": 0,
-                        "stepsX": 0
+                        "offsetY": 0
                     },
                     "left": {
                         "offsetX": -184,
-                        "offsetY": 0,
-                        "stepsX": 0
+                        "offsetY": 0
                     },
                     "right": {
                         "offsetX": -276,
-                        "offsetY": 0,
-                        "stepsX": 0
+                        "offsetY": 0
                     }
                 },
                 "walk": {
@@ -101,48 +96,81 @@
                         "stepsX": 2
                     }
                 },
+                "lift": {
+                    "down": {
+                        "offsetX": -552,
+                        "offsetY": -92
+                    },
+                    "up": {
+                        "offsetX": -552,
+                        "offsetY": -184
+                    },
+                    "left": {
+                        "offsetX": -552,
+                        "offsetY": -276
+                    },
+                    "right": {
+                        "offsetX": -552,
+                        "offsetY": -368
+                    }
+                },
+                "walk.lift": {
+                    "dur": 240,
+                    "down": {
+                        "offsetX": -552,
+                        "offsetY": -92,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": -552,
+                        "offsetY": -184,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": -552,
+                        "offsetY": -276,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -552,
+                        "offsetY": -368,
+                        "stepsX": 2
+                    }
+                },
                 "pull": {
                     "down": {
                         "offsetX": -460,
-                        "offsetY": -92,
-                        "stepsX": 0
+                        "offsetY": -92
                     },
                     "up": {
                         "offsetX": -460,
-                        "offsetY": -184,
-                        "stepsX": 0
+                        "offsetY": -184
                     },
                     "left": {
                         "offsetX": -460,
-                        "offsetY": -276,
-                        "stepsX": 0
+                        "offsetY": -276
                     },
                     "right": {
                         "offsetX": -460,
-                        "offsetY": -368,
-                        "stepsX": 0
+                        "offsetY": -368
                     }
                 },
                 "grab": {
                     "down": {
                         "offsetX": -368,
-                        "offsetY": -184,
-                        "stepsX": 0
+                        "offsetY": -184
                     },
                     "up": {
                         "offsetX": -368,
-                        "offsetY": -92,
-                        "stepsX": 0
+                        "offsetY": -92
                     },
                     "left": {
                         "offsetX": -368,
-                        "offsetY": -368,
-                        "stepsX": 0
+                        "offsetY": -368
                     },
                     "right": {
                         "offsetX": -368,
-                        "offsetY": -276,
-                        "stepsX": 0
+                        "offsetY": -276
                     }
                 }
             }
@@ -161,26 +189,21 @@
             },
             "verbs": {
                 "face": {
-                    "dur": 480,
                     "down": {
                         "offsetX": 0,
-                        "offsetY": 0,
-                        "stepsX": 0
+                        "offsetY": 0
                     },
                     "up": {
                         "offsetX": -140,
-                        "offsetY": 0,
-                        "stepsX": 0
+                        "offsetY": 0
                     },
                     "left": {
                         "offsetX": -280,
-                        "offsetY": 0,
-                        "stepsX": 0
+                        "offsetY": 0
                     },
                     "right": {
                         "offsetX": -420,
-                        "offsetY": 0,
-                        "stepsX": 0
+                        "offsetY": 0
                     }
                 },
                 "walk": {
@@ -204,74 +227,6 @@
                         "offsetX": 0,
                         "offsetY": -560,
                         "stepsX": 8
-                    }
-                },
-                "push": {
-                    "dur": 720,
-                    "down": {
-                        "offsetX": -1120,
-                        "offsetY": -140,
-                        "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": -1120,
-                        "offsetY": -280,
-                        "stepsX": 2
-                    },
-                    "left": {
-                        "offsetX": -1120,
-                        "offsetY": -420,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": -1120,
-                        "offsetY": -560,
-                        "stepsX": 2
-                    }
-                },
-                "pull": {
-                    "dur": 720,
-                    "down": {
-                        "offsetX": -1400,
-                        "offsetY": -140,
-                        "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": -1400,
-                        "offsetY": -280,
-                        "stepsX": 2
-                    },
-                    "left": {
-                        "offsetX": -1400,
-                        "offsetY": -420,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": -1400,
-                        "offsetY": -560,
-                        "stepsX": 2
-                    }
-                },
-                "grab": {
-                    "down": {
-                        "offsetX": -1400,
-                        "offsetY": -280,
-                        "stepsX": 0
-                    },
-                    "up": {
-                        "offsetX": -1400,
-                        "offsetY": -140,
-                        "stepsX": 0
-                    },
-                    "left": {
-                        "offsetX": -1400,
-                        "offsetY": -560,
-                        "stepsX": 0
-                    },
-                    "right": {
-                        "offsetX": -1400,
-                        "offsetY": -420,
-                        "stepsX": 0
                     }
                 }
             }

@@ -15,10 +15,9 @@ const Config = {
         DOWNRIGHT: 444,
     },
     verbs: {
-        // Can these be handled with MOVE?
-        // PUSH: "push",
-        // PULL: "pull",
         CUT: "cut",
+        PUSH: "push",
+        PULL: "pull",
         GRAB: "grab",
         MOVE: "move",
         LIFT: "lift",
@@ -26,6 +25,7 @@ const Config = {
         WALK: "walk",
         FACE: "face",
         TOSS: "toss",
+        SWIM: "swim",
     },
     events: {
         DOOR: "door",
