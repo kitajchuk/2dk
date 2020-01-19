@@ -45,6 +45,12 @@ const touchControls = {
         menu: true,
         gamepad: [8],
     },
+    home: {
+        key: Config.keys.HOME,
+        elem: null,
+        text: "Home",
+        home: true,
+    },
     // D-Pad
     "up-left": {
         key: Config.keys.UPLEFT,
@@ -203,7 +209,12 @@ const onTouchStart = ( e ) => {
         if ( key ) {
             const control = getControl( key );
 
-            startTouch( control );
+            if ( control.home ) {
+                window.location.href = "/";
+
+            } else {
+                startTouch( control );
+            }
         }
     }
 
@@ -273,7 +284,10 @@ const onKeyDown = ( e ) => {
 
         const control = getControl( e.which );
 
-        if ( control ) {
+        if ( control && control.home ) {
+            window.location.href = "/";
+
+        } else if ( control ) {
             startTouch( control );
         }
     }

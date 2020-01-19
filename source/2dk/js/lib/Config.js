@@ -3,6 +3,7 @@ const Config = {
         A: 88,
         B: 90,
         UP: 38,
+        HOME: 72,
         DOWN: 40,
         LEFT: 37,
         RIGHT: 39,
