@@ -22,6 +22,8 @@ const Utils = {
         let ret = false;
 
         if ( box1.x < box2.x + box2.width && box1.x + box1.width > box2.x && box1.y < box2.y + box2.height && box1.height + box1.y > box2.y ) {
+            // console.log( "X", Math.abs( (box1.x - box2.x) / box1.width ) );
+            // console.log( "Y", Math.abs( (box1.y - box2.y) / box1.height ) );
             ret = true;
         }
 

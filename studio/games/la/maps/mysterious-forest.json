@@ -43,7 +43,7 @@
             "coords": [],
             "offsetX": 64,
             "offsetY": 2176,
-            "action": {
+            "attack": {
                 "verb": "cut",
                 "require": {},
                 "payload": {}
@@ -77,6 +77,11 @@
             "offsetY": 512,
             "action": {
                 "verb": "lift",
+                "require": {},
+                "payload": {}
+            },
+            "attack": {
+                "verb": "cut",
                 "require": {},
                 "payload": {}
             }

@@ -30,7 +30,9 @@
 * Active Tiles (animated?, canvas, render to layer (bg, fg), tileset, groups)
 ********************************************************************************
 * NOUN system for Hero
-* NOUNS: GRASS, WATER(depth...?), STAIRS, LEDGE(jump...?), SWITCH(actions...?), QUICK-SAND?
+* NOUNS: HOLE, GRASS, WATER, LEDGE, STAIRS, SWITCH
+
+* action & attack properties
 
 * Interaction tiles like cutting grass and plants
 * Event tiles for doors, locatin switching etc...
@@ -41,30 +43,25 @@
 
 
 ********************************************************************************
-* Active Objects (NPCs, Enemies, colliders, state shifting, sprite/tileset)
+* Active Objects (colliders, state shifting, sprite/tileset)
 ********************************************************************************
-(
-    ...Sprite:  data: id, name, width, height, image(sprite/tileset), spawn(x, y), boxes(hit)
-    layer?:     fg/bg
-    scale:      1, 2
-    states:     [(
-                    background-position,
-                    repeat?,
-                    animated?,
-                    action?(verb, require, payload, counter),
-                    offsetX,
-                    offsetY,
-                    stepsX,
-                    dur,
-                    sound
-                )]
-)
+* States that can shift with interaction
+* Colliders
+* Relative render between background/foreground compared to Hero
 
+
+********************************************************************************
+* VERBS
+********************************************************************************
 * VERB system for Hero Actions and Object(NPC) Reactions
-* VERBS: Face, Walk, Push, Open, Pull, Lift, Toss, Grab
+* VERBS: GRAB, MOVE, LIFT, OPEN, WALK, FACE, TOSS, CUT
 
 * Interactions like pushing pots, picking up rocks etc...
 
+
+********************************************************************************
+* NPCs (Sprites)
+********************************************************************************
 * Object(NPC) looks at Hero conditions (dir, act, etc...) to determine payload
 * Object(NPC) notifys Hero when an action meets conditions for a payload
 * Hero can perform a reciprical action (sprite cycle?, animation?) in return
@@ -85,7 +82,7 @@
 * Map Events
 ********************************************************************************
 * NOUN system for events
-* NOUNS: DOOR, BOUNDARY, CUTSCENE
+* NOUNS: DOOR, WARP, BOUNDARY, CUTSCENE
 
 
 ********************************************************************************

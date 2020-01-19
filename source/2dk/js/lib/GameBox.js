@@ -6,11 +6,6 @@ const { Map } = require( "./Map" );
 const { Hero, NPC } = require( "./Sprite" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
-const footTiles = [
-    Config.tiles.STAIRS,
-    Config.tiles.GRASS,
-    Config.tiles.HOLE,
-];
 const stopTiles = [
     Config.verbs.GRAB,
     Config.verbs.MOVE,
@@ -335,7 +330,6 @@ class GameBox {
 
     checkTile ( poi ) {
         const tiles = [];
-        const hitbox = this.hero.getHitbox( poi );
         const footbox = this.hero.getFootbox( poi );
 
         for ( let i = this.map.activeTiles.length; i--; ) {
@@ -347,9 +341,8 @@ class GameBox {
                     x: tile.data.coords[ j ][ 0 ] * this.map.gridsize,
                     y: tile.data.coords[ j ][ 1 ] * this.map.gridsize
                 };
-                const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
 
-                if ( Utils.collide( lookbox, tilebox ) ) {
+                if ( Utils.collide( footbox, tilebox ) ) {
                     tiles.push({
                         activeTile: tile,
                         activeCoord: tile.data.coords[ j ],
@@ -364,7 +357,7 @@ class GameBox {
 
         // If there's no action tile, return one tile...
         return (tiles.find(( tile ) => {
-            return tile.activeTile.data.action;
+            return tile.activeTile.data.action || tile.activeTile.data.attack;
 
         }) || tiles[ 0 ]);
     }
@@ -476,7 +469,7 @@ class TopView extends GameBox {
             Config.verbs.CUT,
         ];
 
-        if ( collision.tile && collision.tile.activeTile.data.action && (tileActs.indexOf( collision.tile.activeTile.data.action.verb ) !== -1) ) {
+        if ( collision.tile && collision.tile.activeTile.data.attack && (tileActs.indexOf( collision.tile.activeTile.data.attack.verb ) !== -1) ) {
             this.handleTileHit( poi, dir, collision.tile );
         }
     }
@@ -553,7 +546,7 @@ class TopView extends GameBox {
 
 
     handleTileHit ( poi, dir, tile ) {
-        if ( tile.activeTile.canInteract() ) {
+        if ( tile.activeTile.canAttack() ) {
             tile.activeTile.doInteract( tile.activeCoord );
         }
     }

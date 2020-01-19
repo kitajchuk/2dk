@@ -136,12 +136,16 @@ class ActiveTiles {
     }
 
 
+    canAttack () {
+        return this.data.attack;
+    }
+
+
     doInteract ( coords ) {
         for ( let i = this.data.coords.length; i--; ) {
             if ( this.data.coords[ i ][ 0 ] === coords[ 0 ] && this.data.coords[ i ][ 1 ] === coords[ 1 ] ) {
                 this.spliced.push( this.data.coords[ i ] );
                 this.data.coords.splice( i, 1 );
-                console.log( "spliced tile coords" );
                 break;
             }
         }
