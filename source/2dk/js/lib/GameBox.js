@@ -170,6 +170,18 @@ class GameBox {
     }
 
 
+    getCollision ( poi ) {
+        return {
+            evt: this.checkEvt( poi ),
+            map: this.checkMap( poi, this.hero ),
+            box: this.checkBox( poi ),
+            obj: this.checkObj( poi ),
+            // npc: this.checkNPC( poi ),
+            tile: this.checkTile( poi ),
+        };
+    }
+
+
     getStep ( dir ) {
         let dirX = 0;
         let dirY = 0;
@@ -197,7 +209,10 @@ class GameBox {
     }
 
 
-    // Can all be handled in TopView or other play style Box
+/*******************************************************************************
+* GamePad Inputs
+* Can all be handled in TopView or other play style Box
+*******************************************************************************/
     pressD () {}
     releaseD () {}
     pressA () {}
@@ -208,6 +223,151 @@ class GameBox {
     holdB () {}
     releaseB () {}
     releaseHoldB () {}
+
+
+/*******************************************************************************
+* Perception Checks
+*******************************************************************************/
+    checkBox ( poi ) {
+        let ret = false;
+
+        if ( poi.x <= this.camera.x || poi.x >= (this.camera.x + this.camera.width - this.hero.width) ) {
+            ret = true;
+        }
+
+        if ( poi.y <= this.camera.y || poi.y >= (this.camera.y + this.camera.height - this.hero.height) ) {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+
+    checkMap ( poi, sprite ) {
+        let ret = false;
+        const hitbox = sprite.getHitbox( poi );
+
+        for ( let i = this.map.data.collision.length; i--; ) {
+            const collider = this.map.data.collider / this.player.data.game.resolution;
+            const tile = {
+                width: collider,
+                height: collider,
+                x: this.map.data.collision[ i ][ 0 ] * collider,
+                y: this.map.data.collision[ i ][ 1 ] * collider
+            };
+
+            if ( Utils.collide( hitbox, tile ) ) {
+                ret = true;
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+
+    checkEvt ( poi ) {
+        let ret = false;
+        const hitbox = {
+            width: this.hero.width,
+            height: this.hero.height,
+            x: this.hero.position.x,
+            y: this.hero.position.y,
+        };
+
+        for ( let i = this.map.data.events.length; i--; ) {
+            const tile = {
+                width: this.map.gridsize,
+                height: this.map.gridsize,
+                x: this.map.data.events[ i ].coords[ 0 ] * this.map.gridsize,
+                y: this.map.data.events[ i ].coords[ 1 ] * this.map.gridsize
+            };
+
+            if ( Utils.collide( hitbox, tile ) && this.hero.dir === this.map.data.events[ i ].dir ) {
+                ret = this.map.data.events[ i ];
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+
+    // awareNPC ( poi ) {
+    //     for ( let i = this.npcs.length; i--; ) {
+    //         this.npcs[ i ].checkHero( poi );
+    //         this.npcs[ i ].checkCamera( poi );
+    //     }
+    // }
+
+
+    // checkNPC ( poi ) {
+    //     let ret = null;
+    //     const hitbox = this.hero.getHitbox( poi );
+    //
+    //     for ( let i = this.npcs.length; i--; ) {
+    //         const hitnpc = this.npcs[ i ].getHitbox( this.npcs[ i ].position );
+    //
+    //         if ( Utils.collide( hitbox, hitnpc ) ) {
+    //             ret = this.npcs[ i ];
+    //             break;
+    //         }
+    //     }
+    //
+    //     return ret;
+    // }
+
+
+    checkObj ( poi ) {
+        let ret = false;
+        const hitbox = this.hero.getHitbox( poi );
+
+        for ( let i = this.map.activeObjects.length; i--; ) {
+            if ( Utils.collide( hitbox, this.map.activeObjects[ i ].hitbox ) ) {
+                ret = this.map.activeObjects[ i ];
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+
+    checkTile ( poi ) {
+        const tiles = [];
+        const hitbox = this.hero.getHitbox( poi );
+        const footbox = this.hero.getFootbox( poi );
+
+        for ( let i = this.map.activeTiles.length; i--; ) {
+            for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
+                const tile = this.map.activeTiles[ i ];
+                const tilebox = {
+                    width: this.map.gridsize,
+                    height: this.map.gridsize,
+                    x: tile.data.coords[ j ][ 0 ] * this.map.gridsize,
+                    y: tile.data.coords[ j ][ 1 ] * this.map.gridsize
+                };
+                const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
+
+                if ( Utils.collide( lookbox, tilebox ) ) {
+                    tiles.push({
+                        activeTile: tile,
+                        activeCoord: tile.data.coords[ j ],
+                    });
+                }
+            }
+        }
+
+        if ( tiles.length === 1 ) {
+            return tiles[ 0 ];
+        }
+
+        // If there's no action tile, return one tile...
+        return (tiles.find(( tile ) => {
+            return tile.activeTile.data.action;
+
+        }) || tiles[ 0 ]);
+    }
 }
 
 
@@ -215,18 +375,6 @@ class GameBox {
 class TopView extends GameBox {
     constructor ( player ) {
         super( player );
-    }
-
-
-    getCollision ( poi ) {
-        return {
-            evt: this.checkEvt( poi ),
-            map: this.checkMap( poi, this.hero ),
-            box: this.checkBox( poi ),
-            obj: this.checkObj( poi ),
-            // npc: this.checkNPC( poi ),
-            tile: this.checkTile( poi ),
-        };
     }
 
 
@@ -418,151 +566,6 @@ class TopView extends GameBox {
 
     handleEvtBoundary ( evt ) {
         this.switchMap( evt );
-    }
-
-
-/*******************************************************************************
-* Perception Checks
-*******************************************************************************/
-    checkBox ( poi ) {
-        let ret = false;
-
-        if ( poi.x <= this.camera.x || poi.x >= (this.camera.x + this.camera.width - this.hero.width) ) {
-            ret = true;
-        }
-
-        if ( poi.y <= this.camera.y || poi.y >= (this.camera.y + this.camera.height - this.hero.height) ) {
-            ret = true;
-        }
-
-        return ret;
-    }
-
-
-    checkMap ( poi, sprite ) {
-        let ret = false;
-        const hitbox = sprite.getHitbox( poi );
-
-        for ( let i = this.map.data.collision.length; i--; ) {
-            const collider = this.map.data.collider / this.player.data.game.resolution;
-            const tile = {
-                width: collider,
-                height: collider,
-                x: this.map.data.collision[ i ][ 0 ] * collider,
-                y: this.map.data.collision[ i ][ 1 ] * collider
-            };
-
-            if ( Utils.collide( hitbox, tile ) ) {
-                ret = true;
-                break;
-            }
-        }
-
-        return ret;
-    }
-
-
-    checkEvt ( poi ) {
-        let ret = false;
-        const hitbox = {
-            width: this.hero.width,
-            height: this.hero.height,
-            x: this.hero.position.x,
-            y: this.hero.position.y,
-        };
-
-        for ( let i = this.map.data.events.length; i--; ) {
-            const tile = {
-                width: this.map.gridsize,
-                height: this.map.gridsize,
-                x: this.map.data.events[ i ].coords[ 0 ] * this.map.gridsize,
-                y: this.map.data.events[ i ].coords[ 1 ] * this.map.gridsize
-            };
-
-            if ( Utils.collide( hitbox, tile ) && this.hero.dir === this.map.data.events[ i ].dir ) {
-                ret = this.map.data.events[ i ];
-                break;
-            }
-        }
-
-        return ret;
-    }
-
-
-    // awareNPC ( poi ) {
-    //     for ( let i = this.npcs.length; i--; ) {
-    //         this.npcs[ i ].checkHero( poi );
-    //         this.npcs[ i ].checkCamera( poi );
-    //     }
-    // }
-
-
-    // checkNPC ( poi ) {
-    //     let ret = null;
-    //     const hitbox = this.hero.getHitbox( poi );
-    //
-    //     for ( let i = this.npcs.length; i--; ) {
-    //         const hitnpc = this.npcs[ i ].getHitbox( this.npcs[ i ].position );
-    //
-    //         if ( Utils.collide( hitbox, hitnpc ) ) {
-    //             ret = this.npcs[ i ];
-    //             break;
-    //         }
-    //     }
-    //
-    //     return ret;
-    // }
-
-
-    checkObj ( poi ) {
-        let ret = false;
-        const hitbox = this.hero.getHitbox( poi );
-
-        for ( let i = this.map.activeObjects.length; i--; ) {
-            if ( Utils.collide( hitbox, this.map.activeObjects[ i ].hitbox ) ) {
-                ret = this.map.activeObjects[ i ];
-                break;
-            }
-        }
-
-        return ret;
-    }
-
-
-    checkTile ( poi ) {
-        const tiles = [];
-        const hitbox = this.hero.getHitbox( poi );
-        const footbox = this.hero.getFootbox( poi );
-
-        for ( let i = this.map.activeTiles.length; i--; ) {
-            for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
-                const tile = this.map.activeTiles[ i ];
-                const tilebox = {
-                    width: this.map.gridsize,
-                    height: this.map.gridsize,
-                    x: tile.data.coords[ j ][ 0 ] * this.map.gridsize,
-                    y: tile.data.coords[ j ][ 1 ] * this.map.gridsize
-                };
-                const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
-
-                if ( Utils.collide( lookbox, tilebox ) ) {
-                    tiles.push({
-                        activeTile: tile,
-                        activeCoord: tile.data.coords[ j ],
-                    });
-                }
-            }
-        }
-
-        if ( tiles.length === 1 ) {
-            return tiles[ 0 ];
-        }
-
-        // If there's no action tile, return one tile...
-        return (tiles.find(( tile ) => {
-            return tile.activeTile.data.action;
-
-        }) || tiles[ 0 ]);
     }
 
 

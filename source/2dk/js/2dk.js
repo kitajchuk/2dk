@@ -4,7 +4,6 @@
 
 
 
-* Consider what should/could move from TopView up to GameBox core Class...
 * Explore NPC concepts with sprite sheets
 * Door events for entering and exiting interiors
 * Make Editor Utils Promise-based... like clutch core files module
