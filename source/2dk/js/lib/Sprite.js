@@ -164,7 +164,7 @@ class Tile {
 
     toss ( dir ) {
         this.teardown = true;
-        this.tossable = new Toss( this, dir, 256, 320 );
+        this.tossable = new Toss( this, dir, (this.gamebox.map.gridsize * 3), (this.gamebox.map.gridsize * 6) );
         return this.tossable.exec();
     }
 

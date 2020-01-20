@@ -4,7 +4,9 @@
 
 
 
-* Figure out throwable object with destroy animation...
+* Grass sprite cycle / sound
+* Water sprite cycle / sound
+* Sword sprite cycle / sound / collision
 
 
 

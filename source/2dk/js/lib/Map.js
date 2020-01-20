@@ -246,6 +246,10 @@ class ActiveObject {
             this.payload();
         }
 
+        if ( this.state.action.sound ) {
+            this.map.gamebox.player.gameaudio.hitSound( this.state.action.sound );
+        }
+
         if ( this.state.action.shift ) {
             this.shift();
         }
