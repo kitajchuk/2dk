@@ -4,6 +4,7 @@
 
 
 
+* Smass FX for tossable tile sprites
 * Grass sprite cycle / sound
 * Water sprite cycle / sound
 * Sword sprite cycle / sound / collision

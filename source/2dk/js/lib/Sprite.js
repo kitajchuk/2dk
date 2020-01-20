@@ -12,7 +12,7 @@ const stopTiles = [
 
 
 
-class Toss {
+class Tossable {
     constructor ( sprite, dir, dist, dur ) {
         this.sprite = sprite;
         this.dir = dir;
@@ -74,7 +74,7 @@ class Toss {
     }
 
 
-    exec () {
+    toss () {
         return new Promise(( resolve ) => {
             this.resolve = resolve;
             this.values = this.getValues();
@@ -164,13 +164,14 @@ class Tile {
 
     toss ( dir ) {
         this.teardown = true;
-        this.tossable = new Toss( this, dir, (this.gamebox.map.gridsize * 3), (this.gamebox.map.gridsize * 6) );
-        return this.tossable.exec();
+        this.tossable = new Tossable( this, dir, (this.gamebox.map.gridsize * 3), (this.gamebox.map.gridsize * 6) );
+        return this.tossable.toss();
     }
 
 
     destroy () {
         this.element.parentNode.removeChild( this.element );
+        this.tossable = null;
         this.data = null;
     }
 }
