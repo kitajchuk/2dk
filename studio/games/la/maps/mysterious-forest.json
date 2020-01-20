@@ -10,7 +10,7 @@
     "image": "/games/la/assets/tiles/tiles.png",
     "snapshot": "/games/la/assets/snapshots/mysterious-forest.png",
     "thumbnail": "/games/la/assets/snapshots/mysterious-forest-thumb.png",
-    "sound": "/games/la/assets/sounds/16-mysterious-forest.mp3",
+    "sound": "/games/la/assets/sounds/bgm-mysterious-forest.mp3",
     "spawn": [
         {
             "x": 0,

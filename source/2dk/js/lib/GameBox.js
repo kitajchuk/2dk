@@ -3,13 +3,19 @@ const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const Dialogue = require( "./Dialogue" );
 const { Map } = require( "./Map" );
-const { Hero, NPC } = require( "./Sprite" );
+const { Hero, Tile, NPC } = require( "./Sprite" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
 const stopTiles = [
     Config.verbs.GRAB,
     Config.verbs.MOVE,
     Config.verbs.LIFT,
+];
+const footTiles = [
+    Config.tiles.STAIRS,
+    Config.tiles.WATER,
+    Config.tiles.GRASS,
+    Config.tiles.HOLE,
 ];
 
 
@@ -30,7 +36,14 @@ class GameBox {
             resolution: this.player.data.game.resolution,
             speed: this.getSpeed(),
         };
-        this.interact = {};
+        this.interact = {
+            // tile: {
+            //     activeTile,
+            //     coord,
+            //     toss?,
+            //     sprite,
+            // }
+        };
         this.debounce = 1024;
         this.locked = false;
 
@@ -52,6 +65,7 @@ class GameBox {
 
         this.build();
         this.initMap();
+        this.initHero();
         // this.initNPC();
     }
 
@@ -72,6 +86,17 @@ class GameBox {
             src: this.map.data.sound,
             channel: "bgm",
         });
+    }
+
+
+    initHero () {
+        for ( let id in this.hero.data.sounds ) {
+            this.player.gameaudio.addSound({
+                id,
+                src: this.hero.data.sounds[ id ],
+                channel: "sfx",
+            });
+        }
     }
 
 
@@ -146,6 +171,11 @@ class GameBox {
     render ( elapsed ) {
         this.map.render( elapsed, this.camera );
         this.hero.render( elapsed );
+
+        if ( this.interact.tile && this.interact.tile.sprite ) {
+            this.interact.tile.sprite.render( elapsed );
+        }
+
         // this.npcs.forEach(( npc ) => {
         //     npc.update( this.hero.position, this.offset );
         //     npc.render( elapsed );
@@ -306,6 +336,7 @@ class GameBox {
 
     checkTile ( poi ) {
         const tiles = [];
+        const hitbox = this.hero.getHitbox( poi );
         const footbox = this.hero.getFootbox( poi );
 
         for ( let i = this.map.activeTiles.length; i--; ) {
@@ -317,11 +348,12 @@ class GameBox {
                     x: tile.data.coords[ j ][ 0 ] * this.map.gridsize,
                     y: tile.data.coords[ j ][ 1 ] * this.map.gridsize
                 };
+                const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
 
-                if ( Utils.collide( footbox, tilebox ) ) {
+                if ( Utils.collide( lookbox, tilebox ) ) {
                     tiles.push({
                         activeTile: tile,
-                        activeCoord: tile.data.coords[ j ],
+                        coord: tile.data.coords[ j ],
                     });
                 }
             }
@@ -496,7 +528,6 @@ class TopView extends GameBox {
 
         if ( this.hero.verb === Config.verbs.LIFT ) {
             if ( this.interact.tile.toss ) {
-                this.hero.face( this.hero.dir );
                 this.handleToss();
 
             } else {
@@ -545,6 +576,10 @@ class TopView extends GameBox {
         this.map.update( this.offset );
         this.hero.update( poi, this.offset );
 
+        if ( this.interact.tile && this.interact.tile.sprite ) {
+            this.interact.tile.sprite.update( poi, this.offset );
+        }
+
         if ( this.hero.verb !== Config.verbs.LIFT ) {
             this.hero.cycle( Config.verbs.WALK, dir );
 
@@ -588,9 +623,17 @@ class TopView extends GameBox {
         this.locked = true;
         this.hero.act( Config.verbs.PULL, dir );
         setTimeout(() => {
-            this.interact.tile.activeTile.doInteract( this.interact.tile.activeCoord );
-            this.interact.tile.sprite = this.interact.tile.activeTile.getSprite( this.interact.tile.activeCoord );
-            this.hero.element.appendChild( this.interact.tile.sprite );
+            this.player.gameaudio.hitSound( "pickup" );
+            this.interact.tile.activeTile.splice( this.interact.tile.coord );
+            this.interact.tile.sprite = new Tile({
+                width: this.map.data.tilesize,
+                height: this.map.data.tilesize,
+                image: this.map.image,
+                background: this.interact.tile.activeTile.getTile(),
+
+            }, this );
+
+            this.map.element.appendChild( this.interact.tile.sprite.element );
             this.hero.act( Config.verbs.LIFT, dir );
             this.locked = false;
 
@@ -599,8 +642,12 @@ class TopView extends GameBox {
 
 
     handleToss () {
-        this.hero.element.removeChild( this.interact.tile.sprite );
-        this.interact.tile = null;
+        this.hero.face( this.hero.dir );
+        this.player.gameaudio.hitSound( "throw" );
+        this.interact.tile.sprite.toss( this.hero.dir ).then(() => {
+            this.player.gameaudio.hitSound( "smash" );
+            this.interact.tile = null;
+        });
     }
 
 
@@ -641,7 +688,7 @@ class TopView extends GameBox {
 
     handleTileHit ( poi, dir, tile ) {
         if ( tile.activeTile.canAttack() ) {
-            tile.activeTile.doInteract( tile.activeCoord );
+            tile.activeTile.splice( tile.coord );
         }
     }
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = "v232";
+const CACHE_NAME = "v233";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/la/game.json",
@@ -6,9 +6,12 @@ const CACHE_URLS = [
     "/games/la/assets/sprites/smoke.png",
     "/games/la/assets/sprites/hero_la.png",
     "/games/la/assets/sprites/hero_alttp.png",
-    "/games/la/assets/sounds/16-mysterious-forest.mp3",
-    "/games/la/assets/sounds/11-mabe-village.mp3",
-    "/games/la/assets/sounds/10-overworld.mp3",
+    "/games/la/assets/sounds/sfx-throw.mp3",
+    "/games/la/assets/sounds/sfx-smash.mp3",
+    "/games/la/assets/sounds/sfx-pick-up.mp3",
+    "/games/la/assets/sounds/bgm-overworld.mp3",
+    "/games/la/assets/sounds/bgm-mysterious-forest.mp3",
+    "/games/la/assets/sounds/bgm-mabe-village.mp3",
     "/games/la/maps/ukuku-prairie-west.json",
     "/games/la/maps/mysterious-forest.json",
     "/games/la/maps/mabe-village.json",

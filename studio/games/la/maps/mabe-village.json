@@ -10,7 +10,7 @@
     "image": "/games/la/assets/tiles/tiles.png",
     "snapshot": "/games/la/assets/snapshots/mabe-village.png",
     "thumbnail": "/games/la/assets/snapshots/mabe-village-thumb.png",
-    "sound": "/games/la/assets/sounds/11-mabe-village.mp3",
+    "sound": "/games/la/assets/sounds/bgm-mabe-village.mp3",
     "spawn": [
         {
             "x": 0,

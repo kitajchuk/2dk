@@ -1,7 +1,179 @@
 const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
+const Tween = require( "properjs-tween" );
+const Easing = require( "properjs-easing" );
 const $ = require( "properjs-hobo" );
+const stopTiles = [
+    Config.verbs.GRAB,
+    Config.verbs.MOVE,
+    Config.verbs.LIFT,
+];
+
+
+
+class Toss {
+    constructor ( sprite, dir, dist, dur ) {
+        this.sprite = sprite;
+        this.dir = dir;
+        this.dist = dist;
+        this.dur = dur;
+    }
+
+
+    getValues () {
+        const poi = {};
+        const origin = {
+            offset: this.sprite.offset,
+            position: this.sprite.position,
+        };
+
+        if ( this.dir === "up" ) {
+            poi.x = this.sprite.offset.x;
+            poi.y = this.sprite.offset.y - this.dist;
+
+        } else if ( this.dir === "down" ) {
+            poi.x = this.sprite.offset.x;
+            poi.y = this.sprite.offset.y + this.dist;
+
+        } else if ( this.dir === "left" ) {
+            poi.x = this.sprite.offset.x - this.dist;
+            poi.y = this.sprite.offset.y + this.sprite.height;
+
+        } else if ( this.dir === "right" ) {
+            poi.x = this.sprite.offset.x + this.dist;
+            poi.y = this.sprite.offset.y + this.sprite.height;
+        }
+
+        const angle = Utils.getAngle( this.sprite.offset, poi );
+
+        return {
+            poi,
+            angle,
+            origin,
+        }
+    }
+
+
+    update ( t ) {
+        const distance = this.dist - (this.dist - t);
+        const offset = Utils.translate( this.values.origin.offset, this.values.angle, distance );
+        const position = Utils.translate( this.values.origin.position, this.values.angle, distance );
+        const collision = this.sprite.gamebox.getCollision( position );
+
+        this.sprite.offset = offset;
+        this.sprite.position = position;
+        this.sprite.hitbox.x = this.sprite.position.x;
+        this.sprite.hitbox.y = this.sprite.position.y;
+
+        if ( collision.map || collision.obj || collision.box || (collision.tile && collision.tile.activeTile.data.action && stopTiles.indexOf( collision.tile.activeTile.data.action.verb ) !== -1) ) {
+            this.tween.stop();
+            this.sprite.destroy();
+            this.resolve();
+        }
+    }
+
+
+    exec () {
+        return new Promise(( resolve ) => {
+            this.resolve = resolve;
+            this.values = this.getValues();
+            this.tween = new Tween({
+                ease: Easing.swing,
+                duration: this.dur,
+                from: 0,
+                to: this.dist,
+                update: this.update.bind( this ),
+                complete: ( t ) => {
+                    this.update( t );
+                    this.sprite.destroy();
+                    this.resolve();
+                },
+            });
+        });
+    }
+}
+
+
+
+class Tile {
+    constructor ( data, gamebox ) {
+        this.data = data;
+        this.gamebox = gamebox;
+        this.teardown = false;
+        this.scale = this.gamebox.player.data.game.resolution;
+        this.width = this.data.width / this.scale;
+        this.height = this.data.height / this.scale;
+        this.image = this.data.image;
+        this.position = {
+            x: this.gamebox.hero.position.x + (this.gamebox.hero.width / 2) - (this.width / 2),
+            y: this.gamebox.hero.position.y - (this.height / 2),
+        };
+        this.offset = {
+            x: this.gamebox.hero.offset.x + (this.gamebox.hero.width / 2) - (this.width / 2),
+            y: this.gamebox.hero.offset.y - (this.height / 2),
+        };
+        this.hitbox = {
+            x: 0,
+            y: 0,
+            width: this.width,
+            height: this.height,
+        };
+        this.build();
+    }
+
+
+    build () {
+        this.element = document.createElement( "div" );
+        this.element.className = "_2dk__tile";
+        this.element.style.width = `${this.width}px`;
+        this.element.style.height = `${this.height}px`;
+        this.element.style.backgroundImage = `url(${this.image.src})`;
+        this.element.style.backgroundPosition = `-${this.data.background[ 0 ] / this.scale}px -${this.data.background[ 1 ] / this.scale}px`;
+        this.element.style.backgroundSize = `${this.image.naturalWidth / this.scale}px ${this.image.naturalHeight / this.scale}px`;
+        this.element.style.backgroundRepeat = "no-repeat";
+    }
+
+
+    update ( poi, offset ) {
+        if ( this.teardown ) {
+            return;
+        }
+
+        this.position = {
+            x: this.gamebox.hero.position.x + (this.gamebox.hero.width / 2) - (this.width / 2),
+            y: this.gamebox.hero.position.y - (this.height / 2),
+        };
+        this.offset = {
+            x: this.gamebox.hero.offset.x + (this.gamebox.hero.width / 2) - (this.width / 2),
+            y: this.gamebox.hero.offset.y - (this.height / 2),
+        };
+        this.hitbox.x = this.position.x;
+        this.hitbox.y = this.position.y;
+    }
+
+
+    render ( elapsed ) {
+        this.element.style.webkitTransform = `translate3d(
+            ${this.offset.x}px,
+            ${this.offset.y}px,
+            0
+        )`;
+    }
+
+
+    toss ( dir ) {
+        this.teardown = true;
+        this.tossable = new Toss( this, dir, 256, 320 );
+        return this.tossable.exec();
+    }
+
+
+    destroy () {
+        this.element.parentNode.removeChild( this.element );
+        this.data = null;
+    }
+}
 
 
 
@@ -36,7 +208,6 @@ class Sprite {
             width: this.hitbox.width,
             height: this.hitbox.height / 2,
         };
-
         this.build();
     }
 
@@ -381,5 +552,6 @@ class NPC extends Sprite {
 module.exports = {
     NPC,
     Hero,
+    Tile,
     Sprite,
 };

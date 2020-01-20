@@ -20,7 +20,7 @@
 }
 ._2dk__tile {
     position: absolute;
-    left: 50%;
+    left: 0;
     top: 0;
-    transform: translate3d( -50%, -50%, 0 );
+    z-index: 2;
 }

@@ -131,22 +131,6 @@ class ActiveTiles {
     }
 
 
-    getSprite ( coords ) {
-        const sprite = document.createElement( "div" );
-        const position = this.getTile();
-
-        sprite.className = "_2dk__tile";
-        sprite.style.width = `${this.map.gridsize}px`;
-        sprite.style.height = `${this.map.gridsize}px`;
-        sprite.style.backgroundImage = `url(${this.map.image.src})`;
-        sprite.style.backgroundPosition = `-${position[ 0 ] / this.map.gamebox.camera.resolution}px -${position[ 1 ] / this.map.gamebox.camera.resolution}px`;
-        sprite.style.backgroundSize = `${this.map.image.naturalWidth / this.map.gamebox.camera.resolution}px ${this.map.image.naturalHeight / this.map.gamebox.camera.resolution}px`;
-        sprite.style.backgroundRepeat = "no-repeat";
-
-        return sprite;
-    }
-
-
     canInteract () {
         return this.data.action;
     }
@@ -157,7 +141,7 @@ class ActiveTiles {
     }
 
 
-    doInteract ( coords ) {
+    splice ( coords ) {
         for ( let i = this.data.coords.length; i--; ) {
             if ( this.data.coords[ i ][ 0 ] === coords[ 0 ] && this.data.coords[ i ][ 1 ] === coords[ 1 ] ) {
                 this.spliced.push( this.data.coords[ i ] );

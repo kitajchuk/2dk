@@ -7,7 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 232
+        "version": 233
     },
     "hero": {
         "sprite": 0,
@@ -16,6 +16,11 @@
             "y": 1408,
             "dir": "down",
             "map": "/games/la/maps/mabe-village.json"
+        },
+        "sounds": {
+            "pickup": "/games/la/assets/sounds/sfx-pick-up.mp3",
+            "smash": "/games/la/assets/sounds/sfx-smash.mp3",
+            "throw": "/games/la/assets/sounds/sfx-throw.mp3"
         }
     },
     "heroes": [
@@ -322,9 +327,12 @@
         "/games/la/assets/sprites/smoke.png",
         "/games/la/assets/sprites/hero_la.png",
         "/games/la/assets/sprites/hero_alttp.png",
-        "/games/la/assets/sounds/16-mysterious-forest.mp3",
-        "/games/la/assets/sounds/11-mabe-village.mp3",
-        "/games/la/assets/sounds/10-overworld.mp3",
+        "/games/la/assets/sounds/sfx-throw.mp3",
+        "/games/la/assets/sounds/sfx-smash.mp3",
+        "/games/la/assets/sounds/sfx-pick-up.mp3",
+        "/games/la/assets/sounds/bgm-overworld.mp3",
+        "/games/la/assets/sounds/bgm-mysterious-forest.mp3",
+        "/games/la/assets/sounds/bgm-mabe-village.mp3",
         "/games/la/maps/ukuku-prairie-west.json",
         "/games/la/maps/mysterious-forest.json",
         "/games/la/maps/mabe-village.json"

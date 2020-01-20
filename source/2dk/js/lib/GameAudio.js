@@ -1,4 +1,4 @@
-class GameSound {
+class GameAudio {
     constructor () {
         this.sounds = {};
         this.channels = {
@@ -18,7 +18,7 @@ class GameSound {
     prep () {
         this.channels.bgm.node.loop = true;
         this.channels.bgm.node.volume = 0.1;
-        this.channels.sfx.node.loop = true;
+        this.channels.sfx.node.loop = false;
         this.channels.sfx.node.volume = 1.0;
     }
 
@@ -28,6 +28,19 @@ class GameSound {
         if ( !this.sounds[ data.id ] ) {
             this.sounds[ data.id ] = data;
             this.sounds[ data.id ].playing = false;
+        }
+    }
+
+
+    hitSound ( id ) {
+        const sound = this.sounds[ id ];
+
+        if ( sound ) {
+            const channel = this.channels[ sound.channel ];
+
+            channel.node.src = sound.src;
+
+            channel.node.play();
         }
     }
 
@@ -66,4 +79,4 @@ class GameSound {
 
 
 
-module.exports = GameSound;
+module.exports = GameAudio;

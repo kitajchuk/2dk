@@ -4,9 +4,7 @@
 
 
 
-* Tile Interactions (make lifted thing a sprite with companion properties?)
-* Object Interactions
-* Attack Ineractinos (weapon: sword)
+* Figure out throwable object with destroy animation...
 
 
 
