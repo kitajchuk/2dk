@@ -3,7 +3,6 @@ const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const Dialogue = require( "./Dialogue" );
 const { Map } = require( "./Map" );
-const { Hero, NPC } = require( "./Sprite" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
 const stopTiles = [
@@ -50,14 +49,11 @@ class GameBox {
         this.locked = false;
 
         // Map
-        this.map = new Map( Loader.cash( this.player.data.hero.spawn.map ), this );
+        this.map = new Map( Loader.cash( this.player.data.hero.spawn.map ), this.player.data.hero, this );
 
         // Map switch
         this.map_ = null;
         this.cam_ = null;
-
-        // Hero
-        this.hero = new Hero( this.player.data.hero, this );
 
         // NPCs
         this.npcs = [];
@@ -67,22 +63,18 @@ class GameBox {
 
         this.build();
         this.initMap();
-        this.initHero();
-        // this.initNPC();
     }
 
 
     build () {
-        this.map.element.appendChild( this.hero.element );
         this.player.screen.appendChild( this.map.element );
         this.player.screen.appendChild( this.dialogue.element );
     }
 
 
     initMap () {
-        this.offset = this.update( this.hero.position );
-        this.map.update( this.offset );
-        this.hero.update( this.hero.position, this.offset );
+        this.offset = this.update( this.map.hero.position );
+        this.map.update( this.map.hero.position, this.offset );
         this.player.gameaudio.addSound({
             id: this.map.data.id,
             src: this.map.data.sound,
@@ -91,41 +83,12 @@ class GameBox {
     }
 
 
-    initHero () {
-        for ( let id in this.hero.data.sounds ) {
-            this.player.gameaudio.addSound({
-                id,
-                src: this.hero.data.sounds[ id ],
-                channel: "sfx",
-            });
-        }
-    }
-
-
-    // initNPC () {
-    //     this.map.data.objects.forEach(( npc ) => {
-    //         npc = new NPC( Utils.merge( this.player.data.objects.find( ( obj ) => (obj.id === npc.id) ), npc ), this );
-    //
-    //         this.map.element.appendChild( npc.element );
-    //
-    //         this.npcs.push( npc );
-    //     });
-    // }
-
-
-    // killNPC () {
-    //     this.npcs.forEach(( npc ) => {
-    //         npc.destroy();
-    //         npc = null;
-    //     });
-    //
-    //     this.npcs = [];
-    // }
-
-
+/*******************************************************************************
+* Rendering
+*******************************************************************************/
     pause ( paused ) {
         if ( paused ) {
-            this.hero.face( this.hero.dir );
+            this.map.hero.face( this.map.hero.dir );
             this.player.gameaudio.stopSound( this.map.data.id );
 
         } else {
@@ -172,19 +135,16 @@ class GameBox {
 
     render ( elapsed ) {
         this.map.render( elapsed, this.camera );
-        this.hero.render( elapsed );
 
-        if ( this.interact.tile && this.interact.tile.sprite ) {
-            this.interact.tile.sprite.render( elapsed );
+        if ( this.map_ ) {
+            this.map_.render( elapsed, this.cam_ );
         }
-
-        // this.npcs.forEach(( npc ) => {
-        //     npc.update( this.hero.position, this.offset );
-        //     npc.render( elapsed );
-        // });
     }
 
 
+/*******************************************************************************
+* Helper methods
+*******************************************************************************/
     getSpeed () {
         return this.player.width * 0.333333;
     }
@@ -192,8 +152,8 @@ class GameBox {
 
     getPoi ( delta, dirX, dirY ) {
         return {
-            x: this.hero.position.x + (dirX * this.camera.speed * delta),
-            y: this.hero.position.y + (dirY * this.camera.speed * delta),
+            x: this.map.hero.position.x + (dirX * this.camera.speed * delta),
+            y: this.map.hero.position.y + (dirY * this.camera.speed * delta),
         }
     }
 
@@ -201,10 +161,9 @@ class GameBox {
     getCollision ( poi ) {
         return {
             evt: this.checkEvt( poi ),
-            map: this.checkMap( poi, this.hero ),
+            map: this.checkMap( poi, this.map.hero ),
             box: this.checkBox( poi ),
             obj: this.checkObj( poi ),
-            // npc: this.checkNPC( poi ),
             tile: this.checkTile( poi ),
         };
     }
@@ -239,7 +198,7 @@ class GameBox {
 
 /*******************************************************************************
 * GamePad Inputs
-* Can all be handled in TopView or other play style Box
+* Can all be handled in TopView or other play style plugin Box
 *******************************************************************************/
     pressD () {}
     releaseD () {}
@@ -259,11 +218,11 @@ class GameBox {
     checkBox ( poi ) {
         let ret = false;
 
-        if ( poi.x <= this.camera.x || poi.x >= (this.camera.x + this.camera.width - this.hero.width) ) {
+        if ( poi.x <= this.camera.x || poi.x >= (this.camera.x + this.camera.width - this.map.hero.width) ) {
             ret = true;
         }
 
-        if ( poi.y <= this.camera.y || poi.y >= (this.camera.y + this.camera.height - this.hero.height) ) {
+        if ( poi.y <= this.camera.y || poi.y >= (this.camera.y + this.camera.height - this.map.hero.height) ) {
             ret = true;
         }
 
@@ -297,10 +256,10 @@ class GameBox {
     checkEvt ( poi ) {
         let ret = false;
         const hitbox = {
-            width: this.hero.width,
-            height: this.hero.height,
-            x: this.hero.position.x,
-            y: this.hero.position.y,
+            width: this.map.hero.width,
+            height: this.map.hero.height,
+            x: this.map.hero.position.x,
+            y: this.map.hero.position.y,
         };
 
         for ( let i = this.map.data.events.length; i--; ) {
@@ -311,7 +270,7 @@ class GameBox {
                 y: this.map.data.events[ i ].coords[ 1 ] * this.map.gridsize
             };
 
-            if ( Utils.collide( hitbox, tile ) && this.hero.dir === this.map.data.events[ i ].dir ) {
+            if ( Utils.collide( hitbox, tile ) && this.map.hero.dir === this.map.data.events[ i ].dir ) {
                 ret = this.map.data.events[ i ];
                 break;
             }
@@ -323,7 +282,7 @@ class GameBox {
 
     checkObj ( poi ) {
         let ret = false;
-        const hitbox = this.hero.getHitbox( poi );
+        const hitbox = this.map.hero.getHitbox( poi );
 
         for ( let i = this.map.activeObjects.length; i--; ) {
             if ( Utils.collide( hitbox, this.map.activeObjects[ i ].hitbox ) ) {
@@ -338,8 +297,8 @@ class GameBox {
 
     checkTile ( poi ) {
         const tiles = [];
-        const hitbox = this.hero.getHitbox( poi );
-        const footbox = this.hero.getFootbox( poi );
+        const hitbox = this.map.hero.getHitbox( poi );
+        const footbox = this.map.hero.getFootbox( poi );
 
         for ( let i = this.map.activeTiles.length; i--; ) {
             for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
@@ -371,31 +330,6 @@ class GameBox {
 
         }) || tiles[ 0 ]);
     }
-
-
-    // awareNPC ( poi ) {
-    //     for ( let i = this.npcs.length; i--; ) {
-    //         this.npcs[ i ].checkHero( poi );
-    //         this.npcs[ i ].checkCamera( poi );
-    //     }
-    // }
-
-
-    // checkNPC ( poi ) {
-    //     let ret = null;
-    //     const hitbox = this.hero.getHitbox( poi );
-    //
-    //     for ( let i = this.npcs.length; i--; ) {
-    //         const hitnpc = this.npcs[ i ].getHitbox( this.npcs[ i ].position );
-    //
-    //         if ( Utils.collide( hitbox, hitnpc ) ) {
-    //             ret = this.npcs[ i ];
-    //             break;
-    //         }
-    //     }
-    //
-    //     return ret;
-    // }
 }
 
 
@@ -425,13 +359,6 @@ class TopView extends GameBox {
             }
         }
 
-        // this.awareNPC( poi );
-        //
-        // if ( collision.npc ) {
-        //     this.handleNPC( poi, dir, collision.npc );
-        //     return;
-        // }
-
         if ( collision.obj ) {
             this.handleObj( poi, dir );
             return;
@@ -447,8 +374,8 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( this.hero.verb === Config.verbs.GRAB ) {
-            if ( dir === Config.opposites[ this.hero.dir ] ) {
+        if ( this.map.hero.verb === Config.verbs.GRAB ) {
+            if ( dir === Config.opposites[ this.map.hero.dir ] ) {
                 this.handleLift( poi, dir );
             }
 
@@ -467,8 +394,8 @@ class TopView extends GameBox {
             this.camera.speed = speed;
         }
 
-        if ( this.hero.verb === Config.verbs.FACE ) {
-            this.hero.verb = Config.verbs.WALK;
+        if ( this.map.hero.verb === Config.verbs.FACE ) {
+            this.map.hero.verb = Config.verbs.WALK;
         }
 
         this.handleWalk( poi, dir );
@@ -485,10 +412,10 @@ class TopView extends GameBox {
         }
 
         if ( this.interact.tile ) {
-            this.hero.act( this.hero.verb, this.hero.dir );
+            this.map.hero.act( this.map.hero.verb, this.map.hero.dir );
 
         } else {
-            this.hero.face( this.hero.dir );
+            this.map.hero.face( this.map.hero.dir );
         }
     }
 
@@ -528,11 +455,11 @@ class TopView extends GameBox {
 
 
     handleReleaseA () {
-        if ( this.hero.verb === Config.verbs.GRAB ) {
-            this.hero.face( this.hero.dir );
+        if ( this.map.hero.verb === Config.verbs.GRAB ) {
+            this.map.hero.face( this.map.hero.dir );
         }
 
-        if ( this.hero.verb === Config.verbs.LIFT ) {
+        if ( this.map.hero.verb === Config.verbs.LIFT ) {
             if ( this.interact.tile.toss ) {
                 this.handleToss();
 
@@ -579,18 +506,17 @@ class TopView extends GameBox {
 *******************************************************************************/
     handleWalk ( poi, dir ) {
         this.offset = this.update( poi );
-        this.map.update( this.offset );
-        this.hero.update( poi, this.offset );
+        this.map.update( poi, this.offset );
 
         if ( this.interact.tile && this.interact.tile.sprite ) {
             this.interact.tile.sprite.update( poi, this.offset );
         }
 
-        if ( this.hero.verb !== Config.verbs.LIFT ) {
-            this.hero.cycle( Config.verbs.WALK, dir );
+        if ( this.map.hero.verb !== Config.verbs.LIFT ) {
+            this.map.hero.cycle( Config.verbs.WALK, dir );
 
         } else {
-            this.hero.cycle( this.hero.verb, dir );
+            this.map.hero.cycle( this.map.hero.verb, dir );
         }
     }
 
@@ -598,11 +524,11 @@ class TopView extends GameBox {
     handlePushable ( poi, dir ) {
         this.interact.push++;
 
-        if ( (this.hero.verb !== Config.verbs.LIFT) && (this.interact.push > this.map.data.tilesize) ) {
-            this.hero.cycle( Config.verbs.PUSH, dir );
+        if ( (this.map.hero.verb !== Config.verbs.LIFT) && (this.interact.push > this.map.data.tilesize) ) {
+            this.map.hero.cycle( Config.verbs.PUSH, dir );
 
         } else {
-            this.hero.cycle( this.hero.verb, dir );
+            this.map.hero.cycle( this.map.hero.verb, dir );
         }
     }
 
@@ -623,7 +549,7 @@ class TopView extends GameBox {
 
 
     handleBox ( poi, dir ) {
-        this.hero.cycle( this.hero.verb, dir );
+        this.map.hero.cycle( this.map.hero.verb, dir );
     }
 
 
@@ -634,11 +560,11 @@ class TopView extends GameBox {
 
     handleLift ( poi, dir ) {
         this.locked = true;
-        this.hero.act( Config.verbs.PULL, dir );
+        this.map.hero.act( Config.verbs.PULL, dir );
         setTimeout(() => {
             this.player.gameaudio.hitSound( "pickup" );
             this.interact.tile.activeTile = this.map.setActiveTile( this.interact.tile.activeTiles, this.interact.tile.coord );
-            this.hero.act( Config.verbs.LIFT, dir );
+            this.map.hero.act( Config.verbs.LIFT, dir );
             this.locked = false;
 
         }, Config.values.debounceDur );
@@ -646,9 +572,9 @@ class TopView extends GameBox {
 
 
     handleToss () {
-        this.hero.face( this.hero.dir );
+        this.map.hero.face( this.map.hero.dir );
         this.player.gameaudio.hitSound( "throw" );
-        this.interact.tile.activeTile.toss( this.hero.dir ).then(() => {
+        this.interact.tile.activeTile.toss( this.map.hero.dir ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
             this.interact.tile = null;
         });
@@ -667,11 +593,6 @@ class TopView extends GameBox {
     }
 
 
-    // handleNPC ( npc, dir ) {
-    //     this.hero.cycle( this.hero.verb, dir );
-    // }
-
-
     handleObjAct ( poi, dir, obj ) {
         if ( obj.canInteract( dir ) ) {
             obj.doInteract( dir );
@@ -684,7 +605,7 @@ class TopView extends GameBox {
             this.interact.tile = tile;
 
             if ( tile.activeTiles.data.action.verb === Config.verbs.LIFT ) {
-                this.hero.act( Config.verbs.GRAB, dir );
+                this.map.hero.act( Config.verbs.GRAB, dir );
             }
         }
     }
@@ -703,13 +624,24 @@ class TopView extends GameBox {
     switchTween ( obj, css ) {
         return new Promise(( resolve ) => {
             const _update = ( t ) => {
-                const transform = Utils.getTransform( obj.element );
+                if ( obj.position ) {
+                    obj.position.x = (css.axis === "x" ? t : obj.position.x);
+                    obj.position.y = (css.axis === "y" ? t : obj.position.y);
+                }
 
-                obj.element.style.webkitTransform = `translate3d(
-                    ${css.axis === "x" ? t : transform.x}px,
-                    ${css.axis === "y" ? t : transform.y}px,
-                    0
-                )`;
+                // Only a Map has a Hero
+                if ( obj.hero ) {
+                    const transform = Utils.getTransform( obj.element );
+
+                    obj.element.style.webkitTransform = `translate3d(
+                        ${css.axis === "x" ? t : transform.x}px,
+                        ${css.axis === "y" ? t : transform.y}px,
+                        0
+                    )`;
+
+                    // Map offset stays static, Hero position updates...
+                    obj.update( obj.hero.position, obj.offset );
+                }
             };
 
             return new Tween({
@@ -730,44 +662,51 @@ class TopView extends GameBox {
 
 
     switchMap ( evt ) {
-        // Stop player, this is a HARD stop!
-        // Player can only come back online with .resume()
-        this.player.stop();
+        // Pause the Player so no game buttons dispatch
+        // Pausing triggers the GameBox to call this.map.hero.face( this.map.hero.dir )
+        this.player.pause();
 
-        // Create new Map
-        this.map_ = new Map( Loader.cash( evt.map ), this );
+        // Dupe the Hero
+        const mapData = Loader.cash( evt.map );
+        const heroData = Utils.copy( this.map.hero.data );
+
+        // Create new Map / Camera
+        this.map_ = new Map( mapData, heroData, this );
         this.cam_ = Utils.copy( this.camera );
 
-        const _css = {};
-        const _poi = Utils.copy( this.hero.position );
-        const _rect = {
-            hero: this.hero.element.getBoundingClientRect(),
-            screen: this.player.screen.getBoundingClientRect(),
+        // Update this.map_.hero
+        this.map_.hero.face( this.map.hero.dir );
+
+        // Will be the new Hero position on the new Map
+        // const _poi = Utils.copy( this.map.hero.position );
+
+        // Will be the animation values for rendering...
+        const _css = {
+            map: null,
+            map_: null,
+            hero: null,
+            hero_: null,
         };
 
-        // Stage Hero for animation
-        document.body.appendChild( this.hero.element );
-        this.hero.element.style.position = "fixed";
-        this.hero.element.style.webkitTransform = `translate3d(
-            ${_rect.hero.x}px,
-            ${_rect.hero.y}px,
-            0
-        )`;
-
-        // Stage new Map for animation
-        if ( this.hero.dir === "down" ) {
+        // Stage new Map / new Hero for animation
+        if ( this.map.hero.dir === "down" ) {
+            // Presets
+            this.cam_.y = 0;
             this.map_.offset = {
                 x: this.map.offset.x,
                 y: 0,
             };
-            this.cam_.y = 0;
             this.map_.element.style.webkitTransform = `translate3d(
                 0,
                 ${this.camera.height}px,
                 0
             )`;
+            this.map_.hero.position = {
+                x: this.map.hero.position.x,
+                y: -this.map_.hero.height,
+            };
 
-            _poi.y = 0;
+            // Animation values
             _css.map_ = {
                 axis: "y",
                 from: this.camera.height,
@@ -778,25 +717,35 @@ class TopView extends GameBox {
                 from: 0,
                 to: -this.camera.height,
             };
+            _css.hero_ = {
+                axis: "y",
+                from: -this.map_.hero.height,
+                to: 0,
+            };
             _css.hero = {
                 axis: "y",
-                from: _rect.hero.y,
-                to: _rect.screen.y,
+                from: this.map.hero.position.y,
+                to: this.map.hero.position.y + this.map.hero.height,
             };
 
-        } else if ( this.hero.dir === "up" ) {
+        } else if ( this.map.hero.dir === "up" ) {
+            // Presets
+            this.cam_.y = this.map_.height - this.camera.height;
             this.map_.offset = {
                 x: this.map.offset.x,
                 y: -(this.map_.height - this.camera.height),
             };
-            this.cam_.y = this.map_.height - this.camera.height;
             this.map_.element.style.webkitTransform = `translate3d(
                 0,
                 ${-this.camera.height}px,
                 0
             )`;
+            this.map_.hero.position = {
+                x: this.map.hero.position.x,
+                y: this.map_.height,
+            };
 
-            _poi.y = this.map_.height - this.hero.height;
+            // Animation values
             _css.map_ = {
                 axis: "y",
                 from: -this.camera.height,
@@ -807,25 +756,35 @@ class TopView extends GameBox {
                 from: 0,
                 to: this.camera.height,
             };
+            _css.hero_ = {
+                axis: "y",
+                from: this.map_.height,
+                to: this.map_.height - this.map_.hero.height,
+            };
             _css.hero = {
                 axis: "y",
-                from: _rect.hero.y,
-                to: _rect.screen.y + _rect.screen.height - this.hero.height,
+                from: this.map.hero.position.y,
+                to: this.map.hero.position.y - this.map.hero.height,
             };
 
-        } else if ( this.hero.dir === "right" ) {
+        } else if ( this.map.hero.dir === "right" ) {
+            // Presets
+            this.cam_.x = 0;
             this.map_.offset = {
                 x: 0,
                 y: this.map.offset.y,
             };
-            this.cam_.x = 0;
             this.map_.element.style.webkitTransform = `translate3d(
                 ${this.camera.width}px,
                 0,
                 0
             )`;
+            this.map_.hero.position = {
+                x: -this.map_.hero.width,
+                y: this.map.hero.position.y,
+            };
 
-            _poi.x = 0;
+            // Animation values
             _css.map_ = {
                 axis: "x",
                 from: this.camera.width,
@@ -836,25 +795,35 @@ class TopView extends GameBox {
                 from: 0,
                 to: -this.camera.width,
             };
+            _css.hero_ = {
+                axis: "x",
+                from: -this.map_.hero.width,
+                to: 0,
+            };
             _css.hero = {
                 axis: "x",
-                from: _rect.hero.x,
-                to: _rect.screen.x,
+                from: this.map.hero.position.x,
+                to: this.map.hero.position.x + this.map.hero.width,
             };
 
-        } else if ( this.hero.dir === "left" ) {
+        } else if ( this.map.hero.dir === "left" ) {
+            // Presets
+            this.cam_.x = this.map_.width - this.camera.width;
             this.map_.offset = {
                 x: -(this.map_.width - this.camera.width),
                 y: this.map.offset.y,
             };
-            this.cam_.x = this.map_.width - this.camera.width;
             this.map_.element.style.webkitTransform = `translate3d(
                 ${-this.camera.width}px,
                 0,
                 0
             )`;
+            this.map_.hero.position = {
+                x: this.map_.width,
+                y: this.map.hero.position.y,
+            };
 
-            _poi.x = this.map_.width - this.hero.width;
+            // Animation values
             _css.map_ = {
                 axis: "x",
                 from: -this.camera.width,
@@ -865,34 +834,39 @@ class TopView extends GameBox {
                 from: 0,
                 to: this.camera.width,
             };
+            _css.hero_ = {
+                axis: "x",
+                from: this.map_.width,
+                to: this.map_.width - this.map_.hero.width,
+            };
             _css.hero = {
                 axis: "x",
-                from: _rect.hero.x,
-                to: _rect.screen.x + _rect.screen.width - this.hero.width,
+                from: this.map.hero.position.x,
+                to: this.map.hero.position.x - this.map.hero.width,
             };
         }
 
-        // One-time initial render based on the camera we'll end up with
-        // after the transition is complete and the new Map becomes THE Map.
-        this.map_.render( this.player.previousElapsed, this.cam_ );
+        // Set pre-animation offset for map AND hero
+        // this.map_.update( this.map_hero.position, this.map_.offset );
+
+        // Inject the new Map element into the DOM
         this.player.screen.appendChild( this.map_.element );
 
         // Animate Maps and Hero and resolve all tweens for clean-up
         Promise.all([
+            // New Map, New Hero
             this.switchTween( this.map_, _css.map_ ),
+            this.switchTween( this.map_.hero, _css.hero_ ),
+
+            // Old Map, Old Hero
             this.switchTween( this.map, _css.map ),
-            this.switchTween( this.hero, _css.hero ),
+            this.switchTween( this.map.hero, _css.hero ),
 
         ]).then(() => {
             setTimeout(() => {
-                // Stage Hero with correct position on new Map
-                this.hero.element.style.position = "absolute";
-                this.map_.element.appendChild( this.hero.element );
-                this.hero.update( _poi, this.map_.offset );
-                this.hero.render( this.player.previousElapsed );
+                // Set new Hero with props (backfill relevant attributes)
 
                 // Destroy old Map / Set new Map
-                // this.killNPC();
                 this.map.destroy();
                 this.map = this.map_;
                 this.map_ = null;
@@ -900,7 +874,8 @@ class TopView extends GameBox {
 
                 // Initialize
                 this.initMap();
-                // this.initNPC();
+
+                // Resume game blit cycle...
                 this.player.resume();
 
             }, Config.values.debounceDur );

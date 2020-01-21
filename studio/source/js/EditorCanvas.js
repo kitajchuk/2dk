@@ -2,7 +2,8 @@ const EditorUtils = require( "./EditorUtils" );
 const Config = require( "./Config" );
 const Cache = require( "./Cache" );
 const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
-const { MapLayer, drawMapTile, drawMapTiles, drawGridLines } = require( "../../../source/2dk/js/lib/Map" );
+const { MapLayer } = require( "../../../source/2dk/js/lib/Map" );
+const Utils = require( "../../../source/2dk/js/lib/Utils" );
 const Loader = require( "../../../source/2dk/js/lib/Loader" );
 
 
@@ -227,26 +228,26 @@ class EditorCanvas {
         this.clearCanvas( this.contexts.collision.canvas );
         this.clearCanvas( this.canvases.mapgrid );
 
-        drawGridLines(
+        Utils.drawGridLines(
             this.canvases.collider.getContext( "2d" ),
             this.canvases.collider.width,
             this.canvases.collider.height,
             this.map.collider
         );
-        drawGridLines(
+        Utils.drawGridLines(
             this.canvases.mapgrid.getContext( "2d" ),
             this.canvases.mapgrid.width,
             this.canvases.mapgrid.height,
             this.map.tilesize
         );
-        drawMapTiles(
+        Utils.drawMapTiles(
             this.contexts.background.context,
             this.dom.tileset,
             this.map.textures.background,
             this.map.tilesize,
             this.map.tilesize,
         );
-        drawMapTiles(
+        Utils.drawMapTiles(
             this.contexts.foreground.context,
             this.dom.tileset,
             this.map.textures.foreground,
@@ -276,7 +277,7 @@ class EditorCanvas {
                 this.map.tilesize,
             );
 
-            drawMapTile(
+            Utils.drawMapTile(
                 this.contexts[ layer ].context,
                 this.dom.tileset,
                 tile.renderTree,
@@ -399,7 +400,7 @@ class EditorCanvas {
         this.clearCanvas( this.canvases.tilepaint );
         this.clearCanvas( this.canvases.tilegrid );
 
-        drawGridLines(
+        Utils.drawGridLines(
             this.canvases.tilegrid.getContext( "2d" ),
             this.canvases.tilegrid.width,
             this.canvases.tilegrid.height,

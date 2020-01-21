@@ -139,24 +139,6 @@
                     }
                 },
                 "lift": {
-                    "down": {
-                        "offsetX": -552,
-                        "offsetY": -92
-                    },
-                    "up": {
-                        "offsetX": -552,
-                        "offsetY": -184
-                    },
-                    "left": {
-                        "offsetX": -552,
-                        "offsetY": -276
-                    },
-                    "right": {
-                        "offsetX": -552,
-                        "offsetY": -368
-                    }
-                },
-                "walk.lift": {
                     "dur": 240,
                     "down": {
                         "offsetX": -552,
@@ -295,24 +277,6 @@
                     }
                 },
                 "lift": {
-                    "down": {
-                        "offsetX": -2240,
-                        "offsetY": -140
-                    },
-                    "up": {
-                        "offsetX":  -2240,
-                        "offsetY": -280
-                    },
-                    "left": {
-                        "offsetX":  -2240,
-                        "offsetY": -420
-                    },
-                    "right": {
-                        "offsetX":  -2240,
-                        "offsetY": -560
-                    }
-                },
-                "walk.lift": {
                     "dur": 480,
                     "down": {
                         "offsetX": -2240,

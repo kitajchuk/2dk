@@ -150,97 +150,90 @@ class Player {
         // window.onresize = () => {};
     }
 
-
-    stop () {
-        this.stopped = true;
-        this.gamepad.clear();
-        this.gamebox.pause( this.stopped );
-    }
-
-
-    resume () {
-        this.stopped = false;
-        this.gamebox.pause( this.stopped );
-    }
-
-
+    // Stops game button events from dispatching to the gamebox
     pause () {
         this.paused = true;
         this.gamepad.clear();
-        this.gamebox.pause( this.paused );
+        this.gamebox.pause( true );
     }
 
 
-    play () {
+    // Stops the gamebox from rendering
+    stop () {
+        this.stopped = true;
+        this.gamepad.clear();
+        this.gamebox.pause( true );
+    }
+
+
+    // Resumes playable state, not paused and not stopped
+    resume () {
         this.paused = false;
-        this.gamebox.pause( this.paused );
+        this.stopped = false;
+        this.gamebox.pause( false );
     }
 
 
     onGameBlit ( elapsed ) {
-        if ( this.stopped || this.paused ) {
-            this.previousElapsed = elapsed;
-            return;
-        }
-
         let delta = (elapsed - this.previousElapsed) / 1000.0;
         let step;
 
         delta = Math.min( delta, 0.25 ); // maximum delta of 250ms
         this.previousElapsed = elapsed;
 
-        // Rendering at 60FPS to sync layers and active tiles...
-        this.gamebox.render( elapsed );
+        // Rendering happens if NOT stopped
+        if ( !this.stopped ) {
+            this.gamebox.render( elapsed );
+        }
 
-        // D-Pad movement
-        // Easier to check the gamepad than have player use event handlers...
-        const dpad = this.gamepad.checkDpad();
+        // Game Buttons happen if NOT paused
+        if ( !this.paused ) {
+            // D-Pad movement
+            // Easier to check the gamepad than have player use event handlers...
+            const dpad = this.gamepad.checkDpad();
 
-        if ( !dpad.length ) {
-            this.gamebox.releaseD();
+            if ( !dpad.length ) {
+                this.gamebox.releaseD();
 
-        } else {
-            dpad.forEach(( ctrl ) => {
-                ctrl.dpad.forEach(( dir ) => {
-                    step = this.gamebox.getStep( dir );
+            } else {
+                dpad.forEach(( ctrl ) => {
+                    ctrl.dpad.forEach(( dir ) => {
+                        step = this.gamebox.getStep( dir );
 
-                    this.gamebox.pressD( dir, delta, step.x, step.y );
+                        this.gamebox.pressD( dir, delta, step.x, step.y );
+                    });
                 });
-            });
-        }
+            }
 
-        step = this.gamebox.getStep( this.gamebox.hero.dir );
+            step = this.gamebox.getStep( this.gamebox.map.hero.dir );
 
-        // Action buttons
-        // Easier to have the player use event handlers and check controls...
-        if ( this.controls.aHold ) {
-            this.gamebox.holdA( this.gamebox.hero.dir, delta, step.x, step.y );
+            // Action buttons
+            // Easier to have the player use event handlers and check controls...
+            if ( this.controls.aHold ) {
+                this.gamebox.holdA( this.gamebox.map.hero.dir, delta, step.x, step.y );
 
-        } else if ( this.controls.a ) {
-            this.gamebox.pressA( this.gamebox.hero.dir, delta, step.x, step.y );
-        }
+            } else if ( this.controls.a ) {
+                this.gamebox.pressA( this.gamebox.map.hero.dir, delta, step.x, step.y );
+            }
 
-        if ( this.controls.bHold ) {
-            this.gamebox.holdB( this.gamebox.hero.dir, delta, step.x, step.y );
+            if ( this.controls.bHold ) {
+                this.gamebox.holdB( this.gamebox.map.hero.dir, delta, step.x, step.y );
 
-        } else if ( this.controls.b ) {
-            this.gamebox.pressB( this.gamebox.hero.dir, delta, step.x, step.y );
+            } else if ( this.controls.b ) {
+                this.gamebox.pressB( this.gamebox.map.hero.dir, delta, step.x, step.y );
+            }
         }
     }
 
 
     onPressStart () {
-        if ( this.stopped ) {
-            return;
-        }
-
         if ( !this.ready ) {
             this.element.classList.add( "is-started" );
             this.ready = true;
         }
 
         if ( this.paused ) {
-            this.play();
+            this.resume();
 
         } else {
             this.pause();

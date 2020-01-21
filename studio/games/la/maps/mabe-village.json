@@ -130,6 +130,15 @@
     "events": [
         {
             "coords": [
+                5,
+                31
+            ],
+            "type": "boundary",
+            "map": "/games/la/maps/mysterious-forest.json",
+            "dir": "down"
+        },
+        {
+            "coords": [
                 4,
                 0
             ],

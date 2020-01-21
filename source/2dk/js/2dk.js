@@ -4,10 +4,26 @@
 
 
 
-* Smass FX for tossable tile sprites
+* Bug: hero walk cycle can get locked (switch map with activeTile lifed...)
+* Fix lift walk cycling for canvas hero (including sprite design)
+* Try having only a single MapLayer(onCanvas, offCanvas...)
+
+
+
+* Explore z-axis...accelerations...gravity?
+* Explore canvas FX for cool stuff...
+
+
+
 * Grass sprite cycle / sound
 * Water sprite cycle / sound
 * Sword sprite cycle / sound / collision
+
+
+
+* Exclude audio on mobile...?
+* Document code...(jsdoc?
+* Better system for Array.prototype.find within loops...?
 
 
 

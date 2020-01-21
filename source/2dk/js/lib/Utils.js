@@ -1,3 +1,7 @@
+const Config = require( "./Config" );
+
+
+
 const Utils = {
     copy ( obj ) {
         return JSON.parse( JSON.stringify( obj ) );
@@ -22,12 +26,94 @@ const Utils = {
         let ret = false;
 
         if ( box1.x < box2.x + box2.width && box1.x + box1.width > box2.x && box1.y < box2.y + box2.height && box1.height + box1.y > box2.y ) {
-            // console.log( "X", Math.abs( (box1.x - box2.x) / box1.width ) );
-            // console.log( "Y", Math.abs( (box1.y - box2.y) / box1.height ) );
             ret = true;
         }
 
         return ret;
+    },
+
+
+    /*
+    ctx.drawImage(
+        img/cvs,
+        mask-x,
+        mask-y,
+        mask-width,
+        mask-height,
+        x-position,
+        y-position,
+        width,
+        height
+    )
+    */
+    drawTileCel ( context, image, tileSize, gridSize, mx, my, px, py ) {
+        context.drawImage(
+            image,
+            mx,
+            my,
+            tileSize,
+            tileSize,
+            (px * gridSize),
+            (py * gridSize),
+            gridSize,
+            gridSize
+        );
+    },
+
+
+    drawMapTile ( context, image, tile, tileSize, gridSize, x, y ) {
+        // Position has tiles: Array[Array[x, y], Array[x, y]]
+        if ( Array.isArray( tile ) ) {
+            for ( let i = 0, len = tile.length; i < len; i++ ) {
+                this.drawTileCel(
+                    context,
+                    image,
+                    tileSize,
+                    gridSize,
+                    tile[ i ][ 0 ],
+                    tile[ i ][ 1 ],
+                    x,
+                    y,
+                );
+            }
+
+        // Position has no tile: 0
+        } else {
+            context.clearRect(
+                (x * gridSize),
+                (y * gridSize),
+                gridSize,
+                gridSize
+            );
+        }
+    },
+
+
+    drawMapTiles ( context, image, textures, tileSize, gridSize ) {
+        for ( let y = textures.length; y--; ) {
+            const row = textures[ y ];
+
+            for ( let x = row.length; x--; ) {
+                const tile = row[ x ];
+
+                this.drawMapTile( context, image, tile, tileSize, gridSize, x, y );
+            }
+        }
+    },
+
+
+    drawGridLines ( ctx, w, h, g ) {
+        ctx.globalAlpha = 1.0;
+
+        for ( let y = 1; y < h; y++ ) {
+            ctx.fillStyle = Config.colors.teal;
+            ctx.fillRect( 0, (y * g), (g * w), 1 );
+        }
+
+        for ( let x = 1; x < w; x++ ) {
+            ctx.fillStyle = Config.colors.teal;
+            ctx.fillRect( (x * g), 0, 1, (g * h) );
+        }
     },
 
 
@@ -69,7 +155,6 @@ const Utils = {
     random: function (min, range) {
         return min + Math.floor(Math.random() * range);
     },
-
 
     // From Akihabara Trigo
     // https://github.com/Akihabara/akihabara/blob/master/src/trigo.js

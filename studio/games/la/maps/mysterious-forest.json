@@ -143,6 +143,15 @@
     "events": [
         {
             "coords": [
+                5,
+                0
+            ],
+            "type": "boundary",
+            "map": "/games/la/maps/mabe-village.json",
+            "dir": "up"
+        },
+        {
+            "coords": [
                 4,
                 31
             ],

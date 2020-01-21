@@ -11,88 +11,172 @@ const stopTiles = [
 
 
 
-/*
-ctx.drawImage(
-    img/cvs,
-    mask-x,
-    mask-y,
-    mask-width,
-    mask-height,
-    x-position,
-    y-position,
-    width,
-    height
-)
-*/
-const drawTileCel = ( context, image, tileSize, gridSize, mx, my, px, py ) => {
-    context.drawImage(
-        image,
-        mx,
-        my,
-        tileSize,
-        tileSize,
-        (px * gridSize),
-        (py * gridSize),
-        gridSize,
-        gridSize
-    );
-};
-const drawMapTile = ( context, image, tile, tileSize, gridSize, x, y ) => {
-    let maskX = 0;
-    let maskY = 0;
+class Sprite {
+    constructor ( data, map ) {
+        this.data = data;
+        this.map = map;
+        this.gamebox = this.map.gamebox;
+        this.scale = this.gamebox.player.data.game.resolution;
+        this.width = this.data.width / this.scale;
+        this.height = this.data.height / this.scale;
+        this.dir = this.data.spawn.dir;
+        this.verb = Config.verbs.FACE;
+        this.image = Loader.cash( this.data.image );
+        this.position = {
+            x: this.data.spawn.x / this.scale,
+            y: this.data.spawn.y / this.scale,
+        };
+        this.offset = {
+            x: 0,
+            y: 0,
+        };
+        this.hitbox = {
+            x: this.position.x + (this.data.hitbox.x / this.scale),
+            y: this.position.y + (this.data.hitbox.y / this.scale),
+            width: this.data.hitbox.width / this.scale,
+            height: this.data.hitbox.height / this.scale,
+        };
+        this.footbox = {
+            x: this.hitbox.x,
+            y: this.hitbox.y + (this.hitbox.height / 2),
+            width: this.hitbox.width,
+            height: this.hitbox.height / 2,
+        };
+        this.spritecel = this.getCel();
+    }
 
-    // Position has tiles: Array[Array[x, y], Array[x, y]]
-    if ( Array.isArray( tile ) ) {
-        for ( let i = 0, len = tile.length; i < len; i++ ) {
-            drawTileCel(
-                context,
-                image,
-                tileSize,
-                gridSize,
-                tile[ i ][ 0 ],
-                tile[ i ][ 1 ],
-                x,
-                y,
-            );
+
+    blit ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
         }
 
-    // Position has no tile: 0
-    } else {
-        context.clearRect(
-            (x * gridSize),
-            (y * gridSize),
-            gridSize,
-            gridSize
+        this.frame = 0;
+
+        if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
+            const diff = (elapsed - this.previousElapsed);
+
+            this.frame = Math.floor( (diff / this.data.verbs[ this.verb ].dur) * this.data.verbs[ this.verb ][ this.dir ].stepsX );
+
+            if ( diff >= this.data.verbs[ this.verb ].dur ) {
+                this.previousElapsed = elapsed;
+                this.frame = this.data.verbs[ this.verb ][ this.dir ].stepsX - 1;
+            }
+        }
+
+        this.spritecel = this.getCel();
+    }
+
+
+    render () {
+        this.map.layers.background.onCanvas.context.drawImage(
+            this.image,
+            this.spritecel[ 0 ],
+            this.spritecel[ 1 ],
+            this.data.width,
+            this.data.height,
+            this.offset.x,
+            this.offset.y,
+            this.width,
+            this.height,
         );
     }
-};
-const drawMapTiles = ( context, image, textures, tileSize, gridSize ) => {
-    for ( let y = textures.length; y--; ) {
-        const row = textures[ y ];
 
-        for ( let x = row.length; x--; ) {
-            const tile = row[ x ];
 
-            drawMapTile( context, image, tile, tileSize, gridSize, x, y );
+    getCel () {
+        return [
+            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetX ) + (this.data.width * this.frame),
+            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetY ),
+        ];
+    }
+
+
+    cycle ( verb, dir ) {
+        this.dir = dir;
+        this.verb = verb;
+    }
+
+
+    act ( verb, dir ) {
+        this.dir = dir;
+        this.verb = verb;
+    }
+
+
+    face ( dir ) {
+        this.act( Config.verbs.FACE, dir );
+    }
+
+
+    getHitbox ( poi ) {
+        return {
+            x: poi.x + (this.data.hitbox.x / this.scale),
+            y: poi.y + (this.data.hitbox.y / this.scale),
+            width: this.hitbox.width,
+            height: this.hitbox.height,
+        };
+    }
+
+
+    getFootbox ( poi ) {
+        return {
+            x: poi.x + (this.data.hitbox.x / this.scale),
+            y: poi.y + ((this.data.hitbox.y / this.scale) + (this.hitbox.height / 2)),
+            width: this.footbox.width,
+            height: this.footbox.height,
+        };
+    }
+
+
+    destroy () {
+        this.data = null;
+    }
+}
+
+
+
+class Hero extends Sprite {
+    constructor ( data, gamebox ) {
+        super( data, gamebox );
+    }
+
+
+    update ( poi, offset ) {
+        this.position = poi;
+        this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
+        this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
+        this.footbox.x = this.hitbox.x;
+        this.footbox.y = this.hitbox.y + (this.hitbox.height / 2);
+
+        const absolute = {
+            x: Math.abs( offset.x ),
+            y: Math.abs( offset.y ),
+        };
+
+        this.offset = {
+            x: this.gamebox.camera.width / 2,
+            y: this.gamebox.camera.height / 2,
+        };
+
+        if ( absolute.x <= 0 ) {
+            // this.offset.x = Math.max( 0, poi.x );
+            this.offset.x = poi.x;
+        }
+
+        if ( absolute.x >= (this.gamebox.map.width - this.gamebox.camera.width) ) {
+            this.offset.x = poi.x + offset.x;
+        }
+
+        if ( absolute.y <= 0 ) {
+            // this.offset.y = Math.max( 0, poi.y );
+            this.offset.y = poi.y
+        }
+
+        if ( absolute.y >= (this.gamebox.map.height - this.gamebox.camera.height) ) {
+            this.offset.y = poi.y + offset.y;
         }
     }
-};
-
-
-
-const drawGridLines = ( ctx, w, h, g ) => {
-    ctx.globalAlpha = 1.0;
-
-    for ( let y = 1; y < h; y++ ) {
-        ctx.fillStyle = Config.colors.teal;
-        ctx.fillRect( 0, (y * g), (g * w), 1 );
-    }
-
-    for ( let x = 1; x < w; x++ ) {
-        ctx.fillStyle = Config.colors.teal;
-        ctx.fillRect( (x * g), 0, 1, (g * h) );
-    }
-};
+}
 
 
 
@@ -175,6 +259,10 @@ class Tossable {
 
 
 
+/*******************************************************************************
+* ActiveTile
+* Generated when the Hero picks up a liftable tile from a group of ActiveTiles.
+*******************************************************************************/
 class ActiveTile {
     constructor ( activeTiles ) {
         this.activeTiles = activeTiles;
@@ -183,8 +271,8 @@ class ActiveTile {
         this.tilecel = this.activeTiles.getTile();
         this.projectile = false;
         this.position = {
-            x: this.gamebox.hero.position.x + (this.gamebox.hero.width / 2) - (this.map.gridsize / 2),
-            y: this.gamebox.hero.position.y - (this.map.gridsize / 8),
+            x: this.map.hero.position.x + (this.map.hero.width / 2) - (this.map.gridsize / 2),
+            y: this.map.hero.position.y - (this.map.gridsize / 8),
         };
         this.hitbox = {
             x: 0,
@@ -198,13 +286,28 @@ class ActiveTile {
     blit ( elapsed ) {
         if ( !this.projectile ) {
             this.position = {
-                x: this.gamebox.hero.position.x + (this.gamebox.hero.width / 2) - (this.map.gridsize / 2),
-                y: this.gamebox.hero.position.y - (this.map.gridsize / 8),
+                x: this.map.hero.position.x + (this.map.hero.width / 2) - (this.map.gridsize / 2),
+                y: this.map.hero.position.y - (this.map.gridsize / 8),
             };
         }
 
         this.hitbox.x = this.position.x;
         this.hitbox.y = this.position.y;
+    }
+
+
+    render () {
+        this.map.layers.foreground.onCanvas.context.drawImage(
+            this.map.image,
+            this.tilecel[ 0 ],
+            this.tilecel[ 1 ],
+            this.map.data.tilesize,
+            this.map.data.tilesize,
+            this.map.offset.x + this.position.x,
+            this.map.offset.y + this.position.y,
+            this.map.gridsize,
+            this.map.gridsize,
+        );
     }
 
 
@@ -223,6 +326,12 @@ class ActiveTile {
 
 
 
+/*******************************************************************************
+* ActiveTiles
+* Static and animated background tiles injected into the texture map.
+* They work in groups based on tileset background position for rendering.
+* They can have interactions with VERB system or can be attacked with weapon.
+*******************************************************************************/
 class ActiveTiles {
     constructor ( data, map ) {
         this.data = data;
@@ -288,6 +397,13 @@ class ActiveTiles {
 
 
 
+/*******************************************************************************
+* ActiveObject
+* An interactive, collidable object to be injected in the texture map.
+* Can be static or animated. Rendering is determined by object size & coords.
+* This means a 4x4 tile sized object is rendered in 4 separate tile checks
+* when the map textures are rendering.
+*******************************************************************************/
 class ActiveObject {
     constructor ( data, map ) {
         this.map = map;
@@ -343,7 +459,7 @@ class ActiveObject {
         }
 
         if ( this.relative ) {
-            if ( this.hitbox.y > this.map.gamebox.hero.hitbox.y ) {
+            if ( this.hitbox.y > this.map.hero.hitbox.y ) {
                 this.layer = "foreground";
 
             } else {
@@ -392,6 +508,10 @@ class ActiveObject {
 
 
 
+/*******************************************************************************
+* MapLayer
+* Normalize a rendering layer for Canvas and Context.
+*******************************************************************************/
 class MapLayer {
     // id, width, height
     constructor ( data ) {
@@ -440,9 +560,17 @@ class MapLayer {
 
 
 
+/*******************************************************************************
+* Map
+* The logic map.
+* Everything is rendered via the Map as the Map is our game world.
+* My preference is to keep this sort of logic out of the GameBox, which
+* manages Map offset and Camera position.
+*******************************************************************************/
 class Map {
-    constructor ( data, gamebox ) {
+    constructor ( data, heroData, gamebox ) {
         this.data = data;
+        this.heroData = heroData;
         this.gamebox = gamebox;
         this.width = this.data.width / this.gamebox.camera.resolution;
         this.height = this.data.height / this.gamebox.camera.resolution;
@@ -459,6 +587,7 @@ class Map {
             x: 0,
             y: 0
         };
+        this.poi = null;
         this.build();
     }
 
@@ -471,15 +600,17 @@ class Map {
 
         this.activeTiles.forEach(( activeTiles ) => {
             activeTiles.destroy();
+            activeTiles = null;
         });
-        this.activeTiles = null;
 
         this.activeObjects.forEach(( activeObject ) => {
             activeObject.destroy();
+            activeObject = null;
         });
-        this.activeObjects = null;
 
         this.element.parentNode.removeChild( this.element );
+        this.activeObjects = null;
+        this.activeTiles = null;
         this.data = null;
         this.element = null;
         this.image = null;
@@ -491,22 +622,38 @@ class Map {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__map";
 
-        for ( let id in this.layers ) {
-            this.addLayer( id );
+        // Hero
+        this.hero = new Hero( this.heroData, this );
+
+        for ( let id in this.hero.data.sounds ) {
+            this.gamebox.player.gameaudio.addSound({
+                id,
+                src: this.hero.data.sounds[ id ],
+                channel: "sfx",
+            });
         }
 
+        // ActiveTiles
         this.data.tiles.forEach(( data ) => {
             this.activeTiles.push( new ActiveTiles( data, this ) );
         });
 
+        // ActiveObjects
         this.data.objects.forEach(( data ) => {
             this.activeObjects.push( new ActiveObject( data, this ) );
         });
+
+        // Render layers
+        for ( let id in this.layers ) {
+            this.addLayer( id );
+        }
     }
 
 
-    update ( offset ) {
+    update ( poi, offset ) {
+        this.poi = poi;
         this.offset = offset;
+        this.hero.update( this.poi, this.offset );
     }
 
 
@@ -667,6 +814,11 @@ class Map {
                         tiles.coords.push( celsCoords );
                         break loopTiles;
 
+                    // An ActiveTiles coord can be spliced during interaction.
+                    // Example: Hero picks up an action tile and throws it.
+                    // The original tile cel still exists in the textures data,
+                    // but we can capture this condition and make sure we pop
+                    // if off and no longer render it to the texture map.
                     } else if ( isTileSpliced ) {
                         celsCopy.pop();
                         ret = celsCopy;
@@ -711,11 +863,15 @@ class Map {
             this.activeTile.blit( elapsed );
         }
 
+        if ( this.hero ) {
+            this.hero.blit( elapsed );
+        }
+
         this.renderBox = this.getRenderbox( elapsed, camera );
 
         for ( let id in this.layers ) {
             // Draw textures to background / foreground
-            drawMapTiles(
+            Utils.drawMapTiles(
                 this.layers[ id ].offCanvas.context,
                 this.image,
                 this.renderBox.textures[ id ],
@@ -737,19 +893,14 @@ class Map {
             );
         }
 
+        // Draw Hero: There can only be one at a time
+        if ( this.hero ) {
+            this.hero.render();
+        }
+
         // Draw ActiveTile: There can only be one at a time
         if ( this.activeTile ) {
-            this.layers.foreground.onCanvas.context.drawImage(
-                this.image,
-                this.activeTile.tilecel[ 0 ],
-                this.activeTile.tilecel[ 1 ],
-                this.data.tilesize,
-                this.data.tilesize,
-                this.offset.x + this.activeTile.position.x,
-                this.offset.y + this.activeTile.position.y,
-                this.gridsize,
-                this.gridsize,
-            );
+            this.activeTile.render();
         }
     }
 
@@ -788,9 +939,7 @@ class Map {
 
 module.exports = {
     Map,
+    Hero,
+    Sprite,
     MapLayer,
-    drawTileCel,
-    drawMapTile,
-    drawMapTiles,
-    drawGridLines,
 };
