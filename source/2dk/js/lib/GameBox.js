@@ -43,6 +43,8 @@ class GameBox {
             //     toss?,
             //     sprite,
             // }
+            tile: null,
+            push: 0,
         };
         this.debounce = 1024;
         this.locked = false;
@@ -457,7 +459,7 @@ class TopView extends GameBox {
             this.handleTile( poi, dir, collision.tile );
 
             if ( collision.tile.activeTile.data.action && stopTiles.indexOf( collision.tile.activeTile.data.action.verb ) !== -1 ) {
-                this.hero.cycle( this.hero.verb, dir );
+                this.handleTileStop( poi, dir, collision.tile );
                 return;
             }
 
@@ -476,6 +478,10 @@ class TopView extends GameBox {
     releaseD () {
         if ( this.locked ) {
             return;
+        }
+
+        if ( this.interact.push ) {
+            this.interact.push = 0;
         }
 
         if ( this.interact.tile ) {
@@ -589,8 +595,10 @@ class TopView extends GameBox {
     }
 
 
-    handleMap ( poi, dir ) {
-        if ( this.hero.verb !== Config.verbs.LIFT ) {
+    handlePushable ( poi, dir ) {
+        this.interact.push++;
+
+        if ( (this.hero.verb !== Config.verbs.LIFT) && (this.interact.push > this.map.data.tilesize) ) {
             this.hero.cycle( Config.verbs.PUSH, dir );
 
         } else {
@@ -599,13 +607,18 @@ class TopView extends GameBox {
     }
 
 
-    handleObj ( obj, dir ) {
-        if ( this.hero.verb !== Config.verbs.LIFT ) {
-            this.hero.cycle( Config.verbs.PUSH, dir );
+    handleMap ( poi, dir ) {
+        this.handlePushable( poi, dir );
+    }
 
-        } else {
-            this.hero.cycle( this.hero.verb, dir );
-        }
+
+    handleObj ( obj, dir ) {
+        this.handlePushable( poi, dir );
+    }
+
+
+    handleTileStop ( poi, dir, tile ) {
+        this.handlePushable( poi, dir );
     }
 
 
