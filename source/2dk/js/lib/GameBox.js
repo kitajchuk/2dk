@@ -3,7 +3,7 @@ const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const Dialogue = require( "./Dialogue" );
 const { Map } = require( "./Map" );
-const { Hero, Tile, NPC } = require( "./Sprite" );
+const { Hero, NPC } = require( "./Sprite" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
 const stopTiles = [
@@ -38,10 +38,10 @@ class GameBox {
         };
         this.interact = {
             // tile: {
+            //     activeTiles,
             //     activeTile,
             //     coord,
             //     toss?,
-            //     sprite,
             // }
             tile: null,
             push: 0,
@@ -354,7 +354,7 @@ class GameBox {
 
                 if ( Utils.collide( lookbox, tilebox ) ) {
                     tiles.push({
-                        activeTile: tile,
+                        activeTiles: tile,
                         coord: tile.data.coords[ j ],
                     });
                 }
@@ -367,7 +367,7 @@ class GameBox {
 
         // If there's no action tile, return one tile...
         return (tiles.find(( tile ) => {
-            return tile.activeTile.data.action || tile.activeTile.data.attack;
+            return tile.activeTiles.data.action || tile.activeTiles.data.attack;
 
         }) || tiles[ 0 ]);
     }
@@ -458,7 +458,7 @@ class TopView extends GameBox {
         if ( collision.tile ) {
             this.handleTile( poi, dir, collision.tile );
 
-            if ( collision.tile.activeTile.data.action && stopTiles.indexOf( collision.tile.activeTile.data.action.verb ) !== -1 ) {
+            if ( collision.tile.activeTiles.data.action && stopTiles.indexOf( collision.tile.activeTiles.data.action.verb ) !== -1 ) {
                 this.handleTileStop( poi, dir, collision.tile );
                 return;
             }
@@ -504,7 +504,7 @@ class TopView extends GameBox {
             this.handleObjAct( poi, dir, collision.obj );
         }
 
-        if ( collision.tile && collision.tile.activeTile.data.action && (tileActs.indexOf( collision.tile.activeTile.data.action.verb ) !== -1) && !this.interact.tile ) {
+        if ( collision.tile && collision.tile.activeTiles.data.action && (tileActs.indexOf( collision.tile.activeTiles.data.action.verb ) !== -1) && !this.interact.tile ) {
             this.handleTileAct( poi, dir, collision.tile );
         }
     }
@@ -553,7 +553,7 @@ class TopView extends GameBox {
             Config.verbs.CUT,
         ];
 
-        if ( collision.tile && collision.tile.activeTile.data.attack && (tileActs.indexOf( collision.tile.activeTile.data.attack.verb ) !== -1) ) {
+        if ( collision.tile && collision.tile.activeTiles.data.attack && (tileActs.indexOf( collision.tile.activeTiles.data.attack.verb ) !== -1) ) {
             this.handleTileHit( poi, dir, collision.tile );
         }
     }
@@ -612,7 +612,7 @@ class TopView extends GameBox {
     }
 
 
-    handleObj ( obj, dir ) {
+    handleObj ( poi, dir ) {
         this.handlePushable( poi, dir );
     }
 
@@ -637,16 +637,7 @@ class TopView extends GameBox {
         this.hero.act( Config.verbs.PULL, dir );
         setTimeout(() => {
             this.player.gameaudio.hitSound( "pickup" );
-            this.interact.tile.activeTile.splice( this.interact.tile.coord );
-            this.interact.tile.sprite = new Tile({
-                width: this.map.data.tilesize,
-                height: this.map.data.tilesize,
-                image: this.map.image,
-                background: this.interact.tile.activeTile.getTile(),
-
-            }, this );
-
-            this.map.element.appendChild( this.interact.tile.sprite.element );
+            this.interact.tile.activeTile = this.map.setActiveTile( this.interact.tile.activeTiles, this.interact.tile.coord );
             this.hero.act( Config.verbs.LIFT, dir );
             this.locked = false;
 
@@ -657,7 +648,7 @@ class TopView extends GameBox {
     handleToss () {
         this.hero.face( this.hero.dir );
         this.player.gameaudio.hitSound( "throw" );
-        this.interact.tile.sprite.toss( this.hero.dir ).then(() => {
+        this.interact.tile.activeTile.toss( this.hero.dir ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
             this.interact.tile = null;
         });
@@ -666,11 +657,11 @@ class TopView extends GameBox {
 
     handleTile ( poi, dir, tile ) {
         // Stairs are hard, you have to take it slow...
-        if ( tile.activeTile.data.group === Config.tiles.STAIRS ) {
+        if ( tile.activeTiles.data.group === Config.tiles.STAIRS ) {
             this.camera.speed = this.getSpeed() / 2.5;
 
         // Grass is thick, it will slow you down a bit...
-        } else if ( tile.activeTile.data.group === Config.tiles.GRASS ) {
+        } else if ( tile.activeTiles.data.group === Config.tiles.GRASS ) {
             this.camera.speed = this.getSpeed() / 1.5;
         }
     }
@@ -689,10 +680,10 @@ class TopView extends GameBox {
 
 
     handleTileAct ( poi, dir, tile ) {
-        if ( tile.activeTile.canInteract() ) {
+        if ( tile.activeTiles.canInteract() ) {
             this.interact.tile = tile;
 
-            if ( tile.activeTile.data.action.verb === Config.verbs.LIFT ) {
+            if ( tile.activeTiles.data.action.verb === Config.verbs.LIFT ) {
                 this.hero.act( Config.verbs.GRAB, dir );
             }
         }
@@ -700,8 +691,8 @@ class TopView extends GameBox {
 
 
     handleTileHit ( poi, dir, tile ) {
-        if ( tile.activeTile.canAttack() ) {
-            tile.activeTile.splice( tile.coord );
+        if ( tile.activeTiles.canAttack() ) {
+            tile.activeTiles.splice( tile.coord );
         }
     }
 

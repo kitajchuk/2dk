@@ -1,6 +1,13 @@
 const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
+const Tween = require( "properjs-tween" );
+const Easing = require( "properjs-easing" );
+const stopTiles = [
+    Config.verbs.GRAB,
+    Config.verbs.MOVE,
+    Config.verbs.LIFT,
+];
 
 
 
@@ -86,6 +93,133 @@ const drawGridLines = ( ctx, w, h, g ) => {
         ctx.fillRect( (x * g), 0, 1, (g * h) );
     }
 };
+
+
+
+class Tossable {
+    constructor ( activeTile, dir, dist, dur ) {
+        this.activeTile = activeTile;
+        this.dir = dir;
+        this.dist = dist;
+        this.dur = dur;
+    }
+
+
+    getValues () {
+        const poi = {};
+        const origin = this.activeTile.position;
+
+        if ( this.dir === "up" ) {
+            poi.x = this.activeTile.position.x;
+            poi.y = this.activeTile.position.y - this.dist;
+
+        } else if ( this.dir === "down" ) {
+            poi.x = this.activeTile.position.x;
+            poi.y = this.activeTile.position.y + this.dist;
+
+        } else if ( this.dir === "left" ) {
+            poi.x = this.activeTile.position.x - this.dist;
+            poi.y = this.activeTile.position.y + this.activeTile.map.gridsize;
+
+        } else if ( this.dir === "right" ) {
+            poi.x = this.activeTile.position.x + this.dist;
+            poi.y = this.activeTile.position.y + this.activeTile.map.gridsize;
+        }
+
+        const angle = Utils.getAngle( this.activeTile.position, poi );
+
+        return {
+            poi,
+            angle,
+            origin,
+        }
+    }
+
+
+    update ( t ) {
+        const distance = this.dist - (this.dist - t);
+        const position = Utils.translate( this.values.origin, this.values.angle, distance );
+        const collision = this.activeTile.gamebox.getCollision( position );
+
+        this.activeTile.position = position;
+        this.activeTile.hitbox.x = this.activeTile.position.x;
+        this.activeTile.hitbox.y = this.activeTile.position.y;
+
+        if ( collision.map || collision.obj || collision.box || (collision.tile && collision.tile.activeTiles.data.action && stopTiles.indexOf( collision.tile.activeTiles.data.action.verb ) !== -1) ) {
+            this.tween.stop();
+            this.activeTile.destroy();
+            this.resolve();
+        }
+    }
+
+
+    toss () {
+        return new Promise(( resolve ) => {
+            this.resolve = resolve;
+            this.values = this.getValues();
+            this.tween = new Tween({
+                ease: Easing.swing,
+                duration: this.dur,
+                from: 0,
+                to: this.dist,
+                update: this.update.bind( this ),
+                complete: ( t ) => {
+                    this.update( t );
+                    this.activeTile.destroy();
+                    this.resolve();
+                },
+            });
+        });
+    }
+}
+
+
+
+class ActiveTile {
+    constructor ( activeTiles ) {
+        this.activeTiles = activeTiles;
+        this.map = this.activeTiles.map;
+        this.gamebox = this.activeTiles.map.gamebox;
+        this.tilecel = this.activeTiles.getTile();
+        this.projectile = false;
+        this.position = {
+            x: this.gamebox.hero.position.x + (this.gamebox.hero.width / 2) - (this.map.gridsize / 2),
+            y: this.gamebox.hero.position.y - (this.map.gridsize / 8),
+        };
+        this.hitbox = {
+            x: 0,
+            y: 0,
+            width: this.map.gridsize,
+            height: this.map.gridsize,
+        };
+    }
+
+
+    blit ( elapsed ) {
+        if ( !this.projectile ) {
+            this.position = {
+                x: this.gamebox.hero.position.x + (this.gamebox.hero.width / 2) - (this.map.gridsize / 2),
+                y: this.gamebox.hero.position.y - (this.map.gridsize / 8),
+            };
+        }
+
+        this.hitbox.x = this.position.x;
+        this.hitbox.y = this.position.y;
+    }
+
+
+    toss ( dir ) {
+        this.projectile = true;
+        this.tossable = new Tossable( this, dir, (this.gamebox.map.gridsize * 3), (this.gamebox.map.gridsize * 6) );
+        return this.tossable.toss();
+    }
+
+
+    destroy () {
+        this.tossable = null;
+        this.map.activeTile = null;
+    }
+}
 
 
 
@@ -318,6 +452,7 @@ class Map {
             background: null,
             foreground: null,
         };
+        this.activeTile = null;
         this.activeTiles = [];
         this.activeObjects = [];
         this.offset = {
@@ -456,6 +591,15 @@ class Map {
     }
 
 
+    setActiveTile ( activeTiles, coords ) {
+        activeTiles.splice( coords );
+
+        this.activeTile = new ActiveTile( activeTiles );
+
+        return this.activeTile;
+    }
+
+
     getActiveTiles ( group ) {
         return this.activeTiles.find(( activeTiles ) => {
             return (activeTiles.data.group === group);
@@ -563,6 +707,10 @@ class Map {
             activeObject.blit( elapsed );
         });
 
+        if ( this.activeTile ) {
+            this.activeTile.blit( elapsed );
+        }
+
         this.renderBox = this.getRenderbox( elapsed, camera );
 
         for ( let id in this.layers ) {
@@ -586,6 +734,21 @@ class Map {
                 this.renderBox.bleed.y,
                 this.layers[ id ].offCanvas.canvas.width,
                 this.layers[ id ].offCanvas.canvas.height,
+            );
+        }
+
+        // Draw ActiveTile: There can only be one at a time
+        if ( this.activeTile ) {
+            this.layers.foreground.onCanvas.context.drawImage(
+                this.image,
+                this.activeTile.tilecel[ 0 ],
+                this.activeTile.tilecel[ 1 ],
+                this.data.tilesize,
+                this.data.tilesize,
+                this.offset.x + this.activeTile.position.x,
+                this.offset.y + this.activeTile.position.y,
+                this.gridsize,
+                this.gridsize,
             );
         }
     }
