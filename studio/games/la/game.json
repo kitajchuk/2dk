@@ -10,7 +10,7 @@
         "version": 234
     },
     "hero": {
-        "sprite": 0,
+        "sprite": 1,
         "spawn": {
             "x": 1216,
             "y": 1408,
@@ -102,6 +102,42 @@
                         "stepsX": 2
                     }
                 },
+                "grab": {
+                    "down": {
+                        "offsetX": -368,
+                        "offsetY": -184
+                    },
+                    "up": {
+                        "offsetX": -368,
+                        "offsetY": -92
+                    },
+                    "left": {
+                        "offsetX": -368,
+                        "offsetY": -368
+                    },
+                    "right": {
+                        "offsetX": -368,
+                        "offsetY": -276
+                    }
+                },
+                "pull": {
+                    "down": {
+                        "offsetX": -460,
+                        "offsetY": -92
+                    },
+                    "up": {
+                        "offsetX": -460,
+                        "offsetY": -184
+                    },
+                    "left": {
+                        "offsetX": -460,
+                        "offsetY": -276
+                    },
+                    "right": {
+                        "offsetX": -460,
+                        "offsetY": -368
+                    }
+                },
                 "lift": {
                     "down": {
                         "offsetX": -552,
@@ -141,42 +177,6 @@
                         "offsetX": -552,
                         "offsetY": -368,
                         "stepsX": 2
-                    }
-                },
-                "pull": {
-                    "down": {
-                        "offsetX": -460,
-                        "offsetY": -92
-                    },
-                    "up": {
-                        "offsetX": -460,
-                        "offsetY": -184
-                    },
-                    "left": {
-                        "offsetX": -460,
-                        "offsetY": -276
-                    },
-                    "right": {
-                        "offsetX": -460,
-                        "offsetY": -368
-                    }
-                },
-                "grab": {
-                    "down": {
-                        "offsetX": -368,
-                        "offsetY": -184
-                    },
-                    "up": {
-                        "offsetX": -368,
-                        "offsetY": -92
-                    },
-                    "left": {
-                        "offsetX": -368,
-                        "offsetY": -368
-                    },
-                    "right": {
-                        "offsetX": -368,
-                        "offsetY": -276
                     }
                 }
             }
@@ -233,6 +233,106 @@
                         "offsetX": 0,
                         "offsetY": -560,
                         "stepsX": 8
+                    }
+                },
+                "push": {
+                    "dur": 512,
+                    "down": {
+                        "offsetX": -1120,
+                        "offsetY": -140,
+                        "stepsX": 6
+                    },
+                    "up": {
+                        "offsetX": -1120,
+                        "offsetY": -280,
+                        "stepsX": 4
+                    },
+                    "left": {
+                        "offsetX": -1120,
+                        "offsetY": -420,
+                        "stepsX": 4
+                    },
+                    "right": {
+                        "offsetX": -1120,
+                        "offsetY": -560,
+                        "stepsX": 4
+                    }
+                },
+                "grab": {
+                    "down": {
+                        "offsetX": -1960,
+                        "offsetY": -140
+                    },
+                    "up": {
+                        "offsetX":  -1960,
+                        "offsetY": -280
+                    },
+                    "left": {
+                        "offsetX":  -1960,
+                        "offsetY": -420
+                    },
+                    "right": {
+                        "offsetX":  -1960,
+                        "offsetY": -560
+                    }
+                },
+                "pull": {
+                    "down": {
+                        "offsetX": -2100,
+                        "offsetY": -140
+                    },
+                    "up": {
+                        "offsetX":  -2100,
+                        "offsetY": -280
+                    },
+                    "left": {
+                        "offsetX":  -2100,
+                        "offsetY": -420
+                    },
+                    "right": {
+                        "offsetX":  -2100,
+                        "offsetY": -560
+                    }
+                },
+                "lift": {
+                    "down": {
+                        "offsetX": -2240,
+                        "offsetY": -140
+                    },
+                    "up": {
+                        "offsetX":  -2240,
+                        "offsetY": -280
+                    },
+                    "left": {
+                        "offsetX":  -2240,
+                        "offsetY": -420
+                    },
+                    "right": {
+                        "offsetX":  -2240,
+                        "offsetY": -560
+                    }
+                },
+                "walk.lift": {
+                    "dur": 480,
+                    "down": {
+                        "offsetX": -2240,
+                        "offsetY": -140,
+                        "stepsX": 4
+                    },
+                    "up": {
+                        "offsetX":  -2240,
+                        "offsetY": -280,
+                        "stepsX": 4
+                    },
+                    "left": {
+                        "offsetX":  -2240,
+                        "offsetY": -420,
+                        "stepsX": 4
+                    },
+                    "right": {
+                        "offsetX":  -2240,
+                        "offsetY": -560,
+                        "stepsX": 4
                     }
                 }
             }
