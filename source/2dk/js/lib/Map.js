@@ -230,12 +230,13 @@ class Tossable {
         const distance = this.dist - (this.dist - t);
         const position = Utils.translate( this.values.origin, this.values.angle, distance );
         const collision = this.activeTile.gamebox.getCollision( position );
+        const activeTiles = collision.tile ? this.activeTile.map.getActiveTiles( collision.tile.group ) : null;
 
         this.activeTile.position = position;
         this.activeTile.hitbox.x = this.activeTile.position.x;
         this.activeTile.hitbox.y = this.activeTile.position.y;
 
-        if ( collision.map || collision.obj || collision.box || (collision.tile && collision.tile.activeTiles.data.action && stopTiles.indexOf( collision.tile.activeTiles.data.action.verb ) !== -1) ) {
+        if ( collision.map || collision.obj || collision.box || (activeTiles && activeTiles.data.action && stopTiles.indexOf( activeTiles.data.action.verb ) !== -1) ) {
             this.tween.stop();
             this.activeTile.destroy();
             this.resolve();
