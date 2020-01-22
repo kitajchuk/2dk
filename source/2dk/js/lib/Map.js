@@ -17,6 +17,10 @@ const footTiles = [
 
 
 
+/*******************************************************************************
+* Sprite
+* Something that is "alive"...
+*******************************************************************************/
 class Sprite {
     constructor ( data, map ) {
         this.data = data;
@@ -141,6 +145,10 @@ class Sprite {
 
 
 
+/*******************************************************************************
+* Hero
+* There can be only one per Map
+*******************************************************************************/
 class Hero extends Sprite {
     constructor ( data, gamebox ) {
         super( data, gamebox );
@@ -186,6 +194,10 @@ class Hero extends Sprite {
 
 
 
+/*******************************************************************************
+* Tossable
+* Creats a throwable object out of an ActiveTile
+*******************************************************************************/
 class Tossable {
     constructor ( activeTile, dir, dist, dur ) {
         this.activeTile = activeTile;
@@ -327,6 +339,7 @@ class ActiveTile {
 
     destroy () {
         this.tossable = null;
+        // console.log( this.gamebox.player.data.effects );
     }
 }
 
@@ -602,24 +615,28 @@ class Map {
             this.layers[ id ].onCanvas.destroy();
             this.layers[ id ].offCanvas.destroy();
         }
+        this.layers = null;
 
         this.activeTiles.forEach(( activeTiles ) => {
             activeTiles.destroy();
             activeTiles = null;
         });
+        this.activeTiles = null;
 
         this.activeObjects.forEach(( activeObject ) => {
             activeObject.destroy();
             activeObject = null;
         });
+        this.activeObjects = null;
+
+        this.hero.destroy();
+        this.hero = null;
 
         this.element.parentNode.removeChild( this.element );
-        this.activeObjects = null;
-        this.activeTiles = null;
-        this.data = null;
         this.element = null;
+        this.data = null;
         this.image = null;
-        this.layers = null;
+        this.activeTile = null;
     }
 
 

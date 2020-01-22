@@ -7,7 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 234
+        "version": 235
     },
     "hero": {
         "sprite": 1,
@@ -246,15 +246,15 @@
                         "offsetY": -140
                     },
                     "up": {
-                        "offsetX":  -1960,
+                        "offsetX": -1960,
                         "offsetY": -280
                     },
                     "left": {
-                        "offsetX":  -1960,
+                        "offsetX": -1960,
                         "offsetY": -420
                     },
                     "right": {
-                        "offsetX":  -1960,
+                        "offsetX": -1960,
                         "offsetY": -560
                     }
                 },
@@ -264,15 +264,15 @@
                         "offsetY": -140
                     },
                     "up": {
-                        "offsetX":  -2100,
+                        "offsetX": -2100,
                         "offsetY": -280
                     },
                     "left": {
-                        "offsetX":  -2100,
+                        "offsetX": -2100,
                         "offsetY": -420
                     },
                     "right": {
-                        "offsetX":  -2100,
+                        "offsetX": -2100,
                         "offsetY": -560
                     }
                 },
@@ -284,17 +284,17 @@
                         "stepsX": 4
                     },
                     "up": {
-                        "offsetX":  -2240,
+                        "offsetX": -2240,
                         "offsetY": -280,
                         "stepsX": 4
                     },
                     "left": {
-                        "offsetX":  -2240,
+                        "offsetX": -2240,
                         "offsetY": -420,
                         "stepsX": 4
                     },
                     "right": {
-                        "offsetX":  -2240,
+                        "offsetX": -2240,
                         "offsetY": -560,
                         "stepsX": 4
                     }
@@ -388,8 +388,23 @@
             ]
         }
     ],
+    "effects": [
+        {
+            "id": "smoke",
+            "name": "Smoke",
+            "width": 64,
+            "height": 64,
+            "layer": "foreground",
+            "image": "/games/la/assets/sprites/smoke_fx.png",
+            "offsetX": 0,
+            "offsetY": 0,
+            "stepsX": 5,
+            "dur": 1000
+        }
+    ],
     "bundle": [
         "/games/la/assets/tiles/tiles.png",
+        "/games/la/assets/sprites/smoke_fx.png",
         "/games/la/assets/sprites/smoke.png",
         "/games/la/assets/sprites/hero_la.png",
         "/games/la/assets/sprites/hero_alttp.png",

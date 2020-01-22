@@ -53,16 +53,28 @@ class Player {
 
             let counter = 0;
 
-            Promise.all(data.bundle.map(( url ) => {
+            // Audio is still experimental for mobile so disabling for now...
+            let resources = data.bundle.filter(( url ) => {
+                const type = url.split( "/" ).pop().split( "." ).pop();
+
+                return (this.device ? (type !== "mp3") : true);
+            });
+
+            // Map bundle resource URLs to a Loader promise types for initialization...
+            resources = resources.map(( url ) => {
                 return this.loader.load( url ).then(() => {
                     counter++;
 
-                    this.splashLoad.innerHTML = this.getSplash( `Loaded ${counter} of ${data.bundle.length} game resources...` );
+                    this.splashLoad.innerHTML = this.getSplash( `Loaded ${counter} of ${resources.length} game resources...` );
+
+                    // console.log( `Loaded ${counter} of ${resources.length} game resources...` );
                 });
 
-            })).then(( values ) => {
+            })
+
+            Promise.all( resources ).then(( values ) => {
                 this.splashLoad.innerHTML = this.getSplash( "Press Start" );
-                this.gameaudio = new GameAudio();
+                this.gameaudio = new GameAudio( this );
                 this.gamepad = new GamePad( this );
                 this.gamebox = new TopView( this );
                 this.bind();

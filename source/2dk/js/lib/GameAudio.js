@@ -1,6 +1,17 @@
 class GameAudio {
-    constructor () {
+    constructor ( player ) {
+        this.player = player;
         this.sounds = {};
+        this.build();
+    }
+
+
+    build () {
+        if ( this.player.device ) {
+            // console.log( "GameAudio disabled for mobile...", this );
+            return;
+        }
+
         this.channels = {
             bgm: {
                 node: new Audio(),
@@ -11,11 +22,7 @@ class GameAudio {
                 open: false,
             },
         };
-        this.prep();
-    }
 
-
-    prep () {
         this.channels.bgm.node.loop = true;
         this.channels.bgm.node.volume = 0.1;
         this.channels.sfx.node.loop = false;
@@ -23,8 +30,12 @@ class GameAudio {
     }
 
 
-    // id, src, channel
     addSound ( data ) {
+        if ( this.player.device ) {
+            // console.log( "GameAudio disabled for mobile...", data );
+            return;
+        }
+
         if ( !this.sounds[ data.id ] ) {
             this.sounds[ data.id ] = data;
             this.sounds[ data.id ].playing = false;

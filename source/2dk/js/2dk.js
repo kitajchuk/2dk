@@ -114,7 +114,6 @@
 * Make Editor Utils Promise-based... like clutch core files module
 * Use game icon for mobile installed
 
-* Exclude audio on mobile...?
 * Document code...(jsdoc?
 
 * GameCycle manager for states (intro, title, credits, etc...)
