@@ -497,7 +497,7 @@ class TopView extends GameBox {
         const activeTiles = this.map.getActiveTiles( tile.group );
 
         if ( activeTiles.canAttack() ) {
-            activeTiles.splice( tile.coord );
+            activeTiles.attack( tile.coord );
         }
     }
 

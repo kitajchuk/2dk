@@ -17,6 +17,74 @@ const footTiles = [
 
 
 
+class ActiveFX {
+    constructor ( data, position, map ) {
+        this.data = data;
+        this.position = position;
+        this.image = Loader.cash( this.data.image );
+        this.map = map;
+        this.gamebox = this.map.gamebox;
+        this.scale = this.gamebox.player.data.game.resolution;
+        this.width = this.data.width / this.scale;
+        this.height = this.data.height / this.scale;
+        this.spritecel = this.getCel();
+    }
+
+
+    blit ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
+
+        this.frame = 0;
+
+        if ( this.data.stepsX ) {
+            const diff = (elapsed - this.previousElapsed);
+
+            this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
+
+            if ( diff >= this.data.dur ) {
+                // this.previousElapsed = elapsed;
+                // this.frame = this.data.stepsX - 1;
+                this.destroy();
+                return;
+            }
+        }
+
+        this.spritecel = this.getCel();
+    }
+
+
+    render () {
+        this.map.layers.foreground.onCanvas.context.drawImage(
+            this.image,
+            this.spritecel[ 0 ],
+            this.spritecel[ 1 ],
+            this.data.width,
+            this.data.height,
+            this.map.offset.x + this.position.x,
+            this.map.offset.y + this.position.y,
+            this.width,
+            this.height,
+        );
+    }
+
+
+    getCel () {
+        return [
+            Math.abs( this.data.offsetX ) + (this.data.width * this.frame),
+            Math.abs( this.data.offsetY ),
+        ];
+    }
+
+
+    destroy () {
+        this.map.activeFX.splice( this.map.activeFX.indexOf( this ), 1 );
+    }
+}
+
+
+
 /*******************************************************************************
 * Sprite
 * Something that is "alive"...
@@ -289,6 +357,8 @@ class ActiveTile {
         this.gamebox = this.activeTiles.map.gamebox;
         this.tilecel = this.activeTiles.getTile();
         this.projectile = false;
+        this.width = this.map.gridsize;
+        this.height = this.map.gridsize;
         this.position = {
             x: this.map.hero.position.x + (this.map.hero.width / 2) - (this.map.gridsize / 2),
             y: this.map.hero.position.y - (this.map.gridsize / 8),
@@ -339,7 +409,7 @@ class ActiveTile {
 
     destroy () {
         this.tossable = null;
-        // console.log( this.gamebox.player.data.effects );
+        this.map.smokeObject( this );
     }
 }
 
@@ -400,6 +470,19 @@ class ActiveTiles {
 
     canAttack () {
         return this.data.attack;
+    }
+
+
+    attack ( coords ) {
+        this.splice( coords );
+        // this.map.smokeObject({
+        //     position: {
+        //         x: coords[ 0 ] * this.map.gridsize,
+        //         y: coords[ 1 ] * this.map.gridsize,
+        //     },
+        //     width: this.map.gridsize,
+        //     height: this.map.gridsize,
+        // });
     }
 
 
@@ -601,6 +684,7 @@ class Map {
         this.activeTile = null;
         this.activeTiles = [];
         this.activeObjects = [];
+        this.activeFX = [];
         this.offset = {
             x: 0,
             y: 0
@@ -637,6 +721,7 @@ class Map {
         this.data = null;
         this.image = null;
         this.activeTile = null;
+        this.activeFX = null;
     }
 
 
@@ -723,6 +808,10 @@ class Map {
             this.hero.blit( elapsed );
         }
 
+        this.activeFX.forEach(( activeFx ) => {
+            activeFx.blit( elapsed );
+        });
+
         this.renderBox = this.getRenderbox( elapsed, camera );
 
         for ( let id in this.layers ) {
@@ -753,6 +842,11 @@ class Map {
         if ( this.hero ) {
             this.hero.render();
         }
+
+        // Draw FX: There can be many at one time...
+        this.activeFX.forEach(( activeFx ) => {
+            activeFx.render();
+        });
 
         // Draw ActiveTile: There can only be one at a time
         if ( this.activeTile ) {
@@ -957,6 +1051,29 @@ class Map {
         });
 
         return ret;
+    }
+
+
+    addActiveFX ( id, position ) {
+        const fx = this.gamebox.player.data.effects.find(( effect ) => {
+            return (effect.id === id);
+        });
+
+        this.activeFX.push( new ActiveFX( fx, position, this ) );
+    }
+
+
+    smokeObject ( obj ) {
+        const origin = {
+            x: obj.position.x + (obj.width / 2) - (this.gridsize / 2),
+            y: obj.position.y + (obj.height / 2) - (this.gridsize / 2),
+        };
+
+        this.addActiveFX( "smoke", origin );
+        this.addActiveFX( "smoke", { x: origin.x - (this.gridsize / 4), y: origin.y - (this.gridsize / 4) } );
+        this.addActiveFX( "smoke", { x: origin.x + (this.gridsize / 4), y: origin.y - (this.gridsize / 4) } );
+        this.addActiveFX( "smoke", { x: origin.x - (this.gridsize / 4), y: origin.y + (this.gridsize / 4) } );
+        this.addActiveFX( "smoke", { x: origin.x + (this.gridsize / 4), y: origin.y + (this.gridsize / 4) } );
     }
 
 
