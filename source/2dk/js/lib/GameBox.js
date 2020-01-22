@@ -10,12 +10,6 @@ const stopTiles = [
     Config.verbs.MOVE,
     Config.verbs.LIFT,
 ];
-const footTiles = [
-    Config.tiles.STAIRS,
-    Config.tiles.WATER,
-    Config.tiles.GRASS,
-    Config.tiles.HOLE,
-];
 
 
 
@@ -37,8 +31,7 @@ class GameBox {
         };
         this.interact = {
             // tile: {
-            //     activeTiles,
-            //     activeTile,
+            //     group,
             //     coord,
             //     toss?,
             // }
@@ -160,11 +153,11 @@ class GameBox {
 
     getCollision ( poi ) {
         return {
-            evt: this.checkEvt( poi ),
-            map: this.checkMap( poi, this.map.hero ),
-            box: this.checkBox( poi ),
-            obj: this.checkObj( poi ),
-            tile: this.checkTile( poi ),
+            evt: this.map.checkEvt( poi ),
+            map: this.map.checkMap( poi, this.map.hero ),
+            box: this.map.checkBox( poi ),
+            obj: this.map.checkObj( poi ),
+            tile: this.map.checkTile( poi ),
         };
     }
 
@@ -210,126 +203,6 @@ class GameBox {
     holdB () {}
     releaseB () {}
     releaseHoldB () {}
-
-
-/*******************************************************************************
-* Perception Checks
-*******************************************************************************/
-    checkBox ( poi ) {
-        let ret = false;
-
-        if ( poi.x <= this.camera.x || poi.x >= (this.camera.x + this.camera.width - this.map.hero.width) ) {
-            ret = true;
-        }
-
-        if ( poi.y <= this.camera.y || poi.y >= (this.camera.y + this.camera.height - this.map.hero.height) ) {
-            ret = true;
-        }
-
-        return ret;
-    }
-
-
-    checkMap ( poi, sprite ) {
-        let ret = false;
-        const hitbox = sprite.getHitbox( poi );
-
-        for ( let i = this.map.data.collision.length; i--; ) {
-            const collider = this.map.data.collider / this.player.data.game.resolution;
-            const tile = {
-                width: collider,
-                height: collider,
-                x: this.map.data.collision[ i ][ 0 ] * collider,
-                y: this.map.data.collision[ i ][ 1 ] * collider
-            };
-
-            if ( Utils.collide( hitbox, tile ) ) {
-                ret = true;
-                break;
-            }
-        }
-
-        return ret;
-    }
-
-
-    checkEvt ( poi ) {
-        let ret = false;
-        const hitbox = {
-            width: this.map.hero.width,
-            height: this.map.hero.height,
-            x: this.map.hero.position.x,
-            y: this.map.hero.position.y,
-        };
-
-        for ( let i = this.map.data.events.length; i--; ) {
-            const tile = {
-                width: this.map.gridsize,
-                height: this.map.gridsize,
-                x: this.map.data.events[ i ].coords[ 0 ] * this.map.gridsize,
-                y: this.map.data.events[ i ].coords[ 1 ] * this.map.gridsize
-            };
-
-            if ( Utils.collide( hitbox, tile ) && this.map.hero.dir === this.map.data.events[ i ].dir ) {
-                ret = this.map.data.events[ i ];
-                break;
-            }
-        }
-
-        return ret;
-    }
-
-
-    checkObj ( poi ) {
-        let ret = false;
-        const hitbox = this.map.hero.getHitbox( poi );
-
-        for ( let i = this.map.activeObjects.length; i--; ) {
-            if ( Utils.collide( hitbox, this.map.activeObjects[ i ].hitbox ) ) {
-                ret = this.map.activeObjects[ i ];
-                break;
-            }
-        }
-
-        return ret;
-    }
-
-
-    checkTile ( poi ) {
-        const tiles = [];
-        const hitbox = this.map.hero.getHitbox( poi );
-        const footbox = this.map.hero.getFootbox( poi );
-
-        for ( let i = this.map.activeTiles.length; i--; ) {
-            for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
-                const tile = this.map.activeTiles[ i ];
-                const tilebox = {
-                    width: this.map.gridsize,
-                    height: this.map.gridsize,
-                    x: tile.data.coords[ j ][ 0 ] * this.map.gridsize,
-                    y: tile.data.coords[ j ][ 1 ] * this.map.gridsize
-                };
-                const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
-
-                if ( Utils.collide( lookbox, tilebox ) ) {
-                    tiles.push({
-                        activeTiles: tile,
-                        coord: tile.data.coords[ j ],
-                    });
-                }
-            }
-        }
-
-        if ( tiles.length === 1 ) {
-            return tiles[ 0 ];
-        }
-
-        // If there's no action tile, return one tile...
-        return (tiles.find(( tile ) => {
-            return tile.activeTiles.data.action || tile.activeTiles.data.attack;
-
-        }) || tiles[ 0 ]);
-    }
 }
 
 
@@ -385,7 +258,9 @@ class TopView extends GameBox {
         if ( collision.tile ) {
             this.handleTile( poi, dir, collision.tile );
 
-            if ( collision.tile.activeTiles.data.action && stopTiles.indexOf( collision.tile.activeTiles.data.action.verb ) !== -1 ) {
+            const activeTiles = this.map.getActiveTiles( collision.tile.group );
+
+            if ( activeTiles.data.action && stopTiles.indexOf( activeTiles.data.action.verb ) !== -1 ) {
                 this.handleTileStop( poi, dir, collision.tile );
                 return;
             }
@@ -431,8 +306,12 @@ class TopView extends GameBox {
             this.handleObjAct( poi, dir, collision.obj );
         }
 
-        if ( collision.tile && collision.tile.activeTiles.data.action && (tileActs.indexOf( collision.tile.activeTiles.data.action.verb ) !== -1) && !this.interact.tile ) {
-            this.handleTileAct( poi, dir, collision.tile );
+        if ( collision.tile ) {
+            const activeTiles = this.map.getActiveTiles( collision.tile.group );
+
+            if ( activeTiles.data.action && (tileActs.indexOf( activeTiles.data.action.verb ) !== -1) && !this.interact.tile ) {
+                this.handleTileAct( poi, dir, collision.tile );
+            }
         }
     }
 
@@ -480,8 +359,12 @@ class TopView extends GameBox {
             Config.verbs.CUT,
         ];
 
-        if ( collision.tile && collision.tile.activeTiles.data.attack && (tileActs.indexOf( collision.tile.activeTiles.data.attack.verb ) !== -1) ) {
-            this.handleTileHit( poi, dir, collision.tile );
+        if ( collision.tile ) {
+            const activeTiles = this.map.getActiveTiles( collision.tile.group );
+
+            if ( activeTiles.data.attack && (tileActs.indexOf( activeTiles.data.attack.verb ) !== -1) ) {
+                this.handleTileHit( poi, dir, collision.tile );
+            }
         }
     }
 
@@ -507,10 +390,6 @@ class TopView extends GameBox {
     handleWalk ( poi, dir ) {
         this.offset = this.update( poi );
         this.map.update( poi, this.offset );
-
-        if ( this.interact.tile && this.interact.tile.sprite ) {
-            this.interact.tile.sprite.update( poi, this.offset );
-        }
 
         if ( this.map.hero.verb !== Config.verbs.LIFT ) {
             this.map.hero.cycle( Config.verbs.WALK, dir );
@@ -563,7 +442,7 @@ class TopView extends GameBox {
         this.map.hero.act( Config.verbs.PULL, dir );
         setTimeout(() => {
             this.player.gameaudio.hitSound( "pickup" );
-            this.interact.tile.activeTile = this.map.setActiveTile( this.interact.tile.activeTiles, this.interact.tile.coord );
+            this.map.setActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.map.hero.act( Config.verbs.LIFT, dir );
             this.locked = false;
 
@@ -574,8 +453,9 @@ class TopView extends GameBox {
     handleToss () {
         this.map.hero.face( this.map.hero.dir );
         this.player.gameaudio.hitSound( "throw" );
-        this.interact.tile.activeTile.toss( this.map.hero.dir ).then(() => {
+        this.map.activeTile.toss( this.map.hero.dir ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
+            this.map.activeTile = null;
             this.interact.tile = null;
         });
     }
@@ -583,11 +463,11 @@ class TopView extends GameBox {
 
     handleTile ( poi, dir, tile ) {
         // Stairs are hard, you have to take it slow...
-        if ( tile.activeTiles.data.group === Config.tiles.STAIRS ) {
+        if ( tile.group === Config.tiles.STAIRS ) {
             this.camera.speed = this.getSpeed() / 2.5;
 
         // Grass is thick, it will slow you down a bit...
-        } else if ( tile.activeTiles.data.group === Config.tiles.GRASS ) {
+        } else if ( tile.group === Config.tiles.GRASS ) {
             this.camera.speed = this.getSpeed() / 1.5;
         }
     }
@@ -601,10 +481,12 @@ class TopView extends GameBox {
 
 
     handleTileAct ( poi, dir, tile ) {
-        if ( tile.activeTiles.canInteract() ) {
+        const activeTiles = this.map.getActiveTiles( tile.group );
+
+        if ( activeTiles.canInteract() ) {
             this.interact.tile = tile;
 
-            if ( tile.activeTiles.data.action.verb === Config.verbs.LIFT ) {
+            if ( activeTiles.data.action.verb === Config.verbs.LIFT ) {
                 this.map.hero.act( Config.verbs.GRAB, dir );
             }
         }
@@ -612,8 +494,10 @@ class TopView extends GameBox {
 
 
     handleTileHit ( poi, dir, tile ) {
-        if ( tile.activeTiles.canAttack() ) {
-            tile.activeTiles.splice( tile.coord );
+        const activeTiles = this.map.getActiveTiles( tile.group );
+
+        if ( activeTiles.canAttack() ) {
+            activeTiles.splice( tile.coord );
         }
     }
 
@@ -676,9 +560,6 @@ class TopView extends GameBox {
 
         // Update this.map_.hero
         this.map_.hero.face( this.map.hero.dir );
-
-        // Will be the new Hero position on the new Map
-        // const _poi = Utils.copy( this.map.hero.position );
 
         // Will be the animation values for rendering...
         const _css = {
@@ -845,9 +726,6 @@ class TopView extends GameBox {
                 to: this.map.hero.position.x - this.map.hero.width,
             };
         }
-
-        // Set pre-animation offset for map AND hero
-        // this.map_.update( this.map_hero.position, this.map_.offset );
 
         // Inject the new Map element into the DOM
         this.player.screen.appendChild( this.map_.element );

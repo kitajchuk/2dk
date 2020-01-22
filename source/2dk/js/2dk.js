@@ -10,28 +10,15 @@
 
 
 
-* Explore z-axis...accelerations...gravity?
-* Explore canvas FX for cool stuff...
-
-
-
 * Grass sprite cycle / sound
 * Water sprite cycle / sound
 * Sword sprite cycle / sound / collision
-
-
-
-* Exclude audio on mobile...?
-* Document code...(jsdoc?
-* Better system for Array.prototype.find within loops...?
-
-
-
-* Explore NPC concepts with sprite sheets
-* Door events for entering and exiting interiors
-* Make Editor Utils Promise-based... like clutch core files module
-* Use game icon for mobile installed
+* Canvas FX layer (blast, smash, sparks, smoke, etc...?)
+* Z-Axis for sprite position (x, y, z) / use for collision checks...
+* Better system for Array.prototype.find within map loops...?
 * Visually center the Hero on the screen (currently centering top left corner)
+* Door events for entering and exiting interiors
+
 
 
 
@@ -123,6 +110,12 @@
 * Random thoughts we want to keep track of...for now...
 ********************************************************************************
 * ALTTP Sprite scale: 2.1875
+
+* Make Editor Utils Promise-based... like clutch core files module
+* Use game icon for mobile installed
+
+* Exclude audio on mobile...?
+* Document code...(jsdoc?
 
 * GameCycle manager for states (intro, title, credits, etc...)
 * Projectiles, FX in general

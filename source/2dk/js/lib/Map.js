@@ -8,6 +8,12 @@ const stopTiles = [
     Config.verbs.MOVE,
     Config.verbs.LIFT,
 ];
+const footTiles = [
+    Config.tiles.STAIRS,
+    Config.tiles.WATER,
+    Config.tiles.GRASS,
+    Config.tiles.HOLE,
+];
 
 
 
@@ -320,7 +326,6 @@ class ActiveTile {
 
     destroy () {
         this.tossable = null;
-        this.map.activeTile = null;
     }
 }
 
@@ -513,7 +518,6 @@ class ActiveObject {
 * Normalize a rendering layer for Canvas and Context.
 *******************************************************************************/
 class MapLayer {
-    // id, width, height
     constructor ( data ) {
         this.data = data;
         this.build();
@@ -650,10 +654,100 @@ class Map {
     }
 
 
+    addLayer ( id ) {
+        const offWidth = this.gamebox.camera.width + (this.gridsize * 2);
+        const offHeight = this.gamebox.camera.height + (this.gridsize * 2);
+
+        this.layers[ id ] = {};
+        this.layers[ id ].onCanvas = new MapLayer({
+            id,
+            map: this,
+            width: this.gamebox.camera.width,
+            height: this.gamebox.camera.height,
+        });
+        this.layers[ id ].offCanvas = new MapLayer({
+            id,
+            map: this,
+            width: offWidth,
+            height: offHeight,
+        });
+
+        this.element.appendChild( this.layers[ id ].onCanvas.canvas );
+    }
+
+
+/*******************************************************************************
+* Rendering
+*******************************************************************************/
     update ( poi, offset ) {
         this.poi = poi;
         this.offset = offset;
         this.hero.update( this.poi, this.offset );
+    }
+
+
+    render ( elapsed, camera ) {
+        this.clear();
+
+        this.activeTiles.forEach(( activeTiles ) => {
+            activeTiles.blit( elapsed );
+        });
+
+        this.activeObjects.forEach(( activeObject ) => {
+            activeObject.blit( elapsed );
+        });
+
+        if ( this.activeTile ) {
+            this.activeTile.blit( elapsed );
+        }
+
+        if ( this.hero ) {
+            this.hero.blit( elapsed );
+        }
+
+        this.renderBox = this.getRenderbox( elapsed, camera );
+
+        for ( let id in this.layers ) {
+            // Draw textures to background / foreground
+            Utils.drawMapTiles(
+                this.layers[ id ].offCanvas.context,
+                this.image,
+                this.renderBox.textures[ id ],
+                this.data.tilesize,
+                this.gridsize,
+            );
+
+            // Draw offscreen canvases to the onscreen canvases
+            this.layers[ id ].onCanvas.context.drawImage(
+                this.layers[ id ].offCanvas.canvas,
+                0,
+                0,
+                this.layers[ id ].offCanvas.canvas.width,
+                this.layers[ id ].offCanvas.canvas.height,
+                this.renderBox.bleed.x,
+                this.renderBox.bleed.y,
+                this.layers[ id ].offCanvas.canvas.width,
+                this.layers[ id ].offCanvas.canvas.height,
+            );
+        }
+
+        // Draw Hero: There can only be one at a time
+        if ( this.hero ) {
+            this.hero.render();
+        }
+
+        // Draw ActiveTile: There can only be one at a time
+        if ( this.activeTile ) {
+            this.activeTile.render();
+        }
+    }
+
+
+    clear () {
+        for ( let id in this.layers ) {
+            this.layers[ id ].onCanvas.clear();
+            this.layers[ id ].offCanvas.clear();
+        }
     }
 
 
@@ -738,12 +832,12 @@ class Map {
     }
 
 
-    setActiveTile ( activeTiles, coords ) {
+    setActiveTile ( group, coords ) {
+        const activeTiles = this.getActiveTiles( group );
+
         activeTiles.splice( coords );
 
         this.activeTile = new ActiveTile( activeTiles );
-
-        return this.activeTile;
     }
 
 
@@ -848,90 +942,127 @@ class Map {
     }
 
 
-    render ( elapsed, camera ) {
-        this.clear();
+/*******************************************************************************
+* Collisions:
+* Perception Checks
+*******************************************************************************/
+    checkBox ( poi ) {
+        let ret = false;
 
-        this.activeTiles.forEach(( activeTiles ) => {
-            activeTiles.blit( elapsed );
-        });
-
-        this.activeObjects.forEach(( activeObject ) => {
-            activeObject.blit( elapsed );
-        });
-
-        if ( this.activeTile ) {
-            this.activeTile.blit( elapsed );
+        if ( poi.x <= this.gamebox.camera.x || poi.x >= (this.gamebox.camera.x + this.gamebox.camera.width - this.hero.width) ) {
+            ret = true;
         }
 
-        if ( this.hero ) {
-            this.hero.blit( elapsed );
+        if ( poi.y <= this.gamebox.camera.y || poi.y >= (this.gamebox.camera.y + this.gamebox.camera.height - this.hero.height) ) {
+            ret = true;
         }
 
-        this.renderBox = this.getRenderbox( elapsed, camera );
-
-        for ( let id in this.layers ) {
-            // Draw textures to background / foreground
-            Utils.drawMapTiles(
-                this.layers[ id ].offCanvas.context,
-                this.image,
-                this.renderBox.textures[ id ],
-                this.data.tilesize,
-                this.gridsize,
-            );
-
-            // Draw offscreen canvases to the onscreen canvases
-            this.layers[ id ].onCanvas.context.drawImage(
-                this.layers[ id ].offCanvas.canvas,
-                0,
-                0,
-                this.layers[ id ].offCanvas.canvas.width,
-                this.layers[ id ].offCanvas.canvas.height,
-                this.renderBox.bleed.x,
-                this.renderBox.bleed.y,
-                this.layers[ id ].offCanvas.canvas.width,
-                this.layers[ id ].offCanvas.canvas.height,
-            );
-        }
-
-        // Draw Hero: There can only be one at a time
-        if ( this.hero ) {
-            this.hero.render();
-        }
-
-        // Draw ActiveTile: There can only be one at a time
-        if ( this.activeTile ) {
-            this.activeTile.render();
-        }
+        return ret;
     }
 
 
-    clear () {
-        for ( let id in this.layers ) {
-            this.layers[ id ].onCanvas.clear();
-            this.layers[ id ].offCanvas.clear();
+    checkMap ( poi, sprite ) {
+        let ret = false;
+        const hitbox = sprite.getHitbox( poi );
+
+        for ( let i = this.data.collision.length; i--; ) {
+            const collider = this.data.collider / this.gamebox.player.data.game.resolution;
+            const tile = {
+                width: collider,
+                height: collider,
+                x: this.data.collision[ i ][ 0 ] * collider,
+                y: this.data.collision[ i ][ 1 ] * collider
+            };
+
+            if ( Utils.collide( hitbox, tile ) ) {
+                ret = true;
+                break;
+            }
         }
+
+        return ret;
     }
 
 
-    addLayer ( id ) {
-        const offWidth = this.gamebox.camera.width + (this.gridsize * 2);
-        const offHeight = this.gamebox.camera.height + (this.gridsize * 2);
+    checkEvt ( poi ) {
+        let ret = false;
+        const hitbox = {
+            width: this.hero.width,
+            height: this.hero.height,
+            x: this.hero.position.x,
+            y: this.hero.position.y,
+        };
 
-        this.layers[ id ] = {};
-        this.layers[ id ].onCanvas = new MapLayer({
-            id,
-            map: this,
-            width: this.gamebox.camera.width,
-            height: this.gamebox.camera.height,
-        });
-        this.layers[ id ].offCanvas = new MapLayer({
-            id,
-            map: this,
-            width: offWidth,
-            height: offHeight,
-        });
+        for ( let i = this.data.events.length; i--; ) {
+            const tile = {
+                width: this.gridsize,
+                height: this.gridsize,
+                x: this.data.events[ i ].coords[ 0 ] * this.gridsize,
+                y: this.data.events[ i ].coords[ 1 ] * this.gridsize
+            };
 
-        this.element.appendChild( this.layers[ id ].onCanvas.canvas );
+            if ( Utils.collide( hitbox, tile ) && this.hero.dir === this.data.events[ i ].dir ) {
+                ret = this.data.events[ i ];
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+
+    checkObj ( poi ) {
+        let ret = false;
+        const hitbox = this.hero.getHitbox( poi );
+
+        for ( let i = this.activeObjects.length; i--; ) {
+            if ( Utils.collide( hitbox, this.activeObjects[ i ].hitbox ) ) {
+                ret = this.activeObjects[ i ];
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+
+    checkTile ( poi ) {
+        const tiles = [];
+        const hitbox = this.hero.getHitbox( poi );
+        const footbox = this.hero.getFootbox( poi );
+
+        for ( let i = this.activeTiles.length; i--; ) {
+            for ( let j = this.activeTiles[ i ].data.coords.length; j--; ) {
+                const tile = this.activeTiles[ i ];
+                const tilebox = {
+                    width: this.gridsize,
+                    height: this.gridsize,
+                    x: tile.data.coords[ j ][ 0 ] * this.gridsize,
+                    y: tile.data.coords[ j ][ 1 ] * this.gridsize
+                };
+                const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
+
+                if ( Utils.collide( lookbox, tilebox ) ) {
+                    tiles.push({
+                        group: tile.data.group,
+                        coord: tile.data.coords[ j ],
+                    });
+                }
+            }
+        }
+
+        // Only one tile, return it...
+        if ( tiles.length === 1 ) {
+            return tiles[ 0 ];
+        }
+
+        // Set priority to action/attach tiles, otherwise return one tile...
+        return (tiles.find(( tile ) => {
+            const activeTiles = this.getActiveTiles( tile.group );
+
+            return (activeTiles.data.action || activeTiles.data.attack);
+
+        }) || tiles[ 0 ]);
     }
 }
 
