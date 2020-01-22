@@ -287,7 +287,7 @@ class TopView extends GameBox {
         }
 
         if ( this.interact.tile ) {
-            this.map.hero.act( this.map.hero.verb, this.map.hero.dir );
+            this.map.hero.cycle( this.map.hero.verb, this.map.hero.dir );
 
         } else {
             this.map.hero.face( this.map.hero.dir );
@@ -439,11 +439,11 @@ class TopView extends GameBox {
 
     handleLift ( poi, dir ) {
         this.locked = true;
-        this.map.hero.act( Config.verbs.PULL, dir );
+        this.map.hero.cycle( Config.verbs.PULL, dir );
         setTimeout(() => {
             this.player.gameaudio.hitSound( "pickup" );
             this.map.setActiveTile( this.interact.tile.group, this.interact.tile.coord );
-            this.map.hero.act( Config.verbs.LIFT, dir );
+            this.map.hero.cycle( Config.verbs.LIFT, dir );
             this.locked = false;
 
         }, Config.values.debounceDur );
@@ -487,7 +487,7 @@ class TopView extends GameBox {
             this.interact.tile = tile;
 
             if ( activeTiles.data.action.verb === Config.verbs.LIFT ) {
-                this.map.hero.act( Config.verbs.GRAB, dir );
+                this.map.hero.cycle( Config.verbs.GRAB, dir );
             }
         }
     }

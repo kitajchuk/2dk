@@ -121,6 +121,8 @@ class Sprite {
             height: this.hitbox.height / 2,
         };
         this.spritecel = this.getCel();
+        this.moving = false;
+        this.moveTimer = null;
     }
 
 
@@ -132,13 +134,18 @@ class Sprite {
         this.frame = 0;
 
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
-            const diff = (elapsed - this.previousElapsed);
+            if ( this.verb === Config.verbs.LIFT && !this.moving ) {
+                // console.log( "static lift..." );
 
-            this.frame = Math.floor( (diff / this.data.verbs[ this.verb ].dur) * this.data.verbs[ this.verb ][ this.dir ].stepsX );
+            } else {
+                const diff = (elapsed - this.previousElapsed);
 
-            if ( diff >= this.data.verbs[ this.verb ].dur ) {
-                this.previousElapsed = elapsed;
-                this.frame = this.data.verbs[ this.verb ][ this.dir ].stepsX - 1;
+                this.frame = Math.floor( (diff / this.data.verbs[ this.verb ].dur) * this.data.verbs[ this.verb ][ this.dir ].stepsX );
+
+                if ( diff >= this.data.verbs[ this.verb ].dur ) {
+                    this.previousElapsed = elapsed;
+                    this.frame = this.data.verbs[ this.verb ][ this.dir ].stepsX - 1;
+                }
             }
         }
 
@@ -147,6 +154,20 @@ class Sprite {
 
 
     render () {
+        if ( this.data.shadow ) {
+            this.map.layers.background.onCanvas.context.drawImage(
+                this.image,
+                Math.abs( this.data.shadow.offsetX ),
+                Math.abs( this.data.shadow.offsetY ),
+                this.data.width,
+                this.data.height,
+                this.map.offset.x + this.position.x,
+                this.map.offset.y + this.position.y,
+                this.width,
+                this.height,
+            );
+        }
+
         this.map.layers.background.onCanvas.context.drawImage(
             this.image,
             this.spritecel[ 0 ],
@@ -175,14 +196,8 @@ class Sprite {
     }
 
 
-    act ( verb, dir ) {
-        this.dir = dir;
-        this.verb = verb;
-    }
-
-
     face ( dir ) {
-        this.act( Config.verbs.FACE, dir );
+        this.cycle( Config.verbs.FACE, dir );
     }
 
 
@@ -229,6 +244,17 @@ class Hero extends Sprite {
         this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
         this.footbox.x = this.hitbox.x;
         this.footbox.y = this.hitbox.y + (this.hitbox.height / 2);
+
+        clearTimeout( this.moveTimer );
+
+        this.moving = true;
+        // console.log( "Hero is moving" );
+
+        this.moveTimer = setTimeout(() => {
+            this.moving = false;
+            // console.log( "Hero is idle" );
+
+        }, Config.values.debounceDur );
 
         const absolute = {
             x: Math.abs( offset.x ),
