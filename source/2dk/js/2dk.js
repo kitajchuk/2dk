@@ -4,8 +4,11 @@
 
 * Bug: push up cycle for hero
 * Bug: walk cycle gets locked (switch map with activeTile lifed)
-* Camera speed while holding a lifeted Object
+
+
+
 * Grab accuracy for lifting objects (most collided?)
+* Camera speed while holding a lifeted Object
 * Camera speed affects sprite cycle speed?
 * Hero sprite masking?
 * Tossable colliders (z-axis issue?)

@@ -161,8 +161,8 @@ class Sprite {
                 Math.abs( this.data.shadow.offsetY ),
                 this.data.width,
                 this.data.height,
-                this.map.offset.x + this.position.x,
-                this.map.offset.y + this.position.y,
+                this.offset.x,
+                this.offset.y,
                 this.width,
                 this.height,
             );
@@ -179,6 +179,31 @@ class Sprite {
             this.width,
             this.height,
         );
+
+        // Debug rendering...
+        if ( this.gamebox.player.query.debug ) {
+            this.map.layers.background.onCanvas.context.globalAlpha = 0.5;
+
+            // Hitbox
+            this.map.layers.background.onCanvas.context.fillStyle = Config.colors.red;
+            this.map.layers.background.onCanvas.context.fillRect(
+                this.offset.x + (this.data.hitbox.x / this.scale),
+                this.offset.y + (this.data.hitbox.y / this.scale),
+                this.hitbox.width,
+                this.hitbox.height,
+            );
+
+            // Footbox
+            this.map.layers.background.onCanvas.context.fillStyle = Config.colors.black;
+            this.map.layers.background.onCanvas.context.fillRect(
+                this.offset.x + (this.data.hitbox.x / this.scale),
+                this.offset.y + (this.data.hitbox.y / this.scale) + (this.hitbox.height / 2),
+                this.hitbox.width,
+                this.hitbox.height / 2,
+            );
+
+            this.map.layers.background.onCanvas.context.globalAlpha = 1.0;
+        }
     }
 
 
@@ -451,8 +476,10 @@ class ActiveTiles {
     constructor ( data, map ) {
         this.data = data;
         this.map = map;
+        this.gamebox = this.map.gamebox;
         this.frame = 0;
         this.spliced = [];
+        this.colliders = [];
     }
 
 
@@ -477,6 +504,54 @@ class ActiveTiles {
                 this.previousElapsed = elapsed;
                 this.frame = this.data.stepsX - 1;
             }
+        }
+    }
+
+
+    render () {
+        if ( this.gamebox.player.query.debug ) {
+            this.drawColliders();
+        }
+    }
+
+
+    setCollider ( coords ) {
+        if ( this.gamebox.player.query.debug ) {
+            const collider = this.colliders.find( ( coord ) => (coords[ 0 ] === coord[ 0 ] && coords[ 1 ] === coord[ 1 ]) );
+
+            if ( !collider ) {
+                this.colliders.push( coords );
+            }
+        }
+    }
+
+
+    clearCollider ( coords ) {
+        if ( this.gamebox.player.query.debug ) {
+            for ( let i = this.colliders.length; i--; ) {
+                if ( this.colliders[ i ][ 0 ] === coords[ 0 ] && this.colliders[ i ][ 1 ] === coords[ 1 ] ) {
+                    this.colliders.splice( i, 1 );
+                    break;
+                }
+            }
+        }
+    }
+
+
+    drawColliders () {
+        if ( this.colliders.length && this.gamebox.player.query.debug ) {
+            this.map.layers.background.onCanvas.context.globalAlpha = 0.5;
+            this.colliders.forEach(( collider ) => {
+                // Tile overlay to signal collision
+                this.map.layers.background.onCanvas.context.fillStyle = Config.colors.teal;
+                this.map.layers.background.onCanvas.context.fillRect(
+                    this.map.offset.x + (collider[ 0 ] * this.map.gridsize),
+                    this.map.offset.y + (collider[ 1 ] * this.map.gridsize),
+                    this.map.gridsize,
+                    this.map.gridsize,
+                );
+            });
+            this.map.layers.background.onCanvas.context.globalAlpha = 1.0;
         }
     }
 
@@ -535,7 +610,8 @@ class ActiveTiles {
 class ActiveObject {
     constructor ( data, map ) {
         this.map = map;
-        this.data = Utils.merge( map.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
+        this.gamebox = this.map.gamebox;
+        this.data = Utils.merge( this.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
         this.layer = this.data.layer;
         this.width = this.data.width;
         this.height = this.data.height;
@@ -544,14 +620,15 @@ class ActiveObject {
             y: this.data.coords[ 0 ][ 1 ] * this.map.gridsize,
         };
         this.hitbox = {
-            x: this.position.x + (this.data.hitbox.x / this.map.gamebox.camera.resolution),
-            y: this.position.y + (this.data.hitbox.y / this.map.gamebox.camera.resolution),
-            width: this.data.hitbox.width / this.map.gamebox.camera.resolution,
-            height: this.data.hitbox.height / this.map.gamebox.camera.resolution,
+            x: this.position.x + (this.data.hitbox.x / this.gamebox.camera.resolution),
+            y: this.position.y + (this.data.hitbox.y / this.gamebox.camera.resolution),
+            width: this.data.hitbox.width / this.gamebox.camera.resolution,
+            height: this.data.hitbox.height / this.gamebox.camera.resolution,
         };
         this.states = Utils.copy( this.data.states );
         this.relative = (this.hitbox.height !== this.height);
         this.frame = 0;
+        this.collider = false;
         this.shift();
     }
 
@@ -597,6 +674,22 @@ class ActiveObject {
     }
 
 
+    render () {
+        if ( this.gamebox.player.query.debug && this.collider ) {
+            this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 0.5;
+            // Object overlay to signal collision
+            this.map.layers[ this.layer ].onCanvas.context.fillStyle = Config.colors.teal;
+            this.map.layers[ this.layer ].onCanvas.context.fillRect(
+                this.map.offset.x + this.position.x,
+                this.map.offset.y + this.position.y,
+                this.width / this.gamebox.camera.resolution,
+                this.height / this.gamebox.camera.resolution,
+            );
+            this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
+        }
+    }
+
+
     getTile ( coords ) {
         const offsetX = (this.state.offsetX + (this.frame * this.width));
 
@@ -609,7 +702,7 @@ class ActiveObject {
 
     payload () {
         if ( this.data.payload.dialogue ) {
-            this.map.gamebox.dialogue.play( this.data.payload.dialogue );
+            this.gamebox.dialogue.play( this.data.payload.dialogue );
         }
     }
 
@@ -625,7 +718,7 @@ class ActiveObject {
         }
 
         if ( this.state.action.sound ) {
-            this.map.gamebox.player.gameaudio.hitSound( this.state.action.sound );
+            this.gamebox.player.gameaudio.hitSound( this.state.action.sound );
         }
 
         if ( this.state.action.shift ) {
@@ -716,6 +809,7 @@ class Map {
             y: 0
         };
         this.poi = null;
+        this.colliders = [];
         this.build();
     }
 
@@ -864,6 +958,25 @@ class Map {
             );
         }
 
+        // Note:
+        // ActiveTiles/Objects get rendered above as they are mapped into
+        // the texture layers while handling the renderBox mapping logic.
+        // The following is to render debug-level canvas stuff for testing.
+
+        // Draw ActiveTiles debug stuff...
+        this.activeTiles.forEach(( activeTiles ) => {
+            activeTiles.render();
+        });
+
+        // Draw ActiveObjects debug stuff...
+        this.activeObjects.forEach(( activeObject ) => {
+            activeObject.render();
+        });
+
+        if ( this.colliders.length && this.gamebox.player.query.debug ) {
+            this.drawColliders();
+        }
+
         // Draw Hero: There can only be one at a time
         if ( this.hero ) {
             this.hero.render();
@@ -980,9 +1093,7 @@ class Map {
 
 
     getActiveTiles ( group ) {
-        return this.activeTiles.find(( activeTiles ) => {
-            return (activeTiles.data.group === group);
-        });
+        return this.activeTiles.find( ( activeTiles ) => (activeTiles.data.group === group) );
     }
 
 
@@ -1023,12 +1134,8 @@ class Map {
 
                 if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
                     // Check if tile is pushed...
-                    const isTilePushed = tiles.coords.find(( coord ) => {
-                        return (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]);
-                    });
-                    const isTileSpliced = this.getActiveTiles( tiles.group ).spliced.find(( coord ) => {
-                        return (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]);
-                    });
+                    const isTilePushed = tiles.coords.find( ( coord ) => (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]) );
+                    const isTileSpliced = this.getActiveTiles( tiles.group ).spliced.find( ( coord ) => (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]) );
 
                     // Push the tile to the coords Array...
                     // This lets us generate ActiveTile groups that will
@@ -1081,9 +1188,7 @@ class Map {
 
 
     addActiveFX ( id, position ) {
-        const fx = this.gamebox.player.data.effects.find(( effect ) => {
-            return (effect.id === id);
-        });
+        const fx = this.gamebox.player.data.effects.find( ( effect ) => (effect.id === id) );
 
         this.activeFX.push( new ActiveFX( fx, position, this ) );
     }
@@ -1107,6 +1212,47 @@ class Map {
 * Collisions:
 * Perception Checks
 *******************************************************************************/
+    setCollider ( obj ) {
+        if ( this.gamebox.player.query.debug ) {
+            const collider = this.colliders.find( ( collid ) => (collid.x === obj.x && collid.y === obj.y) );
+
+            if ( !collider ) {
+                this.colliders.push( obj );
+            }
+        }
+    }
+
+
+    clearCollider ( obj ) {
+        if ( this.gamebox.player.query.debug ) {
+            for ( let i = this.colliders.length; i--; ) {
+                if ( this.colliders[ i ].x === obj.x && this.colliders[ i ].y === obj.y ) {
+                    this.colliders.splice( i, 1 );
+                    break;
+                }
+            }
+        }
+    }
+
+
+    drawColliders () {
+        if ( this.colliders.length && this.gamebox.player.query.debug ) {
+            this.layers.background.onCanvas.context.globalAlpha = 0.5;
+            this.colliders.forEach(( collider ) => {
+                // Tile overlay to signal collision
+                this.layers.background.onCanvas.context.fillStyle = Config.colors.teal;
+                this.layers.background.onCanvas.context.fillRect(
+                    this.offset.x + collider.x,
+                    this.offset.y + collider.y,
+                    collider.width,
+                    collider.height,
+                );
+            });
+            this.layers.background.onCanvas.context.globalAlpha = 1.0;
+        }
+    }
+
+
     checkBox ( poi ) {
         let ret = false;
 
@@ -1137,7 +1283,11 @@ class Map {
 
             if ( Utils.collide( hitbox, tile ) ) {
                 ret = true;
-                break;
+                this.setCollider( tile );
+                // break;
+
+            } else {
+                this.clearCollider( tile );
             }
         }
 
@@ -1164,7 +1314,11 @@ class Map {
 
             if ( Utils.collide( hitbox, tile ) && this.hero.dir === this.data.events[ i ].dir ) {
                 ret = this.data.events[ i ];
+                this.setCollider( tile );
                 break;
+
+            } else {
+                this.clearCollider( tile );
             }
         }
 
@@ -1179,7 +1333,11 @@ class Map {
         for ( let i = this.activeObjects.length; i--; ) {
             if ( Utils.collide( hitbox, this.activeObjects[ i ].hitbox ) ) {
                 ret = this.activeObjects[ i ];
+                ret.collider = true;
                 break;
+
+            } else {
+                this.activeObjects[ i ].collider = false;
             }
         }
 
@@ -1208,6 +1366,10 @@ class Map {
                         group: tile.data.group,
                         coord: tile.data.coords[ j ],
                     });
+                    tile.setCollider( tile.data.coords[ j ] );
+
+                } else {
+                    tile.clearCollider( tile.data.coords[ j ] );
                 }
             }
         }

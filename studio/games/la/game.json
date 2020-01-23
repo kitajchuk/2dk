@@ -33,9 +33,9 @@
             "image": "/games/la/assets/sprites/hero_alttp.png",
             "hitbox": {
                 "x": 48,
-                "y": 70,
+                "y": 74,
                 "width": 44,
-                "height": 48
+                "height": 44
             },
             "stats": {
                 "power": 1,
