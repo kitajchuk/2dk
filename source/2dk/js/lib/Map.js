@@ -378,11 +378,12 @@ class Tossable {
     update ( t ) {
         const distance = this.dist - (this.dist - t);
         const position = Utils.translate( this.values.origin, this.values.angle, distance );
-        const collision = this.activeTile.gamebox.getCollision( position );
 
         this.activeTile.position = position;
         this.activeTile.hitbox.x = this.activeTile.position.x;
         this.activeTile.hitbox.y = this.activeTile.position.y;
+
+        const collision = this.activeTile.gamebox.getCollision( position, this.activeTile );
 
         if ( collision.map || collision.obj || collision.box ) {
             this.tween.stop();
@@ -472,6 +473,11 @@ class ActiveTile {
         this.projectile = true;
         this.tossable = new Tossable( this, dir, (this.gamebox.map.gridsize * 3), (this.gamebox.map.gridsize * 6) );
         return this.tossable.toss();
+    }
+
+
+    getHitbox ( poi ) {
+        return this.hitbox;
     }
 
 
@@ -1213,14 +1219,14 @@ class Map {
     }
 
 
-    checkBox ( poi ) {
+    checkBox ( poi, sprite ) {
         let ret = false;
 
-        if ( poi.x <= this.gamebox.camera.x || poi.x >= (this.gamebox.camera.x + this.gamebox.camera.width - this.hero.width) ) {
+        if ( poi.x <= this.gamebox.camera.x || poi.x >= (this.gamebox.camera.x + this.gamebox.camera.width - sprite.width) ) {
             ret = true;
         }
 
-        if ( poi.y <= this.gamebox.camera.y || poi.y >= (this.gamebox.camera.y + this.gamebox.camera.height - this.hero.height) ) {
+        if ( poi.y <= this.gamebox.camera.y || poi.y >= (this.gamebox.camera.y + this.gamebox.camera.height - sprite.height) ) {
             ret = true;
         }
 
@@ -1256,13 +1262,13 @@ class Map {
     }
 
 
-    checkEvt ( poi ) {
+    checkEvt ( poi, sprite ) {
         let ret = false;
         const hitbox = {
-            width: this.hero.width,
-            height: this.hero.height,
-            x: this.hero.position.x,
-            y: this.hero.position.y,
+            width: sprite.width,
+            height: sprite.height,
+            x: sprite.position.x,
+            y: sprite.position.y,
         };
 
         for ( let i = this.data.events.length; i--; ) {
@@ -1287,10 +1293,10 @@ class Map {
     }
 
 
-    checkObj ( poi ) {
+    checkObj ( poi, sprite ) {
         let ret = false;
         let collider;
-        const hitbox = this.hero.getHitbox( poi );
+        const hitbox = sprite.getHitbox( poi );
 
         for ( let i = this.activeObjects.length; i--; ) {
             collider = {

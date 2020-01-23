@@ -7,14 +7,14 @@
 
 
 
-* Grab accuracy for lifting objects (most collided?)
-    check amount of collision during loop and end up with the most collided...
+* Tossable colliders (z-axis issue?)
+* Z-Axis for sprite position (x, y, z) / use for collision checks...
+
 
 
 * Camera speed while holding a lifeted Object
 * Camera speed affects sprite cycle speed?
 * Hero sprite masking?
-* Tossable colliders (z-axis issue?)
 
 
 
@@ -22,7 +22,6 @@
 * Water sprite cycle / sound
 * Sword sprite cycle / sound / collision
 * Canvas FX layer (blast, smash, sparks, smoke, etc...?)
-* Z-Axis for sprite position (x, y, z) / use for collision checks...
 * Visually center the Hero on the screen (currently centering top left corner)
 * Door events for entering and exiting interiors
 

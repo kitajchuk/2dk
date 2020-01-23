@@ -146,13 +146,13 @@ class GameBox {
     }
 
 
-    getCollision ( poi ) {
+    getCollision ( poi, sprite ) {
         return {
-            evt: this.map.checkEvt( poi ),
-            map: this.map.checkMap( poi, this.map.hero ),
-            box: this.map.checkBox( poi ),
-            obj: this.map.checkObj( poi ),
-            tiles: this.map.checkTiles( poi ),
+            evt: this.map.checkEvt( poi, sprite ),
+            map: this.map.checkMap( poi, sprite ),
+            box: this.map.checkBox( poi, sprite ),
+            obj: this.map.checkObj( poi, sprite ),
+            tiles: this.map.checkTiles( poi, sprite ),
         };
     }
 
@@ -213,7 +213,7 @@ class TopView extends GameBox {
 *******************************************************************************/
     pressD ( dir, delta, dirX, dirY ) {
         const poi = this.getPoi( delta, dirX, dirY );
-        const collision = this.getCollision( poi );
+        const collision = this.getCollision( poi, this.map.hero );
         const speed = this.getSpeed();
 
         if ( this.locked ) {
@@ -290,7 +290,7 @@ class TopView extends GameBox {
 
     pressA ( dir, delta, dirX, dirY ) {
         const poi = this.getPoi( delta, dirX, dirY );
-        const collision = this.getCollision( poi );
+        const collision = this.getCollision( poi, this.map.hero );
 
         if ( collision.obj ) {
             this.handleObjAct( poi, dir, collision.obj );
@@ -342,7 +342,7 @@ class TopView extends GameBox {
 
     pressB ( dir, delta, dirX, dirY ) {
         const poi = this.getPoi( delta, dirX, dirY );
-        const collision = this.getCollision( poi );
+        const collision = this.getCollision( poi, this.map.hero );
 
         if ( collision.tiles ) {
             if ( collision.tiles.attack.length ) {
