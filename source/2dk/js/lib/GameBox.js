@@ -5,11 +5,6 @@ const Dialogue = require( "./Dialogue" );
 const { Map } = require( "./Map" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
-const stopTiles = [
-    Config.verbs.GRAB,
-    Config.verbs.MOVE,
-    Config.verbs.LIFT,
-];
 
 
 
@@ -157,7 +152,7 @@ class GameBox {
             map: this.map.checkMap( poi, this.map.hero ),
             box: this.map.checkBox( poi ),
             obj: this.map.checkObj( poi ),
-            tile: this.map.checkTile( poi ),
+            tiles: this.map.checkTiles( poi ),
         };
     }
 
@@ -255,13 +250,11 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( collision.tile ) {
-            this.handleTile( poi, dir, collision.tile );
+        if ( collision.tiles ) {
+            this.handleTiles( poi, dir, collision.tiles );
 
-            const activeTiles = this.map.getActiveTiles( collision.tile.group );
-
-            if ( activeTiles.data.action && stopTiles.indexOf( activeTiles.data.action.verb ) !== -1 ) {
-                this.handleTileStop( poi, dir, collision.tile );
+            if ( collision.tiles.action.length && collision.tiles.action[ 0 ].stop ) {
+                this.handleTileStop( poi, dir, collision.tiles.action[ 0 ] );
                 return;
             }
 
@@ -298,19 +291,14 @@ class TopView extends GameBox {
     pressA ( dir, delta, dirX, dirY ) {
         const poi = this.getPoi( delta, dirX, dirY );
         const collision = this.getCollision( poi );
-        const tileActs = [
-            Config.verbs.LIFT,
-        ];
 
         if ( collision.obj ) {
             this.handleObjAct( poi, dir, collision.obj );
         }
 
-        if ( collision.tile ) {
-            const activeTiles = this.map.getActiveTiles( collision.tile.group );
-
-            if ( activeTiles.data.action && (tileActs.indexOf( activeTiles.data.action.verb ) !== -1) && !this.interact.tile ) {
-                this.handleTileAct( poi, dir, collision.tile );
+        if ( collision.tiles ) {
+            if ( collision.tiles.action.length && collision.tiles.action[ 0 ].act && !this.interact.tile ) {
+                this.handleTileAct( poi, dir, collision.tiles.action[ 0 ] );
             }
         }
     }
@@ -355,15 +343,14 @@ class TopView extends GameBox {
     pressB ( dir, delta, dirX, dirY ) {
         const poi = this.getPoi( delta, dirX, dirY );
         const collision = this.getCollision( poi );
-        const tileActs = [
-            Config.verbs.CUT,
-        ];
 
-        if ( collision.tile ) {
-            const activeTiles = this.map.getActiveTiles( collision.tile.group );
-
-            if ( activeTiles.data.attack && (tileActs.indexOf( activeTiles.data.attack.verb ) !== -1) ) {
-                this.handleTileHit( poi, dir, collision.tile );
+        if ( collision.tiles ) {
+            if ( collision.tiles.attack.length ) {
+                collision.tiles.attack.forEach(( tile ) => {
+                    if ( tile.hit ) {
+                        this.handleTileHit( poi, dir, tile );
+                    }
+                });
             }
         }
     }
@@ -461,15 +448,17 @@ class TopView extends GameBox {
     }
 
 
-    handleTile ( poi, dir, tile ) {
-        // Stairs are hard, you have to take it slow...
-        if ( tile.group === Config.tiles.STAIRS ) {
-            this.camera.speed = this.getSpeed() / 2.5;
+    handleTiles ( poi, dir, tiles ) {
+        tiles.passive.forEach(( tile ) => {
+            // Stairs are hard, you have to take it slow...
+            if ( tile.group === Config.tiles.STAIRS ) {
+                this.camera.speed = this.getSpeed() / 2.5;
 
-        // Grass is thick, it will slow you down a bit...
-        } else if ( tile.group === Config.tiles.GRASS ) {
-            this.camera.speed = this.getSpeed() / 1.5;
-        }
+            // Grass is thick, it will slow you down a bit...
+            } else if ( tile.group === Config.tiles.GRASS ) {
+                this.camera.speed = this.getSpeed() / 1.5;
+            }
+        });
     }
 
 
@@ -483,10 +472,10 @@ class TopView extends GameBox {
     handleTileAct ( poi, dir, tile ) {
         const activeTiles = this.map.getActiveTiles( tile.group );
 
-        if ( activeTiles.canInteract() ) {
+        if ( tile.tile.canInteract() ) {
             this.interact.tile = tile;
 
-            if ( activeTiles.data.action.verb === Config.verbs.LIFT ) {
+            if ( tile.tile.data.action.verb === Config.verbs.LIFT ) {
                 this.map.hero.cycle( Config.verbs.GRAB, dir );
             }
         }
@@ -494,10 +483,8 @@ class TopView extends GameBox {
 
 
     handleTileHit ( poi, dir, tile ) {
-        const activeTiles = this.map.getActiveTiles( tile.group );
-
-        if ( activeTiles.canAttack() ) {
-            activeTiles.attack( tile.coord );
+        if ( tile.tile.canAttack() ) {
+            tile.tile.attack( tile.coord );
         }
     }
 

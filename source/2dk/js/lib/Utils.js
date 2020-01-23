@@ -25,8 +25,17 @@ const Utils = {
     collide ( box1, box2 ) {
         let ret = false;
 
-        if ( box1.x < box2.x + box2.width && box1.x + box1.width > box2.x && box1.y < box2.y + box2.height && box1.height + box1.y > box2.y ) {
-            ret = true;
+        if ( box1.x < (box2.x + box2.width) && (box1.x + box1.width) > box2.x && box1.y < (box2.y + box2.height) && (box1.height + box1.y) > box2.y ) {
+            ret = {
+                // box1.x1 snapped to ZERO
+                x: Math.max( 0, (box1.x - box2.x) ),
+                // box1.y1 snapped to ZERO
+                y: Math.max( 0, (box1.y - box2.y) ),
+                // box1.x2 snapped to BOX2.WIDTH
+                width: (Math.min( box2.width, ((box1.x - box2.x) + box1.width) )) - (Math.max( 0, (box1.x - box2.x) )),
+                // box1.y2 snapped to BOX2.HEIGHT
+                height: (Math.min( box2.height, ((box1.y - box2.y) + box1.height) )) - (Math.max( 0, (box1.y - box2.y) )),
+            };
         }
 
         return ret;

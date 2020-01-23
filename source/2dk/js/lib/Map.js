@@ -3,6 +3,14 @@ const Loader = require( "./Loader" );
 const Config = require( "./Config" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
+const tileSortFunc = ( tileA, tileB ) => {
+    if ( tileA.amount > tileB.amount ) {
+        return -1;
+
+    } else {
+        return 1;
+    }
+};
 const stopTiles = [
     Config.verbs.GRAB,
     Config.verbs.MOVE,
@@ -13,6 +21,16 @@ const footTiles = [
     Config.tiles.WATER,
     Config.tiles.GRASS,
     Config.tiles.HOLE,
+];
+const cameraTiles = [
+    Config.tiles.STAIRS,
+    Config.tiles.GRASS,
+];
+const tileActs = [
+    Config.verbs.LIFT,
+];
+const tileHits = [
+    Config.verbs.CUT,
 ];
 
 
@@ -361,13 +379,12 @@ class Tossable {
         const distance = this.dist - (this.dist - t);
         const position = Utils.translate( this.values.origin, this.values.angle, distance );
         const collision = this.activeTile.gamebox.getCollision( position );
-        const activeTiles = collision.tile ? this.activeTile.map.getActiveTiles( collision.tile.group ) : null;
 
         this.activeTile.position = position;
         this.activeTile.hitbox.x = this.activeTile.position.x;
         this.activeTile.hitbox.y = this.activeTile.position.y;
 
-        if ( collision.map || collision.obj || collision.box || (activeTiles && activeTiles.data.action && stopTiles.indexOf( activeTiles.data.action.verb ) !== -1) ) {
+        if ( collision.map || collision.obj || collision.box ) {
             this.tween.stop();
             this.activeTile.destroy();
             this.resolve();
@@ -479,7 +496,6 @@ class ActiveTiles {
         this.gamebox = this.map.gamebox;
         this.frame = 0;
         this.spliced = [];
-        this.colliders = [];
     }
 
 
@@ -504,54 +520,6 @@ class ActiveTiles {
                 this.previousElapsed = elapsed;
                 this.frame = this.data.stepsX - 1;
             }
-        }
-    }
-
-
-    render () {
-        if ( this.gamebox.player.query.debug ) {
-            this.drawColliders();
-        }
-    }
-
-
-    setCollider ( coords ) {
-        if ( this.gamebox.player.query.debug ) {
-            const collider = this.colliders.find( ( coord ) => (coords[ 0 ] === coord[ 0 ] && coords[ 1 ] === coord[ 1 ]) );
-
-            if ( !collider ) {
-                this.colliders.push( coords );
-            }
-        }
-    }
-
-
-    clearCollider ( coords ) {
-        if ( this.gamebox.player.query.debug ) {
-            for ( let i = this.colliders.length; i--; ) {
-                if ( this.colliders[ i ][ 0 ] === coords[ 0 ] && this.colliders[ i ][ 1 ] === coords[ 1 ] ) {
-                    this.colliders.splice( i, 1 );
-                    break;
-                }
-            }
-        }
-    }
-
-
-    drawColliders () {
-        if ( this.colliders.length && this.gamebox.player.query.debug ) {
-            this.map.layers.background.onCanvas.context.globalAlpha = 0.5;
-            this.colliders.forEach(( collider ) => {
-                // Tile overlay to signal collision
-                this.map.layers.background.onCanvas.context.fillStyle = Config.colors.teal;
-                this.map.layers.background.onCanvas.context.fillRect(
-                    this.map.offset.x + (collider[ 0 ] * this.map.gridsize),
-                    this.map.offset.y + (collider[ 1 ] * this.map.gridsize),
-                    this.map.gridsize,
-                    this.map.gridsize,
-                );
-            });
-            this.map.layers.background.onCanvas.context.globalAlpha = 1.0;
         }
     }
 
@@ -628,7 +596,6 @@ class ActiveObject {
         this.states = Utils.copy( this.data.states );
         this.relative = (this.hitbox.height !== this.height);
         this.frame = 0;
-        this.collider = false;
         this.shift();
     }
 
@@ -670,22 +637,6 @@ class ActiveObject {
             } else {
                 this.layer = "background";
             }
-        }
-    }
-
-
-    render () {
-        if ( this.gamebox.player.query.debug && this.collider ) {
-            this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 0.5;
-            // Object overlay to signal collision
-            this.map.layers[ this.layer ].onCanvas.context.fillStyle = Config.colors.teal;
-            this.map.layers[ this.layer ].onCanvas.context.fillRect(
-                this.map.offset.x + this.position.x,
-                this.map.offset.y + this.position.y,
-                this.width / this.gamebox.camera.resolution,
-                this.height / this.gamebox.camera.resolution,
-            );
-            this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
         }
     }
 
@@ -963,16 +914,6 @@ class Map {
         // the texture layers while handling the renderBox mapping logic.
         // The following is to render debug-level canvas stuff for testing.
 
-        // Draw ActiveTiles debug stuff...
-        this.activeTiles.forEach(( activeTiles ) => {
-            activeTiles.render();
-        });
-
-        // Draw ActiveObjects debug stuff...
-        this.activeObjects.forEach(( activeObject ) => {
-            activeObject.render();
-        });
-
         if ( this.colliders.length && this.gamebox.player.query.debug ) {
             this.drawColliders();
         }
@@ -1223,6 +1164,23 @@ class Map {
     }
 
 
+    setTileColliders ( tiles ) {
+        if ( this.gamebox.player.query.debug ) {
+            for ( let id in tiles ) {
+                tiles[ id ].forEach(( tile, i ) => {
+                    // Top tile for a group is sorted as most collided...
+                    if ( i === 0 ) {
+                        tile.tilebox.color = Config.colors.green;
+                    }
+
+                    this.clearCollider( tile.tilebox );
+                    this.setCollider( tile.tilebox );
+                });
+            }
+        }
+    }
+
+
     clearCollider ( obj ) {
         if ( this.gamebox.player.query.debug ) {
             for ( let i = this.colliders.length; i--; ) {
@@ -1237,18 +1195,20 @@ class Map {
 
     drawColliders () {
         if ( this.colliders.length && this.gamebox.player.query.debug ) {
-            this.layers.foreground.onCanvas.context.globalAlpha = 0.5;
             this.colliders.forEach(( collider ) => {
-                // Tile overlay to signal collision
-                this.layers.foreground.onCanvas.context.fillStyle = Config.colors.teal;
-                this.layers.foreground.onCanvas.context.fillRect(
+                const layer = (collider.layer || "background");
+                const color = (collider.color || Config.colors.teal);
+
+                this.layers[ layer ].onCanvas.context.globalAlpha = 0.5;
+                this.layers[ layer ].onCanvas.context.fillStyle = color;
+                this.layers[ layer ].onCanvas.context.fillRect(
                     this.offset.x + collider.x,
                     this.offset.y + collider.y,
                     collider.width,
                     collider.height,
                 );
+                this.layers[ layer ].onCanvas.context.globalAlpha = 1.0;
             });
-            this.layers.foreground.onCanvas.context.globalAlpha = 1.0;
         }
     }
 
@@ -1278,7 +1238,8 @@ class Map {
                 width: collider,
                 height: collider,
                 x: this.data.collision[ i ][ 0 ] * collider,
-                y: this.data.collision[ i ][ 1 ] * collider
+                y: this.data.collision[ i ][ 1 ] * collider,
+                layer: "foreground",
             };
 
             if ( Utils.collide( hitbox, tile ) ) {
@@ -1312,7 +1273,7 @@ class Map {
                 y: this.data.events[ i ].coords[ 1 ] * this.gridsize
             };
 
-            if ( Utils.collide( hitbox, tile ) && this.hero.dir === this.data.events[ i ].dir ) {
+            if ( Utils.collide( hitbox, tile ) && (this.hero.dir === this.data.events[ i ].dir) ) {
                 ret = this.data.events[ i ];
                 this.setCollider( tile );
                 break;
@@ -1328,16 +1289,25 @@ class Map {
 
     checkObj ( poi ) {
         let ret = false;
+        let collider;
         const hitbox = this.hero.getHitbox( poi );
 
         for ( let i = this.activeObjects.length; i--; ) {
+            collider = {
+                x: this.activeObjects[ i ].position.x,
+                y: this.activeObjects[ i ].position.y,
+                width: this.activeObjects[ i ].width / this.gamebox.camera.resolution,
+                height: this.activeObjects[ i ].height / this.gamebox.camera.resolution,
+                layer: this.activeObjects[ i ].layer,
+            };
+
             if ( Utils.collide( hitbox, this.activeObjects[ i ].hitbox ) ) {
                 ret = this.activeObjects[ i ];
-                ret.collider = true;
-                break;
+                this.setCollider( collider );
+                // break;
 
             } else {
-                this.activeObjects[ i ].collider = false;
+                this.clearCollider( collider );
             }
         }
 
@@ -1345,47 +1315,77 @@ class Map {
     }
 
 
-    checkTile ( poi ) {
-        const tiles = [];
+    checkTiles ( poi ) {
+        let ret = false;
+        let amount;
+        const tiles = {
+            action: [],
+            attack: [],
+            passive: [],
+        };
         const hitbox = this.hero.getHitbox( poi );
         const footbox = this.hero.getFootbox( poi );
 
         for ( let i = this.activeTiles.length; i--; ) {
+            const tile = this.activeTiles[ i ];
+            const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
+
             for ( let j = this.activeTiles[ i ].data.coords.length; j--; ) {
-                const tile = this.activeTiles[ i ];
                 const tilebox = {
                     width: this.gridsize,
                     height: this.gridsize,
                     x: tile.data.coords[ j ][ 0 ] * this.gridsize,
-                    y: tile.data.coords[ j ][ 1 ] * this.gridsize
+                    y: tile.data.coords[ j ][ 1 ] * this.gridsize,
                 };
-                const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
+                const collides = Utils.collide( lookbox, tilebox );
 
-                if ( Utils.collide( lookbox, tilebox ) ) {
-                    tiles.push({
+                if ( collides ) {
+                    // Utils.collides returns a useful collider object...
+                    const amount = collides.width * collides.height;
+                    const match = {
+                        tile,
+                        stop: (tile.data.action && stopTiles.indexOf( tile.data.action.verb ) !== -1),
+                        act: (tile.data.action && tileActs.indexOf( tile.data.action.verb ) !== -1),
+                        hit: (tile.data.attack && tileHits.indexOf( tile.data.attack.verb ) !== -1),
+                        cam: (cameraTiles.indexOf( tile.data.group ) !== -1),
                         group: tile.data.group,
                         coord: tile.data.coords[ j ],
-                    });
-                    tile.setCollider( tile.data.coords[ j ] );
+                        amount,
+                        tilebox,
+                        collides,
+                    };
 
-                } else {
-                    tile.clearCollider( tile.data.coords[ j ] );
+                    if ( tile.data.action ) {
+                        tiles.action.push( match );
+                    }
+
+                    if ( tile.data.attack ) {
+                        tiles.attack.push( match );
+                    }
+
+                    if ( (!tile.data.action && !tile.data.attack) || (tile.data.attack && match.cam) ) {
+                        tiles.passive.push( match );
+                    }
+
+                } else if ( this.gamebox.player.query.debug ) {
+                    this.clearCollider( tilebox );
                 }
             }
         }
 
-        // Only one tile, return it...
-        if ( tiles.length === 1 ) {
-            return tiles[ 0 ];
+        if ( tiles.action.length || tiles.attack.length || tiles.passive.length ) {
+            tiles.action = tiles.action.sort( tileSortFunc );
+            tiles.attack = tiles.attack.sort( tileSortFunc );
+            tiles.passive = tiles.passive.sort( tileSortFunc );
+
+            if ( this.gamebox.player.query.debug ) {
+                this.setTileColliders( tiles );
+            }
+
+            ret = tiles;
         }
 
-        // Set priority to action/attach tiles, otherwise return one tile...
-        return (tiles.find(( tile ) => {
-            const activeTiles = this.getActiveTiles( tile.group );
-
-            return (activeTiles.data.action || activeTiles.data.attack);
-
-        }) || tiles[ 0 ]);
+        return ret;
     }
 }
 

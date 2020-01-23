@@ -8,6 +8,9 @@
 
 
 * Grab accuracy for lifting objects (most collided?)
+    check amount of collision during loop and end up with the most collided...
+
+
 * Camera speed while holding a lifeted Object
 * Camera speed affects sprite cycle speed?
 * Hero sprite masking?
