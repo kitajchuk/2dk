@@ -1237,18 +1237,18 @@ class Map {
 
     drawColliders () {
         if ( this.colliders.length && this.gamebox.player.query.debug ) {
-            this.layers.background.onCanvas.context.globalAlpha = 0.5;
+            this.layers.foreground.onCanvas.context.globalAlpha = 0.5;
             this.colliders.forEach(( collider ) => {
                 // Tile overlay to signal collision
-                this.layers.background.onCanvas.context.fillStyle = Config.colors.teal;
-                this.layers.background.onCanvas.context.fillRect(
+                this.layers.foreground.onCanvas.context.fillStyle = Config.colors.teal;
+                this.layers.foreground.onCanvas.context.fillRect(
                     this.offset.x + collider.x,
                     this.offset.y + collider.y,
                     collider.width,
                     collider.height,
                 );
             });
-            this.layers.background.onCanvas.context.globalAlpha = 1.0;
+            this.layers.foreground.onCanvas.context.globalAlpha = 1.0;
         }
     }
 
