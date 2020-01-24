@@ -76,6 +76,9 @@ const Config = {
     values: {
         debounceDur: 256,
         boundaryAnimDur: 512,
+    },
+    plugins: {
+        TOPVIEW: "topview",
     }
 };
 

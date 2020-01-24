@@ -8,9 +8,10 @@
 
 
 
-* Refactor Sprites to their own file
-* Make GameBox a "plugin" based system
-* Z-Axis for sprite position (x, y, z) / use for collision checks...
+* Physics for camera movement, sprite movement
+    (x, y, z)
+    accelerators
+    z-gravity
 
 
 
@@ -24,7 +25,6 @@
 * Water sprite cycle / sound
 * Sword sprite cycle / sound / collision
 * Canvas FX layer (blast, smash, sparks, smoke, etc...?)
-* Visually center the Hero on the screen (currently centering top left corner)
 * Door events for entering and exiting interiors
 
 

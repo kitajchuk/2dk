@@ -3,7 +3,7 @@ const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const GamePad = require( "./GamePad" );
 const GameAudio = require( "./GameAudio" );
-const { TopView } = require( "./GameBox" );
+const TopView = require( "./plugins/TopView" );
 const paramalama = require( "paramalama" );
 const Controller = require( "properjs-controller" );
 
@@ -76,7 +76,11 @@ class Player {
                 this.splashLoad.innerHTML = this.getSplash( "Press Start" );
                 this.gameaudio = new GameAudio( this );
                 this.gamepad = new GamePad( this );
-                this.gamebox = new TopView( this );
+
+                if ( this.data.game.plugin === Config.plugins.TOPVIEW ) {
+                    this.gamebox = new TopView( this );
+                }
+
                 this.bind();
             });
         });
@@ -249,6 +253,7 @@ class Player {
 
         } else {
             this.pause();
+            this.stop();
         }
     }
 
