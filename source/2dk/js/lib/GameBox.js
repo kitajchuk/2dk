@@ -28,7 +28,7 @@ class GameBox {
             // tile: {
             //     group,
             //     coord,
-            //     toss?,
+            //     throw?,
             // }
             tile: null,
             push: 0,
@@ -233,8 +233,14 @@ class TopView extends GameBox {
         }
 
         if ( collision.map ) {
-            this.handleMap( poi, dir );
-            return;
+            // Tile will allow leaping from it's edge, like a ledge...
+            if ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].jump && (collision.tiles.action[ 0 ].collides.width > (collision.tiles.action[ 0 ].tilebox.width / 2) || collision.tiles.action[ 0 ].collides.height > (collision.tiles.action[ 0 ].tilebox.height / 2)) ) {
+                this.handleTileJump( poi, dir, collision.tiles.action[ 0 ] );
+
+            } else {
+                this.handleMap( poi, dir );
+                return;
+            }
         }
 
         if ( collision.box ) {
@@ -253,6 +259,7 @@ class TopView extends GameBox {
         if ( collision.tiles ) {
             this.handleTiles( poi, dir, collision.tiles );
 
+            // Tile is behaves like a WALL, or Object you cannot walk on
             if ( collision.tiles.action.length && collision.tiles.action[ 0 ].stop ) {
                 this.handleTileStop( poi, dir, collision.tiles.action[ 0 ] );
                 return;
@@ -327,11 +334,11 @@ class TopView extends GameBox {
         }
 
         if ( this.map.hero.verb === Config.verbs.LIFT ) {
-            if ( this.interact.tile.toss ) {
-                this.handleToss();
+            if ( this.interact.tile.throw ) {
+                this.handleThrow();
 
             } else {
-                this.interact.tile.toss = true;
+                this.interact.tile.throw = true;
             }
 
         } else {
@@ -437,10 +444,10 @@ class TopView extends GameBox {
     }
 
 
-    handleToss () {
+    handleThrow () {
         this.map.hero.face( this.map.hero.dir );
         this.player.gameaudio.hitSound( "throw" );
-        this.map.activeTile.toss( this.map.hero.dir ).then(() => {
+        this.map.activeTile.throw( this.map.hero.dir ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
             this.map.activeTile = null;
             this.interact.tile = null;
@@ -465,6 +472,29 @@ class TopView extends GameBox {
     handleObjAct ( poi, dir, obj ) {
         if ( obj.canInteract( dir ) ) {
             obj.doInteract( dir );
+        }
+    }
+
+
+    handleTileJump ( poi, dir, tile ) {
+        if ( dir === tile.tile.data.action.require.dir ) {
+            this.locked = true;
+
+            console.log( tile );
+
+            const vertical = (dir === "up" || dir === "down");
+            const collider = {
+                x: vertical ? tile.tilebox.x : (dir === "left" ? (tile.tilebox.x - (tile.tilebox.width * 1)) : (tile.tilebox.x + (tile.tilebox.width * 1))),
+                y: vertical ? (dir === "up" ? (tile.tilebox.y - (tile.tilebox.height * 2)) : (tile.tilebox.y + (tile.tilebox.height * 2))) : tile.tilebox.y,
+                width: tile.tilebox.width,
+                height: tile.tilebox.height,
+            };
+
+            this.map.setCollider( collider );
+
+            // Render shadow to the new landing position
+            // Animate hero to the new landing position
+            // Unlock the game...
         }
     }
 

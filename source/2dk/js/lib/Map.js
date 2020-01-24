@@ -11,11 +11,21 @@ const tileSortFunc = ( tileA, tileB ) => {
         return 1;
     }
 };
-const stopTiles = [
+const stopVerbs = [
     Config.verbs.GRAB,
     Config.verbs.MOVE,
     Config.verbs.LIFT,
 ];
+const actionVerbs = [
+    Config.verbs.LIFT,
+];
+const attackVerbs = [
+    Config.verbs.ATTACK,
+];
+
+
+
+// @see notes in ./Config.js as these are related to that line of thought...
 const footTiles = [
     Config.tiles.STAIRS,
     Config.tiles.WATER,
@@ -25,12 +35,6 @@ const footTiles = [
 const cameraTiles = [
     Config.tiles.STAIRS,
     Config.tiles.GRASS,
-];
-const tileActs = [
-    Config.verbs.LIFT,
-];
-const tileHits = [
-    Config.verbs.CUT,
 ];
 
 
@@ -332,83 +336,149 @@ class Hero extends Sprite {
 
 
 /*******************************************************************************
-* Tossable
-* Creats a throwable object out of an ActiveTile
+* Projectile
+* Creats a projectile object, even from an ActiveTile hero is carrying...
 *******************************************************************************/
-class Tossable {
-    constructor ( activeTile, dir, dist, dur ) {
+class Projectile {
+    constructor ( activeTile, dir, dur ) {
         this.activeTile = activeTile;
         this.dir = dir;
-        this.dist = dist;
         this.dur = dur;
+        this.velocity();
     }
 
 
-    getValues () {
-        const poi = {};
-        const origin = this.activeTile.position;
-
+    velocity () {
         if ( this.dir === "up" ) {
-            poi.x = this.activeTile.position.x;
-            poi.y = this.activeTile.position.y - this.dist;
+            this.vy = -2;
+            this.vx = 0;
 
         } else if ( this.dir === "down" ) {
-            poi.x = this.activeTile.position.x;
-            poi.y = this.activeTile.position.y + this.dist;
+            this.vy = 2;
+            this.vx = 0;
 
         } else if ( this.dir === "left" ) {
-            poi.x = this.activeTile.position.x - this.dist;
-            poi.y = this.activeTile.position.y + this.activeTile.map.gridsize;
+            this.vx = -2;
+            this.vy = 0;
 
         } else if ( this.dir === "right" ) {
-            poi.x = this.activeTile.position.x + this.dist;
-            poi.y = this.activeTile.position.y + this.activeTile.map.gridsize;
-        }
-
-        const angle = Utils.getAngle( this.activeTile.position, poi );
-
-        return {
-            poi,
-            angle,
-            origin,
+            this.vx = 2;
+            this.vy = 0;
         }
     }
 
 
-    update ( t ) {
-        const distance = this.dist - (this.dist - t);
-        const position = Utils.translate( this.values.origin, this.values.angle, distance );
+    accelerator () {
+        if ( this.dir === "up" ) {
+            this.vy *= 0.99;
+            this.vy -= 0.25;
 
-        this.activeTile.position = position;
+        } else if ( this.dir === "down" ) {
+            this.vy *= 0.99;
+            this.vy += 0.25;
+
+        } else if ( this.dir === "left" ) {
+            this.vx *= 0.99;
+            this.vx -= 0.25;
+
+        } else if ( this.dir === "right" ) {
+            this.vx *= 0.99;
+            this.vx += 0.25;
+        }
+    }
+
+
+    blit ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
+
+        this.activeTile.position.x += this.vx;
+        this.activeTile.position.y += this.vy;
         this.activeTile.hitbox.x = this.activeTile.position.x;
         this.activeTile.hitbox.y = this.activeTile.position.y;
+        this.accelerator();
 
-        const collision = this.activeTile.gamebox.getCollision( position, this.activeTile );
+        const diff = (elapsed - this.previousElapsed);
+        const collision = this.activeTile.gamebox.getCollision( this.activeTile.position, this.activeTile );
 
         if ( collision.map || collision.obj || collision.box ) {
-            this.tween.stop();
             this.activeTile.destroy();
             this.resolve();
         }
+
+        // if ( diff >= this.dur ) {
+        //     this.activeTile.destroy();
+        //     this.resolve();
+        // }
     }
 
 
-    toss () {
+    // getValues () {
+    //     const poi = {};
+    //     const origin = this.activeTile.position;
+    //
+    //     if ( this.dir === "up" ) {
+    //         poi.x = this.activeTile.position.x;
+    //         poi.y = this.activeTile.position.y - this.dist;
+    //
+    //     } else if ( this.dir === "down" ) {
+    //         poi.x = this.activeTile.position.x;
+    //         poi.y = this.activeTile.position.y + this.dist;
+    //
+    //     } else if ( this.dir === "left" ) {
+    //         poi.x = this.activeTile.position.x - this.dist;
+    //         poi.y = this.activeTile.position.y + this.activeTile.map.gridsize;
+    //
+    //     } else if ( this.dir === "right" ) {
+    //         poi.x = this.activeTile.position.x + this.dist;
+    //         poi.y = this.activeTile.position.y + this.activeTile.map.gridsize;
+    //     }
+    //
+    //     const angle = Utils.getAngle( this.activeTile.position, poi );
+    //
+    //     return {
+    //         poi,
+    //         angle,
+    //         origin,
+    //     }
+    // }
+
+
+    // update ( t ) {
+    //     const distance = this.dist - (this.dist - t);
+    //     const position = Utils.translate( this.values.origin, this.values.angle, distance );
+    //
+    //     this.activeTile.position = position;
+    //     this.activeTile.hitbox.x = this.activeTile.position.x;
+    //     this.activeTile.hitbox.y = this.activeTile.position.y;
+    //
+    //     const collision = this.activeTile.gamebox.getCollision( position, this.activeTile );
+    //
+    //     if ( collision.map || collision.obj || collision.box ) {
+    //         this.tween.stop();
+    //         this.activeTile.destroy();
+    //         this.resolve();
+    //     }
+    // }
+
+
+    fire () {
         return new Promise(( resolve ) => {
             this.resolve = resolve;
-            this.values = this.getValues();
-            this.tween = new Tween({
-                ease: Easing.swing,
-                duration: this.dur,
-                from: 0,
-                to: this.dist,
-                update: this.update.bind( this ),
-                complete: ( t ) => {
-                    this.update( t );
-                    this.activeTile.destroy();
-                    this.resolve();
-                },
-            });
+            // this.values = this.getValues();
+            // this.tween = new Tween({
+            //     ease: Easing.swing,
+            //     duration: this.dur,
+            //     from: 0,
+            //     to: this.dist,
+            //     update: this.update.bind( this ),
+            //     complete: ( t ) => {
+            //         this.update( t );
+            //         this.activeTile.destroy();
+            //         this.resolve();
+            //     },
+            // });
         });
     }
 }
@@ -425,7 +495,6 @@ class ActiveTile {
         this.map = this.activeTiles.map;
         this.gamebox = this.activeTiles.map.gamebox;
         this.tilecel = this.activeTiles.getTile();
-        this.projectile = false;
         this.width = this.map.gridsize;
         this.height = this.map.gridsize;
         this.position = {
@@ -442,7 +511,10 @@ class ActiveTile {
 
 
     blit ( elapsed ) {
-        if ( !this.projectile ) {
+        if ( this.projectile ) {
+            this.projectile.blit( elapsed );
+
+        } else {
             this.position = {
                 x: this.map.hero.position.x + (this.map.hero.width / 2) - (this.map.gridsize / 2),
                 y: this.map.hero.position.y - (this.map.gridsize / 8),
@@ -469,10 +541,9 @@ class ActiveTile {
     }
 
 
-    toss ( dir ) {
-        this.projectile = true;
-        this.tossable = new Tossable( this, dir, (this.gamebox.map.gridsize * 3), (this.gamebox.map.gridsize * 6) );
-        return this.tossable.toss();
+    throw ( dir ) {
+        this.projectile = new Projectile( this, dir, -1 );
+        return this.projectile.fire();
     }
 
 
@@ -482,7 +553,7 @@ class ActiveTile {
 
 
     destroy () {
-        this.tossable = null;
+        this.projectile = null;
         this.map.smokeObject( this );
     }
 }
@@ -1350,9 +1421,10 @@ class Map {
                     const amount = collides.width * collides.height;
                     const match = {
                         tile,
-                        stop: (tile.data.action && stopTiles.indexOf( tile.data.action.verb ) !== -1),
-                        act: (tile.data.action && tileActs.indexOf( tile.data.action.verb ) !== -1),
-                        hit: (tile.data.attack && tileHits.indexOf( tile.data.attack.verb ) !== -1),
+                        jump: (tile.data.action && tile.data.action.verb === Config.verbs.JUMP),
+                        stop: (tile.data.action && stopVerbs.indexOf( tile.data.action.verb ) !== -1),
+                        act: (tile.data.action && actionVerbs.indexOf( tile.data.action.verb ) !== -1),
+                        hit: (tile.data.attack && attackVerbs.indexOf( tile.data.attack.verb ) !== -1),
                         cam: (cameraTiles.indexOf( tile.data.group ) !== -1),
                         group: tile.data.group,
                         coord: tile.data.coords[ j ],

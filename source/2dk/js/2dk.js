@@ -2,12 +2,14 @@
 * 2dk Dev Notes
 ********************************************************************************
 
+* Bug: Release A while activating lift and an error is thrown...
 * Bug: push up cycle for hero
 * Bug: walk cycle gets locked (switch map with activeTile lifed)
 
 
 
-* Tossable colliders (z-axis issue?)
+* Refactor Sprites to their own file
+* Make GameBox a "plugin" based system
 * Z-Axis for sprite position (x, y, z) / use for collision checks...
 
 

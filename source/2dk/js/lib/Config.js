@@ -1,4 +1,35 @@
 const Config = {
+    // VERBS and TILES:
+    // These alone sort of "break" the idea of the "anybody's game".
+    // These imply that you would be given a preset of "verbs" and "tiles"
+    // to choose from when adding ActiveTiles groups to a map.
+    // I think the verbs have to stay here since they are so specific...
+    // But I think the tiles and their associative FX and Triggers could
+    // be moved to the game.json config. This way the game creator defines
+    // the TILES presets and associates them to VERBS on maps.
+    verbs: {
+        PUSH: "push",
+        PULL: "pull",
+        GRAB: "grab",
+        MOVE: "move",
+        LIFT: "lift",
+        OPEN: "open",
+        WALK: "walk",
+        FACE: "face",
+        SWIM: "swim",
+        JUMP: "jump",
+        FALL: "fall",
+        THROW: "THROW",
+        ATTACK: "attack",
+    },
+    tiles: {
+        HOLE: "hole",
+        GRASS: "grass",
+        WATER: "water",
+        LEDGE: "ledge",
+        STAIRS: "stairs",
+        SWITCH: "switch",
+    },
     keys: {
         A: 88,
         B: 90,
@@ -14,32 +45,11 @@ const Config = {
         DOWNLEFT: 333,
         DOWNRIGHT: 444,
     },
-    verbs: {
-        CUT: "cut",
-        PUSH: "push",
-        PULL: "pull",
-        GRAB: "grab",
-        MOVE: "move",
-        LIFT: "lift",
-        OPEN: "open",
-        WALK: "walk",
-        FACE: "face",
-        TOSS: "toss",
-        SWIM: "swim",
-    },
     events: {
         DOOR: "door",
         WARP: "warp",
         BOUNDARY: "boundary",
         CUTSCENE: "cutscene",
-    },
-    tiles: {
-        HOLE: "hole",
-        GRASS: "grass",
-        WATER: "water",
-        LEDGE: "ledge",
-        STAIRS: "stairs",
-        SWITCH: "switch",
     },
     opposites: {
         y: "x",

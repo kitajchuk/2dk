@@ -44,9 +44,7 @@
             "offsetX": 64,
             "offsetY": 2176,
             "attack": {
-                "verb": "cut",
-                "require": {},
-                "payload": {}
+                "verb": "cut"
             }
         },
         {
@@ -63,9 +61,7 @@
             "offsetX": 192,
             "offsetY": 640,
             "action": {
-                "verb": "lift",
-                "require": {},
-                "payload": {}
+                "verb": "lift"
             }
         },
         {
@@ -75,14 +71,10 @@
             "offsetX": 0,
             "offsetY": 512,
             "action": {
-                "verb": "lift",
-                "require": {},
-                "payload": {}
+                "verb": "lift"
             },
             "attack": {
-                "verb": "cut",
-                "require": {},
-                "payload": {}
+                "verb": "cut"
             }
         }
     ],
