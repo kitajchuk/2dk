@@ -24,10 +24,24 @@ class Sprite {
         this.position = {
             x: this.data.spawn.x / this.scale,
             y: this.data.spawn.y / this.scale,
+            z: 0,
         };
+        // Hero offset is unique to camera
+        // NPCs offset will simply be set to the NPCs position...
         this.offset = {
             x: 0,
             y: 0,
+        };
+        this.physics = {
+            accx: 0,
+            accy: 0,
+            accz: 0,
+            maxacc: 4 / this.scale,
+            controlmaxacc: 4 / this.scale,
+        };
+        this.idle = {
+            x: true,
+            y: true,
         };
         this.hitbox = {
             x: this.position.x + (this.data.hitbox.x / this.scale),
@@ -42,8 +56,6 @@ class Sprite {
             height: this.hitbox.height / 2,
         };
         this.spritecel = this.getCel();
-        this.moving = false;
-        this.moveTimer = null;
     }
 
 
@@ -52,11 +64,17 @@ class Sprite {
             this.previousElapsed = elapsed;
         }
 
+        // Set frame and sprite rendering cel
+        this.setFrame( elapsed );
+    }
+
+
+    setFrame( elapsed ) {
         this.frame = 0;
 
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
-            if ( this.verb === Config.verbs.LIFT && !this.moving ) {
-                // console.log( "static lift..." );
+            if ( this.verb === Config.verbs.LIFT && (this.idle.x && this.idle.y) ) {
+                console.log( "static lift..." );
 
             } else {
                 const diff = (elapsed - this.previousElapsed);
@@ -96,7 +114,7 @@ class Sprite {
             this.data.width,
             this.data.height,
             this.offset.x,
-            this.offset.y,
+            this.offset.y + this.position.z,
             this.width,
             this.height,
         );
@@ -104,9 +122,9 @@ class Sprite {
         // Debug rendering...
         if ( this.gamebox.player.query.debug ) {
             this.map.layers.background.onCanvas.context.globalAlpha = 0.5;
+            this.map.layers.background.onCanvas.context.fillStyle = Config.colors.red;
 
             // Hitbox
-            this.map.layers.background.onCanvas.context.fillStyle = Config.colors.red;
             this.map.layers.background.onCanvas.context.fillRect(
                 this.offset.x + (this.data.hitbox.x / this.scale),
                 this.offset.y + (this.data.hitbox.y / this.scale),
@@ -115,7 +133,6 @@ class Sprite {
             );
 
             // Footbox
-            this.map.layers.background.onCanvas.context.fillStyle = Config.colors.black;
             this.map.layers.background.onCanvas.context.fillRect(
                 this.offset.x + (this.data.hitbox.x / this.scale),
                 this.offset.y + (this.data.hitbox.y / this.scale) + (this.hitbox.height / 2),
@@ -184,27 +201,102 @@ class Hero extends Sprite {
     }
 
 
-    update ( poi, offset ) {
-        this.position = poi;
+    update () {
+        // Soft pause only affects Hero updates and NPCs
+        // Hard stop will affect the entire blit/render engine...
+        // if ( this.gamebox.player.paused ) {
+        //     return;
+        // }
+
+        // Handle player controls
+        this.handleControls();
+
+        // Handle accelerations
+        this.handleAccellerations();
+
+        // Handle z gravity
+        this.handleGravity();
+        this.applyGravity();
+    }
+
+
+    getNextX () {
+        return this.position.x + Utils.limit( this.physics.accx, -this.physics.maxacc, this.physics.maxacc );
+    }
+
+
+    getNextY () {
+        return this.position.y + Utils.limit( this.physics.accy, -this.physics.maxacc, this.physics.maxacc );
+    }
+
+
+    getNextZ () {
+        return this.position.z + Utils.limit( this.physics.accz, -this.physics.maxacc, this.physics.maxacc );
+    }
+
+
+    // getNextPoi () {
+    //     return {
+    //         x: this.getNextX(),
+    //         y: this.getNextY(),
+    //         z: this.getNextZ(),
+    //     }
+    // }
+
+
+    getNextPoiByDir ( dir, ahead ) {
+        if ( ahead && dir === "left" ) {
+            this.physics.accx = -this.physics.maxacc;
+        }
+
+        if ( ahead && dir === "right" ) {
+            this.physics.accx = this.physics.maxacc;
+        }
+
+        if ( ahead && dir === "up" ) {
+            this.physics.accy = -this.physics.maxacc;
+        }
+
+        if ( ahead && dir === "down" ) {
+            this.physics.accy = this.physics.maxacc;
+        }
+
+        return {
+            x: (dir === "left" || dir === "right") ? this.getNextX() : this.position.x,
+            y: (dir === "up" || dir === "down") ? this.getNextY() : this.position.y,
+            z: this.position.z,
+        }
+    }
+
+
+/*******************************************************************************
+* Condition Appliers
+*******************************************************************************/
+    applyPosition ( poi, dir ) {
+        this.dir = dir;
+        this.position.x = poi.x;
+        this.position.y = poi.y;
+    }
+
+
+    applyGravity () {
+        this.position.z = this.getNextZ();
+
+        if ( this.position.z > 0 ) {
+            this.position.z = 0;
+        }
+    }
+
+
+    applyOffset () {
         this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
         this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
         this.footbox.x = this.hitbox.x;
         this.footbox.y = this.hitbox.y + (this.hitbox.height / 2);
 
-        clearTimeout( this.moveTimer );
-
-        this.moving = true;
-        // console.log( "Hero is moving" );
-
-        this.moveTimer = setTimeout(() => {
-            this.moving = false;
-            // console.log( "Hero is idle" );
-
-        }, Config.values.debounceDur );
-
         const absolute = {
-            x: Math.abs( offset.x ),
-            y: Math.abs( offset.y ),
+            x: Math.abs( this.map.offset.x ),
+            y: Math.abs( this.map.offset.y ),
         };
 
         this.offset = {
@@ -214,21 +306,77 @@ class Hero extends Sprite {
 
         if ( absolute.x <= 0 ) {
             // this.offset.x = Math.max( 0, poi.x );
-            this.offset.x = poi.x;
+            this.offset.x = this.position.x;
         }
 
-        if ( absolute.x >= (this.gamebox.map.width - this.gamebox.camera.width) ) {
-            this.offset.x = poi.x + offset.x;
+        if ( absolute.x >= (this.map.width - this.gamebox.camera.width) ) {
+            this.offset.x = this.position.x + this.map.offset.x;
         }
 
         if ( absolute.y <= 0 ) {
             // this.offset.y = Math.max( 0, poi.y );
-            this.offset.y = poi.y
+            this.offset.y = this.position.y;
         }
 
-        if ( absolute.y >= (this.gamebox.map.height - this.gamebox.camera.height) ) {
-            this.offset.y = poi.y + offset.y;
+        if ( absolute.y >= (this.map.height - this.gamebox.camera.height) ) {
+            this.offset.y = this.position.y + this.map.offset.y;
         }
+    }
+
+
+    applyCycle () {
+        if ( this.verb !== Config.verbs.LIFT ) {
+            this.cycle( Config.verbs.WALK, this.dir );
+
+        } else {
+            this.cycle( this.verb, this.dir );
+        }
+    }
+
+
+/*******************************************************************************
+* Condition Handlers
+*******************************************************************************/
+    handleControls () {
+        if ( this.gamebox.player.controls.left ) {
+            this.physics.accx = Utils.limit( this.physics.accx - 1, -this.physics.controlmaxacc, this.physics.controlmaxacc );
+            this.idle.x = false;
+
+        } else if ( this.gamebox.player.controls.right ) {
+            this.physics.accx = Utils.limit( this.physics.accx + 1, -this.physics.controlmaxacc, this.physics.controlmaxacc );
+            this.idle.x = false;
+
+        } else {
+            this.idle.x = true;
+        }
+
+        if ( this.gamebox.player.controls.up ) {
+            this.physics.accy = Utils.limit( this.physics.accy - 1, -this.physics.controlmaxacc, this.physics.controlmaxacc );
+            this.idle.y = false;
+
+        } else if ( this.gamebox.player.controls.down ) {
+            this.physics.accy = Utils.limit( this.physics.accy + 1, -this.physics.controlmaxacc, this.physics.controlmaxacc );
+            this.idle.y = false;
+
+        } else {
+            this.idle.y = true;
+        }
+    }
+
+
+    handleAccellerations () {
+        if ( this.idle.x ) {
+            this.physics.accx = Utils.goToZero( this.physics.accx );
+        }
+
+        if ( this.idle.y ) {
+            this.physics.accy = Utils.goToZero( this.physics.accy );
+        }
+    }
+
+
+    handleGravity () {
+        this.physics.accz++;
     }
 }
 

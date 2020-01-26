@@ -20,6 +20,10 @@ class Player {
             aHold: false,
             b: false,
             bHold: false,
+            left: false,
+            right: false,
+            up: false,
+            down: false,
         };
         this.query = paramalama( window.location.search );
         this.gamecycle = new Controller();
@@ -147,6 +151,18 @@ class Player {
         // Game cycle (requestAnimationFrame)
         this.gamecycle.go( this.onGameBlit.bind( this ) );
 
+        // Standard 4 point d-pad (action)
+        this.gamepad.on( "left-press", this.onDpadPress.bind( this ) );
+        this.gamepad.on( "right-press", this.onDpadPress.bind( this ) );
+        this.gamepad.on( "up-press", this.onDpadPress.bind( this ) );
+        this.gamepad.on( "down-press", this.onDpadPress.bind( this ) );
+
+        // Standard 4 point d-pad (cancel)
+        this.gamepad.on( "left-release", this.onDpadRelease.bind( this ) );
+        this.gamepad.on( "right-release", this.onDpadRelease.bind( this ) );
+        this.gamepad.on( "up-release", this.onDpadRelease.bind( this ) );
+        this.gamepad.on( "down-release", this.onDpadRelease.bind( this ) );
+
         // Start button (pause)
         this.gamepad.on( "start-press", this.onPressStart.bind( this ) );
 
@@ -191,15 +207,11 @@ class Player {
 
 
     onGameBlit ( elapsed ) {
-        let delta = (elapsed - this.previousElapsed) / 1000.0;
-        let step;
-
-        delta = Math.min( delta, 0.25 ); // maximum delta of 250ms
         this.previousElapsed = elapsed;
 
         // Rendering happens if NOT stopped
         if ( !this.stopped ) {
-            this.gamebox.render( elapsed );
+            this.gamebox.blit( elapsed );
         }
 
         // Game Buttons happen if NOT paused
@@ -214,29 +226,25 @@ class Player {
             } else {
                 dpad.forEach(( ctrl ) => {
                     ctrl.dpad.forEach(( dir ) => {
-                        step = this.gamebox.getStep( dir );
-
-                        this.gamebox.pressD( dir, delta, step.x, step.y );
+                        this.gamebox.pressD( dir );
                     });
                 });
             }
 
-            step = this.gamebox.getStep( this.gamebox.map.hero.dir );
-
             // Action buttons
             // Easier to have the player use event handlers and check controls...
             if ( this.controls.aHold ) {
-                this.gamebox.holdA( this.gamebox.map.hero.dir, delta, step.x, step.y );
+                this.gamebox.holdA();
 
             } else if ( this.controls.a ) {
-                this.gamebox.pressA( this.gamebox.map.hero.dir, delta, step.x, step.y );
+                this.gamebox.pressA();
             }
 
             if ( this.controls.bHold ) {
-                this.gamebox.holdB( this.gamebox.map.hero.dir, delta, step.x, step.y );
+                this.gamebox.holdB();
 
             } else if ( this.controls.b ) {
-                this.gamebox.pressB( this.gamebox.map.hero.dir, delta, step.x, step.y );
+                this.gamebox.pressB();
             }
         }
     }
@@ -255,6 +263,16 @@ class Player {
             this.pause();
             this.stop();
         }
+    }
+
+
+    onDpadPress ( dir ) {
+        this.controls[ dir ] = true;
+    }
+
+
+    onDpadRelease ( dir ) {
+        this.controls[ dir ] = false;
     }
 
 

@@ -242,14 +242,12 @@ class ActiveTiles {
 
     attack ( coords ) {
         this.splice( coords );
-        // this.map.smokeObject({
-        //     position: {
-        //         x: coords[ 0 ] * this.map.gridsize,
-        //         y: coords[ 1 ] * this.map.gridsize,
-        //     },
-        //     width: this.map.gridsize,
-        //     height: this.map.gridsize,
-        // });
+        this.map.clearCollider({
+            x: coords[ 0 ] * this.map.gridsize,
+            y: coords[ 1 ] * this.map.gridsize,
+            width: this.map.gridsize,
+            height: this.map.gridsize,
+        });
     }
 
 
@@ -551,16 +549,7 @@ class Map {
 /*******************************************************************************
 * Rendering
 *******************************************************************************/
-    update ( poi, offset ) {
-        this.poi = poi;
-        this.offset = offset;
-        this.hero.update( this.poi, this.offset );
-    }
-
-
-    render ( elapsed, camera ) {
-        this.clear();
-
+    blit ( elapsed ) {
         this.activeTiles.forEach(( activeTiles ) => {
             activeTiles.blit( elapsed );
         });
@@ -573,15 +562,21 @@ class Map {
             this.activeTile.blit( elapsed );
         }
 
-        if ( this.hero ) {
-            this.hero.blit( elapsed );
-        }
-
         this.activeFX.forEach(( activeFx ) => {
             activeFx.blit( elapsed );
         });
+    }
 
-        this.renderBox = this.getRenderbox( elapsed, camera );
+
+    update ( offset ) {
+        this.offset = offset;
+    }
+
+
+    render ( camera ) {
+        this.clear();
+
+        this.renderBox = this.getRenderbox( camera );
 
         for ( let id in this.layers ) {
             // Draw textures to background / foreground
@@ -641,7 +636,7 @@ class Map {
     }
 
 
-    getRenderbox ( elapsed, camera ) {
+    getRenderbox ( camera ) {
         const renderBox = {
             x: Math.floor( camera.x / this.gridsize ) - 1,
             y: Math.floor( camera.y / this.gridsize ) - 1,
@@ -651,14 +646,14 @@ class Map {
             textures: {},
         };
 
-        renderBox.bleed = this.getBleed( renderBox, elapsed, camera );
-        renderBox.textures = this.getTextures( renderBox, elapsed, camera );
+        renderBox.bleed = this.getBleed( renderBox, camera );
+        renderBox.textures = this.getTextures( renderBox, camera );
 
         return renderBox;
     }
 
 
-    getBleed ( renderBox, elapsed, camera ) {
+    getBleed ( renderBox, camera ) {
         return {
             x: -(camera.x - (renderBox.x * this.gridsize)),
             y: -(camera.y - (renderBox.y * this.gridsize)),
@@ -666,7 +661,7 @@ class Map {
     }
 
 
-    getTextures ( renderBox, elapsed, camera ) {
+    getTextures ( renderBox, camera ) {
         let ret = {};
 
         for ( let id in this.data.textures ) {

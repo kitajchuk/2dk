@@ -89,7 +89,7 @@
             "offsetX": 64,
             "offsetY": 2176,
             "attack": {
-                "verb": "cut"
+                "verb": "attack"
             }
         },
         {
@@ -119,7 +119,7 @@
                 "verb": "lift"
             },
             "attack": {
-                "verb": "cut"
+                "verb": "attack"
             }
         }
     ],

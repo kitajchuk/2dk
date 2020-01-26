@@ -2,16 +2,17 @@
 * 2dk Dev Notes
 ********************************************************************************
 
+
+
+* Figure out collision/responsiveness with physics system
+    Need to unset pushes counter in the correct place...
+* Figure out interactions with physics system
+
+
+
 * Bug: Release A while activating lift and an error is thrown...
 * Bug: push up cycle for hero
 * Bug: walk cycle gets locked (switch map with activeTile lifed)
-
-
-
-* Physics for camera movement, sprite movement
-    (x, y, z)
-    accelerators
-    z-gravity
 
 
 
