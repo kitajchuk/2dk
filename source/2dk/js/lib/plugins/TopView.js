@@ -33,36 +33,44 @@ class TopView extends GameBox {
 
 /*******************************************************************************
 * Rendering
+* Order is: blit, update, render
 *******************************************************************************/
     blit ( elapsed ) {
-        // blit hero
-        this.map.hero.blit( elapsed );
-
-        // NPC blits...?
-
         // blit map
+        // blits hero & companion...
         this.map.blit( elapsed );
+
+        // blit map_?
+        if ( this.map_ ) {
+            // blits hero_
+            this.map_.blit( elapsed );
+        }
 
         // update hero
         this.map.hero.update();
 
         // update gamebox (camera)
-        this.update( this.map.hero.position );
+        this.update();
 
-        // render map (currently all canvas rendering happens here...)
+        // update map
+        this.map.update();
+
+        // render map
+        // renders hero
+        // currently all canvas rendering happens here...
         this.map.render( this.camera );
 
-        // render map switching?
+        // render map_?
         if ( this.map_ ) {
-            this.map_.hero.blit( elapsed );
+            // renders hero_
             this.map_.render( this.cam_ );
         }
     }
 
 
     update ( pos ) {
-        const x = ( pos.x - ((this.camera.width / 2) - (this.map.hero.width / 2)) );
-        const y = ( pos.y - ((this.camera.height / 2) - (this.map.hero.height / 2)) );
+        const x = ( this.map.hero.position.x - ((this.camera.width / 2) - (this.map.hero.width / 2)) );
+        const y = ( this.map.hero.position.y - ((this.camera.height / 2) - (this.map.hero.height / 2)) );
         const offset = {};
 
         if ( x >= 0 && x <= (this.map.width - this.camera.width) ) {
@@ -90,7 +98,6 @@ class TopView extends GameBox {
         }
 
         this.offset = offset;
-        this.map.offset = offset;
         this.camera.x = Math.abs( offset.x );
         this.camera.y = Math.abs( offset.y );
     }
@@ -318,8 +325,38 @@ class TopView extends GameBox {
         this.locked = true;
         this.map.hero.cycle( Config.verbs.PULL, dir );
         setTimeout(() => {
+            const activeTiles = this.map.getActiveTiles( this.interact.tile.group );
+            const tileCel = activeTiles.getTile();
+
             this.player.gameaudio.hitSound( "pickup" );
-            this.map.setActiveTile( this.interact.tile.group, this.interact.tile.coord );
+            this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
+            this.interact.tile.companion = this.map.hero.addCompanion({
+                companion: "activetile",
+                float: true,
+                width: this.map.gridsize,
+                height: this.map.gridsize,
+                spawn: {
+                    x: 0,
+                    y: 0,
+                    z: -(this.map.hero.height - (this.map.gridsize * 0.75)),
+                    dir: "down",
+                },
+                image: this.map.data.image,
+                hitbox: {
+                    x: 0,
+                    y: 0,
+                    width: this.map.gridsize,
+                    height: this.map.gridsize,
+                },
+                verbs: {
+                    face: {
+                        down: {
+                            offsetX: tileCel[ 0 ],
+                            offsetY: tileCel[ 1 ],
+                        }
+                    }
+                },
+            });
             this.map.hero.cycle( Config.verbs.LIFT, this.map.hero.dir );
             this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc / 2;
             this.locked = false;
@@ -332,9 +369,8 @@ class TopView extends GameBox {
         this.map.hero.face( this.map.hero.dir );
         this.player.gameaudio.hitSound( "throw" );
         this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc;
-        this.map.activeTile.throw( this.map.hero.dir ).then(() => {
+        this.map.hero.throwCompanion( this.interact.tile.companion ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
-            this.map.activeTile = null;
             this.interact.tile = null;
         });
     }

@@ -15,6 +15,7 @@
         "spawn": {
             "x": 1216,
             "y": 1408,
+            "z": 0,
             "dir": "down",
             "map": "/games/la/maps/mabe-village.json"
         },

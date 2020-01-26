@@ -15,22 +15,27 @@ class Sprite {
         this.data = data;
         this.map = map;
         this.gamebox = this.map.gamebox;
-        this.scale = this.gamebox.player.data.game.resolution;
+        this.scale = this.gamebox.camera.resolution;
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
         this.dir = this.data.spawn.dir;
         this.verb = Config.verbs.FACE;
         this.image = Loader.cash( this.data.image );
+        this.float = this.data.float || false;
         this.position = {
             x: this.data.spawn.x / this.scale,
             y: this.data.spawn.y / this.scale,
-            z: 0,
+            z: this.data.spawn.z / this.scale,
         };
-        // Hero offset is unique to camera
-        // NPCs offset will simply be set to the NPCs position...
+        // Hero offset is based on camera.
+        // NPCs offset snaps to position.
         this.offset = {
             x: 0,
             y: 0,
+        };
+        this.idle = {
+            x: true,
+            y: true,
         };
         this.physics = {
             accx: 0,
@@ -38,10 +43,6 @@ class Sprite {
             accz: 0,
             maxacc: 5 / this.scale,
             controlmaxacc: 5 / this.scale,
-        };
-        this.idle = {
-            x: true,
-            y: true,
         };
         this.hitbox = {
             x: this.position.x + (this.data.hitbox.x / this.scale),
@@ -56,39 +57,59 @@ class Sprite {
             height: this.hitbox.height / 2,
         };
         this.spritecel = this.getCel();
+        this.companions = [];
     }
 
 
+    destroy () {
+        this.data = null;
+
+        if ( this.companion ) {
+            this.companion.destroy();
+            this.companion = null;
+        }
+    }
+
+
+
+/*******************************************************************************
+* Rendering
+* Order is: blit, update, render
+* Update is overridden for Sprite subclasses with different behaviors
+* Default behavior for a Sprite is to be static but with Physics forces
+*******************************************************************************/
     blit ( elapsed ) {
         if ( typeof this.previousElapsed === "undefined" ) {
             this.previousElapsed = elapsed;
         }
 
         // Set frame and sprite rendering cel
-        this.setFrame( elapsed );
+        this.applyFrame( elapsed );
+
+        // Companions
+        if ( this.companions.length ) {
+            this.companions.forEach(( companion ) => {
+                companion.blit( elapsed );
+            });
+        }
     }
 
 
-    setFrame( elapsed ) {
-        this.frame = 0;
+    update () {
+        // The physics stack...
+        this.handleAccellerations();
+        this.handleGravity();
+        this.applyPosition();
+        this.applyHitbox();
+        this.applyOffset();
+        this.applyGravity();
 
-        if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
-            if ( this.verb === Config.verbs.LIFT && (this.idle.x && this.idle.y) ) {
-                console.log( "static lift..." );
-
-            } else {
-                const diff = (elapsed - this.previousElapsed);
-
-                this.frame = Math.floor( (diff / this.data.verbs[ this.verb ].dur) * this.data.verbs[ this.verb ][ this.dir ].stepsX );
-
-                if ( diff >= this.data.verbs[ this.verb ].dur ) {
-                    this.previousElapsed = elapsed;
-                    this.frame = this.data.verbs[ this.verb ][ this.dir ].stepsX - 1;
-                }
-            }
+        // Companions
+        if ( this.companions.length ) {
+            this.companions.forEach(( companion ) => {
+                companion.update();
+            });
         }
-
-        this.spritecel = this.getCel();
     }
 
 
@@ -119,6 +140,13 @@ class Sprite {
             this.height,
         );
 
+        // Companions
+        if ( this.companions.length ) {
+            this.companions.forEach(( companion ) => {
+                companion.render();
+            });
+        }
+
         // Debug rendering...
         if ( this.gamebox.player.query.debug ) {
             this.map.layers.background.onCanvas.context.globalAlpha = 0.5;
@@ -145,14 +173,6 @@ class Sprite {
     }
 
 
-    getCel () {
-        return [
-            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetX ) + (this.data.width * this.frame),
-            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetY ),
-        ];
-    }
-
-
     cycle ( verb, dir ) {
         this.dir = dir;
         this.verb = verb;
@@ -164,95 +184,94 @@ class Sprite {
     }
 
 
-    getHitbox ( poi ) {
-        return {
-            x: poi.x + (this.data.hitbox.x / this.scale),
-            y: poi.y + (this.data.hitbox.y / this.scale),
-            width: this.hitbox.width,
-            height: this.hitbox.height,
-        };
+
+/*******************************************************************************
+* Handlers
+*******************************************************************************/
+    handleAccellerations () {
+        if ( this.idle.x ) {
+            this.physics.accx = Utils.goToZero( this.physics.accx );
+        }
+
+        if ( this.idle.y ) {
+            this.physics.accy = Utils.goToZero( this.physics.accy );
+        }
     }
 
 
-    getFootbox ( poi ) {
-        return {
-            x: poi.x + (this.data.hitbox.x / this.scale),
-            y: poi.y + ((this.data.hitbox.y / this.scale) + (this.hitbox.height / 2)),
-            width: this.footbox.width,
-            height: this.footbox.height,
-        };
+    handleGravity () {
+        this.physics.accz++;
     }
-
-
-    destroy () {
-        this.data = null;
-    }
-}
-
 
 
 /*******************************************************************************
-* Hero
-* There can be only one per Map
+* Applications
 *******************************************************************************/
-class Hero extends Sprite {
-    constructor ( data, gamebox ) {
-        super( data, gamebox );
+    applyPosition () {
+        this.position = this.getNextPoi();
     }
 
 
-    update () {
-        // Handle player controls
-        this.handleControls();
+    applyHitbox () {
+        this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
+        this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
+        this.footbox.x = this.hitbox.x;
+        this.footbox.y = this.hitbox.y + (this.hitbox.height / 2);
+    }
 
-        // Handle accelerations
-        this.handleAccellerations();
 
-        // Handle z gravity
-        this.handleGravity();
-        this.applyGravity();
+    applyOffset () {
+        this.offset = {
+            x: this.map.offset.x + this.position.x,
+            y: this.map.offset.y + this.position.y,
+        };
+    }
 
-        // Somthing like this...
 
-        // Decouple collision...
-        // Possibly use a Promise...
-        // If NOT dpad.length, get POI all dirs and allow accelerations...
+    applyGravity () {
+        if ( this.float ) {
+            return;
+        }
 
-        // Soft pause only affects Hero updates and NPCs
-        // Hard stop will affect the entire blit/render engine...
-        if ( !this.gamebox.player.paused ) {
-            // D-Pad movement
-            // Easier to check the gamepad than have player use event handlers...
-            const dpad = this.gamebox.player.gamepad.checkDpad();
+        this.position.z = this.getNextZ();
 
-            if ( !dpad.length ) {
-                this.gamebox.releaseD();
-                this.gamebox.handleCollision( this.getNextPoi(), this.dir );
+        if ( this.position.z > 0 ) {
+            this.position.z = 0;
+        }
+    }
+
+
+    applyFrame( elapsed ) {
+        this.frame = 0;
+
+        if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
+            if ( this.verb === Config.verbs.LIFT && (this.idle.x && this.idle.y) ) {
+                // console.log( "static lift..." );
 
             } else {
-                dpad.forEach(( ctrl ) => {
-                    ctrl.dpad.forEach(( dir ) => {
-                        this.gamebox.pressD( dir );
-                    });
-                });
-            }
+                const diff = (elapsed - this.previousElapsed);
 
-            // Action buttons
-            // Easier to have the player use event handlers and check controls...
-            if ( this.gamebox.player.controls.aHold ) {
-                this.gamebox.holdA();
+                this.frame = Math.floor( (diff / this.data.verbs[ this.verb ].dur) * this.data.verbs[ this.verb ][ this.dir ].stepsX );
 
-            } else if ( this.gamebox.player.controls.a ) {
-                this.gamebox.pressA();
-            }
-
-            if ( this.gamebox.player.controls.bHold ) {
-                this.gamebox.holdB();
-
-            } else if ( this.gamebox.player.controls.b ) {
-                this.gamebox.pressB();
+                if ( diff >= this.data.verbs[ this.verb ].dur ) {
+                    this.previousElapsed = elapsed;
+                    this.frame = this.data.verbs[ this.verb ][ this.dir ].stepsX - 1;
+                }
             }
         }
+
+        this.spritecel = this.getCel();
+    }
+
+
+/*******************************************************************************
+* Getters
+*******************************************************************************/
+    getCel () {
+        return [
+            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetX ) + (this.data.width * this.frame),
+            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetY ),
+        ];
     }
 
 
@@ -309,31 +328,213 @@ class Hero extends Sprite {
     }
 
 
+    getHitbox ( poi ) {
+        return {
+            x: poi.x + (this.data.hitbox.x / this.scale),
+            y: poi.y + (this.data.hitbox.y / this.scale),
+            width: this.hitbox.width,
+            height: this.hitbox.height,
+        };
+    }
+
+
+    getFootbox ( poi ) {
+        return {
+            x: poi.x + (this.data.hitbox.x / this.scale),
+            y: poi.y + ((this.data.hitbox.y / this.scale) + (this.hitbox.height / 2)),
+            width: this.footbox.width,
+            height: this.footbox.height,
+        };
+    }
+}
+
+
+
 /*******************************************************************************
-* Condition Appliers
+* Companion Sprite
+* Have different behaviors for being "anchored" to a Hero
+*******************************************************************************/
+class Companion extends Sprite {
+    constructor ( data, hero ) {
+        super( data, hero.map );
+        this.hero = hero;
+    }
+
+
+/*******************************************************************************
+* Rendering
+* Order is: blit, update, render
+*******************************************************************************/
+    update () {
+        // The physics stack...
+        this.handleAccellerations();
+        this.handleGravity();
+        this.applyPosition();
+        this.applyHitbox();
+        this.applyOffset();
+        this.applyGravity();
+
+        // Companion type?
+        if ( this.data.companion === "activetile" ) {
+            this.updateActiveTile();
+        }
+    }
+
+
+    updateActiveTile () {
+        if ( this.throwing ) {
+            if ( this.position.z >= 0 ) {
+                this.map.smokeObject( this );
+                this.hero.spliceCompanion( this );
+                this.resolve();
+                this.destroy();
+            }
+        }
+    }
+
+
+/*******************************************************************************
+* Handlers
+*******************************************************************************/
+    handleThrow () {
+        return new Promise(( resolve ) => {
+            this.resolve = resolve;
+            this.throwing = this.hero.dir;
+            this.physics.accz = -8;
+            this.float = false;
+        });
+    }
+
+
+/*******************************************************************************
+* Applications
+*******************************************************************************/
+    applyPosition () {
+        if ( this.data.companion === "activetile" ) {
+            this.applyActiveTilePosition();
+        }
+    }
+
+
+    applyActiveTilePosition () {
+        if ( this.throwing ) {
+            this.position.x = this.getNextX();
+            this.position.y = this.getNextY();
+
+        } else {
+            this.position.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
+            this.position.y = this.hero.position.y + (this.hero.height - this.height);
+        }
+    }
+}
+
+
+
+/*******************************************************************************
+* Hero
+* There can be only one per Map
+*******************************************************************************/
+class Hero extends Sprite {
+    constructor ( data, map ) {
+        super( data, map );
+    }
+
+
+/*******************************************************************************
+* Rendering
+* Order is: blit, update, render
+*******************************************************************************/
+    update () {
+        // Handle player controls
+        this.handleControls();
+
+        // The physics stack...
+        this.handleAccellerations();
+        this.handleGravity();
+        this.applyGravity();
+
+        // Companions
+        if ( this.companions.length ) {
+            this.companions.forEach(( companion ) => {
+                companion.update();
+            });
+        }
+
+        // Soft pause only affects Hero updates and NPCs
+        // Hard stop will affect the entire blit/render engine...
+        if ( !this.gamebox.player.paused ) {
+            // D-Pad movement
+            // Easier to check the gamepad than have player use event handlers...
+            const dpad = this.gamebox.player.gamepad.checkDpad();
+
+            if ( !dpad.length ) {
+                this.gamebox.releaseD();
+                this.gamebox.handleCollision( this.getNextPoi(), this.dir );
+
+            } else {
+                dpad.forEach(( ctrl ) => {
+                    ctrl.dpad.forEach(( dir ) => {
+                        this.gamebox.pressD( dir );
+                    });
+                });
+            }
+
+            // Action buttons
+            // Easier to have the player use event handlers and check controls...
+            if ( this.gamebox.player.controls.aHold ) {
+                this.gamebox.holdA();
+
+            } else if ( this.gamebox.player.controls.a ) {
+                this.gamebox.pressA();
+            }
+
+            if ( this.gamebox.player.controls.bHold ) {
+                this.gamebox.holdB();
+
+            } else if ( this.gamebox.player.controls.b ) {
+                this.gamebox.pressB();
+            }
+        }
+    }
+
+
+    addCompanion ( data ) {
+        const companion = new Companion( data, this );
+
+        this.companions.push( companion );
+
+        return companion;
+    }
+
+
+    throwCompanion ( companion ) {
+        return companion.handleThrow();
+    }
+
+
+    spliceCompanion ( companion ) {
+        for ( let i = this.companions.length; i--; ) {
+            if ( this.companions[ i ] === companion ) {
+                this.companions.splice( i, 1 );
+                break;
+            }
+        }
+    }
+
+
+/*******************************************************************************
+* Applications
+* Hero uses custom position and offset determinance...
 *******************************************************************************/
     applyPosition ( poi, dir ) {
         this.dir = dir;
         this.position.x = poi.x;
         this.position.y = poi.y;
-    }
-
-
-    applyGravity () {
-        this.position.z = this.getNextZ();
-
-        if ( this.position.z > 0 ) {
-            this.position.z = 0;
-        }
+        this.applyHitbox();
     }
 
 
     applyOffset () {
-        this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
-        this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
-        this.footbox.x = this.hitbox.x;
-        this.footbox.y = this.hitbox.y + (this.hitbox.height / 2);
-
         const absolute = {
             x: Math.abs( this.map.offset.x ),
             y: Math.abs( this.map.offset.y ),
@@ -380,7 +581,7 @@ class Hero extends Sprite {
 
 
 /*******************************************************************************
-* Condition Handlers
+* Handlers
 *******************************************************************************/
     handleControls () {
         if ( this.gamebox.player.controls.left ) {
@@ -407,172 +608,6 @@ class Hero extends Sprite {
             this.idle.y = true;
         }
     }
-
-
-    handleAccellerations () {
-        if ( this.idle.x ) {
-            this.physics.accx = Utils.goToZero( this.physics.accx );
-        }
-
-        if ( this.idle.y ) {
-            this.physics.accy = Utils.goToZero( this.physics.accy );
-        }
-    }
-
-
-    handleGravity () {
-        this.physics.accz++;
-    }
-}
-
-
-
-/*******************************************************************************
-* Projectile
-* Creats a projectile object, even from an ActiveTile hero is carrying...
-*******************************************************************************/
-class Projectile {
-    constructor ( activeTile, dir, dur ) {
-        this.activeTile = activeTile;
-        this.dir = dir;
-        this.dur = dur;
-        this.velocity();
-    }
-
-
-    velocity () {
-        if ( this.dir === "up" ) {
-            this.vy = -2;
-            this.vx = 0;
-
-        } else if ( this.dir === "down" ) {
-            this.vy = 2;
-            this.vx = 0;
-
-        } else if ( this.dir === "left" ) {
-            this.vx = -2;
-            this.vy = 0;
-
-        } else if ( this.dir === "right" ) {
-            this.vx = 2;
-            this.vy = 0;
-        }
-    }
-
-
-    accelerator () {
-        if ( this.dir === "up" ) {
-            this.vy *= 0.99;
-            this.vy -= 0.25;
-
-        } else if ( this.dir === "down" ) {
-            this.vy *= 0.99;
-            this.vy += 0.25;
-
-        } else if ( this.dir === "left" ) {
-            this.vx *= 0.99;
-            this.vx -= 0.25;
-
-        } else if ( this.dir === "right" ) {
-            this.vx *= 0.99;
-            this.vx += 0.25;
-        }
-    }
-
-
-    blit ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
-            this.previousElapsed = elapsed;
-        }
-
-        this.activeTile.position.x += this.vx;
-        this.activeTile.position.y += this.vy;
-        this.activeTile.hitbox.x = this.activeTile.position.x;
-        this.activeTile.hitbox.y = this.activeTile.position.y;
-        this.accelerator();
-
-        const diff = (elapsed - this.previousElapsed);
-        const collision = this.activeTile.gamebox.getCollision( this.activeTile.position, this.activeTile );
-
-        if ( collision.map || collision.obj || collision.box ) {
-            this.activeTile.destroy();
-            this.resolve();
-        }
-
-        // if ( diff >= this.dur ) {
-        //     this.activeTile.destroy();
-        //     this.resolve();
-        // }
-    }
-
-
-    // getValues () {
-    //     const poi = {};
-    //     const origin = this.activeTile.position;
-    //
-    //     if ( this.dir === "up" ) {
-    //         poi.x = this.activeTile.position.x;
-    //         poi.y = this.activeTile.position.y - this.dist;
-    //
-    //     } else if ( this.dir === "down" ) {
-    //         poi.x = this.activeTile.position.x;
-    //         poi.y = this.activeTile.position.y + this.dist;
-    //
-    //     } else if ( this.dir === "left" ) {
-    //         poi.x = this.activeTile.position.x - this.dist;
-    //         poi.y = this.activeTile.position.y + this.activeTile.map.gridsize;
-    //
-    //     } else if ( this.dir === "right" ) {
-    //         poi.x = this.activeTile.position.x + this.dist;
-    //         poi.y = this.activeTile.position.y + this.activeTile.map.gridsize;
-    //     }
-    //
-    //     const angle = Utils.getAngle( this.activeTile.position, poi );
-    //
-    //     return {
-    //         poi,
-    //         angle,
-    //         origin,
-    //     }
-    // }
-
-
-    // update ( t ) {
-    //     const distance = this.dist - (this.dist - t);
-    //     const position = Utils.translate( this.values.origin, this.values.angle, distance );
-    //
-    //     this.activeTile.position = position;
-    //     this.activeTile.hitbox.x = this.activeTile.position.x;
-    //     this.activeTile.hitbox.y = this.activeTile.position.y;
-    //
-    //     const collision = this.activeTile.gamebox.getCollision( position, this.activeTile );
-    //
-    //     if ( collision.map || collision.obj || collision.box ) {
-    //         this.tween.stop();
-    //         this.activeTile.destroy();
-    //         this.resolve();
-    //     }
-    // }
-
-
-    fire () {
-        return new Promise(( resolve ) => {
-            this.resolve = resolve;
-            // this.values = this.getValues();
-            // this.tween = new Tween({
-            //     ease: Easing.swing,
-            //     duration: this.dur,
-            //     from: 0,
-            //     to: this.dist,
-            //     update: this.update.bind( this ),
-            //     complete: ( t ) => {
-            //         this.update( t );
-            //         this.activeTile.destroy();
-            //         this.resolve();
-            //     },
-            // });
-        });
-    }
 }
 
 
@@ -580,5 +615,4 @@ class Projectile {
 module.exports = {
     Hero,
     Sprite,
-    Projectile,
 };

@@ -45,7 +45,7 @@ class ActiveFX {
         this.image = Loader.cash( this.data.image );
         this.map = map;
         this.gamebox = this.map.gamebox;
-        this.scale = this.gamebox.player.data.game.resolution;
+        this.scale = this.gamebox.camera.resolution;
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
         this.spritecel = this.getCel();
@@ -101,81 +101,6 @@ class ActiveFX {
 
     destroy () {
         this.map.activeFX.splice( this.map.activeFX.indexOf( this ), 1 );
-    }
-}
-
-
-
-/*******************************************************************************
-* ActiveTile
-* Generated when the Hero picks up a liftable tile from a group of ActiveTiles.
-*******************************************************************************/
-class ActiveTile {
-    constructor ( activeTiles ) {
-        this.activeTiles = activeTiles;
-        this.map = this.activeTiles.map;
-        this.gamebox = this.activeTiles.map.gamebox;
-        this.tilecel = this.activeTiles.getTile();
-        this.width = this.map.gridsize;
-        this.height = this.map.gridsize;
-        this.position = {
-            x: this.map.hero.position.x + (this.map.hero.width / 2) - (this.map.gridsize / 2),
-            y: this.map.hero.position.y - (this.map.gridsize / 8),
-        };
-        this.hitbox = {
-            x: 0,
-            y: 0,
-            width: this.map.gridsize,
-            height: this.map.gridsize,
-        };
-    }
-
-
-    blit ( elapsed ) {
-        if ( this.projectile ) {
-            this.projectile.blit( elapsed );
-
-        } else {
-            this.position = {
-                x: this.map.hero.position.x + (this.map.hero.width / 2) - (this.map.gridsize / 2),
-                y: this.map.hero.position.y - (this.map.gridsize / 8),
-            };
-        }
-
-        this.hitbox.x = this.position.x;
-        this.hitbox.y = this.position.y;
-    }
-
-
-    render () {
-        this.map.layers.foreground.onCanvas.context.drawImage(
-            this.map.image,
-            this.tilecel[ 0 ],
-            this.tilecel[ 1 ],
-            this.map.data.tilesize,
-            this.map.data.tilesize,
-            this.map.offset.x + this.position.x,
-            this.map.offset.y + this.position.y,
-            this.map.gridsize,
-            this.map.gridsize,
-        );
-    }
-
-
-    throw ( dir ) {
-        this.projectile = new Projectile( this, dir, -1 );
-        return this.projectile.fire();
-    }
-
-
-    getHitbox ( poi ) {
-        return this.hitbox;
-    }
-
-
-    destroy () {
-        this.projectile = null;
-        this.map.smokeObject( this );
     }
 }
 
@@ -447,10 +372,10 @@ class Map {
             background: null,
             foreground: null,
         };
-        this.activeTile = null;
         this.activeTiles = [];
         this.activeObjects = [];
         this.activeFX = [];
+        this.npcs = [];
         this.offset = {
             x: 0,
             y: 0
@@ -480,6 +405,12 @@ class Map {
         });
         this.activeObjects = null;
 
+        this.npcs.forEach(( npc ) => {
+            npc.destroy();
+            npc = null;
+        });
+        this.npcs = null;
+
         this.hero.destroy();
         this.hero = null;
 
@@ -487,7 +418,6 @@ class Map {
         this.element = null;
         this.data = null;
         this.image = null;
-        this.activeTile = null;
         this.activeFX = null;
     }
 
@@ -548,6 +478,7 @@ class Map {
 
 /*******************************************************************************
 * Rendering
+* Order is: blit, update, render
 *******************************************************************************/
     blit ( elapsed ) {
         this.activeTiles.forEach(( activeTiles ) => {
@@ -558,9 +489,11 @@ class Map {
             activeObject.blit( elapsed );
         });
 
-        if ( this.activeTile ) {
-            this.activeTile.blit( elapsed );
-        }
+        this.hero.blit( elapsed );
+
+        this.npcs.forEach(( npc ) => {
+            npc.blit( elapsed );
+        });
 
         this.activeFX.forEach(( activeFx ) => {
             activeFx.blit( elapsed );
@@ -568,8 +501,12 @@ class Map {
     }
 
 
-    update ( offset ) {
-        this.offset = offset;
+    update () {
+        this.offset = this.gamebox.offset;
+
+        this.npcs.forEach(( npc ) => {
+            npc.update();
+        });
     }
 
 
@@ -611,20 +548,18 @@ class Map {
             this.drawColliders();
         }
 
-        // Draw Hero: There can only be one at a time
-        if ( this.hero ) {
-            this.hero.render();
-        }
+        // Draw Hero: There can only be one at a time...
+        this.hero.render();
 
         // Draw FX: There can be many at one time...
         this.activeFX.forEach(( activeFx ) => {
             activeFx.render();
         });
 
-        // Draw ActiveTile: There can only be one at a time
-        if ( this.activeTile ) {
-            this.activeTile.render();
-        }
+        // Draw NPCs: There can be many one at a time...
+        this.npcs.forEach(( npc ) => {
+            npc.render();
+        });
     }
 
 
@@ -717,12 +652,10 @@ class Map {
     }
 
 
-    setActiveTile ( group, coords ) {
+    spliceActiveTile ( group, coords ) {
         const activeTiles = this.getActiveTiles( group );
 
         activeTiles.splice( coords );
-
-        this.activeTile = new ActiveTile( activeTiles );
     }
 
 
@@ -926,7 +859,7 @@ class Map {
         const hitbox = sprite.getHitbox( poi );
 
         for ( let i = this.data.collision.length; i--; ) {
-            const collider = this.data.collider / this.gamebox.player.data.game.resolution;
+            const collider = this.data.collider / this.gamebox.camera.resolution;
             const tile = {
                 width: collider,
                 height: collider,
