@@ -282,24 +282,28 @@ class Hero extends Sprite {
 
     getNextPoiByDir ( dir, ahead ) {
         if ( ahead && dir === "left" ) {
-            this.physics.accx = -this.physics.maxacc;
+            ahead = -this.physics.controlmaxacc;
         }
 
         if ( ahead && dir === "right" ) {
-            this.physics.accx = this.physics.maxacc;
+            ahead = this.physics.controlmaxacc;
         }
 
         if ( ahead && dir === "up" ) {
-            this.physics.accy = -this.physics.maxacc;
+            ahead = -this.physics.controlmaxacc;
         }
 
         if ( ahead && dir === "down" ) {
-            this.physics.accy = this.physics.maxacc;
+            ahead = this.physics.controlmaxacc;
+        }
+
+        if ( !ahead ) {
+            ahead = 0;
         }
 
         return {
-            x: (dir === "left" || dir === "right") ? this.getNextX() : this.position.x,
-            y: (dir === "up" || dir === "down") ? this.getNextY() : this.position.y,
+            x: (dir === "left" || dir === "right") ? (this.getNextX() + ahead) : this.position.x,
+            y: (dir === "up" || dir === "down") ? (this.getNextY() + ahead) : this.position.y,
             z: this.position.z,
         }
     }
@@ -361,14 +365,16 @@ class Hero extends Sprite {
 
 
     applyCycle () {
-        if ( this.idle.x && this.idle.y ) {
+        // Lifting and carrying an object trumps all
+        if ( this.verb === Config.verbs.LIFT ) {
+            this.cycle( Config.verbs.LIFT, this.dir );
+
+        // Idle comes next...LIFT has it's own idle face...
+        } else if ( this.idle.x && this.idle.y ) {
             this.face( this.dir );
 
-        } else if ( this.verb !== Config.verbs.LIFT ) {
-            this.cycle( Config.verbs.WALK, this.dir );
-
         } else {
-            this.cycle( this.verb, this.dir );
+            this.cycle( Config.verbs.WALK, this.dir );
         }
     }
 

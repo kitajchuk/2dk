@@ -125,7 +125,7 @@ class TopView extends GameBox {
 
 
     pressA () {
-        const poi = this.map.hero.getNextPoiByDir( this.map.hero.dir, true );
+        const poi = this.map.hero.getNextPoiByDir( this.map.hero.dir, 1 );
         const collision = this.getCollision( poi, this.map.hero );
 
         if ( collision.obj ) {
@@ -177,7 +177,7 @@ class TopView extends GameBox {
 
 
     pressB () {
-        const poi = this.map.hero.getNextPoiByDir( this.map.hero.dir, true );
+        const poi = this.map.hero.getNextPoiByDir( this.map.hero.dir, 1 );
         const collision = this.getCollision( poi, this.map.hero );
 
         if ( collision.tiles ) {
@@ -262,7 +262,7 @@ class TopView extends GameBox {
                 return;
             }
 
-        } else if ( this.map.hero.physics.maxacc !== this.map.hero.physics.controlmaxacc ) {
+        } else if ( this.map.hero.physics.maxacc !== this.map.hero.physics.controlmaxacc && this.map.hero.verb !== Config.verbs.LIFT ) {
             this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc;
         }
 
@@ -321,6 +321,7 @@ class TopView extends GameBox {
             this.player.gameaudio.hitSound( "pickup" );
             this.map.setActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.map.hero.cycle( Config.verbs.LIFT, this.map.hero.dir );
+            this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc / 2;
             this.locked = false;
 
         }, Config.values.debounceDur );
@@ -330,6 +331,7 @@ class TopView extends GameBox {
     handleThrow () {
         this.map.hero.face( this.map.hero.dir );
         this.player.gameaudio.hitSound( "throw" );
+        this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc;
         this.map.activeTile.throw( this.map.hero.dir ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
             this.map.activeTile = null;
