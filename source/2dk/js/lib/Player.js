@@ -215,38 +215,38 @@ class Player {
         }
 
         // Game Buttons happen if NOT paused
-        if ( !this.paused ) {
-            // D-Pad movement
-            // Easier to check the gamepad than have player use event handlers...
-            const dpad = this.gamepad.checkDpad();
-
-            if ( !dpad.length ) {
-                this.gamebox.releaseD();
-
-            } else {
-                dpad.forEach(( ctrl ) => {
-                    ctrl.dpad.forEach(( dir ) => {
-                        this.gamebox.pressD( dir );
-                    });
-                });
-            }
-
-            // Action buttons
-            // Easier to have the player use event handlers and check controls...
-            if ( this.controls.aHold ) {
-                this.gamebox.holdA();
-
-            } else if ( this.controls.a ) {
-                this.gamebox.pressA();
-            }
-
-            if ( this.controls.bHold ) {
-                this.gamebox.holdB();
-
-            } else if ( this.controls.b ) {
-                this.gamebox.pressB();
-            }
-        }
+        // if ( !this.paused ) {
+        //     // D-Pad movement
+        //     // Easier to check the gamepad than have player use event handlers...
+        //     const dpad = this.gamepad.checkDpad();
+        //
+        //     if ( !dpad.length ) {
+        //         this.gamebox.releaseD();
+        //
+        //     } else {
+        //         dpad.forEach(( ctrl ) => {
+        //             ctrl.dpad.forEach(( dir ) => {
+        //                 this.gamebox.pressD( dir );
+        //             });
+        //         });
+        //     }
+        //
+        //     // Action buttons
+        //     // Easier to have the player use event handlers and check controls...
+        //     if ( this.controls.aHold ) {
+        //         this.gamebox.holdA();
+        //
+        //     } else if ( this.controls.a ) {
+        //         this.gamebox.pressA();
+        //     }
+        //
+        //     if ( this.controls.bHold ) {
+        //         this.gamebox.holdB();
+        //
+        //     } else if ( this.controls.b ) {
+        //         this.gamebox.pressB();
+        //     }
+        // }
     }
 
 

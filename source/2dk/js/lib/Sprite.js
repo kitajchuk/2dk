@@ -36,8 +36,8 @@ class Sprite {
             accx: 0,
             accy: 0,
             accz: 0,
-            maxacc: 4 / this.scale,
-            controlmaxacc: 4 / this.scale,
+            maxacc: 5 / this.scale,
+            controlmaxacc: 5 / this.scale,
         };
         this.idle = {
             x: true,
@@ -202,12 +202,6 @@ class Hero extends Sprite {
 
 
     update () {
-        // Soft pause only affects Hero updates and NPCs
-        // Hard stop will affect the entire blit/render engine...
-        // if ( this.gamebox.player.paused ) {
-        //     return;
-        // }
-
         // Handle player controls
         this.handleControls();
 
@@ -217,6 +211,48 @@ class Hero extends Sprite {
         // Handle z gravity
         this.handleGravity();
         this.applyGravity();
+
+        // Somthing like this...
+
+        // Decouple collision...
+        // Possibly use a Promise...
+        // If NOT dpad.length, get POI all dirs and allow accelerations...
+
+        // Soft pause only affects Hero updates and NPCs
+        // Hard stop will affect the entire blit/render engine...
+        if ( !this.gamebox.player.paused ) {
+            // D-Pad movement
+            // Easier to check the gamepad than have player use event handlers...
+            const dpad = this.gamebox.player.gamepad.checkDpad();
+
+            if ( !dpad.length ) {
+                this.gamebox.releaseD();
+                this.gamebox.handleCollision( this.getNextPoi(), this.dir );
+
+            } else {
+                dpad.forEach(( ctrl ) => {
+                    ctrl.dpad.forEach(( dir ) => {
+                        this.gamebox.pressD( dir );
+                    });
+                });
+            }
+
+            // Action buttons
+            // Easier to have the player use event handlers and check controls...
+            if ( this.gamebox.player.controls.aHold ) {
+                this.gamebox.holdA();
+
+            } else if ( this.gamebox.player.controls.a ) {
+                this.gamebox.pressA();
+            }
+
+            if ( this.gamebox.player.controls.bHold ) {
+                this.gamebox.holdB();
+
+            } else if ( this.gamebox.player.controls.b ) {
+                this.gamebox.pressB();
+            }
+        }
     }
 
 
@@ -235,13 +271,13 @@ class Hero extends Sprite {
     }
 
 
-    // getNextPoi () {
-    //     return {
-    //         x: this.getNextX(),
-    //         y: this.getNextY(),
-    //         z: this.getNextZ(),
-    //     }
-    // }
+    getNextPoi () {
+        return {
+            x: this.getNextX(),
+            y: this.getNextY(),
+            z: this.getNextZ(),
+        }
+    }
 
 
     getNextPoiByDir ( dir, ahead ) {
@@ -325,7 +361,10 @@ class Hero extends Sprite {
 
 
     applyCycle () {
-        if ( this.verb !== Config.verbs.LIFT ) {
+        if ( this.idle.x && this.idle.y ) {
+            this.face( this.dir );
+
+        } else if ( this.verb !== Config.verbs.LIFT ) {
             this.cycle( Config.verbs.WALK, this.dir );
 
         } else {

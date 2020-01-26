@@ -4,9 +4,7 @@
 
 
 
-* Figure out collision/responsiveness with physics system
-    Need to unset pushes counter in the correct place...
-* Figure out interactions with physics system
+* Figure out snap-to-pixel for collision so we can dynamically move Hero...
 
 
 

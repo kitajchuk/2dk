@@ -101,69 +101,8 @@ class TopView extends GameBox {
 *******************************************************************************/
     pressD ( dir ) {
         const poi = this.map.hero.getNextPoiByDir( dir );
-        const collision = this.getCollision( poi, this.map.hero );
 
-        if ( this.locked ) {
-            return;
-        }
-
-        if ( collision.evt ) {
-            if ( collision.evt.type === Config.events.BOUNDARY && collision.box ) {
-                this.handleEvtBoundary( poi, dir, collision.evt );
-                return;
-            }
-        }
-
-        if ( collision.obj ) {
-            this.handleObj( poi, dir );
-            return;
-        }
-
-        if ( collision.map ) {
-            // Tile will allow leaping from it's edge, like a ledge...
-            if ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].jump && (collision.tiles.action[ 0 ].collides.width > (collision.tiles.action[ 0 ].tilebox.width / 2) || collision.tiles.action[ 0 ].collides.height > (collision.tiles.action[ 0 ].tilebox.height / 2)) ) {
-                this.handleTileJump(  poi, dir, collision.tiles.action[ 0 ] );
-
-            } else {
-                this.handleMap( poi, dir );
-                return;
-            }
-        }
-
-        if ( collision.box ) {
-            this.handleBox( poi, dir );
-            return;
-        }
-
-        if ( this.map.hero.verb === Config.verbs.GRAB ) {
-            if ( dir === Config.opposites[ this.map.hero.dir ] ) {
-                this.handleLift( poi, dir );
-            }
-
-            return;
-        }
-
-        if ( collision.tiles ) {
-            this.handleTiles(  poi, dir, collision.tiles );
-
-            // Tile is behaves like a WALL, or Object you cannot walk on
-            if ( collision.tiles.action.length && collision.tiles.action[ 0 ].stop ) {
-                this.handleTileStop( poi, dir, collision.tiles.action[ 0 ] );
-                return;
-            }
-
-        } else if ( this.map.hero.physics.maxacc !== this.map.hero.physics.controlmaxacc ) {
-            this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc;
-        }
-
-        // Apply position
-        this.map.hero.applyPosition( poi, dir );
-
-        // Applly offset
-        this.map.hero.applyOffset();
-
-        // Apply the sprite animation cycle
-        this.map.hero.applyCycle();
+        this.handleCollision( poi, dir );
     }
 
 
@@ -271,6 +210,73 @@ class TopView extends GameBox {
 /*******************************************************************************
 * Handlers...
 *******************************************************************************/
+    handleCollision ( poi, dir ) {
+        const collision = this.getCollision( poi, this.map.hero );
+
+        if ( this.locked ) {
+            return;
+        }
+
+        if ( collision.evt ) {
+            if ( collision.evt.type === Config.events.BOUNDARY && collision.box ) {
+                this.handleEvtBoundary( poi, dir, collision.evt );
+                return;
+            }
+        }
+
+        if ( collision.obj ) {
+            this.handleObj( poi, dir );
+            return;
+        }
+
+        if ( collision.map ) {
+            // Tile will allow leaping from it's edge, like a ledge...
+            if ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].jump && (collision.tiles.action[ 0 ].collides.width > (collision.tiles.action[ 0 ].tilebox.width / 2) || collision.tiles.action[ 0 ].collides.height > (collision.tiles.action[ 0 ].tilebox.height / 2)) ) {
+                this.handleTileJump(  poi, dir, collision.tiles.action[ 0 ] );
+
+            } else {
+                this.handleMap( poi, dir );
+                return;
+            }
+        }
+
+        if ( collision.box ) {
+            this.handleBox( poi, dir );
+            return;
+        }
+
+        if ( this.map.hero.verb === Config.verbs.GRAB ) {
+            if ( dir === Config.opposites[ this.map.hero.dir ] ) {
+                this.handleLift( poi, dir );
+            }
+
+            return;
+        }
+
+        if ( collision.tiles ) {
+            this.handleTiles(  poi, dir, collision.tiles );
+
+            // Tile is behaves like a WALL, or Object you cannot walk on
+            if ( collision.tiles.action.length && collision.tiles.action[ 0 ].stop ) {
+                this.handleTileStop( poi, dir, collision.tiles.action[ 0 ] );
+                return;
+            }
+
+        } else if ( this.map.hero.physics.maxacc !== this.map.hero.physics.controlmaxacc ) {
+            this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc;
+        }
+
+        // Apply position
+        this.map.hero.applyPosition( poi, dir );
+
+        // Applly offset
+        this.map.hero.applyOffset();
+
+        // Apply the sprite animation cycle
+        this.map.hero.applyCycle();
+    }
+
+
     handlePushable ( poi, dir ) {
         this.interact.push++;
 
