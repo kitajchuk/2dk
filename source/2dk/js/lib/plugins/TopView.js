@@ -331,7 +331,7 @@ class TopView extends GameBox {
             this.player.gameaudio.hitSound( "pickup" );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.interact.tile.companion = this.map.hero.addCompanion({
-                companion: "activetile",
+                companion: "tile",
                 float: true,
                 width: this.map.gridsize,
                 height: this.map.gridsize,
@@ -371,6 +371,7 @@ class TopView extends GameBox {
         this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc;
         this.map.hero.throwCompanion( this.interact.tile.companion ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
+            this.interact.tile.companion = null;
             this.interact.tile = null;
         });
     }

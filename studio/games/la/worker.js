@@ -1,10 +1,11 @@
-const CACHE_NAME = "v241";
+const CACHE_NAME = "v242";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/la/game.json",
     "/games/la/assets/tiles/tiles.png",
     "/games/la/assets/sprites/smoke_fx.png",
     "/games/la/assets/sprites/smoke.png",
+    "/games/la/assets/sprites/npcs.png",
     "/games/la/assets/sprites/hero_la.png",
     "/games/la/assets/sprites/hero_alttp.png",
     "/games/la/assets/sounds/sfx-throw.mp3",

@@ -1,8 +1,7 @@
 const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
-const Tween = require( "properjs-tween" );
-const Easing = require( "properjs-easing" );
+const { TweenLite, Power4 } = require( "gsap" );
 
 
 
@@ -18,7 +17,7 @@ class Sprite {
         this.scale = this.gamebox.camera.resolution;
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
-        this.dir = this.data.spawn.dir;
+        this.dir = this.data.spawn.dir || "down";
         this.verb = Config.verbs.FACE;
         this.image = Loader.cash( this.data.image );
         this.float = this.data.float || false;
@@ -56,17 +55,22 @@ class Sprite {
             width: this.hitbox.width,
             height: this.hitbox.height / 2,
         };
-        this.spritecel = this.getCel();
+        // this.spritecel = this.getCel();
         this.companions = [];
     }
 
 
     destroy () {
-        this.data = null;
+        // this.data = null;
 
         if ( this.companion ) {
             this.companion.destroy();
             this.companion = null;
+        }
+
+        if ( this.tween ) {
+            this.tween.kill();
+            this.tween = null;
         }
     }
 
@@ -358,6 +362,10 @@ class Companion extends Sprite {
     constructor ( data, hero ) {
         super( data, hero.map );
         this.hero = hero;
+        this.watchFPS = 24;
+        this.watchFrame = 0;
+        this.checkFrame = 0;
+        this.watchDur = 1000;
     }
 
 
@@ -365,29 +373,61 @@ class Companion extends Sprite {
 * Rendering
 * Order is: blit, update, render
 *******************************************************************************/
-    update () {
-        // The physics stack...
-        this.handleAccellerations();
-        this.handleGravity();
-        this.applyPosition();
-        this.applyHitbox();
-        this.applyOffset();
-        this.applyGravity();
+    blit ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
+
+        if ( typeof this.watchElapsed === "undefined" ) {
+            this.watchElapsed = elapsed;
+        }
 
         // Companion type?
-        if ( this.data.companion === "activetile" ) {
-            this.updateActiveTile();
+        if ( this.data.companion === "tile" ) {
+            this.blitTile();
+
+        } else if ( this.data.companion === "pet" ) {
+            this.blitPet();
+        }
+
+        // Set watch cycle frame
+        this.watchDiff = (elapsed - this.watchElapsed);
+        this.checkFrame = Math.floor( (this.watchDiff / this.watchDur) * this.watchFPS );
+
+        if ( this.watchDiff >= this.watchDur ) {
+            this.watchElapsed = elapsed;
+            this.watchFrame = 0;
+            this.checkFrame = 0;
+        }
+
+        // Set sprite cycle frame
+        this.applyFrame( elapsed );
+    }
+
+
+    blitPet () {
+        if ( !this.hero.idle.x || !this.hero.idle.y ) {
+            if ( this.position.z === 0 ) {
+                this.physics.accz = -8;
+            }
+        }
+
+        if ( this.hero.position.x > this.position.x ) {
+            this.dir = "right";
+
+        } else {
+            this.dir = "left";
         }
     }
 
 
-    updateActiveTile () {
+    blitTile () {
         if ( this.throwing ) {
             if ( this.position.z >= 0 ) {
                 this.map.smokeObject( this );
                 this.hero.spliceCompanion( this );
-                this.resolve();
                 this.destroy();
+                this.resolve();
             }
         }
     }
@@ -410,13 +450,84 @@ class Companion extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
-        if ( this.data.companion === "activetile" ) {
-            this.applyActiveTilePosition();
+        if ( this.data.companion === "tile" ) {
+            this.applyTilePosition();
+
+        } else if ( this.data.companion === "pet" ) {
+            this.applyPetPosition();
         }
     }
 
 
-    applyActiveTilePosition () {
+    applyPetPosition () {
+        const poi = {};
+
+        if ( this.hero.dir === "right" && this.hero.position.x > this.position.x ) {
+            poi.x = this.hero.position.x - this.width;
+            poi.y = this.hero.position.y + this.hero.height - this.height - (this.map.gridsize / 3);
+
+        } else if ( this.hero.dir === "left" && this.hero.position.x < this.position.x ) {
+            poi.x = this.hero.position.x + this.hero.width;
+            poi.y = this.hero.position.y + this.hero.height - this.height - (this.map.gridsize / 3);
+
+        } else if ( this.hero.dir === "up" && this.hero.position.y < this.position.y ) {
+            poi.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
+            poi.y = this.hero.position.y + this.hero.height;
+
+        } else if ( this.hero.dir === "down" && this.hero.position.y > this.position.y ) {
+            poi.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
+            poi.y = this.hero.position.y - this.height;
+        }
+
+        if ( !this.origin ) {
+            this.origin = poi;
+            this.position.x = poi.x;
+            this.position.y = poi.y;
+            console.log( `Spawn Origin ${this.data.id} (${poi.x}, ${poi.y})` );
+        }
+
+        if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) && (this.hero.verb !== Config.verbs.GRAB) ) {
+            this.watchFrame = this.checkFrame;
+
+            if ( this.tween ) {
+                this.tween.kill();
+            }
+
+            const angle = Utils.getAngle( this.position, poi );
+            const distance = Utils.getDistance( this.position, poi );
+            const origin = {
+                x: this.position.x,
+                y: this.position.y,
+            };
+            const props = { dist: 0 };
+
+            if ( distance > 1 ) {
+                this.idle.x = false;
+                this.idle.y = false;
+                this.tween = TweenLite.to( props, 1.0, {
+                    dist: distance,
+                    ease: Power4.easeOut,
+                    onUpdate: () => {
+                        const dist = distance - (distance - props.dist);
+                        const pos = Utils.translate( origin, angle, dist );
+
+                        this.position.x = pos.x;
+                        this.position.y = pos.y;
+                    },
+                    onComplete: () => {
+                        this.tween = null;
+                    }
+                });
+
+            } else {
+                this.idle.x = true;
+                this.idle.y = true;
+            }
+        }
+    }
+
+
+    applyTilePosition () {
         if ( this.throwing ) {
             this.position.x = this.getNextX();
             this.position.y = this.getNextY();
@@ -437,6 +548,16 @@ class Companion extends Sprite {
 class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
+
+        if ( this.data.companion ) {
+            this.data.companion = Utils.merge( this.gamebox.player.data.npcs.find( ( obj ) => (obj.id === this.data.companion.id) ), this.data.companion );
+            this.data.companion.spawn = {
+                x: 0,
+                y: 0,
+                z: 0,
+            };
+            this.addCompanion( this.data.companion );
+        }
     }
 
 

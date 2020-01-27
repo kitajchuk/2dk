@@ -4,10 +4,6 @@
 
 
 
-* Figure out snap-to-pixel for collision so we can dynamically move Hero...
-
-
-
 * Bug: Release A while activating lift and an error is thrown...
 * Bug: push up cycle for hero
 * Bug: walk cycle gets locked (switch map with activeTile lifed)
