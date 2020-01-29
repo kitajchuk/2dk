@@ -223,9 +223,9 @@ class Sprite {
 
 
     applyGravity () {
-        // if ( this.float ) {
-        //     return;
-        // }
+        if ( this.float ) {
+            return;
+        }
 
         this.position.z = this.getNextZ();
 
@@ -394,9 +394,9 @@ class Companion extends Sprite {
         }
 
         // Set sprite cycle frame
-        if ( this.data ) {
-            this.applyFrame( elapsed );
-        }
+        // if ( this.data ) {
+        this.applyFrame( elapsed );
+        // }
     }
 
 
@@ -437,8 +437,6 @@ class Companion extends Sprite {
         if ( this.throwing ) {
             if ( this.position.z >= 0 ) {
                 this.map.smokeObject( this );
-                this.hero.spliceCompanion( this );
-                this.destroy();
                 this.resolve();
             }
         }
@@ -645,7 +643,6 @@ class Hero extends Sprite {
 
         if ( this.data.companion ) {
             this.data.companion = Utils.merge( this.gamebox.player.data.npcs.find( ( obj ) => (obj.id === this.data.companion.id) ), this.data.companion );
-            this.data.companion.companion = this.data.companion.type;
             this.data.companion.spawn = {
                 x: this.position.x,
                 y: this.position.y,

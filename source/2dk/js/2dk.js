@@ -4,6 +4,10 @@
 
 
 
+* Make ActiveObject's Sprites on initialization: use npcs, not objects?
+
+
+
 * Centralized Blitting...
 * Refactor GameBox lifecycle: update, blit, render
 * Use GameBox indexed object manager to execute the lifecycle
@@ -14,10 +18,6 @@
 * GameBox will now manage background and foreground screen layers
 * Map will manage it's oversized texture layers as two objects in GameBox index
 * Player.blit() > GameBox.blit() > GameBox.Category.Index[update(), blit(), render()]
-
-
-
-* Studio JSON watcher to run static:games script
 
 
 

@@ -461,13 +461,11 @@ class Map {
         this.layers[ id ] = {};
         this.layers[ id ].onCanvas = new MapLayer({
             id,
-            map: this,
             width: this.gamebox.camera.width,
             height: this.gamebox.camera.height,
         });
         this.layers[ id ].offCanvas = new MapLayer({
             id,
-            map: this,
             width: offWidth,
             height: offHeight,
         });
@@ -479,6 +477,7 @@ class Map {
 /*******************************************************************************
 * Rendering
 * Order is: blit, update, render
+* Map data order is: tiles, objects, hero, npcs, fx
 *******************************************************************************/
     blit ( elapsed ) {
         this.activeTiles.forEach(( activeTiles ) => {
@@ -551,14 +550,14 @@ class Map {
         // Draw Hero: There can only be one at a time...
         this.hero.render();
 
+        // Draw NPCs: There can be many at one a time...
+        this.npcs.forEach(( npc ) => {
+            npc.render();
+        });
+
         // Draw FX: There can be many at one time...
         this.activeFX.forEach(( activeFx ) => {
             activeFx.render();
-        });
-
-        // Draw NPCs: There can be many one at a time...
-        this.npcs.forEach(( npc ) => {
-            npc.render();
         });
     }
 

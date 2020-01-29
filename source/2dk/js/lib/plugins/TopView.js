@@ -23,7 +23,6 @@ class TopView extends GameBox {
             //     coord,
             //     throw?,
             // }
-            tile: null,
             push: 0,
         };
         this.debounce = 1024;
@@ -53,6 +52,7 @@ class TopView extends GameBox {
         this.update();
 
         // update map
+        // ignore map_ as it will become this.map
         this.map.update();
 
         // render map
@@ -178,7 +178,7 @@ class TopView extends GameBox {
             }
 
         } else {
-            this.interact.tile = null;
+            delete this.interact.tile;
         }
     }
 
@@ -331,7 +331,7 @@ class TopView extends GameBox {
             this.player.gameaudio.hitSound( "pickup" );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.interact.tile.companion = this.map.hero.addCompanion({
-                companion: "tile",
+                type: "tile",
                 float: true,
                 width: this.map.gridsize,
                 height: this.map.gridsize,
@@ -371,8 +371,10 @@ class TopView extends GameBox {
         this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv;
         this.map.hero.throwCompanion( this.interact.tile.companion ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
-            this.interact.tile.companion = null;
-            this.interact.tile = null;
+            this.interact.tile.companion.destroy();
+            this.map.hero.spliceCompanion( this.interact.tile.companion );
+
+            delete this.interact.tile;
         });
     }
 
