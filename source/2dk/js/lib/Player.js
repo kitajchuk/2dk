@@ -101,6 +101,14 @@ class Player {
     }
 
 
+    getMergedData ( data, type ) {
+        return Utils.merge(this.data[ type ].find(( obj ) => {
+            return (obj.id === data.id);
+
+        }), data );
+    }
+
+
     debug () {
         if ( this.query.map ) {
             this.data.hero.spawn.map = `/games/${this.data.game.id}/maps/${this.query.map}`;
@@ -220,40 +228,6 @@ class Player {
         if ( !this.stopped ) {
             this.gamebox.blit( elapsed );
         }
-
-        // Game Buttons happen if NOT paused
-        // if ( !this.paused ) {
-        //     // D-Pad movement
-        //     // Easier to check the gamepad than have player use event handlers...
-        //     const dpad = this.gamepad.checkDpad();
-        //
-        //     if ( !dpad.length ) {
-        //         this.gamebox.releaseD();
-        //
-        //     } else {
-        //         dpad.forEach(( ctrl ) => {
-        //             ctrl.dpad.forEach(( dir ) => {
-        //                 this.gamebox.pressD( dir );
-        //             });
-        //         });
-        //     }
-        //
-        //     // Action buttons
-        //     // Easier to have the player use event handlers and check controls...
-        //     if ( this.controls.aHold ) {
-        //         this.gamebox.holdA();
-        //
-        //     } else if ( this.controls.a ) {
-        //         this.gamebox.pressA();
-        //     }
-        //
-        //     if ( this.controls.bHold ) {
-        //         this.gamebox.holdB();
-        //
-        //     } else if ( this.controls.b ) {
-        //         this.gamebox.pressB();
-        //     }
-        // }
     }
 
 

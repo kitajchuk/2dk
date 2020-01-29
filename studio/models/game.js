@@ -13,6 +13,6 @@ module.exports = {
     "hero": {},
     "heroes": [],
     "objects": [],
-    "effects": [],
+    "fx": [],
     "bundle": []
 };

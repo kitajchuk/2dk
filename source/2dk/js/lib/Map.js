@@ -1,7 +1,7 @@
 const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
-const { Hero, NPC } = require( "./Sprite" );
+const { Hero, NPC, FX } = require( "./Sprite" );
 const tileSortFunc = ( tileA, tileB ) => {
     if ( tileA.amount > tileB.amount ) {
         return -1;
@@ -38,74 +38,6 @@ const cameraTiles = [
 
 
 
-class ActiveFX {
-    constructor ( data, position, map ) {
-        this.data = data;
-        this.position = position;
-        this.image = Loader.cash( this.data.image );
-        this.map = map;
-        this.gamebox = this.map.gamebox;
-        this.scale = this.gamebox.camera.resolution;
-        this.width = this.data.width / this.scale;
-        this.height = this.data.height / this.scale;
-        this.spritecel = this.getCel();
-    }
-
-
-    blit ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
-            this.previousElapsed = elapsed;
-        }
-
-        this.frame = 0;
-
-        if ( this.data.stepsX ) {
-            const diff = (elapsed - this.previousElapsed);
-
-            this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
-
-            if ( diff >= this.data.dur ) {
-                // this.previousElapsed = elapsed;
-                // this.frame = this.data.stepsX - 1;
-                this.destroy();
-                return;
-            }
-        }
-
-        this.spritecel = this.getCel();
-    }
-
-
-    render () {
-        this.map.layers.foreground.onCanvas.context.drawImage(
-            this.image,
-            this.spritecel[ 0 ],
-            this.spritecel[ 1 ],
-            this.data.width,
-            this.data.height,
-            this.map.offset.x + this.position.x,
-            this.map.offset.y + this.position.y,
-            this.width,
-            this.height,
-        );
-    }
-
-
-    getCel () {
-        return [
-            Math.abs( this.data.offsetX ) + (this.data.width * this.frame),
-            Math.abs( this.data.offsetY ),
-        ];
-    }
-
-
-    destroy () {
-        this.map.activeFX.splice( this.map.activeFX.indexOf( this ), 1 );
-    }
-}
-
-
-
 /*******************************************************************************
 * ActiveTiles
 * Static and animated background tiles injected into the texture map.
@@ -122,9 +54,7 @@ class ActiveTiles {
     }
 
 
-    destroy () {
-        this.data = null;
-    }
+    destroy () {}
 
 
     blit ( elapsed ) {
@@ -261,13 +191,12 @@ class Map {
             foreground: null,
         };
         this.activeTiles = [];
-        this.activeFX = [];
+        this.fx = [];
         this.npcs = [];
         this.offset = {
             x: 0,
             y: 0
         };
-        this.poi = null;
         this.colliders = [];
         this.build();
     }
@@ -290,14 +219,18 @@ class Map {
         });
         this.npcs = null;
 
+        this.fx.forEach(( fx ) => {
+            fx.destroy();
+        });
+        this.fx = null;
+
         this.hero.destroy();
         this.hero = null;
 
         this.element.parentNode.removeChild( this.element );
         this.element = null;
-        this.data = null;
         this.image = null;
-        this.activeFX = null;
+        this.colliders = null;
     }
 
 
@@ -328,8 +261,7 @@ class Map {
 
         // Objects
         this.data.objects.forEach(( data ) => {
-            data = Utils.merge( this.gamebox.player.data.npcs.find( ( obj ) => (obj.id === data.id) ), data );
-            this.npcs.push( new NPC( data, this ) );
+            this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
         });
     }
 
@@ -370,8 +302,8 @@ class Map {
 
         this.hero.blit( elapsed );
 
-        this.activeFX.forEach(( activeFx ) => {
-            activeFx.blit( elapsed );
+        this.fx.forEach(( fx ) => {
+            fx.blit( elapsed );
         });
     }
 
@@ -381,6 +313,10 @@ class Map {
 
         this.npcs.forEach(( npc ) => {
             npc.update();
+        });
+
+        this.fx.forEach(( fx ) => {
+            fx.update();
         });
     }
 
@@ -415,8 +351,8 @@ class Map {
 
         // Draw FX
         // This is the topmost layer so we can do cool stuff...
-        this.activeFX.forEach(( activeFx ) => {
-            activeFx.render();
+        this.fx.forEach(( fx ) => {
+            fx.render();
         });
     }
 
@@ -612,10 +548,22 @@ class Map {
     }
 
 
-    addActiveFX ( id, position ) {
-        const fx = this.gamebox.player.data.effects.find( ( effect ) => (effect.id === id) );
+    addFX ( data ) {
+        data = this.gamebox.player.getMergedData( data, "fx" );
+        data.hitbox = {
+            x: 0,
+            y: 0,
+            width: data.width,
+            height: data.height,
+        };
 
-        this.activeFX.push( new ActiveFX( fx, position, this ) );
+        this.fx.push( new FX( data, this ) );
+    }
+
+
+    killFX ( fx ) {
+        this.fx.splice( this.fx.indexOf( fx ), 1 );
+        fx = null;
     }
 
 
@@ -625,11 +573,49 @@ class Map {
             y: obj.position.y + (obj.height / 2) - (this.gridsize / 2),
         };
 
-        this.addActiveFX( "smoke", origin );
-        this.addActiveFX( "smoke", { x: origin.x - (this.gridsize / 4), y: origin.y - (this.gridsize / 4) } );
-        this.addActiveFX( "smoke", { x: origin.x + (this.gridsize / 4), y: origin.y - (this.gridsize / 4) } );
-        this.addActiveFX( "smoke", { x: origin.x - (this.gridsize / 4), y: origin.y + (this.gridsize / 4) } );
-        this.addActiveFX( "smoke", { x: origin.x + (this.gridsize / 4), y: origin.y + (this.gridsize / 4) } );
+        this.addFX({
+            id: "smoke",
+            spawn: {
+                x: origin.x,
+                y: origin.y,
+            },
+        });
+        this.addFX({
+            id: "smoke",
+            spawn: {
+                x: origin.x - (this.gridsize / 4),
+                y: origin.y - (this.gridsize / 4),
+            },
+            vx: -8,
+            vy: -8,
+        });
+        this.addFX({
+            id: "smoke",
+            spawn: {
+                x: origin.x + (this.gridsize / 4),
+                y: origin.y - (this.gridsize / 4),
+            },
+            vx: 8,
+            vy: -8,
+        });
+        this.addFX({
+            id: "smoke",
+            spawn: {
+                x: origin.x - (this.gridsize / 4),
+                y: origin.y + (this.gridsize / 4),
+            },
+            vx: -8,
+            vy: 8,
+        });
+        this.addFX({
+            id: "smoke",
+            spawn: {
+                x: origin.x + (this.gridsize / 4),
+                y: origin.y + (this.gridsize / 4),
+            },
+            vx: 8,
+            vy: 8,
+        });
     }
 
 

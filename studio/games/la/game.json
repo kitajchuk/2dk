@@ -37,7 +37,6 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/sprites/npcs.png",
-            "float": 1,
             "scale": 2,
             "hitbox": {
                 "x": 0,
@@ -492,7 +491,7 @@
             }
         }
     ],
-    "effects": [
+    "fx": [
         {
             "id": "smoke",
             "name": "Smoke",

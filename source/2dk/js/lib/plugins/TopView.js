@@ -337,13 +337,13 @@ class TopView extends GameBox {
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.interact.tile.companion = this.map.hero.addCompanion({
                 type: "tile",
-                float: true,
+                layer: "foreground",
                 width: this.map.gridsize,
                 height: this.map.gridsize,
                 spawn: {
                     x: 0,
                     y: 0,
-                    z: -(this.map.hero.height - (this.map.gridsize * 0.75)),
+                    z: 0,
                     dir: "down",
                 },
                 image: this.map.data.image,

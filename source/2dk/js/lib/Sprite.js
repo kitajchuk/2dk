@@ -1,7 +1,7 @@
 const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
-const { TweenLite, Power2 } = require( "gsap" );
+const { TweenLite, Power0, Power1, Power2, Power3, Power4 } = require( "gsap" );
 
 
 
@@ -21,7 +21,6 @@ class Sprite {
         this.dir = (this.data.spawn && this.data.spawn.dir || "down");
         this.verb = Config.verbs.FACE;
         this.image = Loader.cash( this.data.image );
-        this.float = (this.data.float || 0);
         this.frame = 0;
         this.position = {
             x: (this.data.spawn && this.data.spawn.x || 0) / this.scale,
@@ -64,8 +63,6 @@ class Sprite {
 
 
     destroy () {
-        this.data = null;
-
         if ( this.tween ) {
             this.tween.kill();
             this.tween = null;
@@ -234,10 +231,6 @@ class Sprite {
 
 
     applyGravity () {
-        // if ( this.float ) {
-        //     return;
-        // }
-
         this.position.z = this.getNextZ();
 
         if ( this.position.z > 0 ) {
@@ -356,6 +349,57 @@ class Sprite {
 
 
 /*******************************************************************************
+* Visual Effects Sprite
+* Self destructive when duration is met...
+*******************************************************************************/
+class FX extends Sprite {
+    constructor ( data, map ) {
+        super( data, map );
+    }
+
+
+    destroy () {
+        this.map.killFX( this );
+    }
+
+
+    blit ( elapsed ) {
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
+        }
+
+        this.applyFrame( elapsed );
+    }
+
+
+    getCel () {
+        return [
+            Math.abs( this.data.offsetX ) + (this.data.width * this.frame),
+            Math.abs( this.data.offsetY ),
+        ];
+    }
+
+
+    applyFrame ( elapsed ) {
+        this.frame = 0;
+
+        if ( this.data.stepsX ) {
+            const diff = (elapsed - this.previousElapsed);
+
+            this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
+
+            if ( diff >= this.data.dur ) {
+                this.destroy();
+            }
+        }
+
+        this.spritecel = this.getCel();
+    }
+}
+
+
+
+/*******************************************************************************
 * NPC Sprite
 * Shifting states...
 * AI logics?
@@ -462,6 +506,9 @@ class Companion extends Sprite {
     }
 
 
+    blitTile () {}
+
+
     blitFairy () {
         if ( this.position.z <= -(this.hero.height + 32) ) {
             this.physics.vz = 8;
@@ -495,16 +542,6 @@ class Companion extends Sprite {
     }
 
 
-    blitTile () {
-        if ( this.throwing ) {
-            if ( this.position.z >= 0 ) {
-                this.map.smokeObject( this );
-                this.resolve();
-            }
-        }
-    }
-
-
     shadow () {
         if ( this.hero.data.shadow && (this.data.type === Config.npc.FAIRY) ) {
             // Shadows can allways render to the BG since they are floored
@@ -530,8 +567,56 @@ class Companion extends Sprite {
         return new Promise(( resolve ) => {
             this.resolve = resolve;
             this.throwing = this.hero.dir;
-            this.physics.vz = -8;
-            this.float = false;
+
+            let throwX;
+            let throwY;
+            const dist = 128;
+            const props = {
+                x: this.position.x,
+                y: this.position.y,
+            };
+            const _complete = () => {
+                this.tween.kill();
+                this.tween = null;
+                this.map.smokeObject( this );
+                this.resolve();
+            };
+
+            if ( this.throwing === "left" ) {
+                throwX = this.position.x - dist;
+                throwY = this.hero.footbox.y - (this.height - this.hero.footbox.height);
+
+            } else if ( this.throwing === "right" ) {
+                throwX = this.position.x + dist;
+                throwY = this.hero.footbox.y - (this.height - this.hero.footbox.height);
+
+            } else if ( this.throwing === "up" ) {
+                throwX = this.position.x;
+                throwY = this.position.y - dist;
+
+            }  else if ( this.throwing === "down" ) {
+                throwX = this.position.x;
+                throwY = this.hero.footbox.y + dist;
+            }
+
+            this.tween = TweenLite.to( props, 0.5, {
+                x: throwX,
+                y: throwY,
+                ease: Power4.easeOut,
+                onUpdate: () => {
+                    this.position.x = this.tween._targets[ 0 ].x;
+                    this.position.y = this.tween._targets[ 0 ].y;
+
+                    const collision = this.gamebox.getCollision( this.position, this );
+
+                    if ( collision.map || collision.box || collision.npc ) {
+                        _complete();
+                    }
+                },
+                onComplete: () => {
+                    _complete();
+                }
+            });
         });
     }
 
@@ -548,6 +633,18 @@ class Companion extends Sprite {
 
         } else if ( this.data.type === Config.npc.FAIRY ) {
             this.applyFairyPosition();
+        }
+    }
+
+
+    applyTilePosition () {
+        if ( this.throwing ) {
+            this.position.x = this.getNextX();
+            this.position.y = this.getNextY();
+
+        } else {
+            this.position.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
+            this.position.y = this.hero.position.y - (this.height / 5);
         }
     }
 
@@ -694,18 +791,6 @@ class Companion extends Sprite {
             }
         }
     }
-
-
-    applyTilePosition () {
-        if ( this.throwing ) {
-            this.position.x = this.getNextX();
-            this.position.y = this.getNextY();
-
-        } else {
-            this.position.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
-            this.position.y = this.hero.position.y + (this.hero.height - this.height);
-        }
-    }
 }
 
 
@@ -734,7 +819,7 @@ class Hero extends Sprite {
 
     spawnCompanion () {
         if ( this.data.companion ) {
-            this.data.companion = Utils.merge( this.gamebox.player.data.npcs.find( ( obj ) => (obj.id === this.data.companion.id) ), this.data.companion );
+            this.data.companion = this.gamebox.player.getMergedData( this.data.companion, "npcs" );
             this.data.companion.spawn = {
                 x: this.position.x,
                 y: this.position.y,
@@ -935,6 +1020,7 @@ class Hero extends Sprite {
 
 
 module.exports = {
+    FX,
     NPC,
     Hero,
     Sprite,
