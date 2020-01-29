@@ -1,7 +1,7 @@
 const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
-const { TweenLite, Power4 } = require( "gsap" );
+const { TweenLite, Power2 } = require( "gsap" );
 
 
 
@@ -598,7 +598,7 @@ class Companion extends Sprite {
                 this.idle.y = false;
                 this.tween = TweenLite.to( props, duration, {
                     dist: distance,
-                    ease: Power4.easeOut,
+                    ease: Power2.easeOut,
                     onUpdate: () => {
                         const dist = distance - (distance - props.dist);
                         const pos = Utils.translate( origin, angle, dist );
@@ -674,7 +674,7 @@ class Companion extends Sprite {
 
                 this.tween = TweenLite.to( props, duration, {
                     dist: distance,
-                    ease: Power4.easeOut,
+                    ease: Power2.easeOut,
                     onUpdate: () => {
                         const dist = distance - (distance - props.dist);
                         const pos = Utils.translate( origin, angle, dist );
