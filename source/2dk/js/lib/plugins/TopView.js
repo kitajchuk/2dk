@@ -53,8 +53,12 @@ class TopView extends GameBox {
         this.update();
 
         // update map
-        // ignore map_ as it will become this.map
-        this.map.update();
+        this.map.update( this.offset );
+
+        // update map_?
+        if ( this.map_ ) {
+            this.map_.update( this.map_.offset );
+        }
 
         // render map
         // renders hero

@@ -548,7 +548,7 @@ class GamePad extends Controller {
             }
         }
 
-        // Sort UP and DOWN to be last the dispatch in a stream of directions
+        // Sort UP and DOWN so they dispatch last in a stream of directions
         return ctrls.sort(( ctrl ) => {
             if ( ctrl.key === Config.keys.UP || ctrl.key === Config.keys.DOWN ) {
                 return 1;

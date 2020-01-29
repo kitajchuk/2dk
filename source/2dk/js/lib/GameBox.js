@@ -55,6 +55,7 @@ class GameBox {
     initMap () {
         this.update( this.map.hero.position );
         this.map.hero.applyOffset();
+        this.map.hero.spawnCompanion();
         this.player.gameaudio.addSound({
             id: this.map.data.id,
             src: this.map.data.sound,

@@ -720,7 +720,19 @@ class Hero extends Sprite {
 
         // Companions
         this.companions = [];
+    }
 
+
+    addCompanion ( data ) {
+        const companion = new Companion( data, this );
+
+        this.companions.push( companion );
+
+        return companion;
+    }
+
+
+    spawnCompanion () {
         if ( this.data.companion ) {
             this.data.companion = Utils.merge( this.gamebox.player.data.npcs.find( ( obj ) => (obj.id === this.data.companion.id) ), this.data.companion );
             this.data.companion.spawn = {
@@ -732,15 +744,6 @@ class Hero extends Sprite {
 
             this.addCompanion( this.data.companion );
         }
-    }
-
-
-    addCompanion ( data ) {
-        const companion = new Companion( data, this );
-
-        this.companions.push( companion );
-
-        return companion;
     }
 
 

@@ -376,8 +376,8 @@ class Map {
     }
 
 
-    update () {
-        this.offset = this.gamebox.offset;
+    update ( offset ) {
+        this.offset = offset;
 
         this.npcs.forEach(( npc ) => {
             npc.update();
@@ -390,51 +390,59 @@ class Map {
 
         this.renderBox = this.getRenderbox( camera );
 
-        for ( let id in this.layers ) {
-            // Draw textures to background / foreground
-            Utils.drawMapTiles(
-                this.layers[ id ].offCanvas.context,
-                this.image,
-                this.renderBox.textures[ id ],
-                this.data.tilesize,
-                this.gridsize,
-            );
-
-            // Draw offscreen canvases to the onscreen canvases
-            this.layers[ id ].onCanvas.context.drawImage(
-                this.layers[ id ].offCanvas.canvas,
-                0,
-                0,
-                this.layers[ id ].offCanvas.canvas.width,
-                this.layers[ id ].offCanvas.canvas.height,
-                this.renderBox.bleed.x,
-                this.renderBox.bleed.y,
-                this.layers[ id ].offCanvas.canvas.width,
-                this.layers[ id ].offCanvas.canvas.height,
-            );
-        }
+        // Draw background textures
+        this.renderTextures( "background" );
 
         // Note:
-        // ActiveTiles/Objects get rendered above as they are mapped into
+        // ActiveTiles get rendered above as they are mapped into
         // the texture layers while handling the renderBox mapping logic.
         // The following is to render debug-level canvas stuff for testing.
-
         if ( this.colliders.length && this.gamebox.player.query.debug ) {
             this.drawColliders();
         }
 
-        // Draw NPCs: There can be many at one a time...
+        // Draw NPCs
+        // They can draw to either background OR foreground
         this.npcs.forEach(( npc ) => {
             npc.render();
         });
 
-        // Draw Hero: There can only be one at a time...
+        // Draw Hero
         this.hero.render();
 
-        // Draw FX: There can be many at one time...
+        // Draw foreground textures
+        this.renderTextures( "foreground" );
+
+        // Draw FX
+        // This is the topmost layer so we can do cool stuff...
         this.activeFX.forEach(( activeFx ) => {
             activeFx.render();
         });
+    }
+
+
+    renderTextures ( id ) {
+        // Draw textures to background / foreground
+        Utils.drawMapTiles(
+            this.layers[ id ].offCanvas.context,
+            this.image,
+            this.renderBox.textures[ id ],
+            this.data.tilesize,
+            this.gridsize,
+        );
+
+        // Draw offscreen canvases to the onscreen canvases
+        this.layers[ id ].onCanvas.context.drawImage(
+            this.layers[ id ].offCanvas.canvas,
+            0,
+            0,
+            this.layers[ id ].offCanvas.canvas.width,
+            this.layers[ id ].offCanvas.canvas.height,
+            this.renderBox.bleed.x,
+            this.renderBox.bleed.y,
+            this.layers[ id ].offCanvas.canvas.width,
+            this.layers[ id ].offCanvas.canvas.height,
+        );
     }
 
 
