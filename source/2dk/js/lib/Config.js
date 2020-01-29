@@ -45,11 +45,23 @@ const Config = {
         DOWNLEFT: 333,
         DOWNRIGHT: 444,
     },
+    plugins: {
+        TOPVIEW: "topview",
+    },
     events: {
         DOOR: "door",
         WARP: "warp",
         BOUNDARY: "boundary",
         CUTSCENE: "cutscene",
+    },
+    values: {
+        debounceDur: 256,
+        boundaryAnimDur: 512,
+    },
+    npc: {
+        PET: "pet",
+        TILE: "tile",
+        FAIRY: "fairy",
     },
     opposites: {
         y: "x",
@@ -73,13 +85,6 @@ const Config = {
         greyDark: "#333",
         blueDark: "#004080",
     },
-    values: {
-        debounceDur: 256,
-        boundaryAnimDur: 512,
-    },
-    plugins: {
-        TOPVIEW: "topview",
-    }
 };
 
 

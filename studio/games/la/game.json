@@ -27,10 +27,40 @@
         },
         "companion": {
             "id": "dog",
-            "companion": "pet"
+            "dir": "left",
+            "type": "pet"
         }
     },
     "npcs": [
+        {
+            "id": "cucco",
+            "name": "Cucco",
+            "width": 32,
+            "height": 32,
+            "image": "/games/la/assets/sprites/npcs.png",
+            "float": true,
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 32,
+                "height": 32
+            },
+            "verbs": {
+                "face": {
+                    "dur": 512,
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -64,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -128,
+                        "offsetY": -64,
+                        "stepsX": 2
+                    }
+                }
+            }
+        },
         {
             "id": "dog",
             "name": "Dog",
@@ -46,19 +76,6 @@
             },
             "verbs": {
                 "face": {
-                    "dur": 512,
-                    "left": {
-                        "offsetX": 0,
-                        "offsetY": 0,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": -128,
-                        "offsetY": 0,
-                        "stepsX": 2
-                    }
-                },
-                "walk": {
                     "dur": 512,
                     "left": {
                         "offsetX": 0,
@@ -459,7 +476,7 @@
             "offsetX": 0,
             "offsetY": 0,
             "stepsX": 5,
-            "dur": 500
+            "dur": 512
         }
     ],
     "bundle": [

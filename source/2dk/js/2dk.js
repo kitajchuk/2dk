@@ -4,18 +4,30 @@
 
 
 
+* Centralized Blitting...
+* Refactor GameBox lifecycle: update, blit, render
+* Use GameBox indexed object manager to execute the lifecycle
+* Auto increment GameBoxID's and assign on entry
+* Use a category > layer strategy per indexed object to determine order and position
+* Use ID's to manage position of objects in category order
+* Use ID's to trash objects from the indexes (purge: object.destroy() delete this[object])
+* GameBox will now manage background and foreground screen layers
+* Map will manage it's oversized texture layers as two objects in GameBox index
+* Player.blit() > GameBox.blit() > GameBox.Category.Index[update(), blit(), render()]
+
+
+
+* Studio JSON watcher to run static:games script
+
+
+
 * Bug: Release A while activating lift and an error is thrown...
 * Bug: push up cycle for hero
 * Bug: walk cycle gets locked (switch map with activeTile lifed)
 
 
 
-* Camera speed while holding a lifeted Object
-* Camera speed affects sprite cycle speed?
 * Hero sprite masking?
-
-
-
 * Grass sprite cycle / sound
 * Water sprite cycle / sound
 * Sword sprite cycle / sound / collision
@@ -46,7 +58,6 @@
 * Active Objects (background, foreground)
 * Active Tiles (background, foreground)
 * Upload icon PNG when creating a new game
-* Sync games to ../static when maps are saved?
 * Map spawn points (x, y, dir)
 * Map event points (coords, type, map, dir)
 * Erase one tile cel at a time?

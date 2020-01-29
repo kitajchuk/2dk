@@ -269,8 +269,8 @@ class TopView extends GameBox {
                 return;
             }
 
-        } else if ( this.map.hero.physics.maxacc !== this.map.hero.physics.controlmaxacc && this.map.hero.verb !== Config.verbs.LIFT ) {
-            this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc;
+        } else if ( this.map.hero.physics.maxv !== this.map.hero.physics.controlmaxv && this.map.hero.verb !== Config.verbs.LIFT ) {
+            this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv;
         }
 
         // Apply position
@@ -358,7 +358,7 @@ class TopView extends GameBox {
                 },
             });
             this.map.hero.cycle( Config.verbs.LIFT, this.map.hero.dir );
-            this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc / 2;
+            this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv / 2;
             this.locked = false;
 
         }, Config.values.debounceDur );
@@ -368,7 +368,7 @@ class TopView extends GameBox {
     handleThrow () {
         this.map.hero.face( this.map.hero.dir );
         this.player.gameaudio.hitSound( "throw" );
-        this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc;
+        this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv;
         this.map.hero.throwCompanion( this.interact.tile.companion ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
             this.interact.tile.companion = null;
@@ -381,11 +381,11 @@ class TopView extends GameBox {
         tiles.passive.forEach(( tile ) => {
             // Stairs are hard, you have to take it slow...
             if ( tile.group === Config.tiles.STAIRS ) {
-                this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc / 2;
+                this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv / 2;
 
             // Grass is thick, it will slow you down a bit...
             } else if ( tile.group === Config.tiles.GRASS ) {
-                this.map.hero.physics.maxacc = this.map.hero.physics.controlmaxacc / 1.5;
+                this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv / 1.5;
             }
         });
     }

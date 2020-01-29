@@ -8,6 +8,7 @@ const { TweenLite, Power4 } = require( "gsap" );
 /*******************************************************************************
 * Sprite
 * Something that is "alive"...
+* All sprites need update, blit, render AND destroy methods...
 *******************************************************************************/
 class Sprite {
     constructor ( data, map ) {
@@ -17,14 +18,22 @@ class Sprite {
         this.scale = this.gamebox.camera.resolution;
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
-        this.dir = this.data.spawn.dir || "down";
+        this.dir = (this.data.spawn.dir || "down");
         this.verb = Config.verbs.FACE;
         this.image = Loader.cash( this.data.image );
-        this.float = this.data.float || false;
+        this.float = (this.data.float || 0);
+        this.frame = 0;
         this.position = {
-            x: this.data.spawn.x / this.scale,
-            y: this.data.spawn.y / this.scale,
-            z: this.data.spawn.z / this.scale,
+            x: (this.data.spawn && this.data.spawn.x || 0) / this.scale,
+            y: (this.data.spawn && this.data.spawn.y || 0) / this.scale,
+            z: (this.data.spawn && this.data.spawn.z || 0) / this.scale,
+        };
+        this.physics = {
+            vx: (this.data.vx || 0),
+            vy: (this.data.vy || 0),
+            vz: (this.data.vz || 0),
+            maxv: (this.data.maxv || 4) / this.scale,
+            controlmaxv: (this.data.controlmaxv || 4) / this.scale,
         };
         // Hero offset is based on camera.
         // NPCs offset snaps to position.
@@ -35,13 +44,6 @@ class Sprite {
         this.idle = {
             x: true,
             y: true,
-        };
-        this.physics = {
-            accx: 0,
-            accy: 0,
-            accz: 0,
-            maxacc: 5 / this.scale,
-            controlmaxacc: 5 / this.scale,
         };
         this.hitbox = {
             x: this.position.x + (this.data.hitbox.x / this.scale),
@@ -55,18 +57,12 @@ class Sprite {
             width: this.hitbox.width,
             height: this.hitbox.height / 2,
         };
-        // this.spritecel = this.getCel();
-        this.companions = [];
+        this.spritecel = this.getCel();
     }
 
 
     destroy () {
-        // this.data = null;
-
-        if ( this.companion ) {
-            this.companion.destroy();
-            this.companion = null;
-        }
+        this.data = null;
 
         if ( this.tween ) {
             this.tween.kill();
@@ -87,33 +83,24 @@ class Sprite {
             this.previousElapsed = elapsed;
         }
 
+        // Hero can blit companions
+        if ( typeof this.blitCompanions === "function" ) {
+            this.blitCompanions( elapsed );
+        }
+
         // Set frame and sprite rendering cel
         this.applyFrame( elapsed );
-
-        // Companions
-        if ( this.companions.length ) {
-            this.companions.forEach(( companion ) => {
-                companion.blit( elapsed );
-            });
-        }
     }
 
 
     update () {
         // The physics stack...
-        this.handleAccellerations();
+        this.handleVelocity();
         this.handleGravity();
         this.applyPosition();
         this.applyHitbox();
         this.applyOffset();
         this.applyGravity();
-
-        // Companions
-        if ( this.companions.length ) {
-            this.companions.forEach(( companion ) => {
-                companion.update();
-            });
-        }
     }
 
 
@@ -132,6 +119,11 @@ class Sprite {
             );
         }
 
+        // Hero can render companions
+        if ( typeof this.renderCompanions === "function" ) {
+            this.renderCompanions();
+        }
+
         this.map.layers.background.onCanvas.context.drawImage(
             this.image,
             this.spritecel[ 0 ],
@@ -144,36 +136,34 @@ class Sprite {
             this.height,
         );
 
-        // Companions
-        if ( this.companions.length ) {
-            this.companions.forEach(( companion ) => {
-                companion.render();
-            });
-        }
-
         // Debug rendering...
         if ( this.gamebox.player.query.debug ) {
-            this.map.layers.background.onCanvas.context.globalAlpha = 0.5;
-            this.map.layers.background.onCanvas.context.fillStyle = Config.colors.red;
-
-            // Hitbox
-            this.map.layers.background.onCanvas.context.fillRect(
-                this.offset.x + (this.data.hitbox.x / this.scale),
-                this.offset.y + (this.data.hitbox.y / this.scale),
-                this.hitbox.width,
-                this.hitbox.height,
-            );
-
-            // Footbox
-            this.map.layers.background.onCanvas.context.fillRect(
-                this.offset.x + (this.data.hitbox.x / this.scale),
-                this.offset.y + (this.data.hitbox.y / this.scale) + (this.hitbox.height / 2),
-                this.hitbox.width,
-                this.hitbox.height / 2,
-            );
-
-            this.map.layers.background.onCanvas.context.globalAlpha = 1.0;
+            this.renderDebug();
         }
+    }
+
+
+    renderDebug () {
+        this.map.layers.background.onCanvas.context.globalAlpha = 0.5;
+        this.map.layers.background.onCanvas.context.fillStyle = Config.colors.red;
+
+        // Hitbox
+        this.map.layers.background.onCanvas.context.fillRect(
+            this.offset.x + (this.data.hitbox.x / this.scale),
+            this.offset.y + (this.data.hitbox.y / this.scale),
+            this.hitbox.width,
+            this.hitbox.height,
+        );
+
+        // Footbox
+        this.map.layers.background.onCanvas.context.fillRect(
+            this.offset.x + (this.data.hitbox.x / this.scale),
+            this.offset.y + (this.data.hitbox.y / this.scale) + (this.hitbox.height / 2),
+            this.hitbox.width,
+            this.hitbox.height / 2,
+        );
+
+        this.map.layers.background.onCanvas.context.globalAlpha = 1.0;
     }
 
 
@@ -192,19 +182,19 @@ class Sprite {
 /*******************************************************************************
 * Handlers
 *******************************************************************************/
-    handleAccellerations () {
+    handleVelocity () {
         if ( this.idle.x ) {
-            this.physics.accx = Utils.goToZero( this.physics.accx );
+            this.physics.vx = Utils.goToZero( this.physics.vx );
         }
 
         if ( this.idle.y ) {
-            this.physics.accy = Utils.goToZero( this.physics.accy );
+            this.physics.vy = Utils.goToZero( this.physics.vy );
         }
     }
 
 
     handleGravity () {
-        this.physics.accz++;
+        this.physics.vz++;
     }
 
 
@@ -233,9 +223,9 @@ class Sprite {
 
 
     applyGravity () {
-        if ( this.float ) {
-            return;
-        }
+        // if ( this.float ) {
+        //     return;
+        // }
 
         this.position.z = this.getNextZ();
 
@@ -280,17 +270,17 @@ class Sprite {
 
 
     getNextX () {
-        return this.position.x + Utils.limit( this.physics.accx, -this.physics.maxacc, this.physics.maxacc );
+        return this.position.x + Utils.limit( this.physics.vx, -this.physics.maxv, this.physics.maxv );
     }
 
 
     getNextY () {
-        return this.position.y + Utils.limit( this.physics.accy, -this.physics.maxacc, this.physics.maxacc );
+        return this.position.y + Utils.limit( this.physics.vy, -this.physics.maxv, this.physics.maxv );
     }
 
 
     getNextZ () {
-        return this.position.z + Utils.limit( this.physics.accz, -this.physics.maxacc, this.physics.maxacc );
+        return this.position.z + Utils.limit( this.physics.vz, -this.physics.maxv, this.physics.maxv );
     }
 
 
@@ -305,19 +295,19 @@ class Sprite {
 
     getNextPoiByDir ( dir, ahead ) {
         if ( ahead && dir === "left" ) {
-            ahead = -this.physics.controlmaxacc;
+            ahead = -this.physics.controlmaxv;
         }
 
         if ( ahead && dir === "right" ) {
-            ahead = this.physics.controlmaxacc;
+            ahead = this.physics.controlmaxv;
         }
 
         if ( ahead && dir === "up" ) {
-            ahead = -this.physics.controlmaxacc;
+            ahead = -this.physics.controlmaxv;
         }
 
         if ( ahead && dir === "down" ) {
-            ahead = this.physics.controlmaxacc;
+            ahead = this.physics.controlmaxv;
         }
 
         if ( !ahead ) {
@@ -383,11 +373,14 @@ class Companion extends Sprite {
         }
 
         // Companion type?
-        if ( this.data.companion === "tile" ) {
+        if ( this.data.type === Config.npc.TILE ) {
             this.blitTile();
 
-        } else if ( this.data.companion === "pet" ) {
+        } else if ( this.data.type === Config.npc.PET ) {
             this.blitPet();
+
+        } else if ( this.data.type === Config.npc.FAIRY ) {
+            this.blitFairy();
         }
 
         // Set watch cycle frame
@@ -401,14 +394,33 @@ class Companion extends Sprite {
         }
 
         // Set sprite cycle frame
-        this.applyFrame( elapsed );
+        if ( this.data ) {
+            this.applyFrame( elapsed );
+        }
+    }
+
+
+    blitFairy () {
+        if ( this.position.z <= -(this.hero.height + 32) ) {
+            this.physics.vz = 8;
+
+        } else if ( this.position.z >= -(this.hero.height - 32) ) {
+            this.physics.vz = -8;
+        }
+
+        if ( this.hero.position.x > this.position.x ) {
+            this.dir = "right";
+
+        } else {
+            this.dir = "left";
+        }
     }
 
 
     blitPet () {
-        if ( !this.hero.idle.x || !this.hero.idle.y ) {
+        if ( (!this.hero.idle.x || !this.hero.idle.y) || (this.hero.idle.x && this.hero.idle.y && this.distance > 24) ) {
             if ( this.position.z === 0 ) {
-                this.physics.accz = -8;
+                this.physics.vz = -8;
             }
         }
 
@@ -440,7 +452,7 @@ class Companion extends Sprite {
         return new Promise(( resolve ) => {
             this.resolve = resolve;
             this.throwing = this.hero.dir;
-            this.physics.accz = -8;
+            this.physics.vz = -8;
             this.float = false;
         });
     }
@@ -450,25 +462,28 @@ class Companion extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
-        if ( this.data.companion === "tile" ) {
+        if ( this.data.type === Config.npc.TILE ) {
             this.applyTilePosition();
 
-        } else if ( this.data.companion === "pet" ) {
+        } else if ( this.data.type === Config.npc.PET ) {
             this.applyPetPosition();
+
+        } else if ( this.data.type === Config.npc.FAIRY ) {
+            this.applyFairyPosition();
         }
     }
 
 
-    applyPetPosition () {
+    applyFairyPosition () {
         const poi = {};
 
         if ( this.hero.dir === "right" && this.hero.position.x > this.position.x ) {
             poi.x = this.hero.position.x - this.width;
-            poi.y = this.hero.position.y + this.hero.height - this.height - (this.map.gridsize / 3);
+            poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
 
         } else if ( this.hero.dir === "left" && this.hero.position.x < this.position.x ) {
             poi.x = this.hero.position.x + this.hero.width;
-            poi.y = this.hero.position.y + this.hero.height - this.height - (this.map.gridsize / 3);
+            poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
 
         } else if ( this.hero.dir === "up" && this.hero.position.y < this.position.y ) {
             poi.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
@@ -476,17 +491,15 @@ class Companion extends Sprite {
 
         } else if ( this.hero.dir === "down" && this.hero.position.y > this.position.y ) {
             poi.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
-            poi.y = this.hero.position.y - this.height;
+            poi.y = this.hero.position.y + this.hero.height - (this.height * 2);
         }
 
         if ( !this.origin ) {
-            this.origin = poi;
-            this.position.x = poi.x;
-            this.position.y = poi.y;
-            console.log( `Spawn Origin ${this.data.id} (${poi.x}, ${poi.y})` );
+            this.origin = this.position;
+            console.log( `Spawn Origin ${this.data.id} (${this.position.x}, ${this.position.y})` );
         }
 
-        if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) && (this.hero.verb !== Config.verbs.GRAB) ) {
+        if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) ) {
             this.watchFrame = this.checkFrame;
 
             if ( this.tween ) {
@@ -500,11 +513,12 @@ class Companion extends Sprite {
                 y: this.position.y,
             };
             const props = { dist: 0 };
+            const duration = (!this.hero.idle.x && !this.hero.idle.y) ? 2.0 : 1.5;
 
             if ( distance > 1 ) {
                 this.idle.x = false;
                 this.idle.y = false;
-                this.tween = TweenLite.to( props, 1.0, {
+                this.tween = TweenLite.to( props, duration, {
                     dist: distance,
                     ease: Power4.easeOut,
                     onUpdate: () => {
@@ -522,6 +536,83 @@ class Companion extends Sprite {
             } else {
                 this.idle.x = true;
                 this.idle.y = true;
+            }
+        }
+    }
+
+
+    applyPetPosition () {
+        const poi = {};
+
+        if ( this.hero.dir === "right" && this.hero.position.x > this.position.x ) {
+            poi.x = this.hero.position.x - (this.width / 2);
+            poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
+
+        } else if ( this.hero.dir === "left" && this.hero.position.x < this.position.x ) {
+            poi.x = this.hero.position.x + this.hero.width - (this.width / 2);
+            poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
+
+        } else if ( this.hero.dir === "up" && this.hero.position.y < this.position.y ) {
+            poi.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
+            poi.y = this.hero.position.y + this.hero.height - (this.height / 2);
+
+        } else if ( this.hero.dir === "down" && this.hero.position.y > this.position.y ) {
+            poi.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
+            poi.y = this.hero.position.y - (this.height / 2);
+        }
+
+        if ( !this.origin ) {
+            this.origin = this.position;
+            console.log( `Spawn Origin ${this.data.id} (${this.position.x}, ${this.position.y})` );
+        }
+
+        if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) && (this.hero.verb !== Config.verbs.GRAB) ) {
+            this.watchFrame = this.checkFrame;
+
+            if ( this.tween ) {
+                this.tween.kill();
+            }
+
+            const angle = Utils.getAngle( this.position, poi );
+            const distance = Utils.getDistance( this.position, poi );
+            const origin = {
+                x: this.position.x,
+                y: this.position.y,
+            };
+            const props = { dist: 0 };
+            const duration = (!this.hero.idle.x && !this.hero.idle.y) ? 2.0 : 1.5;
+
+            this.distance = distance;
+
+            if ( distance > 1 ) {
+                this.idle.x = false;
+                this.idle.y = false;
+
+                // Simple NPCs can operate with just FACE data
+                // Checking for WALK data to shift sprite cycles while moving...
+                // if ( this.data.verbs[ Config.verbs.WALK ] ) {
+                //     this.verb = Config.verbs.WALK;
+                // }
+
+                this.tween = TweenLite.to( props, duration, {
+                    dist: distance,
+                    ease: Power4.easeOut,
+                    onUpdate: () => {
+                        const dist = distance - (distance - props.dist);
+                        const pos = Utils.translate( origin, angle, dist );
+
+                        this.position.x = pos.x;
+                        this.position.y = pos.y;
+                    },
+                    onComplete: () => {
+                        this.tween = null;
+                    }
+                });
+
+            } else {
+                this.idle.x = true;
+                this.idle.y = true;
+                // this.verb = Config.verbs.FACE;
             }
         }
     }
@@ -549,14 +640,44 @@ class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
 
+        // Companions
+        this.companions = [];
+
         if ( this.data.companion ) {
             this.data.companion = Utils.merge( this.gamebox.player.data.npcs.find( ( obj ) => (obj.id === this.data.companion.id) ), this.data.companion );
+            this.data.companion.companion = this.data.companion.type;
             this.data.companion.spawn = {
-                x: 0,
-                y: 0,
+                x: this.position.x,
+                y: this.position.y,
                 z: 0,
+                dir: this.data.companion.dir,
             };
+
             this.addCompanion( this.data.companion );
+        }
+    }
+
+
+    addCompanion ( data ) {
+        const companion = new Companion( data, this );
+
+        this.companions.push( companion );
+
+        return companion;
+    }
+
+
+    throwCompanion ( companion ) {
+        return companion.handleThrow();
+    }
+
+
+    spliceCompanion ( companion ) {
+        for ( let i = this.companions.length; i--; ) {
+            if ( this.companions[ i ] === companion ) {
+                this.companions.splice( i, 1 );
+                break;
+            }
         }
     }
 
@@ -570,16 +691,12 @@ class Hero extends Sprite {
         this.handleControls();
 
         // The physics stack...
-        this.handleAccellerations();
+        this.handleVelocity();
         this.handleGravity();
         this.applyGravity();
 
         // Companions
-        if ( this.companions.length ) {
-            this.companions.forEach(( companion ) => {
-                companion.update();
-            });
-        }
+        this.updateCompanions();
 
         // Soft pause only affects Hero updates and NPCs
         // Hard stop will affect the entire blit/render engine...
@@ -619,26 +736,29 @@ class Hero extends Sprite {
     }
 
 
-    addCompanion ( data ) {
-        const companion = new Companion( data, this );
-
-        this.companions.push( companion );
-
-        return companion;
+    blitCompanions ( elapsed ) {
+        if ( this.companions.length ) {
+            this.companions.forEach(( companion ) => {
+                companion.blit( elapsed );
+            });
+        }
     }
 
 
-    throwCompanion ( companion ) {
-        return companion.handleThrow();
+    updateCompanions () {
+        if ( this.companions.length ) {
+            this.companions.forEach(( companion ) => {
+                companion.update();
+            });
+        }
     }
 
 
-    spliceCompanion ( companion ) {
-        for ( let i = this.companions.length; i--; ) {
-            if ( this.companions[ i ] === companion ) {
-                this.companions.splice( i, 1 );
-                break;
-            }
+    renderCompanions () {
+        if ( this.companions.length ) {
+            this.companions.forEach(( companion ) => {
+                companion.render();
+            });
         }
     }
 
@@ -706,11 +826,11 @@ class Hero extends Sprite {
 *******************************************************************************/
     handleControls () {
         if ( this.gamebox.player.controls.left ) {
-            this.physics.accx = Utils.limit( this.physics.accx - 1, -this.physics.controlmaxacc, this.physics.controlmaxacc );
+            this.physics.vx = Utils.limit( this.physics.vx - 1, -this.physics.controlmaxv, this.physics.controlmaxv );
             this.idle.x = false;
 
         } else if ( this.gamebox.player.controls.right ) {
-            this.physics.accx = Utils.limit( this.physics.accx + 1, -this.physics.controlmaxacc, this.physics.controlmaxacc );
+            this.physics.vx = Utils.limit( this.physics.vx + 1, -this.physics.controlmaxv, this.physics.controlmaxv );
             this.idle.x = false;
 
         } else {
@@ -718,11 +838,11 @@ class Hero extends Sprite {
         }
 
         if ( this.gamebox.player.controls.up ) {
-            this.physics.accy = Utils.limit( this.physics.accy - 1, -this.physics.controlmaxacc, this.physics.controlmaxacc );
+            this.physics.vy = Utils.limit( this.physics.vy - 1, -this.physics.controlmaxv, this.physics.controlmaxv );
             this.idle.y = false;
 
         } else if ( this.gamebox.player.controls.down ) {
-            this.physics.accy = Utils.limit( this.physics.accy + 1, -this.physics.controlmaxacc, this.physics.controlmaxacc );
+            this.physics.vy = Utils.limit( this.physics.vy + 1, -this.physics.controlmaxv, this.physics.controlmaxv );
             this.idle.y = false;
 
         } else {
