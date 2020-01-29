@@ -18,7 +18,7 @@ class Sprite {
         this.scale = this.gamebox.camera.resolution;
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
-        this.dir = (this.data.spawn.dir || "down");
+        this.dir = (this.data.spawn && this.data.spawn.dir || "down");
         this.verb = Config.verbs.FACE;
         this.image = Loader.cash( this.data.image );
         this.float = (this.data.float || 0);
@@ -57,6 +57,8 @@ class Sprite {
             width: this.hitbox.width,
             height: this.hitbox.height / 2,
         };
+        this.layer = (this.data.layer || "background");
+        this.relative = (this.hitbox.height !== this.height);
         this.spritecel = this.getCel();
     }
 
@@ -105,8 +107,17 @@ class Sprite {
 
 
     render () {
+        if ( this.relative ) {
+            if ( this.hitbox.y > this.map.hero.hitbox.y ) {
+                this.layer = "foreground";
+
+            } else {
+                this.layer = "background";
+            }
+        }
+
         if ( this.data.shadow ) {
-            this.map.layers.background.onCanvas.context.drawImage(
+            this.map.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
                 Math.abs( this.data.shadow.offsetX ),
                 Math.abs( this.data.shadow.offsetY ),
@@ -124,7 +135,7 @@ class Sprite {
             this.renderCompanions();
         }
 
-        this.map.layers.background.onCanvas.context.drawImage(
+        this.map.layers[ this.layer ].onCanvas.context.drawImage(
             this.image,
             this.spritecel[ 0 ],
             this.spritecel[ 1 ],
@@ -144,11 +155,11 @@ class Sprite {
 
 
     renderDebug () {
-        this.map.layers.background.onCanvas.context.globalAlpha = 0.5;
-        this.map.layers.background.onCanvas.context.fillStyle = Config.colors.red;
+        this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 0.5;
+        this.map.layers[ this.layer ].onCanvas.context.fillStyle = Config.colors.red;
 
         // Hitbox
-        this.map.layers.background.onCanvas.context.fillRect(
+        this.map.layers[ this.layer ].onCanvas.context.fillRect(
             this.offset.x + (this.data.hitbox.x / this.scale),
             this.offset.y + (this.data.hitbox.y / this.scale),
             this.hitbox.width,
@@ -156,14 +167,14 @@ class Sprite {
         );
 
         // Footbox
-        this.map.layers.background.onCanvas.context.fillRect(
+        this.map.layers[ this.layer ].onCanvas.context.fillRect(
             this.offset.x + (this.data.hitbox.x / this.scale),
             this.offset.y + (this.data.hitbox.y / this.scale) + (this.hitbox.height / 2),
             this.hitbox.width,
             this.hitbox.height / 2,
         );
 
-        this.map.layers.background.onCanvas.context.globalAlpha = 1.0;
+        this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
     }
 
 
@@ -339,6 +350,57 @@ class Sprite {
             width: this.footbox.width,
             height: this.footbox.height,
         };
+    }
+}
+
+
+
+/*******************************************************************************
+* NPC Sprite
+* Shifting states...
+* AI logics?
+*******************************************************************************/
+class NPC extends Sprite {
+    constructor ( data, map ) {
+        super( data, map );
+        this.states = Utils.copy( this.data.states );
+        this.shift();
+    }
+
+
+    shift () {
+        if ( this.states.length ) {
+            this.state = this.states.shift();
+            this.dir = this.state.dir;
+            this.verb = this.state.verb;
+        }
+    }
+
+
+    payload () {
+        if ( this.data.payload.dialogue ) {
+            this.gamebox.dialogue.play( this.data.payload.dialogue );
+        }
+    }
+
+
+    canInteract ( dir ) {
+        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
+    }
+
+
+    doInteract ( dir ) {
+        if ( this.data.payload ) {
+            this.payload();
+        }
+
+        if ( this.state.action.sound ) {
+            this.gamebox.player.gameaudio.hitSound( this.state.action.sound );
+        }
+
+        if ( this.state.action.shift ) {
+            this.shift();
+        }
     }
 }
 
@@ -851,6 +913,7 @@ class Hero extends Sprite {
 
 
 module.exports = {
+    NPC,
     Hero,
     Sprite,
 };

@@ -81,12 +81,11 @@
     "objects": [
         {
             "id": "chest",
-            "coords": [
-                [
-                    14,
-                    3
-                ]
-            ],
+            "spawn": {
+                "x": 896,
+                "y": 192,
+                "dir": "down"
+            },
             "payload": {
                 "dialogue": {
                     "type": "text",
@@ -98,12 +97,11 @@
         },
         {
             "id": "chest",
-            "coords": [
-                [
-                    14,
-                    29
-                ]
-            ],
+            "spawn": {
+                "x": 896,
+                "y": 1856,
+                "dir": "down"
+            },
             "payload": {
                 "dialogue": {
                     "type": "text",
@@ -115,12 +113,11 @@
         },
         {
             "id": "sign",
-            "coords": [
-                [
-                    25,
-                    20
-                ]
-            ],
+            "spawn": {
+                "x": 1600,
+                "y": 1280,
+                "dir": "down"
+            },
             "payload": {
                 "dialogue": {
                     "type": "text",

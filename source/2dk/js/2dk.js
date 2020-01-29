@@ -4,10 +4,6 @@
 
 
 
-* Make ActiveObject's Sprites on initialization: use npcs, not objects?
-
-
-
 * Centralized Blitting...
 * Refactor GameBox lifecycle: update, blit, render
 * Use GameBox indexed object manager to execute the lifecycle

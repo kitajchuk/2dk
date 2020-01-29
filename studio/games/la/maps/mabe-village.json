@@ -94,16 +94,11 @@
     "objects": [
         {
             "id": "bird-statue",
-            "coords": [
-                [
-                    25,
-                    11
-                ],
-                [
-                    25,
-                    12
-                ]
-            ],
+            "spawn": {
+                "x": 1600,
+                "y": 704,
+                "dir": "down"
+            },
             "payload": {
                 "dialogue": {
                     "type": "text",
@@ -115,12 +110,11 @@
         },
         {
             "id": "sign",
-            "coords": [
-                [
-                    5,
-                    13
-                ]
-            ],
+            "spawn": {
+                "x": 320,
+                "y": 832,
+                "dir": "down"
+            },
             "payload": {
                 "dialogue": {
                     "type": "text",

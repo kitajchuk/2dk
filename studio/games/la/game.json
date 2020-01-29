@@ -15,7 +15,6 @@
         "spawn": {
             "x": 1216,
             "y": 1408,
-            "z": 0,
             "dir": "down",
             "map": "/games/la/maps/mabe-village.json"
         },
@@ -38,7 +37,7 @@
             "width": 32,
             "height": 32,
             "image": "/games/la/assets/sprites/npcs.png",
-            "float": true,
+            "float": 1,
             "hitbox": {
                 "x": 0,
                 "y": 0,
@@ -59,7 +58,8 @@
                         "stepsX": 2
                     }
                 }
-            }
+            },
+            "states": [{}]
         },
         {
             "id": "dog",
@@ -67,12 +67,11 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/sprites/npcs.png",
-            "float": false,
             "hitbox": {
                 "x": 0,
-                "y": 0,
+                "y": 32,
                 "width": 64,
-                "height": 64
+                "height": 32
             },
             "verbs": {
                 "face": {
@@ -88,7 +87,120 @@
                         "stepsX": 2
                     }
                 }
-            }
+            },
+            "states": [{}]
+        },
+        {
+            "id": "sign",
+            "name": "Sign",
+            "width": 64,
+            "height": 64,
+            "image": "/games/la/assets/tiles/tiles.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 64
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": 384
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "read",
+                        "require": {
+                            "dir": "up"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": "chest",
+            "name": "Chest",
+            "width": 64,
+            "height": 64,
+            "image": "/games/la/assets/tiles/tiles.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 64
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 704,
+                        "offsetY": 768
+                    },
+                    "up": {
+                        "offsetX": 704,
+                        "offsetY": 832
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "open",
+                        "require": {
+                            "dir": "up"
+                        },
+                        "shift": 1,
+                        "sound": "chest"
+                    }
+                },
+                {
+                    "verb": "face",
+                    "dir": "up"
+                }
+            ]
+        },
+        {
+            "id": "bird-statue",
+            "name": "Bird Statue",
+            "width": 64,
+            "height": 128,
+            "image": "/games/la/assets/tiles/tiles.png",
+            "hitbox": {
+                "x": 0,
+                "y": 72,
+                "width": 64,
+                "height": 56
+            },
+            "verbs": {
+                "face": {
+                    "dur": 1000,
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": 2304,
+                        "stepsX": 4
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "move",
+                        "require": {
+                            "dir": "up"
+                        },
+                        "counter": 1
+                    }
+                }
+            ]
         }
     ],
     "heroes": [
@@ -377,92 +489,6 @@
                     }
                 }
             }
-        }
-    ],
-    "objects": [
-        {
-            "id": "sign",
-            "name": "Sign",
-            "width": 64,
-            "height": 64,
-            "layer": "background",
-            "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 64,
-                "height": 64
-            },
-            "states": [
-                {
-                    "offsetX": 0,
-                    "offsetY": 384,
-                    "action": {
-                        "verb": "read",
-                        "require": {
-                            "dir": "up"
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "id": "chest",
-            "name": "Chest",
-            "width": 64,
-            "height": 64,
-            "layer": "background",
-            "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 64,
-                "height": 64
-            },
-            "states": [
-                {
-                    "offsetX": 704,
-                    "offsetY": 768,
-                    "action": {
-                        "verb": "open",
-                        "require": {
-                            "dir": "up"
-                        },
-                        "shift": 1,
-                        "sound": "chest"
-                    }
-                },
-                {
-                    "offsetX": 704,
-                    "offsetY": 832
-                }
-            ]
-        },
-        {
-            "id": "bird-statue",
-            "name": "Bird Statue",
-            "width": 64,
-            "height": 128,
-            "layer": "background",
-            "hitbox": {
-                "x": 0,
-                "y": 72,
-                "width": 64,
-                "height": 56
-            },
-            "states": [
-                {
-                    "offsetX": 0,
-                    "offsetY": 2304,
-                    "stepsX": 4,
-                    "dur": 1000,
-                    "action": {
-                        "verb": "move",
-                        "require": {
-                            "dir": "up"
-                        },
-                        "counter": 1
-                    }
-                }
-            ]
         }
     ],
     "effects": [

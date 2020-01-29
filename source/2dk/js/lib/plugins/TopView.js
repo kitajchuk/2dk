@@ -135,8 +135,8 @@ class TopView extends GameBox {
         const poi = this.map.hero.getNextPoiByDir( this.map.hero.dir, 1 );
         const collision = this.getCollision( poi, this.map.hero );
 
-        if ( collision.obj ) {
-            this.handleObjAct( poi, this.map.hero.dir, collision.obj );
+        if ( collision.npc ) {
+            this.handleNPCAct( poi, this.map.hero.dir, collision.npc );
         }
 
         if ( collision.tiles ) {
@@ -231,8 +231,8 @@ class TopView extends GameBox {
             }
         }
 
-        if ( collision.obj ) {
-            this.handleObj( poi, dir );
+        if ( collision.npc ) {
+            this.handleNPC( poi, dir );
             return;
         }
 
@@ -301,7 +301,7 @@ class TopView extends GameBox {
     }
 
 
-    handleObj ( poi, dir ) {
+    handleNPC ( poi, dir ) {
         this.handlePushable( poi, dir );
     }
 
@@ -393,7 +393,7 @@ class TopView extends GameBox {
     }
 
 
-    handleObjAct ( poi, dir, obj ) {
+    handleNPCAct ( poi, dir, obj ) {
         if ( obj.canInteract( dir ) ) {
             obj.doInteract( dir );
         }

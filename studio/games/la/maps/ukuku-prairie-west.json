@@ -126,12 +126,11 @@
     "objects": [
         {
             "id": "sign",
-            "coords": [
-                [
-                    3,
-                    9
-                ]
-            ],
+            "spawn": {
+                "x": 192,
+                "y": 576,
+                "dir": "down"
+            },
             "payload": {
                 "dialogue": {
                     "type": "text",
@@ -144,12 +143,11 @@
         },
         {
             "id": "sign",
-            "coords": [
-                [
-                    4,
-                    20
-                ]
-            ],
+            "spawn": {
+                "x": 256,
+                "y": 1280,
+                "dir": "down"
+            },
             "payload": {
                 "dialogue": {
                     "type": "text",
@@ -161,12 +159,11 @@
         },
         {
             "id": "sign",
-            "coords": [
-                [
-                    5,
-                    28
-                ]
-            ],
+            "spawn": {
+                "x": 320,
+                "y": 1792,
+                "dir": "down"
+            },
             "payload": {
                 "dialogue": {
                     "type": "text",

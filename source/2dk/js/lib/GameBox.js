@@ -79,7 +79,7 @@ Can all be handled in plugin GameBox
             evt: this.map.checkEvt( poi, sprite ),
             map: this.map.checkMap( poi, sprite ),
             box: this.map.checkBox( poi, sprite ),
-            obj: this.map.checkObj( poi, sprite ),
+            npc: this.map.checkNPC( poi, sprite ),
             tiles: this.map.checkTiles( poi, sprite ),
         };
     }

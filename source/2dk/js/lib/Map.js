@@ -1,7 +1,7 @@
 const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
-const { Hero, Projectile } = require( "./Sprite" );
+const { Hero, NPC } = require( "./Sprite" );
 const tileSortFunc = ( tileA, tileB ) => {
     if ( tileA.amount > tileB.amount ) {
         return -1;
@@ -190,118 +190,6 @@ class ActiveTiles {
 
 
 /*******************************************************************************
-* ActiveObject
-* An interactive, collidable object to be injected in the texture map.
-* Can be static or animated. Rendering is determined by object size & coords.
-* This means a 4x4 tile sized object is rendered in 4 separate tile checks
-* when the map textures are rendering.
-*******************************************************************************/
-class ActiveObject {
-    constructor ( data, map ) {
-        this.map = map;
-        this.gamebox = this.map.gamebox;
-        this.data = Utils.merge( this.gamebox.player.data.objects.find( ( obj ) => (obj.id === data.id) ), data );
-        this.layer = this.data.layer;
-        this.width = this.data.width;
-        this.height = this.data.height;
-        this.position = {
-            x: this.data.coords[ 0 ][ 0 ] * this.map.gridsize,
-            y: this.data.coords[ 0 ][ 1 ] * this.map.gridsize,
-        };
-        this.hitbox = {
-            x: this.position.x + (this.data.hitbox.x / this.gamebox.camera.resolution),
-            y: this.position.y + (this.data.hitbox.y / this.gamebox.camera.resolution),
-            width: this.data.hitbox.width / this.gamebox.camera.resolution,
-            height: this.data.hitbox.height / this.gamebox.camera.resolution,
-        };
-        this.states = Utils.copy( this.data.states );
-        this.relative = (this.hitbox.height !== this.height);
-        this.frame = 0;
-        this.shift();
-    }
-
-
-    destroy () {
-        this.data = null;
-    }
-
-
-    shift () {
-        if ( this.states.length ) {
-            this.state = this.states.shift();
-        }
-    }
-
-
-    blit ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
-            this.previousElapsed = elapsed;
-        }
-
-        this.frame = 0;
-
-        if ( this.state.stepsX ) {
-            const diff = (elapsed - this.previousElapsed);
-
-            this.frame = Math.floor( (diff / this.state.dur) * this.state.stepsX );
-
-            if ( diff >= this.state.dur ) {
-                this.previousElapsed = elapsed;
-                this.frame = this.state.stepsX - 1;
-            }
-        }
-
-        if ( this.relative ) {
-            if ( this.hitbox.y > this.map.hero.hitbox.y ) {
-                this.layer = "foreground";
-
-            } else {
-                this.layer = "background";
-            }
-        }
-    }
-
-
-    getTile ( coords ) {
-        const offsetX = (this.state.offsetX + (this.frame * this.width));
-
-        return [
-            offsetX + ((coords[ 0 ] - this.data.coords[ 0 ][ 0 ]) * this.map.data.tilesize),
-            this.state.offsetY + ((coords[ 1 ] - this.data.coords[ 0 ][ 1 ]) * this.map.data.tilesize),
-        ];
-    }
-
-
-    payload () {
-        if ( this.data.payload.dialogue ) {
-            this.gamebox.dialogue.play( this.data.payload.dialogue );
-        }
-    }
-
-
-    canInteract ( dir ) {
-        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
-    }
-
-
-    doInteract ( dir ) {
-        if ( this.data.payload ) {
-            this.payload();
-        }
-
-        if ( this.state.action.sound ) {
-            this.gamebox.player.gameaudio.hitSound( this.state.action.sound );
-        }
-
-        if ( this.state.action.shift ) {
-            this.shift();
-        }
-    }
-}
-
-
-
-/*******************************************************************************
 * MapLayer
 * Normalize a rendering layer for Canvas and Context.
 *******************************************************************************/
@@ -373,7 +261,6 @@ class Map {
             foreground: null,
         };
         this.activeTiles = [];
-        this.activeObjects = [];
         this.activeFX = [];
         this.npcs = [];
         this.offset = {
@@ -395,19 +282,11 @@ class Map {
 
         this.activeTiles.forEach(( activeTiles ) => {
             activeTiles.destroy();
-            activeTiles = null;
         });
         this.activeTiles = null;
 
-        this.activeObjects.forEach(( activeObject ) => {
-            activeObject.destroy();
-            activeObject = null;
-        });
-        this.activeObjects = null;
-
         this.npcs.forEach(( npc ) => {
             npc.destroy();
-            npc = null;
         });
         this.npcs = null;
 
@@ -426,6 +305,11 @@ class Map {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__map";
 
+        // Render layers
+        for ( let id in this.layers ) {
+            this.addLayer( id );
+        }
+
         // Hero
         this.hero = new Hero( this.heroData, this );
 
@@ -437,20 +321,16 @@ class Map {
             });
         }
 
-        // ActiveTiles
+        // Tiles
         this.data.tiles.forEach(( data ) => {
             this.activeTiles.push( new ActiveTiles( data, this ) );
         });
 
-        // ActiveObjects
+        // Objects
         this.data.objects.forEach(( data ) => {
-            this.activeObjects.push( new ActiveObject( data, this ) );
+            data = Utils.merge( this.gamebox.player.data.npcs.find( ( obj ) => (obj.id === data.id) ), data );
+            this.npcs.push( new NPC( data, this ) );
         });
-
-        // Render layers
-        for ( let id in this.layers ) {
-            this.addLayer( id );
-        }
     }
 
 
@@ -484,15 +364,11 @@ class Map {
             activeTiles.blit( elapsed );
         });
 
-        this.activeObjects.forEach(( activeObject ) => {
-            activeObject.blit( elapsed );
-        });
-
-        this.hero.blit( elapsed );
-
         this.npcs.forEach(( npc ) => {
             npc.blit( elapsed );
         });
+
+        this.hero.blit( elapsed );
 
         this.activeFX.forEach(( activeFx ) => {
             activeFx.blit( elapsed );
@@ -547,13 +423,13 @@ class Map {
             this.drawColliders();
         }
 
-        // Draw Hero: There can only be one at a time...
-        this.hero.render();
-
         // Draw NPCs: There can be many at one a time...
         this.npcs.forEach(( npc ) => {
             npc.render();
         });
+
+        // Draw Hero: There can only be one at a time...
+        this.hero.render();
 
         // Draw FX: There can be many at one time...
         this.activeFX.forEach(( activeFx ) => {
@@ -615,7 +491,6 @@ class Map {
 
                     while ( x < width ) {
                         const lookupX = renderBox.x + x;
-                        const activeObject = this.getActiveObject( id, lookupX, lookupY );
 
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
                             const celsCopy = Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
@@ -629,14 +504,8 @@ class Map {
                                 ret[ id ][ y ][ x ].push( activeTile );
                             }
 
-                            // Push any ActiveObject tiles to the cel stack
-                            if ( activeObject ) {
-                                ret[ id ][ y ][ x ].push( activeObject );
-                            }
-
                         } else {
-                            // ActiveObject tiles can move between background and foreground
-                            ret[ id ][ y ][ x ] = activeObject ? [activeObject] : 0;
+                            ret[ id ][ y ][ x ] = 0;
                         }
 
                         x++;
@@ -730,24 +599,6 @@ class Map {
                     }
                 }
             }
-
-        return ret;
-    }
-
-
-    getActiveObject ( layer, lookupX, lookupY ) {
-        let ret = null;
-
-        this.activeObjects.forEach(( activeObject ) => {
-            // Correct render layer AND correct tile coords
-            if ( layer === activeObject.layer ) {
-                activeObject.data.coords.forEach(( coord ) => {
-                    if ( coord[ 0 ] === lookupX && coord[ 1 ] === lookupY ) {
-                        ret = activeObject.getTile( coord );
-                    }
-                });
-            }
-        });
 
         return ret;
     }
@@ -912,22 +763,22 @@ class Map {
     }
 
 
-    checkObj ( poi, sprite ) {
+    checkNPC ( poi, sprite ) {
         let ret = false;
         let collider;
         const hitbox = sprite.getHitbox( poi );
 
-        for ( let i = this.activeObjects.length; i--; ) {
+        for ( let i = this.npcs.length; i--; ) {
             collider = {
-                x: this.activeObjects[ i ].position.x,
-                y: this.activeObjects[ i ].position.y,
-                width: this.activeObjects[ i ].width / this.gamebox.camera.resolution,
-                height: this.activeObjects[ i ].height / this.gamebox.camera.resolution,
-                layer: this.activeObjects[ i ].layer,
+                x: this.npcs[ i ].position.x,
+                y: this.npcs[ i ].position.y,
+                width: this.npcs[ i ].width / this.gamebox.camera.resolution,
+                height: this.npcs[ i ].height / this.gamebox.camera.resolution,
+                layer: this.npcs[ i ].layer,
             };
 
-            if ( Utils.collide( hitbox, this.activeObjects[ i ].hitbox ) ) {
-                ret = this.activeObjects[ i ];
+            if ( Utils.collide( hitbox, this.npcs[ i ].hitbox ) ) {
+                ret = this.npcs[ i ];
                 this.setCollider( collider );
                 // break;
 
