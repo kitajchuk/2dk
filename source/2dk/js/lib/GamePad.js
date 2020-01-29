@@ -456,8 +456,10 @@ const handleTouchEnd = ( control ) => {
         control.hold = 0;
 
     } else if ( control.dpad ) {
-        instance.fire( `${control.btn[ 0 ]}-release`, control.dpad[ 0 ] );
-        // console.log( `${control.btn[ i ]}-release` );
+        control.dpad.forEach(( dpad, i ) => {
+            instance.fire( `${control.btn[ i ]}-release`, dpad );
+            // console.log( `${control.btn[ i ]}-release` );
+        });
 
     } else {
         instance.fire( `${control.btn[ 0 ]}-release`, null );
