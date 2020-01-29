@@ -15,7 +15,7 @@ class Sprite {
         this.data = data;
         this.map = map;
         this.gamebox = this.map.gamebox;
-        this.scale = this.gamebox.camera.resolution;
+        this.scale = (this.data.scale || this.gamebox.camera.resolution);
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
         this.dir = (this.data.spawn && this.data.spawn.dir || "down");
@@ -38,8 +38,8 @@ class Sprite {
         // Hero offset is based on camera.
         // NPCs offset snaps to position.
         this.offset = {
-            x: 0,
-            y: 0,
+            x: this.map.offset.x + this.position.x,
+            y: this.map.offset.y + this.position.y,
         };
         this.idle = {
             x: true,
@@ -234,9 +234,9 @@ class Sprite {
 
 
     applyGravity () {
-        if ( this.float ) {
-            return;
-        }
+        // if ( this.float ) {
+        //     return;
+        // }
 
         this.position.z = this.getNextZ();
 
@@ -501,6 +501,24 @@ class Companion extends Sprite {
                 this.map.smokeObject( this );
                 this.resolve();
             }
+        }
+    }
+
+
+    shadow () {
+        if ( this.hero.data.shadow && (this.data.type === Config.npc.FAIRY) ) {
+            // Shadows can allways render to the BG since they are floored
+            this.map.layers.background.onCanvas.context.drawImage(
+                this.hero.image,
+                Math.abs( this.hero.data.shadow.offsetX ),
+                Math.abs( this.hero.data.shadow.offsetY ),
+                this.hero.data.width,
+                this.hero.data.height,
+                this.offset.x,
+                this.offset.y,
+                this.width,
+                this.height,
+            );
         }
     }
 
@@ -816,6 +834,7 @@ class Hero extends Sprite {
     renderCompanions () {
         if ( this.companions.length ) {
             this.companions.forEach(( companion ) => {
+                companion.shadow();
                 companion.render();
             });
         }

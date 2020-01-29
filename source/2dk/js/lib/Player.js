@@ -117,6 +117,13 @@ class Player {
             this.data.game.resolution = Number( this.query.resolution );
         }
 
+        if ( this.query.companion ) {
+            const datas = this.query.companion.split( "," );
+
+            this.data.hero.companion.id = datas[ 0 ];
+            this.data.hero.companion.type = datas[ 1 ];
+        }
+
         if ( this.device ) {
             this.data.game.resolution = 2;
         }

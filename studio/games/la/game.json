@@ -25,23 +25,24 @@
             "chest": "/games/la/assets/sounds/sfx-chest-unlock.mp3"
         },
         "companion": {
-            "id": "dog",
+            "id": "cucco",
             "dir": "left",
-            "type": "pet"
+            "type": "fairy"
         }
     },
     "npcs": [
         {
             "id": "cucco",
             "name": "Cucco",
-            "width": 32,
-            "height": 32,
+            "width": 64,
+            "height": 64,
             "image": "/games/la/assets/sprites/npcs.png",
             "float": 1,
+            "scale": 2,
             "hitbox": {
                 "x": 0,
-                "y": 0,
-                "width": 32,
+                "y": 32,
+                "width": 64,
                 "height": 32
             },
             "verbs": {
