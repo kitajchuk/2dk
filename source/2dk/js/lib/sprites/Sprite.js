@@ -17,8 +17,8 @@ class Sprite {
         this.scale = this.gamebox.camera.resolution;
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
-        this.dir = (this.data.spawn && this.data.spawn.dir || "down");
-        this.verb = Config.verbs.FACE;
+        this.dir = (this.data.dir || "down");
+        this.verb = (this.data.verb || Config.verbs.FACE);
         this.image = Loader.cash( this.data.image );
         this.frame = 0;
         this.position = {

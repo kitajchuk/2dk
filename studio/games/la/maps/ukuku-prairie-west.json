@@ -13,9 +13,8 @@
     "sound": "/games/la/assets/sounds/bgm-overworld.mp3",
     "spawn": [
         {
-            "x": 0,
-            "y": 0,
-            "dir": ""
+            "x": 1216,
+            "y": 1728
         }
     ],
     "tiles": [
@@ -123,13 +122,12 @@
             }
         }
     ],
-    "objects": [
+    "npcs": [
         {
             "id": "sign",
             "spawn": {
                 "x": 192,
-                "y": 576,
-                "dir": "down"
+                "y": 576
             },
             "payload": {
                 "dialogue": {
@@ -145,8 +143,7 @@
             "id": "sign",
             "spawn": {
                 "x": 256,
-                "y": 1280,
-                "dir": "down"
+                "y": 1280
             },
             "payload": {
                 "dialogue": {
@@ -161,8 +158,7 @@
             "id": "sign",
             "spawn": {
                 "x": 320,
-                "y": 1792,
-                "dir": "down"
+                "y": 1792
             },
             "payload": {
                 "dialogue": {

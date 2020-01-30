@@ -13,9 +13,8 @@
     "sound": "/games/la/assets/sounds/bgm-mabe-village.mp3",
     "spawn": [
         {
-            "x": 0,
-            "y": 0,
-            "dir": ""
+            "x": 1024,
+            "y": 640
         }
     ],
     "tiles": [
@@ -91,13 +90,43 @@
             }
         }
     ],
-    "objects": [
+    "npcs": [
+        {
+            "id": "fisherman",
+            "spawn": {
+                "x": 960,
+                "y": 256
+            },
+            "payload": {
+                "dialogue": {
+                    "type": "prompt",
+                    "text": [
+                        "How about some fishing, little buddy?",
+                        "I'll only charge you 10 Rupees..."
+                    ],
+                    "yes": {
+                        "label": "Fish",
+                        "text": [
+                            "Okay, here's how you do it.",
+                            "Use left and right on the dpad to aim a cast.",
+                            "Once you hook a fish, press the A button rapidly to reel him in!"
+                        ]
+                    },
+                    "no": {
+                        "label": "Not Now",
+                        "text": [
+                            "You have to have more passion!",
+                            "Live a little!"
+                        ]
+                    }
+                }
+            }
+        },
         {
             "id": "bird-statue",
             "spawn": {
                 "x": 1600,
-                "y": 704,
-                "dir": "down"
+                "y": 704
             },
             "payload": {
                 "dialogue": {
@@ -112,8 +141,7 @@
             "id": "sign",
             "spawn": {
                 "x": 320,
-                "y": 832,
-                "dir": "down"
+                "y": 832
             },
             "payload": {
                 "dialogue": {

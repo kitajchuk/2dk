@@ -246,6 +246,7 @@ class Map {
         }
 
         // Hero
+        this.heroData.spawn = this.data.spawn[ this.heroData.spawn ];
         this.hero = new Hero( this.heroData, this );
 
         for ( let id in this.hero.data.sounds ) {
@@ -261,8 +262,8 @@ class Map {
             this.activeTiles.push( new ActiveTiles( data, this ) );
         });
 
-        // Objects
-        this.data.objects.forEach(( data ) => {
+        // NPCs
+        this.data.npcs.forEach(( data ) => {
             this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
         });
     }

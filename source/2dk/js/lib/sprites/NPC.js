@@ -12,6 +12,7 @@ class NPC extends Sprite {
     constructor ( data, map ) {
         super( data, map );
         this.states = Utils.copy( this.data.states );
+        this.dialogue = null;
         this.shift();
     }
 
@@ -26,9 +27,23 @@ class NPC extends Sprite {
 
 
     payload () {
-        if ( this.data.payload.dialogue ) {
-            this.gamebox.dialogue.play( this.data.payload.dialogue );
+        if ( this.data.payload.dialogue && !this.dialogue ) {
+            this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
+            this.dialogue.then(() => {
+                this.handleDialogue();
+
+            }).catch(() => {
+                this.handleDialogue();
+            });
         }
+    }
+
+
+    handleDialogue () {
+        console.log( "Dialogue complete" );
+        this.dialogue = null;
+        this.dir = this.state.dir;
+        this.verb = this.state.verb;
     }
 
 
@@ -44,6 +59,11 @@ class NPC extends Sprite {
 
         if ( this.state.action.sound ) {
             this.gamebox.player.gameaudio.hitSound( this.state.action.sound );
+        }
+
+        if ( this.state.action.verb && this.data.verbs[ this.state.action.verb ] ) {
+            this.verb = this.state.action.verb;
+            this.dir = (this.state.action.dir || this.state.dir);
         }
 
         if ( this.state.action.shift ) {

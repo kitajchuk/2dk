@@ -32,6 +32,7 @@ class Dialogue {
 
         return new Promise(( resolve, reject ) => {
             this.data = Utils.copy( data );
+            this.isResolve = true;
             this.resolve = resolve;
             this.reject = reject;
             this.$element.addClass( `_2dk__dialogue--${this.data.type} is-texting` );
@@ -63,7 +64,13 @@ class Dialogue {
                 }, this.debounce );
 
             } else {
-                this.resolve();
+                if ( this.isResolve ) {
+                    this.resolve();
+
+                } else {
+                    this.reject();
+                }
+
                 this.teardown();
             }
 
@@ -71,7 +78,14 @@ class Dialogue {
         } else if ( this.data.type === "prompt" ) {
             // A-button OR B-button will advance as long as there is text...
             if ( this.data.text.length ) {
-                this.element.innerHTML = this.data.text.shift();
+                const text = [this.data.text.shift()];
+
+                // No more text so show prompts...
+                if ( !this.data.text.length ) {
+                    text.push( `<span class="teal">A: ${this.data.yes.label}</span>, <span class="blue">B: ${this.data.no.label}</span>` );
+                }
+
+                this.element.innerHTML = text.join( "<br />" );
                 this.timeout = setTimeout(() => {
                     this.pressed = false;
 
@@ -79,13 +93,25 @@ class Dialogue {
 
             // A-button will confirm if there is no more text...
             } else if ( a && !this.data.text.length ) {
-                this.resolve();
-                this.teardown();
+                this.isResolve = true;
+                this.data.type = "text";
+                this.data.text = this.data.yes.text;
+                this.timeout = setTimeout(() => {
+                    this.pressed = false;
+                    this.check( true, false );
+
+                }, this.duration );
 
             // B-button will cancel if there is no more text...
             } else if ( b && !this.data.text.length ) {
-                this.reject();
-                this.teardown();
+                this.isResolve = false;
+                this.data.type = "text";
+                this.data.text = this.data.no.text;
+                this.timeout = setTimeout(() => {
+                    this.pressed = false;
+                    this.check( false, true );
+
+                }, this.duration );
             }
         }
     }

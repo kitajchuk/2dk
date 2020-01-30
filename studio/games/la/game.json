@@ -11,13 +11,9 @@
         "plugin": "topview"
     },
     "hero": {
-        "sprite": 0,
-        "spawn": {
-            "x": 1216,
-            "y": 1408,
-            "dir": "down",
-            "map": "/games/la/maps/mabe-village.json"
-        },
+        "sprite": 1,
+        "spawn": 0,
+        "map": "/games/la/maps/mabe-village.json",
         "sounds": {
             "pickup": "/games/la/assets/sounds/sfx-pick-up.mp3",
             "smash": "/games/la/assets/sounds/sfx-smash.mp3",
@@ -25,12 +21,54 @@
             "chest": "/games/la/assets/sounds/sfx-chest-unlock.mp3"
         },
         "companion": {
-            "id": "cucco",
+            "id": "dog",
             "dir": "left",
             "type": "pet"
         }
     },
     "npcs": [
+        {
+            "id": "fisherman",
+            "name": "Fisherman",
+            "width": 128,
+            "height": 64,
+            "image": "/games/la/assets/sprites/npcs.png",
+            "hitbox": {
+                "x": 64,
+                "y": 0,
+                "width": 64,
+                "height": 64
+            },
+            "verbs": {
+                "face": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": -128,
+                        "stepsX": 2
+                    }
+                },
+                "talk": {
+                    "down": {
+                        "offsetX": -259,
+                        "offsetY": -128
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "talk",
+                        "dir": "down",
+                        "require": {
+                            "dir": "up"
+                        }
+                    }
+                }
+            ]
+        },
         {
             "id": "cucco",
             "name": "Cucco",
@@ -55,7 +93,7 @@
                     }
                 },
                 "walk": {
-                    "dur": 256,
+                    "dur": 250,
                     "left": {
                         "offsetX": 0,
                         "offsetY": -64,
@@ -85,7 +123,7 @@
             },
             "verbs": {
                 "face": {
-                    "dur": 512,
+                    "dur": 500,
                     "left": {
                         "offsetX": 0,
                         "offsetY": 0,
@@ -139,6 +177,7 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/tiles/tiles.png",
+            "verb": "closed",
             "hitbox": {
                 "x": 0,
                 "y": 0,
@@ -146,12 +185,14 @@
                 "height": 64
             },
             "verbs": {
-                "face": {
+                "closed": {
                     "down": {
                         "offsetX": 704,
                         "offsetY": 768
-                    },
-                    "up": {
+                    }
+                },
+                "open": {
+                    "down": {
                         "offsetX": 704,
                         "offsetY": 832
                     }
@@ -159,7 +200,7 @@
             },
             "states": [
                 {
-                    "verb": "face",
+                    "verb": "closed",
                     "dir": "down",
                     "action": {
                         "verb": "open",
@@ -171,8 +212,8 @@
                     }
                 },
                 {
-                    "verb": "face",
-                    "dir": "up"
+                    "verb": "open",
+                    "dir": "down"
                 }
             ]
         },
@@ -203,7 +244,7 @@
                     "verb": "face",
                     "dir": "down",
                     "action": {
-                        "verb": "move",
+                        "verb": "read",
                         "require": {
                             "dir": "up"
                         },
@@ -256,7 +297,7 @@
                     }
                 },
                 "walk": {
-                    "dur": 512,
+                    "dur": 500,
                     "down": {
                         "offsetX": 0,
                         "offsetY": -140,
@@ -279,7 +320,7 @@
                     }
                 },
                 "push": {
-                    "dur": 512,
+                    "dur": 500,
                     "down": {
                         "offsetX": -1120,
                         "offsetY": -140,
@@ -338,7 +379,7 @@
                     }
                 },
                 "lift": {
-                    "dur": 768,
+                    "dur": 750,
                     "down": {
                         "offsetX": -2240,
                         "offsetY": -140,
@@ -374,6 +415,16 @@
                 "width": 36,
                 "height": 40
             },
+            "stats": {
+                "power": 1,
+                "health": 3,
+                "stamina": 3,
+                "strength": 1
+            },
+            "shadow": {
+                "offsetX": -368,
+                "offsetY": 0
+            },
             "verbs": {
                 "face": {
                     "down": {
@@ -394,7 +445,7 @@
                     }
                 },
                 "walk": {
-                    "dur": 240,
+                    "dur": 250,
                     "down": {
                         "offsetX": 0,
                         "offsetY": -92,
@@ -417,7 +468,7 @@
                     }
                 },
                 "push": {
-                    "dur": 240,
+                    "dur": 250,
                     "down": {
                         "offsetX": -184,
                         "offsetY": -92,
@@ -476,7 +527,7 @@
                     }
                 },
                 "lift": {
-                    "dur": 240,
+                    "dur": 250,
                     "down": {
                         "offsetX": -552,
                         "offsetY": -92,
@@ -512,7 +563,7 @@
             "offsetX": 0,
             "offsetY": 0,
             "stepsX": 5,
-            "dur": 512
+            "dur": 500
         }
     ],
     "bundle": [

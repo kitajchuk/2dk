@@ -134,11 +134,7 @@ class Companion extends Sprite {
 
 
     applyTilePosition () {
-        if ( this.throwing ) {
-            this.position.x = this.getNextX();
-            this.position.y = this.getNextY();
-
-        } else {
+        if ( !this.throwing ) {
             this.position.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
             this.position.y = this.hero.position.y - (this.height / 5);
         }

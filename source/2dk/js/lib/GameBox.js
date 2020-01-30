@@ -22,7 +22,7 @@ class GameBox {
         };
 
         // Map
-        this.map = new Map( Loader.cash( this.player.data.hero.spawn.map ), this.player.data.hero, this );
+        this.map = new Map( Loader.cash( this.player.data.hero.map ), this.player.data.hero, this );
 
         // NPCs
         this.npcs = [];

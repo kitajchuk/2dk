@@ -13,9 +13,8 @@
     "sound": "/games/la/assets/sounds/bgm-mysterious-forest.mp3",
     "spawn": [
         {
-            "x": 0,
-            "y": 0,
-            "dir": ""
+            "x": 2176,
+            "y": 1024
         }
     ],
     "tiles": [
@@ -78,13 +77,12 @@
             }
         }
     ],
-    "objects": [
+    "npcs": [
         {
             "id": "chest",
             "spawn": {
                 "x": 896,
-                "y": 192,
-                "dir": "down"
+                "y": 192
             },
             "payload": {
                 "dialogue": {
@@ -99,8 +97,7 @@
             "id": "chest",
             "spawn": {
                 "x": 896,
-                "y": 1856,
-                "dir": "down"
+                "y": 1856
             },
             "payload": {
                 "dialogue": {
@@ -115,8 +112,7 @@
             "id": "sign",
             "spawn": {
                 "x": 1600,
-                "y": 1280,
-                "dir": "down"
+                "y": 1280
             },
             "payload": {
                 "dialogue": {

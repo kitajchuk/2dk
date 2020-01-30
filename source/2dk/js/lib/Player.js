@@ -111,26 +111,26 @@ class Player {
 
     debug () {
         if ( this.query.map ) {
-            this.data.hero.spawn.map = `/games/${this.data.game.id}/maps/${this.query.map}`;
+            this.data.hero.map = `/games/${this.data.game.id}/maps/${this.query.map}`;
         }
 
-        if ( this.query.spawn ) {
-            const coords = this.query.spawn.split( "," );
-
-            this.data.hero.spawn.x = Number( coords[ 0 ] );
-            this.data.hero.spawn.y = Number( coords[ 1 ] );
-        }
+        // if ( this.query.spawn ) {
+        //     const coords = this.query.spawn.split( "," );
+        //
+        //     this.data.hero.spawn.x = Number( coords[ 0 ] );
+        //     this.data.hero.spawn.y = Number( coords[ 1 ] );
+        // }
 
         if ( this.query.resolution ) {
             this.data.game.resolution = Number( this.query.resolution );
         }
 
-        if ( this.query.companion ) {
-            const datas = this.query.companion.split( "," );
-
-            this.data.hero.companion.id = datas[ 0 ];
-            this.data.hero.companion.type = datas[ 1 ];
-        }
+        // if ( this.query.companion ) {
+        //     const datas = this.query.companion.split( "," );
+        //
+        //     this.data.hero.companion.id = datas[ 0 ];
+        //     this.data.hero.companion.type = datas[ 1 ];
+        // }
 
         if ( this.device ) {
             this.data.game.resolution = 2;

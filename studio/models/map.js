@@ -20,7 +20,7 @@ module.exports = {
     ],
     "tiles": [],
     "events": [],
-    "objects": [],
+    "npcs": [],
     "collision": [],
     "textures": {
         "background": [],
