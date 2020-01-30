@@ -27,7 +27,7 @@
         "companion": {
             "id": "cucco",
             "dir": "left",
-            "type": "fairy"
+            "type": "pet"
         }
     },
     "npcs": [
@@ -37,7 +37,6 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/sprites/npcs.png",
-            "scale": 2,
             "hitbox": {
                 "x": 0,
                 "y": 32,
@@ -46,7 +45,17 @@
             },
             "verbs": {
                 "face": {
-                    "dur": 512,
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -64
+                    },
+                    "right": {
+                        "offsetX": -128,
+                        "offsetY": -64
+                    }
+                },
+                "walk": {
+                    "dur": 256,
                     "left": {
                         "offsetX": 0,
                         "offsetY": -64,
@@ -67,6 +76,7 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/sprites/npcs.png",
+            "bounce": 1,
             "hitbox": {
                 "x": 0,
                 "y": 32,

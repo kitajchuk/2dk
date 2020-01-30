@@ -1,7 +1,9 @@
 const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
-const { Hero, NPC, FX } = require( "./Sprite" );
+const Hero = require( "./sprites/Hero" );
+const NPC = require( "./sprites/NPC" );
+const FX = require( "./sprites/FX" );
 const tileSortFunc = ( tileA, tileB ) => {
     if ( tileA.amount > tileB.amount ) {
         return -1;

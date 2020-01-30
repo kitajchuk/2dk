@@ -3,7 +3,6 @@ const Config = require( "../Config" );
 const Loader = require( "../Loader" );
 const GameBox = require( "../GameBox" );
 const { Map } = require( "../Map" );
-const { TweenLite, Power4 } = require( "gsap" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
 
