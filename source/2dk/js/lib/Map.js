@@ -3,41 +3,7 @@ const Loader = require( "./Loader" );
 const Config = require( "./Config" );
 const Hero = require( "./sprites/Hero" );
 const NPC = require( "./sprites/NPC" );
-const FX = require( "./sprites/FX" );
 const Companion = require( "./sprites/Companion" );
-const tileSortFunc = ( tileA, tileB ) => {
-    if ( tileA.amount > tileB.amount ) {
-        return -1;
-
-    } else {
-        return 1;
-    }
-};
-const stopVerbs = [
-    Config.verbs.GRAB,
-    Config.verbs.MOVE,
-    Config.verbs.LIFT,
-];
-const actionVerbs = [
-    Config.verbs.LIFT,
-];
-const attackVerbs = [
-    Config.verbs.ATTACK,
-];
-
-
-
-// @see notes in ./Config.js as these are related to that line of thought...
-const footTiles = [
-    Config.tiles.STAIRS,
-    Config.tiles.WATER,
-    Config.tiles.GRASS,
-    Config.tiles.HOLE,
-];
-const cameraTiles = [
-    Config.tiles.STAIRS,
-    Config.tiles.GRASS,
-];
 
 
 
@@ -185,6 +151,7 @@ class Map {
         this.data = data;
         this.heroData = heroData;
         this.gamebox = gamebox;
+        this.camera = this.gamebox.camera;
         this.width = this.data.width / this.gamebox.camera.resolution;
         this.height = this.data.height / this.gamebox.camera.resolution;
         this.gridsize = this.data.tilesize / this.gamebox.camera.resolution;
@@ -339,6 +306,7 @@ class Map {
     render ( camera ) {
         this.clear();
 
+        this.camera = camera;
         this.renderBox = this.getRenderbox( camera );
 
         // Draw background textures
@@ -580,63 +548,6 @@ class Map {
     }
 
 
-    smokeObject ( obj ) {
-        let data = {
-            id: "smoke",
-            spawn: {
-                x: obj.position.x + (obj.width / 2) - (this.gridsize / 2),
-                y: obj.position.y + (obj.height / 2) - (this.gridsize / 2),
-            },
-        };
-
-        data = this.gamebox.player.getMergedData( data, "fx" );
-        data.hitbox = {
-            x: 0,
-            y: 0,
-            width: data.width,
-            height: data.height,
-        };
-
-        this.addFX( new FX( data, this ) );
-        this.addFX( new FX( Utils.merge( data, {
-            spawn: {
-                x: origin.x - (this.gridsize / 4),
-                y: origin.y - (this.gridsize / 4),
-            },
-            vx: -8,
-            vy: -8,
-
-        }), this ));
-        this.addFX( new FX( Utils.merge( data, {
-            spawn: {
-                x: origin.x + (this.gridsize / 4),
-                y: origin.y - (this.gridsize / 4),
-            },
-            vx: 8,
-            vy: -8,
-
-        }), this ));
-        this.addFX( new FX( Utils.merge( data, {
-            spawn: {
-                x: origin.x - (this.gridsize / 4),
-                y: origin.y + (this.gridsize / 4),
-            },
-            vx: -8,
-            vy: 8,
-
-        }), this ));
-        this.addFX( new FX( Utils.merge( data, {
-            spawn: {
-                x: origin.x + (this.gridsize / 4),
-                y: origin.y + (this.gridsize / 4),
-            },
-            vx: 8,
-            vy: 8,
-
-        }), this ));
-    }
-
-
 /*******************************************************************************
 * Collisions:
 * Perception Checks
@@ -698,189 +609,6 @@ class Map {
                 this.layers[ layer ].onCanvas.context.globalAlpha = 1.0;
             });
         }
-    }
-
-
-    checkBox ( poi, sprite ) {
-        let ret = false;
-
-        if ( poi.x <= this.gamebox.camera.x || poi.x >= (this.gamebox.camera.x + this.gamebox.camera.width - sprite.width) ) {
-            ret = true;
-        }
-
-        if ( poi.y <= this.gamebox.camera.y || poi.y >= (this.gamebox.camera.y + this.gamebox.camera.height - sprite.height) ) {
-            ret = true;
-        }
-
-        return ret;
-    }
-
-
-    checkMap ( poi, sprite ) {
-        let ret = false;
-        const hitbox = sprite.getHitbox( poi );
-
-        for ( let i = this.data.collision.length; i--; ) {
-            const collider = this.data.collider / this.gamebox.camera.resolution;
-            const tile = {
-                width: collider,
-                height: collider,
-                x: this.data.collision[ i ][ 0 ] * collider,
-                y: this.data.collision[ i ][ 1 ] * collider,
-                layer: "foreground",
-            };
-
-            if ( Utils.collide( hitbox, tile ) ) {
-                ret = true;
-                this.setCollider( tile );
-                // break;
-
-            } else {
-                this.clearCollider( tile );
-            }
-        }
-
-        return ret;
-    }
-
-
-    checkEvt ( poi, sprite ) {
-        let ret = false;
-        const hitbox = {
-            width: sprite.width,
-            height: sprite.height,
-            x: sprite.position.x,
-            y: sprite.position.y,
-        };
-
-        for ( let i = this.data.events.length; i--; ) {
-            const tile = {
-                width: this.gridsize,
-                height: this.gridsize,
-                x: this.data.events[ i ].coords[ 0 ] * this.gridsize,
-                y: this.data.events[ i ].coords[ 1 ] * this.gridsize
-            };
-
-            if ( Utils.collide( hitbox, tile ) && (this.hero.dir === this.data.events[ i ].dir) ) {
-                ret = this.data.events[ i ];
-                this.setCollider( tile );
-                break;
-
-            } else {
-                this.clearCollider( tile );
-            }
-        }
-
-        return ret;
-    }
-
-
-    checkNPC ( poi, sprite ) {
-        let ret = false;
-        let collider;
-        const hitbox = sprite.getHitbox( poi );
-
-        for ( let i = this.npcs.length; i--; ) {
-            // Companion NPC will have a Hero prop?
-            // Ensure we also don't collide with ourselves :P
-            if ( this.npcs[ i ].hero || this.npcs[ i ] === sprite ) {
-                continue;
-            }
-
-            collider = {
-                x: this.npcs[ i ].position.x,
-                y: this.npcs[ i ].position.y,
-                width: this.npcs[ i ].width / this.gamebox.camera.resolution,
-                height: this.npcs[ i ].height / this.gamebox.camera.resolution,
-                layer: this.npcs[ i ].layer,
-            };
-
-            if ( Utils.collide( hitbox, this.npcs[ i ].hitbox ) ) {
-                ret = this.npcs[ i ];
-                this.setCollider( collider );
-                // break;
-
-            } else {
-                this.clearCollider( collider );
-            }
-        }
-
-        return ret;
-    }
-
-
-    checkTiles ( poi ) {
-        let ret = false;
-        let amount;
-        const tiles = {
-            action: [],
-            attack: [],
-            passive: [],
-        };
-        const hitbox = this.hero.getHitbox( poi );
-        const footbox = this.hero.getFootbox( poi );
-
-        for ( let i = this.activeTiles.length; i--; ) {
-            const tile = this.activeTiles[ i ];
-            const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
-
-            for ( let j = this.activeTiles[ i ].data.coords.length; j--; ) {
-                const tilebox = {
-                    width: this.gridsize,
-                    height: this.gridsize,
-                    x: tile.data.coords[ j ][ 0 ] * this.gridsize,
-                    y: tile.data.coords[ j ][ 1 ] * this.gridsize,
-                };
-                const collides = Utils.collide( lookbox, tilebox );
-
-                if ( collides ) {
-                    // Utils.collides returns a useful collider object...
-                    const amount = collides.width * collides.height;
-                    const match = {
-                        tile,
-                        jump: (tile.data.action && tile.data.action.verb === Config.verbs.JUMP),
-                        stop: (tile.data.action && stopVerbs.indexOf( tile.data.action.verb ) !== -1),
-                        act: (tile.data.action && actionVerbs.indexOf( tile.data.action.verb ) !== -1),
-                        hit: (tile.data.attack && attackVerbs.indexOf( tile.data.attack.verb ) !== -1),
-                        cam: (cameraTiles.indexOf( tile.data.group ) !== -1),
-                        group: tile.data.group,
-                        coord: tile.data.coords[ j ],
-                        amount,
-                        tilebox,
-                        collides,
-                    };
-
-                    if ( tile.data.action ) {
-                        tiles.action.push( match );
-                    }
-
-                    if ( tile.data.attack ) {
-                        tiles.attack.push( match );
-                    }
-
-                    if ( (!tile.data.action && !tile.data.attack) || (tile.data.attack && match.cam) ) {
-                        tiles.passive.push( match );
-                    }
-
-                } else if ( this.gamebox.player.query.debug ) {
-                    this.clearCollider( tilebox );
-                }
-            }
-        }
-
-        if ( tiles.action.length || tiles.attack.length || tiles.passive.length ) {
-            tiles.action = tiles.action.sort( tileSortFunc );
-            tiles.attack = tiles.attack.sort( tileSortFunc );
-            tiles.passive = tiles.passive.sort( tileSortFunc );
-
-            if ( this.gamebox.player.query.debug ) {
-                this.setTileColliders( tiles );
-            }
-
-            ret = tiles;
-        }
-
-        return ret;
     }
 }
 

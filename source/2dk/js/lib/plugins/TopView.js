@@ -6,6 +6,7 @@ const { Map } = require( "../Map" );
 const Sprite = require( "../sprites/Sprite" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
+const { TweenLite, Power0, Power1, Power2, Power3, Power4 } = require( "gsap" );
 
 
 
@@ -47,7 +48,7 @@ class TopView extends GameBox {
         }
 
         // update hero
-        this.map.hero.update();
+        this.hero.update();
 
         // update gamebox (camera)
         this.update();
@@ -74,8 +75,8 @@ class TopView extends GameBox {
 
 
     update ( pos ) {
-        const x = ( this.map.hero.position.x - ((this.camera.width / 2) - (this.map.hero.width / 2)) );
-        const y = ( this.map.hero.position.y - ((this.camera.height / 2) - (this.map.hero.height / 2)) );
+        const x = ( this.hero.position.x - ((this.camera.width / 2) - (this.hero.width / 2)) );
+        const y = ( this.hero.position.y - ((this.camera.height / 2) - (this.hero.height / 2)) );
         const offset = {};
 
         if ( x >= 0 && x <= (this.map.width - this.camera.width) ) {
@@ -112,9 +113,9 @@ class TopView extends GameBox {
 * GamePad Inputs
 *******************************************************************************/
     pressD ( dir ) {
-        const poi = this.map.hero.getNextPoiByDir( dir );
+        const poi = this.hero.getNextPoiByDir( dir );
 
-        this.handleCollision( poi, dir );
+        this.handleHero( poi, dir );
     }
 
 
@@ -128,28 +129,28 @@ class TopView extends GameBox {
         }
 
         if ( this.interact.tile ) {
-            this.map.hero.cycle( this.map.hero.verb, this.map.hero.dir );
+            this.hero.cycle( this.hero.verb, this.hero.dir );
 
         } else {
-            this.map.hero.face( this.map.hero.dir );
+            this.hero.face( this.hero.dir );
         }
     }
 
 
     pressA () {
-        const poi = this.map.hero.getNextPoiByDir( this.map.hero.dir, 1 );
+        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
         const collision = {
-            npc: this.map.checkNPC( poi, this.map.hero ),
-            tiles: this.map.checkTiles( poi, this.map.hero ),
+            npc: this.checkNPC( poi, this.hero ),
+            tiles: this.checkTiles( poi, this.hero ),
         };
 
         if ( collision.npc ) {
-            this.handleNPCAct( poi, this.map.hero.dir, collision.npc );
+            this.handleHeroNPCAct( poi, this.hero.dir, collision.npc );
         }
 
         if ( collision.tiles ) {
             if ( collision.tiles.action.length && collision.tiles.action[ 0 ].act && !this.interact.tile ) {
-                this.handleTileAct( poi, this.map.hero.dir, collision.tiles.action[ 0 ] );
+                this.handleHeroTileAct( poi, this.hero.dir, collision.tiles.action[ 0 ] );
             }
         }
     }
@@ -172,36 +173,17 @@ class TopView extends GameBox {
     }
 
 
-    handleReleaseA () {
-        if ( this.map.hero.verb === Config.verbs.GRAB ) {
-            this.map.hero.face( this.map.hero.dir );
-        }
-
-        if ( this.map.hero.verb === Config.verbs.LIFT ) {
-            if ( this.interact.tile.throw ) {
-                this.handleThrow();
-
-            } else {
-                this.interact.tile.throw = true;
-            }
-
-        } else {
-            delete this.interact.tile;
-        }
-    }
-
-
     pressB () {
-        const poi = this.map.hero.getNextPoiByDir( this.map.hero.dir, 1 );
+        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
         const collision = {
-            tiles: this.map.checkTiles( poi, this.map.hero ),
+            tiles: this.checkTiles( poi, this.hero ),
         };
 
         if ( collision.tiles ) {
             if ( collision.tiles.attack.length ) {
                 collision.tiles.attack.forEach(( tile ) => {
                     if ( tile.hit ) {
-                        this.handleTileHit( poi, this.map.hero.dir, tile );
+                        this.handleHeroTileHit( poi, this.hero.dir, tile );
                     }
                 });
             }
@@ -225,15 +207,34 @@ class TopView extends GameBox {
 
 
 /*******************************************************************************
-* Handlers...
+* Hero Handlers...
 *******************************************************************************/
-    handleCollision ( poi, dir ) {
+    handleReleaseA () {
+        if ( this.hero.verb === Config.verbs.GRAB ) {
+            this.hero.face( this.hero.dir );
+        }
+
+        if ( this.hero.verb === Config.verbs.LIFT ) {
+            if ( this.interact.tile.throw ) {
+                this.handleHeroThrow();
+
+            } else {
+                this.interact.tile.throw = true;
+            }
+
+        } else {
+            delete this.interact.tile;
+        }
+    }
+
+
+    handleHero ( poi, dir ) {
         const collision = {
-            evt: this.map.checkEvt( poi, this.map.hero ),
-            map: this.map.checkMap( poi, this.map.hero ),
-            box: this.map.checkBox( poi, this.map.hero ),
-            npc: this.map.checkNPC( poi, this.map.hero ),
-            tiles: this.map.checkTiles( poi, this.map.hero ),
+            evt: this.checkEvt( poi, this.hero ),
+            map: this.checkMap( poi, this.hero ),
+            box: this.checkBox( poi, this.hero ),
+            npc: this.checkNPC( poi, this.hero ),
+            tiles: this.checkTiles( poi, this.hero ),
         };
 
         if ( this.locked ) {
@@ -242,42 +243,42 @@ class TopView extends GameBox {
 
         if ( collision.evt ) {
             if ( collision.evt.type === Config.events.BOUNDARY && collision.box ) {
-                this.handleEvtBoundary( poi, dir, collision.evt );
+                this.handleHeroEvtBoundary( poi, dir, collision.evt );
                 return;
             }
         }
 
         if ( collision.npc ) {
-            this.handleNPC( poi, dir );
+            this.handleHeroNPC( poi, dir );
             return;
         }
 
         if ( collision.map ) {
             // Tile will allow leaping from it's edge, like a ledge...
             if ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].jump && (collision.tiles.action[ 0 ].collides.width > (collision.tiles.action[ 0 ].tilebox.width / 2) || collision.tiles.action[ 0 ].collides.height > (collision.tiles.action[ 0 ].tilebox.height / 2)) ) {
-                this.handleTileJump(  poi, dir, collision.tiles.action[ 0 ] );
+                this.handleHeroTileJump(  poi, dir, collision.tiles.action[ 0 ] );
 
             } else {
-                this.handleMap( poi, dir );
+                this.handleHeroMap( poi, dir );
                 return;
             }
         }
 
         if ( collision.box ) {
-            this.handleBox( poi, dir );
+            this.handleHeroBox( poi, dir );
             return;
         }
 
-        if ( this.map.hero.verb === Config.verbs.GRAB ) {
-            if ( dir === Config.opposites[ this.map.hero.dir ] ) {
-                this.handleLift( poi, dir );
+        if ( this.hero.verb === Config.verbs.GRAB ) {
+            if ( dir === Config.opposites[ this.hero.dir ] ) {
+                this.handleHeroLift( poi, dir );
             }
 
             return;
         }
 
         if ( collision.tiles ) {
-            this.handleTiles(  poi, dir, collision.tiles );
+            this.handleHeroTiles(  poi, dir, collision.tiles );
 
             // Tile is behaves like a WALL, or Object you cannot walk on
             if ( collision.tiles.action.length && collision.tiles.action[ 0 ].stop ) {
@@ -285,61 +286,61 @@ class TopView extends GameBox {
                 return;
             }
 
-        } else if ( this.map.hero.physics.maxv !== this.map.hero.physics.controlmaxv && this.map.hero.verb !== Config.verbs.LIFT ) {
-            this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv;
+        } else if ( this.hero.physics.maxv !== this.hero.physics.controlmaxv && this.hero.verb !== Config.verbs.LIFT ) {
+            this.hero.physics.maxv = this.hero.physics.controlmaxv;
         }
 
         // Apply position
-        this.map.hero.applyPosition( poi, dir );
+        this.hero.applyPosition( poi, dir );
 
         // Applly offset
-        this.map.hero.applyOffset();
+        this.hero.applyOffset();
 
         // Apply the sprite animation cycle
-        this.map.hero.applyCycle();
+        this.hero.applyCycle();
     }
 
 
-    handlePushable ( poi, dir ) {
+    handleHeroPushable ( poi, dir ) {
         this.interact.push++;
 
-        if ( (this.map.hero.verb !== Config.verbs.LIFT) && (this.interact.push > this.map.data.tilesize) ) {
-            this.map.hero.cycle( Config.verbs.PUSH, dir );
+        if ( (this.hero.verb !== Config.verbs.LIFT) && (this.interact.push > this.map.data.tilesize) ) {
+            this.hero.cycle( Config.verbs.PUSH, dir );
 
-        } else {
-            this.map.hero.cycle( this.map.hero.verb, dir );
+        } else if ( this.hero.verb !== Config.verbs.LIFT ) {
+            this.hero.cycle( Config.verbs.WALK, dir );
         }
     }
 
 
-    handleMap ( poi, dir ) {
-        this.handlePushable( poi, dir );
+    handleHeroMap ( poi, dir ) {
+        this.handleHeroPushable( poi, dir );
     }
 
 
-    handleNPC ( poi, dir ) {
-        this.handlePushable( poi, dir );
+    handleHeroNPC ( poi, dir ) {
+        this.handleHeroPushable( poi, dir );
     }
 
 
     handleTileStop (  poi, dir, tile ) {
-        this.handlePushable( poi, dir );
+        this.handleHeroPushable( poi, dir );
     }
 
 
-    handleBox ( poi, dir ) {
-        this.map.hero.cycle( this.map.hero.verb, dir );
+    handleHeroBox ( poi, dir ) {
+        this.hero.cycle( this.hero.verb, dir );
     }
 
 
-    handleEvtBoundary (  poi, dir, evt ) {
+    handleHeroEvtBoundary (  poi, dir, evt ) {
         this.switchMap( evt );
     }
 
 
-    handleLift ( poi, dir ) {
+    handleHeroLift ( poi, dir ) {
         this.locked = true;
-        this.map.hero.cycle( Config.verbs.PULL, dir );
+        this.hero.cycle( Config.verbs.PULL, dir );
         setTimeout(() => {
             const activeTiles = this.map.getActiveTiles( this.interact.tile.group );
             const tileCel = activeTiles.getTile();
@@ -351,8 +352,8 @@ class TopView extends GameBox {
                 width: this.map.gridsize,
                 height: this.map.gridsize,
                 spawn: {
-                    x: this.map.hero.position.x + (this.map.hero.width / 2) - (this.map.gridsize / 2),
-                    y: this.map.hero.position.y - this.map.gridsize + 42,
+                    x: this.hero.position.x + (this.hero.width / 2) - (this.map.gridsize / 2),
+                    y: this.hero.position.y - this.map.gridsize + 42,
                 },
                 image: this.map.data.image,
                 hitbox: {
@@ -371,21 +372,21 @@ class TopView extends GameBox {
                 },
 
             }, this.map );
-            this.interact.tile.sprite.hero = this.map.hero;
+            this.interact.tile.sprite.hero = this.hero;
             this.map.addNPC( this.interact.tile.sprite );
-            this.map.hero.cycle( Config.verbs.LIFT, this.map.hero.dir );
-            this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv / 2;
+            this.hero.cycle( Config.verbs.LIFT, this.hero.dir );
+            this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
             this.locked = false;
 
         }, Config.values.debounceDur );
     }
 
 
-    handleThrow () {
-        this.map.hero.face( this.map.hero.dir );
+    handleHeroThrow () {
+        this.hero.face( this.hero.dir );
         this.player.gameaudio.hitSound( "throw" );
-        this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv;
-        this.interact.tile.sprite.handleThrow().then(() => {
+        this.hero.physics.maxv = this.hero.physics.controlmaxv;
+        this.handleThrow( this.interact.tile.sprite ).then(() => {
             this.player.gameaudio.hitSound( "smash" );
             this.map.killObj( "npcs", this.interact.tile.sprite );
 
@@ -394,28 +395,28 @@ class TopView extends GameBox {
     }
 
 
-    handleTiles ( poi, dir, tiles ) {
+    handleHeroTiles ( poi, dir, tiles ) {
         tiles.passive.forEach(( tile ) => {
             // Stairs are hard, you have to take it slow...
             if ( tile.group === Config.tiles.STAIRS ) {
-                this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv / 2;
+                this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
 
             // Grass is thick, it will slow you down a bit...
             } else if ( tile.group === Config.tiles.GRASS ) {
-                this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv / 1.5;
+                this.hero.physics.maxv = this.hero.physics.controlmaxv / 1.5;
             }
         });
     }
 
 
-    handleNPCAct ( poi, dir, obj ) {
+    handleHeroNPCAct ( poi, dir, obj ) {
         if ( obj.canInteract( dir ) ) {
             obj.doInteract( dir );
         }
     }
 
 
-    handleTileJump ( poi, dir, tile ) {
+    handleHeroTileJump ( poi, dir, tile ) {
         if ( dir === tile.tile.data.action.require.dir ) {
             this.locked = true;
 
@@ -438,22 +439,194 @@ class TopView extends GameBox {
     }
 
 
-    handleTileAct ( poi, dir, tile ) {
+    handleHeroTileAct ( poi, dir, tile ) {
         const activeTiles = this.map.getActiveTiles( tile.group );
 
         if ( tile.tile.canInteract() ) {
             this.interact.tile = tile;
 
             if ( tile.tile.data.action.verb === Config.verbs.LIFT ) {
-                this.map.hero.cycle( Config.verbs.GRAB, this.map.hero.dir );
+                this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
             }
         }
     }
 
 
-    handleTileHit ( poi, dir, tile ) {
+    handleHeroTileHit ( poi, dir, tile ) {
         if ( tile.tile.canAttack() ) {
             tile.tile.attack( tile.coord );
+        }
+    }
+
+
+/*******************************************************************************
+* Sprite Handlers
+*******************************************************************************/
+    handleControls ( controls, sprite ) {
+        if ( controls.left ) {
+            sprite.physics.vx = Utils.limit( sprite.physics.vx - sprite.speed, -sprite.physics.controlmaxv, sprite.physics.controlmaxv );
+            sprite.idle.x = false;
+
+        } else if ( controls.right ) {
+            sprite.physics.vx = Utils.limit( sprite.physics.vx + sprite.speed, -sprite.physics.controlmaxv, sprite.physics.controlmaxv );
+            sprite.idle.x = false;
+
+        } else {
+            sprite.idle.x = true;
+        }
+
+        if ( controls.up ) {
+            sprite.physics.vy = Utils.limit( sprite.physics.vy - sprite.speed, -sprite.physics.controlmaxv, sprite.physics.controlmaxv );
+            sprite.idle.y = false;
+
+        } else if ( controls.down ) {
+            sprite.physics.vy = Utils.limit( sprite.physics.vy + sprite.speed, -sprite.physics.controlmaxv, sprite.physics.controlmaxv );
+            sprite.idle.y = false;
+
+        } else {
+            sprite.idle.y = true;
+        }
+
+        // Handle sprite AI logics...
+        // Hero sprite will NEVER have AI data...
+        if ( sprite.data.ai ) {
+            if ( sprite.data.ai === "wander" ) {
+                this.handleWander( sprite );
+            }
+        }
+    }
+
+
+    handleThrow ( sprite ) {
+        return new Promise(( resolve ) => {
+            sprite.resolve = resolve;
+            sprite.throwing = this.hero.dir;
+
+            let throwX;
+            let throwY;
+            const dist = 128;
+            const props = {
+                x: sprite.position.x,
+                y: sprite.position.y,
+            };
+            const _complete = () => {
+                this.smokeObject( sprite );
+                sprite.tween.kill();
+                sprite.tween = null;
+                sprite.resolve();
+            };
+
+            if ( sprite.throwing === "left" ) {
+                throwX = sprite.position.x - dist;
+                throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+
+            } else if ( sprite.throwing === "right" ) {
+                throwX = sprite.position.x + dist;
+                throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+
+            } else if ( sprite.throwing === "up" ) {
+                throwX = sprite.position.x;
+                throwY = sprite.position.y - dist;
+
+            }  else if ( sprite.throwing === "down" ) {
+                throwX = sprite.position.x;
+                throwY = this.hero.footbox.y + dist;
+            }
+
+            sprite.tween = TweenLite.to( props, 0.5, {
+                x: throwX,
+                y: throwY,
+                ease: Power4.easeOut,
+                onUpdate: () => {
+                    sprite.position.x = sprite.tween._targets[ 0 ].x;
+                    sprite.position.y = sprite.tween._targets[ 0 ].y;
+
+                    const collision = {
+                        map: this.checkMap( sprite.position, sprite ),
+                        box: this.checkBox( sprite.position, sprite ),
+                        npc: this.checkNPC( sprite.position, sprite ),
+                    };
+
+                    if ( collision.map || collision.box || collision.npc ) {
+                        _complete();
+                    }
+                },
+                onComplete: () => {
+                    _complete();
+                }
+            });
+        });
+    }
+
+
+    handleWander ( sprite ) {
+        if ( !sprite.counter ) {
+            // sprite.counter = Utils.random( 60, 180 );
+            sprite.counter = 5 * 60;
+            sprite.stepsX = Utils.random( 20, 50 );
+            sprite.stepsY = Utils.random( 20, 50 );
+            sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
+            sprite.dirY = ["up", "down"][ Utils.random( 0, 2 ) ];
+
+            console.log(
+                `Sprite: ${sprite.data.id}`,
+                `Countdown: ${sprite.counter}`,
+                `${sprite.dirX}: ${sprite.stepsX}`,
+                `${sprite.dirY}: ${sprite.stepsY}`,
+            );
+
+        } else {
+            sprite.counter--;
+        }
+
+        if ( sprite.stepsX ) {
+            sprite.stepsX--;
+
+            if ( sprite.dirX === "left" ) {
+                sprite.controls.left = 1;
+                sprite.controls.right = 0;
+                sprite.dir = "left";
+
+            } else {
+                sprite.controls.right = 1;
+                sprite.controls.left = 0;
+                sprite.dir = "right";
+            }
+
+        } else {
+            sprite.controls.left = 0;
+            sprite.controls.right = 0;
+        }
+
+        if ( sprite.stepsY ) {
+            sprite.stepsY--;
+
+            if ( sprite.dirY === "up" ) {
+                sprite.controls.up = 1;
+                sprite.controls.down = 0;
+
+            } else {
+                sprite.controls.down = 1;
+                sprite.controls.up = 0;
+            }
+
+        } else {
+            sprite.controls.up = 0;
+            sprite.controls.down = 0;
+        }
+
+        if ( !sprite.stepsX && !sprite.stepsY ) {
+            sprite.verb = Config.verbs.FACE;
+            sprite.controls = {};
+
+        } else {
+            if ( sprite.data.bounce && sprite.position.z === 0 ) {
+                sprite.physics.vz = -6;
+            }
+
+            if ( sprite.data.verbs[ Config.verbs.WALK ] ) {
+                sprite.verb = Config.verbs.WALK;
+            }
         }
     }
 
@@ -501,20 +674,20 @@ class TopView extends GameBox {
 
     switchMap ( evt ) {
         // Pause the Player so no game buttons dispatch
-        // Pausing triggers the GameBox to call this.map.hero.face( this.map.hero.dir )
+        // Pausing triggers the GameBox to call this.hero.face( this.hero.dir )
         this.player.pause();
 
         // Dupe the Hero
         const mapData = Loader.cash( evt.map );
-        const heroData = Utils.copy( this.map.hero.data );
+        const heroData = Utils.copy( this.hero.data );
 
         // Create new Map / Camera
         this.map_ = new Map( mapData, heroData, this );
         this.cam_ = Utils.copy( this.camera );
 
         // Update this.map_.hero
-        this.map_.hero.face( this.map.hero.dir );
-        this.map_.hero.idle = this.map.hero.idle;
+        this.map_.hero.face( this.hero.dir );
+        this.map_.hero.idle = this.hero.idle;
 
         // Will be the animation values for rendering...
         const _css = {
@@ -525,7 +698,7 @@ class TopView extends GameBox {
         };
 
         // Stage new Map / new Hero for animation
-        if ( this.map.hero.dir === "down" ) {
+        if ( this.hero.dir === "down" ) {
             // Presets
             this.cam_.y = 0;
             this.map_.offset = {
@@ -538,7 +711,7 @@ class TopView extends GameBox {
                 0
             )`;
             this.map_.hero.position = {
-                x: this.map.hero.position.x,
+                x: this.hero.position.x,
                 y: -this.map_.hero.height,
                 z: 0,
             };
@@ -561,11 +734,11 @@ class TopView extends GameBox {
             };
             _css.hero = {
                 axis: "y",
-                from: this.map.hero.position.y,
-                to: this.map.hero.position.y + this.map.hero.height,
+                from: this.hero.position.y,
+                to: this.hero.position.y + this.hero.height,
             };
 
-        } else if ( this.map.hero.dir === "up" ) {
+        } else if ( this.hero.dir === "up" ) {
             // Presets
             this.cam_.y = this.map_.height - this.camera.height;
             this.map_.offset = {
@@ -578,7 +751,7 @@ class TopView extends GameBox {
                 0
             )`;
             this.map_.hero.position = {
-                x: this.map.hero.position.x,
+                x: this.hero.position.x,
                 y: this.map_.height,
                 z: 0,
             };
@@ -601,11 +774,11 @@ class TopView extends GameBox {
             };
             _css.hero = {
                 axis: "y",
-                from: this.map.hero.position.y,
-                to: this.map.hero.position.y - this.map.hero.height,
+                from: this.hero.position.y,
+                to: this.hero.position.y - this.hero.height,
             };
 
-        } else if ( this.map.hero.dir === "right" ) {
+        } else if ( this.hero.dir === "right" ) {
             // Presets
             this.cam_.x = 0;
             this.map_.offset = {
@@ -619,7 +792,7 @@ class TopView extends GameBox {
             )`;
             this.map_.hero.position = {
                 x: -this.map_.hero.width,
-                y: this.map.hero.position.y,
+                y: this.hero.position.y,
                 z: 0,
             };
 
@@ -641,11 +814,11 @@ class TopView extends GameBox {
             };
             _css.hero = {
                 axis: "x",
-                from: this.map.hero.position.x,
-                to: this.map.hero.position.x + this.map.hero.width,
+                from: this.hero.position.x,
+                to: this.hero.position.x + this.hero.width,
             };
 
-        } else if ( this.map.hero.dir === "left" ) {
+        } else if ( this.hero.dir === "left" ) {
             // Presets
             this.cam_.x = this.map_.width - this.camera.width;
             this.map_.offset = {
@@ -659,7 +832,7 @@ class TopView extends GameBox {
             )`;
             this.map_.hero.position = {
                 x: this.map_.width,
-                y: this.map.hero.position.y,
+                y: this.hero.position.y,
                 z: 0,
             };
 
@@ -681,8 +854,8 @@ class TopView extends GameBox {
             };
             _css.hero = {
                 axis: "x",
-                from: this.map.hero.position.x,
-                to: this.map.hero.position.x - this.map.hero.width,
+                from: this.hero.position.x,
+                to: this.hero.position.x - this.hero.width,
             };
         }
 
@@ -697,7 +870,7 @@ class TopView extends GameBox {
 
             // Old Map, Old Hero
             this.switchTween( this.map, _css.map ),
-            this.switchTween( this.map.hero, _css.hero ),
+            this.switchTween( this.hero, _css.hero ),
 
         ]).then(() => {
             setTimeout(() => {

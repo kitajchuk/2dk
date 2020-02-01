@@ -222,6 +222,45 @@ class Player {
         if ( !this.stopped ) {
             this.gamebox.blit( elapsed );
         }
+
+        // Soft pause only affects Hero updates and NPCs
+        // Hard stop will affect the entire blit/render engine...
+        if ( !this.paused ) {
+            // D-Pad movement
+            // Easier to check the gamepad than have player use event handlers...
+            const dpad = this.gamepad.checkDpad();
+
+            if ( !dpad.length ) {
+                this.gamebox.releaseD();
+                this.gamebox.handleHero(
+                    this.gamebox.hero.getNextPoi(),
+                    this.gamebox.hero.dir
+                );
+
+            } else {
+                dpad.forEach(( ctrl ) => {
+                    ctrl.dpad.forEach(( dir ) => {
+                        this.gamebox.pressD( dir );
+                    });
+                });
+            }
+
+            // Action buttons
+            // Easier to have the player use event handlers and check controls...
+            if ( this.controls.aHold ) {
+                this.gamebox.holdA();
+
+            } else if ( this.controls.a ) {
+                this.gamebox.pressA();
+            }
+
+            if ( this.controls.bHold ) {
+                this.gamebox.holdB();
+
+            } else if ( this.controls.b ) {
+                this.gamebox.pressB();
+            }
+        }
     }
 
 

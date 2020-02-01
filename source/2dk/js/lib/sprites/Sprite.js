@@ -1,7 +1,6 @@
 const Utils = require( "../Utils" );
 const Loader = require( "../Loader" );
 const Config = require( "../Config" );
-const { TweenLite, Power0, Power1, Power2, Power3, Power4 } = require( "gsap" );
 
 
 
@@ -67,14 +66,12 @@ class Sprite {
 
 
     visible () {
-        const collider = {
+        return Utils.collide( this.map.camera, {
             x: this.position.x,
             y: this.position.y,
             width: this.width,
             height: this.height,
-        };
-
-        return Utils.collide( this.gamebox.camera, collider );
+        });
     }
 
 
@@ -218,95 +215,6 @@ class Sprite {
 
     handleGravity () {
         this.physics.vz++;
-    }
-
-
-    handleControls ( controls ) {
-        if ( controls.left ) {
-            this.physics.vx = Utils.limit( this.physics.vx - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
-            this.idle.x = false;
-
-        } else if ( controls.right ) {
-            this.physics.vx = Utils.limit( this.physics.vx + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
-            this.idle.x = false;
-
-        } else {
-            this.idle.x = true;
-        }
-
-        if ( controls.up ) {
-            this.physics.vy = Utils.limit( this.physics.vy - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
-            this.idle.y = false;
-
-        } else if ( controls.down ) {
-            this.physics.vy = Utils.limit( this.physics.vy + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
-            this.idle.y = false;
-
-        } else {
-            this.idle.y = true;
-        }
-    }
-
-
-    handleThrow () {
-        return new Promise(( resolve ) => {
-            this.resolve = resolve;
-            this.throwing = this.hero.dir;
-
-            let throwX;
-            let throwY;
-            const dist = 128;
-            const props = {
-                x: this.position.x,
-                y: this.position.y,
-            };
-            const _complete = () => {
-                this.tween.kill();
-                this.tween = null;
-                this.map.smokeObject( this );
-                this.resolve();
-            };
-
-            if ( this.throwing === "left" ) {
-                throwX = this.position.x - dist;
-                throwY = this.hero.footbox.y - (this.height - this.hero.footbox.height);
-
-            } else if ( this.throwing === "right" ) {
-                throwX = this.position.x + dist;
-                throwY = this.hero.footbox.y - (this.height - this.hero.footbox.height);
-
-            } else if ( this.throwing === "up" ) {
-                throwX = this.position.x;
-                throwY = this.position.y - dist;
-
-            }  else if ( this.throwing === "down" ) {
-                throwX = this.position.x;
-                throwY = this.hero.footbox.y + dist;
-            }
-
-            this.tween = TweenLite.to( props, 0.5, {
-                x: throwX,
-                y: throwY,
-                ease: Power4.easeOut,
-                onUpdate: () => {
-                    this.position.x = this.tween._targets[ 0 ].x;
-                    this.position.y = this.tween._targets[ 0 ].y;
-
-                    const collision = {
-                        map: this.map.checkMap( this.position, this ),
-                        box: this.map.checkBox( this.position, this ),
-                        npc: this.map.checkNPC( this.position, this ),
-                    };
-
-                    if ( collision.map || collision.box || collision.npc ) {
-                        _complete();
-                    }
-                },
-                onComplete: () => {
-                    _complete();
-                }
-            });
-        });
     }
 
 
