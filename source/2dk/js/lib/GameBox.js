@@ -185,7 +185,7 @@ Can all be handled in plugin GameBox
 * Collision checks
 * Can all be handled in plugin GameBox
 *******************************************************************************/
-    checkBox ( poi, sprite ) {
+    checkCamera ( poi, sprite ) {
         let ret = false;
 
         if ( poi.x <= this.camera.x || poi.x >= (this.camera.x + this.camera.width - sprite.width) ) {
@@ -228,7 +228,7 @@ Can all be handled in plugin GameBox
     }
 
 
-    checkEvt ( poi, sprite ) {
+    checkEvents ( poi, sprite ) {
         let ret = false;
         const hitbox = {
             width: sprite.width,

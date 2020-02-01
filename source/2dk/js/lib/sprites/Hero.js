@@ -81,6 +81,10 @@ class Hero extends Sprite {
         if ( this.verb === Config.verbs.LIFT ) {
             this.cycle( Config.verbs.LIFT, this.dir );
 
+        // Jumping needs to be captured...
+        } else if ( this.gamebox.jumping ) {
+            this.cycle( Config.verbs.JUMP, this.dir );
+
         // Idle comes next...LIFT has it's own idle face...
         } else if ( this.idle.x && this.idle.y ) {
             this.face( this.dir );

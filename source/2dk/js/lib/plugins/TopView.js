@@ -29,6 +29,7 @@ class TopView extends GameBox {
         };
         this.debounce = 1024;
         this.locked = false;
+        this.jumping = false;
     }
 
 
@@ -120,7 +121,7 @@ class TopView extends GameBox {
 
 
     releaseD () {
-        if ( this.locked ) {
+        if ( this.locked || this.jumping ) {
             return;
         }
 
@@ -138,6 +139,10 @@ class TopView extends GameBox {
 
 
     pressA () {
+        if ( this.locked || this.jumping ) {
+            return;
+        }
+
         const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
         const collision = {
             npc: this.checkNPC( poi, this.hero ),
@@ -145,23 +150,34 @@ class TopView extends GameBox {
         };
 
         if ( collision.npc ) {
-            this.handleHeroNPCAct( poi, this.hero.dir, collision.npc );
-        }
+            this.handleHeroNPCAction( poi, this.hero.dir, collision.npc );
 
-        if ( collision.tiles ) {
-            if ( collision.tiles.action.length && collision.tiles.action[ 0 ].act && !this.interact.tile ) {
-                this.handleHeroTileAct( poi, this.hero.dir, collision.tiles.action[ 0 ] );
+        } else if ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].act ) {
+            if ( !this.interact.tile ) {
+                this.handleHeroTileAction( poi, this.hero.dir, collision.tiles.action[ 0 ] );
             }
+
+        // Jump...
+        } else if ( this.hero.verb !== Config.verbs.LIFT && this.hero.verb !== Config.verbs.GRAB ) {
+            this.handleHeroJump( poi, this.hero.dir );
         }
     }
 
 
     holdA () {
+        if ( this.jumping ) {
+            return;
+        }
+
         console.log( "A Hold" );
     }
 
 
     releaseA () {
+        if ( this.jumping ) {
+            return;
+        }
+
         this.dialogue.check( true, false );
 
         this.handleReleaseA();
@@ -169,6 +185,10 @@ class TopView extends GameBox {
 
 
     releaseHoldA () {
+        if ( this.jumping ) {
+            return;
+        }
+
         this.handleReleaseA();
     }
 
@@ -179,29 +199,41 @@ class TopView extends GameBox {
             tiles: this.checkTiles( poi, this.hero ),
         };
 
-        if ( collision.tiles ) {
-            if ( collision.tiles.attack.length ) {
-                collision.tiles.attack.forEach(( tile ) => {
-                    if ( tile.hit ) {
-                        this.handleHeroTileHit( poi, this.hero.dir, tile );
-                    }
-                });
-            }
+        // Apply attack cycle...
+
+        if ( collision.tiles && collision.tiles.attack.length ) {
+            collision.tiles.attack.forEach(( tile ) => {
+                if ( tile.hit ) {
+                    this.handleHeroTileAttack( poi, this.hero.dir, tile );
+                }
+            });
         }
     }
 
 
     holdB () {
+        if ( this.jumping ) {
+            return;
+        }
+
         console.log( "B Hold" );
     }
 
 
     releaseB () {
+        if ( this.jumping ) {
+            return;
+        }
+
         this.dialogue.check( false, true );
     }
 
 
     releaseHoldB () {
+        if ( this.jumping ) {
+            return;
+        }
+
         console.log( "B Hold Release" );
     }
 
@@ -210,6 +242,10 @@ class TopView extends GameBox {
 * Hero Handlers...
 *******************************************************************************/
     handleReleaseA () {
+        if ( this.jumping ) {
+            return;
+        }
+
         if ( this.hero.verb === Config.verbs.GRAB ) {
             this.hero.face( this.hero.dir );
         }
@@ -228,68 +264,7 @@ class TopView extends GameBox {
     }
 
 
-    handleHero ( poi, dir ) {
-        const collision = {
-            evt: this.checkEvt( poi, this.hero ),
-            map: this.checkMap( poi, this.hero ),
-            box: this.checkBox( poi, this.hero ),
-            npc: this.checkNPC( poi, this.hero ),
-            tiles: this.checkTiles( poi, this.hero ),
-        };
-
-        if ( this.locked ) {
-            return;
-        }
-
-        if ( collision.evt ) {
-            if ( collision.evt.type === Config.events.BOUNDARY && collision.box ) {
-                this.handleHeroEvtBoundary( poi, dir, collision.evt );
-                return;
-            }
-        }
-
-        if ( collision.npc ) {
-            this.handleHeroNPC( poi, dir );
-            return;
-        }
-
-        if ( collision.map ) {
-            // Tile will allow leaping from it's edge, like a ledge...
-            if ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].jump && (collision.tiles.action[ 0 ].collides.width > (collision.tiles.action[ 0 ].tilebox.width / 2) || collision.tiles.action[ 0 ].collides.height > (collision.tiles.action[ 0 ].tilebox.height / 2)) ) {
-                this.handleHeroTileJump(  poi, dir, collision.tiles.action[ 0 ] );
-
-            } else {
-                this.handleHeroMap( poi, dir );
-                return;
-            }
-        }
-
-        if ( collision.box ) {
-            this.handleHeroBox( poi, dir );
-            return;
-        }
-
-        if ( this.hero.verb === Config.verbs.GRAB ) {
-            if ( dir === Config.opposites[ this.hero.dir ] ) {
-                this.handleHeroLift( poi, dir );
-            }
-
-            return;
-        }
-
-        if ( collision.tiles ) {
-            this.handleHeroTiles(  poi, dir, collision.tiles );
-
-            // Tile is behaves like a WALL, or Object you cannot walk on
-            if ( collision.tiles.action.length && collision.tiles.action[ 0 ].stop ) {
-                this.handleTileStop( poi, dir, collision.tiles.action[ 0 ] );
-                return;
-            }
-
-        } else if ( this.hero.physics.maxv !== this.hero.physics.controlmaxv && this.hero.verb !== Config.verbs.LIFT ) {
-            this.hero.physics.maxv = this.hero.physics.controlmaxv;
-        }
-
+    applyHero ( poi, dir ) {
         // Apply position
         this.hero.applyPosition( poi, dir );
 
@@ -301,7 +276,134 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroPushable ( poi, dir ) {
+    handleHero ( poi, dir ) {
+        const collision = {
+            map: this.checkMap( poi, this.hero ),
+            npc: this.checkNPC( poi, this.hero ),
+            tiles: this.checkTiles( poi, this.hero ),
+            event: this.checkEvents( poi, this.hero ),
+            camera: this.checkCamera( poi, this.hero ),
+        };
+
+        if ( this.locked ) {
+            this.interact.push = 0;
+            return;
+
+        } else if ( this.jumping ) {
+            this.interact.push = 0;
+            if ( this.ledgeJump ) {
+                this.applyHero( poi, dir );
+
+            } else if ( this.canHeroMoveWhileJumping( poi, dir, collision ) ) {
+                this.applyHero( poi, dir );
+            }
+            return;
+        }
+
+        if ( collision.event ) {
+            if ( this.canHeroEventBoundary( poi, dir, collision ) ) {
+                this.handleHeroEventBoundary( poi, dir, collision.event );
+                return;
+            }
+        }
+
+        if ( collision.npc ) {
+            this.handleHeroPush( poi, dir );
+            return;
+        }
+
+        if ( collision.map ) {
+            // Tile will allow leaping from it's edge, like a ledge...
+            if ( this.canHeroTileJump( poi, dir, collision ) ) {
+                this.handleHeroTileJump(  poi, dir, collision.tiles.action[ 0 ] );
+
+            } else {
+                this.handleHeroPush( poi, dir );
+                return;
+            }
+        }
+
+        if ( collision.camera ) {
+            this.handleHeroCamera( poi, dir );
+            return;
+        }
+
+        if ( this.hero.verb === Config.verbs.GRAB ) {
+            if ( this.canHeroLift( poi, dir, collision ) ) {
+                this.handleHeroLift( poi, dir );
+            }
+
+            return;
+        }
+
+        if ( collision.tiles ) {
+            this.handleHeroTiles(  poi, dir, collision.tiles );
+
+            // Tile is behaves like a WALL, or Object you cannot walk on
+            if ( this.canHeroTileStop( poi, dir, collision ) ) {
+                this.handleHeroPush( poi, dir, collision.tiles.action[ 0 ] );
+                return;
+            }
+
+        } else if ( this.canHeroResetMaxV( poi, dir, collision ) ) {
+            this.hero.physics.maxv = this.hero.physics.controlmaxv;
+        }
+
+        this.applyHero( poi, dir );
+    }
+
+
+    canHeroMoveWhileJumping ( poi, dir, collision ) {
+        return (!collision.map && !collision.npc && !(collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].stop));
+    }
+
+
+    canHeroResetMaxV ( poi, dir, collision ) {
+        return (this.hero.physics.maxv !== this.hero.physics.controlmaxv && this.hero.verb !== Config.verbs.LIFT);
+    }
+
+
+    canHeroEventBoundary ( poi, dir, collision ) {
+        return (collision.event.type === Config.events.BOUNDARY && collision.camera);
+    }
+
+
+    canHeroTileStop ( poi, dir, collision ) {
+        return (collision.tiles.action.length && collision.tiles.action[ 0 ].stop);
+    }
+
+
+    canHeroLift ( poi, dir, collision ) {
+        return (dir === Config.opposites[ this.hero.dir ]);
+    }
+
+
+    canHeroTileJump ( poi, dir, collision ) {
+        return (collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].jump && (collision.tiles.action[ 0 ].collides.width > (collision.tiles.action[ 0 ].tilebox.width / 2) || collision.tiles.action[ 0 ].collides.height > (collision.tiles.action[ 0 ].tilebox.height / 2)) && this.hero.verb !== Config.verbs.LIFT && dir === collision.tiles.action[ 0 ].tile.data.action.require.dir);
+    }
+
+
+    handleHeroJump ( poi, dir ) {
+        this.jumping = true;
+        this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
+        this.hero.physics.vz = -16;
+        setTimeout(() => {
+            this.jumping = false;
+            this.ledgeJump = false;
+            this.hero.physics.maxv = this.hero.physics.controlmaxv;
+            this.hero.face( this.hero.dir );
+
+        }, 500 );
+    }
+
+
+    handleHeroTileJump ( poi, dir, tile ) {
+        this.ledgeJump = true;
+        this.handleHeroJump( poi, dir );
+    }
+
+
+    handleHeroPush ( poi, dir ) {
         this.interact.push++;
 
         if ( (this.hero.verb !== Config.verbs.LIFT) && (this.interact.push > this.map.data.tilesize) ) {
@@ -313,28 +415,13 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroMap ( poi, dir ) {
-        this.handleHeroPushable( poi, dir );
-    }
-
-
-    handleHeroNPC ( poi, dir ) {
-        this.handleHeroPushable( poi, dir );
-    }
-
-
-    handleTileStop (  poi, dir, tile ) {
-        this.handleHeroPushable( poi, dir );
-    }
-
-
-    handleHeroBox ( poi, dir ) {
+    handleHeroCamera ( poi, dir ) {
         this.hero.cycle( this.hero.verb, dir );
     }
 
 
-    handleHeroEvtBoundary (  poi, dir, evt ) {
-        this.switchMap( evt );
+    handleHeroEventBoundary (  poi, dir, event ) {
+        this.switchMap( event );
     }
 
 
@@ -378,7 +465,7 @@ class TopView extends GameBox {
             this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
             this.locked = false;
 
-        }, Config.values.debounceDur );
+        }, 250 );
     }
 
 
@@ -409,37 +496,14 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroNPCAct ( poi, dir, obj ) {
+    handleHeroNPCAction ( poi, dir, obj ) {
         if ( obj.canInteract( dir ) ) {
             obj.doInteract( dir );
         }
     }
 
 
-    handleHeroTileJump ( poi, dir, tile ) {
-        if ( dir === tile.tile.data.action.require.dir ) {
-            this.locked = true;
-
-            console.log( tile );
-
-            const vertical = (dir === "up" || dir === "down");
-            const collider = {
-                x: vertical ? tile.tilebox.x : (dir === "left" ? (tile.tilebox.x - (tile.tilebox.width * 1)) : (tile.tilebox.x + (tile.tilebox.width * 1))),
-                y: vertical ? (dir === "up" ? (tile.tilebox.y - (tile.tilebox.height * 2)) : (tile.tilebox.y + (tile.tilebox.height * 2))) : tile.tilebox.y,
-                width: tile.tilebox.width,
-                height: tile.tilebox.height,
-            };
-
-            this.map.setCollider( collider );
-
-            // Render shadow to the new landing position
-            // Animate hero to the new landing position
-            // Unlock the game...
-        }
-    }
-
-
-    handleHeroTileAct ( poi, dir, tile ) {
+    handleHeroTileAction ( poi, dir, tile ) {
         const activeTiles = this.map.getActiveTiles( tile.group );
 
         if ( tile.tile.canInteract() ) {
@@ -452,7 +516,7 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroTileHit ( poi, dir, tile ) {
+    handleHeroTileAttack ( poi, dir, tile ) {
         if ( tile.tile.canAttack() ) {
             tile.tile.attack( tile.coord );
         }
@@ -543,11 +607,11 @@ class TopView extends GameBox {
 
                     const collision = {
                         map: this.checkMap( sprite.position, sprite ),
-                        box: this.checkBox( sprite.position, sprite ),
                         npc: this.checkNPC( sprite.position, sprite ),
+                        camera: this.checkCamera( sprite.position, sprite ),
                     };
 
-                    if ( collision.map || collision.box || collision.npc ) {
+                    if ( collision.map || collision.camera || collision.npc ) {
                         _complete();
                     }
                 },
@@ -568,12 +632,12 @@ class TopView extends GameBox {
             sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
             sprite.dirY = ["up", "down"][ Utils.random( 0, 2 ) ];
 
-            console.log(
-                `Sprite: ${sprite.data.id}`,
-                `Countdown: ${sprite.counter}`,
-                `${sprite.dirX}: ${sprite.stepsX}`,
-                `${sprite.dirY}: ${sprite.stepsY}`,
-            );
+            // console.log(
+            //     `Sprite: ${sprite.data.id}`,
+            //     `Countdown: ${sprite.counter}`,
+            //     `${sprite.dirX}: ${sprite.stepsX}`,
+            //     `${sprite.dirY}: ${sprite.stepsY}`,
+            // );
 
         } else {
             sprite.counter--;
@@ -634,51 +698,13 @@ class TopView extends GameBox {
 /*******************************************************************************
 * Map Switching
 *******************************************************************************/
-    switchTween ( obj, css ) {
-        return new Promise(( resolve ) => {
-            const _update = ( t ) => {
-                if ( obj.position ) {
-                    obj.position.x = (css.axis === "x" ? t : obj.position.x);
-                    obj.position.y = (css.axis === "y" ? t : obj.position.y);
-                    obj.applyOffset();
-                }
-
-                // Only a Map has a Hero
-                if ( obj.hero ) {
-                    const transform = Utils.getTransform( obj.element );
-
-                    obj.element.style.webkitTransform = `translate3d(
-                        ${css.axis === "x" ? t : transform.x}px,
-                        ${css.axis === "y" ? t : transform.y}px,
-                        0
-                    )`;
-                }
-            };
-
-            return new Tween({
-                ease: Easing.swing,
-                duration: Config.values.boundaryAnimDur,
-                from: css.from,
-                to: css.to,
-                update: ( t ) => {
-                    _update( t );
-                },
-                complete: ( t ) => {
-                    _update( t );
-                    resolve();
-                }
-            });
-        });
-    }
-
-
-    switchMap ( evt ) {
+    switchMap ( event ) {
         // Pause the Player so no game buttons dispatch
         // Pausing triggers the GameBox to call this.hero.face( this.hero.dir )
         this.player.pause();
 
         // Dupe the Hero
-        const mapData = Loader.cash( evt.map );
+        const mapData = Loader.cash( event.map );
         const heroData = Utils.copy( this.hero.data );
 
         // Create new Map / Camera
@@ -865,12 +891,12 @@ class TopView extends GameBox {
         // Animate Maps and Hero and resolve all tweens for clean-up
         Promise.all([
             // New Map, New Hero
-            this.switchTween( this.map_, _css.map_ ),
-            this.switchTween( this.map_.hero, _css.hero_ ),
+            this.switchMapTween( this.map_, _css.map_ ),
+            this.switchMapTween( this.map_.hero, _css.hero_ ),
 
             // Old Map, Old Hero
-            this.switchTween( this.map, _css.map ),
-            this.switchTween( this.hero, _css.hero ),
+            this.switchMapTween( this.map, _css.map ),
+            this.switchMapTween( this.hero, _css.hero ),
 
         ]).then(() => {
             setTimeout(() => {
@@ -888,7 +914,45 @@ class TopView extends GameBox {
                 // Resume game blit cycle...
                 this.player.resume();
 
-            }, Config.values.debounceDur );
+            }, 250 );
+        });
+    }
+
+
+    switchMapTween ( obj, css ) {
+        return new Promise(( resolve ) => {
+            const _update = ( t ) => {
+                if ( obj.position ) {
+                    obj.position.x = (css.axis === "x" ? t : obj.position.x);
+                    obj.position.y = (css.axis === "y" ? t : obj.position.y);
+                    obj.applyOffset();
+                }
+
+                // Only a Map has a Hero
+                if ( obj.hero ) {
+                    const transform = Utils.getTransform( obj.element );
+
+                    obj.element.style.webkitTransform = `translate3d(
+                        ${css.axis === "x" ? t : transform.x}px,
+                        ${css.axis === "y" ? t : transform.y}px,
+                        0
+                    )`;
+                }
+            };
+
+            return new Tween({
+                ease: Easing.swing,
+                duration: 500,
+                from: css.from,
+                to: css.to,
+                update: ( t ) => {
+                    _update( t );
+                },
+                complete: ( t ) => {
+                    _update( t );
+                    resolve();
+                }
+            });
         });
     }
 }

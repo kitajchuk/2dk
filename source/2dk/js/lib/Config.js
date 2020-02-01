@@ -54,10 +54,6 @@ const Config = {
         BOUNDARY: "boundary",
         CUTSCENE: "cutscene",
     },
-    values: {
-        debounceDur: 250,
-        boundaryAnimDur: 500,
-    },
     npc: {
         PET: "pet",
         TILE: "tile",

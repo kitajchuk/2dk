@@ -7,7 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 242,
+        "version": 243,
         "plugin": "topview"
     },
     "hero": {
@@ -425,7 +425,7 @@
                 "x": 28,
                 "y": 44,
                 "width": 36,
-                "height": 40
+                "height": 44
             },
             "stats": {
                 "power": 1,
@@ -559,6 +559,29 @@
                         "offsetX": -552,
                         "offsetY": -368,
                         "stepsX": 2
+                    }
+                },
+                "jump": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": -736,
+                        "offsetY": -92,
+                        "stepsX": 3
+                    },
+                    "up": {
+                        "offsetX": -736,
+                        "offsetY": -184,
+                        "stepsX": 3
+                    },
+                    "left": {
+                        "offsetX": -736,
+                        "offsetY": -276,
+                        "stepsX": 3
+                    },
+                    "right": {
+                        "offsetX": -736,
+                        "offsetY": -368,
+                        "stepsX": 3
                     }
                 }
             }

@@ -53,25 +53,18 @@
 * Thoughts Bank:
 * Random thoughts we want to keep track of...for now...
 ********************************************************************************
+* HUD / Menus / Items(attached to buttons...?)
 * ALTTP Sprite scale: 2.1875
-
-* Response-based prompt dialogues with A: yes, B: no
 * Object interaction hints (A Open, A Check, etc...)
-
-* Try having only a single MapLayer(onCanvas, offCanvas...)
-
 * Document code...(jsdoc?
-
 * GameCycle manager for states (intro, title, credits, etc...)
 * Projectiles, FX in general
 * Math functions (arc animations?, see Akihabara Trigo)
-
 * Attacking & Weapons
 * Enemy AIs (Baddies)
 * Charged Hero + Release Attack
 * Collider events?
 * Move resistance (pushing, tiles, etc...)
-
 * LOADSCREEN?, INTRO?, OUTRO?
 * Diagonal wall move physics. A left-down wall moves Hero left down.
 * Bounce physics so Hero does not get tile collision locked.
