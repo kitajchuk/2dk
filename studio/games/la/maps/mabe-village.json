@@ -92,9 +92,73 @@
     ],
     "npcs": [
         {
+            "id": "cucco",
+            "ai": "wander",
+            "spawn": {
+                "x": 896,
+                "y": 768
+            }
+        },
+        {
+            "id": "cucco",
+            "ai": "wander",
+            "spawn": {
+                "x": 832,
+                "y": 1536
+            }
+        },
+        {
+            "id": "cucco",
+            "ai": "wander",
+            "spawn": {
+                "x": 1728,
+                "y": 1644
+            }
+        },
+        {
+            "id": "cucco",
+            "ai": "wander",
+            "spawn": {
+                "x": 1472,
+                "y": 1344
+            }
+        },
+        {
+            "id": "cucco",
+            "ai": "wander",
+            "spawn": {
+                "x": 2048,
+                "y": 640
+            }
+        },
+        {
+            "id": "dog",
+            "ai": "wander",
+            "spawn": {
+                "x": 1088,
+                "y": 1088
+            }
+        },
+        {
+            "id": "dog",
+            "ai": "wander",
+            "spawn": {
+                "x": 1472,
+                "y": 896
+            }
+        },
+        {
+            "id": "dog",
+            "ai": "wander",
+            "spawn": {
+                "x": 2048,
+                "y": 1664
+            }
+        },
+        {
             "id": "fisherman",
             "spawn": {
-                "x": 960,
+                "x": 952,
                 "y": 256
             },
             "payload": {

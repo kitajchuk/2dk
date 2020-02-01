@@ -12,12 +12,11 @@ class FX extends Sprite {
     }
 
 
-    destroy () {
-        this.map.killFX( this );
-    }
-
-
     blit ( elapsed ) {
+        if ( !this.visible() ) {
+            return;
+        }
+
         if ( typeof this.previousElapsed === "undefined" ) {
             this.previousElapsed = elapsed;
         }
@@ -43,7 +42,7 @@ class FX extends Sprite {
             this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
 
             if ( diff >= this.data.dur ) {
-                this.destroy();
+                this.map.killObj( "fx", this );
             }
         }
 

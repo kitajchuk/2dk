@@ -4,6 +4,7 @@ const Config = require( "./Config" );
 const Hero = require( "./sprites/Hero" );
 const NPC = require( "./sprites/NPC" );
 const FX = require( "./sprites/FX" );
+const Companion = require( "./sprites/Companion" );
 const tileSortFunc = ( tileA, tileB ) => {
     if ( tileA.amount > tileB.amount ) {
         return -1;
@@ -256,6 +257,17 @@ class Map {
                 channel: "sfx",
             });
         }
+
+        // Companion?
+        // if ( this.heroData.companion ) {
+        //     this.heroData.companion = this.gamebox.player.getMergedData( this.heroData.companion, "npcs" );
+        //     this.heroData.companion.spawn = {
+        //         x: this.hero.position.x,
+        //         y: this.hero.position.y,
+        //     };
+        //
+        //     this.npcs.push( new Companion( this.heroData.companion, this.hero ) );
+        // }
 
         // Tiles
         this.data.tiles.forEach(( data ) => {
@@ -551,7 +563,32 @@ class Map {
     }
 
 
-    addFX ( data ) {
+    addNPC ( npc ) {
+        this.npcs.push( npc );
+    }
+
+
+    addFX ( fx ) {
+        this.fx.push( fx );
+    }
+
+
+    killObj ( type, obj ) {
+        this[ type ].splice( this[ type ].indexOf( obj ), 1 );
+        obj.destroy();
+        obj = null;
+    }
+
+
+    smokeObject ( obj ) {
+        let data = {
+            id: "smoke",
+            spawn: {
+                x: obj.position.x + (obj.width / 2) - (this.gridsize / 2),
+                y: obj.position.y + (obj.height / 2) - (this.gridsize / 2),
+            },
+        };
+
         data = this.gamebox.player.getMergedData( data, "fx" );
         data.hitbox = {
             x: 0,
@@ -560,65 +597,43 @@ class Map {
             height: data.height,
         };
 
-        this.fx.push( new FX( data, this ) );
-    }
-
-
-    killFX ( fx ) {
-        this.fx.splice( this.fx.indexOf( fx ), 1 );
-        fx = null;
-    }
-
-
-    smokeObject ( obj ) {
-        const origin = {
-            x: obj.position.x + (obj.width / 2) - (this.gridsize / 2),
-            y: obj.position.y + (obj.height / 2) - (this.gridsize / 2),
-        };
-
-        this.addFX({
-            id: "smoke",
-            spawn: {
-                x: origin.x,
-                y: origin.y,
-            },
-        });
-        this.addFX({
-            id: "smoke",
+        this.addFX( new FX( data, this ) );
+        this.addFX( new FX( Utils.merge( data, {
             spawn: {
                 x: origin.x - (this.gridsize / 4),
                 y: origin.y - (this.gridsize / 4),
             },
             vx: -8,
             vy: -8,
-        });
-        this.addFX({
-            id: "smoke",
+
+        }), this ));
+        this.addFX( new FX( Utils.merge( data, {
             spawn: {
                 x: origin.x + (this.gridsize / 4),
                 y: origin.y - (this.gridsize / 4),
             },
             vx: 8,
             vy: -8,
-        });
-        this.addFX({
-            id: "smoke",
+
+        }), this ));
+        this.addFX( new FX( Utils.merge( data, {
             spawn: {
                 x: origin.x - (this.gridsize / 4),
                 y: origin.y + (this.gridsize / 4),
             },
             vx: -8,
             vy: 8,
-        });
-        this.addFX({
-            id: "smoke",
+
+        }), this ));
+        this.addFX( new FX( Utils.merge( data, {
             spawn: {
                 x: origin.x + (this.gridsize / 4),
                 y: origin.y + (this.gridsize / 4),
             },
             vx: 8,
             vy: 8,
-        });
+
+        }), this ));
     }
 
 
@@ -766,6 +781,12 @@ class Map {
         const hitbox = sprite.getHitbox( poi );
 
         for ( let i = this.npcs.length; i--; ) {
+            // Companion NPC will have a Hero prop?
+            // Ensure we also don't collide with ourselves :P
+            if ( this.npcs[ i ].hero || this.npcs[ i ] === sprite ) {
+                continue;
+            }
+
             collider = {
                 x: this.npcs[ i ].position.x,
                 y: this.npcs[ i ].position.y,

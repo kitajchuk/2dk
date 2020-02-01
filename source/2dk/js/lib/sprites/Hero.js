@@ -1,6 +1,5 @@
 const Config = require( "../Config" );
 const Sprite = require( "./Sprite" );
-const Companion = require( "./Companion" );
 
 
 
@@ -11,48 +10,11 @@ const Companion = require( "./Companion" );
 class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
-
-        // Companions
-        this.companions = [];
     }
 
 
-    addCompanion ( data ) {
-        const companion = new Companion( data, this );
-
-        this.companions.push( companion );
-
-        return companion;
-    }
-
-
-    spawnCompanion () {
-        if ( this.data.companion ) {
-            this.data.companion = this.gamebox.player.getMergedData( this.data.companion, "npcs" );
-            this.data.companion.spawn = {
-                x: this.position.x,
-                y: this.position.y,
-                z: 0,
-                dir: this.data.companion.dir,
-            };
-
-            this.addCompanion( this.data.companion );
-        }
-    }
-
-
-    throwCompanion ( companion ) {
-        return companion.handleThrow();
-    }
-
-
-    spliceCompanion ( companion ) {
-        for ( let i = this.companions.length; i--; ) {
-            if ( this.companions[ i ] === companion ) {
-                this.companions.splice( i, 1 );
-                break;
-            }
-        }
+    visible () {
+        return true;
     }
 
 
@@ -63,15 +25,16 @@ class Hero extends Sprite {
     update () {
         // Handle player controls
         this.handleControls( this.gamebox.player.controls );
+        this.updateControls();
 
         // The physics stack...
         this.handleVelocity();
         this.handleGravity();
         this.applyGravity();
+    }
 
-        // Companions
-        this.updateCompanions();
 
+    updateControls () {
         // Soft pause only affects Hero updates and NPCs
         // Hard stop will affect the entire blit/render engine...
         if ( !this.gamebox.player.paused ) {
@@ -106,34 +69,6 @@ class Hero extends Sprite {
             } else if ( this.gamebox.player.controls.b ) {
                 this.gamebox.pressB();
             }
-        }
-    }
-
-
-    blitCompanions ( elapsed ) {
-        if ( this.companions.length ) {
-            this.companions.forEach(( companion ) => {
-                companion.blit( elapsed );
-            });
-        }
-    }
-
-
-    updateCompanions () {
-        if ( this.companions.length ) {
-            this.companions.forEach(( companion ) => {
-                companion.update();
-            });
-        }
-    }
-
-
-    renderCompanions () {
-        if ( this.companions.length ) {
-            this.companions.forEach(( companion ) => {
-                companion.shadow();
-                companion.render();
-            });
         }
     }
 

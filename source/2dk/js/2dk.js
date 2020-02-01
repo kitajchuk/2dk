@@ -4,6 +4,16 @@
 
 
 
+* Figure out tile carry size and spawn with game resolution...
+* All "plugin" specific logic "style" needs to go in TopView...
+    Collision etc...move from Map to GameBox or TopView...
+    Sprite logic should be generic
+    Plugin logic should be specific
+    Implications for Companion and NPC AI logics...
+    Implications for Hero logics...
+
+
+
 * Hero sprite masking?
 * Grass sprite cycle / sound
 * Water sprite cycle / sound

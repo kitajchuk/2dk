@@ -22,7 +22,6 @@
         },
         "companion": {
             "id": "dog",
-            "dir": "left",
             "type": "pet"
         }
     },
@@ -50,7 +49,7 @@
                 },
                 "talk": {
                     "down": {
-                        "offsetX": -259,
+                        "offsetX": -256,
                         "offsetY": -128
                     }
                 }
@@ -75,6 +74,8 @@
             "width": 64,
             "height": 64,
             "image": "/games/la/assets/sprites/npcs.png",
+            "bounce": 1,
+            "dir": "left",
             "hitbox": {
                 "x": 0,
                 "y": 32,
@@ -106,7 +107,12 @@
                     }
                 }
             },
-            "states": [{}]
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "left"
+                }
+            ]
         },
         {
             "id": "dog",
@@ -115,6 +121,7 @@
             "height": 64,
             "image": "/games/la/assets/sprites/npcs.png",
             "bounce": 1,
+            "dir": "left",
             "hitbox": {
                 "x": 0,
                 "y": 32,
@@ -136,7 +143,12 @@
                     }
                 }
             },
-            "states": [{}]
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "left"
+                }
+            ]
         },
         {
             "id": "sign",

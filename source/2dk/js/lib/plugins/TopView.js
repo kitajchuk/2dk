@@ -3,6 +3,7 @@ const Config = require( "../Config" );
 const Loader = require( "../Loader" );
 const GameBox = require( "../GameBox" );
 const { Map } = require( "../Map" );
+const Sprite = require( "../sprites/Sprite" );
 const Tween = require( "properjs-tween" );
 const Easing = require( "properjs-easing" );
 
@@ -36,7 +37,7 @@ class TopView extends GameBox {
 *******************************************************************************/
     blit ( elapsed ) {
         // blit map
-        // blits hero & companion...
+        // blits hero
         this.map.blit( elapsed );
 
         // blit map_?
@@ -137,7 +138,10 @@ class TopView extends GameBox {
 
     pressA () {
         const poi = this.map.hero.getNextPoiByDir( this.map.hero.dir, 1 );
-        const collision = this.getCollision( poi, this.map.hero );
+        const collision = {
+            npc: this.map.checkNPC( poi, this.map.hero ),
+            tiles: this.map.checkTiles( poi, this.map.hero ),
+        };
 
         if ( collision.npc ) {
             this.handleNPCAct( poi, this.map.hero.dir, collision.npc );
@@ -189,7 +193,9 @@ class TopView extends GameBox {
 
     pressB () {
         const poi = this.map.hero.getNextPoiByDir( this.map.hero.dir, 1 );
-        const collision = this.getCollision( poi, this.map.hero );
+        const collision = {
+            tiles: this.map.checkTiles( poi, this.map.hero ),
+        };
 
         if ( collision.tiles ) {
             if ( collision.tiles.attack.length ) {
@@ -222,7 +228,13 @@ class TopView extends GameBox {
 * Handlers...
 *******************************************************************************/
     handleCollision ( poi, dir ) {
-        const collision = this.getCollision( poi, this.map.hero );
+        const collision = {
+            evt: this.map.checkEvt( poi, this.map.hero ),
+            map: this.map.checkMap( poi, this.map.hero ),
+            box: this.map.checkBox( poi, this.map.hero ),
+            npc: this.map.checkNPC( poi, this.map.hero ),
+            tiles: this.map.checkTiles( poi, this.map.hero ),
+        };
 
         if ( this.locked ) {
             return;
@@ -334,16 +346,13 @@ class TopView extends GameBox {
 
             this.player.gameaudio.hitSound( "pickup" );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
-            this.interact.tile.companion = this.map.hero.addCompanion({
-                type: "tile",
+            this.interact.tile.sprite = new Sprite({
                 layer: "foreground",
                 width: this.map.gridsize,
                 height: this.map.gridsize,
                 spawn: {
-                    x: 0,
-                    y: 0,
-                    z: 0,
-                    dir: "down",
+                    x: this.map.hero.position.x + (this.map.hero.width / 2) - (this.map.gridsize / 2),
+                    y: this.map.hero.position.y - this.map.gridsize + 42,
                 },
                 image: this.map.data.image,
                 hitbox: {
@@ -360,7 +369,10 @@ class TopView extends GameBox {
                         }
                     }
                 },
-            });
+
+            }, this.map );
+            this.interact.tile.sprite.hero = this.map.hero;
+            this.map.addNPC( this.interact.tile.sprite );
             this.map.hero.cycle( Config.verbs.LIFT, this.map.hero.dir );
             this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv / 2;
             this.locked = false;
@@ -373,10 +385,9 @@ class TopView extends GameBox {
         this.map.hero.face( this.map.hero.dir );
         this.player.gameaudio.hitSound( "throw" );
         this.map.hero.physics.maxv = this.map.hero.physics.controlmaxv;
-        this.map.hero.throwCompanion( this.interact.tile.companion ).then(() => {
+        this.interact.tile.sprite.handleThrow().then(() => {
             this.player.gameaudio.hitSound( "smash" );
-            this.interact.tile.companion.destroy();
-            this.map.hero.spliceCompanion( this.interact.tile.companion );
+            this.map.killObj( "npcs", this.interact.tile.sprite );
 
             delete this.interact.tile;
         });

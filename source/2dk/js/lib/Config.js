@@ -55,8 +55,8 @@ const Config = {
         CUTSCENE: "cutscene",
     },
     values: {
-        debounceDur: 256,
-        boundaryAnimDur: 512,
+        debounceDur: 250,
+        boundaryAnimDur: 500,
     },
     npc: {
         PET: "pet",

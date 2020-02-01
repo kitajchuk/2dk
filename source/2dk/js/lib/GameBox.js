@@ -55,7 +55,6 @@ class GameBox {
     initMap () {
         this.update( this.map.hero.position );
         this.map.hero.applyOffset();
-        this.map.hero.spawnCompanion();
         this.player.gameaudio.addSound({
             id: this.map.data.id,
             src: this.map.data.sound,
@@ -70,20 +69,6 @@ Can all be handled in plugin GameBox
 *******************************************************************************/
     blit () {}
     update () {}
-
-
-/*******************************************************************************
-* Helper methods
-*******************************************************************************/
-    getCollision ( poi, sprite ) {
-        return {
-            evt: this.map.checkEvt( poi, sprite ),
-            map: this.map.checkMap( poi, sprite ),
-            box: this.map.checkBox( poi, sprite ),
-            npc: this.map.checkNPC( poi, sprite ),
-            tiles: this.map.checkTiles( poi, sprite ),
-        };
-    }
 
 
 /*******************************************************************************

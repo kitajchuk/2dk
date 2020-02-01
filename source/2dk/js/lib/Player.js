@@ -114,23 +114,9 @@ class Player {
             this.data.hero.map = `/games/${this.data.game.id}/maps/${this.query.map}`;
         }
 
-        // if ( this.query.spawn ) {
-        //     const coords = this.query.spawn.split( "," );
-        //
-        //     this.data.hero.spawn.x = Number( coords[ 0 ] );
-        //     this.data.hero.spawn.y = Number( coords[ 1 ] );
-        // }
-
         if ( this.query.resolution ) {
             this.data.game.resolution = Number( this.query.resolution );
         }
-
-        // if ( this.query.companion ) {
-        //     const datas = this.query.companion.split( "," );
-        //
-        //     this.data.hero.companion.id = datas[ 0 ];
-        //     this.data.hero.companion.type = datas[ 1 ];
-        // }
 
         if ( this.device ) {
             this.data.game.resolution = 2;
@@ -163,9 +149,6 @@ class Player {
 
 
     bind () {
-        // Game cycle (requestAnimationFrame)
-        this.gamecycle.go( this.onGameBlit.bind( this ) );
-
         // Standard 4 point d-pad (action)
         this.gamepad.on( "left-press", this.onDpadPress.bind( this ) );
         this.gamepad.on( "right-press", this.onDpadPress.bind( this ) );
@@ -221,6 +204,17 @@ class Player {
     }
 
 
+    onReady () {
+        if ( !this.ready ) {
+            this.ready = true;
+            this.element.classList.add( "is-started" );
+
+            // Game cycle (requestAnimationFrame)
+            this.gamecycle.go( this.onGameBlit.bind( this ) );
+        }
+    }
+
+
     onGameBlit ( elapsed ) {
         this.previousElapsed = elapsed;
 
@@ -233,8 +227,7 @@ class Player {
 
     onPressStart () {
         if ( !this.ready ) {
-            this.element.classList.add( "is-started" );
-            this.ready = true;
+            this.onReady();
         }
 
         if ( this.paused ) {

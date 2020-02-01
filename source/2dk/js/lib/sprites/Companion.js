@@ -6,7 +6,7 @@ const { TweenLite, Power0, Power1, Power2, Power3, Power4 } = require( "gsap" );
 
 
 /*******************************************************************************
-* Companion Sprite
+* Companion NPC
 * Have different behaviors for being "anchored" to a Hero
 *******************************************************************************/
 class Companion extends Sprite {
@@ -17,7 +17,14 @@ class Companion extends Sprite {
         this.watchFrame = 0;
         this.checkFrame = 0;
         this.watchDur = 1000;
-        this.controls = {};
+    }
+
+
+    destroy () {
+        if ( this.tween ) {
+            this.tween.kill();
+            this.tween = null;
+        }
     }
 
 
@@ -26,6 +33,10 @@ class Companion extends Sprite {
 * Order is: blit, update, render
 *******************************************************************************/
     blit ( elapsed ) {
+        if ( !this.visible() ) {
+            return;
+        }
+
         if ( typeof this.previousElapsed === "undefined" ) {
             this.previousElapsed = elapsed;
         }
@@ -35,10 +46,7 @@ class Companion extends Sprite {
         }
 
         // Companion type?
-        if ( this.data.type === Config.npc.TILE ) {
-            this.blitTile();
-
-        } else if ( this.data.type === Config.npc.PET ) {
+        if ( this.data.type === Config.npc.PET ) {
             this.blitPet();
 
         } else if ( this.data.type === Config.npc.FAIRY ) {
@@ -57,9 +65,6 @@ class Companion extends Sprite {
 
         this.applyFrame( elapsed );
     }
-
-
-    blitTile () {}
 
 
     blitFairy () {
@@ -121,22 +126,11 @@ class Companion extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
-        if ( this.data.type === Config.npc.TILE ) {
-            this.applyTilePosition();
-
-        } else if ( this.data.type === Config.npc.PET ) {
+        if ( this.data.type === Config.npc.PET ) {
             this.applyPetPosition();
 
         } else if ( this.data.type === Config.npc.FAIRY ) {
             this.applyFairyPosition();
-        }
-    }
-
-
-    applyTilePosition () {
-        if ( !this.throwing ) {
-            this.position.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
-            this.position.y = this.hero.position.y - (this.height / 5);
         }
     }
 
@@ -284,67 +278,6 @@ class Companion extends Sprite {
                 this.idle.y = true;
             }
         }
-    }
-
-
-/*******************************************************************************
-* Handlers
-*******************************************************************************/
-    handleThrow () {
-        return new Promise(( resolve ) => {
-            this.resolve = resolve;
-            this.throwing = this.hero.dir;
-
-            let throwX;
-            let throwY;
-            const dist = 128;
-            const props = {
-                x: this.position.x,
-                y: this.position.y,
-            };
-            const _complete = () => {
-                this.tween.kill();
-                this.tween = null;
-                this.map.smokeObject( this );
-                this.resolve();
-            };
-
-            if ( this.throwing === "left" ) {
-                throwX = this.position.x - dist;
-                throwY = this.hero.footbox.y - (this.height - this.hero.footbox.height);
-
-            } else if ( this.throwing === "right" ) {
-                throwX = this.position.x + dist;
-                throwY = this.hero.footbox.y - (this.height - this.hero.footbox.height);
-
-            } else if ( this.throwing === "up" ) {
-                throwX = this.position.x;
-                throwY = this.position.y - dist;
-
-            }  else if ( this.throwing === "down" ) {
-                throwX = this.position.x;
-                throwY = this.hero.footbox.y + dist;
-            }
-
-            this.tween = TweenLite.to( props, 0.5, {
-                x: throwX,
-                y: throwY,
-                ease: Power4.easeOut,
-                onUpdate: () => {
-                    this.position.x = this.tween._targets[ 0 ].x;
-                    this.position.y = this.tween._targets[ 0 ].y;
-
-                    const collision = this.gamebox.getCollision( this.position, this );
-
-                    if ( collision.map || collision.box || collision.npc ) {
-                        _complete();
-                    }
-                },
-                onComplete: () => {
-                    _complete();
-                }
-            });
-        });
     }
 }
 

@@ -1,6 +1,7 @@
 const Utils = require( "../Utils" );
 const Loader = require( "../Loader" );
 const Config = require( "../Config" );
+const { TweenLite, Power0, Power1, Power2, Power3, Power4 } = require( "gsap" );
 
 
 
@@ -20,6 +21,7 @@ class Sprite {
         this.dir = (this.data.dir || "down");
         this.verb = (this.data.verb || Config.verbs.FACE);
         this.image = Loader.cash( this.data.image );
+        this.speed = 1;
         this.frame = 0;
         this.position = {
             x: (this.data.spawn && this.data.spawn.x || 0) / this.scale,
@@ -61,11 +63,18 @@ class Sprite {
     }
 
 
-    destroy () {
-        if ( this.tween ) {
-            this.tween.kill();
-            this.tween = null;
-        }
+    destroy () {}
+
+
+    visible () {
+        const collider = {
+            x: this.position.x,
+            y: this.position.y,
+            width: this.width,
+            height: this.height,
+        };
+
+        return Utils.collide( this.gamebox.camera, collider );
     }
 
 
@@ -77,13 +86,12 @@ class Sprite {
 * Default behavior for a Sprite is to be static but with Physics forces
 *******************************************************************************/
     blit ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
-            this.previousElapsed = elapsed;
+        if ( !this.visible() ) {
+            return;
         }
 
-        // Hero can blit companions
-        if ( typeof this.blitCompanions === "function" ) {
-            this.blitCompanions( elapsed );
+        if ( typeof this.previousElapsed === "undefined" ) {
+            this.previousElapsed = elapsed;
         }
 
         // Set frame and sprite rendering cel
@@ -92,7 +100,15 @@ class Sprite {
 
 
     update () {
-        // Build in handlControls( this.controls )?
+        if ( !this.visible() ) {
+            return;
+        }
+
+        this.updateStack();
+    }
+
+
+    updateStack () {
         // The physics stack...
         this.handleVelocity();
         this.handleGravity();
@@ -104,6 +120,10 @@ class Sprite {
 
 
     render () {
+        if ( !this.visible() ) {
+            return;
+        }
+
         if ( this.relative ) {
             if ( this.hitbox.y > this.map.hero.hitbox.y ) {
                 this.layer = "foreground";
@@ -125,11 +145,6 @@ class Sprite {
                 this.width,
                 this.height,
             );
-        }
-
-        // Hero can render companions
-        if ( typeof this.renderCompanions === "function" ) {
-            this.renderCompanions();
         }
 
         this.map.layers[ this.layer ].onCanvas.context.drawImage(
@@ -208,11 +223,11 @@ class Sprite {
 
     handleControls ( controls ) {
         if ( controls.left ) {
-            this.physics.vx = Utils.limit( this.physics.vx - 1, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.physics.vx = Utils.limit( this.physics.vx - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
             this.idle.x = false;
 
         } else if ( controls.right ) {
-            this.physics.vx = Utils.limit( this.physics.vx + 1, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.physics.vx = Utils.limit( this.physics.vx + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
             this.idle.x = false;
 
         } else {
@@ -220,11 +235,11 @@ class Sprite {
         }
 
         if ( controls.up ) {
-            this.physics.vy = Utils.limit( this.physics.vy - 1, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.physics.vy = Utils.limit( this.physics.vy - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
             this.idle.y = false;
 
         } else if ( controls.down ) {
-            this.physics.vy = Utils.limit( this.physics.vy + 1, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.physics.vy = Utils.limit( this.physics.vy + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
             this.idle.y = false;
 
         } else {
@@ -233,11 +248,83 @@ class Sprite {
     }
 
 
+    handleThrow () {
+        return new Promise(( resolve ) => {
+            this.resolve = resolve;
+            this.throwing = this.hero.dir;
+
+            let throwX;
+            let throwY;
+            const dist = 128;
+            const props = {
+                x: this.position.x,
+                y: this.position.y,
+            };
+            const _complete = () => {
+                this.tween.kill();
+                this.tween = null;
+                this.map.smokeObject( this );
+                this.resolve();
+            };
+
+            if ( this.throwing === "left" ) {
+                throwX = this.position.x - dist;
+                throwY = this.hero.footbox.y - (this.height - this.hero.footbox.height);
+
+            } else if ( this.throwing === "right" ) {
+                throwX = this.position.x + dist;
+                throwY = this.hero.footbox.y - (this.height - this.hero.footbox.height);
+
+            } else if ( this.throwing === "up" ) {
+                throwX = this.position.x;
+                throwY = this.position.y - dist;
+
+            }  else if ( this.throwing === "down" ) {
+                throwX = this.position.x;
+                throwY = this.hero.footbox.y + dist;
+            }
+
+            this.tween = TweenLite.to( props, 0.5, {
+                x: throwX,
+                y: throwY,
+                ease: Power4.easeOut,
+                onUpdate: () => {
+                    this.position.x = this.tween._targets[ 0 ].x;
+                    this.position.y = this.tween._targets[ 0 ].y;
+
+                    const collision = {
+                        map: this.map.checkMap( this.position, this ),
+                        box: this.map.checkBox( this.position, this ),
+                        npc: this.map.checkNPC( this.position, this ),
+                    };
+
+                    if ( collision.map || collision.box || collision.npc ) {
+                        _complete();
+                    }
+                },
+                onComplete: () => {
+                    _complete();
+                }
+            });
+        });
+    }
+
+
 /*******************************************************************************
 * Applications
 *******************************************************************************/
     applyPosition () {
-        this.position = this.getNextPoi();
+        // A lifted object
+        if ( this.hero ) {
+            if ( !this.throwing ) {
+                this.position.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
+                this.position.y = this.hero.position.y - this.height + 42;
+            }
+
+        // Basic collision for NPCs...
+        } else {
+            this.position = this.getNextPoi();
+        }
     }
 
 

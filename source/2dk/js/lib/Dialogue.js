@@ -10,8 +10,8 @@ class Dialogue {
         this.pressed = false;
         this.active = false;
         this.timeout = null;
-        this.debounce = 1024;
-        this.duration = 240;
+        this.debounce = 750;
+        this.duration = 250;
         this.build();
     }
 
