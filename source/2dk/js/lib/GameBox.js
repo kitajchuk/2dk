@@ -306,15 +306,15 @@ Can all be handled in plugin GameBox
         const footbox = this.hero.getFootbox( poi );
 
         for ( let i = this.map.activeTiles.length; i--; ) {
-            const tile = this.map.activeTiles[ i ];
-            const lookbox = ((footTiles.indexOf( tile.data.group ) !== -1) ? footbox : hitbox);
+            const instance = this.map.activeTiles[ i ];
+            const lookbox = ((footTiles.indexOf( instance.data.group ) !== -1) ? footbox : hitbox);
 
             for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
                 const tilebox = {
                     width: this.map.gridsize,
                     height: this.map.gridsize,
-                    x: tile.data.coords[ j ][ 0 ] * this.map.gridsize,
-                    y: tile.data.coords[ j ][ 1 ] * this.map.gridsize,
+                    x: instance.data.coords[ j ][ 0 ] * this.map.gridsize,
+                    y: instance.data.coords[ j ][ 1 ] * this.map.gridsize,
                 };
                 const collides = Utils.collide( lookbox, tilebox );
 
@@ -322,28 +322,28 @@ Can all be handled in plugin GameBox
                     // Utils.collides returns a useful collider object...
                     const amount = collides.width * collides.height;
                     const match = {
-                        tile,
-                        jump: (tile.data.action && tile.data.action.verb === Config.verbs.JUMP),
-                        stop: (tile.data.action && stopVerbs.indexOf( tile.data.action.verb ) !== -1),
-                        act: (tile.data.action && actionVerbs.indexOf( tile.data.action.verb ) !== -1),
-                        hit: (tile.data.attack && attackVerbs.indexOf( tile.data.attack.verb ) !== -1),
-                        cam: (cameraTiles.indexOf( tile.data.group ) !== -1),
-                        group: tile.data.group,
-                        coord: tile.data.coords[ j ],
+                        jump: (instance.data.action && instance.data.action.verb === Config.verbs.JUMP),
+                        stop: (instance.data.action && stopVerbs.indexOf( instance.data.action.verb ) !== -1),
+                        group: instance.data.group,
+                        coord: instance.data.coords[ j ],
+                        action: (instance.data.action && actionVerbs.indexOf( instance.data.action.verb ) !== -1),
+                        attack: (instance.data.attack && attackVerbs.indexOf( instance.data.attack.verb ) !== -1),
+                        camera: (cameraTiles.indexOf( instance.data.group ) !== -1),
                         amount,
                         tilebox,
                         collides,
+                        instance,
                     };
 
-                    if ( tile.data.action ) {
+                    if ( instance.data.action ) {
                         tiles.action.push( match );
                     }
 
-                    if ( tile.data.attack ) {
+                    if ( instance.data.attack ) {
                         tiles.attack.push( match );
                     }
 
-                    if ( (!tile.data.action && !tile.data.attack) || (tile.data.attack && match.cam) ) {
+                    if ( (!instance.data.action && !instance.data.attack) || (instance.data.attack && match.camera) ) {
                         tiles.passive.push( match );
                     }
 

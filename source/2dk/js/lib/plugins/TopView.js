@@ -152,7 +152,7 @@ class TopView extends GameBox {
         if ( collision.npc ) {
             this.handleHeroNPCAction( poi, this.hero.dir, collision.npc );
 
-        } else if ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].act ) {
+        } else if ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].action ) {
             if ( !this.interact.tile ) {
                 this.handleHeroTileAction( poi, this.hero.dir, collision.tiles.action[ 0 ] );
             }
@@ -203,7 +203,7 @@ class TopView extends GameBox {
 
         if ( collision.tiles && collision.tiles.attack.length ) {
             collision.tiles.attack.forEach(( tile ) => {
-                if ( tile.hit ) {
+                if ( tile.attack ) {
                     this.handleHeroTileAttack( poi, this.hero.dir, tile );
                 }
             });
@@ -379,7 +379,7 @@ class TopView extends GameBox {
 
 
     canHeroTileJump ( poi, dir, collision ) {
-        return (collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].jump && (collision.tiles.action[ 0 ].collides.width > (collision.tiles.action[ 0 ].tilebox.width / 2) || collision.tiles.action[ 0 ].collides.height > (collision.tiles.action[ 0 ].tilebox.height / 2)) && this.hero.verb !== Config.verbs.LIFT && dir === collision.tiles.action[ 0 ].tile.data.action.require.dir);
+        return (collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].jump && (collision.tiles.action[ 0 ].collides.width > (collision.tiles.action[ 0 ].tilebox.width / 2) || collision.tiles.action[ 0 ].collides.height > (collision.tiles.action[ 0 ].tilebox.height / 2)) && this.hero.verb !== Config.verbs.LIFT && dir === collision.tiles.action[ 0 ].instance.data.action.require.dir);
     }
 
 
@@ -484,6 +484,7 @@ class TopView extends GameBox {
 
     handleHeroTiles ( poi, dir, tiles ) {
         tiles.passive.forEach(( tile ) => {
+            console.log( tile );
             // Stairs are hard, you have to take it slow...
             if ( tile.group === Config.tiles.STAIRS ) {
                 this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
@@ -506,10 +507,10 @@ class TopView extends GameBox {
     handleHeroTileAction ( poi, dir, tile ) {
         const activeTiles = this.map.getActiveTiles( tile.group );
 
-        if ( tile.tile.canInteract() ) {
+        if ( tile.instance.canInteract() ) {
             this.interact.tile = tile;
 
-            if ( tile.tile.data.action.verb === Config.verbs.LIFT ) {
+            if ( tile.instance.data.action.verb === Config.verbs.LIFT ) {
                 this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
             }
         }
@@ -517,8 +518,8 @@ class TopView extends GameBox {
 
 
     handleHeroTileAttack ( poi, dir, tile ) {
-        if ( tile.tile.canAttack() ) {
-            tile.tile.attack( tile.coord );
+        if ( tile.instance.canAttack() ) {
+            tile.instance.attack( tile.coord );
         }
     }
 
