@@ -21,11 +21,57 @@
             "chest": "/games/la/assets/sounds/sfx-chest-unlock.mp3"
         },
         "companion": {
-            "id": "dog",
-            "type": "pet"
+            "id": "ghost",
+            "type": "float"
         }
     },
     "npcs": [
+        {
+            "id": "ghost",
+            "name": "Ghost",
+            "width": 64,
+            "height": 64,
+            "image": "/games/la/assets/sprites/npcs.png",
+            "opacity": 0.75,
+            "dir": "left",
+            "hitbox": {
+                "x": 0,
+                "y": 32,
+                "width": 64,
+                "height": 32
+            },
+            "verbs": {
+                "face": {
+                    "dur": 1000,
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -192,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -128,
+                        "offsetY": -192,
+                        "stepsX": 2
+                    },
+                    "up-left": {
+                        "offsetX": -256,
+                        "offsetY": -192,
+                        "stepsX": 2
+                    },
+                    "up-right": {
+                        "offsetX": -384,
+                        "offsetY": -192,
+                        "stepsX": 2
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "left"
+                }
+            ]
+        },
         {
             "id": "fisherman",
             "name": "Fisherman",

@@ -4,10 +4,6 @@
 
 
 
-* Figure out tile carry size and spawn with game resolution...
-
-
-
 * Hero sprite masking?
 * Grass sprite cycle / sound
 * Water sprite cycle / sound

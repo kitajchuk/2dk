@@ -23,7 +23,7 @@ const Config = {
         ATTACK: "attack",
     },
     tiles: {
-        HOLE: "hole",
+        HOLES: "holes",
         GRASS: "grass",
         WATER: "water",
         LEDGE: "ledge",
@@ -55,9 +55,9 @@ const Config = {
         CUTSCENE: "cutscene",
     },
     npc: {
-        PET: "pet",
         TILE: "tile",
-        FAIRY: "fairy",
+        WALK: "walk",
+        FLOAT: "float",
     },
     opposites: {
         y: "x",

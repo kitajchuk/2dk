@@ -14,25 +14,25 @@ class Sprite {
         this.data = data;
         this.map = map;
         this.gamebox = this.map.gamebox;
-        this.scale = this.gamebox.camera.resolution;
-        this.width = this.data.width / this.scale;
-        this.height = this.data.height / this.scale;
+        this.width = this.data.width;
+        this.height = this.data.height;
         this.dir = (this.data.dir || "down");
         this.verb = (this.data.verb || Config.verbs.FACE);
         this.image = Loader.cash( this.data.image );
         this.speed = 1;
         this.frame = 0;
+        this.opacity = (data.opacity || 1);
         this.position = {
-            x: (this.data.spawn && this.data.spawn.x || 0) / this.scale,
-            y: (this.data.spawn && this.data.spawn.y || 0) / this.scale,
-            z: (this.data.spawn && this.data.spawn.z || 0) / this.scale,
+            x: (this.data.spawn && this.data.spawn.x || 0),
+            y: (this.data.spawn && this.data.spawn.y || 0),
+            z: (this.data.spawn && this.data.spawn.z || 0),
         };
         this.physics = {
             vx: (this.data.vx || 0),
             vy: (this.data.vy || 0),
             vz: (this.data.vz || 0),
-            maxv: (this.data.maxv || 4) / this.scale,
-            controlmaxv: (this.data.controlmaxv || 4) / this.scale,
+            maxv: (this.data.maxv || 4),
+            controlmaxv: (this.data.controlmaxv || 4),
         };
         // Hero offset is based on camera.
         // NPCs offset snaps to position.
@@ -45,10 +45,10 @@ class Sprite {
             y: true,
         };
         this.hitbox = {
-            x: this.position.x + (this.data.hitbox.x / this.scale),
-            y: this.position.y + (this.data.hitbox.y / this.scale),
-            width: this.data.hitbox.width / this.scale,
-            height: this.data.hitbox.height / this.scale,
+            x: this.position.x + this.data.hitbox.x,
+            y: this.position.y + this.data.hitbox.y,
+            width: this.data.hitbox.width,
+            height: this.data.hitbox.height,
         };
         this.footbox = {
             x: this.hitbox.x,
@@ -57,7 +57,6 @@ class Sprite {
             height: this.hitbox.height / 2,
         };
         this.layer = (this.data.layer || "background");
-        this.relative = (this.hitbox.height !== this.height); // A better way?
         this.spritecel = this.getCel();
     }
 
@@ -121,7 +120,8 @@ class Sprite {
             return;
         }
 
-        if ( this.relative ) {
+        // move betweeb BG and FG relative to Hero
+        if ( this !== this.map.hero ) {
             if ( this.hitbox.y > this.map.hero.hitbox.y ) {
                 this.layer = "foreground";
 
@@ -144,6 +144,10 @@ class Sprite {
             );
         }
 
+        if ( this.opacity ) {
+            this.map.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
+        }
+
         this.map.layers[ this.layer ].onCanvas.context.drawImage(
             this.image,
             this.spritecel[ 0 ],
@@ -155,6 +159,8 @@ class Sprite {
             this.width,
             this.height,
         );
+
+        this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
 
         // Debug rendering...
         if ( this.gamebox.player.query.debug ) {
@@ -169,16 +175,16 @@ class Sprite {
 
         // Hitbox
         this.map.layers[ this.layer ].onCanvas.context.fillRect(
-            this.offset.x + (this.data.hitbox.x / this.scale),
-            this.offset.y + (this.data.hitbox.y / this.scale),
+            this.offset.x + this.data.hitbox.x,
+            this.offset.y + this.data.hitbox.y,
             this.hitbox.width,
             this.hitbox.height,
         );
 
         // Footbox
         this.map.layers[ this.layer ].onCanvas.context.fillRect(
-            this.offset.x + (this.data.hitbox.x / this.scale),
-            this.offset.y + (this.data.hitbox.y / this.scale) + (this.hitbox.height / 2),
+            this.offset.x + this.data.hitbox.x,
+            this.offset.y + this.data.hitbox.y + (this.hitbox.height / 2),
             this.hitbox.width,
             this.hitbox.height / 2,
         );
@@ -237,8 +243,8 @@ class Sprite {
 
 
     applyHitbox () {
-        this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
-        this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
+        this.hitbox.x = this.position.x + this.data.hitbox.x;
+        this.hitbox.y = this.position.y + this.data.hitbox.y;
         this.footbox.x = this.hitbox.x;
         this.footbox.y = this.hitbox.y + (this.hitbox.height / 2);
     }
@@ -350,8 +356,8 @@ class Sprite {
 
     getHitbox ( poi ) {
         return {
-            x: poi.x + (this.data.hitbox.x / this.scale),
-            y: poi.y + (this.data.hitbox.y / this.scale),
+            x: poi.x + this.data.hitbox.x,
+            y: poi.y + this.data.hitbox.y,
             width: this.hitbox.width,
             height: this.hitbox.height,
         };
@@ -360,8 +366,8 @@ class Sprite {
 
     getFootbox ( poi ) {
         return {
-            x: poi.x + (this.data.hitbox.x / this.scale),
-            y: poi.y + ((this.data.hitbox.y / this.scale) + (this.hitbox.height / 2)),
+            x: poi.x + this.data.hitbox.x,
+            y: poi.y + (this.data.hitbox.y + (this.hitbox.height / 2)),
             width: this.footbox.width,
             height: this.footbox.height,
         };

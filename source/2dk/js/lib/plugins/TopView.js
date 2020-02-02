@@ -30,6 +30,8 @@ class TopView extends GameBox {
         this.debounce = 1024;
         this.locked = false;
         this.jumping = false;
+        this.falling = false;
+        this.ledgeJump = false;
     }
 
 
@@ -121,7 +123,7 @@ class TopView extends GameBox {
 
 
     releaseD () {
-        if ( this.locked || this.jumping ) {
+        if ( this.locked || this.jumping || this.falling ) {
             return;
         }
 
@@ -139,7 +141,7 @@ class TopView extends GameBox {
 
 
     pressA () {
-        if ( this.locked || this.jumping ) {
+        if ( this.locked || this.jumping || this.falling ) {
             return;
         }
 
@@ -165,7 +167,7 @@ class TopView extends GameBox {
 
 
     holdA () {
-        if ( this.jumping ) {
+        if ( this.jumping || this.falling ) {
             return;
         }
 
@@ -174,7 +176,7 @@ class TopView extends GameBox {
 
 
     releaseA () {
-        if ( this.jumping ) {
+        if ( this.jumping || this.falling ) {
             return;
         }
 
@@ -185,7 +187,7 @@ class TopView extends GameBox {
 
 
     releaseHoldA () {
-        if ( this.jumping ) {
+        if ( this.jumping || this.falling ) {
             return;
         }
 
@@ -212,7 +214,7 @@ class TopView extends GameBox {
 
 
     holdB () {
-        if ( this.jumping ) {
+        if ( this.jumping || this.falling ) {
             return;
         }
 
@@ -221,7 +223,7 @@ class TopView extends GameBox {
 
 
     releaseB () {
-        if ( this.jumping ) {
+        if ( this.jumping || this.falling ) {
             return;
         }
 
@@ -230,7 +232,7 @@ class TopView extends GameBox {
 
 
     releaseHoldB () {
-        if ( this.jumping ) {
+        if ( this.jumping || this.falling ) {
             return;
         }
 
@@ -285,7 +287,7 @@ class TopView extends GameBox {
             camera: this.checkCamera( poi, this.hero ),
         };
 
-        if ( this.locked ) {
+        if ( this.locked || this.falling ) {
             this.interact.push = 0;
             return;
 
@@ -337,7 +339,7 @@ class TopView extends GameBox {
         }
 
         if ( collision.tiles ) {
-            this.handleHeroTiles(  poi, dir, collision.tiles );
+            this.handleHeroTiles( poi, dir, collision.tiles );
 
             // Tile is behaves like a WALL, or Object you cannot walk on
             if ( this.canHeroTileStop( poi, dir, collision ) ) {
@@ -436,18 +438,18 @@ class TopView extends GameBox {
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.interact.tile.sprite = new Sprite({
                 layer: "foreground",
-                width: this.map.gridsize,
-                height: this.map.gridsize,
+                width: this.map.data.tilesize,
+                height: this.map.data.tilesize,
                 spawn: {
-                    x: this.hero.position.x + (this.hero.width / 2) - (this.map.gridsize / 2),
-                    y: this.hero.position.y - this.map.gridsize + 42,
+                    x: this.interact.tile.coord[ 0 ] * this.map.data.tilesize,
+                    y: this.interact.tile.coord[ 1 ] * this.map.data.tilesize,
                 },
                 image: this.map.data.image,
                 hitbox: {
                     x: 0,
                     y: 0,
-                    width: this.map.gridsize,
-                    height: this.map.gridsize,
+                    width: this.map.data.tilesize,
+                    height: this.map.data.tilesize,
                 },
                 verbs: {
                     face: {
@@ -484,7 +486,6 @@ class TopView extends GameBox {
 
     handleHeroTiles ( poi, dir, tiles ) {
         tiles.passive.forEach(( tile ) => {
-            console.log( tile );
             // Stairs are hard, you have to take it slow...
             if ( tile.group === Config.tiles.STAIRS ) {
                 this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
@@ -492,6 +493,15 @@ class TopView extends GameBox {
             // Grass is thick, it will slow you down a bit...
             } else if ( tile.group === Config.tiles.GRASS ) {
                 this.hero.physics.maxv = this.hero.physics.controlmaxv / 1.5;
+
+            } else if ( tile.group === Config.tiles.HOLES ) {
+                // if ( tile.amount >= (this.hero.footbox.width * this.hero.footbox.height) ) {
+                //     this.falling = true;
+                //     setTimeout(() => {
+                //         this.falling = false;
+                //
+                //     }, 1000 );
+                // }
             }
         });
     }
@@ -734,7 +744,7 @@ class TopView extends GameBox {
             };
             this.map_.element.style.webkitTransform = `translate3d(
                 0,
-                ${this.camera.height}px,
+                ${this.player.height}px,
                 0
             )`;
             this.map_.hero.position = {
@@ -746,13 +756,13 @@ class TopView extends GameBox {
             // Animation values
             _css.map_ = {
                 axis: "y",
-                from: this.camera.height,
+                from: this.player.height,
                 to: 0,
             };
             _css.map = {
                 axis: "y",
                 from: 0,
-                to: -this.camera.height,
+                to: -this.player.height,
             };
             _css.hero_ = {
                 axis: "y",
@@ -774,7 +784,7 @@ class TopView extends GameBox {
             };
             this.map_.element.style.webkitTransform = `translate3d(
                 0,
-                ${-this.camera.height}px,
+                ${-this.player.height}px,
                 0
             )`;
             this.map_.hero.position = {
@@ -786,13 +796,13 @@ class TopView extends GameBox {
             // Animation values
             _css.map_ = {
                 axis: "y",
-                from: -this.camera.height,
+                from: -this.player.height,
                 to: 0,
             };
             _css.map = {
                 axis: "y",
                 from: 0,
-                to: this.camera.height,
+                to: this.player.height,
             };
             _css.hero_ = {
                 axis: "y",
@@ -813,7 +823,7 @@ class TopView extends GameBox {
                 y: this.map.offset.y,
             };
             this.map_.element.style.webkitTransform = `translate3d(
-                ${this.camera.width}px,
+                ${this.player.width}px,
                 0,
                 0
             )`;
@@ -826,13 +836,13 @@ class TopView extends GameBox {
             // Animation values
             _css.map_ = {
                 axis: "x",
-                from: this.camera.width,
+                from: this.player.width,
                 to: 0,
             };
             _css.map = {
                 axis: "x",
                 from: 0,
-                to: -this.camera.width,
+                to: -this.player.width,
             };
             _css.hero_ = {
                 axis: "x",
@@ -853,7 +863,7 @@ class TopView extends GameBox {
                 y: this.map.offset.y,
             };
             this.map_.element.style.webkitTransform = `translate3d(
-                ${-this.camera.width}px,
+                ${-this.player.width}px,
                 0,
                 0
             )`;
@@ -866,13 +876,13 @@ class TopView extends GameBox {
             // Animation values
             _css.map_ = {
                 axis: "x",
-                from: -this.camera.width,
+                from: -this.player.width,
                 to: 0,
             };
             _css.map = {
                 axis: "x",
                 from: 0,
-                to: this.camera.width,
+                to: this.player.width,
             };
             _css.hero_ = {
                 axis: "x",

@@ -28,7 +28,7 @@ const footTiles = [
     Config.tiles.STAIRS,
     Config.tiles.WATER,
     Config.tiles.GRASS,
-    Config.tiles.HOLE,
+    Config.tiles.HOLES,
 ];
 const cameraTiles = [
     Config.tiles.STAIRS,
@@ -48,8 +48,8 @@ class GameBox {
         this.camera = {
             x: 0,
             y: 0,
-            width: this.player.width,
-            height: this.player.height,
+            width: this.player.width * this.player.data.game.resolution,
+            height: this.player.height * this.player.data.game.resolution,
             resolution: this.player.data.game.resolution,
         };
 
@@ -128,8 +128,8 @@ Can all be handled in plugin GameBox
         let data = {
             id: "smoke",
             spawn: {
-                x: obj.position.x + (obj.width / 2) - (this.map.gridsize / 2),
-                y: obj.position.y + (obj.height / 2) - (this.map.gridsize / 2),
+                x: obj.position.x + (obj.width / 2) - (this.map.data.tilesize / 2),
+                y: obj.position.y + (obj.height / 2) - (this.map.data.tilesize / 2),
             },
         };
 
@@ -144,8 +144,8 @@ Can all be handled in plugin GameBox
         this.map.addFX( new FX( data, this.map ) );
         this.map.addFX( new FX( Utils.merge( data, {
             spawn: {
-                x: origin.x - (this.map.gridsize / 4),
-                y: origin.y - (this.map.gridsize / 4),
+                x: origin.x - (this.map.data.tilesize / 4),
+                y: origin.y - (this.map.data.tilesize / 4),
             },
             vx: -8,
             vy: -8,
@@ -153,8 +153,8 @@ Can all be handled in plugin GameBox
         }), this.map ));
         this.map.addFX( new FX( Utils.merge( data, {
             spawn: {
-                x: origin.x + (this.map.gridsize / 4),
-                y: origin.y - (this.map.gridsize / 4),
+                x: origin.x + (this.map.data.tilesize / 4),
+                y: origin.y - (this.map.data.tilesize / 4),
             },
             vx: 8,
             vy: -8,
@@ -162,8 +162,8 @@ Can all be handled in plugin GameBox
         }), this.map ));
         this.map.addFX( new FX( Utils.merge( data, {
             spawn: {
-                x: origin.x - (this.map.gridsize / 4),
-                y: origin.y + (this.map.gridsize / 4),
+                x: origin.x - (this.map.data.tilesize / 4),
+                y: origin.y + (this.map.data.tilesize / 4),
             },
             vx: -8,
             vy: 8,
@@ -171,8 +171,8 @@ Can all be handled in plugin GameBox
         }), this.map ));
         this.map.addFX( new FX( Utils.merge( data, {
             spawn: {
-                x: origin.x + (this.map.gridsize / 4),
-                y: origin.y + (this.map.gridsize / 4),
+                x: origin.x + (this.map.data.tilesize / 4),
+                y: origin.y + (this.map.data.tilesize / 4),
             },
             vx: 8,
             vy: 8,
@@ -205,7 +205,7 @@ Can all be handled in plugin GameBox
         const hitbox = sprite.getHitbox( poi );
 
         for ( let i = this.map.data.collision.length; i--; ) {
-            const collider = this.map.data.collider / this.camera.resolution;
+            const collider = this.map.data.collider;
             const tile = {
                 width: collider,
                 height: collider,
@@ -239,10 +239,10 @@ Can all be handled in plugin GameBox
 
         for ( let i = this.map.data.events.length; i--; ) {
             const tile = {
-                width: this.map.gridsize,
-                height: this.map.gridsize,
-                x: this.map.data.events[ i ].coords[ 0 ] * this.map.gridsize,
-                y: this.map.data.events[ i ].coords[ 1 ] * this.map.gridsize
+                width: this.map.data.tilesize,
+                height: this.map.data.tilesize,
+                x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.tilesize,
+                y: this.map.data.events[ i ].coords[ 1 ] * this.map.data.tilesize
             };
 
             if ( Utils.collide( hitbox, tile ) && (sprite.dir === this.map.data.events[ i ].dir) ) {
@@ -274,8 +274,8 @@ Can all be handled in plugin GameBox
             collider = {
                 x: this.map.npcs[ i ].position.x,
                 y: this.map.npcs[ i ].position.y,
-                width: this.map.npcs[ i ].width / this.camera.resolution,
-                height: this.map.npcs[ i ].height / this.camera.resolution,
+                width: this.map.npcs[ i ].width,
+                height: this.map.npcs[ i ].height,
                 layer: this.map.npcs[ i ].layer,
             };
 
@@ -311,10 +311,10 @@ Can all be handled in plugin GameBox
 
             for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
                 const tilebox = {
-                    width: this.map.gridsize,
-                    height: this.map.gridsize,
-                    x: instance.data.coords[ j ][ 0 ] * this.map.gridsize,
-                    y: instance.data.coords[ j ][ 1 ] * this.map.gridsize,
+                    width: this.map.data.tilesize,
+                    height: this.map.data.tilesize,
+                    x: instance.data.coords[ j ][ 0 ] * this.map.data.tilesize,
+                    y: instance.data.coords[ j ][ 1 ] * this.map.data.tilesize,
                 };
                 const collides = Utils.collide( lookbox, tilebox );
 

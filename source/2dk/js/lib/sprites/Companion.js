@@ -17,6 +17,21 @@ class Companion extends Sprite {
         this.watchFrame = 0;
         this.checkFrame = 0;
         this.watchDur = 1000;
+
+        // if ( this.hero.data.shadow && (this.data.type === Config.npc.FLOAT) ) {
+        //     // Shadows can always render to the BG since they are floored
+        //     this.map.layers.background.onCanvas.context.drawImage(
+        //         this.hero.image,
+        //         Math.abs( this.hero.data.shadow.offsetX ),
+        //         Math.abs( this.hero.data.shadow.offsetY ),
+        //         this.hero.data.width,
+        //         this.hero.data.height,
+        //         this.offset.x,
+        //         this.offset.y,
+        //         this.width,
+        //         this.height,
+        //     );
+        // }
     }
 
 
@@ -46,11 +61,11 @@ class Companion extends Sprite {
         }
 
         // Companion type?
-        if ( this.data.type === Config.npc.PET ) {
-            this.blitPet();
+        if ( this.data.type === Config.npc.WALK ) {
+            this.blitWalk();
 
-        } else if ( this.data.type === Config.npc.FAIRY ) {
-            this.blitFairy();
+        } else if ( this.data.type === Config.npc.FLOAT ) {
+            this.blitFloat();
         }
 
         // Set watch cycle frame
@@ -67,13 +82,8 @@ class Companion extends Sprite {
     }
 
 
-    blitFairy () {
-        if ( this.position.z <= -(this.hero.height + 32) ) {
-            this.physics.vz = 8;
-
-        } else if ( this.position.z >= -(this.hero.height - 32) ) {
-            this.physics.vz = -8;
-        }
+    blitFloat () {
+        // this.position.z = -128;
 
         if ( (this.hero.position.x + (this.hero.width / 2)) > (this.position.x + (this.width / 2)) ) {
             this.dir = "right";
@@ -84,10 +94,10 @@ class Companion extends Sprite {
     }
 
 
-    blitPet () {
+    blitWalk () {
         // Hero is NOT idle, so moving
         // Hero IS idle but companion is within a threshold distance...
-        if ( (!this.hero.idle.x || !this.hero.idle.y) || (this.hero.idle.x && this.hero.idle.y && this.distance > (this.map.gridsize / 2)) ) {
+        if ( (!this.hero.idle.x || !this.hero.idle.y) || (this.hero.idle.x && this.hero.idle.y && this.distance > (this.map.data.tilesize / 2)) ) {
             // Bounce condition is TRUE
             // Position Z is zero, so bounce a bit...
             if ( this.data.bounce && this.position.z === 0 ) {
@@ -104,55 +114,37 @@ class Companion extends Sprite {
     }
 
 
-    shadow () {
-        if ( this.hero.data.shadow && (this.data.type === Config.npc.FAIRY) ) {
-            // Shadows can always render to the BG since they are floored
-            this.map.layers.background.onCanvas.context.drawImage(
-                this.hero.image,
-                Math.abs( this.hero.data.shadow.offsetX ),
-                Math.abs( this.hero.data.shadow.offsetY ),
-                this.hero.data.width,
-                this.hero.data.height,
-                this.offset.x,
-                this.offset.y,
-                this.width,
-                this.height,
-            );
-        }
-    }
-
-
 /*******************************************************************************
 * Applications
 *******************************************************************************/
     applyPosition () {
-        if ( this.data.type === Config.npc.PET ) {
-            this.applyPetPosition();
+        if ( this.data.type === Config.npc.WALK ) {
+            this.applyWalkPosition();
 
-        } else if ( this.data.type === Config.npc.FAIRY ) {
-            this.applyFairyPosition();
+        } else if ( this.data.type === Config.npc.FLOAT ) {
+            this.applyFloatPosition();
         }
     }
 
 
-    applyFairyPosition () {
+    applyFloatPosition () {
         const poi = {};
 
         if ( this.hero.dir === "right" && this.hero.position.x > this.position.x ) {
-            poi.x = this.hero.position.x - this.width;
+            poi.x = this.hero.footbox.x - this.width;
             poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
 
         } else if ( this.hero.dir === "left" && this.hero.position.x < this.position.x ) {
-            poi.x = this.hero.position.x + this.hero.width;
+            poi.x = this.hero.footbox.x + this.hero.width;
             poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
 
         } else if ( this.hero.dir === "up" && this.hero.position.y < this.position.y ) {
-            poi.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
-            poi.y = this.hero.position.y + this.hero.height;
+            poi.x = this.hero.footbox.x + (this.hero.width / 2) - (this.width / 2);
+            poi.y = this.hero.footbox.y + this.hero.height;
 
         } else if ( this.hero.dir === "down" && this.hero.position.y > this.position.y ) {
-            poi.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
-            poi.y = this.hero.position.y + this.hero.height - (this.height * 2);
+            poi.x = this.hero.footbox.x + (this.hero.width / 2) - (this.width / 2);
+            poi.y = this.hero.footbox.y + this.hero.height - (this.height * 2);
         }
 
         if ( !this.origin ) {
@@ -202,7 +194,7 @@ class Companion extends Sprite {
     }
 
 
-    applyPetPosition () {
+    applyWalkPosition () {
         const poi = {};
 
         if ( this.hero.dir === "right" && this.hero.position.x > this.position.x ) {
@@ -247,7 +239,7 @@ class Companion extends Sprite {
 
             // Simple NPCs can operate with just FACE data
             // Checking for WALK data to shift sprite cycles while moving...
-            if ( distance >= (this.map.gridsize / 4) && this.data.verbs[ Config.verbs.WALK ] ) {
+            if ( distance >= (this.map.data.tilesize / 4) && this.data.verbs[ Config.verbs.WALK ] ) {
                 this.verb = Config.verbs.WALK;
 
             } else {

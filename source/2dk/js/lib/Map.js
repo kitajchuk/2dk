@@ -67,10 +67,10 @@ class ActiveTiles {
     attack ( coords ) {
         this.splice( coords );
         this.map.clearCollider({
-            x: coords[ 0 ] * this.map.gridsize,
-            y: coords[ 1 ] * this.map.gridsize,
-            width: this.map.gridsize,
-            height: this.map.gridsize,
+            x: coords[ 0 ] * this.map.data.tilesize,
+            y: coords[ 1 ] * this.map.data.tilesize,
+            width: this.map.data.tilesize,
+            height: this.map.data.tilesize,
         });
     }
 
@@ -152,9 +152,8 @@ class Map {
         this.heroData = heroData;
         this.gamebox = gamebox;
         this.camera = this.gamebox.camera;
-        this.width = this.data.width / this.gamebox.camera.resolution;
-        this.height = this.data.height / this.gamebox.camera.resolution;
-        this.gridsize = this.data.tilesize / this.gamebox.camera.resolution;
+        this.width = this.data.width;
+        this.height = this.data.height;
         this.image = Loader.cash( data.image );
         this.layers = {
             background: null,
@@ -226,15 +225,15 @@ class Map {
         }
 
         // Companion?
-        // if ( this.heroData.companion ) {
-        //     this.heroData.companion = this.gamebox.player.getMergedData( this.heroData.companion, "npcs" );
-        //     this.heroData.companion.spawn = {
-        //         x: this.hero.position.x,
-        //         y: this.hero.position.y,
-        //     };
-        //
-        //     this.npcs.push( new Companion( this.heroData.companion, this.hero ) );
-        // }
+        if ( this.heroData.companion ) {
+            this.heroData.companion = this.gamebox.player.getMergedData( this.heroData.companion, "npcs" );
+            this.heroData.companion.spawn = {
+                x: this.hero.position.x,
+                y: this.hero.position.y,
+            };
+
+            this.npcs.push( new Companion( this.heroData.companion, this.hero ) );
+        }
 
         // Tiles
         this.data.tiles.forEach(( data ) => {
@@ -249,8 +248,8 @@ class Map {
 
 
     addLayer ( id ) {
-        const offWidth = this.gamebox.camera.width + (this.gridsize * 2);
-        const offHeight = this.gamebox.camera.height + (this.gridsize * 2);
+        const offWidth = this.gamebox.camera.width + (this.data.tilesize * 2);
+        const offHeight = this.gamebox.camera.height + (this.data.tilesize * 2);
 
         this.layers[ id ] = {};
         this.layers[ id ].onCanvas = new MapLayer({
@@ -263,6 +262,11 @@ class Map {
             width: offWidth,
             height: offHeight,
         });
+
+        this.layers[ id ].onCanvas.canvas.width = `${this.gamebox.camera.width * this.gamebox.camera.resolution}`;
+        this.layers[ id ].onCanvas.canvas.height = `${this.gamebox.camera.height * this.gamebox.camera.resolution}`;
+        this.layers[ id ].offCanvas.canvas.width = `${offWidth * this.gamebox.camera.resolution}`;
+        this.layers[ id ].offCanvas.canvas.height = `${offHeight * this.gamebox.camera.resolution}`;
 
         this.element.appendChild( this.layers[ id ].onCanvas.canvas );
     }
@@ -347,7 +351,7 @@ class Map {
             this.image,
             this.renderBox.textures[ id ],
             this.data.tilesize,
-            this.gridsize,
+            this.data.tilesize,
         );
 
         // Draw offscreen canvases to the onscreen canvases
@@ -375,10 +379,10 @@ class Map {
 
     getRenderbox ( camera ) {
         const renderBox = {
-            x: Math.floor( camera.x / this.gridsize ) - 1,
-            y: Math.floor( camera.y / this.gridsize ) - 1,
-            width: camera.width + (this.gridsize * 2),
-            height: camera.height + (this.gridsize * 2),
+            x: Math.floor( camera.x / this.data.tilesize ) - 1,
+            y: Math.floor( camera.y / this.data.tilesize ) - 1,
+            width: camera.width + (this.data.tilesize * 2),
+            height: camera.height + (this.data.tilesize * 2),
             bleed: {},
             textures: {},
         };
@@ -392,8 +396,8 @@ class Map {
 
     getBleed ( renderBox, camera ) {
         return {
-            x: -(camera.x - (renderBox.x * this.gridsize)),
-            y: -(camera.y - (renderBox.y * this.gridsize)),
+            x: -(camera.x - (renderBox.x * this.data.tilesize)),
+            y: -(camera.y - (renderBox.y * this.data.tilesize)),
         };
     }
 
@@ -404,7 +408,7 @@ class Map {
         for ( let id in this.data.textures ) {
             ret[ id ] = [];
 
-            const height = (renderBox.height / this.gridsize);
+            const height = (renderBox.height / this.data.tilesize);
             let y = 0;
 
             while ( y < height ) {
@@ -413,7 +417,7 @@ class Map {
                 const lookupY = renderBox.y + y;
 
                 if ( this.data.textures[ id ][ lookupY ] ) {
-                    const width = (renderBox.width / this.gridsize);
+                    const width = (renderBox.width / this.data.tilesize);
                     let x = 0;
 
                     while ( x < width ) {
