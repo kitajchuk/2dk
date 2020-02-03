@@ -27,11 +27,10 @@ class TopView extends GameBox {
             // }
             push: 0,
         };
-        this.debounce = 1024;
         this.locked = false;
         this.jumping = false;
         this.falling = false;
-        this.ledgeJump = false;
+        this.parkour = false;
     }
 
 
@@ -287,18 +286,23 @@ class TopView extends GameBox {
             camera: this.checkCamera( poi, this.hero ),
         };
 
-        if ( this.locked || this.falling ) {
+        if ( this.locked || this.jumping || this.falling || this.parkour ) {
             this.interact.push = 0;
+        }
+
+        if ( this.locked || this.falling ) {
+            return;
+
+        } else if ( this.parkour ) {
+            this.applyHeroTileJump( poi, dir );
+            this.applyHero( poi, dir );
             return;
 
         } else if ( this.jumping ) {
-            this.interact.push = 0;
-            if ( this.ledgeJump ) {
-                this.applyHero( poi, dir );
-
-            } else if ( this.canHeroMoveWhileJumping( poi, dir, collision ) ) {
+            if ( this.canHeroMoveWhileJumping( poi, dir, collision ) ) {
                 this.applyHero( poi, dir );
             }
+
             return;
         }
 
@@ -391,17 +395,50 @@ class TopView extends GameBox {
         this.hero.physics.vz = -16;
         setTimeout(() => {
             this.jumping = false;
-            this.ledgeJump = false;
-            this.hero.physics.maxv = this.hero.physics.controlmaxv;
             this.hero.face( this.hero.dir );
 
         }, 500 );
     }
 
 
+    applyHeroTileJump ( poi, dir ) {
+        this.player.controls[ this.hero.dir ] = true;
+
+        if ( (dir === "left" && this.hero.position.x <= this.parkour.landing.x) || (dir === "right" && this.hero.position.x >= this.parkour.landing.x) || (dir === "up" && this.hero.position.y <= this.parkour.landing.y) || (dir === "down" && this.hero.position.y >= this.parkour.landing.y) ) {
+            const dpad = this.player.gamepad.checkDpad();
+            const dpadDir = dpad.find(( ctrl ) => {
+                return (ctrl.btn[ 0 ] === this.hero.dir);
+            });
+
+            if ( !dpadDir ) {
+                this.player.controls[ this.hero.dir ] = false;
+            }
+
+            this.parkour = false;
+            this.hero.face( this.hero.dir );
+        }
+    }
+
+
     handleHeroTileJump ( poi, dir, tile ) {
-        this.ledgeJump = true;
-        this.handleHeroJump( poi, dir );
+        const distance = this.map.data.tilesize + (this.map.data.tilesize * tile.instance.data.elevation);
+
+        this.parkour = {
+            distance,
+            landing: {
+                x: (dir === "left" ? this.hero.position.x - distance : dir === "right" ? this.hero.position.x + distance : this.hero.position.x),
+                y: (dir === "up" ? this.hero.position.y - distance : dir === "down" ? this.hero.position.y + distance : this.hero.position.y),
+            },
+        };
+        this.jumping = true;
+        this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
+        this.hero.physics.vz = -16;
+        this.player.controls[ this.hero.dir ] = true;
+        setTimeout(() => {
+            this.jumping = false;
+            this.hero.face( this.hero.dir );
+
+        }, 500 );
     }
 
 

@@ -24,6 +24,7 @@
             "coords": [],
             "offsetX": 192,
             "offsetY": 1600,
+            "elevation": 1,
             "action": {
                 "verb": "jump",
                 "require": {

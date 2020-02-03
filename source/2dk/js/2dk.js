@@ -4,12 +4,34 @@
 
 
 
+* Hero weapon animations / collisions (sword...?)
+* Tile interactions (fall, etc...)
 * Hero sprite masking?
 * Grass sprite cycle / sound
 * Water sprite cycle / sound
 * Sword sprite cycle / sound / collision
 * Canvas FX layer (blast, smash, sparks, smoke, etc...?)
 * Door events for entering and exiting interiors
+
+
+
+********************************************************************************
+* Studio Software
+********************************************************************************
+
+* Map Spawn (x, y, dir)
+* Map Events (coords, type, map, dir, spawn?)
+* Map Heroes / Hero
+* Map NPCs (background?, foreground?)
+* Map Active Tiles (background)
+* Map FX
+* Map Hero companion?
+
+* History states for painting
+* Upload icon PNG when creating a new game
+* Erase one tile cel at a time?
+* Make EditorUtils Promise-based...like clutch core files module.
+* Use game icon for mobile installed
 
 
 
@@ -23,23 +45,6 @@
 * Butterflies, Cucco's, Dogs
 
 * Sprites can have a perception box to activate a little before entering screen
-
-
-
-********************************************************************************
-* Studio Software
-********************************************************************************
-
-* History states for painting
-* Hero Pins (sets map.spawn(x, y))
-* Sprites (background, foreground)
-* Active Tiles (background, foreground)
-* Upload icon PNG when creating a new game
-* Map spawn points (x, y, dir)
-* Map event points (coords, type, map, dir)
-* Erase one tile cel at a time?
-* Make EditorUtils Promise-based...like clutch core files module.
-* Use game icon for mobile installed
 
 
 

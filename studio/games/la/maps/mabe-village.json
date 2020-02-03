@@ -13,8 +13,8 @@
     "sound": "/games/la/assets/sounds/bgm-mabe-village.mp3",
     "spawn": [
         {
-            "x": 1024,
-            "y": 640
+            "x": 1776,
+            "y": 317
         }
     ],
     "tiles": [
@@ -24,6 +24,7 @@
             "coords": [],
             "offsetX": 448,
             "offsetY": 1792,
+            "elevation": 2,
             "action": {
                 "verb": "jump",
                 "require": {
@@ -219,6 +220,15 @@
         }
     ],
     "events": [
+        {
+            "coords": [
+                5,
+                21
+            ],
+            "type": "door",
+            "map": "/games/la/maps/mysterious-forest.json",
+            "dir": "down"
+        },
         {
             "coords": [
                 5,

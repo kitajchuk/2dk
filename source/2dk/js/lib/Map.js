@@ -225,24 +225,24 @@ class Map {
         }
 
         // Companion?
-        if ( this.heroData.companion ) {
-            this.heroData.companion = this.gamebox.player.getMergedData( this.heroData.companion, "npcs" );
-            this.heroData.companion.spawn = {
-                x: this.hero.position.x,
-                y: this.hero.position.y,
-            };
+        // if ( this.heroData.companion ) {
+        //     this.heroData.companion = this.gamebox.player.getMergedData( this.heroData.companion, "npcs" );
+        //     this.heroData.companion.spawn = {
+        //         x: this.hero.position.x,
+        //         y: this.hero.position.y,
+        //     };
+        //
+        //     this.npcs.push( new Companion( this.heroData.companion, this.hero ) );
+        // }
 
-            this.npcs.push( new Companion( this.heroData.companion, this.hero ) );
-        }
+        // NPCs
+        // this.data.npcs.forEach(( data ) => {
+        //     this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
+        // });
 
         // Tiles
         this.data.tiles.forEach(( data ) => {
             this.activeTiles.push( new ActiveTiles( data, this ) );
-        });
-
-        // NPCs
-        this.data.npcs.forEach(( data ) => {
-            this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
         });
     }
 
