@@ -1,4 +1,4 @@
-const CACHE_NAME = "v244";
+const CACHE_NAME = "v245";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/la/game.json",
@@ -11,7 +11,10 @@ const CACHE_URLS = [
     "/games/la/assets/sounds/sfx-throw.mp3",
     "/games/la/assets/sounds/sfx-smash.mp3",
     "/games/la/assets/sounds/sfx-pick-up.mp3",
+    "/games/la/assets/sounds/sfx-jump.mp3",
+    "/games/la/assets/sounds/sfx-dropping.mp3",
     "/games/la/assets/sounds/sfx-chest-unlock.mp3",
+    "/games/la/assets/sounds/sfx-bounce.mp3",
     "/games/la/assets/sounds/bgm-overworld.mp3",
     "/games/la/assets/sounds/bgm-mysterious-forest.mp3",
     "/games/la/assets/sounds/bgm-mabe-village.mp3",

@@ -19,7 +19,8 @@ const Config = {
         SWIM: "swim",
         JUMP: "jump",
         FALL: "fall",
-        THROW: "THROW",
+        THROW: "throw",
+        SMASH: "smash",
         ATTACK: "attack",
     },
     tiles: {

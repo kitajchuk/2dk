@@ -18,20 +18,10 @@ class Companion extends Sprite {
         this.checkFrame = 0;
         this.watchDur = 1000;
 
-        // if ( this.hero.data.shadow && (this.data.type === Config.npc.FLOAT) ) {
-        //     // Shadows can always render to the BG since they are floored
-        //     this.map.layers.background.onCanvas.context.drawImage(
-        //         this.hero.image,
-        //         Math.abs( this.hero.data.shadow.offsetX ),
-        //         Math.abs( this.hero.data.shadow.offsetY ),
-        //         this.hero.data.width,
-        //         this.hero.data.height,
-        //         this.offset.x,
-        //         this.offset.y,
-        //         this.width,
-        //         this.height,
-        //     );
-        // }
+        if ( this.hero.data.shadow && (this.data.type === Config.npc.FLOAT) ) {
+            this.shadowImage = this.hero.image;
+            this.data.shadow = this.hero.data.shadow;
+        }
     }
 
 
@@ -83,7 +73,7 @@ class Companion extends Sprite {
 
 
     blitFloat () {
-        // this.position.z = -128;
+        this.position.z = -(this.map.data.tilesize * 2);
 
         if ( (this.hero.position.x + (this.hero.width / 2)) > (this.position.x + (this.width / 2)) ) {
             this.dir = "right";
@@ -129,22 +119,30 @@ class Companion extends Sprite {
 
     applyFloatPosition () {
         const poi = {};
+        const heroCenter = {
+            x: this.hero.position.x + (this.hero.width / 2),
+            y: this.hero.position.y + (this.hero.height / 2),
+        };
+        const selfCenter = {
+            x: this.position.x + (this.width / 2),
+            y: this.position.y + (this.height / 2),
+        };
 
-        if ( this.hero.dir === "right" && this.hero.position.x > this.position.x ) {
-            poi.x = this.hero.footbox.x - this.width;
-            poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
+        if ( this.hero.dir === "right" && heroCenter.x > selfCenter.x ) {
+            poi.x = heroCenter.x - this.width;
+            poi.y = heroCenter.y - (this.height / 2);
 
-        } else if ( this.hero.dir === "left" && this.hero.position.x < this.position.x ) {
-            poi.x = this.hero.footbox.x + this.hero.width;
-            poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
+        } else if ( this.hero.dir === "left" && heroCenter.x < selfCenter.x ) {
+            poi.x = heroCenter.x;
+            poi.y = heroCenter.y - (this.height / 2);
 
-        } else if ( this.hero.dir === "up" && this.hero.position.y < this.position.y ) {
-            poi.x = this.hero.footbox.x + (this.hero.width / 2) - (this.width / 2);
-            poi.y = this.hero.footbox.y + this.hero.height;
+        } else if ( this.hero.dir === "up" && heroCenter.y < selfCenter.y ) {
+            poi.x = heroCenter.x - (this.width / 2);
+            poi.y = heroCenter.y + this.height;
 
-        } else if ( this.hero.dir === "down" && this.hero.position.y > this.position.y ) {
-            poi.x = this.hero.footbox.x + (this.hero.width / 2) - (this.width / 2);
-            poi.y = this.hero.footbox.y + this.hero.height - (this.height * 2);
+        } else if ( this.hero.dir === "down" && heroCenter.y > selfCenter.y ) {
+            poi.x = heroCenter.x - (this.width / 2);
+            poi.y = heroCenter.y - this.height;
         }
 
         if ( !this.origin ) {

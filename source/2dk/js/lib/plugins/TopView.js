@@ -393,6 +393,7 @@ class TopView extends GameBox {
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -16;
+        this.player.gameaudio.hitSound( Config.verbs.JUMP );
         setTimeout(() => {
             this.jumping = false;
             this.hero.face( this.hero.dir );
@@ -434,6 +435,7 @@ class TopView extends GameBox {
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -16;
         this.player.controls[ this.hero.dir ] = true;
+        this.player.gameaudio.hitSound( "parkour" );
         setTimeout(() => {
             this.jumping = false;
             this.hero.face( this.hero.dir );
@@ -471,7 +473,7 @@ class TopView extends GameBox {
             const activeTiles = this.map.getActiveTiles( this.interact.tile.group );
             const tileCel = activeTiles.getTile();
 
-            this.player.gameaudio.hitSound( "pickup" );
+            this.player.gameaudio.hitSound( Config.verbs.LIFT );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.interact.tile.sprite = new Sprite({
                 layer: "foreground",
@@ -510,10 +512,10 @@ class TopView extends GameBox {
 
     handleHeroThrow () {
         this.hero.face( this.hero.dir );
-        this.player.gameaudio.hitSound( "throw" );
+        this.player.gameaudio.hitSound( Config.verbs.THROW );
         this.hero.physics.maxv = this.hero.physics.controlmaxv;
         this.handleThrow( this.interact.tile.sprite ).then(() => {
-            this.player.gameaudio.hitSound( "smash" );
+            this.player.gameaudio.hitSound( Config.verbs.SMASH );
             this.map.killObj( "npcs", this.interact.tile.sprite );
 
             delete this.interact.tile;
@@ -616,7 +618,7 @@ class TopView extends GameBox {
 
             let throwX;
             let throwY;
-            const dist = 128;
+            const dist = this.map.data.tilesize * 2;
             const props = {
                 x: sprite.position.x,
                 y: sprite.position.y,

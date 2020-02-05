@@ -19,6 +19,7 @@ class Sprite {
         this.dir = (this.data.dir || "down");
         this.verb = (this.data.verb || Config.verbs.FACE);
         this.image = Loader.cash( this.data.image );
+        this.shadowImage = this.image;
         this.speed = 1;
         this.frame = 0;
         this.opacity = (data.opacity || 1);
@@ -120,8 +121,8 @@ class Sprite {
             return;
         }
 
-        // move betweeb BG and FG relative to Hero
-        if ( this !== this.map.hero ) {
+        // Move betweeb BG and FG relative to Hero
+        if ( this !== this.map.hero && !(this.hero && !this.data.type) ) {
             if ( this.hitbox.y > this.map.hero.hitbox.y ) {
                 this.layer = "foreground";
 
@@ -132,7 +133,7 @@ class Sprite {
 
         if ( this.data.shadow ) {
             this.map.layers[ this.layer ].onCanvas.context.drawImage(
-                this.image,
+                this.shadowImage,
                 Math.abs( this.data.shadow.offsetX ),
                 Math.abs( this.data.shadow.offsetY ),
                 this.data.width,

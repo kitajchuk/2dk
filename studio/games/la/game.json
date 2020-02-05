@@ -7,7 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "version": 244,
+        "version": 245,
         "plugin": "topview"
     },
     "hero": {
@@ -15,10 +15,13 @@
         "spawn": 0,
         "map": "/games/la/maps/mabe-village.json",
         "sounds": {
-            "pickup": "/games/la/assets/sounds/sfx-pick-up.mp3",
-            "smash": "/games/la/assets/sounds/sfx-smash.mp3",
+            "lift": "/games/la/assets/sounds/sfx-pick-up.mp3",
+            "jump": "/games/la/assets/sounds/sfx-jump.mp3",
             "throw": "/games/la/assets/sounds/sfx-throw.mp3",
-            "chest": "/games/la/assets/sounds/sfx-chest-unlock.mp3"
+            "smash": "/games/la/assets/sounds/sfx-smash.mp3",
+            "chest": "/games/la/assets/sounds/sfx-chest-unlock.mp3",
+            "bounce": "/games/la/assets/sounds/sfx-bounce.mp3",
+            "parkour": "/games/la/assets/sounds/sfx-dropping.mp3"
         },
         "companion": {
             "id": "ghost",
@@ -36,9 +39,9 @@
             "dir": "left",
             "hitbox": {
                 "x": 0,
-                "y": 32,
-                "width": 64,
-                "height": 32
+                "y": 0,
+                "width": 0,
+                "height": 0
             },
             "verbs": {
                 "face": {
@@ -124,9 +127,9 @@
             "dir": "left",
             "hitbox": {
                 "x": 0,
-                "y": 32,
+                "y": 0,
                 "width": 64,
-                "height": 32
+                "height": 64
             },
             "verbs": {
                 "face": {
@@ -170,9 +173,9 @@
             "dir": "left",
             "hitbox": {
                 "x": 0,
-                "y": 32,
+                "y": 0,
                 "width": 64,
-                "height": 32
+                "height": 64
             },
             "verbs": {
                 "face": {
@@ -657,7 +660,10 @@
         "/games/la/assets/sounds/sfx-throw.mp3",
         "/games/la/assets/sounds/sfx-smash.mp3",
         "/games/la/assets/sounds/sfx-pick-up.mp3",
+        "/games/la/assets/sounds/sfx-jump.mp3",
+        "/games/la/assets/sounds/sfx-dropping.mp3",
         "/games/la/assets/sounds/sfx-chest-unlock.mp3",
+        "/games/la/assets/sounds/sfx-bounce.mp3",
         "/games/la/assets/sounds/bgm-overworld.mp3",
         "/games/la/assets/sounds/bgm-mysterious-forest.mp3",
         "/games/la/assets/sounds/bgm-mabe-village.mp3",
