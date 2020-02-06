@@ -75,7 +75,7 @@ class GameBox {
 
     pause ( paused ) {
         if ( paused ) {
-            this.map.hero.face( this.map.hero.dir );
+            this.hero.face( this.hero.dir );
             this.player.gameaudio.stopSound( this.map.data.id );
 
         } else {
@@ -230,12 +230,6 @@ Can all be handled in plugin GameBox
 
     checkEvents ( poi, sprite ) {
         let ret = false;
-        const hitbox = {
-            width: sprite.width,
-            height: sprite.height,
-            x: sprite.position.x,
-            y: sprite.position.y,
-        };
 
         for ( let i = this.map.data.events.length; i--; ) {
             const tile = {
@@ -244,9 +238,12 @@ Can all be handled in plugin GameBox
                 x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.tilesize,
                 y: this.map.data.events[ i ].coords[ 1 ] * this.map.data.tilesize
             };
+            const collides = Utils.collide( sprite.footbox, tile );
 
-            if ( Utils.collide( hitbox, tile ) && (sprite.dir === this.map.data.events[ i ].dir) ) {
+            if ( collides && (sprite.dir === this.map.data.events[ i ].dir) ) {
                 ret = this.map.data.events[ i ];
+                ret.collides = collides;
+                ret.amount = collides.width * collides.height;
                 this.map.setCollider( tile );
                 break;
 

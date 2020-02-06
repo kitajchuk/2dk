@@ -16,10 +16,9 @@ class Sprite {
         this.gamebox = this.map.gamebox;
         this.width = this.data.width;
         this.height = this.data.height;
-        this.dir = (this.data.dir || "down");
+        this.dir = (this.data.dir || this.data.spawn.dir || "down");
         this.verb = (this.data.verb || Config.verbs.FACE);
         this.image = Loader.cash( this.data.image );
-        this.shadowImage = this.image;
         this.speed = 1;
         this.frame = 0;
         this.opacity = (data.opacity || 1);
@@ -133,7 +132,7 @@ class Sprite {
 
         if ( this.data.shadow ) {
             this.map.layers[ this.layer ].onCanvas.context.drawImage(
-                this.shadowImage,
+                this.image,
                 Math.abs( this.data.shadow.offsetX ),
                 Math.abs( this.data.shadow.offsetY ),
                 this.data.width,

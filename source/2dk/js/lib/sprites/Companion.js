@@ -17,11 +17,6 @@ class Companion extends Sprite {
         this.watchFrame = 0;
         this.checkFrame = 0;
         this.watchDur = 1000;
-
-        if ( this.hero.data.shadow && (this.data.type === Config.npc.FLOAT) ) {
-            this.shadowImage = this.hero.image;
-            this.data.shadow = this.hero.data.shadow;
-        }
     }
 
 

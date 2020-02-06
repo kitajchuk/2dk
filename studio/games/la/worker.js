@@ -1,8 +1,9 @@
-const CACHE_NAME = "v245";
+const CACHE_NAME = "v251";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/la/game.json",
     "/games/la/assets/tiles/tiles.png",
+    "/games/la/assets/tiles/inside.png",
     "/games/la/assets/sprites/smoke_fx.png",
     "/games/la/assets/sprites/smoke.png",
     "/games/la/assets/sprites/npcs.png",
@@ -15,11 +16,17 @@ const CACHE_URLS = [
     "/games/la/assets/sounds/sfx-dropping.mp3",
     "/games/la/assets/sounds/sfx-chest-unlock.mp3",
     "/games/la/assets/sounds/sfx-bounce.mp3",
+    "/games/la/assets/sounds/bgm-shop.mp3",
+    "/games/la/assets/sounds/bgm-phone-booth.mp3",
     "/games/la/assets/sounds/bgm-overworld.mp3",
     "/games/la/assets/sounds/bgm-mysterious-forest.mp3",
+    "/games/la/assets/sounds/bgm-marins-house.mp3",
     "/games/la/assets/sounds/bgm-mabe-village.mp3",
+    "/games/la/assets/sounds/bgm-house.mp3",
+    "/games/la/assets/sounds/bgm-cave.mp3",
     "/games/la/maps/ukuku-prairie-west.json",
     "/games/la/maps/mysterious-forest.json",
+    "/games/la/maps/marins-house.json",
     "/games/la/maps/mabe-village.json",
 ];
 

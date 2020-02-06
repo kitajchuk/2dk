@@ -13,8 +13,9 @@
     "sound": "/games/la/assets/sounds/bgm-mabe-village.mp3",
     "spawn": [
         {
-            "x": 1776,
-            "y": 317
+            "x": 1585,
+            "y": 1296,
+            "dir": "down"
         }
     ],
     "tiles": [
@@ -222,12 +223,13 @@
     "events": [
         {
             "coords": [
-                5,
-                21
+                25,
+                20
             ],
             "type": "door",
-            "map": "/games/la/maps/mysterious-forest.json",
-            "dir": "down"
+            "map": "/games/la/maps/marins-house.json",
+            "dir": "up",
+            "spawn": 0
         },
         {
             "coords": [

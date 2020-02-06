@@ -310,6 +310,10 @@ class TopView extends GameBox {
             if ( this.canHeroEventBoundary( poi, dir, collision ) ) {
                 this.handleHeroEventBoundary( poi, dir, collision.event );
                 return;
+
+            } else if ( this.canHeroEventDoor( poi, dir, collision ) ) {
+                this.handleHeroEventDoor( poi, dir, collision.event );
+                return;
             }
         }
 
@@ -366,6 +370,11 @@ class TopView extends GameBox {
 
     canHeroResetMaxV ( poi, dir, collision ) {
         return (this.hero.physics.maxv !== this.hero.physics.controlmaxv && this.hero.verb !== Config.verbs.LIFT);
+    }
+
+
+    canHeroEventDoor ( poi, dir, collision ) {
+        return (collision.event.type === Config.events.DOOR);
     }
 
 
@@ -461,7 +470,12 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroEventBoundary (  poi, dir, event ) {
+    handleHeroEventDoor ( poi, dir, event ) {
+        this.changeMap( event );
+    }
+
+
+    handleHeroEventBoundary ( poi, dir, event ) {
         this.switchMap( event );
     }
 
@@ -748,6 +762,44 @@ class TopView extends GameBox {
 /*******************************************************************************
 * Map Switching
 *******************************************************************************/
+    changeMap ( event ) {
+        // Pause the Player so no game buttons dispatch
+        // Pausing triggers the GameBox to call this.hero.face( this.hero.dir )
+        this.player.pause();
+
+        // Fade out...
+        this.player.element.classList.add( "is-fader" );
+
+        setTimeout(() => {
+            // Dupe the Hero
+            const mapData = Loader.cash( event.map );
+            const heroData = Utils.copy( this.hero.data );
+
+            // Set a spawn index...
+            heroData.spawn = (event.spawn || 0);
+
+            // Destroy old Map / Set new Map
+            this.map.destroy();
+
+            // Create new Map / Camera
+            this.map = new Map( mapData, heroData, this );
+
+            // Inject the new Map element into the DOM
+            this.player.screen.appendChild( this.map.element );
+
+            // Initialize
+            this.initMap();
+
+            // Fade in...
+            this.player.element.classList.remove( "is-fader" );
+
+            // Resume game blit cycle...
+            this.player.resume();
+
+        }, 1000 );
+    }
+
+
     switchMap ( event ) {
         // Pause the Player so no game buttons dispatch
         // Pausing triggers the GameBox to call this.hero.face( this.hero.dir )

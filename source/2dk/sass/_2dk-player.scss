@@ -58,6 +58,10 @@
     .is-started & {
         opacity: 0;
     }
+
+    .is-fader & {
+        opacity: 1;
+    }
 }
 ._2dk__splash__load,
 ._2dk__splash__info {
