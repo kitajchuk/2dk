@@ -691,63 +691,43 @@ class TopView extends GameBox {
         if ( !sprite.counter ) {
             // sprite.counter = Utils.random( 60, 180 );
             sprite.counter = 5 * 60;
-            sprite.stepsX = Utils.random( 20, 50 );
-            sprite.stepsY = Utils.random( 20, 50 );
-            sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
-            sprite.dirY = ["up", "down"][ Utils.random( 0, 2 ) ];
+            sprite.steps = Utils.random( 20, 50 );
+
+            let dir = sprite.dir;
+
+            while ( dir === sprite.dir ) {
+                dir = ["left", "right", "down", "up"][ Utils.random( 0, 4 ) ];
+            }
+
+            sprite.stepsDir = dir;
+
+            if ( sprite.data.verbs[ sprite.verb ][ sprite.stepsDir ] ) {
+                sprite.dir = sprite.stepsDir;
+            }
 
             // console.log(
             //     `Sprite: ${sprite.data.id}`,
             //     `Countdown: ${sprite.counter}`,
-            //     `${sprite.dirX}: ${sprite.stepsX}`,
-            //     `${sprite.dirY}: ${sprite.stepsY}`,
+            //     `Steps: ${sprite.stepsDir} ${sprite.steps}`,
+            //     `Face: ${sprite.dir}`,
             // );
 
         } else {
             sprite.counter--;
         }
 
-        if ( sprite.stepsX ) {
-            sprite.stepsX--;
+        if ( sprite.steps ) {
+            sprite.steps--;
 
-            if ( sprite.dirX === "left" ) {
-                sprite.controls.left = 1;
-                sprite.controls.right = 0;
-                sprite.dir = "left";
+            ["left", "right", "down", "up"].forEach(( dir ) => {
+                if ( dir !== sprite.stepsDir ) {
+                    sprite.controls[ dir ] = 0;
 
-            } else {
-                sprite.controls.right = 1;
-                sprite.controls.left = 0;
-                sprite.dir = "right";
-            }
+                } else {
+                    sprite.controls[ dir ] = 1;
+                }
+            });
 
-        } else {
-            sprite.controls.left = 0;
-            sprite.controls.right = 0;
-        }
-
-        if ( sprite.stepsY ) {
-            sprite.stepsY--;
-
-            if ( sprite.dirY === "up" ) {
-                sprite.controls.up = 1;
-                sprite.controls.down = 0;
-
-            } else {
-                sprite.controls.down = 1;
-                sprite.controls.up = 0;
-            }
-
-        } else {
-            sprite.controls.up = 0;
-            sprite.controls.down = 0;
-        }
-
-        if ( !sprite.stepsX && !sprite.stepsY ) {
-            sprite.verb = Config.verbs.FACE;
-            sprite.controls = {};
-
-        } else {
             if ( sprite.data.bounce && sprite.position.z === 0 ) {
                 sprite.physics.vz = -6;
             }
@@ -755,7 +735,61 @@ class TopView extends GameBox {
             if ( sprite.data.verbs[ Config.verbs.WALK ] ) {
                 sprite.verb = Config.verbs.WALK;
             }
+
+        } else {
+            sprite.verb = Config.verbs.FACE;
+            sprite.controls = {};
         }
+
+        // if ( sprite.stepsX ) {
+        //     sprite.stepsX--;
+        //
+        //     if ( sprite.dirX === "left" ) {
+        //         sprite.controls.left = 1;
+        //         sprite.controls.right = 0;
+        //         sprite.dir = "left";
+        //
+        //     } else {
+        //         sprite.controls.right = 1;
+        //         sprite.controls.left = 0;
+        //         sprite.dir = "right";
+        //     }
+        //
+        // } else {
+        //     sprite.controls.left = 0;
+        //     sprite.controls.right = 0;
+        // }
+        //
+        // if ( sprite.stepsY ) {
+        //     sprite.stepsY--;
+        //
+        //     if ( sprite.dirY === "up" ) {
+        //         sprite.controls.up = 1;
+        //         sprite.controls.down = 0;
+        //
+        //     } else {
+        //         sprite.controls.down = 1;
+        //         sprite.controls.up = 0;
+        //     }
+        //
+        // } else {
+        //     sprite.controls.up = 0;
+        //     sprite.controls.down = 0;
+        // }
+        //
+        // if ( !sprite.stepsX && !sprite.stepsY ) {
+        //     sprite.verb = Config.verbs.FACE;
+        //     sprite.controls = {};
+        //
+        // } else {
+        //     if ( sprite.data.bounce && sprite.position.z === 0 ) {
+        //         sprite.physics.vz = -6;
+        //     }
+        //
+        //     if ( sprite.data.verbs[ Config.verbs.WALK ] ) {
+        //         sprite.verb = Config.verbs.WALK;
+        //     }
+        // }
     }
 
 

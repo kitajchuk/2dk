@@ -24,9 +24,9 @@ class GameAudio {
         };
 
         this.channels.bgm.node.loop = true;
-        this.channels.bgm.node.volume = 0.1;
+        this.channels.bgm.node.volume = 0.4;
         this.channels.sfx.node.loop = false;
-        this.channels.sfx.node.volume = 1.0;
+        this.channels.sfx.node.volume = 0.8;
     }
 
 
