@@ -16,6 +16,16 @@
             "x": 1585,
             "y": 1296,
             "dir": "down"
+        },
+        {
+            "x": 1585,
+            "y": 275,
+            "dir": "down"
+        },
+        {
+            "x": 1712,
+            "y": 275,
+            "dir": "down"
         }
     ],
     "tiles": [
@@ -221,6 +231,26 @@
         }
     ],
     "events": [
+        {
+            "coords": [
+                25,
+                4
+            ],
+            "type": "door",
+            "map": "/games/la/maps/papahls-house.json",
+            "dir": "up",
+            "spawn": 0
+        },
+        {
+            "coords": [
+                27,
+                4
+            ],
+            "type": "door",
+            "map": "/games/la/maps/papahls-house.json",
+            "dir": "up",
+            "spawn": 1
+        },
         {
             "coords": [
                 25,

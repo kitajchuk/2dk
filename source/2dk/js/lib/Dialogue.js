@@ -9,6 +9,7 @@ class Dialogue {
         this.ready = false;
         this.pressed = false;
         this.active = false;
+        this.autoplay = false;
         this.timeout = null;
         this.debounce = 750;
         this.duration = 250;
@@ -20,6 +21,22 @@ class Dialogue {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__dialogue";
         this.$element = $( this.element );
+    }
+
+
+    auto ( data ) {
+        if ( this.active ) {
+            return;
+        }
+
+        this.data = Utils.copy( data );
+        this.$element.addClass( `_2dk__dialogue--${this.data.type} is-texting` );
+        this.element.innerHTML = this.data.text.shift();
+
+        setTimeout(() => {
+            this.teardown();
+
+        }, (this.debounce * 3) );
     }
 
 

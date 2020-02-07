@@ -11,13 +11,16 @@
     "snapshot": "/games/pk/assets/snapshots/pallet-town.png",
     "thumbnail": "/games/pk/assets/snapshots/pallet-town-thumb.png",
     "sound": "",
-    "spawn": {
-        "x": 0,
-        "y": 0
-    },
+    "spawn": [
+        {
+            "x": 320,
+            "y": 736,
+            "dir": "down"
+        }
+    ],
     "tiles": [],
     "events": [],
-    "objects": [],
+    "npcs": [],
     "collision": [
         [
             42,

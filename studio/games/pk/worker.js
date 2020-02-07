@@ -1,4 +1,4 @@
-const CACHE_NAME = "v6";
+const CACHE_NAME = "v8";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/pk/game.json",

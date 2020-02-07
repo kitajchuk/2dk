@@ -4,6 +4,10 @@
 
 
 
+* Refactor asset loading (init bundle, in-game events, etc...)
+
+
+
 * Hero weapon animations / collisions (sword...?)
 * Tile interactions (fall, etc...)
 * Hero sprite masking?

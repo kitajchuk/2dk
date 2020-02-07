@@ -236,9 +236,9 @@ class Map {
         // }
 
         // NPCs
-        // this.data.npcs.forEach(( data ) => {
-        //     this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
-        // });
+        this.data.npcs.forEach(( data ) => {
+            this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
+        });
 
         // Tiles
         this.data.tiles.forEach(( data ) => {

@@ -33,7 +33,7 @@
                     "fullscreen": false,
                     "resolution": 1,
                     "icon": "/games/la/assets/icons/la.png",
-                    "version": 251,
+                    "version": 258,
                     "plugin": "topview"
                 },
                 {
@@ -44,7 +44,8 @@
                     "fullscreen": false,
                     "resolution": 1,
                     "icon": "/games/pk/assets/icons/pk.png",
-                    "version": 6
+                    "version": 8,
+                    "plugin": "topview"
                 }
             ]
         }

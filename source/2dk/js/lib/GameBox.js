@@ -238,7 +238,14 @@ Can all be handled in plugin GameBox
                 x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.tilesize,
                 y: this.map.data.events[ i ].coords[ 1 ] * this.map.data.tilesize
             };
-            const collides = Utils.collide( sprite.footbox, tile );
+            const lookbox = (this.map.data.events[ i ].type === Config.events.BOUNDARY ? {
+                width: sprite.width,
+                height: sprite.height,
+                x: sprite.position.x,
+                y: sprite.position.y,
+
+            } : sprite.footbox);
+            const collides = Utils.collide( lookbox, tile );
 
             if ( collides && (sprite.dir === this.map.data.events[ i ].dir) ) {
                 ret = this.map.data.events[ i ];

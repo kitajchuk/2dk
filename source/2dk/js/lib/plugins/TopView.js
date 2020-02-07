@@ -778,16 +778,16 @@ class TopView extends GameBox {
             // Set a spawn index...
             heroData.spawn = (event.spawn || 0);
 
-            // Destroy old Map / Set new Map
+            // Destroy old Map
             this.map.destroy();
 
-            // Create new Map / Camera
+            // Create new Map
             this.map = new Map( mapData, heroData, this );
 
             // Inject the new Map element into the DOM
             this.player.screen.appendChild( this.map.element );
 
-            // Initialize
+            // Initialize the new Map
             this.initMap();
 
             // Fade in...
@@ -795,6 +795,13 @@ class TopView extends GameBox {
 
             // Resume game blit cycle...
             this.player.resume();
+
+            // Show contextual location text...
+            this.dialogue.auto({
+                text: [
+                    mapData.name
+                ]
+            });
 
         }, 1000 );
     }
@@ -809,15 +816,18 @@ class TopView extends GameBox {
         const mapData = Loader.cash( event.map );
         const heroData = Utils.copy( this.hero.data );
 
-        // Create new Map / Camera
+        // Set a spawn index...
+        heroData.spawn = (event.spawn || 0);
+
+        // Create new Map & Camera
         this.map_ = new Map( mapData, heroData, this );
         this.cam_ = Utils.copy( this.camera );
 
-        // Update this.map_.hero
+        // Update new Map's Hero
         this.map_.hero.face( this.hero.dir );
         this.map_.hero.idle = this.hero.idle;
 
-        // Will be the animation values for rendering...
+        // Will be the animation values for transition...
         const _css = {
             map: null,
             map_: null,
@@ -1002,15 +1012,13 @@ class TopView extends GameBox {
 
         ]).then(() => {
             setTimeout(() => {
-                // Set new Hero with props (backfill relevant attributes)
-
-                // Destroy old Map / Set new Map
+                // Destroy old Map & Set the new Map
                 this.map.destroy();
                 this.map = this.map_;
                 this.map_ = null;
                 this.cam_ = null;
 
-                // Initialize
+                // Initialize the new Map
                 this.initMap();
 
                 // Resume game blit cycle...

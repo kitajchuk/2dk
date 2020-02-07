@@ -1,4 +1,4 @@
-const CACHE_NAME = "v251";
+const CACHE_NAME = "v258";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/la/game.json",
@@ -25,6 +25,7 @@ const CACHE_URLS = [
     "/games/la/assets/sounds/bgm-house.mp3",
     "/games/la/assets/sounds/bgm-cave.mp3",
     "/games/la/maps/ukuku-prairie-west.json",
+    "/games/la/maps/papahls-house.json",
     "/games/la/maps/mysterious-forest.json",
     "/games/la/maps/marins-house.json",
     "/games/la/maps/mabe-village.json",
