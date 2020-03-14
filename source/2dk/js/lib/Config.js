@@ -58,7 +58,9 @@ const Config = {
     npc: {
         TILE: "tile",
         WALK: "walk",
+        ROAM: "roam",
         FLOAT: "float",
+        WANDER: "wander",
     },
     opposites: {
         y: "x",

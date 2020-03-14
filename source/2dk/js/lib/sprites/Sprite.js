@@ -14,8 +14,9 @@ class Sprite {
         this.data = data;
         this.map = map;
         this.gamebox = this.map.gamebox;
-        this.width = this.data.width;
-        this.height = this.data.height;
+        this.scale = (this.data.scale || 1);
+        this.width = this.data.width / this.scale;
+        this.height = this.data.height / this.scale;
         this.dir = (this.data.dir || this.data.spawn.dir || "down");
         this.verb = (this.data.verb || Config.verbs.FACE);
         this.image = Loader.cash( this.data.image );
@@ -45,10 +46,10 @@ class Sprite {
             y: true,
         };
         this.hitbox = {
-            x: this.position.x + this.data.hitbox.x,
-            y: this.position.y + this.data.hitbox.y,
-            width: this.data.hitbox.width,
-            height: this.data.hitbox.height,
+            x: this.position.x + (this.data.hitbox.x / this.scale),
+            y: this.position.y + (this.data.hitbox.y / this.scale),
+            width: this.data.hitbox.width / this.scale,
+            height: this.data.hitbox.height / this.scale,
         };
         this.footbox = {
             x: this.hitbox.x,
@@ -175,16 +176,16 @@ class Sprite {
 
         // Hitbox
         this.map.layers[ this.layer ].onCanvas.context.fillRect(
-            this.offset.x + this.data.hitbox.x,
-            this.offset.y + this.data.hitbox.y,
+            this.offset.x + (this.data.hitbox.x / this.scale),
+            this.offset.y + (this.data.hitbox.y / this.scale),
             this.hitbox.width,
             this.hitbox.height,
         );
 
         // Footbox
         this.map.layers[ this.layer ].onCanvas.context.fillRect(
-            this.offset.x + this.data.hitbox.x,
-            this.offset.y + this.data.hitbox.y + (this.hitbox.height / 2),
+            this.offset.x + (this.data.hitbox.x / this.scale),
+            this.offset.y + (this.data.hitbox.y / this.scale) + (this.hitbox.height / 2),
             this.hitbox.width,
             this.hitbox.height / 2,
         );
@@ -243,8 +244,8 @@ class Sprite {
 
 
     applyHitbox () {
-        this.hitbox.x = this.position.x + this.data.hitbox.x;
-        this.hitbox.y = this.position.y + this.data.hitbox.y;
+        this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
+        this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
         this.footbox.x = this.hitbox.x;
         this.footbox.y = this.hitbox.y + (this.hitbox.height / 2);
     }
@@ -356,8 +357,8 @@ class Sprite {
 
     getHitbox ( poi ) {
         return {
-            x: poi.x + this.data.hitbox.x,
-            y: poi.y + this.data.hitbox.y,
+            x: poi.x + (this.data.hitbox.x / this.scale),
+            y: poi.y + (this.data.hitbox.y / this.scale),
             width: this.hitbox.width,
             height: this.hitbox.height,
         };
@@ -366,8 +367,8 @@ class Sprite {
 
     getFootbox ( poi ) {
         return {
-            x: poi.x + this.data.hitbox.x,
-            y: poi.y + (this.data.hitbox.y + (this.hitbox.height / 2)),
+            x: poi.x + (this.data.hitbox.x / this.scale),
+            y: poi.y + ((this.data.hitbox.y / this.scale) + (this.hitbox.height / 2)),
             width: this.footbox.width,
             height: this.footbox.height,
         };

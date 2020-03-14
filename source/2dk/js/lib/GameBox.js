@@ -263,6 +263,18 @@ Can all be handled in plugin GameBox
     }
 
 
+    checkHero ( poi, sprite ) {
+        let ret = false;
+        const collides = Utils.collide( sprite.getHitbox( poi ), this.hero.hitbox );
+
+        if ( collides ) {
+            ret = collides;
+        }
+
+        return ret;
+    }
+
+
     checkNPC ( poi, sprite ) {
         let ret = false;
         let collider;

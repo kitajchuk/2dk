@@ -85,27 +85,30 @@ class NPC extends Sprite {
             const poi = this.getNextPoiByDir( dir );
             const collision = {
                 map: this.gamebox.checkMap( poi, this ),
+                npc: this.gamebox.checkNPC( poi, this ),
+                hero: this.gamebox.checkHero( poi, this ),
                 tiles: this.gamebox.checkTiles( poi, this ),
             };
-            const isStopTile = (collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].stop);
 
-            if ( !collision.map && !collision.tiles && !isStopTile ) {
+            if ( collision.hero && this.data.ai === Config.npc.ROAM ) {
+                if ( this.dir === "left" ) {
+                    this.gamebox.hero.physics.vx = -1;
+
+                } else if ( this.dir === "right" ) {
+                    this.gamebox.hero.physics.vx = 1;
+
+                } else if ( this.dir === "up" ) {
+                    this.gamebox.hero.physics.vy = -1;
+
+                } else if ( this.dir === "down" ) {
+                    this.gamebox.hero.physics.vy = 1;
+                }
+
+            } else if ( !collision.map && !collision.npc && !collision.hero && !this.gamebox.canHeroTileStop( poi, dir, collision ) ) {
                 this.position = poi;
 
-            } else {
-                if ( dir === "left" ) {
-                    this.physics.vx = 8;
-
-                } else if ( dir === "right" ) {
-                    this.physics.vx = -8;
-                }
-
-                if ( dir === "up" ) {
-                    this.physics.vy = 8;
-
-                } else if ( dir === "down" ) {
-                    this.physics.vy = -8;
-                }
+            } else if ( this.data.ai === Config.npc.ROAM ) {
+                this.counter = 0;
             }
         });
     }

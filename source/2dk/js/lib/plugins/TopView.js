@@ -384,7 +384,7 @@ class TopView extends GameBox {
 
 
     canHeroTileStop ( poi, dir, collision ) {
-        return (collision.tiles.action.length && collision.tiles.action[ 0 ].stop);
+        return (collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].stop);
     }
 
 
@@ -618,7 +618,10 @@ class TopView extends GameBox {
         // Handle sprite AI logics...
         // Hero sprite will NEVER have AI data...
         if ( sprite.data.ai ) {
-            if ( sprite.data.ai === "wander" ) {
+            if ( sprite.data.ai === Config.npc.ROAM ) {
+                this.handleRoam( sprite );
+
+            } else if ( sprite.data.ai === Config.npc.WANDER ) {
                 this.handleWander( sprite );
             }
         }
@@ -687,47 +690,120 @@ class TopView extends GameBox {
     }
 
 
-    handleWander ( sprite ) {
+    handleRoam ( sprite ) {
         if ( !sprite.counter ) {
-            // sprite.counter = Utils.random( 60, 180 );
-            sprite.counter = 5 * 60;
-            sprite.steps = Utils.random( 20, 50 );
-
-            let dir = sprite.dir;
-
-            while ( dir === sprite.dir ) {
-                dir = ["left", "right", "down", "up"][ Utils.random( 0, 4 ) ];
-            }
-
-            sprite.stepsDir = dir;
-
-            if ( sprite.data.verbs[ sprite.verb ][ sprite.stepsDir ] ) {
-                sprite.dir = sprite.stepsDir;
-            }
+            sprite.counter = Utils.random( 64, 192 );
+            sprite.dir = ["left", "right", "up", "down"][ Utils.random( 0, 4 ) ];
 
             // console.log(
             //     `Sprite: ${sprite.data.id}`,
-            //     `Countdown: ${sprite.counter}`,
-            //     `Steps: ${sprite.stepsDir} ${sprite.steps}`,
-            //     `Face: ${sprite.dir}`,
+            //     `Steps: ${sprite.dir} ${sprite.counter}`,
             // );
 
         } else {
             sprite.counter--;
         }
 
-        if ( sprite.steps ) {
-            sprite.steps--;
+        if ( sprite.dir === "left" ) {
+            sprite.controls.left = 1;
+            sprite.controls.right = 0;
+            sprite.controls.up = 0;
+            sprite.controls.down = 0;
 
-            ["left", "right", "down", "up"].forEach(( dir ) => {
-                if ( dir !== sprite.stepsDir ) {
-                    sprite.controls[ dir ] = 0;
+        } else if ( sprite.dir === "right" ) {
+            sprite.controls.left = 0;
+            sprite.controls.right = 1;
+            sprite.controls.up = 0;
+            sprite.controls.down = 0;
 
-                } else {
-                    sprite.controls[ dir ] = 1;
+        } else if ( sprite.dir === "up" ) {
+            sprite.controls.left = 0;
+            sprite.controls.right = 0;
+            sprite.controls.up = 1;
+            sprite.controls.down = 0;
+
+        } else if ( sprite.dir === "down" ) {
+            sprite.controls.left = 0;
+            sprite.controls.right = 0;
+            sprite.controls.up = 0;
+            sprite.controls.down = 1;
+        }
+    }
+
+
+    handleWander ( sprite ) {
+        if ( !sprite.counter ) {
+            sprite.counter = Utils.random( 100, 200 );
+            sprite.stepsX = Utils.random( 4, 60 );
+            sprite.stepsY = Utils.random( 4, 60 );
+            sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
+            sprite.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
+
+            // console.log(
+            //     `Sprite: ${sprite.data.id}`,
+            //     `StepsX: ${sprite.dirX} ${sprite.stepsX}`,
+            //     `StepsY: ${sprite.dirY} ${sprite.stepsY}`,
+            // );
+
+        } else {
+            sprite.counter--;
+        }
+
+        if ( sprite.stepsX ) {
+            sprite.stepsX--;
+
+            if ( sprite.dirX === "left" ) {
+                sprite.controls.left = 1;
+                sprite.controls.right = 0;
+
+                if ( sprite.data.verbs[ sprite.verb ].left ) {
+                    sprite.dir = "left";
                 }
-            });
 
+            } else {
+                sprite.controls.right = 1;
+                sprite.controls.left = 0;
+
+                if ( sprite.data.verbs[ sprite.verb ].right ) {
+                    sprite.dir = "right";
+                }
+            }
+
+        } else {
+            sprite.controls.left = 0;
+            sprite.controls.right = 0;
+        }
+
+        if ( sprite.stepsY ) {
+            sprite.stepsY--;
+
+            if ( sprite.dirY === "up" ) {
+                sprite.controls.up = 1;
+                sprite.controls.down = 0;
+
+                if ( sprite.data.verbs[ sprite.verb ].up ) {
+                    sprite.dir = "up";
+                }
+
+            } else {
+                sprite.controls.down = 1;
+                sprite.controls.up = 0;
+
+                if ( sprite.data.verbs[ sprite.verb ].down ) {
+                    sprite.dir = "down";
+                }
+            }
+
+        } else {
+            sprite.controls.up = 0;
+            sprite.controls.down = 0;
+        }
+
+        if ( !sprite.stepsX && !sprite.stepsY ) {
+            sprite.verb = Config.verbs.FACE;
+            sprite.controls = {};
+
+        } else {
             if ( sprite.data.bounce && sprite.position.z === 0 ) {
                 sprite.physics.vz = -6;
             }
@@ -735,61 +811,7 @@ class TopView extends GameBox {
             if ( sprite.data.verbs[ Config.verbs.WALK ] ) {
                 sprite.verb = Config.verbs.WALK;
             }
-
-        } else {
-            sprite.verb = Config.verbs.FACE;
-            sprite.controls = {};
         }
-
-        // if ( sprite.stepsX ) {
-        //     sprite.stepsX--;
-        //
-        //     if ( sprite.dirX === "left" ) {
-        //         sprite.controls.left = 1;
-        //         sprite.controls.right = 0;
-        //         sprite.dir = "left";
-        //
-        //     } else {
-        //         sprite.controls.right = 1;
-        //         sprite.controls.left = 0;
-        //         sprite.dir = "right";
-        //     }
-        //
-        // } else {
-        //     sprite.controls.left = 0;
-        //     sprite.controls.right = 0;
-        // }
-        //
-        // if ( sprite.stepsY ) {
-        //     sprite.stepsY--;
-        //
-        //     if ( sprite.dirY === "up" ) {
-        //         sprite.controls.up = 1;
-        //         sprite.controls.down = 0;
-        //
-        //     } else {
-        //         sprite.controls.down = 1;
-        //         sprite.controls.up = 0;
-        //     }
-        //
-        // } else {
-        //     sprite.controls.up = 0;
-        //     sprite.controls.down = 0;
-        // }
-        //
-        // if ( !sprite.stepsX && !sprite.stepsY ) {
-        //     sprite.verb = Config.verbs.FACE;
-        //     sprite.controls = {};
-        //
-        // } else {
-        //     if ( sprite.data.bounce && sprite.position.z === 0 ) {
-        //         sprite.physics.vz = -6;
-        //     }
-        //
-        //     if ( sprite.data.verbs[ Config.verbs.WALK ] ) {
-        //         sprite.verb = Config.verbs.WALK;
-        //     }
-        // }
     }
 
 

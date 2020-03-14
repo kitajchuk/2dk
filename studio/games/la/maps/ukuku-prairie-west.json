@@ -13,8 +13,8 @@
     "sound": "/games/la/assets/sounds/bgm-overworld.mp3",
     "spawn": [
         {
-            "x": 1216,
-            "y": 1728,
+            "x": 686,
+            "y": 657,
             "dir": "down"
         }
     ],
@@ -125,6 +125,14 @@
         }
     ],
     "npcs": [
+        {
+            "id": "octorok",
+            "ai": "roam",
+            "spawn": {
+                "x": 512,
+                "y": 896
+            }
+        },
         {
             "id": "sign",
             "spawn": {

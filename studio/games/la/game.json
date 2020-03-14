@@ -13,7 +13,7 @@
     "hero": {
         "sprite": 0,
         "spawn": 0,
-        "map": "/games/la/maps/papahls-house.json",
+        "map": "/games/la/maps/ukuku-prairie-west.json",
         "sounds": {
             "lift": "/games/la/assets/sounds/sfx-pick-up.mp3",
             "jump": "/games/la/assets/sounds/sfx-jump.mp3",
@@ -28,7 +28,376 @@
             "type": "float"
         }
     },
+    "heroes": [
+        {
+            "id": "la",
+            "name": "BK",
+            "width": 92,
+            "height": 92,
+            "image": "/games/la/assets/sprites/hero_la.png",
+            "hitbox": {
+                "x": 28,
+                "y": 44,
+                "width": 36,
+                "height": 44
+            },
+            "stats": {
+                "power": 1,
+                "health": 3,
+                "stamina": 3,
+                "strength": 1
+            },
+            "shadow": {
+                "offsetX": -368,
+                "offsetY": 0
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": 0
+                    },
+                    "up": {
+                        "offsetX": -92,
+                        "offsetY": 0
+                    },
+                    "left": {
+                        "offsetX": -184,
+                        "offsetY": 0
+                    },
+                    "right": {
+                        "offsetX": -276,
+                        "offsetY": 0
+                    }
+                },
+                "walk": {
+                    "dur": 250,
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": -92,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 0,
+                        "offsetY": -184,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -276,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 0,
+                        "offsetY": -368,
+                        "stepsX": 2
+                    }
+                },
+                "push": {
+                    "dur": 250,
+                    "down": {
+                        "offsetX": -184,
+                        "offsetY": -92,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": -184,
+                        "offsetY": -184,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": -184,
+                        "offsetY": -276,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -184,
+                        "offsetY": -368,
+                        "stepsX": 2
+                    }
+                },
+                "grab": {
+                    "down": {
+                        "offsetX": -368,
+                        "offsetY": -184
+                    },
+                    "up": {
+                        "offsetX": -368,
+                        "offsetY": -92
+                    },
+                    "left": {
+                        "offsetX": -368,
+                        "offsetY": -368
+                    },
+                    "right": {
+                        "offsetX": -368,
+                        "offsetY": -276
+                    }
+                },
+                "pull": {
+                    "down": {
+                        "offsetX": -460,
+                        "offsetY": -92
+                    },
+                    "up": {
+                        "offsetX": -460,
+                        "offsetY": -184
+                    },
+                    "left": {
+                        "offsetX": -460,
+                        "offsetY": -276
+                    },
+                    "right": {
+                        "offsetX": -460,
+                        "offsetY": -368
+                    }
+                },
+                "lift": {
+                    "dur": 250,
+                    "down": {
+                        "offsetX": -552,
+                        "offsetY": -92,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": -552,
+                        "offsetY": -184,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": -552,
+                        "offsetY": -276,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -552,
+                        "offsetY": -368,
+                        "stepsX": 2
+                    }
+                },
+                "jump": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": -736,
+                        "offsetY": -92,
+                        "stepsX": 3
+                    },
+                    "up": {
+                        "offsetX": -736,
+                        "offsetY": -184,
+                        "stepsX": 3
+                    },
+                    "left": {
+                        "offsetX": -736,
+                        "offsetY": -276,
+                        "stepsX": 3
+                    },
+                    "right": {
+                        "offsetX": -736,
+                        "offsetY": -368,
+                        "stepsX": 3
+                    }
+                }
+            }
+        },
+        {
+            "id": "alttp",
+            "name": "BK",
+            "width": 140,
+            "height": 140,
+            "scale": 1.1,
+            "image": "/games/la/assets/sprites/hero_alttp.png",
+            "hitbox": {
+                "x": 48,
+                "y": 74,
+                "width": 44,
+                "height": 44
+            },
+            "stats": {
+                "power": 1,
+                "health": 3,
+                "stamina": 3,
+                "strength": 1
+            },
+            "shadow": {
+                "offsetX": -560,
+                "offsetY": 0
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": 0
+                    },
+                    "up": {
+                        "offsetX": -140,
+                        "offsetY": 0
+                    },
+                    "left": {
+                        "offsetX": -280,
+                        "offsetY": 0
+                    },
+                    "right": {
+                        "offsetX": -420,
+                        "offsetY": 0
+                    }
+                },
+                "walk": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": -140,
+                        "stepsX": 8
+                    },
+                    "up": {
+                        "offsetX": 0,
+                        "offsetY": -280,
+                        "stepsX": 8
+                    },
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -420,
+                        "stepsX": 8
+                    },
+                    "right": {
+                        "offsetX": 0,
+                        "offsetY": -560,
+                        "stepsX": 8
+                    }
+                },
+                "push": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": -1120,
+                        "offsetY": -140,
+                        "stepsX": 6
+                    },
+                    "up": {
+                        "offsetX": -1120,
+                        "offsetY": -280,
+                        "stepsX": 4
+                    },
+                    "left": {
+                        "offsetX": -1120,
+                        "offsetY": -420,
+                        "stepsX": 5
+                    },
+                    "right": {
+                        "offsetX": -1120,
+                        "offsetY": -560,
+                        "stepsX": 5
+                    }
+                },
+                "grab": {
+                    "down": {
+                        "offsetX": -1960,
+                        "offsetY": -140
+                    },
+                    "up": {
+                        "offsetX": -1960,
+                        "offsetY": -280
+                    },
+                    "left": {
+                        "offsetX": -1960,
+                        "offsetY": -420
+                    },
+                    "right": {
+                        "offsetX": -1960,
+                        "offsetY": -560
+                    }
+                },
+                "pull": {
+                    "down": {
+                        "offsetX": -2100,
+                        "offsetY": -140
+                    },
+                    "up": {
+                        "offsetX": -2100,
+                        "offsetY": -280
+                    },
+                    "left": {
+                        "offsetX": -2100,
+                        "offsetY": -420
+                    },
+                    "right": {
+                        "offsetX": -2100,
+                        "offsetY": -560
+                    }
+                },
+                "lift": {
+                    "dur": 750,
+                    "down": {
+                        "offsetX": -2240,
+                        "offsetY": -140,
+                        "stepsX": 8
+                    },
+                    "up": {
+                        "offsetX": -2240,
+                        "offsetY": -280,
+                        "stepsX": 8
+                    },
+                    "left": {
+                        "offsetX": -2240,
+                        "offsetY": -420,
+                        "stepsX": 8
+                    },
+                    "right": {
+                        "offsetX": -2240,
+                        "offsetY": -560,
+                        "stepsX": 8
+                    }
+                }
+            }
+        }
+    ],
     "npcs": [
+        {
+            "id": "octorok",
+            "name": "Octorok",
+            "width": 64,
+            "height": 64,
+            "image": "/games/la/assets/sprites/npcs.png",
+            "verb": "walk",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 64
+            },
+            "verbs": {
+                "walk": {
+                    "dur": 500,
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -256,
+                        "stepsX": 2
+                    },
+                    "down": {
+                        "offsetX": -128,
+                        "offsetY": -256,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": -256,
+                        "offsetY": -256,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -384,
+                        "offsetY": -256,
+                        "stepsX": 2
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "walk",
+                    "dir": "down"
+                }
+            ]
+        },
         {
             "id": "ghost",
             "name": "Ghost",
@@ -315,179 +684,6 @@
             ]
         }
     ],
-    "heroes": [
-        {
-            "id": "la",
-            "name": "BK",
-            "width": 92,
-            "height": 92,
-            "image": "/games/la/assets/sprites/hero_la.png",
-            "hitbox": {
-                "x": 28,
-                "y": 44,
-                "width": 36,
-                "height": 44
-            },
-            "stats": {
-                "power": 1,
-                "health": 3,
-                "stamina": 3,
-                "strength": 1
-            },
-            "shadow": {
-                "offsetX": -368,
-                "offsetY": 0
-            },
-            "verbs": {
-                "face": {
-                    "down": {
-                        "offsetX": 0,
-                        "offsetY": 0
-                    },
-                    "up": {
-                        "offsetX": -92,
-                        "offsetY": 0
-                    },
-                    "left": {
-                        "offsetX": -184,
-                        "offsetY": 0
-                    },
-                    "right": {
-                        "offsetX": -276,
-                        "offsetY": 0
-                    }
-                },
-                "walk": {
-                    "dur": 250,
-                    "down": {
-                        "offsetX": 0,
-                        "offsetY": -92,
-                        "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": 0,
-                        "offsetY": -184,
-                        "stepsX": 2
-                    },
-                    "left": {
-                        "offsetX": 0,
-                        "offsetY": -276,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": 0,
-                        "offsetY": -368,
-                        "stepsX": 2
-                    }
-                },
-                "push": {
-                    "dur": 250,
-                    "down": {
-                        "offsetX": -184,
-                        "offsetY": -92,
-                        "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": -184,
-                        "offsetY": -184,
-                        "stepsX": 2
-                    },
-                    "left": {
-                        "offsetX": -184,
-                        "offsetY": -276,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": -184,
-                        "offsetY": -368,
-                        "stepsX": 2
-                    }
-                },
-                "grab": {
-                    "down": {
-                        "offsetX": -368,
-                        "offsetY": -184
-                    },
-                    "up": {
-                        "offsetX": -368,
-                        "offsetY": -92
-                    },
-                    "left": {
-                        "offsetX": -368,
-                        "offsetY": -368
-                    },
-                    "right": {
-                        "offsetX": -368,
-                        "offsetY": -276
-                    }
-                },
-                "pull": {
-                    "down": {
-                        "offsetX": -460,
-                        "offsetY": -92
-                    },
-                    "up": {
-                        "offsetX": -460,
-                        "offsetY": -184
-                    },
-                    "left": {
-                        "offsetX": -460,
-                        "offsetY": -276
-                    },
-                    "right": {
-                        "offsetX": -460,
-                        "offsetY": -368
-                    }
-                },
-                "lift": {
-                    "dur": 250,
-                    "down": {
-                        "offsetX": -552,
-                        "offsetY": -92,
-                        "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": -552,
-                        "offsetY": -184,
-                        "stepsX": 2
-                    },
-                    "left": {
-                        "offsetX": -552,
-                        "offsetY": -276,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": -552,
-                        "offsetY": -368,
-                        "stepsX": 2
-                    }
-                },
-                "jump": {
-                    "dur": 500,
-                    "down": {
-                        "offsetX": -736,
-                        "offsetY": -92,
-                        "stepsX": 3
-                    },
-                    "up": {
-                        "offsetX": -736,
-                        "offsetY": -184,
-                        "stepsX": 3
-                    },
-                    "left": {
-                        "offsetX": -736,
-                        "offsetY": -276,
-                        "stepsX": 3
-                    },
-                    "right": {
-                        "offsetX": -736,
-                        "offsetY": -368,
-                        "stepsX": 3
-                    }
-                }
-            }
-        }
-    ],
     "fx": [
         {
             "id": "smoke",
@@ -495,7 +691,7 @@
             "width": 64,
             "height": 64,
             "layer": "foreground",
-            "image": "/games/la/assets/sprites/smoke_fx.png",
+            "image": "/games/la/assets/sprites/fx.png",
             "offsetX": 0,
             "offsetY": 0,
             "stepsX": 5,
@@ -505,8 +701,7 @@
     "bundle": [
         "/games/la/assets/tiles/tiles.png",
         "/games/la/assets/tiles/inside.png",
-        "/games/la/assets/sprites/smoke_fx.png",
-        "/games/la/assets/sprites/smoke.png",
+        "/games/la/assets/sprites/fx.png",
         "/games/la/assets/sprites/npcs.png",
         "/games/la/assets/sprites/hero_la.png",
         "/games/la/assets/sprites/hero_alttp.png",
