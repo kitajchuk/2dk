@@ -7,7 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/pk/assets/icons/pk.png",
-        "version": 8,
+        "save": 8,
         "plugin": "topview"
     },
     "hero": {

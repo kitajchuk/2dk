@@ -1,7 +1,7 @@
 <%
 const context = locals.context;
-const sourceJS = `${context.javascript}?v=${context.timestamp}`;
-const sourceCSS = `${context.stylesheet}?v=${context.timestamp}`;
+const sourceJS = `${context.javascript}?buster=${context.timestamp}`;
+const sourceCSS = `${context.stylesheet}?buster=${context.timestamp}`;
 
 context.pageTitle = context.getPageTitle();
 context.pageDescription = context.getPageDescription();

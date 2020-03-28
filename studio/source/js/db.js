@@ -360,10 +360,10 @@ class DB {
             bundle.push( `/games/${this.gameId}/maps/${map.id}.json` );
         });
 
-        game.game.version = game.game.version + 1;
+        game.game.save = game.game.save + 1;
         game.bundle = bundle;
 
-        worker = worker.replace( "{__CACHE_VERSION__}", `v${game.game.version}` );
+        worker = worker.replace( "{__CACHE_VERSION__}", `v${game.game.save}` );
         worker = worker.replace( "{__CACHE_LIST__}", caches.join( "\n" ) );
 
         Utils.writeFile( file, worker, () => {
@@ -403,7 +403,7 @@ DB.getGames = () => {
 DB.updateGame = ( data ) => {
     let games = path.join( process.cwd(), "games.json" );
     const gameDir = path.join( process.cwd(), "games", data.game.id );
-    const index = DB.getTemplate( "index.html" ).replace( /\{__GAME_NAME__\}/g, data.game.name ).replace( /\{__GAME_VERSION__\}/g, data.game.version );
+    const index = DB.getTemplate( "index.html" ).replace( /\{__GAME_NAME__\}/g, data.game.name ).replace( /\{__GAME_VERSION__\}/g, data.game.save );
 
     // Update game index.html
     Utils.writeFile( path.join( gameDir, "index.html" ), index );
@@ -433,7 +433,7 @@ DB.addGame = ( data ) => {
             const gameDir = path.join( process.cwd(), "games", game.game.id );
             const mapsDir = path.join( gameDir, "maps" );
             const assetsDir = path.join( gameDir, "assets" );
-            const index = DB.getTemplate( "index.html" ).replace( "{__GAME_NAME__}", game.game.name ).replace( "{__GAME_VERSION__}", game.game.version );
+            const index = DB.getTemplate( "index.html" ).replace( "{__GAME_NAME__}", game.game.name ).replace( "{__GAME_VERSION__}", game.game.save );
 
             Utils.makeDir( gameDir );
             Utils.makeDir( mapsDir );
