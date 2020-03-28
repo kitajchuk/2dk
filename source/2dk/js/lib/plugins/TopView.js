@@ -490,6 +490,7 @@ class TopView extends GameBox {
             this.player.gameaudio.hitSound( Config.verbs.LIFT );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.interact.tile.sprite = new Sprite({
+                type: Config.npc.FLOAT,
                 layer: "foreground",
                 width: this.map.data.tilesize,
                 height: this.map.data.tilesize,
