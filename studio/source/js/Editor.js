@@ -414,11 +414,9 @@ class Editor {
         this.dom.loadout[ 0 ].innerHTML = games.map(( game ) => {
             return `<div class="js-game-tile" data-game="${game.id}">
                 <div>
-                    <div>
-                        <img src=".${game.icon}" />
-                        <div>${game.name}</div>
-                    </div>
+                    <img src=".${game.icon}" />
                 </div>
+                <div>${game.name}</div>
             </div>`;
 
         }).join( "" );
@@ -431,11 +429,9 @@ class Editor {
         this.dom.loadout[ 0 ].innerHTML = maps.map(( map ) => {
             return `<div class="js-map-tile" data-map="${map.id}">
                 <div>
-                    <div>
-                        <img src="./${map.thumbnail}" />
-                        <div>${map.name}</div>
-                    </div>
+                    <img src="./${map.thumbnail}" />
                 </div>
+                <div>${map.name}</div>
             </div>`;
 
         }).join( "" );

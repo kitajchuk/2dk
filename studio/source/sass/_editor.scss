@@ -135,34 +135,46 @@
         display: inline-block;
         text-align: center;
         cursor: pointer;
-        width: auto;
-        justify-content: center;
-        align-items: center;
         position: relative;
-        padding: 20px;
-        max-width: 20%;
+        width: 100%;
 
-        > div {
-            display: flex;
+        > div:first-child {
+            width: 100%;
+            padding-bottom: 100%;
+            position: relative;
             pointer-events: none;
-            align-items: center;
-            justify-content: center;
 
-            img {
-                margin-bottom: 16px;
-                max-width: 100%;
-                box-shadow: $box-shadow;
+            > img {
+                position: absolute;
+                left: 0;
+                top: 0;
                 width: 100%;
-                // height: 160px;
+                height: 100%;
+                object-fit: cover;
+                box-shadow: $box-shadow;
                 background-color: $black;
             }
+        }
+
+        > div:last-child {
+            margin-top: 16px;
+            pointer-events: none;
         }
     }
 
     &.is-loaded {
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
+        display: grid;
+        grid-gap: 100px;
+        grid-template-columns: repeat( 9, 1fr );
+        grid-template-rows: max-content;
+
+        @include respond( $break-desktop-medium ) {
+            grid-template-columns: repeat( 7, 1fr );
+        }
+
+        @include respond( $break-laptop-full ) {
+            grid-template-columns: repeat( 5, 1fr );
+        }
     }
 }
 
