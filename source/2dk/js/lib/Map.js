@@ -225,15 +225,15 @@ class Map {
         }
 
         // Companion?
-        // if ( this.heroData.companion ) {
-        //     this.heroData.companion = this.gamebox.player.getMergedData( this.heroData.companion, "npcs" );
-        //     this.heroData.companion.spawn = {
-        //         x: this.hero.position.x,
-        //         y: this.hero.position.y,
-        //     };
-        //
-        //     this.npcs.push( new Companion( this.heroData.companion, this.hero ) );
-        // }
+        if ( this.heroData.companion ) {
+            this.heroData.companion = this.gamebox.player.getMergedData( this.heroData.companion, "npcs" );
+            this.heroData.companion.spawn = {
+                x: this.hero.position.x,
+                y: this.hero.position.y,
+            };
+
+            this.npcs.push( new Companion( this.heroData.companion, this.hero ) );
+        }
 
         // NPCs
         this.data.npcs.forEach(( data ) => {
@@ -313,6 +313,14 @@ class Map {
         this.camera = camera;
         this.renderBox = this.getRenderbox( camera );
 
+        // Separate Companion NPCs from the normies
+        const npcs = this.npcs.filter(( npc ) => {
+            return !npc.hero || (npc.hero && npc.data.type !== Config.npc.FLOAT);
+        });
+        const floats = this.npcs.filter(( npc ) => {
+            return npc.hero && npc.data.type === Config.npc.FLOAT;
+        });
+
         // Draw background textures
         this.renderTextures( "background" );
 
@@ -326,7 +334,7 @@ class Map {
 
         // Draw NPCs
         // They can draw to either background OR foreground
-        this.npcs.forEach(( npc ) => {
+        npcs.forEach(( npc ) => {
             npc.render();
         });
 
@@ -335,6 +343,11 @@ class Map {
 
         // Draw foreground textures
         this.renderTextures( "foreground" );
+
+        // Draw float companions
+        floats.forEach(( float ) => {
+            float.render();
+        });
 
         // Draw FX
         // This is the topmost layer so we can do cool stuff...

@@ -406,6 +406,7 @@
             "image": "/games/la/assets/sprites/npcs.png",
             "opacity": 0.75,
             "dir": "left",
+            "layer": "foreground",
             "hitbox": {
                 "x": 0,
                 "y": 0,

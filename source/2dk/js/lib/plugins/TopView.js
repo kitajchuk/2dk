@@ -64,8 +64,8 @@ class TopView extends GameBox {
         }
 
         // render map
-        // renders hero
-        // currently all canvas rendering happens here...
+        // also renders hero...
+        // ...currently all canvas rendering happens here...
         this.map.render( this.camera );
 
         // render map_?

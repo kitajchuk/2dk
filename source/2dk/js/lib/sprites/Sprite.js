@@ -122,8 +122,10 @@ class Sprite {
         }
 
         // Move betweeb BG and FG relative to Hero
-        if ( this !== this.map.hero && !(this.hero && !this.data.type) ) {
-            if ( this.hitbox.y > this.map.hero.hitbox.y ) {
+        // !(this.hero && !this.data.type)
+        if ( this !== this.map.hero ) {
+            // Assume that FLOAT should always render to the foreground, at least for now
+            if ( (this.data.type === Config.npc.FLOAT) || this.hitbox.y > this.map.hero.hitbox.y ) {
                 this.layer = "foreground";
 
             } else {
