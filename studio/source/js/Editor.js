@@ -181,6 +181,7 @@ class Editor {
 
     prefillGameFields ( game ) {
         this.menus.activeGame.find( ".js-game-field[name='name']" )[ 0 ].value = game.name;
+        this.menus.activeGame.find( ".js-game-field[name='resolution']" )[ 0 ].value = game.resolution;
         this.menus.activeGame.find( ".js-game-field[name='width']" )[ 0 ].value = game.width;
         this.menus.activeGame.find( ".js-game-field[name='height']" )[ 0 ].value = game.height;
     }
