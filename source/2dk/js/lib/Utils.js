@@ -153,7 +153,7 @@ const Utils = {
     },
 
 
-    // From Akihabara helpers
+    // From Akihabara helpers:
 
     // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L78
     random  ( min, range ) {
@@ -181,6 +181,9 @@ const Utils = {
     goToZero ( v ) {
         return (v ? v - (v / Math.abs( v )) : 0);
     },
+
+
+    // From Akihabara trigo:
 
 
     /**
