@@ -123,8 +123,16 @@ class Sprite {
 
         // Move betweeb BG and FG relative to Hero
         if ( this !== this.map.hero ) {
-            // Assume that FLOAT should always render to the foreground, at least for now
-            if ( (this.data.type === Config.npc.FLOAT) || this.hitbox.y > this.map.hero.hitbox.y ) {
+            // Assume that FLOAT should always render to the foreground
+            if ( this.data.type === Config.npc.FLOAT ) {
+                this.layer = "foreground";
+
+            // Companions can flip between layers depending on hero position
+            } else if ( this.hero && (this.hitbox.y > this.map.hero.hitbox.y) ) {
+                this.layer = "foreground";
+
+            // Sprites that have a smaller hitbox than their actual size can flip layer
+            } else if ( (this.hitbox.width * this.hitbox.height) !== (this.width * this.height) && (this.hitbox.y > this.map.hero.hitbox.y) ) {
                 this.layer = "foreground";
 
             } else {

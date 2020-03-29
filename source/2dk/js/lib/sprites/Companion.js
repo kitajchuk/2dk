@@ -130,11 +130,11 @@ class Companion extends Sprite {
 
         if ( this.hero.dir === "right" && heroCenter.x > selfCenter.x ) {
             poi.x = heroCenter.x - this.width;
-            poi.y = heroCenter.y - (this.height / 2);
+            poi.y = heroCenter.y;
 
         } else if ( this.hero.dir === "left" && heroCenter.x < selfCenter.x ) {
             poi.x = heroCenter.x;
-            poi.y = heroCenter.y - (this.height / 2);
+            poi.y = heroCenter.y;
 
         } else if ( this.hero.dir === "up" && heroCenter.y < selfCenter.y ) {
             poi.x = heroCenter.x - (this.width / 2);
@@ -142,12 +142,12 @@ class Companion extends Sprite {
 
         } else if ( this.hero.dir === "down" && heroCenter.y > selfCenter.y ) {
             poi.x = heroCenter.x - (this.width / 2);
-            poi.y = heroCenter.y - this.height;
+            poi.y = heroCenter.y;
         }
 
         if ( !this.origin ) {
             this.origin = this.position;
-            console.log( `Companion spawn origin ${this.data.id} (${this.position.x}, ${this.position.y})` );
+            // console.log( `Companion spawn origin ${this.data.id} (${this.position.x}, ${this.position.y})` );
         }
 
         if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) ) {

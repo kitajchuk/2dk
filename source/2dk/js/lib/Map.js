@@ -313,12 +313,24 @@ class Map {
         this.camera = camera;
         this.renderBox = this.getRenderbox( camera );
 
-        // Separate Companion NPCs from the normies
+        // Separate FLOAT NPCs from the normies
         const npcs = this.npcs.filter(( npc ) => {
-            return !npc.hero || (npc.hero && npc.data.type !== Config.npc.FLOAT);
+            return npc.data.type !== Config.npc.FLOAT;
+
+        // Sort non-FLOAT companions to top of stack
+        }).sort(( a, b ) => {
+            if ( a.hero ) {
+                return 1;
+            }
+
+            if ( b.hero ) {
+                return -1;
+            }
+
+            return 0;
         });
         const floats = this.npcs.filter(( npc ) => {
-            return npc.hero && npc.data.type === Config.npc.FLOAT;
+            return npc.data.type === Config.npc.FLOAT;
         });
 
         // Draw background textures
@@ -344,7 +356,7 @@ class Map {
         // Draw foreground textures
         this.renderTextures( "foreground" );
 
-        // Draw float companions
+        // Draw float companions (render AFTER texture foreground)
         floats.forEach(( float ) => {
             float.render();
         });

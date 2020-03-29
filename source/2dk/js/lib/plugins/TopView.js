@@ -696,10 +696,10 @@ class TopView extends GameBox {
             sprite.counter = Utils.random( 64, 192 );
             sprite.dir = ["left", "right", "up", "down"][ Utils.random( 0, 4 ) ];
 
-            console.log(
-                `Roam: ${sprite.data.id}`,
-                `Steps: ${sprite.dir} ${sprite.counter}`,
-            );
+            // console.log(
+            //     `Roam: ${sprite.data.id}`,
+            //     `Steps: ${sprite.dir} ${sprite.counter}`,
+            // );
 
         } else {
             sprite.counter--;
@@ -740,11 +740,11 @@ class TopView extends GameBox {
             sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
             sprite.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
 
-            console.log(
-                `Wander: ${sprite.data.id}`,
-                `StepsX: ${sprite.dirX} ${sprite.stepsX}`,
-                `StepsY: ${sprite.dirY} ${sprite.stepsY}`,
-            );
+            // console.log(
+            //     `Wander: ${sprite.data.id}`,
+            //     `StepsX: ${sprite.dirX} ${sprite.stepsX}`,
+            //     `StepsY: ${sprite.dirY} ${sprite.stepsY}`,
+            // );
 
         } else {
             sprite.counter--;
@@ -869,26 +869,11 @@ class TopView extends GameBox {
         // Pausing triggers the GameBox to call this.hero.face( this.hero.dir )
         this.player.pause();
 
-        // Dupe the Hero
+        // Get the Map data
         const mapData = Loader.cash( event.map );
-        const heroData = Utils.copy( this.hero.data );
 
-        // There is a hiccup wherein hero gets a map spawn index first
-        // Immediately position begins updating and we get current coords
-        // However, Companion NPCs spawn based on the hiccup spawn index
-        // This causes the Companion NPC to spawn entirely in the wrong place.
-        // What to do about this...?
-
-        // Set a spawn index...
-        heroData.spawn = (event.spawn || 0);
-
-        // Create new Map & Camera
-        this.map_ = new Map( mapData, heroData, this );
+        // Create new Camera
         this.cam_ = Utils.copy( this.camera );
-
-        // Update new Map's Hero
-        this.map_.hero.face( this.hero.dir );
-        this.map_.hero.idle = this.hero.idle;
 
         // Will be the animation values for transition...
         const _css = {
@@ -897,23 +882,32 @@ class TopView extends GameBox {
             hero: null,
             hero_: null,
         };
+        // Will be the new values for map_ and cam_
+        const _val = {
+            cam_: this.cam_,
+            map_: {
+                offset: null,
+                transform: null,
+                heroPosition: null,
+            }
+        };
 
         // Stage new Map / new Hero for animation
         if ( this.hero.dir === "down" ) {
             // Presets
-            this.cam_.y = 0;
-            this.map_.offset = {
+            _val.cam_.y = 0;
+            _val.map_.offset = {
                 x: this.map.offset.x,
                 y: 0,
             };
-            this.map_.element.style.webkitTransform = `translate3d(
+            _val.map_.transform = `translate3d(
                 0,
                 ${this.player.height}px,
                 0
             )`;
-            this.map_.hero.position = {
+            _val.map_.heroPosition = {
                 x: this.hero.position.x,
-                y: -this.map_.hero.height,
+                y: -this.hero.height,
                 z: 0,
             };
 
@@ -930,7 +924,7 @@ class TopView extends GameBox {
             };
             _css.hero_ = {
                 axis: "y",
-                from: -this.map_.hero.height,
+                from: -this.hero.height,
                 to: 0,
             };
             _css.hero = {
@@ -941,19 +935,19 @@ class TopView extends GameBox {
 
         } else if ( this.hero.dir === "up" ) {
             // Presets
-            this.cam_.y = this.map_.height - this.camera.height;
-            this.map_.offset = {
+            _val.cam_.y = this.map.height - this.camera.height;
+            _val.map_.offset = {
                 x: this.map.offset.x,
-                y: -(this.map_.height - this.camera.height),
+                y: -(this.map.height - this.camera.height),
             };
-            this.map_.element.style.webkitTransform = `translate3d(
+            _val.map_.transform = `translate3d(
                 0,
                 ${-this.player.height}px,
                 0
             )`;
-            this.map_.hero.position = {
+            _val.map_.heroPosition = {
                 x: this.hero.position.x,
-                y: this.map_.height,
+                y: this.map.height,
                 z: 0,
             };
 
@@ -970,8 +964,8 @@ class TopView extends GameBox {
             };
             _css.hero_ = {
                 axis: "y",
-                from: this.map_.height,
-                to: this.map_.height - this.map_.hero.height,
+                from: this.map.height,
+                to: this.map.height - this.hero.height,
             };
             _css.hero = {
                 axis: "y",
@@ -981,18 +975,18 @@ class TopView extends GameBox {
 
         } else if ( this.hero.dir === "right" ) {
             // Presets
-            this.cam_.x = 0;
-            this.map_.offset = {
+            _val.cam_.x = 0;
+            _val.map_.offset = {
                 x: 0,
                 y: this.map.offset.y,
             };
-            this.map_.element.style.webkitTransform = `translate3d(
+            _val.map_transform = `translate3d(
                 ${this.player.width}px,
                 0,
                 0
             )`;
-            this.map_.hero.position = {
-                x: -this.map_.hero.width,
+            _val.map_.heroPosition = {
+                x: -this.hero.width,
                 y: this.hero.position.y,
                 z: 0,
             };
@@ -1010,7 +1004,7 @@ class TopView extends GameBox {
             };
             _css.hero_ = {
                 axis: "x",
-                from: -this.map_.hero.width,
+                from: -this.hero.width,
                 to: 0,
             };
             _css.hero = {
@@ -1021,18 +1015,18 @@ class TopView extends GameBox {
 
         } else if ( this.hero.dir === "left" ) {
             // Presets
-            this.cam_.x = this.map_.width - this.camera.width;
-            this.map_.offset = {
-                x: -(this.map_.width - this.camera.width),
+            _val.cam_.x = this.map.width - this.camera.width;
+            _val.map_.offset = {
+                x: -(this.map.width - this.camera.width),
                 y: this.map.offset.y,
             };
-            this.map_.element.style.webkitTransform = `translate3d(
+            _val.map_.transform = `translate3d(
                 ${-this.player.width}px,
                 0,
                 0
             )`;
-            this.map_.hero.position = {
-                x: this.map_.width,
+            _val.map_.heroPosition = {
+                x: this.map.width,
                 y: this.hero.position.y,
                 z: 0,
             };
@@ -1050,8 +1044,8 @@ class TopView extends GameBox {
             };
             _css.hero_ = {
                 axis: "x",
-                from: this.map_.width,
-                to: this.map_.width - this.map_.hero.width,
+                from: this.map.width,
+                to: this.map.width - this.hero.width,
             };
             _css.hero = {
                 axis: "x",
@@ -1059,6 +1053,27 @@ class TopView extends GameBox {
                 to: this.hero.position.x - this.hero.width,
             };
         }
+
+        // New values for cam_
+        this.cam_ = _val.cam_;
+
+        // Dupe current Hero data
+        const heroData = Utils.copy( this.hero.data );
+
+        // Shim a spawn index based on initial new Hero position
+        mapData.spawn.push( _val.map_.heroPosition );
+        mapData.spawn[ mapData.spawn.length - 1 ][ _css.hero_.axis ] = _css.hero_.from;
+        heroData.spawn = mapData.spawn.length - 1;
+
+        // Create new Map and apply calculations
+        this.map_ = new Map( mapData, heroData, this );
+        this.map_.offset = _val.map_.offset;
+        this.map_.hero.position = _val.map_.heroPosition;
+        this.map_.element.style.webkitTransform = _val.map_.transform;
+
+        // Update new Map's Hero
+        this.map_.hero.face( this.hero.dir );
+        this.map_.hero.idle = this.hero.idle;
 
         // Inject the new Map element into the DOM
         this.player.screen.appendChild( this.map_.element );
