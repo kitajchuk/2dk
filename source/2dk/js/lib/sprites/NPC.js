@@ -83,36 +83,31 @@ class NPC extends Sprite {
             dirs.push( "down" );
         }
 
-        dirs.forEach(( dir ) => {
-            const poi = this.getNextPoiByDir( dir );
-            const collision = {
-                map: this.gamebox.checkMap( poi, this ),
-                npc: this.gamebox.checkNPC( poi, this ),
-                hero: this.gamebox.checkHero( poi, this ),
-                tiles: this.gamebox.checkTiles( poi, this ),
-            };
+        const poi = this.getNextPoi();
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
+            hero: this.gamebox.checkHero( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+        };
 
-            if ( collision.hero && this.data.ai === Config.npc.ROAM ) {
-                if ( this.dir === "left" ) {
-                    this.gamebox.hero.physics.vx = -1;
+        if ( collision.hero && this.data.ai === Config.npc.ROAM ) {
+            if ( this.dir === "left" ) {
+                this.gamebox.hero.physics.vx = -1;
 
-                } else if ( this.dir === "right" ) {
-                    this.gamebox.hero.physics.vx = 1;
+            } else if ( this.dir === "right" ) {
+                this.gamebox.hero.physics.vx = 1;
 
-                } else if ( this.dir === "up" ) {
-                    this.gamebox.hero.physics.vy = -1;
+            } else if ( this.dir === "up" ) {
+                this.gamebox.hero.physics.vy = -1;
 
-                } else if ( this.dir === "down" ) {
-                    this.gamebox.hero.physics.vy = 1;
-                }
-
-            } else if ( !collision.map && !collision.npc && !collision.hero && !this.gamebox.canHeroTileStop( poi, dir, collision ) ) {
-                this.position = poi;
-
-            } else if ( this.data.ai === Config.npc.ROAM ) {
-                this.counter = 0;
+            } else if ( this.dir === "down" ) {
+                this.gamebox.hero.physics.vy = 1;
             }
-        });
+
+        } else if ( !collision.map && !collision.npc && !collision.hero && !this.gamebox.canHeroTileStop( poi, null, collision ) ) {
+            this.position = poi;
+        }
     }
 
 

@@ -20,6 +20,11 @@ class Companion extends Sprite {
     }
 
 
+    visible () {
+        return true;
+    }
+
+
     destroy () {
         if ( this.tween ) {
             this.tween.kill();
@@ -142,7 +147,7 @@ class Companion extends Sprite {
 
         if ( !this.origin ) {
             this.origin = this.position;
-            console.log( `Spawn Origin ${this.data.id} (${this.position.x}, ${this.position.y})` );
+            console.log( `Companion spawn origin ${this.data.id} (${this.position.x}, ${this.position.y})` );
         }
 
         if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) ) {

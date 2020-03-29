@@ -12,8 +12,8 @@
     },
     "hero": {
         "sprite": 0,
-        "spawn": 0,
-        "map": "/games/la/maps/ukuku-prairie-west.json",
+        "spawn": 2,
+        "map": "/games/la/maps/mabe-village.json",
         "sounds": {
             "lift": "/games/la/assets/sounds/sfx-pick-up.mp3",
             "jump": "/games/la/assets/sounds/sfx-jump.mp3",
@@ -24,8 +24,8 @@
             "parkour": "/games/la/assets/sounds/sfx-dropping.mp3"
         },
         "companion": {
-            "id": "ghost",
-            "type": "float"
+            "id": "dog",
+            "type": "walk"
         }
     },
     "heroes": [

@@ -696,10 +696,10 @@ class TopView extends GameBox {
             sprite.counter = Utils.random( 64, 192 );
             sprite.dir = ["left", "right", "up", "down"][ Utils.random( 0, 4 ) ];
 
-            // console.log(
-            //     `Sprite: ${sprite.data.id}`,
-            //     `Steps: ${sprite.dir} ${sprite.counter}`,
-            // );
+            console.log(
+                `Roam: ${sprite.data.id}`,
+                `Steps: ${sprite.dir} ${sprite.counter}`,
+            );
 
         } else {
             sprite.counter--;
@@ -740,11 +740,11 @@ class TopView extends GameBox {
             sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
             sprite.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
 
-            // console.log(
-            //     `Sprite: ${sprite.data.id}`,
-            //     `StepsX: ${sprite.dirX} ${sprite.stepsX}`,
-            //     `StepsY: ${sprite.dirY} ${sprite.stepsY}`,
-            // );
+            console.log(
+                `Wander: ${sprite.data.id}`,
+                `StepsX: ${sprite.dirX} ${sprite.stepsX}`,
+                `StepsY: ${sprite.dirY} ${sprite.stepsY}`,
+            );
 
         } else {
             sprite.counter--;
@@ -872,6 +872,12 @@ class TopView extends GameBox {
         // Dupe the Hero
         const mapData = Loader.cash( event.map );
         const heroData = Utils.copy( this.hero.data );
+
+        // There is a hiccup wherein hero gets a map spawn index first
+        // Immediately position begins updating and we get current coords
+        // However, Companion NPCs spawn based on the hiccup spawn index
+        // This causes the Companion NPC to spawn entirely in the wrong place.
+        // What to do about this...?
 
         // Set a spawn index...
         heroData.spawn = (event.spawn || 0);

@@ -4,6 +4,12 @@
 
 
 
+* Companion NPCs get lost when map switching...
+* Wandering NPCs can get locked in corners (collision problems...)
+* Can we use physics for throw rather than a canned tween?
+
+
+
 * Refactor asset loading (init bundle, in-game events, etc...)
 
 
@@ -15,7 +21,6 @@
 * Water sprite cycle / sound
 * Sword sprite cycle / sound / collision
 * Canvas FX layer (blast, smash, sparks, smoke, etc...?)
-* Door events for entering and exiting interiors
 
 
 
@@ -33,7 +38,6 @@
 
 * History states for painting
 * Upload icon PNG when creating a new game
-* Erase one tile cel at a time?
 * Make EditorUtils Promise-based...like clutch core files module.
 * Use game icon for mobile installed
 
@@ -43,11 +47,8 @@
 * NPCs (Sprites)
 ********************************************************************************
 
-* Companion NPC
-* Try Navi the fairy as a test-run, or bow-wow, or Dark Link!
-
+* Companion NPC: Try Navi the fairy as a test-run, or bow-wow, or Dark Link!
 * Butterflies, Cucco's, Dogs
-
 * Sprites can have a perception box to activate a little before entering screen
 
 
