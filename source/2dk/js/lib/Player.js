@@ -94,7 +94,7 @@ class Player {
     getSplash ( display ) {
         return `
             <div>
-                <div>${this.data.game.name} @v${this.data.game.version}</div>
+                <div>${this.data.game.name}: Save #${this.data.game.save}</div>
                 <div>${display}</div>
             </div>
         `;
