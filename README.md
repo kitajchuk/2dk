@@ -34,7 +34,7 @@ npm run start:studio
 
 I've been using the game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. If you run the Studio you'll find it's there, aptly named [Link's Re-awakening](https://2dk.kitajchuk.com/games/la/?buster=260). It's important to note I take no credit for the IPs used for testing nor for the artwork and designs. All I've done is painstakingly increased the resolution of sprites and tilesets I've compiled from the internet.
 
-Some screenshots of the software in action. Right now you can create and paint maps quite well. It's basically Photoshop for 2D map painting. A 2dk game is a static webapp that contains all it's own resources and JSON files. The Player, or engine, has a mobile first philosophy behind it and is designed to be played as a standalone webapp on your phone. I spent a fair amount of time making the touch controls, specifically the 8-point dpad, work very well.
+Some screenshots of the software in action. Right now you can create and paint maps quite well. It's basically Photoshop for 2D map painting. A 2dk game is a static webapp that contains all it's own resources and JSON files. The Player, or engine, has a mobile first philosophy behind it and is designed to be played as a standalone webapp on your phone. I spent a fair amount of time making the touch controls, specifically the 8-point dpad, work very well. I also implemented the native GamePad and have tested that with a USB NES controller. There are some other debug mode features available when running a 2dk game in a desktop browser.
 
 #### Mobile Player:
 ![image](./static/img/screens/mobile1.png)
@@ -43,6 +43,12 @@ Some screenshots of the software in action. Right now you can create and paint m
 
 #### Fullscreen mode:
 ![image](./static/img/screens/mobile3.png)
+
+
+#### Dev mode (Firefox)
+![image](./static/img/screens/roaming1.png)
+
+![image](./static/img/screens/roaming2.png)
 
 
 #### Painting maps
@@ -55,7 +61,7 @@ Some screenshots of the software in action. Right now you can create and paint m
 
 
 ## Open source
-I've been mostly good about documenting where I've found resources online. Things like spritesheets, tilesets and sound files.
+I've been trying to keep track of where I've found resources online. Stuff like sprites, tiles and audio.
 
 #### Assets
 * Sounds for Link's Awakening DX from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/link-s-awakening-dx)
