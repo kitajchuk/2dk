@@ -15,7 +15,7 @@ files.read( gamesPath ).then(( gamesJson ) => {
         }).games = gamesJson;
 
         files.write( dataPath, dataJson ).then(() => {
-            lager.cache( "Save games JSON" );
+            lager.cache( "Saved games JSON to static data." );
         });
     });
 });

@@ -47,13 +47,13 @@ const siteConfig = Object.assign( {}, webpackConfig, {
 
     entry: {
         "app": path.resolve( __dirname, `source/${config.theme}/js/app.js` ),
-        "2dk": path.resolve( __dirname, `source/2dk/js/2dk.js` ),
+        "2dk": path.resolve( __dirname, "source/2dk/js/2dk.js" ),
     },
 
 
     output: {
         path: path.resolve( __dirname, "static/js" ),
-        filename: `[name].js`
+        filename: "[name].js"
     },
 
 
@@ -91,7 +91,7 @@ const siteConfig = Object.assign( {}, webpackConfig, {
                 test: /\.(sass|scss)$/,
                 exclude: /node_modules|vendor/,
                 use: [
-                    `file-loader?name=../css/[name].css`,
+                    "file-loader?name=../css/[name].css",
                     "postcss-loader",
                     {
                         loader: "sass-loader",
@@ -116,13 +116,13 @@ const siteConfig = Object.assign( {}, webpackConfig, {
 
 const studioConfig = Object.assign( {}, webpackConfig, {
     entry: {
-        "studio": path.resolve( __dirname, `studio/source/js/screen.js` )
+        "studio": path.resolve( __dirname, "studio/source/js/screen.js" )
     },
 
 
     output: {
         path: path.resolve( __dirname, "studio/static/js" ),
-        filename: `[name].js`
+        filename: "[name].js"
     },
 
 
@@ -132,7 +132,7 @@ const studioConfig = Object.assign( {}, webpackConfig, {
                 test: /\.(sass|scss)$/,
                 exclude: /node_modules|vendor/,
                 use: [
-                    `file-loader?name=../css/[name].css`,
+                    "file-loader?name=../css/[name].css",
                     "postcss-loader",
                     {
                         loader: "sass-loader",
