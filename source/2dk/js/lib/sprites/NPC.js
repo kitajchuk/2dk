@@ -15,7 +15,9 @@ class NPC extends Sprite {
         this.states = Utils.copy( this.data.states );
         this.dialogue = null;
         this.controls = {};
-        this.speed = 0.5;
+        // Initial cooldown period upon spawn (don't immediately move)
+        // requestAnimationFrame runs 60fps so we use (60 * seconds)
+        this.counter = this.data.ai ? (60 * 1) : 0;
         this.shift();
     }
 

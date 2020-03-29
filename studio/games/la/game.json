@@ -495,6 +495,8 @@
             "image": "/games/la/assets/sprites/npcs.png",
             "bounce": 1,
             "dir": "left",
+            "maxv": 2,
+            "controlmaxv": 2,
             "hitbox": {
                 "x": 0,
                 "y": 0,
@@ -541,6 +543,8 @@
             "image": "/games/la/assets/sprites/npcs.png",
             "bounce": 1,
             "dir": "left",
+            "maxv": 2,
+            "controlmaxv": 2,
             "hitbox": {
                 "x": 0,
                 "y": 0,
