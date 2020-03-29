@@ -35,14 +35,5 @@ if ( !fs.existsSync( rootClutch ) ) {
 
 
 
-// Create notes
-console.log( "[Clutch] Creating .notes file for dev..." );
-
-if ( !fs.existsSync( rootNotes ) ) {
-    child_process.execSync( `touch ${rootNotes}` );
-}
-
-
-
 // 6.0 done
 console.log( "[Clutch] Install complete!" );
