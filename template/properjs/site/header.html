@@ -13,7 +13,7 @@ const config = locals.context.config;
             <nav class="navi js-navi">
                 <ul class="navi__ul">
                     <% navi.items.forEach(( item ) => { %>
-                        <% if ( item.uid !== config.homepage && item.uid !== config.app ) { %>
+                        <% if ( item.uid !== config.homepage ) { %>
                             <li class="navi__li navi__li--<%= item.uid %>">
                                 <a class="navi__a navi__a--<%= item.uid %> js-navi-a js-navi--<%= item.uid %> m" href="<%= item.slug %>"><%= item.text %></a>
                             </li>

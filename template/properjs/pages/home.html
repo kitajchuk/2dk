@@ -4,19 +4,43 @@ const games = locals.context.doc.games;
 %>
 <div class="home -exp">
     <div class="home__mast -wrap">
-        <h1><em><%- site.data.title %></em></h1>
-        <p><%- site.data.description %></p>
+        <h1>
+            <div><%- site.data.title %></div>
+            <h3>
+                <em><%- site.data.description %></em>
+            </h3>
+        </h1>
+    </div>
+    <hr />
+    <div class="-wrap">
+        <img class="mason__image image js-lazy-image" data-img-src="/img/screens/ukukuprairie.png" />
+        <div class="_cap-wrap">
+            <div class="_cap">
+                <div class="m"><p>Painting with the Studio software (Ukuku Prairie)</p></div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="mason mason--diptych">
+        <div class="mason__item mason__item--noinfo">
+            <img class="mason__image image js-lazy-image" data-img-src="/img/screens/roaming1.png" />
+        </div>
+        <div class="mason__item mason__item--noinfo">
+            <img class="mason__image image js-lazy-image" data-img-src="/img/screens/roaming2.png" />
+        </div>
+    </div>
+    <div class="_cap-wrap -wrap">
+        <div class="_cap">
+            <div class="m"><p>Wandering around with a pet companion (Firefox dev mode)</p></div>
+        </div>
     </div>
     <hr />
     <div class="home__games -wrap">
-        <h3><em>Test</em></h3>
-        <% games.forEach(( game ) => { %>
-            <p><%= game.name %> | <a href="/games/<%= game.id %>/?buster=<%= game.save %>" class="js-webapp-link">DEMO</a></p>
-        <% }) %>
-    </div>
-    <div class="home__mast -wrap -expt">
-        <h3><em>Dev</em></h3>
-        <p>The project is in active development.</p>
-        <p>The code is on Github <a href="https://github.com/kitajchuk/2dk" target="_blank">HERE</a>.</p>
+        <h1>Testing</h1>
+        <div class="_cap">
+            <% games.forEach(( game ) => { %>
+                <p><%= game.name %> | <a href="/games/<%= game.id %>/?buster=<%= game.save %>" class="js-webapp-link">DEMO</a></p>
+            <% }) %>
+        </div>
     </div>
 </div>

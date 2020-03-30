@@ -2,7 +2,7 @@
     "site": {
         "data": {
             "title": "2dk",
-            "description": "For the love of 2D. A JavaScript SDK.",
+            "description": "Nostalgia for 2D gaming wrapped up in a JavaScript SDK.",
             "googleUA": "",
             "googleVerify": ""
         }
@@ -13,6 +13,11 @@
                 "uid": "home",
                 "text": "Home",
                 "slug": "/"
+            },
+            {
+                "uid": "github",
+                "text": "Project on Github",
+                "slug": "https://github.com/kitajchuk/2dk"
             }
         ]
     },
@@ -22,7 +27,7 @@
             "type": "page",
             "data": {
                 "title": "2dK",
-                "description": "For the love of 2D. A JavaScript SDK."
+                "description": "Nostalgia for 2D gaming wrapped up in a JavaScript SDK."
             },
             "games": [
                 {

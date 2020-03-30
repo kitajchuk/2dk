@@ -4,9 +4,9 @@ require( "../sass/screen.scss" );
 
 
 // Load the JS
-// import router from "./router";
+import router from "./router";
 import * as core from "./core";
-// import Analytics from "./services/Analytics";
+import Analytics from "./services/Analytics";
 import intro from "./modules/intro";
 import navi from "./modules/navi";
 import Controllers from "./Controllers";
@@ -25,8 +25,8 @@ class App {
         this.core = core;
         this.intro = intro;
         this.navi = navi;
-        // this.router = router;
-        // this.analytics = new Analytics();
+        this.router = router;
+        this.analytics = new Analytics();
         this.controllers = new Controllers({
             el: this.core.dom.main
         });
@@ -40,13 +40,13 @@ class App {
         this.navi.init();
         this.init();
         this.bind();
-        // this.router.init().load().then(() => {
-        //     this.bind();
-        //     this.init();
-        //
-        // }).catch(( error ) => {
-        //     this.core.log( "warn", error );
-        // });
+        this.router.init().load().then(() => {
+            this.bind();
+            this.init();
+
+        }).catch(( error ) => {
+            this.core.log( "warn", error );
+        });
     }
 
 
