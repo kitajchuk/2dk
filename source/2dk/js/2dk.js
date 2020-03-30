@@ -2,24 +2,8 @@
 * 2dk Dev Notes
 ********************************************************************************
 
-
-
-* Companion NPCs get lost when map switching...
 * Wandering NPCs can get locked in corners (collision problems...)
 * Can we use physics for throw rather than a canned tween?
-
-
-
-* Refactor asset loading (init bundle, in-game events, etc...)
-
-
-
-* Hero weapon animations / collisions (sword...?)
-* Tile interactions (fall, etc...)
-* Hero sprite masking?
-* Grass sprite cycle / sound
-* Water sprite cycle / sound
-* Sword sprite cycle / sound / collision
 * Canvas FX layer (blast, smash, sparks, smoke, etc...?)
 
 
@@ -28,18 +12,19 @@
 * Studio Software
 ********************************************************************************
 
+* Upload icon PNG when creating a new game / saving existing game
+* Add Spritesheet uploader
+* Bullet-proof uploads with progress, bulk uploads?
+* History states for painting
+* Make EditorUtils Promise-based...like clutch core files module.
+* Use game icon for mobile installed
 * Map Spawn (x, y, dir)
 * Map Events (coords, type, map, dir, spawn?)
 * Map Heroes / Hero
 * Map NPCs (background?, foreground?)
 * Map Active Tiles (background)
-* Map FX
+* Map FX maker?
 * Map Hero companion?
-
-* History states for painting
-* Upload icon PNG when creating a new game
-* Make EditorUtils Promise-based...like clutch core files module.
-* Use game icon for mobile installed
 
 
 
@@ -47,9 +32,29 @@
 * NPCs (Sprites)
 ********************************************************************************
 
-* Companion NPC: Try Navi the fairy as a test-run, or bow-wow, or Dark Link!
-* Butterflies, Cucco's, Dogs
-* Sprites can have a perception box to activate a little before entering screen
+* Butterflies
+* Perception box
+* Projectiles (with FX)
+* Enemy AIs (Baddies)
+
+
+
+********************************************************************************
+* Hero
+********************************************************************************
+* Hero weapon animations / collisions (sword...?)
+* Tile interactions (fall, etc...)
+* Hero sprite masking?
+* Grass sprite cycle / sound
+* Water sprite cycle / sound
+* Sword sprite cycle / sound / collision
+* Attacking & Weapons
+* Charged Hero + Release Attack
+* Move resistance (pushing, tiles, etc...)
+* Diagonal wall move physics. A left-down wall moves Hero left down.
+* Bounce physics so Hero does not get tile collision locked.
+* Knockbacks Hero_Slide(free) and Hero_Hit(paused).
+* Object interaction hints (A Open, A Check, etc...)
 
 
 
@@ -59,23 +64,9 @@
 * Thoughts Bank:
 * Random thoughts we want to keep track of...for now...
 ********************************************************************************
-* HUD / Menus / Items(attached to buttons...?)
-* ALTTP Sprite scale: 2.1875
-* Object interaction hints (A Open, A Check, etc...)
-* Document code...(jsdoc?
+* Use Zelda 1 map with our ALTTP modified tileset
+* HUD / Menus / Items (attached to buttons...?)
 * GameCycle manager for states (intro, title, credits, etc...)
-* Projectiles, FX in general
-* Math functions (arc animations?, see Akihabara Trigo)
-* Attacking & Weapons
-* Enemy AIs (Baddies)
-* Charged Hero + Release Attack
-* Collider events?
-* Move resistance (pushing, tiles, etc...)
-* LOADSCREEN?, INTRO?, OUTRO?
-* Diagonal wall move physics. A left-down wall moves Hero left down.
-* Bounce physics so Hero does not get tile collision locked.
-* Knockbacks Hero_Slide(free) and Hero_Hit(paused).
-* Use Artificial General Intelligence for NPC base class.
 * Procedural map paint with cellauto JS.
 *******************************************************************************/
 // Load CSS
