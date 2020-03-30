@@ -148,16 +148,23 @@
                 </div>
                 <!-- Active game -->
                 <div class="editor__menu js-menu" id="editor-active-game-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--stay_current_landscapestay_primary_landscape"></span><span>Game Settings</span></div>
                     <div class="editor__setting">
+                        <div class="editor__label"><span class="icon icon--nudge icon--stay_current_landscapestay_primary_landscape"></span><span>Game Settings</span></div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="editor__label">Name</div>
                         <input class="input editor__field js-game-field" type="text" name="name" readonly />
                     </div>
                     <div class="editor__setting">
+                        <div class="editor__label">Resolution</div>
                         <input class="input editor__field js-game-field" type="text" name="resolution" readonly />
                     </div>
-                    <div class="editor__setting editor__setting--multi">
-                        <input class="input editor__field js-game-field" type="text" name="width" readonly />
-                        <input class="input editor__field js-game-field" type="text" name="height" readonly />
+                    <div class="editor__setting">
+                        <div class="editor__label">Width & height</div>
+                        <div class="editor__setting--multi">
+                            <input class="input editor__field js-game-field" type="text" name="width" readonly />
+                            <input class="input editor__field js-game-field" type="text" name="height" readonly />
+                        </div>
                     </div>
                 </div>
                 <!-- New map -->
@@ -198,18 +205,26 @@
                 </div>
                 <!-- Active map -->
                 <div class="editor__menu js-menu" id="editor-active-map-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--map"></span><span>Map Settings</span></div>
                     <div class="editor__setting">
+                        <div class="editor__label"><span class="icon icon--nudge icon--map"></span><span>Map Settings</span></div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="editor__label">Name</div>
                         <input class="input editor__field js-map-field" type="text" name="name" />
                     </div>
                     <div class="editor__setting">
+                        <div class="editor__label">Tilesize</div>
                         <input class="input editor__field js-map-field" type="text" name="tilesize" />
                     </div>
-                    <div class="editor__setting editor__setting--multi">
-                        <input class="input editor__field js-map-field" type="text" name="tilewidth" />
-                        <input class="input editor__field js-map-field" type="text" name="tileheight" />
+                    <div class="editor__setting">
+                        <div class="editor__label">Tile width & height</div>
+                        <div class="editor__setting--multi">
+                            <input class="input editor__field js-map-field" type="text" name="tilewidth" />
+                            <input class="input editor__field js-map-field" type="text" name="tileheight" />
+                        </div>
                     </div>
                     <div class="editor__setting">
+                        <div class="editor__label">Tileset</div>
                         <div class="select">
                             <select class="select__field js-map-field js-select js-select-tiles" name="image" data-label="Tileset">
                                 <option value="">Tileset</option>
@@ -217,6 +232,7 @@
                         </div>
                     </div>
                     <div class="editor__setting">
+                        <div class="editor__label">BGM</div>
                         <div class="select">
                             <select class="select__field js-map-field js-select js-select-sound" name="sound" data-label="Sound">
                                 <option value="">Sound</option>
