@@ -51,8 +51,8 @@ class Player {
             this.data = data;
             this.data.hero = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
             this.debug();
-            this.width = (this.device && this.data.game.fullscreen) ? screen.height : this.data.game.width / this.data.game.resolution;
-            this.height = (this.device && this.data.game.fullscreen) ? screen.width : this.data.game.height / this.data.game.resolution;
+            this.width = (this.device && this.data.game.fullscreen) ? Math.max( screen.height, screen.width ) : this.data.game.width / this.data.game.resolution;
+            this.height = (this.device && this.data.game.fullscreen) ? Math.min( screen.height, screen.width ) : this.data.game.height / this.data.game.resolution;
             this.build();
 
             let counter = 0;
