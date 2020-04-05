@@ -75,7 +75,7 @@ const readFile = ( file, cb ) => {
     if ( cb ) {
         fs.readFile( file, "utf8", ( err, data ) => {
             if ( !err ) {
-                cb( data );
+                cb( String( data ) );
             }
         });
 
@@ -141,6 +141,21 @@ const removeFile = ( file, cb ) => {
 
 
 
+const copyFile = ( file, dest, cb ) => {
+    if ( cb ) {
+        fse.copy( file, dest, ( err ) => {
+            if ( !err ) {
+                cb();
+            }
+        });
+
+    } else {
+        fse.copySync( file, dest );
+    }
+};
+
+
+
 const removeDir = ( dir, cb ) => {
     if ( cb ) {
         fse.remove( dir, ( err ) => {
@@ -171,5 +186,6 @@ module.exports = {
     writeFile,
     removeFile,
     removeDir,
+    copyFile,
     copyObj
 };

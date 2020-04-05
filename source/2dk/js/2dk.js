@@ -17,9 +17,10 @@
 * Studio Software
 ********************************************************************************
 
-* Upload icon PNG when creating a new game / saving existing game
+* Add Game app icon uploader
 * Add Spritesheet uploader
 * Bullet-proof uploads with progress, bulk uploads?
+
 * History states for painting
 * Make EditorUtils Promise-based...like clutch core files module.
 * Use game icon for mobile installed

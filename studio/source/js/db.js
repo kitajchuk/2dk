@@ -3,6 +3,11 @@ const Utils = require( "./Utils" );
 const Cache = require( "./Cache" );
 const lager = require( "properjs-lager" );
 const jimp = require( "jimp" );
+const paths = {
+    games: path.join( process.cwd(), "games.json" ),
+    models: path.join( __dirname, "../../models/" ),
+    templates: path.join( __dirname, "../../templates/" ),
+};
 
 
 class DB {
@@ -144,6 +149,7 @@ class DB {
     /******************************************************************************
      * CREATE Events
     *******************************************************************************/
+    // { fileName, fileData, type }
     addFile ( data ) {
         return new Promise(( resolve, reject ) => {
             let files = null;
@@ -278,6 +284,20 @@ class DB {
         });
     }
 
+    updateIcon ( data ) {
+        return new Promise(( resolve ) => {
+            const buffer = Buffer.from( data.fileData.replace( /^data:.*?;base64,/, "" ), "base64" );
+            const game = this.cache.get( "game" );
+            const file = path.join( process.cwd(), "games", game.game.id, "icon.png" );
+
+            lager.info( `DB-${this.gameId}: update game icon` );
+
+            Utils.writeFile( file, buffer, () => {
+                resolve( game.game );
+            });
+        });
+    }
+
     /******************************************************************************
      * DELETE Events
     *******************************************************************************/
@@ -379,18 +399,18 @@ class DB {
  * STATIC methods...
 *******************************************************************************/
 DB.getModel = ( model ) => {
-    return Utils.copyObj( require( `../../models/${model}` ) );
+    return Utils.copyObj( require( path.join( paths.models, model ) ) );
 };
 
 
 DB.getTemplate = ( template ) => {
-    return Utils.readFile( path.join( __dirname, `../../templates/${template}` ) );
+    return Utils.readFile( path.join( paths.templates, template ) );
 };
 
 
 DB.getGames = () => {
     return new Promise(( resolve ) => {
-        Utils.readJson( path.join( process.cwd(), "games.json" ), ( json ) => {
+        Utils.readJson( paths.games, ( json ) => {
             resolve({
                 games: json,
             });
@@ -400,39 +420,51 @@ DB.getGames = () => {
 
 
 DB.updateGame = ( data ) => {
-    let games = path.join( process.cwd(), "games.json" );
     const gameDir = path.join( process.cwd(), "games", data.game.id );
-    const index = DB.getTemplate( "index.html" ).replace( /\{__GAME_NAME__\}/g, data.game.name ).replace( /\{__GAME_VERSION__\}/g, data.game.save );
+    const indexHtml = DB.getTemplate( "index.html" )
+                        .replace( /\{__GAME_NAME__\}/g, data.game.name )
+                        .replace( /\{__GAME_VERSION__\}/g, data.game.save );
 
     // Update game index.html
-    Utils.writeFile( path.join( gameDir, "index.html" ), index );
+    Utils.writeFile( path.join( gameDir, "index.html" ), indexHtml );
 
     // Save new game data
     Utils.writeJson( path.join( gameDir, "game.json" ), data );
 
     // Update games.json root
-    Utils.readJson( games, ( json ) => {
-        json.forEach(( gm, i ) => {
+    DB.getGames().then(( json ) => {
+        json.games.forEach(( gm, i ) => {
             if ( gm.id === data.game.id ) {
-                json[ i ] = data.game;
+                json.games[ i ] = data.game;
             }
         });
 
-        Utils.writeJson( games, json );
+        Utils.writeJson( paths.games, json.games );
     });
 };
 
 
 DB.addGame = ( data ) => {
     return new Promise(( resolve ) => {
-        let games = path.join( process.cwd(), "games.json" );
-        let gameJson = null;
-        const game = DB.getModel( "game" );
-        const done = () => {
-            const gameDir = path.join( process.cwd(), "games", game.game.id );
+        DB.getGames().then(( json ) => {
+            const games = json.games;
+            const gameModel = DB.getModel( "game" );
+
+            gameModel.game.id = Cache.slugify( data.name );
+            gameModel.game.name = data.name;
+            gameModel.game.width = Number( data.width ) || gameModel.game.width;
+            gameModel.game.height = Number( data.height ) || gameModel.game.height;
+            gameModel.game.resolution = Number( data.resolution ) || gameModel.game.resolution;
+            gameModel.game.icon = `/games/${gameModel.game.id}/icon.png`;
+
+            games.push( gameModel.game );
+
+            const gameDir = path.join( process.cwd(), "games", gameModel.game.id );
             const mapsDir = path.join( gameDir, "maps" );
             const assetsDir = path.join( gameDir, "assets" );
-            const index = DB.getTemplate( "index.html" ).replace( "{__GAME_NAME__}", game.game.name ).replace( "{__GAME_VERSION__}", game.game.save );
+            const indexHtml = DB.getTemplate( "index.html" )
+                                .replace( "{__GAME_NAME__}", gameModel.game.name )
+                                .replace( "{__GAME_VERSION__}", gameModel.game.save );
 
             Utils.makeDir( gameDir );
             Utils.makeDir( mapsDir );
@@ -441,31 +473,19 @@ DB.addGame = ( data ) => {
             Utils.makeDir( path.join( assetsDir, "sprites" ) );
             Utils.makeDir( path.join( assetsDir, "sounds" ) );
             Utils.makeDir( path.join( assetsDir, "snapshots" ) );
-            Utils.writeFile( path.join( gameDir, "index.html" ), index );
-            Utils.writeJson( games, gameJson, () => {
-                games = path.join( gameDir, "game.json" );
+            Utils.writeFile( path.join( gameDir, "index.html" ), indexHtml );
+            Utils.copyFile( path.join( paths.templates, "icon.png" ), path.join( gameDir, "icon.png" ) );
 
-                Utils.writeJson( games, game, () => {
-                    lager.info( `DB-static: created game ${game.id}` );
+            Utils.writeJson( paths.games, games, () => {
+                Utils.writeJson( path.join( gameDir, "game.json" ), gameModel, () => {
+                    lager.info( `DB-static: created game ${gameModel.game.id}` );
 
                     resolve({
-                        game,
-                        games: gameJson,
+                        game: gameModel,
+                        games,
                     });
                 });
             });
-        };
-
-        game.game.id = Cache.slugify( data.name );
-        game.game.name = data.name;
-        game.game.width = Number( data.width ) || game.game.width;
-        game.game.height = Number( data.height ) || game.game.height;
-        game.game.resolution = Number( data.resolution ) || game.game.resolution;
-
-        Utils.readJson( games, ( json ) => {
-            gameJson = json;
-            gameJson.push( game.game );
-            done();
         });
     });
 };
@@ -473,23 +493,19 @@ DB.addGame = ( data ) => {
 
 DB.deleteGame = ( data ) => {
     return new Promise(( resolve ) => {
-        const jsonPath = path.join( process.cwd(), "games.json" );
-        const gamePath = path.join( process.cwd(), "games", data.id );
-
-        Utils.readJson( jsonPath, ( json ) => {
-            const game = json.find(( gm ) => {
+        DB.getGames().then(( json ) => {
+            const gamePath = path.join( process.cwd(), "games", data.id );
+            const game = json.games.find(( gm ) => {
                 return (gm.id === data.id);
             });
 
-            json.splice( json.indexOf( game ), 1 );
+            json.games.splice( json.games.indexOf( game ), 1 );
 
-            Utils.writeJson( jsonPath, json );
+            Utils.writeJson( paths.games, json.games );
             Utils.removeDir( gamePath, () => {
                 lager.info( `DB-static: deleted game ${game.id}` );
 
-                resolve({
-                    games: json,
-                });
+                resolve( json );
             });
         });
     });

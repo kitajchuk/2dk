@@ -8,8 +8,8 @@ module.exports = {
     "tileheight": 32,
     "collider": 16,
     "image": "",
-    "snapshot": "/static/img/icon/apple-icon.png",
-    "thumbnail": "/static/img/icon/apple-icon.png",
+    "snapshot": "",
+    "thumbnail": "",
     "sound": "",
     "spawn": [
         {

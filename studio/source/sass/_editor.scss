@@ -177,6 +177,12 @@
         }
     }
 }
+#editor-game-icon-image {
+    width: 96px;
+    margin: 0 auto;
+    display: block;
+    border: 1px solid $grey-dark;
+}
 
 
 
@@ -384,7 +390,7 @@
     border-bottom: 1px solid $grey-dark;
 }
 .editor__label {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 .editor__layer {
     padding: 16px;

@@ -32,13 +32,24 @@
             "games": [
                 {
                     "id": "la",
-                    "name": "Links Re-awakening",
+                    "name": "LA",
                     "width": 768,
                     "height": 576,
                     "fullscreen": false,
                     "resolution": 1,
                     "icon": "/games/la/assets/icons/la.png",
                     "save": 268,
+                    "plugin": "topview"
+                },
+                {
+                    "id": "loz",
+                    "name": "LOZ",
+                    "width": 768,
+                    "height": 576,
+                    "resolution": 1,
+                    "fullscreen": false,
+                    "icon": "/img/icon/apple-icon.png",
+                    "version": 1,
                     "plugin": "topview"
                 }
             ]

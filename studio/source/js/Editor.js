@@ -33,6 +33,8 @@ class Editor {
             loadout: $( "#editor-loadout" ),
             mapLoad: $( "#editor-map-load" ),
             gameLoad: $( "#editor-game-load" ),
+            iconImage: $( "#editor-game-icon-image" ),
+            iconField: $( "#editor-game-icon" ),
         };
         this.selects = {
             all: $( ".js-select" ),
@@ -180,9 +182,11 @@ class Editor {
 
     prefillGameFields ( game ) {
         this.menus.activeGame.find( ".js-game-field[name='name']" )[ 0 ].value = game.name;
-        this.menus.activeGame.find( ".js-game-field[name='resolution']" )[ 0 ].value = game.resolution;
+        // this.menus.activeGame.find( ".js-game-field[name='resolution']" )[ 0 ].value = game.resolution;
         this.menus.activeGame.find( ".js-game-field[name='width']" )[ 0 ].value = game.width;
         this.menus.activeGame.find( ".js-game-field[name='height']" )[ 0 ].value = game.height;
+        this.dom.iconField[ 0 ].value = game.icon;
+        this.dom.iconImage[ 0 ].src = `.${game.icon}`;
     }
 
 
@@ -295,6 +299,28 @@ class Editor {
     }
 
 
+    readFile ( fileInput ) {
+        return new Promise(( resolve ) => {
+            const fileReader = new FileReader();
+            const fileData = fileInput[ 0 ].files[ 0 ];
+
+            if ( fileData ) {
+                fileReader.onload = ( fe ) => {
+                    resolve({
+                        fileName: fileData.name,
+                        fileData: fe.target.result,
+                    });
+                };
+
+                fileReader.readAsDataURL( fileData );
+
+            } else {
+                reject();
+            }
+        });
+    }
+
+
     _saveSnapshot () {
         // Upload map PNG snapshot
         const uploadSnap = {
@@ -373,8 +399,16 @@ class Editor {
     }
 
 
-    _openMenu ( type, target ) {
-        const canFunction = (type === "game") || this.canGameFunction();
+    _openMenu ( action, target ) {
+        let canFunction = this.canGameFunction();
+
+        // Capture circumstances
+        if ( action === "newgame" ) {
+            canFunction = true;
+
+        } else if ( action === "mapsettings" && !this.data.map ) {
+            canFunction = false;
+        }
 
         if ( !canFunction ) {
             return false;
@@ -465,12 +499,20 @@ class Editor {
             this._saveMap();
         });
 
+        ipcRenderer.on( "menu-gamesettings", () => {
+            this._openMenu( "gamesettings", "editor-active-game-menu" );
+        });
+
         ipcRenderer.on( "menu-newgame", () => {
-            this._openMenu( "game", "editor-addgame-menu" );
+            this._openMenu( "newgame", "editor-addgame-menu" );
+        });
+
+        ipcRenderer.on( "menu-mapsettings", () => {
+            this._openMenu( "mapsettings", "editor-active-map-menu" );
         });
 
         ipcRenderer.on( "menu-newmap", () => {
-            this._openMenu( "map", "editor-addmap-menu" );
+            this._openMenu( "newmap", "editor-addmap-menu" );
         });
 
         ipcRenderer.on( "menu-newtileset", () => {
@@ -492,6 +534,11 @@ class Editor {
         ipcRenderer.on( "menu-assets", ( e, assets ) => {
             this.loadAssets( assets );
         });
+
+        ipcRenderer.on( "menu-reloadicon", ( e, game ) => {
+            this.dom.iconImage[ 0 ].src = `.${game.icon}?buster=${Date.now()}`;
+            this.dom.iconField[ 0 ].value = game.icon;
+        });
     }
 
 
@@ -512,13 +559,15 @@ class Editor {
         });
 
         this.dom.uploadFiles.on( "change", ( e ) => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
-
             const targ = $( e.target );
             const elem = targ.is( ".js-upload-file" ) ? targ : targ.closest( ".js-upload-file" );
             const data = elem.data();
+
+            if ( targ[ 0 ].name === "icon" ) {
+                this.readFile( targ ).then(( response ) => {
+                    ipcRenderer.send( "renderer-uploadicon", response );
+                });
+            }
 
             document.getElementById( data.target ).value = elem[ 0 ].value;
         });
@@ -625,29 +674,22 @@ class Editor {
             const menu = button.closest( ".js-upload-menu" );
             const fileInput = menu.find( ".js-upload-file" );
             const fileField = menu.find( ".js-upload-field" );
-            const fileReader = new FileReader();
-            const fileData = fileInput[ 0 ].files[ 0 ];
             const postData = {
                 id: this.data.game.id,
-                type: button.data().type
+                type: button.data().type,
             };
 
-            if ( fileData ) {
-                this.mode = Config.Editor.modes.SAVING;
-                this.dom.root[ 0 ].className = "is-saving-file";
-                postData.fileName = fileData.name;
+            this.mode = Config.Editor.modes.SAVING;
+            this.dom.root[ 0 ].className = "is-saving-file";
 
-                fileReader.onload = ( fe ) => {
-                    postData.fileData = fe.target.result;
-                    ipcRenderer.send( "renderer-newfile", postData );
-                    fileField[ 0 ].value = "";
-                    this.closeMenus();
-                    this.done();
-
-                };
-
-                fileReader.readAsDataURL( fileData );
-            }
+            this.readFile( fileInput ).then(( response ) => {
+                postData.fileName = response.fileName;
+                postData.fileData = response.fileData;
+                ipcRenderer.send( "renderer-newfile", postData );
+                fileField[ 0 ].value = "";
+                this.closeMenus();
+                this.done();
+            });
         });
 
 

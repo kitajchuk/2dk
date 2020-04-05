@@ -1,0 +1,22 @@
+{
+    "game": {
+        "id": "loz",
+        "name": "LOZ",
+        "width": 768,
+        "height": 576,
+        "resolution": 1,
+        "fullscreen": false,
+        "icon": "/games/loz/icon.png",
+        "save": 1,
+        "plugin": "topview",
+        "save": null
+    },
+    "hero": {},
+    "heroes": [],
+    "objects": [],
+    "fx": [],
+    "bundle": [
+        "/games/loz/assets/tiles/tiles.png",
+        "/games/loz/assets/tiles/inside.png"
+    ]
+}

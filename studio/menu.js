@@ -84,6 +84,13 @@ const getGamesMenu = () => {
                 }
             },
             gamesLoadout,
+            { type: "separator" },
+            {
+                label: "Project Settings",
+                click () {
+                    mainWindow.webContents.send( "menu-gamesettings", null );
+                }
+            },
         ]
     };
 };
@@ -114,6 +121,13 @@ const getMapsMenu = () => {
                 }
             },
             mapsLoadout,
+            { type: "separator" },
+            {
+                label: "Map Settings",
+                click () {
+                    mainWindow.webContents.send( "menu-mapsettings", null );
+                }
+            },
             { type: "separator" },
             {
                 label: "Add Tileset",
@@ -300,6 +314,12 @@ ipcMain.on( "renderer-newfile", ( event, data ) => {
 ipcMain.on( "renderer-deletefile", ( event, data ) => {
     dBase.deleteFile( data ).then(( response ) => {
         mainWindow.webContents.send( "menu-assets", response );
+    });
+});
+
+ipcMain.on( "renderer-uploadicon", ( event, data ) => {
+    dBase.updateIcon( data ).then(( response ) => {
+        mainWindow.webContents.send( "menu-reloadicon", response );
     });
 });
 
