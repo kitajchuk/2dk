@@ -141,7 +141,7 @@ class Sprite {
         }
 
         if ( this.data.shadow ) {
-            this.map.layers[ this.layer ].onCanvas.context.drawImage(
+            this.map.layers.background.onCanvas.context.drawImage(
                 this.image,
                 Math.abs( this.data.shadow.offsetX ),
                 Math.abs( this.data.shadow.offsetY ),

@@ -27,10 +27,15 @@ class TopView extends GameBox {
             // }
             push: 0,
         };
-        this.locked = false;
+        // parkour: {
+        //     distance,
+        //     landing: { x, y }
+        // }
+        this.parkour = false;
         this.jumping = false;
         this.falling = false;
-        this.parkour = false;
+        this.locked = false;
+        this.keyTimer = null;
     }
 
 
@@ -277,6 +282,26 @@ class TopView extends GameBox {
     }
 
 
+    handleCriticalReset () {
+        // Timer used for jumping / parkour
+        if ( this.keyTimer ) {
+            clearTimeout( this.keyTimer );
+            this.keyTimer = null;
+        }
+
+        // Applied for parkour
+        this.player.controls[ this.hero.dir ] = false;
+
+        // To kill any animated sprite cycling (jump etc...)
+        this.hero.face( this.hero.dir );
+
+        // Reset flags
+        this.parkour = false;
+        this.jumping = false;
+        this.falling = false;
+    }
+
+
     handleHero ( poi, dir ) {
         const collision = {
             map: this.checkMap( poi, this.hero ),
@@ -294,6 +319,16 @@ class TopView extends GameBox {
             return;
 
         } else if ( this.parkour ) {
+            if ( collision.event ) {
+                // console.log( collision.event.amount );
+                if ( this.canHeroEventDoor( poi, dir, collision ) && collision.event.amount >= (786 / this.camera.resolution) ) {
+                    this.handleCriticalReset();
+                    // console.log( "collision", collision );
+                    this.handleHeroEventDoor( poi, dir, collision.event );
+                    return;
+                }
+            }
+
             this.applyHeroTileJump( poi, dir );
             this.applyHero( poi, dir );
             return;
@@ -402,9 +437,11 @@ class TopView extends GameBox {
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -16;
+        this.hero.layer = "foreground";
         this.player.gameaudio.hitSound( Config.verbs.JUMP );
-        setTimeout(() => {
+        this.keyTimer = setTimeout(() => {
             this.jumping = false;
+            this.hero.layer = "background";
             this.hero.face( this.hero.dir );
 
         }, 500 );
@@ -425,6 +462,7 @@ class TopView extends GameBox {
             }
 
             this.parkour = false;
+            this.hero.layer = "background";
             this.hero.face( this.hero.dir );
         }
     }
@@ -443,9 +481,10 @@ class TopView extends GameBox {
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -16;
+        this.hero.layer = "foreground";
         this.player.controls[ this.hero.dir ] = true;
         this.player.gameaudio.hitSound( "parkour" );
-        setTimeout(() => {
+        this.keyTimer = setTimeout(() => {
             this.jumping = false;
             this.hero.face( this.hero.dir );
 

@@ -7,12 +7,12 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "save": 262,
+        "save": 268,
         "plugin": "topview"
     },
     "hero": {
         "sprite": 0,
-        "spawn": 2,
+        "spawn": 3,
         "map": "/games/la/maps/mabe-village.json",
         "sounds": {
             "lift": "/games/la/assets/sounds/sfx-pick-up.mp3",
@@ -24,8 +24,8 @@
             "parkour": "/games/la/assets/sounds/sfx-dropping.mp3"
         },
         "companion": {
-            "id": "ghost",
-            "type": "float"
+            "id": "dog",
+            "type": "walk"
         }
     },
     "heroes": [
@@ -729,6 +729,7 @@
         "/games/la/maps/papahls-house.json",
         "/games/la/maps/mysterious-forest.json",
         "/games/la/maps/marins-house.json",
-        "/games/la/maps/mabe-village.json"
+        "/games/la/maps/mabe-village.json",
+        "/games/la/maps/bottom-of-the-well.json"
     ]
 }

@@ -26,6 +26,11 @@
             "x": 1712,
             "y": 275,
             "dir": "down"
+        },
+        {
+            "x": 305,
+            "y": 1385,
+            "dir": "down"
         }
     ],
     "tiles": [
@@ -259,6 +264,16 @@
             "type": "door",
             "map": "/games/la/maps/marins-house.json",
             "dir": "up",
+            "spawn": 0
+        },
+        {
+            "coords": [
+                5,
+                21
+            ],
+            "type": "door",
+            "map": "/games/la/maps/bottom-of-the-well.json",
+            "dir": "down",
             "spawn": 0
         },
         {

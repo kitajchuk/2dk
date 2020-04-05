@@ -1,6 +1,6 @@
 const isMac = (process.platform === "darwin");
 const { app, Menu, ipcMain } = require( "electron" );
-const db = require( "./source/js/db" );
+const DB = require( "./source/js/DB" );
 
 // Global mainWindow
 let mainWindow;
@@ -37,7 +37,7 @@ const loadMaps = () => {
     });
 };
 const loadGames = () => {
-    db.DB.getGames().then(( response ) => {
+    DB.getGames().then(( response ) => {
         activeGames = response.games;
         mainWindow.webContents.send( "menu-loadgames", activeGames );
         setMenu();
@@ -262,7 +262,7 @@ ipcMain.on( "renderer-loadmap", ( event, data ) => {
 });
 
 ipcMain.on( "renderer-newgame", ( event, data ) => {
-    db.DB.addGame( data ).then(( response ) => {
+    DB.addGame( data ).then(( response ) => {
         activeGames = response.games;
         mainWindow.webContents.send( "menu-loadgames", activeGames );
         setMenu();
@@ -278,7 +278,7 @@ ipcMain.on( "renderer-newmap", ( event, data ) => {
 });
 
 ipcMain.on( "renderer-deletegame", ( event, data ) => {
-    db.DB.deleteGame( data ).then(( response ) => {
+    DB.deleteGame( data ).then(( response ) => {
         activeGames = response.games;
         setMenu();
     });
@@ -315,7 +315,7 @@ ipcMain.on( "renderer-savemap", ( event, data ) => {
 module.exports = {
     init ( mainWin ) {
         mainWindow = mainWin;
-        dBase = new db.DB();
+        dBase = new DB();
 
         loadGames();
 

@@ -2,6 +2,11 @@
 * 2dk Dev Notes
 ********************************************************************************
 
+* Render foreground textures to background if BEHIND Hero
+* Z position for spawn (fall from off screen for "bottom of the well")
+
+
+
 * Wandering NPCs can get locked in corners (collision problems...)
 * Can we use physics for throw rather than a canned tween?
 * Canvas FX layer (blast, smash, sparks, smoke, etc...?)

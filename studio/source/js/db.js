@@ -30,22 +30,22 @@ class DB {
 
             Utils.readDir( this.files.tiles, ( files ) => {
                 this.cache.set( "tiles", files );
-                lager.info( `DB-${this.gameId}: cached tiles` );
+                lager.info( `DB-${this.gameId}: loaded tiles` );
             });
 
             Utils.readDir( this.files.sprites, ( files ) => {
                 this.cache.set( "sprites", files );
-                lager.info( `DB-${this.gameId}: cached sprites` );
+                lager.info( `DB-${this.gameId}: loaded sprites` );
             });
 
             Utils.readDir( this.files.snapshots, ( files ) => {
                 this.cache.set( "snapshots", files );
-                lager.info( `DB-${this.gameId}: cached snapshots` );
+                lager.info( `DB-${this.gameId}: loaded snapshots` );
             });
 
             Utils.readDir( this.files.sounds, ( files ) => {
                 this.cache.set( "sounds", files );
-                lager.info( `DB-${this.gameId}: cached sounds` );
+                lager.info( `DB-${this.gameId}: loaded sounds` );
             });
 
             Utils.readDir( this.mapsPath, ( files ) => {
@@ -56,12 +56,12 @@ class DB {
                 });
 
                 this.cache.set( "maps", maps );
-                lager.info( `DB-${this.gameId}: cached maps` );
+                lager.info( `DB-${this.gameId}: loaded maps` );
             });
 
             Utils.readJson( this.gamePath, ( data ) => {
                 this.cache.set( "game", data );
-                lager.info( `DB-${this.gameId}: cached game` );
+                lager.info( `DB-${this.gameId}: loaded game` );
                 resolve();
             });
         });
@@ -368,7 +368,6 @@ class DB {
 
         Utils.writeFile( file, worker, () => {
             lager.info( `DB-${this.gameId}: worker updated` );
-            // lager.data( caches );
 
             DB.updateGame( game );
         });
@@ -498,6 +497,4 @@ DB.deleteGame = ( data ) => {
 
 
 // Export
-module.exports = {
-    DB
-};
+module.exports = DB;

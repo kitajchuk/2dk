@@ -29,11 +29,18 @@ class Dialogue {
             return;
         }
 
+        if ( this.timeout ) {
+            clearTimeout( this.timeout );
+        }
+
+        if ( this.data ) {
+            this.$element.removeClass( `_2dk__dialogue--${this.data.type}` );
+        }
+
         this.data = Utils.copy( data );
         this.$element.addClass( `_2dk__dialogue--${this.data.type} is-texting` );
         this.element.innerHTML = this.data.text.shift();
-
-        setTimeout(() => {
+        this.timeout = setTimeout(() => {
             this.teardown();
 
         }, (this.debounce * 3) );

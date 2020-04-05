@@ -7,18 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/assets/icons/la.png",
-        "save": 262,
-        "plugin": "topview"
-    },
-    {
-        "id": "pk",
-        "name": "Pokemon Re-d",
-        "width": 384,
-        "height": 288,
-        "fullscreen": false,
-        "resolution": 1,
-        "icon": "/games/pk/assets/icons/pk.png",
-        "save": 8,
+        "save": 268,
         "plugin": "topview"
     }
 ]

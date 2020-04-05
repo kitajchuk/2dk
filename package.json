@@ -25,7 +25,7 @@
     "bootstrap:hobo": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
     "start": "(npm run server & npm run watch:webpack & npm run watch:games)",
     "start:studio": "cd studio && npm start",
-    "watch:games": "export NODE_ENV=sandbox ; ./node_modules/.bin/chokidar studio/games/**/*.json -c \"npm run static:games\"",
+    "watch:games": "export NODE_ENV=sandbox ; ./node_modules/.bin/chokidar \"studio/games/**/*.json\" -c \"npm run static:games\"",
     "watch:webpack": "export NODE_ENV=sandbox ; ./node_modules/.bin/webpack --env.sandbox --hide-modules --colors --watch",
     "server": "export NODE_ENV=sandbox ; ./node_modules/.bin/pm2 --no-daemon --watch -a start ecosystem.config.js",
     "server:stop": "./node_modules/.bin/pm2 stop 'all' --watch",

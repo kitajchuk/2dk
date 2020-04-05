@@ -31,14 +31,14 @@ class Editor {
             deleteMap: $( "#editor-delmap" ),
             deleteGame: $( "#editor-delgame" ),
             loadout: $( "#editor-loadout" ),
+            mapLoad: $( "#editor-map-load" ),
+            gameLoad: $( "#editor-game-load" ),
         };
         this.selects = {
             all: $( ".js-select" ),
             maps: $( ".js-select-map" ),
             tiles: $( ".js-select-tiles" ),
             sounds: $( ".js-select-sound" ),
-            mapLoad: $( "#editor-map-load-select" ),
-            gameLoad: $( "#editor-game-load-select" ),
         };
         this.menus = {
             all: $( ".js-menu" ),
@@ -87,8 +87,7 @@ class Editor {
         this.prefillGameFields( this.data.game );
 
         // Set active game to menu
-        this.selects.gameLoad.find( "option" )[ 0 ].innerText = this.data.game.name;
-        this.selects.mapLoad.find( "option" )[ 0 ].innerText = this.selects.mapLoad[ 0 ].dataset.label;
+        this.dom.gameLoad[ 0 ].innerText = this.data.game.name;
 
         this.setTitle();
     }
@@ -109,7 +108,7 @@ class Editor {
         this.canvas.loadMap( this.data.map );
 
         // Set active map to menu
-        this.selects.mapLoad.find( "option" )[ 0 ].innerText = map.name;
+        this.dom.mapLoad[ 0 ].innerText = map.name;
 
         this.setTitle();
     }

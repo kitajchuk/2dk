@@ -4,6 +4,17 @@ const Config = require( "./Config" );
 const Hero = require( "./sprites/Hero" );
 const NPC = require( "./sprites/NPC" );
 const Companion = require( "./sprites/Companion" );
+const companionSortFunc = ( a, b ) => {
+    if ( a.hero ) {
+        return 1;
+    }
+
+    if ( b.hero ) {
+        return -1;
+    }
+
+    return 0;
+};
 
 
 
@@ -318,17 +329,8 @@ class Map {
             return npc.data.type !== Config.npc.FLOAT;
 
         // Sort non-FLOAT companions to top of stack
-        }).sort(( a, b ) => {
-            if ( a.hero ) {
-                return 1;
-            }
-
-            if ( b.hero ) {
-                return -1;
-            }
-
-            return 0;
-        });
+        // Only a companion NPC can have a hero reference
+        }).sort( companionSortFunc );
         const floats = this.npcs.filter(( npc ) => {
             return npc.data.type === Config.npc.FLOAT;
         });

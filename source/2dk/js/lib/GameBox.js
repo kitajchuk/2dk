@@ -203,6 +203,7 @@ Can all be handled in plugin GameBox
     checkMap ( poi, sprite ) {
         let ret = false;
         const hitbox = sprite.getHitbox( poi );
+        const isHero = sprite === this.hero;
 
         for ( let i = this.map.data.collision.length; i--; ) {
             const collider = this.map.data.collider;
@@ -216,11 +217,11 @@ Can all be handled in plugin GameBox
 
             if ( Utils.collide( hitbox, tile ) ) {
                 ret = true;
-                this.map.setCollider( tile );
+                isHero && this.map.setCollider( tile );
                 // break;
 
             } else {
-                this.map.clearCollider( tile );
+                isHero && this.map.clearCollider( tile );
             }
         }
 
@@ -238,24 +239,30 @@ Can all be handled in plugin GameBox
                 x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.tilesize,
                 y: this.map.data.events[ i ].coords[ 1 ] * this.map.data.tilesize
             };
-            const lookbox = (this.map.data.events[ i ].type === Config.events.BOUNDARY ? {
+            const hasDir = this.map.data.events[ i ].dir;
+            const isBoundary = this.map.data.events[ i ].type === Config.events.BOUNDARY;
+            const lookbox = (isBoundary ? {
                 width: sprite.width,
                 height: sprite.height,
                 x: sprite.position.x,
                 y: sprite.position.y,
 
-            } : sprite.footbox);
+            } : sprite.hitbox);
             const collides = Utils.collide( lookbox, tile );
+            const amount = (collides.width * collides.height);
+            const isDir = hasDir ? (sprite.dir === hasDir) : true;
+            const isThresh = isBoundary ? true : !hasDir ? (amount >= (1280 / this.camera.resolution)) : (amount >= (256 / this.camera.resolution));
 
-            if ( collides && (sprite.dir === this.map.data.events[ i ].dir) ) {
+            // An event without a "dir" can be triggered from any direction
+            if ( collides && isThresh && isDir ) {
                 ret = this.map.data.events[ i ];
                 ret.collides = collides;
-                ret.amount = collides.width * collides.height;
-                this.map.setCollider( tile );
+                ret.amount = amount;
+                // this.map.setCollider( tile );
                 break;
 
             } else {
-                this.map.clearCollider( tile );
+                // this.map.clearCollider( tile );
             }
         }
 
@@ -309,8 +316,7 @@ Can all be handled in plugin GameBox
     }
 
 
-    // Currently this check assumes the Hero as context...
-    checkTiles ( poi ) {
+    checkTiles ( poi, sprite ) {
         let ret = false;
         let amount;
         const tiles = {
@@ -320,6 +326,7 @@ Can all be handled in plugin GameBox
         };
         const hitbox = this.hero.getHitbox( poi );
         const footbox = this.hero.getFootbox( poi );
+        const isHero = sprite === this.hero;
 
         for ( let i = this.map.activeTiles.length; i--; ) {
             const instance = this.map.activeTiles[ i ];
@@ -363,8 +370,8 @@ Can all be handled in plugin GameBox
                         tiles.passive.push( match );
                     }
 
-                } else if ( this.player.query.debug ) {
-                    this.map.clearCollider( tilebox );
+                } else {
+                    isHero && this.map.clearCollider( tilebox );
                 }
             }
         }
@@ -374,9 +381,7 @@ Can all be handled in plugin GameBox
             tiles.attack = tiles.attack.sort( tileSortFunc );
             tiles.passive = tiles.passive.sort( tileSortFunc );
 
-            if ( this.player.query.debug ) {
-                this.map.setTileColliders( tiles );
-            }
+            isHero && this.map.setTileColliders( tiles );
 
             ret = tiles;
         }
