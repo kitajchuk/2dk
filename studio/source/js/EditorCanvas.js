@@ -752,9 +752,11 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mousemove", ( e ) => {
-            const coords = [ Math.floor( e.offsetX / this.gridsize ), Math.floor( e.offsetY / this.gridsize ) ];
+            if ( this.map ) {
+                const coords = [ Math.floor( e.offsetX / this.gridsize ), Math.floor( e.offsetY / this.gridsize ) ];
 
-            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
+                this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
+            }
 
             if ( this.editor.canMapFunction() ) {
                 if ( this.canApplyTiles() ) {
