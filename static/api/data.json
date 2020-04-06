@@ -13,11 +13,6 @@
                 "uid": "home",
                 "text": "Home",
                 "slug": "/"
-            },
-            {
-                "uid": "github",
-                "text": "Project on Github",
-                "slug": "https://github.com/kitajchuk/2dk"
             }
         ]
     },
@@ -37,7 +32,7 @@
                     "height": 576,
                     "fullscreen": false,
                     "resolution": 1,
-                    "icon": "/games/la/assets/icons/la.png",
+                    "icon": "/games/la/icon.png",
                     "save": 268,
                     "plugin": "topview"
                 },
@@ -48,8 +43,8 @@
                     "height": 576,
                     "resolution": 1,
                     "fullscreen": false,
-                    "icon": "/img/icon/apple-icon.png",
-                    "version": 1,
+                    "icon": "/games/loz/icon.png",
+                    "save": null,
                     "plugin": "topview"
                 }
             ]
