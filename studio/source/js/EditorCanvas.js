@@ -68,6 +68,8 @@ class EditorCanvas {
         this.draggable = this.getDraggable();
         this.draggable.disable();
 
+        this.hideCanvasCursor();
+
         this.bindEvents();
     }
 
@@ -752,11 +754,9 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mousemove", ( e ) => {
-            if ( this.map ) {
-                const coords = [ Math.floor( e.offsetX / this.gridsize ), Math.floor( e.offsetY / this.gridsize ) ];
+            const coords = [ Math.floor( e.offsetX / this.gridsize ), Math.floor( e.offsetY / this.gridsize ) ];
 
-                this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
-            }
+            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
             if ( this.editor.canMapFunction() ) {
                 if ( this.canApplyTiles() ) {
@@ -843,14 +843,7 @@ class EditorCanvas {
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
-            this.canvases.cursor.style.opacity = 0.5;
-            this.canvases.cursor.style.zIndex = 9999;
-            this.canvases.cursor.style.webkitTransform = `translate3d(
-                    ${coords[ 0 ] * this.map.tilesize}px,
-                    ${coords[ 1 ] * this.map.tilesize}px,
-                    0
-                )
-            `;
+            this.showCanvasCursor( coords );
 
             if ( this.editor.canMapFunction() && this.isMouseDownCanvas ) {
                 if ( this.canApplyLayer() ) {
@@ -875,15 +868,32 @@ class EditorCanvas {
         $mapgrid.on( "mouseout", () => {
             this.dom.moveCoords.innerHTML = "( X, Y )";
 
-            this.canvases.cursor.style.opacity = 0;
-            this.canvases.cursor.style.zIndex = -1;
-            this.canvases.cursor.style.webkitTransform = `translate3d(
-                    0,
-                    0,
-                    0
-                )
-            `;
+            this.hideCanvasCursor();
         });
+    }
+
+
+    showCanvasCursor ( coords ) {
+        this.canvases.cursor.style.opacity = 0.5;
+        this.canvases.cursor.style.zIndex = 9999;
+        this.canvases.cursor.style.webkitTransform = `translate3d(
+                ${coords[ 0 ] * this.map.tilesize}px,
+                ${coords[ 1 ] * this.map.tilesize}px,
+                0
+            )
+        `;
+    }
+
+
+    hideCanvasCursor () {
+        this.canvases.cursor.style.opacity = 0;
+        this.canvases.cursor.style.zIndex = -1;
+        this.canvases.cursor.style.webkitTransform = `translate3d(
+                0,
+                0,
+                0
+            )
+        `;
     }
 
 
