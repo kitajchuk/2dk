@@ -1,4 +1,4 @@
-const CACHE_NAME = "v41";
+const CACHE_NAME = "v46";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/loz/game.json",

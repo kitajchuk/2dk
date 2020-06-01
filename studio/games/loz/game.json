@@ -7,7 +7,7 @@
         "resolution": 1,
         "fullscreen": false,
         "icon": "/games/loz/icon.png",
-        "save": 41,
+        "save": 46,
         "plugin": "topview"
     },
     "hero": {
