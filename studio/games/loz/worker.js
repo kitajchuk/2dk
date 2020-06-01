@@ -1,9 +1,19 @@
-const CACHE_NAME = "v1";
+const CACHE_NAME = "v41";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/loz/game.json",
     "/games/loz/assets/tiles/tiles.png",
     "/games/loz/assets/tiles/inside.png",
+    "/games/loz/assets/sprites/hero_la.png",
+    "/games/loz/assets/sounds/sfx-throw.mp3",
+    "/games/loz/assets/sounds/sfx-smash.mp3",
+    "/games/loz/assets/sounds/sfx-pick-up.mp3",
+    "/games/loz/assets/sounds/sfx-jump.mp3",
+    "/games/loz/assets/sounds/sfx-dropping.mp3",
+    "/games/loz/assets/sounds/sfx-chest-unlock.mp3",
+    "/games/loz/assets/sounds/sfx-bounce.mp3",
+    "/games/loz/assets/sounds/bgm-overworld.mp3",
+    "/games/loz/maps/start-screen.json",
 ];
 
 

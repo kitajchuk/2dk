@@ -22,6 +22,7 @@ class Editor {
             settings: $( ".js-settings" ),
             mapSettings: $( "#editor-mapsettings" ),
             gameSettings: $( "#editor-gamesettings" ),
+            closeSettings: $( ".js-close-settings" ),
             cancelPost: $( ".js-post-cancel" ),
             savePost: $( ".js-post-save" ),
             uploadFiles: $( ".js-upload-file" ),
@@ -480,8 +481,38 @@ class Editor {
     }
 
 
+    _onSettingsClick ( e ) {
+        const targ = $( e.target );
+        const elem = targ.is( ".js-settings" ) ? targ : targ.closest( ".js-settings" );
+        const elemData = elem.data();
+
+        if ( elemData.type === "game" && this.canGameFunction() ) {
+            if ( this.menus.activeGame.is( ".is-active" ) ) {
+                this.menus.activeGame.removeClass( "is-active" );
+
+            } else {
+                this.menus.activeGame.addClass( "is-active" );
+            }
+        }
+
+        if ( elemData.type === "map" && this.canMapFunction() ) {
+            if ( this.menus.activeMap.is( ".is-active" ) ) {
+                this.menus.activeMap.removeClass( "is-active" );
+
+            } else {
+                this.menus.activeMap.addClass( "is-active" );
+            }
+        }
+    }
+
+
     bindMenuEvents () {
         ipcRenderer.send( "renderer-loadgames" );
+
+        // Tell ipcMain to reset dynamic submenus
+        window.onbeforeunload = () => {
+            ipcRenderer.send( "renderer-unload" );
+        };
 
         ipcRenderer.on( "menu-loadgames", ( e, games ) => {
             this._loadoutGames( games );
@@ -500,7 +531,9 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-gamesettings", () => {
-            this._openMenu( "gamesettings", "editor-active-game-menu" );
+            this._onSettingsClick({
+                target: this.dom.gameSettings[ 0 ],
+            });
         });
 
         ipcRenderer.on( "menu-newgame", () => {
@@ -508,7 +541,9 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-mapsettings", () => {
-            this._openMenu( "mapsettings", "editor-active-map-menu" );
+            this._onSettingsClick({
+                target: this.dom.mapSettings[ 0 ],
+            });
         });
 
         ipcRenderer.on( "menu-newmap", () => {
@@ -586,30 +621,10 @@ class Editor {
             }
         });
 
-        this.dom.settings.on( "click", ( e ) => {
-            const targ = $( e.target );
-            const elem = targ.is( ".js-settings" ) ? targ : targ.closest( ".js-settings" );
-            const elemData = elem.data();
-
-            if ( elemData.type === "game" && this.canGameFunction() ) {
-                if ( this.menus.activeGame.is( ".is-active" ) ) {
-                    this.menus.activeGame.removeClass( "is-active" );
-
-                } else {
-                    this.menus.activeGame.addClass( "is-active" );
-                }
-            }
-
-            if ( elemData.type === "map" && this.canMapFunction() ) {
-                if ( this.menus.activeMap.is( ".is-active" ) ) {
-                    this.menus.activeMap.removeClass( "is-active" );
-
-                } else {
-                    this.menus.activeMap.addClass( "is-active" );
-                }
-            }
+        this.dom.settings.on( "click", this._onSettingsClick.bind( this ) );
+        this.dom.closeSettings.on( "click", ( e ) => {
+            this.closeMenus();
         });
-
 
         this.dom.cancelPost.on( "click", ( e ) => {
             const targ = $( e.target );

@@ -292,6 +292,86 @@ class DB {
 
             lager.info( `DB-${this.gameId}: update game icon` );
 
+            // Create webapp icons...
+            jimp.read( file ).then(( icon ) => {
+                let img = icon.clone();
+
+                // apple-icon.png / 192x192
+                img.resize( 192, 192 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-precomposed.png / 192x192
+                img.resize( 192, 192 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-precomposed.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-57x57.png
+                img.resize( 57, 57 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-57x57.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-60x60.png
+                img.resize( 60, 60 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-60x60.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-72x72.png
+                img.resize( 72, 72 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-72x72.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-76x76.png
+                img.resize( 76, 76 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-76x76.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-114x114.png
+                img.resize( 114, 114 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-114x114.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-120x120.png
+                img.resize( 120, 120 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-120x120.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-144x144.png
+                img.resize( 144, 144 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-144x144.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-152x152.png
+                img.resize( 152, 152 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-152x152.png" ) );
+
+                img = icon.clone();
+
+                // apple-icon-180x180.png
+                img.resize( 180, 180 );
+                img.quality( 100 );
+                img.write( file.replace( "icon.png", "apple-icon-180x180.png" ) );
+            });
+
             Utils.writeFile( file, buffer, () => {
                 resolve( game.game );
             });
@@ -422,6 +502,7 @@ DB.getGames = () => {
 DB.updateGame = ( data ) => {
     const gameDir = path.join( process.cwd(), "games", data.game.id );
     const indexHtml = DB.getTemplate( "index.html" )
+                        .replace( /\{__GAME_ID__\}/g, data.game.id )
                         .replace( /\{__GAME_NAME__\}/g, data.game.name )
                         .replace( /\{__GAME_VERSION__\}/g, data.game.save );
 
@@ -463,8 +544,9 @@ DB.addGame = ( data ) => {
             const mapsDir = path.join( gameDir, "maps" );
             const assetsDir = path.join( gameDir, "assets" );
             const indexHtml = DB.getTemplate( "index.html" )
-                                .replace( "{__GAME_NAME__}", gameModel.game.name )
-                                .replace( "{__GAME_VERSION__}", gameModel.game.save );
+                                .replace( /\{__GAME_ID__\}/g, gameModel.game.id )
+                                .replace( /\{__GAME_NAME__\}/g, gameModel.game.name )
+                                .replace( /\{__GAME_VERSION__\}/g, gameModel.game.save );
 
             Utils.makeDir( gameDir );
             Utils.makeDir( mapsDir );

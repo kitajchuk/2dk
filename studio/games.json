@@ -7,7 +7,7 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/icon.png",
-        "save": 268,
+        "save": 270,
         "plugin": "topview"
     },
     {
@@ -18,8 +18,7 @@
         "resolution": 1,
         "fullscreen": false,
         "icon": "/games/loz/icon.png",
-        "save": 1,
-        "plugin": "topview",
-        "save": null
+        "save": 41,
+        "plugin": "topview"
     }
 ]

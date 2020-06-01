@@ -35,6 +35,7 @@ class TopView extends GameBox {
         this.jumping = false;
         this.falling = false;
         this.locked = false;
+        this.dropin = false;
         this.keyTimer = null;
     }
 
@@ -320,10 +321,9 @@ class TopView extends GameBox {
 
         } else if ( this.parkour ) {
             if ( collision.event ) {
-                // console.log( collision.event.amount );
                 if ( this.canHeroEventDoor( poi, dir, collision ) && collision.event.amount >= (786 / this.camera.resolution) ) {
+                    this.dropin = true;
                     this.handleCriticalReset();
-                    // console.log( "collision", collision );
                     this.handleHeroEventDoor( poi, dir, collision.event );
                     return;
                 }
@@ -885,6 +885,12 @@ class TopView extends GameBox {
 
             // Initialize the new Map
             this.initMap();
+
+            // Handle the `dropin` effect
+            if ( this.dropin ) {
+                this.dropin = false;
+                this.hero.position.z = -(this.camera.height / 2);
+            }
 
             // Fade in...
             this.player.element.classList.remove( "is-fader" );

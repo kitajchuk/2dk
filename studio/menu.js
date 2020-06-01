@@ -57,6 +57,12 @@ const loadGame = () => {
         loadMaps();
     });
 };
+const resetAll = () => {
+    activeGames = [];
+    activeMaps = [];
+    activeGame = null;
+    activeMap = null;
+};
 const getGamesMenu = () => {
     const gamesLoadout = {
         label: "Load Project",
@@ -130,13 +136,13 @@ const getMapsMenu = () => {
             },
             { type: "separator" },
             {
-                label: "Add Tileset",
+                label: "Manage Tilesets",
                 click () {
                     mainWindow.webContents.send( "menu-newtileset", null );
                 }
             },
             {
-                label: "Add Sound",
+                label: "Manage Sounds",
                 click () {
                     mainWindow.webContents.send( "menu-newsound", null );
                 }
@@ -257,6 +263,10 @@ const setMenu = () => {
 };
 
 // Listen for events from the ipcRenderer
+ipcMain.on( "renderer-unload", ( event, data ) => {
+    resetAll();
+});
+
 ipcMain.on( "renderer-loadgames", ( event, data ) => {
     loadGames();
 });

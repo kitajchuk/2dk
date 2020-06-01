@@ -2,8 +2,8 @@
 * 2dk Dev Notes
 ********************************************************************************
 
+* Update to latest electron
 * Render foreground textures to background if BEHIND Hero
-* Z position for spawn (fall from off screen for "bottom of the well")
 
 
 
@@ -13,17 +13,20 @@
 
 
 
+* Procedural map paint with cellauto JS.
+
+
+
 ********************************************************************************
 * Studio Software
 ********************************************************************************
 
-* Add Game app icon uploader
 * Add Spritesheet uploader
 * Bullet-proof uploads with progress, bulk uploads?
 
-* History states for painting
+* Game Sprite Editor...
+* History states for painting (undo/redo)
 * Make EditorUtils Promise-based...like clutch core files module.
-* Use game icon for mobile installed
 * Map Spawn (x, y, dir)
 * Map Events (coords, type, map, dir, spawn?)
 * Map Heroes / Hero
@@ -71,9 +74,10 @@
 * Random thoughts we want to keep track of...for now...
 ********************************************************************************
 * Use Zelda 1 map with our ALTTP modified tileset
+    * 16x11 for one screen
+    * 32x22 for four screens
 * HUD / Menus / Items (attached to buttons...?)
 * GameCycle manager for states (intro, title, credits, etc...)
-* Procedural map paint with cellauto JS.
 *******************************************************************************/
 // Load CSS
 require( "../sass/2dk.scss" );

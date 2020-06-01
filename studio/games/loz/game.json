@@ -7,16 +7,210 @@
         "resolution": 1,
         "fullscreen": false,
         "icon": "/games/loz/icon.png",
-        "save": 1,
-        "plugin": "topview",
-        "save": null
+        "save": 41,
+        "plugin": "topview"
     },
-    "hero": {},
-    "heroes": [],
+    "hero": {
+        "sprite": 0,
+        "spawn": 0,
+        "map": "/games/loz/maps/start-screen.json",
+        "sounds": {
+            "lift": "/games/la/assets/sounds/sfx-pick-up.mp3",
+            "jump": "/games/la/assets/sounds/sfx-jump.mp3",
+            "throw": "/games/la/assets/sounds/sfx-throw.mp3",
+            "smash": "/games/la/assets/sounds/sfx-smash.mp3",
+            "chest": "/games/la/assets/sounds/sfx-chest-unlock.mp3",
+            "bounce": "/games/la/assets/sounds/sfx-bounce.mp3",
+            "parkour": "/games/la/assets/sounds/sfx-dropping.mp3"
+        }
+    },
+    "heroes": [
+        {
+            "id": "la",
+            "name": "BK",
+            "width": 92,
+            "height": 92,
+            "image": "/games/loz/assets/sprites/hero_la.png",
+            "hitbox": {
+                "x": 28,
+                "y": 44,
+                "width": 36,
+                "height": 44
+            },
+            "stats": {
+                "power": 1,
+                "health": 3,
+                "stamina": 3,
+                "strength": 1
+            },
+            "shadow": {
+                "offsetX": -368,
+                "offsetY": 0
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": 0
+                    },
+                    "up": {
+                        "offsetX": -92,
+                        "offsetY": 0
+                    },
+                    "left": {
+                        "offsetX": -184,
+                        "offsetY": 0
+                    },
+                    "right": {
+                        "offsetX": -276,
+                        "offsetY": 0
+                    }
+                },
+                "walk": {
+                    "dur": 250,
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": -92,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 0,
+                        "offsetY": -184,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -276,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 0,
+                        "offsetY": -368,
+                        "stepsX": 2
+                    }
+                },
+                "push": {
+                    "dur": 250,
+                    "down": {
+                        "offsetX": -184,
+                        "offsetY": -92,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": -184,
+                        "offsetY": -184,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": -184,
+                        "offsetY": -276,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -184,
+                        "offsetY": -368,
+                        "stepsX": 2
+                    }
+                },
+                "grab": {
+                    "down": {
+                        "offsetX": -368,
+                        "offsetY": -184
+                    },
+                    "up": {
+                        "offsetX": -368,
+                        "offsetY": -92
+                    },
+                    "left": {
+                        "offsetX": -368,
+                        "offsetY": -368
+                    },
+                    "right": {
+                        "offsetX": -368,
+                        "offsetY": -276
+                    }
+                },
+                "pull": {
+                    "down": {
+                        "offsetX": -460,
+                        "offsetY": -92
+                    },
+                    "up": {
+                        "offsetX": -460,
+                        "offsetY": -184
+                    },
+                    "left": {
+                        "offsetX": -460,
+                        "offsetY": -276
+                    },
+                    "right": {
+                        "offsetX": -460,
+                        "offsetY": -368
+                    }
+                },
+                "lift": {
+                    "dur": 250,
+                    "down": {
+                        "offsetX": -552,
+                        "offsetY": -92,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": -552,
+                        "offsetY": -184,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": -552,
+                        "offsetY": -276,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -552,
+                        "offsetY": -368,
+                        "stepsX": 2
+                    }
+                },
+                "jump": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": -736,
+                        "offsetY": -92,
+                        "stepsX": 3
+                    },
+                    "up": {
+                        "offsetX": -736,
+                        "offsetY": -184,
+                        "stepsX": 3
+                    },
+                    "left": {
+                        "offsetX": -736,
+                        "offsetY": -276,
+                        "stepsX": 3
+                    },
+                    "right": {
+                        "offsetX": -736,
+                        "offsetY": -368,
+                        "stepsX": 3
+                    }
+                }
+            }
+        }
+    ],
     "objects": [],
     "fx": [],
     "bundle": [
         "/games/loz/assets/tiles/tiles.png",
-        "/games/loz/assets/tiles/inside.png"
+        "/games/loz/assets/tiles/inside.png",
+        "/games/loz/assets/sprites/hero_la.png",
+        "/games/loz/assets/sounds/sfx-throw.mp3",
+        "/games/loz/assets/sounds/sfx-smash.mp3",
+        "/games/loz/assets/sounds/sfx-pick-up.mp3",
+        "/games/loz/assets/sounds/sfx-jump.mp3",
+        "/games/loz/assets/sounds/sfx-dropping.mp3",
+        "/games/loz/assets/sounds/sfx-chest-unlock.mp3",
+        "/games/loz/assets/sounds/sfx-bounce.mp3",
+        "/games/loz/assets/sounds/bgm-overworld.mp3",
+        "/games/loz/maps/start-screen.json"
     ]
 }
