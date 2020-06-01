@@ -26,7 +26,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: $teal;
+        color: $white;
         font-size: $font-size-overlay;
     }
     &.is-saving-map:after {
@@ -294,6 +294,10 @@
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
+
+    &.is-dragging {
+        cursor: grabbing !important;
+    }
 
     &.is-background,
     &.is-foreground,

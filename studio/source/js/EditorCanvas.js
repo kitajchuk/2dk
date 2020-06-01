@@ -100,6 +100,12 @@ class EditorCanvas {
                 onDragStart: () => {
                     this.isDraggableAlive = true;
                 },
+                onRelease: () => {
+                    this.dom.canvasPane.classList.remove( "is-dragging" );
+                },
+                onPress: () => {
+                    this.dom.canvasPane.classList.add( "is-dragging" );
+                },
                 onThrowComplete: () => {
                     this.isMouseDownCanvas = false;
                     this.isDraggableAlive = false;
