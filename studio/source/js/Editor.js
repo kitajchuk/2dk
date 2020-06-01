@@ -581,11 +581,15 @@ class Editor {
         const $document = $( document );
 
         $document.on( "click", ".js-game-tile", ( e ) => {
-            ipcRenderer.send( "renderer-loadgame", e.target.dataset );
+            ipcRenderer.send( "renderer-loadgame", {
+                game: e.target.dataset.game,
+            });
         });
 
         $document.on( "click", ".js-map-tile", ( e ) => {
-            ipcRenderer.send( "renderer-loadmap", e.target.dataset );
+            ipcRenderer.send( "renderer-loadmap", {
+                map: e.target.dataset.map,
+            });
             this._loadoutClear();
         });
 
