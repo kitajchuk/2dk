@@ -59,6 +59,7 @@ a {
     width: 100%;
     box-sizing: border-box;
     display: inline-block;
+    font-size: $font-size-forms;
 
     &:focus {
         outline: none;
@@ -92,7 +93,7 @@ a {
     color: $grey;
     font-family: $font-monospace;
     outline: none;
-    padding: 8px 56px 8px 14px;
+    padding: 10px 56px 10px 14px;
     position: relative;
     min-width: 185px;
     width: 100%;
