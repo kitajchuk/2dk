@@ -1,6 +1,6 @@
-const EditorUtils = require( "./EditorUtils" );
+// const EditorUtils = require( "./EditorUtils" );
 const Config = require( "./Config" );
-const Cache = require( "./Cache" );
+// const Cache = require( "./Cache" );
 const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 const { MapLayer } = require( "../../../source/2dk/js/lib/Map" );
 const Utils = require( "../../../source/2dk/js/lib/Utils" );
@@ -253,14 +253,14 @@ class EditorCanvas {
             this.dom.tileset,
             this.map.textures.background,
             this.map.tilesize,
-            this.map.tilesize,
+            this.map.tilesize
         );
         Utils.drawMapTiles(
             this.contexts.foreground.context,
             this.dom.tileset,
             this.map.textures.foreground,
             this.map.tilesize,
-            this.map.tilesize,
+            this.map.tilesize
         );
         this.drawColliders();
     }
@@ -282,7 +282,7 @@ class EditorCanvas {
                 (coords[ 0 ] + tile.drawCoord[ 0 ]) * this.map.tilesize,
                 (coords[ 1 ] + tile.drawCoord[ 1 ]) * this.map.tilesize,
                 this.map.tilesize,
-                this.map.tilesize,
+                this.map.tilesize
             );
 
             Utils.drawMapTile(
@@ -292,7 +292,7 @@ class EditorCanvas {
                 this.map.tilesize,
                 this.map.tilesize,
                 coords[ 0 ] + tile.drawCoord[ 0 ],
-                coords[ 1 ] + tile.drawCoord[ 1 ],
+                coords[ 1 ] + tile.drawCoord[ 1 ]
             );
         }
     }
@@ -314,7 +314,7 @@ class EditorCanvas {
                 collider[ 0 ] * this.map.collider,
                 collider[ 1 ] * this.map.collider,
                 this.map.collider,
-                this.map.collider,
+                this.map.collider
             );
         });
     }
@@ -333,7 +333,7 @@ class EditorCanvas {
                 coord[ 0 ] * this.map.collider,
                 coord[ 1 ] * this.map.collider,
                 this.map.collider,
-                this.map.collider,
+                this.map.collider
             );
         }
     }
@@ -352,7 +352,7 @@ class EditorCanvas {
                 coord[ 0 ] * this.map.collider,
                 coord[ 1 ] * this.map.collider,
                 this.map.collider,
-                this.map.collider,
+                this.map.collider
             );
         }
     }
@@ -468,7 +468,7 @@ class EditorCanvas {
             coords[ 0 ] * this.map.tilesize,
             coords[ 1 ] * this.map.tilesize,
             this.map.tilesize,
-            this.map.tilesize,
+            this.map.tilesize
         );
     }
 
@@ -673,10 +673,10 @@ class EditorCanvas {
         if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
             this.brush( layer, coords );
 
-        } else if ( editor.actions.mode === Config.EditorActions.modes.BUCKET ) {
+        } else if ( this.editor.actions.mode === Config.EditorActions.modes.BUCKET ) {
             this.bucket( layer, coords );
 
-        } else if ( editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+        } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             this.trash( layer, coords );
         }
     }
@@ -788,17 +788,17 @@ class EditorCanvas {
             }
         });
 
-        $tilepaint.on( "mouseup", ( e ) => {
+        $tilepaint.on( "mouseup", () => {
             this.currentTileCoord = null;
             this.isMouseDownTiles = false;
             this.isMouseMovedTiles = false;
         });
 
-        $tilepaint.on( "mouseout", ( e ) => {
+        $tilepaint.on( "mouseout", () => {
             this.dom.moveCoords.innerHTML = "( X, Y )";
         });
 
-        $collider.on( "mousedown", ( e ) => {
+        $collider.on( "mousedown", () => {
             if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCollider = true;
             }
@@ -825,7 +825,7 @@ class EditorCanvas {
             }
         });
 
-        $collider.on( "mouseup", ( e ) => {
+        $collider.on( "mouseup", () => {
             this.isMouseDownCollider = false;
         });
 
@@ -833,7 +833,7 @@ class EditorCanvas {
             this.dom.moveCoords.innerHTML = "( X, Y )";
         });
 
-        $mapgrid.on( "mousedown", ( e ) => {
+        $mapgrid.on( "mousedown", () => {
             if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCanvas = true;
             }

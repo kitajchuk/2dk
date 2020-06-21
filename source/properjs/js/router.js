@@ -34,28 +34,15 @@ const router = {
             this._resolve = resolve;
             this._reject = reject;
             this.controller = new PageController({
-                transitionTime: this.duration,
-                routerOptions: {
-                    async: true
-                }
+                transitionTime: this.duration
             });
-
-            this.controller.setConfig([
-                "/",
-                ":view",
-                ":view/:uid"
-            ]);
-
-            // this.controller.setModules( [] );
-
-            //this.controller.on( "page-controller-router-samepage", () => {} );
-            this.controller.on( "page-controller-router-transition-out", this.changePageOut.bind( this ) );
-            this.controller.on( "page-controller-router-refresh-document", this.changeContent.bind( this ) );
-            this.controller.on( "page-controller-router-transition-in", this.changePageIn.bind( this ) );
-            this.controller.on( "page-controller-initialized-page", ( data ) => {
+            this.controller.on( "transition-out", this.changePageOut.bind( this ) );
+            this.controller.on( "document", this.changeContent.bind( this ) );
+            this.controller.on( "transition-in", this.changePageIn.bind( this ) );
+            this.controller.on( "initialized", ( data ) => {
                 this.initPage( data );
             });
-            this.controller.initPage();
+            this.controller.bind();
         });
     },
 

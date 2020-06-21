@@ -131,7 +131,7 @@ class NPC extends Sprite {
     }
 
 
-    doInteract ( dir ) {
+    doInteract () {
         if ( this.data.payload ) {
             this.payload();
         }

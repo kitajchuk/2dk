@@ -44,14 +44,14 @@ class Loader {
 
 
     loadAudio ( src ) {
-        return new Promise(( resolve, reject ) => {
+        return new Promise(( resolve ) => {
             if ( cache[ src ] ) {
                 return resolve( cache[ src ] );
             }
 
             let audio = new Audio();
 
-            audio.addEventListener( "loadedmetadata", ( event ) => {
+            audio.addEventListener( "loadedmetadata", () => {
                 cache[ src ] = true;
                 audio = null;
                 resolve( cache[ src ] );

@@ -4,8 +4,8 @@ const Loader = require( "./Loader" );
 const GamePad = require( "./GamePad" );
 const GameAudio = require( "./GameAudio" );
 const TopView = require( "./plugins/TopView" );
-const paramalama = require( "paramalama" );
-const Controller = require( "properjs-controller" );
+const paramalama = require( "paramalama" ).default;
+const Controller = require( "properjs-controller" ).default;
 
 
 
@@ -77,7 +77,7 @@ class Player {
 
             })
 
-            Promise.all( resources ).then(( values ) => {
+            Promise.all( resources ).then(() => {
                 this.splashLoad.innerHTML = this.getSplash( "Press Start" );
                 this.gameaudio = new GameAudio( this );
                 this.gamepad = new GamePad( this );

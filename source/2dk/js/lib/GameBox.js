@@ -318,7 +318,6 @@ Can all be handled in plugin GameBox
 
     checkTiles ( poi, sprite ) {
         let ret = false;
-        let amount;
         const tiles = {
             action: [],
             attack: [],

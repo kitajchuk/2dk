@@ -250,8 +250,6 @@ class Editor {
 
 
     updateMapLayer ( layer, coords, coordMap ) {
-        let tmp;
-
         coordMap.tiles.forEach(( tile ) => {
             if ( tile.paintTile ) {
                 const cx = coords[ 0 ] + tile.drawCoord[ 0 ];
@@ -301,7 +299,7 @@ class Editor {
 
 
     readFile ( fileInput ) {
-        return new Promise(( resolve ) => {
+        return new Promise(( resolve, reject ) => {
             const fileReader = new FileReader();
             const fileData = fileInput[ 0 ].files[ 0 ];
 
@@ -593,7 +591,7 @@ class Editor {
             this._loadoutClear();
         });
 
-        this.selects.all.on( "change", ( e ) => {
+        this.selects.all.on( "change", () => {
             this.blurSelectMenus();
         });
 
@@ -626,7 +624,7 @@ class Editor {
         });
 
         this.dom.settings.on( "click", this._onSettingsClick.bind( this ) );
-        this.dom.closeSettings.on( "click", ( e ) => {
+        this.dom.closeSettings.on( "click", () => {
             this.closeMenus();
         });
 

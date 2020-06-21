@@ -150,7 +150,7 @@ class Sprite {
                 this.offset.x,
                 this.offset.y,
                 this.width,
-                this.height,
+                this.height
             );
         }
 
@@ -167,7 +167,7 @@ class Sprite {
             this.offset.x,
             this.offset.y + this.position.z,
             this.width,
-            this.height,
+            this.height
         );
 
         this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
@@ -188,7 +188,7 @@ class Sprite {
             this.offset.x + (this.data.hitbox.x / this.scale),
             this.offset.y + (this.data.hitbox.y / this.scale),
             this.hitbox.width,
-            this.hitbox.height,
+            this.hitbox.height
         );
 
         // Footbox
@@ -196,7 +196,7 @@ class Sprite {
             this.offset.x + (this.data.hitbox.x / this.scale),
             this.offset.y + (this.data.hitbox.y / this.scale) + (this.hitbox.height / 2),
             this.hitbox.width,
-            this.hitbox.height / 2,
+            this.hitbox.height / 2
         );
 
         this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;

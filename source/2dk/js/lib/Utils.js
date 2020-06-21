@@ -82,7 +82,7 @@ const Utils = {
                     tile[ i ][ 0 ],
                     tile[ i ][ 1 ],
                     x,
-                    y,
+                    y
                 );
             }
 

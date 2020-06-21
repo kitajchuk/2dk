@@ -151,10 +151,10 @@ class DB {
     *******************************************************************************/
     // { fileName, fileData, type }
     addFile ( data ) {
-        return new Promise(( resolve, reject ) => {
+        return new Promise(( resolve ) => {
             let files = null;
             const ext = data.fileName.split( "." ).pop();
-            const rExt = new RegExp( `\.${ext}$` );
+            const rExt = new RegExp( `.${ext}$` );
             const name = `${Cache.slugify( data.fileName.replace( rExt, "" ) )}.${ext}`;
             const file = path.join( this.files[ data.type ], name );
             const buffer = Buffer.from( data.fileData.replace( /^data:.*?;base64,/, "" ), "base64" );
@@ -199,7 +199,7 @@ class DB {
     addMap ( data ) {
         return new Promise(( resolve ) => {
             const map = DB.getModel( "map" );
-            const game = this.cache.get( "game" );
+            // const game = this.cache.get( "game" );
             const mapjson = path.join( this.mapsPath, data.fileName );
 
             map.id = Cache.slugify( data.name );

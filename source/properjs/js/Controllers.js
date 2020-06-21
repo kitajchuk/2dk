@@ -29,6 +29,10 @@ class Controllers {
 
         // Push components here...
         // this.push( "view", this.element.find( ".js-view" ), BaseController, View );
+        // this.push( "form", () => {
+        //     return this.element.find( ".js-form" );
+        //
+        // }, BaseController, Form );
 
         // Initialize pushed components
         this.init();

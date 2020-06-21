@@ -4,9 +4,8 @@ const Loader = require( "../Loader" );
 const GameBox = require( "../GameBox" );
 const { Map } = require( "../Map" );
 const Sprite = require( "../sprites/Sprite" );
-const Tween = require( "properjs-tween" );
-const Easing = require( "properjs-easing" );
-const { TweenLite, Power0, Power1, Power2, Power3, Power4 } = require( "gsap" );
+const Controller = require( "properjs-controller" ).default;
+const { TweenLite, Power4 } = require( "gsap" );
 
 
 
@@ -82,7 +81,7 @@ class TopView extends GameBox {
     }
 
 
-    update ( pos ) {
+    update () {
         const x = ( this.hero.position.x - ((this.camera.width / 2) - (this.hero.width / 2)) );
         const y = ( this.hero.position.y - ((this.camera.height / 2) - (this.hero.height / 2)) );
         const offset = {};
@@ -403,7 +402,7 @@ class TopView extends GameBox {
     }
 
 
-    canHeroResetMaxV ( poi, dir, collision ) {
+    canHeroResetMaxV () {
         return (this.hero.physics.maxv !== this.hero.physics.controlmaxv && this.hero.verb !== Config.verbs.LIFT);
     }
 
@@ -423,7 +422,7 @@ class TopView extends GameBox {
     }
 
 
-    canHeroLift ( poi, dir, collision ) {
+    canHeroLift ( poi, dir ) {
         return (dir === Config.opposites[ this.hero.dir ]);
     }
 
@@ -433,7 +432,7 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroJump ( poi, dir ) {
+    handleHeroJump () {
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -16;
@@ -608,7 +607,7 @@ class TopView extends GameBox {
 
 
     handleHeroTileAction ( poi, dir, tile ) {
-        const activeTiles = this.map.getActiveTiles( tile.group );
+        // const activeTiles = this.map.getActiveTiles( tile.group );
 
         if ( tile.instance.canInteract() ) {
             this.interact.tile = tile;
@@ -1154,6 +1153,7 @@ class TopView extends GameBox {
 
     switchMapTween ( obj, css ) {
         return new Promise(( resolve ) => {
+            const controller = new Controller();
             const _update = ( t ) => {
                 if ( obj.position ) {
                     obj.position.x = (css.axis === "x" ? t : obj.position.x);
@@ -1173,9 +1173,7 @@ class TopView extends GameBox {
                 }
             };
 
-            return new Tween({
-                ease: Easing.swing,
-                duration: 500,
+            controller.tween({
                 from: css.from,
                 to: css.to,
                 update: ( t ) => {

@@ -42,7 +42,7 @@ class EditorLayers {
         });
 
         $document.on( "click", ".js-hide-layer", ( e ) => {
-            if ( editor.canMapFunction() ) {
+            if ( this.editor.canMapFunction() ) {
                 const targ = $( e.target );
                 const elem = targ.is( ".js-hide-layer" ) ? targ : targ.closest( ".js-hide-layer" );
                 const layer = elem.data().layer;

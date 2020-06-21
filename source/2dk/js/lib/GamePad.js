@@ -1,5 +1,5 @@
 const Config = require( "./Config" );
-const Controller = require( "properjs-controller" );
+const Controller = require( "properjs-controller" ).default;
 
 
 
@@ -130,18 +130,18 @@ const getControl = ( key ) => {
 
 
 
-const getDpad = ( key ) => {
-    let ret = null;
-
-    for ( let btn in touchControls ) {
-        if ( touchControls[ btn ].key === key && touchControls[ btn ].dpad ) {
-            ret = touchControls[ btn ];
-            break;
-        }
-    }
-
-    return ret;
-};
+// const getDpad = ( key ) => {
+//     let ret = null;
+//
+//     for ( let btn in touchControls ) {
+//         if ( touchControls[ btn ].key === key && touchControls[ btn ].dpad ) {
+//             ret = touchControls[ btn ];
+//             break;
+//         }
+//     }
+//
+//     return ret;
+// };
 
 
 
@@ -273,7 +273,9 @@ const onKeyDown = ( e ) => {
 
         const control = getControl( e.which );
 
-        startTouch( control );
+        if ( control ) {
+            startTouch( control );
+        }
     }
 };
 
@@ -293,7 +295,7 @@ const onKeyUp = ( e ) => {
 
 
 
-const onGamepadConnected = ( e ) => {
+const onGamepadConnected = () => {
     instance.stop();
     instance.go(() => {
         const gamepad = navigator.getGamepads()[ 0 ];
@@ -337,7 +339,7 @@ const onGamepadConnected = ( e ) => {
 
 
 
-const onGamepadDisconnected = ( e ) => {
+const onGamepadDisconnected = () => {
     instance.stop();
 };
 

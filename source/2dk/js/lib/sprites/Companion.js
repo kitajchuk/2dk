@@ -1,7 +1,7 @@
 const Utils = require( "../Utils" );
 const Config = require( "../Config" );
 const Sprite = require( "./Sprite" );
-const { TweenLite, Power0, Power1, Power2, Power3, Power4 } = require( "gsap" );
+const { TweenLite, Power2 } = require( "gsap" );
 
 
 

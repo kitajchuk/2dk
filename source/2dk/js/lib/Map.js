@@ -378,7 +378,7 @@ class Map {
             this.image,
             this.renderBox.textures[ id ],
             this.data.tilesize,
-            this.data.tilesize,
+            this.data.tilesize
         );
 
         // Draw offscreen canvases to the onscreen canvases
@@ -391,7 +391,7 @@ class Map {
             this.renderBox.bleed.x,
             this.renderBox.bleed.y,
             this.layers[ id ].offCanvas.canvas.width,
-            this.layers[ id ].offCanvas.canvas.height,
+            this.layers[ id ].offCanvas.canvas.height
         );
     }
 
@@ -429,7 +429,7 @@ class Map {
     }
 
 
-    getTextures ( renderBox, camera ) {
+    getTextures ( renderBox ) {
         let ret = {};
 
         for ( let id in this.data.textures ) {
@@ -507,22 +507,21 @@ class Map {
                 const topCel = celsCopy[ celsCopy.length - 1 ];
 
                 if ( tiles.coords.length ) {
-                    loopCoords:
-                        for ( let j = tiles.coords.length; j--; ) {
-                            const coord = tiles.coords[ j ];
+                    for ( let j = tiles.coords.length; j--; ) {
+                        const coord = tiles.coords[ j ];
 
-                            // Correct tile coords
-                            if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] ) {
-                                // (tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ])
-                                const isTileAnimated = tiles.stepsX;
+                        // Correct tile coords
+                        if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] ) {
+                            // (tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ])
+                            const isTileAnimated = tiles.stepsX;
 
-                                // Make sure we don't dupe a tile match if it's NOT animated...
-                                if ( isTileAnimated ) {
-                                    ret = this.getActiveTiles( tiles.group ).getTile();
-                                    break loopTiles;
-                                }
+                            // Make sure we don't dupe a tile match if it's NOT animated...
+                            if ( isTileAnimated ) {
+                                ret = this.getActiveTiles( tiles.group ).getTile();
+                                break loopTiles;
                             }
                         }
+                    }
                 }
 
                 if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
@@ -635,7 +634,7 @@ class Map {
                     this.offset.x + collider.x,
                     this.offset.y + collider.y,
                     collider.width,
-                    collider.height,
+                    collider.height
                 );
                 this.layers[ layer ].onCanvas.context.globalAlpha = 1.0;
             });

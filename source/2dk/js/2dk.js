@@ -2,7 +2,7 @@
 * 2dk Dev Notes
 ********************************************************************************
 
-* Update to latest electron
+* Update LOZ start-screen map to be new 64x44 tilesize (keep painted)
 * Render foreground textures to background if BEHIND Hero
 
 
@@ -24,7 +24,6 @@
 * Add Spritesheet uploader
 * Bullet-proof uploads with progress, bulk uploads?
 
-* Game Sprite Editor...
 * History states for painting (undo/redo)
 * Make EditorUtils Promise-based...like clutch core files module.
 * Map Spawn (x, y, dir)
@@ -34,6 +33,7 @@
 * Map Active Tiles (background)
 * Map FX maker?
 * Map Hero companion?
+* Game Sprite Editor...
 
 
 
@@ -75,12 +75,13 @@
 ********************************************************************************
 * Use Zelda 1 map with our ALTTP modified tileset
     * 16x11 for one screen
-    * 32x22 for four screens
+    * 32x22 for four screens (2x2 screens)
+    * 64x44 for sixteen screens (4x4 screens)
 * HUD / Menus / Items (attached to buttons...?)
 * GameCycle manager for states (intro, title, credits, etc...)
 *******************************************************************************/
 // Load CSS
-require( "../sass/2dk.scss" );
+import "../sass/2dk.scss";
 
 
 

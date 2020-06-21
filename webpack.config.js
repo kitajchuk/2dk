@@ -1,12 +1,15 @@
 const path = require( "path" );
+const child_process = require( "child_process" );
 const root = path.resolve( __dirname );
 const source = path.join( root, "source" );
+const studio = path.join( root, "studio", "source" );
 const config = require( "./clutch.config" );
 const lager = require( "properjs-lager" );
 const nodeModules = "node_modules";
 const webpack = require( "webpack" );
-const autoprefixer = require( "autoprefixer" );
+const nodeExternals = require( "webpack-node-externals" );
 const BrowserSyncPlugin = require( "browser-sync-webpack-plugin" );
+const WebpackOnBuildPlugin = require( "on-build-webpack" );
 
 
 
@@ -18,7 +21,7 @@ const webpackConfig = {
 
 
     resolve: {
-        modules: [root, source, nodeModules],
+        modules: [root, source, studio, nodeModules],
         mainFields: ["webpack", "browserify", "web", "clutch", "hobo", "main"]
     }
 };
@@ -27,11 +30,6 @@ const webpackConfig = {
 
 const siteConfig = Object.assign( {}, webpackConfig, {
     plugins: [
-        new webpack.LoaderOptionsPlugin({
-            options: {
-                postcss: [autoprefixer( { browsers: ["last 2 versions"] } )]
-            }
-        }),
         new BrowserSyncPlugin({
             open: true,
             host: "localhost",
@@ -60,54 +58,56 @@ const siteConfig = Object.assign( {}, webpackConfig, {
     module: {
         rules: [
             {
-                test: /source\/js\/.*\.js$/,
-                exclude: /node_modules|vendor/,
+                test: /source\/.*\.js$/i,
+                exclude: /node_modules/,
                 loader: "eslint-loader",
                 enforce: "pre",
                 options: {
                     emitError: true,
                     emitWarning: false,
                     failOnError: true,
-                    quiet: true
-                }
+                    quiet: true,
+                },
             },
             {
-                test: /source\/js\/.*\.js$/,
-                exclude: /node_modules|vendor/,
+                // test: /source\/.*\.js$/i,
+                // exclude: /node_modules/,
+                test: /source\/.*\.js$|node_modules\/[properjs-|konami-|paramalama].*/i,
                 use: [
                     {
                         loader: "babel-loader",
                         options: {
-                            presets: ["env"]
-                        }
-                    }
-                ]
+                            presets: ["@babel/preset-env"],
+                        },
+                    },
+                ],
             },
             {
-                test: /(hobo|hobo.build)\.js$/,
-                use: ["expose-loader?hobo"]
+                test: /(hobo|hobo.build)\.js$/i,
+                use: ["expose-loader?hobo"],
             },
             {
-                test: /\.(sass|scss)$/,
-                exclude: /node_modules|vendor/,
+                test: /\.s[ac]ss$/i,
+                exclude: /node_modules/,
                 use: [
                     "file-loader?name=../css/[name].css",
-                    "postcss-loader",
                     {
                         loader: "sass-loader",
                         options: {
-                            outputStyle: (config.env.sandbox ? "uncompressed" : "compressed")
-                        }
-                    }
-                ]
+                            sassOptions: {
+                                outputStyle: (config.env.sandbox ? "uncompressed" : "compressed"),
+                            },
+                        },
+                    },
+                ],
             },
             {
-                test: /\.svg$/,
+                test: /\.svg$/i,
                 exclude: /node_modules/,
                 use: [
-                    "svg-inline-loader"
-                ]
-            }
+                    "svg-inline-loader",
+                ],
+            },
         ]
     }
 });
@@ -115,8 +115,26 @@ const siteConfig = Object.assign( {}, webpackConfig, {
 
 
 const studioConfig = Object.assign( {}, webpackConfig, {
+    plugins: [
+        new WebpackOnBuildPlugin(() => {
+            setTimeout(() => {
+                child_process.execSync( "npm run studio:clean" );
+
+            }, 1 );
+        })
+    ],
+
+
+    target: "node", // in order to ignore built-in modules like path, fs, etc.
+
+
+    externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
+
+
     entry: {
-        "studio": path.resolve( __dirname, "studio/source/js/screen.js" )
+        "styles": path.resolve( __dirname, "studio/source/sass/screen.js" ),
+        "editor": path.resolve( __dirname, "studio/source/js/Editor.js" ),
+        "menu": path.resolve( __dirname, "studio/menu.js" ),
     },
 
 
@@ -129,19 +147,32 @@ const studioConfig = Object.assign( {}, webpackConfig, {
     module: {
         rules: [
             {
-                test: /\.(sass|scss)$/,
-                exclude: /node_modules|vendor/,
+                test: /studio\/source\/.*\.js$/i,
+                exclude: /node_modules|electron/,
+                loader: "eslint-loader",
+                enforce: "pre",
+                options: {
+                    emitError: true,
+                    emitWarning: false,
+                    failOnError: true,
+                    quiet: true,
+                },
+            },
+            {
+                test: /\.s[ac]ss$/i,
+                exclude: /node_modules/,
                 use: [
                     "file-loader?name=../css/[name].css",
-                    "postcss-loader",
                     {
                         loader: "sass-loader",
                         options: {
-                            outputStyle: (config.env.sandbox ? "uncompressed" : "compressed")
-                        }
-                    }
-                ]
-            }
+                            sassOptions: {
+                                outputStyle: (config.env.sandbox ? "uncompressed" : "compressed"),
+                            },
+                        },
+                    },
+                ],
+            },
         ]
     }
 });

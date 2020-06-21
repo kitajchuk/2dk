@@ -29,7 +29,7 @@ The studio software is an [Electron](https://www.electronjs.org/) application. C
 cd studio && npm i
 
 # Runs the Electron application
-npm run start:studio
+npm run studio
 ```
 
 **It's important to note I take no credit for the Nintendo IPs used for testing nor for the artwork and designs. All I've done is increased the resolution of sprites and tilesets I've compiled from the internet.**
