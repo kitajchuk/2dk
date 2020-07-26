@@ -110,6 +110,11 @@ class Player {
     }
 
 
+    getOrientation () {
+        return (("orientation" in window) ? window.orientation : window.screen.orientation.angle);
+    }
+
+
     debug () {
         if ( this.query.map ) {
             this.data.hero.map = `/games/${this.data.game.id}/maps/${this.query.map}`;
@@ -210,7 +215,7 @@ class Player {
 
 
     onRotate () {
-        if ( Math.abs( window.screen.orientation.angle ) === 90 ) {
+        if ( Math.abs( this.getOrientation() ) === 90 ) {
             this.element.classList.remove( "is-portrait" );
             this.element.classList.add( "is-landscape" );
 
