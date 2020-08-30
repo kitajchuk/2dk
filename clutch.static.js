@@ -1,6 +1,6 @@
 const config = require( "./clutch.config" );
 const router = require( "./server/core/router" );
-const stasis = require( `./server/generators/static` );
+const stasis = require( "./server/generators/static" );
 const lager = require( "properjs-lager" );
 const clean = Number( process.env.CLUTCH_CLEAN );
 

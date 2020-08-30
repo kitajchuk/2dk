@@ -23,7 +23,7 @@ const core = {
     content: require( "./content" ),
     template: require( "./template" )
 };
-const httpServer = (core.config.env.sandbox ? http.Server( expressApp ) : https.Server( expressApp ));
+const httpServer = ((core.config.env.sandbox || core.config.env.netlify) ? http.Server( expressApp ) : https.Server( expressApp ));
 const allowed = [
     core.config.url
 ];
@@ -107,6 +107,11 @@ const killAuth = ( req, res, next ) => {
     });
 };
 async function checkOrigin ( req, res, next ) {
+    // Skip for static builds...
+    if ( core.config.env.netlify ) {
+        return next();
+    }
+
     // No origin means not CORS :-)
     if ( !req.headers.origin ) {
         next();
@@ -118,6 +123,11 @@ async function checkOrigin ( req, res, next ) {
     }
 };
 async function checkAuth ( req, res, next ) {
+    // Skip for static builds...
+    if ( core.config.env.netlify ) {
+        return next();
+    }
+
     // Condition:
     // 1. No session
     if ( !sess[ req.session.id ] ) {
@@ -189,7 +199,7 @@ const setRoutes = () => {
     expressApp.get( "/", setReq, getPage );
     expressApp.get( "/:type", setReq, getPage );
     expressApp.get( "/:type/:uid", setReq, getPage );
-    // expressApp.get( "/:type/:uid/index.json", setReq, getPage );
+    expressApp.get( "/:type/:uid/index.json", setReq, getPage );
 };
 /**
  *
@@ -282,7 +292,7 @@ const getPage = ( req, res ) => {
 //     res.status( 200 ).send( "success" );
 // };
 const getSitemap = ( req, res ) => {
-    const sitemap = require( `../generators/sitemap` );
+    const sitemap = require( "../generators/sitemap" );
 
     sitemap.generate().then(( xml ) => {
         res.set( "Content-Type", "text/xml" ).status( 200 ).send( xml );
@@ -290,7 +300,7 @@ const getSitemap = ( req, res ) => {
 
 };
 const getRobots = ( req, res ) => {
-    const robots = require( `../generators/robots` );
+    const robots = require( "../generators/robots" );
 
     robots.generate().then(( txt ) => {
         res.set( "Content-Type", "text/plain" ).status( 200 ).send( txt );
