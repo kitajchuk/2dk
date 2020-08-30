@@ -562,6 +562,7 @@ class Editor {
 
         ipcRenderer.on( "menu-loadmap", ( e, map ) => {
             this.loadMap( map );
+            this._loadoutClear();
         });
 
         ipcRenderer.on( "menu-assets", ( e, assets ) => {

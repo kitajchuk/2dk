@@ -78,7 +78,7 @@ const getPage = function ( req, res, listener ) {
         };
         const done = () => {
             context.set({
-                csrf: req.csrfToken ? req.csrfToken() : null,
+                session: req.session ? req.session.id : null,
                 navi: core.query.cache.navi,
                 site: core.query.cache.site
             });

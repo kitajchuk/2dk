@@ -12,5 +12,5 @@ import Store from "./Store";
  */
 export default new Store({
     // If TRUE the Store will use LocalStorage...
-    enableStorage: false
+    enableStorage: true
 });

@@ -8,7 +8,7 @@ let _initialized = false;
 // Session Storage
 let _cache = {};
 const _access = "clutch-cache";
-const _session = window.sessionStorage;
+const _session = window.localStorage;
 
 
 /**
@@ -48,9 +48,25 @@ class Store {
 
         _initialized = true;
 
-        this.flush();
+        // We don't want to flush this since we share between properjs / 2dk
+        // this.flush();
+        this.load();
 
         log( "Store::Initialized" );
+    }
+
+
+    /**
+     *
+     * @public
+     * @instance
+     * @method load
+     * @memberof Store
+     * @description Load the stored session cache
+     *
+     */
+    load () {
+        _cache = _session.getItem( _access ) ? JSON.parse( _session.getItem( _access ) ) : {};
     }
 
 

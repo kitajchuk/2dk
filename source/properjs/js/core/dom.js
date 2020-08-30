@@ -20,7 +20,8 @@ const dom = {
     naviLinks: $( ".js-navi-a" ),
     naviMobile: $( ".js-navi-mobile" ),
     intro: $( ".js-intro" ),
-    introLoading: $( ".js-intro-loading" )
+    introLoading: $( ".js-intro-loading" ),
+    session: $( "#session" )
 };
 
 

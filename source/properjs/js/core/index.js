@@ -12,6 +12,7 @@ import config from "./config";
 import env from "./env";
 import log from "./log";
 import emitter from "./emitter";
+import cache from "./cache";
 
 
 export {
@@ -21,6 +22,6 @@ export {
     config,
     env,
     log,
-    // cache,
+    cache,
     emitter,
 };

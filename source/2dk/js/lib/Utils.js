@@ -153,6 +153,27 @@ const Utils = {
     },
 
 
+    getSpriteClassAsObject ( sprite ) {
+        const obj = {};
+
+        for ( let i in sprite ) {
+            // Need to convert <img> node to string src...
+            if ( i === "image" ) {
+                obj[ i ] = sprite[ i ].src;
+
+            // Need to nullify class instance references...
+            } else if ( i === "map" || i === "gamebox" ) {
+                obj[ i ] = null;
+
+            } else {
+                obj[ i ] = sprite[ i ];
+            }
+        }
+
+        return obj;
+    },
+
+
     // From Akihabara helpers:
 
     // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L78

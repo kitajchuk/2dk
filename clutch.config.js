@@ -55,11 +55,16 @@ const config = {
     },
     // Express.js config
     express: {
-        port: 8000
+        port: 8000,
+        secret: "shutupnavi"
     },
     // Browser-sync config
     browser: {
         port: 8001
+    },
+    // Websocket config
+    socket: {
+        port: 8002
     },
     // Static assets config
     static: {
