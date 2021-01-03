@@ -186,6 +186,8 @@ class Editor {
         // this.menus.activeGame.find( ".js-game-field[name='resolution']" )[ 0 ].value = game.resolution;
         this.menus.activeGame.find( ".js-game-field[name='width']" )[ 0 ].value = game.width;
         this.menus.activeGame.find( ".js-game-field[name='height']" )[ 0 ].value = game.height;
+        this.menus.activeGame.find( ".js-game-field[name='save']" )[ 0 ].value = game.save;
+        this.menus.activeGame.find( ".js-game-field[name='release']" )[ 0 ].value = game.release;
         this.dom.iconField[ 0 ].value = game.icon;
         this.dom.iconImage[ 0 ].src = `.${game.icon}`;
     }

@@ -10,6 +10,8 @@
 
 
 
+* Versioned game package tar balls (releases)
+    * Requires a difference between saves / releases
 * Update LOZ start-screen map to be new 64x44 tilesize (keep painted)
 * Render foreground textures to background if BEHIND Hero
 

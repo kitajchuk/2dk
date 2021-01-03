@@ -7,7 +7,8 @@
         "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/icon.png",
-        "save": 275,
+        "save": 276,
+        "release": 1,
         "plugin": "topview"
     },
     "hero": {

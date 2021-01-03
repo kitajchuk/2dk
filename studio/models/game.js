@@ -8,6 +8,7 @@ module.exports = {
         "fullscreen": false,
         "icon": "",
         "save": 1,
+        "release": 1.0,
         "plugin": "topview"
     },
     "hero": {},
