@@ -41,7 +41,10 @@ studio/games/**/assets/snapshots
 # Node / npm
 node_modules
 npm-debug.log
+sessions
 
 
 # Local Netlify folder
 .netlify
+functions
+payload.json

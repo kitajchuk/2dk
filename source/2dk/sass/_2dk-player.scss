@@ -122,7 +122,7 @@
 
 
 
-@media only screen and ( orientation: portrait ) {
+@media ( orientation: portrait ) {
     ._2dk__splash {
         z-index: 11;
     }
@@ -147,7 +147,7 @@
 
 
 
-@media only screen and ( orientation: landscape ) {
+@media ( orientation: landscape ) {
     ._2dk__splash__load {
         display: flex;
     }

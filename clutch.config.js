@@ -24,7 +24,7 @@ const config = {
     // Timestamp ( Stamp of instantiation )
     timestamp: Date.now(),
     // Single page web application
-    onepager: false,
+    onepager: true,
     // Environments
     env: {
         sandbox: (process.env.NODE_ENV === "sandbox"),
@@ -53,10 +53,11 @@ const config = {
         partialsDir: path.join( root, "template", rootConfig.theme, "partials" ),
         staticDir: path.join( root, "static" )
     },
+    // Session secrets
+    session: rootConfig.session,
     // Express.js config
     express: {
-        port: 8000,
-        secret: "shutupnavi"
+        port: 8000
     },
     // Browser-sync config
     browser: {
@@ -70,8 +71,8 @@ const config = {
     static: {
         // One day
         maxAge: 86400000,
-        js: `/js/app.js`,
-        css: `/css/screen.css`,
+        js: "/js/app.js",
+        css: "/css/screen.css",
         minify: {
             // html-minifier config
             html: {

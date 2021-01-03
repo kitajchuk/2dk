@@ -1,7 +1,7 @@
 const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
-// const Socket = require( "./Socket" );
+const Socket = require( "./Socket" );
 const GamePad = require( "./GamePad" );
 const GameAudio = require( "./GameAudio" );
 const TopView = require( "./plugins/TopView" );
@@ -28,7 +28,6 @@ class Player {
         };
         this.query = paramalama( window.location.search );
         this.gamecycle = new Controller();
-        // this.socket = new Socket();
         this.previousElapsed = 0;
         this.detect();
     }
@@ -48,6 +47,7 @@ class Player {
 
 
     load () {
+        this.socket = new Socket( this );
         this.loader = new Loader();
         this.loader.loadJson( "game.json" ).then(( data ) => {
             this.data = data;
@@ -297,10 +297,11 @@ class Player {
             } else if ( this.controls.b ) {
                 this.gamebox.pressB();
             }
+        }
 
-            // Socket streaming
-            // Broadcast your position to other client connections!
-            // this.socket.emit( "player", Utils.getSpriteClassAsObject( this.gamebox.hero ) );
+        // Blit the socket (broadcasts)
+        if ( !this.stopped ) {
+            this.socket.blit( elapsed );
         }
     }
 
