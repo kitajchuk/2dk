@@ -31,7 +31,7 @@
                     <div class="select icon--nudge" disabled>
                         <div class="select__field" id="editor-game-load">Project</div>
                     </div>
-                    <span class="icon icon--settings js-settings" id="editor-gamesettings" data-type="game" title="Game Settings"></span>
+                    <span class="icon icon--settings js-settings" id="editor-gamesettings" data-type="game" title="Open Game Settings"></span>
                 </div>
                 <div class="editor__panel__map">
                     <span class="icon icon--nudge icon--map"></span>
@@ -39,7 +39,7 @@
                     <div class="select icon--nudge" disabled>
                         <div class="select__field" id="editor-map-load">Map</div>
                     </div>
-                    <span class="icon icon--settings js-settings" id="editor-mapsettings" data-type="map" title="Map Settings"></span>
+                    <span class="icon icon--settings js-settings" id="editor-mapsettings" data-type="map" title="Open Map Settings"></span>
                 </div>
                 <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
                     <span class="icon icon--nudge icon--music_note"></span>
@@ -48,7 +48,7 @@
                             <option value="">Sample Sounds</option>
                         </select>
                     </div>
-                    <span class="icon icon--play_circle_outline js-sound-button"></span>
+                    <span class="icon icon--play_circle_outline js-sound-button" title="Play Selected Sound"></span>
                 </div>
                 <div class="editor__panel__xy">
                     <span class="icon icon--location_onplaceroom icon--nudge"></span>
@@ -163,6 +163,16 @@
                         <div class="editor__label">Resolution</div>
                         <input class="input editor__field js-game-field" type="text" name="resolution" readonly />
                     </div> -->
+                    <div class="editor__setting editor__setting--multi">
+                        <div>
+                            <div class="editor__label">Save version</div>
+                            <input class="input editor__field js-game-field" type="text" name="save" readonly disabled />
+                        </div>
+                        <div>
+                            <div class="editor__label">Release version</div>
+                            <input class="input editor__field js-game-field" type="text" name="release" readonly disabled />
+                        </div>
+                    </div>
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Screen width</div>

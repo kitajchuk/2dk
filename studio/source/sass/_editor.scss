@@ -334,6 +334,11 @@
     &.is-hidden {
         display: none;
     }
+
+    &.editor__mapgrid.is-hidden {
+        display: block;
+        opacity: 0;
+    }
 }
 .editor__background {
     z-index: 1;
