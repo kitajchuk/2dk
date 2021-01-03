@@ -52,7 +52,6 @@ class App {
     init () {
         this.intro.teardown();
         this.controllers.exec();
-        this.core.cache.set( "session", this.core.dom.session[ 0 ].value );
     }
 
 

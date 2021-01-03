@@ -2,6 +2,14 @@
 * 2dk Dev Notes
 ********************************************************************************
 
+* Headless services (express/websocket) for mmo
+    * Initialize handshake with server
+    * Register player with server
+    * Broadcast player data to server
+    * Server broadcasts players data to other clients
+
+
+
 * Update LOZ start-screen map to be new 64x44 tilesize (keep painted)
 * Render foreground textures to background if BEHIND Hero
 
@@ -87,7 +95,6 @@ import "../sass/2dk.scss";
 
 // Load JS
 import Player from "./lib/Player";
-import cache from "../../properjs/js/core/cache";
 
 
 
@@ -97,7 +104,6 @@ class App {
         this.gameId = window.location.pathname.replace( /^\/|\/$/g, "" ).split( "/" ).pop();
         this.worker = `/games/${this.gameId}/worker.js`;
         this.scope = `/games/${this.gameId}/`;
-        this.session = cache.get( "session" );
 
         if ( "serviceWorker" in navigator ) {
             // navigator.serviceWorker.register( this.worker, {scope: this.scope} ).then(( register ) => {
