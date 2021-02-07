@@ -11,6 +11,7 @@ class Socket {
         this.registered = false;
         this.registrations = {};
         this.connection = "ws://localhost:8002";
+        this.endpoint = "http://localhost:8002/gamesession";
 
         this.init();
     }
@@ -24,7 +25,7 @@ class Socket {
 
         } else {
             $.ajax({
-                url: "http://localhost:8002/gamesession",
+                url: this.endpoint,
                 dataType: "json",
                 method: "POST",
                 payload: {},

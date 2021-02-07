@@ -17,6 +17,9 @@ npm run bootstrap
 
 # Run the dev server and watch scripts
 npm start
+
+# Run the netlify dev server for Lambda
+netlify dev
 ```
 
 
@@ -34,7 +37,7 @@ npm run studio
 
 **It's important to note I take no credit for the Nintendo IPs used for testing nor for the artwork and designs. All I've done is increased the resolution of sprites and tilesets I've compiled from the internet.**
 
-Currently you can create and paint maps quite well. It's basically Photoshop for 2D map painting.
+Currently you can create and paint maps quite well for the background, foreground and collision layers. It's basically Photoshop for 2D map painting.
 
 I've been using the game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. If you run the Studio you'll find it's there, named [LA](https://2dk.kitajchuk.com/games/la/?buster=260).
 

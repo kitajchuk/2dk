@@ -37,6 +37,12 @@ const games = locals.context.doc.games;
     <hr />
     <div class="home__games -wrap">
         <h1>Testing</h1>
+        <ul class="_cap">
+            <li class="m"><p>Browser: Arrow keys, X is A, Z is B, Enter is Start.</p></li>
+            <li class="m"><p>Native Gamepad support tested with NES & SNES USB controllers.</p></li>
+            <li class="m"><p>Designed for mobile with a highly functional 8-point touch D-pad.</p></li>
+            <li class="m"><p>*Audio is disabled on mobile due to autoplay issues on devices.</p></li>
+        </ul>
         <div class="_cap">
             <% games.forEach(( game ) => { %>
                 <p><%= game.name %> | <a href="/games/<%= game.id %>/?buster=<%= game.save %>" class="js-webapp-link">DEMO</a></p>

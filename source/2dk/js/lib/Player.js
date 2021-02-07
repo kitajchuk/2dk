@@ -2,9 +2,10 @@ const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const Socket = require( "./Socket" );
+// const Lambda = require( "./Lambda" );
 const GamePad = require( "./GamePad" );
-const GameAudio = require( "./GameAudio" );
 const TopView = require( "./plugins/TopView" );
+const GameAudio = require( "./GameAudio" );
 const paramalama = require( "paramalama" ).default;
 const Controller = require( "properjs-controller" ).default;
 
@@ -47,7 +48,6 @@ class Player {
 
 
     load () {
-        this.socket = new Socket( this );
         this.loader = new Loader();
         this.loader.loadJson( "game.json" ).then(( data ) => {
             this.data = data;
@@ -57,6 +57,8 @@ class Player {
             this.height = (this.device && this.data.game.fullscreen) ? Math.min( window.screen.height, screen.width ) : this.data.game.height / this.data.game.resolution;
             this.build();
             this.onRotate();
+            this.socket = new Socket( this );
+            // this.lambda = new Lambda( this );
 
             let counter = 0;
 
@@ -97,7 +99,7 @@ class Player {
     getSplash ( display ) {
         return `
             <div>
-                <div>${this.data.game.name}: Save #${this.data.game.save}</div>
+                <div>${this.data.game.name}: Save #${this.data.game.save}, Release v${this.data.game.release}</div>
                 <div>${display}</div>
             </div>
         `;
@@ -302,6 +304,7 @@ class Player {
         // Blit the socket (broadcasts)
         if ( !this.stopped ) {
             this.socket.blit( elapsed );
+            // this.lambda.blit( elapsed );
         }
     }
 
