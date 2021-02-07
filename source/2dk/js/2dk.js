@@ -2,28 +2,15 @@
 * 2dk Dev Notes
 ********************************************************************************
 
-* Headless services (express/websocket) for mmo
-    * Initialize handshake with server
-    * Register player with server
-    * Broadcast player data to server
-    * Server broadcasts players data to other clients
 
 
-
+** Multiplayer online
+    * Websocket server deploys (Clutch AWS)
+    * Lambda (AWS -- Port Netlify functions)
+    * JWT token in-memory client storage (fully private?)
 * Versioned game package tar balls (releases)
     * Requires a difference between saves / releases
-* Update LOZ start-screen map to be new 64x44 tilesize (keep painted)
-* Render foreground textures to background if BEHIND Hero
-
-
-
-* Wandering NPCs can get locked in corners (collision problems...)
-* Can we use physics for throw rather than a canned tween?
-* Canvas FX layer (blast, smash, sparks, smoke, etc...?)
-
-
-
-* Procedural map paint with cellauto JS.
+    * Implement "Package Release" button to create tar ball
 
 
 
@@ -52,7 +39,7 @@
 ********************************************************************************
 
 * Butterflies
-* Perception box
+* Perception box (aggro-ranges)
 * Projectiles (with FX)
 * Enemy AIs (Baddies)
 
@@ -89,6 +76,10 @@
     * 64x44 for sixteen screens (4x4 screens)
 * HUD / Menus / Items (attached to buttons...?)
 * GameCycle manager for states (intro, title, credits, etc...)
+* Render foreground textures to background if BEHIND Hero
+* Wandering NPCs can get locked in corners (collision problems...)
+* Canvas FX layer (blast, smash, sparks, chimney-smoke, etc...?)
+* Procedural map paint with cellauto JS...?
 *******************************************************************************/
 // Load CSS
 import "../sass/2dk.scss";

@@ -46,5 +46,5 @@ sessions
 
 # Local Netlify folder
 .netlify
-functions
+functions/node_modules
 payload.json
