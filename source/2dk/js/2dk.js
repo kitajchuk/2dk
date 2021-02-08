@@ -1,12 +1,28 @@
 /*******************************************************************************
 * 2dk Dev Notes
 ********************************************************************************
+* Studio Software
+********************************************************************************
+
+* Map Spawnpoints (x, y, dir)
+* Map Events (coords, type, map, dir, spawn?)
+* Map FX Maker
+* Map NPC Maker
+* Map Hero Maker (companion?)
+* Map NPCs (id, ai, spawn, payload)
+* Map Tiles (group, layer, coords, offsetX, offsetY, stepsX?, action?, attack?)
+
+* Uploads with progress, bulk uploads?
+* History states for painting (undo/redo)
 
 
 
+********************************************************************************
+* Network Online
+********************************************************************************
 ** Multiplayer online
     * Websocket server deploys (Clutch AWS)
-    * Lambda (AWS -- Port Netlify functions)
+    * Lambda (Port Netlify functions to AWS Lambda)
     * JWT token in-memory client storage (fully private?)
 * Versioned game package tar balls (releases)
     * Requires a difference between saves / releases
@@ -15,30 +31,10 @@
 
 
 ********************************************************************************
-* Studio Software
-********************************************************************************
-
-* Add Spritesheet uploader
-* Bullet-proof uploads with progress, bulk uploads?
-
-* History states for painting (undo/redo)
-* Make EditorUtils Promise-based...like clutch core files module.
-* Map Spawn (x, y, dir)
-* Map Events (coords, type, map, dir, spawn?)
-* Map Heroes / Hero
-* Map NPCs (background?, foreground?)
-* Map Active Tiles (background)
-* Map FX maker?
-* Map Hero companion?
-* Game Sprite Editor...
-
-
-
-********************************************************************************
 * NPCs (Sprites)
 ********************************************************************************
 
-* Butterflies
+* Butterflies / Bugs
 * Perception box (aggro-ranges)
 * Projectiles (with FX)
 * Enemy AIs (Baddies)
@@ -57,15 +53,10 @@
 * Attacking & Weapons
 * Charged Hero + Release Attack
 * Move resistance (pushing, tiles, etc...)
-* Diagonal wall move physics. A left-down wall moves Hero left down.
-* Bounce physics so Hero does not get tile collision locked.
-* Knockbacks Hero_Slide(free) and Hero_Hit(paused).
 * Object interaction hints (A Open, A Check, etc...)
 
 
 
-********************************************************************************
-********************************************************************************
 ********************************************************************************
 * Thoughts Bank:
 * Random thoughts we want to keep track of...for now...
@@ -77,8 +68,6 @@
 * HUD / Menus / Items (attached to buttons...?)
 * GameCycle manager for states (intro, title, credits, etc...)
 * Render foreground textures to background if BEHIND Hero
-* Wandering NPCs can get locked in corners (collision problems...)
-* Canvas FX layer (blast, smash, sparks, chimney-smoke, etc...?)
 * Procedural map paint with cellauto JS...?
 *******************************************************************************/
 // Load CSS
