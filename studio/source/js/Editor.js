@@ -237,7 +237,7 @@ class Editor {
 
     cleanMap () {
         for ( const l in this.data.map.textures ) {
-            if ( this.data.map.textures.hasOwnProperty( l ) ) {
+            if ( Object.prototype.hasOwnProperty.call( this.data.map.textures, l ) ) {
                 for ( let y = this.data.map.textures[ l ].length; y--; ) {
                     for ( let x = this.data.map.textures[ l ][ y ].length; x--; ) {
                         // Purge the tile cels ensuring no duplicates Array[Array[x, y], Array[x, y]]
@@ -386,7 +386,7 @@ class Editor {
         const mapData = EditorUtils.parseFields( this.fields.map );
 
         for ( const i in mapData ) {
-            if ( mapData.hasOwnProperty( i ) ) {
+            if ( Object.prototype.hasOwnProperty.call( mapData, i ) ) {
                 postData[ i ] = mapData[ i ];
             }
         }
