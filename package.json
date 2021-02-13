@@ -70,7 +70,7 @@
     "eslint-webpack-plugin": "^2.5.1",
     "expose-loader": "^0.7.5",
     "file-loader": "^6.0.0",
-    "gsap": "^3.0.4",
+    "gsap": "^3.6.0",
     "html-minifier": "^4.0.0",
     "node-sass": "^4.13.1",
     "paramalama": "^0.3.0",
