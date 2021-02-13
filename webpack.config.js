@@ -1,5 +1,4 @@
 const path = require( "path" );
-const child_process = require( "child_process" );
 const root = path.resolve( __dirname );
 const source = path.join( root, "source" );
 const studio = path.join( root, "studio", "source" );
@@ -8,8 +7,27 @@ const lager = require( "properjs-lager" );
 const nodeModules = "node_modules";
 const webpack = require( "webpack" );
 const nodeExternals = require( "webpack-node-externals" );
+const rimraf = require( "rimraf" );
 const BrowserSyncPlugin = require( "browser-sync-webpack-plugin" );
-const WebpackOnBuildPlugin = require( "on-build-webpack" );
+const ESLintPlugin = require( "eslint-webpack-plugin" );
+
+
+
+// https://webpack.js.org/contribute/writing-a-plugin/
+// https://webpack.js.org/api/compiler-hooks/
+class StudioHooksPlugin {
+    constructor ( options ) {
+        this.options = options;
+    }
+
+    apply ( compiler ) {
+        compiler.hooks.afterCompile.tap( "StudioHooksPlugin", ( compilation ) => {
+            if ( typeof this.options.afterCompile === "function" ) {
+                this.options.afterCompile();
+            }
+        });
+    }
+}
 
 
 
@@ -30,6 +48,16 @@ const webpackConfig = {
 
 const siteConfig = Object.assign( {}, webpackConfig, {
     plugins: [
+        new ESLintPlugin({
+            emitError: true,
+            emitWarning: false,
+            failOnError: true,
+            quiet: true,
+            context: path.resolve( __dirname, "source" ),
+            exclude: [
+                "node_modules",
+            ],
+        }),
         new BrowserSyncPlugin({
             open: true,
             host: "localhost",
@@ -38,7 +66,7 @@ const siteConfig = Object.assign( {}, webpackConfig, {
             files: [
                 "template/**/*.html",
                 "template/**/*.json"
-            ]
+            ],
         })
     ],
 
@@ -57,18 +85,6 @@ const siteConfig = Object.assign( {}, webpackConfig, {
 
     module: {
         rules: [
-            {
-                test: /source\/.*\.js$/i,
-                exclude: /node_modules/,
-                loader: "eslint-loader",
-                enforce: "pre",
-                options: {
-                    emitError: true,
-                    emitWarning: false,
-                    failOnError: true,
-                    quiet: true,
-                },
-            },
             {
                 // test: /source\/.*\.js$/i,
                 // exclude: /node_modules/,
@@ -116,12 +132,28 @@ const siteConfig = Object.assign( {}, webpackConfig, {
 
 const studioConfig = Object.assign( {}, webpackConfig, {
     plugins: [
-        new WebpackOnBuildPlugin(() => {
-            setTimeout(() => {
-                child_process.execSync( "npm run studio:clean" );
+        new ESLintPlugin({
+            emitError: true,
+            emitWarning: false,
+            failOnError: true,
+            quiet: true,
+            context: path.resolve( __dirname, "studio", "source" ),
+            exclude: [
+                "electron",
+                "node_modules",
+            ],
+        }),
+        new StudioHooksPlugin({
+            afterCompile: () => {
+                setTimeout(() => {
+                    rimraf.sync( `${__dirname}/studio/static/js/editor*` );
+                    rimraf.sync( `${__dirname}/studio/static/js/menu*` );
+                    rimraf.sync( `${__dirname}/studio/static/js/styles*` );
+                    rimraf.sync( `${__dirname}/studio/static/js/scripts*` );
 
-            }, 1 );
-        })
+                }, 100 );
+            },
+        }),
     ],
 
 
@@ -140,24 +172,12 @@ const studioConfig = Object.assign( {}, webpackConfig, {
 
     output: {
         path: path.resolve( __dirname, "studio/static/js" ),
-        filename: "[name].js"
+        filename: "[name].js",
     },
 
 
     module: {
         rules: [
-            {
-                test: /studio\/source\/.*\.js$/i,
-                exclude: /node_modules|electron/,
-                loader: "eslint-loader",
-                enforce: "pre",
-                options: {
-                    emitError: true,
-                    emitWarning: false,
-                    failOnError: true,
-                    quiet: true,
-                },
-            },
             {
                 test: /\.s[ac]ss$/i,
                 exclude: /node_modules/,
@@ -181,5 +201,5 @@ const studioConfig = Object.assign( {}, webpackConfig, {
 
 module.exports = [
     siteConfig,
-    studioConfig
+    studioConfig,
 ];

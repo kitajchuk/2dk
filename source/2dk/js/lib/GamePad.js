@@ -384,7 +384,7 @@ const startTouch = ( control ) => {
 
         handleTouchStart( control );
 
-        if ( control.hasOwnProperty( "hold" ) && !control.menu ) {
+        if ( Object.prototype.hasOwnProperty.call( control, "hold" ) && !control.menu ) {
             control.timer = setInterval(() => {
                 handleTouchStart( control );
 
@@ -402,7 +402,7 @@ const handleTouchStart = ( control ) => {
         return;
     }
 
-    if ( control.hasOwnProperty( "hold" ) ) {
+    if ( Object.prototype.hasOwnProperty.call( control, "hold" ) ) {
         control.hold++;
 
         if ( control.hold > touchRepeated ) {
@@ -429,7 +429,7 @@ const handleTouchStart = ( control ) => {
 
 
 const handleTouchEnd = ( control ) => {
-    if ( control.hasOwnProperty( "hold" ) ) {
+    if ( Object.prototype.hasOwnProperty.call( control, "hold" ) ) {
         if ( control.hold > touchRepeated ) {
             instance.fire( `${control.btn[ 0 ]}-holdrelease` );
             // console.log( `${control.btn[ 0 ]}-holdrelease` );
