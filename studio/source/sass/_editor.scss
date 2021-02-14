@@ -183,6 +183,13 @@
     display: block;
     border: 1px solid $grey-dark;
 }
+#editor-cellauto-button {
+    display: none;
+
+    .is-cellauto & {
+        display: inline-block;
+    }
+}
 
 
 
@@ -283,6 +290,18 @@
     z-index: 1;
     overflow: hidden;
     background-color: $charcoal2;
+}
+.editor__canvas__buttons {
+    pointer-events: none;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 9999;
+
+    button {
+        width: auto;
+        pointer-events: auto;
+    }
 }
 .editor__canvas__pane {
     height: 100%;

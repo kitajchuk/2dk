@@ -7,6 +7,7 @@
     "tilewidth": 20,
     "tileheight": 16,
     "collider": 16,
+    "cellauto": false,
     "image": "/games/la/assets/tiles/inside.png",
     "snapshot": "/games/la/assets/snapshots/marins-house.png",
     "thumbnail": "/games/la/assets/snapshots/marins-house-thumb.png",

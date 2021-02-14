@@ -21,5 +21,17 @@
         "icon": "/games/loz/icon.png",
         "save": 46,
         "plugin": "topview"
+    },
+    {
+        "id": "cellauto",
+        "name": "Cellauto",
+        "width": 768,
+        "height": 576,
+        "resolution": 1,
+        "fullscreen": false,
+        "icon": "/games/cellauto/icon.png",
+        "save": 17,
+        "release": 1,
+        "plugin": "topview"
     }
 ]

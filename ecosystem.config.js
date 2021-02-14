@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: "clutch",
+            name: "clutch-2dk",
             script: "./server/app.js",
             env: {
                 NODE_ENV: "sandbox"

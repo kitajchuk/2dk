@@ -11,6 +11,8 @@
 * Map Hero Maker (companion?)
 * Map NPCs (id, ai, spawn, payload)
 * Map Tiles (group, layer, coords, offsetX, offsetY, stepsX?, action?, attack?)
+* Map collider should be dynamic (precision: 4)
+
 
 * Uploads with progress, bulk uploads?
 * History states for painting (undo/redo)
@@ -68,7 +70,6 @@
 * HUD / Menus / Items (attached to buttons...?)
 * GameCycle manager for states (intro, title, credits, etc...)
 * Render foreground textures to background if BEHIND Hero
-* Procedural map paint with cellauto JS...?
 *******************************************************************************/
 // Load CSS
 import "../sass/2dk.scss";

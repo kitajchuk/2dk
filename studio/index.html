@@ -22,6 +22,9 @@
                         <canvas class="canvas layer layer--grid" id="editor-collider-canvas"></canvas>
                     </div>
                 </div>
+                <div class="editor__canvas__buttons" id="editor-canvas-buttons">
+                    <button id="editor-cellauto-button" class="button editor__button">Generate Cellauto</button>
+                </div>
             </div>
             <!-- Topbar -->
             <div class="editor__panel">
@@ -242,6 +245,12 @@
                             </select>
                         </div>
                     </div>
+                    <div class="editor__setting">
+                        <label class="checkbox">
+                            <input class="check js-addmap-field" type="checkbox" name="cellauto" />
+                            <span class="label">CellAuto</span>
+                        </label>
+                    </div>
                     <div class="editor__setting editor__setting--multi">
                         <button class="button editor__button editor__upload-button js-post-save" data-type="map">Create</button>
                         <button class="button button--grey editor__button editor__cancel-button js-post-cancel">Cancel</button>
@@ -285,6 +294,12 @@
                                 <option value="">Sound</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="editor__setting">
+                        <label class="checkbox">
+                            <input class="check js-map-field" type="checkbox" name="cellauto" readonly disabled />
+                            <span class="label">CellAuto</span>
+                        </label>
                     </div>
                     <div class="editor__setting">
                         <button class="button button--grey editor__button editor__cancel-button js-close-settings">Close</button>

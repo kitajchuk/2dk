@@ -5,6 +5,7 @@ const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 const { MapLayer } = require( "../../../source/2dk/js/lib/Map" );
 const Utils = require( "../../../source/2dk/js/lib/Utils" );
 const Loader = require( "../../../source/2dk/js/lib/Loader" );
+const EditorCellAuto = require( "./EditorCellAuto" );
 
 
 
@@ -27,6 +28,7 @@ const clearTile = ( ctx, x, y, w, h ) => {
 class EditorCanvas {
     constructor ( editor ) {
         this.loader = new Loader();
+        this.cellauto = new EditorCellAuto();
         this.editor = editor;
         this.mode = null;
         this.map = null;
@@ -65,12 +67,17 @@ class EditorCanvas {
             preview: document.getElementById( "editor-preview-canvas" ),
             cursor: document.getElementById( "editor-cursor-canvas" ),
         };
+        this.buttons = {
+            container: document.getElementById( "editor-canvas-buttons" ),
+            cellauto: document.getElementById( "editor-cellauto-button" ),
+        };
         this.draggable = this.getDraggable();
         this.draggable.disable();
 
         this.hideCanvasCursor();
 
         this.bindEvents();
+        this.bindCellauto();
     }
 
 
@@ -147,13 +154,13 @@ class EditorCanvas {
             this.layers.foreground.innerHTML = "";
             this.layers.collision.innerHTML = "";
             this.dom.$canvasPane.removeClass( "is-loaded" );
+
+            // CellAuto?
+            this.buttons.container.classList.remove( "is-cellauto" );
         }
     }
 
 
-/******************************************************************************
- * BEGIN: Use this.scale for draw maths
-*******************************************************************************/
     loadMap ( map ) {
         this.map = map;
 
@@ -191,6 +198,12 @@ class EditorCanvas {
             width: this.map.width,
             height: this.map.height
         });
+
+        // CellAuto registration
+        if ( this.map.cellauto ) {
+            this.cellauto.register( this.map );
+            this.buttons.container.classList.add( "is-cellauto" );
+        }
 
         this.contexts.background.canvas.style.width = `${this.map.width}px`;
         this.contexts.background.canvas.style.height = `${this.map.height}px`;
@@ -356,9 +369,6 @@ class EditorCanvas {
             );
         }
     }
-/******************************************************************************
- * END: Use this.scale for draw maths
-*******************************************************************************/
 
 
     hide ( l ) {
@@ -682,6 +692,38 @@ class EditorCanvas {
     }
 
 
+    applyCellAuto ( data ) {
+        this.map.textures.background = data;
+        this.clearCanvas( this.contexts.background.canvas );
+        Utils.drawMapTiles(
+            this.contexts.background.context,
+            this.dom.tileset,
+            this.map.textures.background,
+            this.map.tilesize,
+            this.map.tilesize
+        );
+    }
+
+
+    bindCellauto () {
+        let isCellGen = false;
+        const $cellauto = $( this.buttons.cellauto );
+
+        this.cellauto.step( this.applyCellAuto.bind( this ) );
+
+        $cellauto.on( "click", () => {
+            if ( !isCellGen ) {
+                isCellGen = true;
+
+                this.cellauto.generate().then(( data ) => {
+                    isCellGen = false;
+                    this.applyCellAuto( data ); // Final render !!!
+                });
+            }
+        });
+    }
+
+
     bindEvents () {
         const $document = $( document );
         const $tilepaint = $( this.canvases.tilepaint );
@@ -844,7 +886,6 @@ class EditorCanvas {
                 return;
             }
 
-            // Need to use this.scale?
             const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
@@ -860,7 +901,6 @@ class EditorCanvas {
 
         $mapgrid.on( "mouseup", ( e ) => {
             if ( this.editor.canMapFunction() ) {
-                // Need to use this.scale?
                 const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
 
                 if ( this.canApplyLayer() ) {

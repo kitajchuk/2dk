@@ -209,6 +209,7 @@ class DB {
             map.tileheight = Number( data.tileheight );
             map.height = map.tileheight * map.tilesize;
             map.width = map.tilewidth * map.tilesize;
+            map.cellauto = data.cellauto;
             map.image = `/games/${this.gameId}/assets/tiles/${data.image}`;
             map.sound = data.sound ? `/games/${this.gameId}/assets/sounds/${data.sound}` : map.sound;
             // map.snapshot = `/games/${this.gameId}/assets/snapshots/${map.id}.png`;
@@ -260,6 +261,7 @@ class DB {
             map.tileheight = Number( data.tileheight );
             map.height = map.tileheight * map.tilesize;
             map.width = map.tilewidth * map.tilesize;
+            map.cellauto = data.cellauto;
             map.image = `/games/${this.gameId}/assets/tiles/${data.image}`;
             map.sound = data.sound ? `/games/${this.gameId}/assets/sounds/${data.sound}` : map.sound;
             map.snapshot = `/games/${this.gameId}/assets/snapshots/${map.id}.png`;

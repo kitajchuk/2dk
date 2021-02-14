@@ -7,6 +7,7 @@ module.exports = {
     "tilewidth": 40,
     "tileheight": 32,
     "collider": 16,
+    "cellauto": false,
     "image": "",
     "snapshot": "",
     "thumbnail": "",
