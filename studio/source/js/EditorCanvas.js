@@ -479,7 +479,7 @@ class EditorCanvas {
             coord[ 1 ] * this.map.tilesize,
             this.map.tilesize,
             this.map.tilesize,
-            Config.colors.greyDark,
+            Config.colors.blueDark,
             0.5
         );
     }
