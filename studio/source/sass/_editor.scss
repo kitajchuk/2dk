@@ -81,7 +81,7 @@
     overflow: hidden;
 }
 #editor-tileset-box {
-    height: calc( 100vh - 47px - 47px - 47px - 47px - 32px - 32px - 161px - 16px - 16px - 50px );
+    height: calc( 100vh - (47px * 5) - 32px - 32px - 161px - 16px - 16px - 50px );
     width: 100%;
 }
 #editor-preview-box {
@@ -113,9 +113,7 @@
     position: absolute;
     pointer-events: none;
 }
-#editor-mapgrid-canvas {
-    display: none;
-}
+#editor-mapgrid-canvas,
 #editor-collider-canvas {
     display: none;
 }
@@ -320,12 +318,14 @@
 
     &.is-background,
     &.is-foreground,
-    &.is-collision {
+    &.is-collision,
+    &.is-selection {
         cursor: crosshair;
     }
 
     &.is-background,
-    &.is-foreground {
+    &.is-foreground,
+    &.is-selection {
         #editor-mapgrid-canvas {
             display: block;
         }
@@ -363,11 +363,16 @@
     z-index: 1;
     pointer-events: none;
 }
+.editor__objects {
+    z-index: 2; // This is dynamic in the player engine (toggle bg/fg based on hero position)
+    pointer-events: none;
+}
 .editor__foreground {
     z-index: 3;
     pointer-events: none;
 }
-.editor__collision {
+.editor__collision,
+.editor__selection {
     z-index: 4;
     pointer-events: none;
 }

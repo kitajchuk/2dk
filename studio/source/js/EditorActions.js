@@ -16,6 +16,8 @@ class EditorActions {
         const $document = $( document );
 
         $document.on( "keydown", ( e ) => {
+            // console.log( "keydown", e );
+
             if ( this.editor.canMapFunction() ) {
                 const test = $( `.js-edit-action[data-key="${e.which}"]` );
 
@@ -41,6 +43,7 @@ class EditorActions {
         if ( elem.is( ".is-active" ) ) {
             this.mode = null;
             this.elements.removeClass( "is-active" );
+            this.editor.canvas.clearSelection();
 
         } else {
             this.elements.removeClass( "is-active" );
@@ -51,6 +54,10 @@ class EditorActions {
             // Consider: You want to select a tile and then go through your map erasing tiles and painting the new tile
             if ( this.mode === Config.EditorActions.modes.BUCKET || this.mode === Config.EditorActions.modes.ERASE ) {
                 this.editor.canvas.clearTileset();
+            }
+
+            if ( this.mode !== Config.EditorActions.modes.SELECT ) {
+                this.editor.canvas.clearSelection();
             }
         }
     }

@@ -7,7 +7,7 @@
         "resolution": 1,
         "fullscreen": false,
         "icon": "/games/cellauto/icon.png",
-        "save": 17,
+        "save": 23,
         "release": 1,
         "plugin": "topview"
     },
@@ -197,8 +197,9 @@
     "bundle": [
         "/games/cellauto/assets/tiles/tiles.png",
         "/games/cellauto/assets/sprites/hero_la.png",
-        "/games/cellauto/assets/sounds/bgm-overworld.mp3",
         "/games/cellauto/assets/sounds/sfx-jump.mp3",
+        "/games/cellauto/assets/sounds/bgm-overworld.mp3",
+        "/games/cellauto/maps/world-1-2.json",
         "/games/cellauto/maps/world-1-1.json"
     ]
 }

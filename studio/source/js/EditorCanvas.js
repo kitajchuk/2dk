@@ -3,6 +3,7 @@ const Config = require( "./Config" );
 // const Cache = require( "./Cache" );
 const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 const { MapLayer } = require( "../../../source/2dk/js/lib/Map" );
+const { ipcRenderer } = require( "electron" );
 const Utils = require( "../../../source/2dk/js/lib/Utils" );
 const Loader = require( "../../../source/2dk/js/lib/Loader" );
 const EditorCellAuto = require( "./EditorCellAuto" );
@@ -22,6 +23,17 @@ const clearTile = ( ctx, x, y, w, h ) => {
         h
     );
 };
+const sortCoords = ( cA, cB ) => {
+    if ( cA[ 1 ] < cB[ 1 ] ) {
+        return -1;
+
+    } else if ( cA[ 1 ] === cB[ 1 ] && cA[ 0 ] < cB[ 0 ] ) {
+        return -1;
+
+    } else {
+        return 1;
+    }
+};
 
 
 
@@ -33,6 +45,7 @@ class EditorCanvas {
         this.mode = null;
         this.map = null;
         this.tilesetCoords = [];
+        this.selectionCoords = [];
         this.isZoomable = false;
         this.isSpacebar = false;
         this.isMouseDownTiles = false;
@@ -52,16 +65,18 @@ class EditorCanvas {
             background: document.getElementById( "editor-bg" ),
             foreground: document.getElementById( "editor-fg" ),
             collision: document.getElementById( "editor-c" ),
+            selection: document.getElementById( "editor-sel" ),
             mapgrid: document.getElementById( "editor-mapgrid" ),
         };
         this.contexts = {
             background: null,
             foreground: null,
             collision: null,
+            selection: null,
         };
         this.canvases = {
-            collider: document.getElementById( "editor-collider-canvas" ),
             mapgrid: document.getElementById( "editor-mapgrid-canvas" ),
+            collider: document.getElementById( "editor-collider-canvas" ),
             tilegrid: document.getElementById( "editor-tilegrid-canvas" ),
             tilepaint: document.getElementById( "editor-tilepaint-canvas" ),
             preview: document.getElementById( "editor-preview-canvas" ),
@@ -78,6 +93,7 @@ class EditorCanvas {
 
         this.bindEvents();
         this.bindCellauto();
+        this.bindMenuEvents();
     }
 
 
@@ -144,15 +160,18 @@ class EditorCanvas {
             this.isDraggableAlive = false;
             this.currentTileCoord = null;
             this.tilesetCoords = [];
+            this.selectionCoords = [];
             this.map = null;
             this.mode = null;
             this.contexts.background = null;
             this.contexts.foreground = null;
             this.contexts.collision = null;
+            this.contexts.selection = null;
             this.dom.tileset.src = "";
             this.layers.background.innerHTML = "";
             this.layers.foreground.innerHTML = "";
             this.layers.collision.innerHTML = "";
+            this.layers.selection.innerHTML = "";
             this.dom.$canvasPane.removeClass( "is-loaded" );
 
             // CellAuto?
@@ -171,10 +190,14 @@ class EditorCanvas {
         // Empty tileset tiles
         this.tilesetCoords = [];
 
+        // Empty the selection coords
+        this.selectionCoords = [];
+
         // Clean up last map in DOM, prolly already happened with this.reset()
         this.layers.background.innerHTML = "";
         this.layers.foreground.innerHTML = "";
         this.layers.collision.innerHTML = "";
+        this.layers.selection.innerHTML = "";
 
         // Create new map layers
         this.contexts.background = new MapLayer({
@@ -198,6 +221,13 @@ class EditorCanvas {
             width: this.map.width,
             height: this.map.height
         });
+        this.contexts.selection = new MapLayer({
+            id: "selection",
+            map: this.map,
+            cash: false,
+            width: this.map.width,
+            height: this.map.height
+        });
 
         // CellAuto registration
         if ( this.map.cellauto ) {
@@ -211,10 +241,13 @@ class EditorCanvas {
         this.contexts.foreground.canvas.style.height = `${this.map.height}px`;
         this.contexts.collision.canvas.style.width = `${this.map.width}px`;
         this.contexts.collision.canvas.style.height = `${this.map.height}px`;
+        this.contexts.selection.canvas.style.width = `${this.map.width}px`;
+        this.contexts.selection.canvas.style.height = `${this.map.height}px`;
 
         this.layers.background.appendChild( this.contexts.background.canvas );
         this.layers.foreground.appendChild( this.contexts.foreground.canvas );
         this.layers.collision.appendChild( this.contexts.collision.canvas );
+        this.layers.selection.appendChild( this.contexts.selection.canvas );
 
         this.canvases.mapgrid.width = this.map.width;
         this.canvases.mapgrid.height = this.map.height;
@@ -247,6 +280,7 @@ class EditorCanvas {
         this.clearCanvas( this.contexts.background.canvas );
         this.clearCanvas( this.contexts.foreground.canvas );
         this.clearCanvas( this.contexts.collision.canvas );
+        this.clearCanvas( this.contexts.selection.canvas );
         this.clearCanvas( this.canvases.mapgrid );
 
         Utils.drawGridLines(
@@ -438,11 +472,43 @@ class EditorCanvas {
     }
 
 
+    applySelection ( coord ) {
+        renderTile(
+            this.contexts.selection.context,
+            coord[ 0 ] * this.map.tilesize,
+            coord[ 1 ] * this.map.tilesize,
+            this.map.tilesize,
+            this.map.tilesize,
+            Config.colors.greyDark,
+            0.5
+        );
+    }
+
+
+    clearSelection () {
+        this.selectionCoords.forEach(( coord ) => {
+            clearTile(
+                this.contexts.selection.context,
+                coord[ 0 ] * this.map.tilesize,
+                coord[ 1 ] * this.map.tilesize,
+                this.map.tilesize,
+                this.map.tilesize
+            );
+        });
+        this.selectionCoords = [];
+    }
+
+
     setActiveLayer ( layer ) {
-        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision" );
+        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-objects" );
+        this.dom.$canvasPane.removeClass( "is-selection" );
 
         if ( layer ) {
             this.dom.$canvasPane.addClass( `is-${layer}` );
+        }
+
+        if ( this.canApplySelection() ) {
+            this.dom.$canvasPane.addClass( "is-selection" );
         }
     }
 
@@ -514,17 +580,13 @@ class EditorCanvas {
 
     pushCoords ( coords ) {
         this.tilesetCoords.push( coords );
-        this.tilesetCoords = this.tilesetCoords.sort(( cA, cB ) => {
-            if ( cA[ 1 ] < cB[ 1 ] ) {
-                return -1;
+        this.tilesetCoords = this.tilesetCoords.sort( sortCoords );
+    }
 
-            } else if ( cA[ 1 ] === cB[ 1 ] && cA[ 0 ] < cB[ 0 ] ) {
-                return -1;
 
-            } else {
-                return 1;
-            }
-        });
+    pushSelection ( coords ) {
+        this.selectionCoords.push( coords );
+        this.selectionCoords = this.selectionCoords.sort( sortCoords );
     }
 
 
@@ -772,7 +834,7 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mousedown", ( e ) => {
-            if ( this.editor.canMapFunction() && this.editor.actions.mode !== Config.EditorActions.modes.ERASE ) {
+            if ( this.editor.canMapFunction() && this.editor.actions.mode !== Config.EditorActions.modes.ERASE && this.editor.actions.mode !== Config.EditorActions.modes.SELECT ) {
                 this.isMouseDownTiles = true;
                 this.isMouseMovedTiles = false;
 
@@ -875,9 +937,27 @@ class EditorCanvas {
             this.dom.moveCoords.innerHTML = "( X, Y )";
         });
 
-        $mapgrid.on( "mousedown", () => {
+        $mapgrid.on( "mousedown", ( e ) => {
+            // Right click mouse button
+            // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+            if ( e.button === 2 ) {
+                this.isMouseDownCanvas = false;
+                return;
+            }
+
             if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCanvas = true;
+
+                const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
+
+                if ( this.canApplySelection() ) {
+                    const foundCoord = this.selectionCoords.find( ( coord ) => coord[ 0 ] === coords[ 0 ] && coord[ 1 ] === coords[ 1 ] );
+
+                    if ( !foundCoord ) {
+                        this.applySelection( coords );
+                        this.pushSelection( coords );
+                    }
+                }
             }
         });
 
@@ -890,11 +970,23 @@ class EditorCanvas {
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
-            this.showCanvasCursor( coords );
+            if ( this.editor.canMapFunction() ) {
+                if ( this.isMouseDownCanvas ) {
+                    if ( this.canApplySelection() ) {
+                        const foundCoord = this.selectionCoords.find( ( coord ) => coord[ 0 ] === coords[ 0 ] && coord[ 1 ] === coords[ 1 ] );
 
-            if ( this.editor.canMapFunction() && this.isMouseDownCanvas ) {
-                if ( this.canApplyLayer() ) {
-                    this.applyLayer( this.editor.layers.mode, coords );
+                        if ( !foundCoord ) {
+                            this.applySelection( coords );
+                            this.pushSelection( coords );
+                        }
+
+                    } else if ( this.canApplyLayer() ) {
+                        this.applyLayer( this.editor.layers.mode, coords );
+                    }
+                } else {
+                    if ( this.canApplyLayer() ) {
+                        this.showCanvasCursor( coords );
+                    }
                 }
             }
         });
@@ -915,6 +1007,33 @@ class EditorCanvas {
             this.dom.moveCoords.innerHTML = "( X, Y )";
 
             this.hideCanvasCursor();
+        });
+
+        $mapgrid.on( "contextmenu", ( e ) => {
+            e.preventDefault();
+
+            this.isMouseDownCanvas = false;
+
+            if ( this.canApplySelection() ) {
+                ipcRenderer.send( "renderer-contextmenu" );
+            }
+        });
+    }
+
+
+    bindMenuEvents () {
+        ipcRenderer.on( "menu-contextmenu", ( e, action ) => {
+            this.isMouseDownCanvas = false;
+
+            if ( action === "clear" ) {
+                this.clearSelection();
+
+            } else if ( action === "convert" ) {
+                console.log( e, action );
+
+            } else if ( action === "revert" ) {
+                console.log( e, action );
+            }
         });
     }
 
@@ -940,6 +1059,14 @@ class EditorCanvas {
                 0
             )
         `;
+    }
+
+
+    canApplySelection () {
+        return (
+            this.editor.actions.mode === Config.EditorActions.modes.SELECT &&
+            (this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND)
+        );
     }
 
 

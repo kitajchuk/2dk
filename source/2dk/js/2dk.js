@@ -4,16 +4,31 @@
 * Studio Software
 ********************************************************************************
 
+
+* Map models...
+* Map Active Tiles (group, layer, coords, offsetX, offsetY, stepsX?, action?, attack?)
 * Map Spawnpoints (x, y, dir)
+* Map Ojbects, Sprites & NPCs (id, ai, spawn, payload)
+* Map CellAuto registration UI
 * Map Events (coords, type, map, dir, spawn?)
 * Map FX Maker
 * Map NPC Maker
 * Map Hero Maker (companion?)
-* Map NPCs (id, ai, spawn, payload)
-* Map Tiles (group, layer, coords, offsetX, offsetY, stepsX?, action?, attack?)
+* Quest status system
+* Refactor dialogue(s) system for quest status
+
+
+* Resolution rendering
+* External storage
+* Engine upgrades
+* Software upgrades
+* Distribution
+* Software player (...debugger)
+* Code docs (framework?)
+* Code unit tests (framework?)
+
+
 * Map collider should be dynamic (precision: 4)
-
-
 * Uploads with progress, bulk uploads?
 * History states for painting (undo/redo)
 

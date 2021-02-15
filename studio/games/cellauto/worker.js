@@ -1,11 +1,12 @@
-const CACHE_NAME = "v17";
+const CACHE_NAME = "v23";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/cellauto/game.json",
     "/games/cellauto/assets/tiles/tiles.png",
     "/games/cellauto/assets/sprites/hero_la.png",
-    "/games/cellauto/assets/sounds/bgm-overworld.mp3",
     "/games/cellauto/assets/sounds/sfx-jump.mp3",
+    "/games/cellauto/assets/sounds/bgm-overworld.mp3",
+    "/games/cellauto/maps/world-1-2.json",
     "/games/cellauto/maps/world-1-1.json",
 ];
 

@@ -1,5 +1,5 @@
 const isMac = (process.platform === "darwin");
-const { app, Menu, ipcMain } = require( "electron" );
+const { app, Menu, MenuItem, ipcMain } = require( "electron" );
 const DB = require( "./source/js/DB" );
 
 // Global mainWindow
@@ -261,6 +261,28 @@ const setMenu = () => {
         getHelpMenu(),
     ]));
 };
+const contextMenu = (() => {
+    return Menu.buildFromTemplate([
+        {
+            label: "Convert to Active Tiles",
+            click () {
+                mainWindow.webContents.send( "menu-contextmenu", "convert" );
+            },
+        },
+        {
+            label: "Revert from Active Tiles",
+            click ( menuItem, browserWindow, event ) {
+                mainWindow.webContents.send( "menu-contextmenu", "revert" );
+            },
+        },
+        {
+            label: "Clear Selection",
+            click ( menuItem, browserWindow, event ) {
+                mainWindow.webContents.send( "menu-contextmenu", "clear" );
+            },
+        },
+    ]);
+})();
 
 // Listen for events from the ipcRenderer
 ipcMain.on( "renderer-unload", ( event, data ) => {
@@ -337,6 +359,12 @@ ipcMain.on( "renderer-savemap", ( event, data ) => {
     dBase.updateMap( data ).then(( response ) => {
         activeMaps = response.maps;
         setMenu();
+    });
+});
+
+ipcMain.on( "renderer-contextmenu", ( event ) => {
+    contextMenu.popup({
+        window: mainWindow,
     });
 });
 

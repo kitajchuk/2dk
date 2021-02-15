@@ -17,6 +17,7 @@
                     <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
                     <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
                     <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
+                    <div class="editor__canvas__layer editor__selection" id="editor-sel"></div>
                     <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
                         <canvas class="canvas layer layer--grid" id="editor-mapgrid-canvas"></canvas>
                         <canvas class="canvas layer layer--grid" id="editor-collider-canvas"></canvas>
@@ -71,6 +72,11 @@
                         <span>Foreground</span>
                         <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer" data-layer="foreground"></span>
                     </div>
+                    <div class="editor__layer js-edit-layer" data-layer="objects">
+                        <span class="icon icon--nudge icon--layers"></span>
+                        <span>Objects</span>
+                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer" data-layer="objects"></span>
+                    </div>
                     <div class="editor__layer js-edit-layer" data-layer="background">
                         <span class="icon icon--nudge icon--layers"></span>
                         <span>Background</span>
@@ -115,6 +121,9 @@
                         </button>
                         <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Erase (E)">
                             <span class="icon icon--content_cut"></span>
+                        </button>
+                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select (X)">
+                            <span class="icon icon--zoom_out_map"></span>
                         </button>
                     </div>
                 </div>
