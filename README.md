@@ -8,8 +8,75 @@
 
 
 
+## Development roadmap
+
+* Code docs (framework?)
+* Code unit tests (framework?)
+
+#### Studio Software
+* Game configure starting data hero (spawn, map, sounds, companion, sprite)
+* Map Active Tiles (group, layer, coords, offsetX, offsetY, dur, stepsX, action, attack)
+* Map Spawnpoints (x, y, dir)
+* Map Ojbects, Sprites & NPCs (id, ai, spawn, payload)
+* Map CellAuto registration UI
+* Map Events (coords, type, map, dir, spawn?)
+* Map FX Maker
+* Map NPC Maker
+* Map Hero Maker (companion?)
+* Quest status system
+* Refactor dialogue(s) system for quest status
+* Resolution rendering
+* External storage
+* Engine upgrades
+* Software upgrades
+* Distribution
+* Software player (...debugger)
+* Map collider should be dynamic (precision: 4)
+* Uploads with progress, bulk uploads?
+* History states for painting (undo/redo)
+
+#### Game Engine
+* HUD (health, item, status)
+* Menus (inventory, worldmap, save, etc...)
+* Quest (items, key items, weapons, story, cutscenes)
+* Save State (local storage, persistence?)
+* Audio (mobile has issues...)
+* GameCycle manager for states (intro, title, credits, cutscenes etc...)
+* Render foreground textures to background if BEHIND Hero?
+* Hero weapon animations / collisions (sword...?)
+* Tile interactions (fall, etc...)
+* Hero sprite masking?
+* Grass sprite cycle / sound
+* Water sprite cycle / sound
+* Sword sprite cycle / sound / collision
+* Push / Pull
+* Swimming
+* Falling
+* Attacking & Weapons
+* Charged Hero + Release Attack
+* Move resistance (pushing, tiles, etc...)
+* Object interaction hints (A Open, A Check, etc...)
+
+#### NPC AIs
+* Butterflies / Bugs
+* Perception box (aggro-ranges)
+* Projectiles (with FX)
+* Enemies (Baddies)
+
+#### Multiplayer (MMO)
+* Multiplayer online
+    * Websocket player streaming (broadcast)
+    * Websocket server deploys (Clutch AWS)
+    * Lambda (Port Netlify functions to AWS Lambda)
+    * JWT token in-memory client storage (fully private?)
+* Versioned game package tar balls (releases)
+    * Requires a difference between saves / releases
+    * Implement "Package Release" button to create tar ball
+
+
+
 ## Getting started
-This source code is using the [Clutch SDK](), another repository I manage. To get started with the 2dk source, clone this repo and then:
+This source code is using the [Clutch SDK](https://github.com/kitajchuk/clutch). To develop clone this repo and then:
 
 ```shell
 # Bootstrap the Clutch environment
@@ -17,9 +84,6 @@ npm run bootstrap
 
 # Run the dev server and watch scripts
 npm start
-
-# Run the netlify dev server for Lambda
-netlify dev
 ```
 
 
@@ -28,11 +92,18 @@ netlify dev
 The studio software is an [Electron](https://www.electronjs.org/) application. Currently there are no package scripts for the software distribution as the project is still in what I would consider pre-beta development. For source execution:
 
 ```shell
+# Move to the studio project tree
 # Install the software dependencies
 cd studio && npm i
 
+# Move back to the project root for dev scripts
+cd ../
+
 # Runs the Electron application
 npm run studio
+
+# Runs the 2dk webpack config (shared for clutch and software)
+npm run watch
 ```
 
 **It's important to note I take no credit for the Nintendo IPs used for testing nor for the artwork and designs. All I've done is increased the resolution of sprites and tilesets I've compiled from the internet.**
@@ -50,7 +121,6 @@ I've found the [Mozilla Gaming](https://developer.mozilla.org/en-US/docs/Games) 
 
 #### Fullscreen mode:
 ![image](./static/img/screens/mobile2.png)
-
 
 #### Painting maps
 ![image](./static/img/screens/mabevillage.png)
