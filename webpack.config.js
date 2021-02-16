@@ -46,20 +46,25 @@ const webpackConfig = {
 
 
 
-const siteConfig = Object.assign( {}, webpackConfig, {
-    plugins: [
-        new ESLintPlugin({
-            emitError: true,
-            emitWarning: false,
-            failOnError: true,
-            quiet: true,
-            context: path.resolve( __dirname, "source" ),
-            exclude: [
-                "node_modules",
-            ],
-        }),
+const sitePlugins = [
+    new ESLintPlugin({
+        emitError: true,
+        emitWarning: false,
+        failOnError: true,
+        quiet: true,
+        context: path.resolve( __dirname, "source" ),
+        exclude: [
+            "node_modules",
+        ],
+    }),
+];
+
+
+
+if ( process.env.CLUTCH_ENV === "server" ) {
+    sitePlugins.push(
         new BrowserSyncPlugin({
-            open: true,
+            open: false,
             host: "localhost",
             port: config.browser.port,
             proxy: `http://localhost:${config.express.port}`,
@@ -68,7 +73,13 @@ const siteConfig = Object.assign( {}, webpackConfig, {
                 "template/**/*.json"
             ],
         })
-    ],
+    );
+}
+
+
+
+const siteConfig = Object.assign( {}, webpackConfig, {
+    plugins: sitePlugins,
 
 
     entry: {
