@@ -16,15 +16,8 @@ const rootConfig = require( "./clutch.root" );
 
 
 
-// Fresh `node_modules`
-console.log( "[Clutch] Installing node_modules..." );
-
-child_process.execSync( "npm i" );
-
-
-
 // Create sandbox
-console.log( "[Clutch] Creating .clutch directory..." );
+console.log( "[Clutch] Creating .clutch config..." );
 
 if ( !fs.existsSync( rootClutch ) ) {
     child_process.execSync( `mkdir ${rootClutch}` );
@@ -35,5 +28,5 @@ if ( !fs.existsSync( rootClutch ) ) {
 
 
 
-// 6.0 done
+// Done!
 console.log( "[Clutch] Install complete!" );

@@ -79,10 +79,10 @@
 This source code is using the [Clutch SDK](https://github.com/kitajchuk/clutch). To develop clone this repo and then:
 
 ```shell
-# Bootstrap the Clutch environment
-npm run bootstrap
+# Clutch install
+npm i
 
-# Run the dev server and watch scripts
+# PM2 server / Webpack watcher
 npm start
 ```
 
@@ -92,17 +92,13 @@ npm start
 The studio software is an [Electron](https://www.electronjs.org/) application. Currently there are no package scripts for the software distribution as the project is still in what I would consider pre-beta development. For source execution:
 
 ```shell
-# Move to the studio project tree
 # Install the software dependencies
-cd studio && npm i
-
-# Move back to the project root for dev scripts
-cd ../
+npm i studio
 
 # Runs the Electron application
 npm run studio
 
-# Runs the 2dk webpack config (shared for clutch and software)
+# Webpack watcher
 npm run watch
 ```
 

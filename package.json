@@ -19,12 +19,11 @@
   ],
   "private": true,
   "scripts": {
-    "postinstall": "npm run bootstrap:hobo",
+    "postinstall": "node clutch.install.js ; npm run hobo",
     "prestart": "npm run static:games",
-    "bootstrap": "node clutch.install.js",
-    "bootstrap:hobo": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
-    "studio": "cd studio && npm start",
     "start": "export CLUTCH_ENV=server ; (npm run server & npm run watch:webpack & npm run watch:games)",
+    "hobo": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
+    "studio": "cd studio && npm start",
     "watch": "export CLUTCH_ENV=watcher ; (npm run watch:webpack & npm run watch:games)",
     "watch:games": "export NODE_ENV=sandbox ; ./node_modules/.bin/chokidar \"studio/games/**/*.json\" -c \"npm run static:games\"",
     "watch:webpack": "export NODE_ENV=sandbox ; ./node_modules/.bin/webpack --env.sandbox --hide-modules --colors --watch",
@@ -39,6 +38,7 @@
     "sess:clean": "rm -rf ./sessions/*"
   },
   "dependencies": {
+    "2dk-studio": "file:studio",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "consolidate": "^0.15.1",
