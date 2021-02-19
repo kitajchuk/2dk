@@ -17,7 +17,7 @@
 * Game configure starting data hero (spawn, map, sounds, companion, sprite)
 * Map Active Tiles (group, layer, coords, offsetX, offsetY, dur, stepsX, action, attack)
 * Map Spawnpoints (x, y, dir)
-* Map Ojbects, Sprites & NPCs (id, ai, spawn, payload)
+* Map Objects, Sprites & NPCs (id, ai, spawn, payload)
 * Map CellAuto registration UI
 * Map Events (coords, type, map, dir, spawn?)
 * Map FX Maker
