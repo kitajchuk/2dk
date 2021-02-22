@@ -3,6 +3,7 @@ const EditorLayers = require( "./EditorLayers" );
 const EditorCanvas = require( "./EditorCanvas" );
 const EditorUtils = require( "./EditorUtils" );
 const Config = require( "./Config" );
+const ConfigLib = require( "../../../source/2dk/js/lib/Config" );
 const Cache = require( "./Cache" );
 const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 const { ipcRenderer } = require( "electron" );
@@ -25,6 +26,7 @@ class Editor {
             closeSettings: $( ".js-close-settings" ),
             cancelPost: $( ".js-post-cancel" ),
             savePost: $( ".js-post-save" ),
+            updatePost: $( ".js-post-update" ),
             uploadFiles: $( ".js-upload-file" ),
             cancelUpload: $( ".js-upload-cancel" ),
             deleteUpload: $( ".js-upload-delete" ),
@@ -42,26 +44,44 @@ class Editor {
             maps: $( ".js-select-map" ),
             tiles: $( ".js-select-tiles" ),
             sounds: $( ".js-select-sound" ),
+            actions: $( ".js-select-action" ),
         };
         this.menus = {
             all: $( ".js-menu" ),
             activeMap: $( "#editor-active-map-menu" ),
             activeGame: $( "#editor-active-game-menu" ),
+            activeTiles: $( "#editor-activetiles-menu" ),
         };
         this.fields = {
             map: $( ".js-map-field" ),
             addMap: $( ".js-addmap-field" ),
             addGame: $( ".js-addgame-field" ),
+            activeTile: $( ".js-activetile-field" ),
         };
 
-        // Show UI
         this.display();
-
-        // bind events
         this.bindEvents();
-
-        // bind menu events from Electron
         this.bindMenuEvents();
+        this.bindeFileEvents();
+        this.bindDocumentEvents();
+    }
+
+
+    display () {
+        setTimeout(() => {
+            this.dom.root[ 0 ].className = "";
+
+        }, 1000 );
+    }
+
+
+    done () {
+        this.mode = null;
+
+        setTimeout(() => {
+            this.dom.root[ 0 ].className = "";
+
+        }, 1000 );
     }
 
 
@@ -132,7 +152,6 @@ class Editor {
         this.mode = Config.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-game";
 
-
         ipcRenderer.send( "renderer-newgame", postData );
         this.closeMenus();
         this.done();
@@ -146,21 +165,8 @@ class Editor {
     }
 
 
-    display () {
-        setTimeout(() => {
-            this.dom.root[ 0 ].className = "";
-
-        }, 1000 );
-    }
-
-
-    done () {
-        this.mode = null;
-
-        setTimeout(() => {
-            this.dom.root[ 0 ].className = "";
-
-        }, 1000 );
+    loadMapMenus () {
+        EditorUtils.buildSelectMenu( this.selects.actions, ConfigLib.verbs );
     }
 
 
@@ -242,6 +248,7 @@ class Editor {
     }
 
 
+    /* @todo: Remove this method (no longer in use as "cleanTiles" is more performant during layer updates)
     cleanMap () {
         for ( const l in this.data.map.textures ) {
             if ( Object.prototype.hasOwnProperty.call( this.data.map.textures, l ) ) {
@@ -256,6 +263,7 @@ class Editor {
             }
         }
     }
+    */
 
 
     updateMapLayer ( layer, coords, coordMap ) {
@@ -295,14 +303,20 @@ class Editor {
 
     closeMenus () {
         this.menus.all.removeClass( "is-active" );
+        this.actions.enableKeys();
     }
 
 
     clearMenu ( menu ) {
         const inputs = menu.find( ".editor__field, .select__field" );
+        const checks = menu.find( ".check" );
 
         inputs.forEach(( input ) => {
             input.value = "";
+        });
+
+        checks.forEach(( check ) => {
+            check.checked = false;
         });
     }
 
@@ -431,6 +445,7 @@ class Editor {
         } else {
             this.closeMenus();
             menu.addClass( "is-active" );
+            this.actions.disableKeys();
         }
     }
 
@@ -571,6 +586,7 @@ class Editor {
 
         ipcRenderer.on( "menu-loadmap", ( e, map ) => {
             this.loadMap( map );
+            this.loadMapMenus();
             this._loadoutClear();
         });
 
@@ -585,7 +601,7 @@ class Editor {
     }
 
 
-    bindEvents () {
+    bindDocumentEvents () {
         const $document = $( document );
 
         $document.on( "click", ".js-game-tile", ( e ) => {
@@ -601,10 +617,30 @@ class Editor {
             this._loadoutClear();
         });
 
-        this.selects.all.on( "change", () => {
-            this.blurSelectMenus();
-        });
+        $document.on( "click", ".js-sound-button", ( e ) => {
+            if ( !this.canGameFunction() ) {
+                return false;
+            }
 
+            const targ = $( e.target );
+            const button = targ.is( ".js-sound-button" ) ? targ : targ.closest( ".js-sound-button" );
+            const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
+
+            if ( button.is( ".icon--pause_circle_outline" ) ) {
+                button.removeClass( "icon--pause_circle_outline" );
+                button.addClass( "icon--play_circle_outline" );
+
+            } else {
+                button.removeClass( "icon--play_circle_outline" );
+                button.addClass( "icon--pause_circle_outline" );
+            }
+
+            EditorUtils.processSound( sampler, this.data.game.id );
+        });
+    }
+
+
+    bindeFileEvents () {
         this.dom.uploadFiles.on( "change", ( e ) => {
             const targ = $( e.target );
             const elem = targ.is( ".js-upload-file" ) ? targ : targ.closest( ".js-upload-file" );
@@ -619,6 +655,76 @@ class Editor {
             document.getElementById( data.target ).value = elem[ 0 ].value;
         });
 
+        this.dom.cancelUpload.on( "click", ( e ) => {
+            if ( !this.canGameFunction() ) {
+                return false;
+            }
+
+            const targ = $( e.target );
+            const elem = targ.is( ".js-upload-cancel" ) ? targ : targ.closest( ".js-upload-cancel" );
+
+            this.closeMenus();
+            this.clearMenu( elem.closest( ".js-menu" ) );
+        });
+
+        this.dom.deleteUpload.on( "click", ( e ) => {
+            if ( !this.canGameFunction() ) {
+                return false;
+            }
+
+            const targ = $( e.target );
+            const button = targ.is( ".js-upload-delete" ) ? targ : targ.closest( ".js-upload-delete" );
+            const menu = button.closest( ".js-upload-menu" );
+            const select = menu.find( ".js-select-delete" );
+            const postData = {
+                type: button.data().type,
+                fileName: select[ 0 ].value
+            };
+
+            if ( confirm( `Sure you want to delete the file "${select[ 0 ].value}"? This may affect other data referencing this file.` ) ) {
+                this.mode = Config.Editor.modes.SAVING;
+                this.dom.root[ 0 ].className = "is-deleting-file";
+
+                ipcRenderer.send( "renderer-deletefile", postData );
+                this.closeMenus();
+                this.done();
+            }
+        });
+
+        this.dom.saveUpload.on( "click", ( e ) => {
+            if ( !this.canGameFunction() ) {
+                return false;
+            }
+
+            const targ = $( e.target );
+            const button = targ.is( ".js-upload-save" ) ? targ : targ.closest( ".js-upload-save" );
+            const menu = button.closest( ".js-upload-menu" );
+            const fileInput = menu.find( ".js-upload-file" );
+            const fileField = menu.find( ".js-upload-field" );
+            const postData = {
+                id: this.data.game.id,
+                type: button.data().type,
+            };
+
+            this.mode = Config.Editor.modes.SAVING;
+            this.dom.root[ 0 ].className = "is-saving-file";
+
+            this.readFile( fileInput ).then(( response ) => {
+                postData.fileName = response.fileName;
+                postData.fileData = response.fileData;
+                ipcRenderer.send( "renderer-newfile", postData );
+                fileField[ 0 ].value = "";
+                this.closeMenus();
+                this.done();
+            });
+        });
+    }
+
+
+    bindEvents () {
+        this.selects.all.on( "change", () => {
+            this.blurSelectMenus();
+        });
 
         this.selects.sounds.on( "change", ( e ) => {
             if ( !this.canGameFunction() ) {
@@ -652,74 +758,6 @@ class Editor {
             this.clearMenu( elem.closest( ".js-menu" ) );
         });
 
-
-        this.dom.cancelUpload.on( "click", ( e ) => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
-
-            const targ = $( e.target );
-            const elem = targ.is( ".js-upload-cancel" ) ? targ : targ.closest( ".js-upload-cancel" );
-
-            this.closeMenus();
-            this.clearMenu( elem.closest( ".js-menu" ) );
-        });
-
-
-        this.dom.deleteUpload.on( "click", ( e ) => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
-
-            const targ = $( e.target );
-            const button = targ.is( ".js-upload-delete" ) ? targ : targ.closest( ".js-upload-delete" );
-            const menu = button.closest( ".js-upload-menu" );
-            const select = menu.find( ".js-select-delete" );
-            const postData = {
-                type: button.data().type,
-                fileName: select[ 0 ].value
-            };
-
-            if ( confirm( `Sure you want to delete the file "${select[ 0 ].value}"? This may affect other data referencing this file.` ) ) {
-                this.mode = Config.Editor.modes.SAVING;
-                this.dom.root[ 0 ].className = "is-deleting-file";
-
-                ipcRenderer.send( "renderer-deletefile", postData );
-                this.closeMenus();
-                this.done();
-            }
-        });
-
-
-        this.dom.saveUpload.on( "click", ( e ) => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
-
-            const targ = $( e.target );
-            const button = targ.is( ".js-upload-save" ) ? targ : targ.closest( ".js-upload-save" );
-            const menu = button.closest( ".js-upload-menu" );
-            const fileInput = menu.find( ".js-upload-file" );
-            const fileField = menu.find( ".js-upload-field" );
-            const postData = {
-                id: this.data.game.id,
-                type: button.data().type,
-            };
-
-            this.mode = Config.Editor.modes.SAVING;
-            this.dom.root[ 0 ].className = "is-saving-file";
-
-            this.readFile( fileInput ).then(( response ) => {
-                postData.fileName = response.fileName;
-                postData.fileData = response.fileData;
-                ipcRenderer.send( "renderer-newfile", postData );
-                fileField[ 0 ].value = "";
-                this.closeMenus();
-                this.done();
-            });
-        });
-
-
         this.dom.savePost.on( "click", ( e ) => {
             const targ = $( e.target );
             const elem = targ.is( ".js-post-save" ) ? targ : targ.closest( ".js-post-save" );
@@ -730,13 +768,16 @@ class Editor {
                 return false;
             }
 
-            const postData = (elemData.type === "game" ? EditorUtils.parseFields( this.fields.addGame ) : EditorUtils.parseFields( this.fields.addMap ));
+            const postData = (elemData.type === "game" ?
+                EditorUtils.parseFields( this.fields.addGame ) :
+                // "map" is the only post besides game...
+                EditorUtils.parseFields( this.fields.addMap ));
 
             if ( postData.name ) {
                 if ( elemData.type === "game" ) {
                     this.postGame( postData );
 
-                // Map is the only post besides game...
+                // "map" is the only post besides game...
                 } else {
                     this.postMap( postData );
                 }
@@ -745,28 +786,21 @@ class Editor {
             }
         });
 
+        this.dom.updatePost.on( "click", ( e ) => {
+            const targ = $( e.target );
+            const elem = targ.is( ".js-post-update" ) ? targ : targ.closest( ".js-post-update" );
+            const elemData = elem.data();
 
-        $document.on( "click", ".js-sound-button", ( e ) => {
-            if ( !this.canGameFunction() ) {
+            if ( !this.canMapFunction() ) {
                 return false;
             }
 
-            const targ = $( e.target );
-            const button = targ.is( ".js-sound-button" ) ? targ : targ.closest( ".js-sound-button" );
-            const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
+            if ( elemData.type === "activetiles" ) {
+                const activeTileData = EditorUtils.parseFields( this.fields.activeTile );
 
-            if ( button.is( ".icon--pause_circle_outline" ) ) {
-                button.removeClass( "icon--pause_circle_outline" );
-                button.addClass( "icon--play_circle_outline" );
-
-            } else {
-                button.removeClass( "icon--play_circle_outline" );
-                button.addClass( "icon--pause_circle_outline" );
+                this.canvas.applyActiveTiles( activeTileData );
             }
-
-            EditorUtils.processSound( sampler, this.data.game.id );
         });
-
 
         // this.dom.deleteMap.on( "click", ( e ) => {
         //     if ( !this.canMapFunction() ) {

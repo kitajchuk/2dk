@@ -264,21 +264,33 @@ const setMenu = () => {
 const contextMenu = (() => {
     return Menu.buildFromTemplate([
         {
-            label: "Convert to Active Tiles",
+            label: "Create Active Tiles",
             click () {
-                mainWindow.webContents.send( "menu-contextmenu", "convert" );
+                mainWindow.webContents.send( "menu-contextmenu", "create-activetiles" );
             },
         },
         {
-            label: "Revert from Active Tiles",
+            label: "Remove Active Tiles",
             click ( menuItem, browserWindow, event ) {
-                mainWindow.webContents.send( "menu-contextmenu", "revert" );
+                mainWindow.webContents.send( "menu-contextmenu", "remove-activetiles" );
             },
         },
         {
-            label: "Clear Selection",
+            label: "Select Matching Tiles",
             click ( menuItem, browserWindow, event ) {
-                mainWindow.webContents.send( "menu-contextmenu", "clear" );
+                mainWindow.webContents.send( "menu-contextmenu", "select-matching-tiles" );
+            },
+        },
+        {
+            label: "Deselect Tiles",
+            click ( menuItem, browserWindow, event ) {
+                mainWindow.webContents.send( "menu-contextmenu", "deselect-tiles" );
+            },
+        },
+        {
+            label: "Deselect Tile",
+            click ( menuItem, browserWindow, event ) {
+                mainWindow.webContents.send( "menu-contextmenu", "deselect-tile" );
             },
         },
     ]);

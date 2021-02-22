@@ -1,11 +1,28 @@
-const CACHE_NAME = "v23";
+const CACHE_NAME = "v47";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/cellauto/game.json",
     "/games/cellauto/assets/tiles/tiles.png",
+    "/games/cellauto/assets/tiles/inside.png",
+    "/games/cellauto/assets/sprites/npcs.png",
     "/games/cellauto/assets/sprites/hero_la.png",
+    "/games/cellauto/assets/sprites/hero_alttp.png",
+    "/games/cellauto/assets/sprites/fx.png",
+    "/games/cellauto/assets/sounds/sfx-throw.mp3",
+    "/games/cellauto/assets/sounds/sfx-smash.mp3",
+    "/games/cellauto/assets/sounds/sfx-pick-up.mp3",
     "/games/cellauto/assets/sounds/sfx-jump.mp3",
+    "/games/cellauto/assets/sounds/sfx-dropping.mp3",
+    "/games/cellauto/assets/sounds/sfx-chest-unlock.mp3",
+    "/games/cellauto/assets/sounds/sfx-bounce.mp3",
+    "/games/cellauto/assets/sounds/bgm-shop.mp3",
+    "/games/cellauto/assets/sounds/bgm-phone-booth.mp3",
     "/games/cellauto/assets/sounds/bgm-overworld.mp3",
+    "/games/cellauto/assets/sounds/bgm-mysterious-forest.mp3",
+    "/games/cellauto/assets/sounds/bgm-marins-house.mp3",
+    "/games/cellauto/assets/sounds/bgm-mabe-village.mp3",
+    "/games/cellauto/assets/sounds/bgm-house.mp3",
+    "/games/cellauto/assets/sounds/bgm-cave.mp3",
     "/games/cellauto/maps/world-1-2.json",
     "/games/cellauto/maps/world-1-1.json",
 ];

@@ -87,6 +87,17 @@ const EditorUtils = {
 
             dom[ i ].innerHTML = `<option value="">${dom[ i ].dataset.label}</option>`;
 
+            // Convert {object} to [array]
+            if ( !Array.isArray( data ) ) {
+                const arr = [];
+
+                for ( let i in data ) {
+                    arr.push( data[ i ] );
+                }
+
+                data = arr;
+            }
+
             data.forEach(( dt ) => {
                 const opt = document.createElement( "option" );
                 const label = (typeof dt === "object") ? dt.name : String( dt );

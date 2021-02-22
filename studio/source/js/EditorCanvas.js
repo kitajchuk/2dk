@@ -1,9 +1,8 @@
-// const EditorUtils = require( "./EditorUtils" );
-const Config = require( "./Config" );
-// const Cache = require( "./Cache" );
 const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 const { MapLayer } = require( "../../../source/2dk/js/lib/Map" );
 const { ipcRenderer } = require( "electron" );
+const Config = require( "./Config" );
+const ConfigLib = require( "../../../source/2dk/js/lib/Config" );
 const Utils = require( "../../../source/2dk/js/lib/Utils" );
 const Loader = require( "../../../source/2dk/js/lib/Loader" );
 const EditorCellAuto = require( "./EditorCellAuto" );
@@ -54,6 +53,7 @@ class EditorCanvas {
         this.isMouseDownCollider = false;
         this.isDraggableAlive = false;
         this.currentTileCoord = null;
+        this.contextCoords = null;
         this.dom = {
             moveCoords: document.getElementById( "editor-move-coords" ),
             canvasPane: document.getElementById( "editor-canvas-pane" ),
@@ -89,11 +89,13 @@ class EditorCanvas {
         this.draggable = this.getDraggable();
         this.draggable.disable();
 
-        this.hideCanvasCursor();
-
-        this.bindEvents();
         this.bindCellauto();
         this.bindMenuEvents();
+        this.bindMapgridEvents();
+        this.bindColliderEvents();
+        this.bindDocumentEvents();
+        this.bindTilepaintEvents();
+        this.hideCanvasCursor();
     }
 
 
@@ -499,6 +501,118 @@ class EditorCanvas {
     }
 
 
+    clearSelectionCoord ( coord ) {
+        clearTile(
+            this.contexts.selection.context,
+            coord[ 0 ] * this.map.tilesize,
+            coord[ 1 ] * this.map.tilesize,
+            this.map.tilesize,
+            this.map.tilesize
+        );
+    }
+
+
+    validateSelection () {
+        let testCoord = this.selectionCoords[ 0 ];
+        let testTexture;
+        const validation = {
+            valid: true,
+            alert: "",
+        };
+        const validTexture = this.map.textures[ this.editor.layers.mode ][ testCoord[ 1 ] ][ testCoord[ 0 ] ];
+
+        // Need to allow layered textures to be converted
+        // This means we need to reverse the Array order to look at the "top" tile
+        // E.g. A shrub on top of a dirt hole -- lift the shrub and toss it
+        // if ( validTexture.length > 1 ) {
+            // validation.valid = false;
+            // validation.alert = "You can only convert single texture tiles to Active Tiles.";
+        // }
+
+        for ( let i = this.selectionCoords.length; i--; ) {
+            testCoord = this.selectionCoords[ i ];
+            testTexture = this.map.textures[ this.editor.layers.mode ][ testCoord[ 1 ] ][ testCoord[ 0 ] ];
+
+            const testX = validTexture[ validTexture.length - 1 ][ 0 ] === testTexture[ validTexture.length - 1 ][ 0 ];
+            const testY = validTexture[ validTexture.length - 1 ][ 1 ] === testTexture[ validTexture.length - 1 ][ 1 ];
+
+            if ( !testX || !testY ) {
+                validation.valid = false;
+                validation.alert = "Selected tiles must all be the same in order to convert to Active Tiles.";
+                break;
+            }
+        }
+
+        return validation;
+    }
+
+
+    selectMatchingTiles ( coord ) {
+        console.log( "selectMatchingTiles", coord );
+    }
+
+
+    applyActiveTiles ( data ) {
+        // Offset X & Y are already known by selection tiles
+        const coord = this.selectionCoords[ 0 ];
+        const texture = this.map.textures[ this.editor.layers.mode ][ coord[ 1 ] ][ coord[ 0 ] ];
+
+        data.offsetX = texture[ texture.length - 1 ][ 0 ];
+        data.offsetY = texture[ texture.length - 1 ][ 1 ];
+
+        // Layer is determined by active layer in Sidebar
+        data.layer = this.editor.layers.mode;
+
+        // Coords is the current canvas selectionCoords
+        // Discover allows dynamic Active Tiles based on tileset position
+        if ( data.discover ) {
+            data.coords = [];
+            delete data.discover;
+
+        } else {
+            data.coords = this.selectionCoords;
+        }
+
+        // Action is an internalized VERB object (dynamic)
+        if ( data.action ) {
+            data.action = {
+                verb: data.action,
+            };
+        }
+
+        // Attack is an internalized VERB object (static)
+        if ( data.attack ) {
+            data.attack = {
+                verb: ConfigLib.verbs.ATTACK,
+            };
+        }
+
+        // Normalize integers
+        if ( data.dur ) {
+            data.dur = parseInt( data.dur, 10 );
+        }
+
+        if ( data.stepsX ) {
+            data.stepsX = parseInt( data.stepsX, 10 );
+        }
+
+        // Check for this Active Tiles group
+        const tiles = this.map.tiles.find(( obj ) => {
+            return (obj.group === data.group);
+        });
+
+        if ( !tiles ) {
+            this.map.tiles.push( data );
+            this.editor._saveMap();
+            this.editor.clearMenu( this.editor.menus.activeTiles );
+            this.clearSelection();
+
+        } else {
+            alert( `The tile group ${data.group} already exists!` );
+        }
+    }
+
+
     setActiveLayer ( layer ) {
         this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-objects" );
         this.dom.$canvasPane.removeClass( "is-selection" );
@@ -767,6 +881,21 @@ class EditorCanvas {
     }
 
 
+    getMouseCoords ( e, grid ) {
+        return [
+            Math.floor( e.offsetX / grid ),
+            Math.floor( e.offsetY / grid )
+        ];
+    }
+
+
+    getFoundCoords ( source, ref ) {
+        return source.find(( coord ) => {
+            return (coord[ 0 ] === ref[ 0 ] && coord[ 1 ] === ref[ 1 ]);
+        });
+    }
+
+
     bindCellauto () {
         let isCellGen = false;
         const $cellauto = $( this.buttons.cellauto );
@@ -786,11 +915,8 @@ class EditorCanvas {
     }
 
 
-    bindEvents () {
+    bindDocumentEvents () {
         const $document = $( document );
-        const $tilepaint = $( this.canvases.tilepaint );
-        const $mapgrid = $( this.canvases.mapgrid );
-        const $collider = $( this.canvases.collider );
 
         $document.on( "keydown", ( e ) => {
             const activeMenu = $( ".js-menu.is-active" );
@@ -832,14 +958,59 @@ class EditorCanvas {
             this.isMouseDownCanvas = false;
             this.isMouseDownCollider = false;
         });
+    }
+
+
+    bindColliderEvents () {
+        const $collider = $( this.canvases.collider );
+
+        $collider.on( "mousedown", () => {
+            if ( this.editor.canMapFunction() ) {
+                this.isMouseDownCollider = true;
+            }
+        });
+
+        $collider.on( "mousemove", ( e ) => {
+            if ( !this.map ) {
+                return;
+            }
+
+            const coords = this.getMouseCoords( e, this.map.collider );
+
+            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
+
+            if ( this.editor.canMapFunction() && this.isMouseDownCollider ) {
+                if ( this.canApplyCollider() ) {
+                    if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
+                        this.applyCollider( coords );
+
+                    } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+                        this.removeCollider( coords );
+                    }
+                }
+            }
+        });
+
+        $collider.on( "mouseup", () => {
+            this.isMouseDownCollider = false;
+        });
+
+        $collider.on( "mouseout", () => {
+            this.dom.moveCoords.innerHTML = "( X, Y )";
+        });
+    }
+
+
+    bindTilepaintEvents () {
+        const $tilepaint = $( this.canvases.tilepaint );
 
         $tilepaint.on( "mousedown", ( e ) => {
-            if ( this.editor.canMapFunction() && this.editor.actions.mode !== Config.EditorActions.modes.ERASE && this.editor.actions.mode !== Config.EditorActions.modes.SELECT ) {
+            if ( this.canBeginApplyTiles() ) {
                 this.isMouseDownTiles = true;
                 this.isMouseMovedTiles = false;
 
-                const coords = [ Math.floor( e.offsetX / this.gridsize ), Math.floor( e.offsetY / this.gridsize ) ];
-                const foundCoord = this.tilesetCoords.find( ( coord ) => coord[ 0 ] === coords[ 0 ] && coord[ 1 ] === coords[ 1 ] );
+                const coords = this.getMouseCoords( e, this.gridsize );
+                const foundCoord = this.getFoundCoords( this.tilesetCoords, coords );
 
                 if ( !foundCoord ) {
                     this.applyTile( coords );
@@ -864,16 +1035,14 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mousemove", ( e ) => {
-            const coords = [ Math.floor( e.offsetX / this.gridsize ), Math.floor( e.offsetY / this.gridsize ) ];
+            const coords = this.getMouseCoords( e, this.gridsize );
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
             if ( this.editor.canMapFunction() ) {
                 if ( this.canApplyTiles() ) {
-                    const foundCoord = this.tilesetCoords.find( ( coord ) => coord[ 0 ] === coords[ 0 ] && coord[ 1 ] === coords[ 1 ] );
-                    const sameCoord = coords[ 0 ] === this.currentTileCoord[ 0 ] && coords[ 1 ] === this.currentTileCoord[ 1 ];
-
-
+                    const foundCoord = this.getFoundCoords( this.tilesetCoords, coords );
+                    const sameCoord = (coords[ 0 ] === this.currentTileCoord[ 0 ] && coords[ 1 ] === this.currentTileCoord[ 1 ]);
 
                     if ( !foundCoord && !sameCoord ) {
                         this.applyTile( coords );
@@ -901,41 +1070,11 @@ class EditorCanvas {
         $tilepaint.on( "mouseout", () => {
             this.dom.moveCoords.innerHTML = "( X, Y )";
         });
+    }
 
-        $collider.on( "mousedown", () => {
-            if ( this.editor.canMapFunction() ) {
-                this.isMouseDownCollider = true;
-            }
-        });
 
-        $collider.on( "mousemove", ( e ) => {
-            if ( !this.map ) {
-                return;
-            }
-
-            const coords = [ Math.floor( e.offsetX / this.map.collider ), Math.floor( e.offsetY / this.map.collider ) ];
-
-            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
-
-            if ( this.editor.canMapFunction() && this.isMouseDownCollider ) {
-                if ( this.canApplyCollider() ) {
-                    if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
-                        this.applyCollider( coords );
-
-                    } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
-                        this.removeCollider( coords );
-                    }
-                }
-            }
-        });
-
-        $collider.on( "mouseup", () => {
-            this.isMouseDownCollider = false;
-        });
-
-        $collider.on( "mouseout", () => {
-            this.dom.moveCoords.innerHTML = "( X, Y )";
-        });
+    bindMapgridEvents () {
+        const $mapgrid = $( this.canvases.mapgrid );
 
         $mapgrid.on( "mousedown", ( e ) => {
             // Right click mouse button
@@ -948,10 +1087,10 @@ class EditorCanvas {
             if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCanvas = true;
 
-                const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
+                const coords = this.getMouseCoords( e, this.map.tilesize );
 
                 if ( this.canApplySelection() ) {
-                    const foundCoord = this.selectionCoords.find( ( coord ) => coord[ 0 ] === coords[ 0 ] && coord[ 1 ] === coords[ 1 ] );
+                    const foundCoord = this.getFoundCoords( this.selectionCoords, coords );
 
                     if ( !foundCoord ) {
                         this.applySelection( coords );
@@ -966,14 +1105,14 @@ class EditorCanvas {
                 return;
             }
 
-            const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
+            const coords = this.getMouseCoords( e, this.map.tilesize );
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
 
             if ( this.editor.canMapFunction() ) {
                 if ( this.isMouseDownCanvas ) {
                     if ( this.canApplySelection() ) {
-                        const foundCoord = this.selectionCoords.find( ( coord ) => coord[ 0 ] === coords[ 0 ] && coord[ 1 ] === coords[ 1 ] );
+                        const foundCoord = this.getFoundCoords( this.selectionCoords, coords );
 
                         if ( !foundCoord ) {
                             this.applySelection( coords );
@@ -993,7 +1132,7 @@ class EditorCanvas {
 
         $mapgrid.on( "mouseup", ( e ) => {
             if ( this.editor.canMapFunction() ) {
-                const coords = [ Math.floor( e.offsetX / this.map.tilesize ), Math.floor( e.offsetY / this.map.tilesize ) ];
+                const coords = this.getMouseCoords( e, this.map.tilesize );
 
                 if ( this.canApplyLayer() ) {
                     this.applyLayer( this.editor.layers.mode, coords );
@@ -1014,6 +1153,10 @@ class EditorCanvas {
 
             this.isMouseDownCanvas = false;
 
+            const ctxCoords = this.getMouseCoords( e, this.map.tilesize );
+
+            this.contextCoords = this.getFoundCoords( this.selectionCoords, ctxCoords );
+
             if ( this.canApplySelection() ) {
                 ipcRenderer.send( "renderer-contextmenu" );
             }
@@ -1025,15 +1168,39 @@ class EditorCanvas {
         ipcRenderer.on( "menu-contextmenu", ( e, action ) => {
             this.isMouseDownCanvas = false;
 
-            if ( action === "clear" ) {
+            // Clear the "selection"
+            if ( action === "deselect-tiles" ) {
                 this.clearSelection();
 
-            } else if ( action === "convert" ) {
-                console.log( e, action );
+            // Clear the "selected" tile
+            } else if ( action === "deselect-tile" ) {
+                this.clearSelectionCoord( this.contextCoords );
+                this.selectionCoords.splice( this.selectionCoords.indexOf( this.contextCoords ), 1 );
 
-            } else if ( action === "revert" ) {
-                console.log( e, action );
+            } else if ( action === "select-matching-tiles" ) {
+                // Find all matching tiles to "contextCoords"
+                // Push to selectionCoords[] and draw to canvas
+                this.selectMatchingTiles( this.contextCoords );
+
+            // Initiate Active Tiles menu
+            } else if ( action === "create-activetiles" ) {
+                const validation = this.validateSelection();
+
+                if ( validation.valid ) {
+                    this.editor._openMenu( "activetiles", "editor-activetiles-menu" );
+
+                } else {
+                    alert( validation.alert );
+                }
+
+            // One-time action to revert Active Tiles
+            // Use a confirm() popup indicating permanence of this action...
+            } else if ( action === "remove-activetiles" ) {
+                // Remove active tiles by selectionCoords[]
+                // Requires calling "this.editor._saveMap()"
             }
+
+            this.contextCoords = null;
         });
     }
 
@@ -1095,6 +1262,15 @@ class EditorCanvas {
             this.isMouseDownTiles &&
             this.editor.actions.mode !== Config.EditorActions.modes.ERASE &&
             this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
+        );
+    }
+
+
+    canBeginApplyTiles () {
+        return (
+            this.editor.canMapFunction() &&
+            this.editor.actions.mode !== Config.EditorActions.modes.ERASE &&
+            this.editor.actions.mode !== Config.EditorActions.modes.SELECT
         );
     }
 }

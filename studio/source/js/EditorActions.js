@@ -7,6 +7,7 @@ class EditorActions {
     constructor ( editor ) {
         this.editor = editor;
         this.elements = $( ".js-edit-action" );
+        this.keysDisabled = false;
         this.mode = null;
         this.bind();
     }
@@ -17,6 +18,10 @@ class EditorActions {
 
         $document.on( "keydown", ( e ) => {
             // console.log( "keydown", e );
+
+            if ( this.keysDisabled ) {
+                return;
+            }
 
             if ( this.editor.canMapFunction() ) {
                 const test = $( `.js-edit-action[data-key="${e.which}"]` );
@@ -36,6 +41,16 @@ class EditorActions {
     }
 
 
+    disableKeys () {
+        this.keysDisabled = true;
+    }
+
+
+    enableKeys () {
+        this.keysDisabled = false;
+    }
+
+
     _handleAction ( targ ) {
         const elem = targ.is( ".js-edit-action" ) ? targ : targ.closest( ".js-edit-action" );
         const action = elem.data().action.toUpperCase();
@@ -50,9 +65,7 @@ class EditorActions {
             elem.addClass( "is-active" );
             this.mode = Config.EditorActions.modes[ action ];
 
-            // This may be too much
-            // Consider: You want to select a tile and then go through your map erasing tiles and painting the new tile
-            if ( this.mode === Config.EditorActions.modes.BUCKET || this.mode === Config.EditorActions.modes.ERASE ) {
+            if ( this.mode !== Config.EditorActions.modes.BRUSH ) {
                 this.editor.canvas.clearTileset();
             }
 

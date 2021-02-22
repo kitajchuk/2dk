@@ -74,9 +74,9 @@ class EditorCellAuto {
 
                         // Hardcoded dummy textures for now...
                         const textures = [
-                            [[1 * this.world.cellSize, 11 * this.world.cellSize], [0 * this.world.cellSize, 8 * this.world.cellSize]], // 0: collision
+                            [[1 * this.world.cellSize, 9 * this.world.cellSize], [0 * this.world.cellSize, 8 * this.world.cellSize]], // 0: collision
                             [[1 * this.world.cellSize, 11 * this.world.cellSize]],
-                            [[7 * this.world.cellSize, 34 * this.world.cellSize]],
+                            [[8 * this.world.cellSize, 34 * this.world.cellSize]],
                             [[0 * this.world.cellSize, 34 * this.world.cellSize]],
                         ];
 

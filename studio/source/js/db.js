@@ -269,6 +269,9 @@ class DB {
             map.collision = data.collision;
             map.textures = data.textures;
 
+            // Active Tiles
+            map.tiles = data.tiles || map.tiles;
+
             Utils.writeJson( file, map, () => {
                 maps.splice( idx, 1, map );
 

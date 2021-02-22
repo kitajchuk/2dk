@@ -34,6 +34,7 @@ const Config = {
         E: 69,
         Z: 90,
         X: 88,
+        P: 80,
         SPACEBAR: 32,
     },
     colors: {
