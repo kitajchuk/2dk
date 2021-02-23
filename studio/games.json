@@ -19,7 +19,8 @@
         "resolution": 1,
         "fullscreen": false,
         "icon": "/games/loz/icon.png",
-        "save": 46,
+        "save": 51,
+        "release": 1,
         "plugin": "topview"
     },
     {

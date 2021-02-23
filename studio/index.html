@@ -48,11 +48,11 @@
                 <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
                     <span class="icon icon--nudge icon--music_note"></span>
                     <div class="select icon--nudge">
-                        <select class="select__field js-map-field js-select js-select-sound" data-label="Sample Sounds">
-                            <option value="">Sample Sounds</option>
+                        <select class="select__field js-map-field js-select js-select-sound" data-label="Sound Player">
+                            <option value="">Sound Player</option>
                         </select>
                     </div>
-                    <span class="icon icon--play_circle_outline js-sound-button" title="Play Selected Sound"></span>
+                    <span class="icon icon--play_circle_outline js-sound-button" title="Play Sounds"></span>
                 </div>
                 <div class="editor__panel__xy">
                     <span class="icon icon--location_onplaceroom icon--nudge"></span>
@@ -113,16 +113,16 @@
                 </div>
                 <div class="editor__sidebar__tools">
                     <div class="editor__toolbar editor__toolbar__tools">
-                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Brush (B)">
+                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Paint Brush Tool (B)">
                             <span class="icon icon--brush"></span>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="bucket" data-key="70" title="Fill (F)">
+                        <button class="editor__action js-edit-action" data-action="bucket" data-key="70" title="Paint Bucket Tool (F)">
                             <span class="icon icon--format_color_fill"></span>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Erase (E)">
+                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Cut Tool (E)">
                             <span class="icon icon--content_cut"></span>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select (X)">
+                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Selection Tool (X)">
                             <span class="icon icon--zoom_out_map"></span>
                         </button>
                     </div>
@@ -323,9 +323,39 @@
                             Active Tiles can be frame animated background or foreground tiles with their own timing function. They can also be interaction tiles that can be lifted, tossed, pushed and even attacked. The Discover option is for dynamic Active Tiles in the game engine. With this setting you can select just a single tile in the Editor, apply your settings and all matching tiles on the map will become Active Tiles in the live game engine.
                         </div>
                     </div>
+                    <!-- Discover allows dynamic Active Tiles based on tileset position -->
                     <div class="editor__setting">
                         <div class="editor__label">Group</div>
-                        <input class="input editor__field js-activetile-field" type="text" placeholder="Group" name="group" />
+                        <div class="editor__setting--multi">
+                            <div>
+                                <input class="input editor__field js-activetile-field" type="text" placeholder="Group" name="group" />
+                            </div>
+                            <div class="editor__checkbox">
+                                <label class="checkbox">
+                                    <input class="check js-activetile-field" type="checkbox" name="discover" />
+                                    <span class="label">Discover</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Attack is an internalized VERB object -->
+                    <div class="editor__setting">
+                        <div class="editor__label">Action</div>
+                        <div class="editor__setting--multi">
+                            <div>
+                                <div class="select">
+                                    <select class="select__field js-activetile-field js-select js-select-action" name="action" data-label="Action">
+                                        <option value="">Action</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="editor__checkbox">
+                                <label class="checkbox">
+                                    <input class="check js-activetile-field" type="checkbox" name="attack" />
+                                    <span class="label">Attack</span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <!-- Layer is determined by active layer in Sidebar
                     <div class="editor__setting">
@@ -339,52 +369,34 @@
                     -->
                     <!-- Coords is the current canvas selectionCoords -->
                     <!-- Offset X & Y should be picked from tileset UI -->
-                    <div class="editor__setting">
-                        <div class="editor__label">Steps (frames)</div>
-                        <input class="input editor__field js-activetile-field" type="text" placeholder="Steps" name="stepsX" />
-                    </div>
-                    <div class="editor__setting">
-                        <div class="editor__label">Duration (milliseconds)</div>
-                        <input class="input editor__field js-activetile-field" type="text" placeholder="Duration" name="dur" />
-                    </div>
-                    <div class="editor__setting">
-                        <div class="editor__label">Action</div>
-                        <div class="select">
-                            <select class="select__field js-activetile-field js-select js-select-action" name="action" data-label="Action">
-                                <option value="">Action</option>
-                            </select>
+                    <div class="editor__setting editor__setting--multi">
+                        <div>
+                            <div class="editor__label">Steps (keyframes)</div>
+                            <input class="input editor__field js-activetile-field" type="text" placeholder="Steps" name="stepsX" />
+                        </div>
+                        <div>
+                            <div class="editor__label">Duration (milliseconds)</div>
+                            <input class="input editor__field js-activetile-field" type="text" placeholder="Duration" name="dur" />
                         </div>
                     </div>
                     <!-- If the Action is jump we need an elevation -->
-                    <div class="editor__setting">
-                        <div class="editor__label">Elevation (used with jump verb)</div>
-                        <input class="input editor__field js-activetile-field" type="text" placeholder="Elevation" name="elevation" />
-                    </div>
-                    <div class="editor__setting">
-                        <div class="editor__label">Direction (used with elevation)</div>
-                        <div class="select">
-                            <select class="select__field js-activetile-field js-select" name="direction" data-label="Direction">
-                                <option value="">Direction</option>
-                                <option value="up">up</option>
-                                <option value="down">down</option>
-                                <option value="left">left</option>
-                                <option value="right">right</option>
-                            </select>
+                    <div class="editor__setting editor__setting--multi">
+                        <div>
+                            <div class="editor__label">Elevation (verb: jump)</div>
+                            <input class="input editor__field js-activetile-field" type="text" placeholder="Elevation" name="elevation" />
                         </div>
-                    </div>
-                    <!-- Attack is an internalized VERB object -->
-                    <div class="editor__setting">
-                        <label class="checkbox">
-                            <input class="check js-activetile-field" type="checkbox" name="attack" />
-                            <span class="label">Attack</span>
-                        </label>
-                    </div>
-                    <!-- Discover allows dynamic Active Tiles based on tileset position -->
-                    <div class="editor__setting">
-                        <label class="checkbox">
-                            <input class="check js-activetile-field" type="checkbox" name="discover" />
-                            <span class="label">Discover</span>
-                        </label>
+                        <div>
+                            <div class="editor__label">Direction (elevation)</div>
+                            <div class="select">
+                                <select class="select__field js-activetile-field js-select" name="direction" data-label="Direction">
+                                    <option value="">Direction</option>
+                                    <option value="up">up</option>
+                                    <option value="down">down</option>
+                                    <option value="left">left</option>
+                                    <option value="right">right</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="editor__setting editor__setting--multi">
                         <button class="button editor__button editor__upload-button js-post-update" data-type="activetiles">Create</button>

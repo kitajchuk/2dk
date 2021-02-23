@@ -498,6 +498,7 @@ class EditorCanvas {
             );
         });
         this.selectionCoords = [];
+        ipcRenderer.send( "renderer-selection", false );
     }
 
 
@@ -1095,6 +1096,7 @@ class EditorCanvas {
                     if ( !foundCoord ) {
                         this.applySelection( coords );
                         this.pushSelection( coords );
+                        ipcRenderer.send( "renderer-selection", true );
                     }
                 }
             }
@@ -1117,6 +1119,7 @@ class EditorCanvas {
                         if ( !foundCoord ) {
                             this.applySelection( coords );
                             this.pushSelection( coords );
+                            ipcRenderer.send( "renderer-selection", true );
                         }
 
                     } else if ( this.canApplyLayer() ) {

@@ -1,10 +1,11 @@
-const CACHE_NAME = "v46";
+const CACHE_NAME = "v51";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/loz/game.json",
     "/games/loz/assets/tiles/tiles.png",
     "/games/loz/assets/tiles/inside.png",
     "/games/loz/assets/sprites/hero_la.png",
+    "/games/loz/assets/sprites/fx.png",
     "/games/loz/assets/sounds/sfx-throw.mp3",
     "/games/loz/assets/sounds/sfx-smash.mp3",
     "/games/loz/assets/sounds/sfx-pick-up.mp3",
@@ -12,7 +13,14 @@ const CACHE_URLS = [
     "/games/loz/assets/sounds/sfx-dropping.mp3",
     "/games/loz/assets/sounds/sfx-chest-unlock.mp3",
     "/games/loz/assets/sounds/sfx-bounce.mp3",
+    "/games/loz/assets/sounds/bgm-shop.mp3",
+    "/games/loz/assets/sounds/bgm-phone-booth.mp3",
     "/games/loz/assets/sounds/bgm-overworld.mp3",
+    "/games/loz/assets/sounds/bgm-mysterious-forest.mp3",
+    "/games/loz/assets/sounds/bgm-marins-house.mp3",
+    "/games/loz/assets/sounds/bgm-mabe-village.mp3",
+    "/games/loz/assets/sounds/bgm-house.mp3",
+    "/games/loz/assets/sounds/bgm-cave.mp3",
     "/games/loz/maps/start-screen.json",
 ];
 

@@ -6,16 +6,18 @@ const DB = require( "./source/js/DB" );
 let mainWindow;
 
 // Keep a global reference to the active game and map objects
+let contextMenu = null;
 let activeGames = [];
 let activeMaps = [];
 let activeGame = null;
 let activeMap = null;
+let activeSelect = false;
 
 // Global database client
 let dBase;
 
-// Getter methods for application menus
-// The Games and Maps menus will dynamically update their load submenus
+// First class methods for application menus
+// The Games / Maps menus will dynamically update their load menus
 const loadAssets = () => {
     const assets = [
         "tiles",
@@ -105,6 +107,10 @@ const getMapsMenu = () => {
         label: "Load Map",
         submenu: [],
     };
+    const selectionLoadout = {
+        label: "Selection",
+        submenu: activeSelect ? getContextMenu() : [],
+    };
 
     activeMaps.forEach(( map ) => {
         mapsLoadout.submenu.push({
@@ -156,26 +162,28 @@ const getMapsMenu = () => {
                 }
             },
             {
-                label: "Undo Map Paint",
+                label: "Toggle Grid",
+                accelerator: "CmdOrCtrl+;",
+                click () {
+                    mainWindow.webContents.send( "menu-togglegrid", null );
+                }
+            },
+            {
+                label: "Undo Paint (TODO)",
                 accelerator: "CmdOrCtrl+Z",
                 click () {
                     mainWindow.webContents.send( "menu-undomap", null );
                 }
             },
             {
-                label: "Redo Map Paint",
+                label: "Redo Paint (TODO)",
                 accelerator: "Shift+CmdOrCtrl+Z",
                 click () {
                     mainWindow.webContents.send( "menu-redomap", null );
                 }
             },
-            {
-                label: "Toggle Map Grid",
-                accelerator: "CmdOrCtrl+;",
-                click () {
-                    mainWindow.webContents.send( "menu-togglegrid", null );
-                }
-            },
+            { type: "separator" },
+            selectionLoadout
         ]
     };
 };
@@ -250,19 +258,8 @@ const getHelpMenu = () => {
         ]
     };
 };
-const setMenu = () => {
-    Menu.setApplicationMenu( Menu.buildFromTemplate([
-        getAppMenu(),
-        getFileMenu(),
-        getGamesMenu(),
-        getMapsMenu(),
-        getViewMenu(),
-        getWindowMenu(),
-        getHelpMenu(),
-    ]));
-};
-const contextMenu = (() => {
-    return Menu.buildFromTemplate([
+const getContextMenu = () => {
+    return [
         {
             label: "Create Active Tiles",
             click () {
@@ -293,8 +290,24 @@ const contextMenu = (() => {
                 mainWindow.webContents.send( "menu-contextmenu", "deselect-tile" );
             },
         },
-    ]);
-})();
+    ];
+};
+const setMenu = () => {
+    Menu.setApplicationMenu( Menu.buildFromTemplate([
+        getAppMenu(),
+        getFileMenu(),
+        getGamesMenu(),
+        getMapsMenu(),
+        getViewMenu(),
+        getWindowMenu(),
+        getHelpMenu(),
+    ]));
+};
+
+
+// Set the global context menu for reference
+contextMenu = Menu.buildFromTemplate( getContextMenu() );
+
 
 // Listen for events from the ipcRenderer
 ipcMain.on( "renderer-unload", ( event, data ) => {
@@ -378,6 +391,11 @@ ipcMain.on( "renderer-contextmenu", ( event ) => {
     contextMenu.popup({
         window: mainWindow,
     });
+});
+
+ipcMain.on( "renderer-selection", ( event, state ) => {
+    activeSelect = state;
+    setMenu();
 });
 
 

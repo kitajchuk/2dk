@@ -58,7 +58,7 @@
         position: absolute;
         left: 50%;
         top: 0;
-        cursor: crosshair;
+        cursor: $cursor;
         transform: translateX( -50% );
     }
     .layer--preview {
@@ -320,7 +320,7 @@
     &.is-foreground,
     &.is-collision,
     &.is-selection {
-        cursor: crosshair;
+        cursor: $cursor;
     }
 
     &.is-background,
@@ -424,6 +424,16 @@
 }
 .editor__label {
     margin-bottom: 10px;
+
+    & + .editor__setting--multi {
+        > div:first-child {
+            width: calc( 75% - 5px );
+        }
+
+        > div:last-child {
+            width: calc( 25% - 5px );
+        }
+    }
 }
 .editor__layer {
     padding: 16px;
@@ -499,6 +509,11 @@
     > button {
         width: calc( 50% - 5px );
     }
+}
+.editor__checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 
