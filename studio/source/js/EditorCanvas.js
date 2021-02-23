@@ -233,7 +233,7 @@ class EditorCanvas {
 
         // CellAuto registration
         if ( this.map.cellauto ) {
-            this.cellauto.register( this.map );
+            // this.cellauto.register( this.map );
             this.buttons.container.classList.add( "is-cellauto" );
         }
 
@@ -907,7 +907,7 @@ class EditorCanvas {
             if ( !isCellGen ) {
                 isCellGen = true;
 
-                this.cellauto.generate().then(( data ) => {
+                this.cellauto.register( this.map ).generate().then(( data ) => {
                     isCellGen = false;
                     this.applyCellAuto( data ); // Final render !!!
                 });

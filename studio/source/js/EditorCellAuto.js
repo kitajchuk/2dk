@@ -17,7 +17,7 @@ class EditorCellAuto {
 
 
     register ( map ) {
-        this.map = Utils.copyObj( map );
+        this.map = Utils.copyObj( map ); // Always use a clone of the live map data
         this.tiles = [];
         this.textures = this.map.textures.background; // For now we're just testing background renders...
         this.world = new CellAuto.World({
@@ -42,6 +42,8 @@ class EditorCellAuto {
                 distribution: 2
             }
         ]);
+
+        return this;
     }
 
 
@@ -49,6 +51,8 @@ class EditorCellAuto {
         if ( typeof cb === "function" ) {
             this.callback = cb;
         }
+
+        return this;
     }
 
 
@@ -56,6 +60,8 @@ class EditorCellAuto {
         if ( typeof this.callback === "function" ) {
             this.callback( data );
         }
+
+        return this;
     }
 
 
