@@ -21,7 +21,7 @@
   "scripts": {
     "postinstall": "node clutch.install.js ; npm run hobo",
     "prestart": "npm run static:games",
-    "start": "export CLUTCH_ENV=server ; (npm run server & npm run watch:webpack & npm run watch:games)",
+    "start": "export CLUTCH_ENV=server ; concurrently 'npm run server' 'npm run watch:webpack' 'npm run watch:games'",
     "hobo": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
     "studio": "cd studio && npm start",
     "watch": "export CLUTCH_ENV=watcher ; (npm run watch:webpack & npm run watch:games)",
@@ -66,6 +66,7 @@
     "browser-sync": "^2.26.14",
     "browser-sync-webpack-plugin": "^2.2.2",
     "chokidar-cli": "^2.1.0",
+    "concurrently": "^6.0.0",
     "css-loader": "^3.5.3",
     "eslint": "^7.20.0",
     "eslint-webpack-plugin": "^2.5.1",
