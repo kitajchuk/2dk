@@ -2,7 +2,6 @@ const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const Socket = require( "./Socket" );
-// const Lambda = require( "./Lambda" );
 const GamePad = require( "./GamePad" );
 const TopView = require( "./plugins/TopView" );
 const GameAudio = require( "./GameAudio" );
@@ -58,7 +57,6 @@ class Player {
             this.build();
             this.onRotate();
             this.socket = new Socket( this );
-            // this.lambda = new Lambda( this );
 
             let counter = 0;
 
@@ -304,7 +302,6 @@ class Player {
         // Blit the socket (broadcasts)
         if ( !this.stopped ) {
             this.socket.blit( elapsed );
-            // this.lambda.blit( elapsed );
         }
     }
 

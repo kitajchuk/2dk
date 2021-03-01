@@ -7,7 +7,6 @@ const path = require( "path" );
 const express = require( "express" );
 const expressApp = express();
 const compression = require( "compression" );
-const cookieParser = require( "cookie-parser" );
 const bodyParser = require( "body-parser" );
 const http = require( "http" );
 const lager = require( "properjs-lager" );
@@ -15,7 +14,6 @@ const websocket = require( "websocket" );
 const session = require( "express-session" );
 const jwt = require( "jsonwebtoken" );
 const WebSocketServer = websocket.server;
-const FileStore = require( "session-file-store" )( session );
 const core = {
     config: require( "../../clutch.config" )
 };
@@ -27,10 +25,7 @@ const websocketserver = new WebSocketServer({
 const allowed = [
     core.config.url
 ];
-const oneHourMs = 3600000; // 1 hour in milliseconds
-const oneHourSs = oneHourMs / 1000; // 1 hour in seconds
 const pool = {}; // Memo sessions for clients
-const hours = 24;
 
 
 
@@ -143,21 +138,14 @@ expressApp.use( bodyParser.urlencoded({
     limit: "10mb",
     extended: true,
 }));
-// expressApp.use( cookieParser() );
 expressApp.use( session({
     secret: core.config.session.secret,
     saveUninitialized: true,
     resave: true,
     cookie: {
         secure: (core.config.env.sandbox ? false : true),
-        // 24 hour cookie time in milliseconds
-        maxAge: (oneHourMs * hours),
+        maxAge: 3600 * 1000, // One hour -- 3600s => 3600000ms
     },
-    store: new FileStore({
-        secret: core.config.express.secret,
-        // 24 hour session time in seconds
-        ttl: (oneHourSs * hours),
-    }),
 }));
 
 
@@ -210,11 +198,7 @@ websocketserver.on( "connect", ( connection ) => {
             if ( !error ) {
                 // Persist the verified session
                 if ( !pool[ decoded.sessionId ] ) {
-                    const sessPath = path.join( process.cwd(), `./sessions/${decoded.sessionId}.json` );
-
-                    if ( fs.existsSync( sessPath ) ) {
-                        pool[ decoded.sessionId ] = new AppSession( decoded.sessionId, connection );
-                    }
+                    pool[ decoded.sessionId ] = new AppSession( decoded.sessionId, connection );
                 }
 
                 // Verified session exists
