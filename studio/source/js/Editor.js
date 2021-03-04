@@ -235,7 +235,7 @@ class Editor {
             for ( let j = ret.length; j--; ) {
                 if ( ret[ j ][ 0 ] === arr[ i ][ 0 ] && ret[ j ][ 1 ] === arr[ i ][ 1 ] ) {
                     uniq = null;
-                    break;
+                    return ret;
                 }
             }
 

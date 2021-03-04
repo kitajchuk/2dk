@@ -540,7 +540,7 @@ class EditorCanvas {
             if ( !testX || !testY ) {
                 validation.valid = false;
                 validation.alert = "Selected tiles must all be the same in order to convert to Active Tiles.";
-                break;
+                return validation;
             }
         }
 
