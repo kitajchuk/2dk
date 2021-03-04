@@ -116,79 +116,64 @@ let instance = null;
 
 
 const getControl = ( key ) => {
-    let ret = null;
-
     for ( let btn in touchControls ) {
         if ( touchControls[ btn ].key === key ) {
-            ret = touchControls[ btn ];
-            break;
+            return touchControls[ btn ];
         }
     }
 
-    return ret;
+    return null;
 };
 
 
 
 // const getDpad = ( key ) => {
-//     let ret = null;
-//
 //     for ( let btn in touchControls ) {
 //         if ( touchControls[ btn ].key === key && touchControls[ btn ].dpad ) {
-//             ret = touchControls[ btn ];
-//             break;
+//             return touchControls[ btn ];
 //         }
 //     }
 //
-//     return ret;
+//     return null;
 // };
 
 
 
 const getGamepad = ( val ) => {
-    let ret = null;
-
     for ( let btn in touchControls ) {
         if ( touchControls[ btn ].gamepad && touchControls[ btn ].gamepad.indexOf( val ) !== -1 ) {
-            ret = touchControls[ btn ];
-            break;
+            return touchControls[ btn ];
         }
     }
 
-    return ret;
+    return null;
 };
 
 
 
 const getAxes = ( xy, val ) => {
-    let ret = null;
-
     for ( let btn in touchControls ) {
         if ( touchControls[ btn ].axes && touchControls[ btn ].axes[ xy ] === val ) {
-            ret = touchControls[ btn ];
-            break;
+            return touchControls[ btn ];
         }
     }
 
-    return ret;
+    return null;
 };
 
 
 
 const getTouched = ( touches, control ) => {
-    let ret = null;
-
     for ( let i = 0; i < touches.length; i++ ) {
         const touched = document.elementFromPoint( touches[ i ].pageX, touches[ i ].pageY );
         const key = Number( touched.dataset.key );
 
         if ( key === control.key ) {
-            ret = control;
-            break;
+            return control;
         }
     }
 
-    return ret;
+    return null;
 };
 
 

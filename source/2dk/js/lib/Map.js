@@ -91,7 +91,7 @@ class ActiveTiles {
             if ( this.data.coords[ i ][ 0 ] === coords[ 0 ] && this.data.coords[ i ][ 1 ] === coords[ 1 ] ) {
                 this.spliced.push( this.data.coords[ i ] );
                 this.data.coords.splice( i, 1 );
-                break;
+                return true;
             }
         }
     }
@@ -491,73 +491,66 @@ class Map {
 
 
     getActiveTile ( layer, celsCoords, celsCopy ) {
-        let ret = null;
-
         // Either return a tile or don't if it's a static thing...
+        for ( let i = this.data.tiles.length; i--; ) {
+            const tiles = this.data.tiles[ i ];
 
-        loopTiles:
-            for ( let i = this.data.tiles.length; i--; ) {
-                const tiles = this.data.tiles[ i ];
+            // Skip if not even the right layer to begin with...
+            if ( layer !== tiles.layer ) {
+                continue;
+            }
 
-                // Skip if not even the right layer to begin with...
-                if ( layer !== tiles.layer ) {
-                    continue;
-                }
+            const topCel = celsCopy[ celsCopy.length - 1 ];
 
-                const topCel = celsCopy[ celsCopy.length - 1 ];
+            if ( tiles.coords.length ) {
+                for ( let j = tiles.coords.length; j--; ) {
+                    const coord = tiles.coords[ j ];
 
-                if ( tiles.coords.length ) {
-                    for ( let j = tiles.coords.length; j--; ) {
-                        const coord = tiles.coords[ j ];
+                    // Correct tile coords
+                    if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] ) {
+                        // (tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ])
+                        const isTileAnimated = tiles.stepsX;
 
-                        // Correct tile coords
-                        if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] ) {
-                            // (tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ])
-                            const isTileAnimated = tiles.stepsX;
-
-                            // Make sure we don't dupe a tile match if it's NOT animated...
-                            if ( isTileAnimated ) {
-                                ret = this.getActiveTiles( tiles.group ).getTile();
-                                break loopTiles;
-                            }
+                        // Make sure we don't dupe a tile match if it's NOT animated...
+                        if ( isTileAnimated ) {
+                            return this.getActiveTiles( tiles.group ).getTile();
                         }
-                    }
-                }
-
-                if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
-                    // Check if tile is pushed...
-                    const isTilePushed = tiles.coords.find( ( coord ) => (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]) );
-                    const isTileSpliced = this.getActiveTiles( tiles.group ).spliced.find( ( coord ) => (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]) );
-
-                    // Push the tile to the coords Array...
-                    // This lets us generate ActiveTile groups that will
-                    // find their coordinates in real-time using background-position...
-                    /* Example: This will find stairs tiles and push them into the coords stack...
-                        {
-                            "group": "stairs",
-                            "layer": "background",
-                            "coords": [],
-                            "offsetX": 256,
-                            "offsetY": 384
-                        }
-                    */
-                    if ( !isTilePushed && !isTileSpliced ) {
-                        tiles.coords.push( celsCoords );
-                        break loopTiles;
-
-                    // An ActiveTiles coord can be spliced during interaction.
-                    // Example: Hero picks up an action tile and throws it.
-                    // The original tile cel still exists in the textures data,
-                    // but we can capture this condition and make sure we pop
-                    // if off and no longer render it to the texture map.
-                    } else if ( isTileSpliced ) {
-                        celsCopy.pop();
-                        ret = celsCopy;
                     }
                 }
             }
 
-        return ret;
+            if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
+                // Check if tile is pushed...
+                const isTilePushed = tiles.coords.find( ( coord ) => (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]) );
+                const isTileSpliced = this.getActiveTiles( tiles.group ).spliced.find( ( coord ) => (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]) );
+
+                // Push the tile to the coords Array...
+                // This lets us generate ActiveTile groups that will
+                // find their coordinates in real-time using background-position...
+                /* Example: This will find stairs tiles and push them into the coords stack...
+                    {
+                        "group": "stairs",
+                        "layer": "background",
+                        "coords": [],
+                        "offsetX": 256,
+                        "offsetY": 384
+                    }
+                */
+                if ( !isTilePushed && !isTileSpliced ) {
+                    tiles.coords.push( celsCoords );
+                    return true;
+
+                // An ActiveTiles coord can be spliced during interaction.
+                // Example: Hero picks up an action tile and throws it.
+                // The original tile cel still exists in the textures data,
+                // but we can capture this condition and make sure we pop
+                // if off and no longer render it to the texture map.
+                } else if ( isTileSpliced ) {
+                    celsCopy.pop();
+                    return celsCopy;
+                }
+            }
+        }
     }
 
 
@@ -615,7 +608,7 @@ class Map {
             for ( let i = this.colliders.length; i--; ) {
                 if ( this.colliders[ i ].x === obj.x && this.colliders[ i ].y === obj.y ) {
                     this.colliders.splice( i, 1 );
-                    break;
+                    return true;
                 }
             }
         }

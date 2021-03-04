@@ -218,7 +218,6 @@ Can all be handled in plugin GameBox
             if ( Utils.collide( hitbox, tile ) ) {
                 ret = true;
                 isHero && this.map.setCollider( tile );
-                // break;
 
             } else {
                 isHero && this.map.clearCollider( tile );
@@ -230,8 +229,6 @@ Can all be handled in plugin GameBox
 
 
     checkEvents ( poi, sprite ) {
-        let ret = false;
-
         for ( let i = this.map.data.events.length; i--; ) {
             const tile = {
                 width: this.map.data.tilesize,
@@ -255,18 +252,18 @@ Can all be handled in plugin GameBox
 
             // An event without a "dir" can be triggered from any direction
             if ( collides && isThresh && isDir ) {
-                ret = this.map.data.events[ i ];
-                ret.collides = collides;
-                ret.amount = amount;
                 // this.map.setCollider( tile );
-                break;
+                return Object.assign( this.map.data.events[ i ], {
+                    collides,
+                    amount,
+                });
 
             } else {
                 // this.map.clearCollider( tile );
             }
         }
 
-        return ret;
+        return false;
     }
 
 
@@ -305,7 +302,6 @@ Can all be handled in plugin GameBox
             if ( Utils.collide( hitbox, this.map.npcs[ i ].hitbox ) ) {
                 ret = this.map.npcs[ i ];
                 this.map.setCollider( collider );
-                // break;
 
             } else {
                 this.map.clearCollider( collider );
