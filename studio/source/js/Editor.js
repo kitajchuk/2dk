@@ -5,7 +5,6 @@ const EditorUtils = require( "./EditorUtils" );
 const Config = require( "./Config" );
 const ConfigLib = require( "../../../client/js/lib/Config" );
 const Cache = require( "./Cache" );
-const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 const { ipcRenderer } = require( "electron" );
 
 
@@ -19,44 +18,44 @@ class Editor {
         this.actions = new EditorActions( this );
         this.utils = EditorUtils;
         this.dom = {
-            root: $( "#editor" ),
-            settings: $( ".js-settings" ),
-            mapSettings: $( "#editor-mapsettings" ),
-            gameSettings: $( "#editor-gamesettings" ),
-            closeSettings: $( ".js-close-settings" ),
-            cancelPost: $( ".js-post-cancel" ),
-            savePost: $( ".js-post-save" ),
-            updatePost: $( ".js-post-update" ),
-            uploadFiles: $( ".js-upload-file" ),
-            cancelUpload: $( ".js-upload-cancel" ),
-            deleteUpload: $( ".js-upload-delete" ),
-            saveUpload: $( ".js-upload-save" ),
-            deleteMap: $( "#editor-delmap" ),
-            deleteGame: $( "#editor-delgame" ),
-            loadout: $( "#editor-loadout" ),
-            mapLoad: $( "#editor-map-load" ),
-            gameLoad: $( "#editor-game-load" ),
-            iconImage: $( "#editor-game-icon-image" ),
-            iconField: $( "#editor-game-icon" ),
+            root: window.hobo( "#editor" ),
+            settings: window.hobo( ".js-settings" ),
+            mapSettings: window.hobo( "#editor-mapsettings" ),
+            gameSettings: window.hobo( "#editor-gamesettings" ),
+            closeSettings: window.hobo( ".js-close-settings" ),
+            cancelPost: window.hobo( ".js-post-cancel" ),
+            savePost: window.hobo( ".js-post-save" ),
+            updatePost: window.hobo( ".js-post-update" ),
+            uploadFiles: window.hobo( ".js-upload-file" ),
+            cancelUpload: window.hobo( ".js-upload-cancel" ),
+            deleteUpload: window.hobo( ".js-upload-delete" ),
+            saveUpload: window.hobo( ".js-upload-save" ),
+            deleteMap: window.hobo( "#editor-delmap" ),
+            deleteGame: window.hobo( "#editor-delgame" ),
+            loadout: window.hobo( "#editor-loadout" ),
+            mapLoad: window.hobo( "#editor-map-load" ),
+            gameLoad: window.hobo( "#editor-game-load" ),
+            iconImage: window.hobo( "#editor-game-icon-image" ),
+            iconField: window.hobo( "#editor-game-icon" ),
         };
         this.selects = {
-            all: $( ".js-select" ),
-            maps: $( ".js-select-map" ),
-            tiles: $( ".js-select-tiles" ),
-            sounds: $( ".js-select-sound" ),
-            actions: $( ".js-select-action" ),
+            all: window.hobo( ".js-select" ),
+            maps: window.hobo( ".js-select-map" ),
+            tiles: window.hobo( ".js-select-tiles" ),
+            sounds: window.hobo( ".js-select-sound" ),
+            actions: window.hobo( ".js-select-action" ),
         };
         this.menus = {
-            all: $( ".js-menu" ),
-            activeMap: $( "#editor-active-map-menu" ),
-            activeGame: $( "#editor-active-game-menu" ),
-            activeTiles: $( "#editor-activetiles-menu" ),
+            all: window.hobo( ".js-menu" ),
+            activeMap: window.hobo( "#editor-active-map-menu" ),
+            activeGame: window.hobo( "#editor-active-game-menu" ),
+            activeTiles: window.hobo( "#editor-activetiles-menu" ),
         };
         this.fields = {
-            map: $( ".js-map-field" ),
-            addMap: $( ".js-addmap-field" ),
-            addGame: $( ".js-addgame-field" ),
-            activeTile: $( ".js-activetile-field" ),
+            map: window.hobo( ".js-map-field" ),
+            addMap: window.hobo( ".js-addmap-field" ),
+            addGame: window.hobo( ".js-addgame-field" ),
+            activeTile: window.hobo( ".js-activetile-field" ),
         };
 
         this.display();
@@ -436,7 +435,7 @@ class Editor {
             return false;
         }
 
-        const menu = $( `#${target}` );
+        const menu = window.hobo( `#${target}` );
 
         if ( menu.is( ".is-active" ) ) {
             this.closeMenus();
@@ -455,7 +454,7 @@ class Editor {
             return false;
         }
 
-        const menu = $( `#${target}` );
+        const menu = window.hobo( `#${target}` );
 
         if ( menu.is( ".is-active" ) ) {
             this.closeMenus();
@@ -504,7 +503,7 @@ class Editor {
 
 
     _onSettingsClick ( e ) {
-        const targ = $( e.target );
+        const targ = window.hobo( e.target );
         const elem = targ.is( ".js-settings" ) ? targ : targ.closest( ".js-settings" );
         const elemData = elem.data();
 
@@ -602,7 +601,7 @@ class Editor {
 
 
     bindDocumentEvents () {
-        const $document = $( document );
+        const $document = window.hobo( document );
 
         $document.on( "click", ".js-game-tile", ( e ) => {
             ipcRenderer.send( "renderer-loadgame", {
@@ -622,7 +621,7 @@ class Editor {
                 return false;
             }
 
-            const targ = $( e.target );
+            const targ = window.hobo( e.target );
             const button = targ.is( ".js-sound-button" ) ? targ : targ.closest( ".js-sound-button" );
             const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
 
@@ -642,7 +641,7 @@ class Editor {
 
     bindeFileEvents () {
         this.dom.uploadFiles.on( "change", ( e ) => {
-            const targ = $( e.target );
+            const targ = window.hobo( e.target );
             const elem = targ.is( ".js-upload-file" ) ? targ : targ.closest( ".js-upload-file" );
             const data = elem.data();
 
@@ -660,7 +659,7 @@ class Editor {
                 return false;
             }
 
-            const targ = $( e.target );
+            const targ = window.hobo( e.target );
             const elem = targ.is( ".js-upload-cancel" ) ? targ : targ.closest( ".js-upload-cancel" );
 
             this.closeMenus();
@@ -672,7 +671,7 @@ class Editor {
                 return false;
             }
 
-            const targ = $( e.target );
+            const targ = window.hobo( e.target );
             const button = targ.is( ".js-upload-delete" ) ? targ : targ.closest( ".js-upload-delete" );
             const menu = button.closest( ".js-upload-menu" );
             const select = menu.find( ".js-select-delete" );
@@ -696,7 +695,7 @@ class Editor {
                 return false;
             }
 
-            const targ = $( e.target );
+            const targ = window.hobo( e.target );
             const button = targ.is( ".js-upload-save" ) ? targ : targ.closest( ".js-upload-save" );
             const menu = button.closest( ".js-upload-menu" );
             const fileInput = menu.find( ".js-upload-file" );
@@ -731,7 +730,7 @@ class Editor {
                 return false;
             }
 
-            const targ = $( e.target );
+            const targ = window.hobo( e.target );
             const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
 
             if ( sampler.length && sampler.is( ".is-playing" ) ) {
@@ -745,7 +744,7 @@ class Editor {
         });
 
         this.dom.cancelPost.on( "click", ( e ) => {
-            const targ = $( e.target );
+            const targ = window.hobo( e.target );
             const elem = targ.is( ".js-post-cancel" ) ? targ : targ.closest( ".js-post-cancel" );
             const elemData = elem.data();
             const canFunction = (elemData.type === "game") || this.canGameFunction();
@@ -759,7 +758,7 @@ class Editor {
         });
 
         this.dom.savePost.on( "click", ( e ) => {
-            const targ = $( e.target );
+            const targ = window.hobo( e.target );
             const elem = targ.is( ".js-post-save" ) ? targ : targ.closest( ".js-post-save" );
             const elemData = elem.data();
             const canFunction = (elemData.type === "game") || this.canGameFunction();
@@ -787,7 +786,7 @@ class Editor {
         });
 
         this.dom.updatePost.on( "click", ( e ) => {
-            const targ = $( e.target );
+            const targ = window.hobo( e.target );
             const elem = targ.is( ".js-post-update" ) ? targ : targ.closest( ".js-post-update" );
             const elemData = elem.data();
 

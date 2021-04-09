@@ -20,7 +20,6 @@
   ],
   "main": "main.js",
   "scripts": {
-    "postinstall": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
     "start": "electron ."
   },
   "devDependencies": {
@@ -30,7 +29,6 @@
     "fs-extra": "^8.1.0",
     "jimp": "^0.9.3",
     "paramalama": "^0.2.0",
-    "properjs-hobo": "^0.3.26",
     "properjs-lager": "^0.1.2",
     "properjs-mediabox": "^0.3.4"
   }

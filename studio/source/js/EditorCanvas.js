@@ -1,4 +1,3 @@
-const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 const { MapLayer } = require( "../../../client/js/lib/Map" );
 const { ipcRenderer } = require( "electron" );
 const Config = require( "./Config" );
@@ -57,7 +56,7 @@ class EditorCanvas {
         this.dom = {
             moveCoords: document.getElementById( "editor-move-coords" ),
             canvasPane: document.getElementById( "editor-canvas-pane" ),
-            $canvasPane: $( "#editor-canvas-pane" ),
+            $canvasPane: window.hobo( "#editor-canvas-pane" ),
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
         };
@@ -100,7 +99,7 @@ class EditorCanvas {
 
 
     toggleGrid () {
-        const $mapgrid = $( this.layers.mapgrid );
+        const $mapgrid = window.hobo( this.layers.mapgrid );
 
         if ( $mapgrid.is( ".is-hidden" ) ) {
             this.show( "mapgrid" );
@@ -408,12 +407,12 @@ class EditorCanvas {
 
 
     hide ( l ) {
-        $( this.layers[ l ] ).addClass( "is-hidden" );
+        window.hobo( this.layers[ l ] ).addClass( "is-hidden" );
     }
 
 
     show ( l ) {
-        $( this.layers[ l ] ).removeClass( "is-hidden" );
+        window.hobo( this.layers[ l ] ).removeClass( "is-hidden" );
     }
 
 
@@ -899,7 +898,7 @@ class EditorCanvas {
 
     bindCellauto () {
         let isCellGen = false;
-        const $cellauto = $( this.buttons.cellauto );
+        const $cellauto = window.hobo( this.buttons.cellauto );
 
         this.cellauto.step( this.applyCellAuto.bind( this ) );
 
@@ -917,10 +916,10 @@ class EditorCanvas {
 
 
     bindDocumentEvents () {
-        const $document = $( document );
+        const $document = window.hobo( document );
 
         $document.on( "keydown", ( e ) => {
-            const activeMenu = $( ".js-menu.is-active" );
+            const activeMenu = window.hobo( ".js-menu.is-active" );
 
             if ( activeMenu.length ) {
                 return;
@@ -963,7 +962,7 @@ class EditorCanvas {
 
 
     bindColliderEvents () {
-        const $collider = $( this.canvases.collider );
+        const $collider = window.hobo( this.canvases.collider );
 
         $collider.on( "mousedown", () => {
             if ( this.editor.canMapFunction() ) {
@@ -1003,7 +1002,7 @@ class EditorCanvas {
 
 
     bindTilepaintEvents () {
-        const $tilepaint = $( this.canvases.tilepaint );
+        const $tilepaint = window.hobo( this.canvases.tilepaint );
 
         $tilepaint.on( "mousedown", ( e ) => {
             if ( this.canBeginApplyTiles() ) {
@@ -1075,7 +1074,7 @@ class EditorCanvas {
 
 
     bindMapgridEvents () {
-        const $mapgrid = $( this.canvases.mapgrid );
+        const $mapgrid = window.hobo( this.canvases.mapgrid );
 
         $mapgrid.on( "mousedown", ( e ) => {
             // Right click mouse button

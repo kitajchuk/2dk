@@ -1,12 +1,11 @@
 const Config = require( "./Config" );
-const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
 
 
 
 class EditorActions {
     constructor ( editor ) {
         this.editor = editor;
-        this.elements = $( ".js-edit-action" );
+        this.elements = window.hobo( ".js-edit-action" );
         this.keysDisabled = false;
         this.mode = null;
         this.bind();
@@ -14,7 +13,7 @@ class EditorActions {
 
 
     bind () {
-        const $document = $( document );
+        const $document = window.hobo( document );
 
         $document.on( "keydown", ( e ) => {
             // console.log( "keydown", e );
@@ -24,7 +23,7 @@ class EditorActions {
             }
 
             if ( this.editor.canMapFunction() ) {
-                const test = $( `.js-edit-action[data-key="${e.which}"]` );
+                const test = window.hobo( `.js-edit-action[data-key="${e.which}"]` );
 
                 if ( test.length ) {
                     this._handleAction( test );
@@ -35,7 +34,7 @@ class EditorActions {
 
         $document.on( "click", ".js-edit-action", ( e ) => {
             if ( this.editor.canMapFunction() ) {
-                this._handleAction( $( e.target ) );
+                this._handleAction( window.hobo( e.target ) );
             }
         });
     }
