@@ -1,5 +1,4 @@
 const Utils = require( "./Utils" );
-const $ = require( "properjs-hobo" );
 
 
 
@@ -19,7 +18,6 @@ class Dialogue {
     build () {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__dialogue";
-        this.$element = $( this.element );
     }
 
 
@@ -33,11 +31,12 @@ class Dialogue {
         }
 
         if ( this.data ) {
-            this.$element.removeClass( `_2dk__dialogue--${this.data.type}` );
+            this.element.classList.remove( `_2dk__dialogue--${this.data.type}` );
         }
 
         this.data = Utils.copy( data );
-        this.$element.addClass( `_2dk__dialogue--${this.data.type} is-texting` );
+        this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
+        this.element.classList.add( "is-texting" );
         this.element.innerHTML = this.data.text.shift();
         this.timeout = setTimeout(() => {
             this.teardown();
@@ -58,7 +57,8 @@ class Dialogue {
             this.isResolve = true;
             this.resolve = resolve;
             this.reject = reject;
-            this.$element.addClass( `_2dk__dialogue--${this.data.type} is-texting` );
+            this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
+            this.element.classList.add( "is-texting" );
             this.element.innerHTML = this.data.text.shift();
             this.timeout = setTimeout(() => {
                 this.ready = true;
@@ -141,7 +141,8 @@ class Dialogue {
 
 
     teardown () {
-        this.$element.removeClass( `_2dk__dialogue--${this.data.type} is-texting` );
+        this.element.classList.remove( `_2dk__dialogue--${this.data.type}` );
+        this.element.classList.remove( "is-texting" );
         this.data = null;
         this.ready = false;
         this.pressed = false;
