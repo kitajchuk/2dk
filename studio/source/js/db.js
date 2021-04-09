@@ -600,4 +600,6 @@ DB.deleteGame = ( data ) => {
 
 
 // Export
-module.exports = DB;
+module.exports = {
+    DB,
+};

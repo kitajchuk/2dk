@@ -1,6 +1,6 @@
 const isMac = (process.platform === "darwin");
 const { app, Menu, MenuItem, ipcMain } = require( "electron" );
-const DB = require( "./source/js/DB" );
+const { DB } = require( "./source/js/db" );
 
 // Global mainWindow
 let mainWindow;
