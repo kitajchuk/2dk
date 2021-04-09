@@ -20,18 +20,18 @@
   "private": true,
   "scripts": {
     "postinstall": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
-    "prestart": "yarn games",
-    "start": "concurrently 'yarn server' 'yarn watch:webpack' 'yarn watch:games'",
-    "studio": "cd studio && yarn start",
+    "prestart": "npm run games",
+    "start": "concurrently 'npm run server' 'npm run watch:webpack' 'npm run watch:games'",
+    "studio": "cd studio && npm start",
     "games": "cp -R studio/games public",
-    "watch": "(yarn watch:webpack & yarn watch:games)",
+    "watch": "(npm run watch:webpack & npm run watch:games)",
     "watch:webpack": "./node_modules/.bin/webpack --env.sandbox --hide-modules --colors --watch",
-    "watch:games": "./node_modules/.bin/chokidar \"studio/games/**/*.json\" -c \"yarn games\"",
+    "watch:games": "./node_modules/.bin/chokidar \"studio/games/**/*.json\" -c \"npm run games\"",
     "server": "./node_modules/.bin/pm2 --no-daemon --watch -a start ecosystem.config.js",
     "server:stop": "./node_modules/.bin/pm2 stop 'all' --watch",
     "bundle": "./node_modules/.bin/webpack --env.production --progress --profile --display-modules --colors -p",
-    "build": "yarn bundle",
-    "postbuild": "yarn games"
+    "build": "npm run bundle",
+    "postbuild": "npm run games"
   },
   "dependencies": {
     "2dk-studio": "file:studio",

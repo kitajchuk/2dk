@@ -77,10 +77,10 @@
 To develop clone this repo and then:
 
 ```shell
-yarn install
+npm install
 
 # PM2 server / Webpack watcher
-yarn start
+npm start
 ```
 
 
@@ -90,14 +90,14 @@ The studio software is an [Electron](https://www.electronjs.org/) application. C
 
 ```shell
 # Install the software dependencies
-cd studio && yarn install
+cd studio && npm install
 
 # From project root
 # Runs the Electron application
-yarn studio
+npm run studio
 
 # Webpack watcher
-yarn watch
+npm run watch
 ```
 
 **It's important to note I take no credit for the Nintendo IPs used for testing nor for the artwork and designs. All I've done is increased the resolution of sprites and tilesets I've compiled from the internet.**
