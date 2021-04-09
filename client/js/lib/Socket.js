@@ -1,7 +1,3 @@
-const $ = require( "../../../node_modules/properjs-hobo/dist/hobo.build" );
-
-
-
 class Socket {
     constructor ( player ) {
         this.player = player;
@@ -23,19 +19,15 @@ class Socket {
             this.bind();
 
         } else {
-            $.ajax({
-                url: this.endpoint,
-                dataType: "json",
-                method: "POST",
-                payload: {},
+            fetch( this.endpoint, { method: "POST" } ).then(( response ) => {
+                response.json().then(( json ) => {
+                    this.token = json.token; // Use localstorage maybe?
 
-            }).then(( response ) => {
-                this.token = response.token; // Use localstorage maybe?
-
-                this.bind();
+                    this.bind();
+                });
 
             }).catch(( error ) => {
-                console.error( error );
+                console.error( error ) ;
             });
         }
     }

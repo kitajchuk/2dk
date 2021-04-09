@@ -19,7 +19,6 @@
   ],
   "private": true,
   "scripts": {
-    "postinstall": "cd ./node_modules/properjs-hobo && npm i && npm run build -- 'is eq not one next prev attr last first index parent filter detach append remove trigger prepend closest children removeAttr toggleClass'",
     "prestart": "npm run games",
     "start": "concurrently 'npm run server' 'npm run watch:webpack' 'npm run watch:games'",
     "studio": "cd studio && npm start",
@@ -62,7 +61,6 @@
     "paramalama": "^0.3.0",
     "properjs-controller": "^0.3.1",
     "properjs-debounce": "^0.3.0",
-    "properjs-hobo": "^0.3.26",
     "properjs-imageloader": "^0.4.0",
     "properjs-pagecontroller": "^0.5.0",
     "properjs-resizecontroller": "^0.3.0",
