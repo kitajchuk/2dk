@@ -14,25 +14,10 @@
 .sass-cache
 
 
-# Clutch
-.notes
-.clutch
-source/vendor
-static/js
-static/css
-static/svg
-static/games
-static/robots.txt
-static/sitemap.xml
-static/*.html
-static/**/*.html
-static/*.json
-static/**/*.json
-!static/img/icon/manifest.json
-!static/api/data.json
-
-
 # 2dk Studio
+public/js
+public/css
+public/games
 studio/static/js
 studio/static/css
 studio/games/**/assets/snapshots
@@ -42,9 +27,3 @@ studio/games/**/assets/snapshots
 node_modules
 npm-debug.log
 sessions
-
-
-# Local Netlify folder
-.netlify
-functions/node_modules
-payload.json

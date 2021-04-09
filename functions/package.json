@@ -1,9 +1,0 @@
-{
-    "title": "2dk Lambda Services",
-    "name": "2dk-lamda-services",
-    "description": "MMO FTW",
-    "version": "1.0.0",
-    "dependencies": {
-        "jsonwebtoken": "^8.5.1"
-    }
-}

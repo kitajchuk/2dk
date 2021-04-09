@@ -18,7 +18,6 @@
 * Map Active Tiles (group, layer, coords, offsetX, offsetY, dur, stepsX, action, attack)
 * Map Spawnpoints (x, y, dir)
 * Map Objects, Sprites & NPCs (id, ai, spawn, payload)
-* Map CellAuto registration UI
 * Map Events (coords, type, map, dir, spawn?)
 * Map FX Maker
 * Map NPC Maker
@@ -66,8 +65,7 @@
 #### Multiplayer (MMO)
 * Multiplayer online
     * Websocket player streaming (broadcast)
-    * Websocket server deploys (Clutch AWS)
-    * Lambda (Port Netlify functions to AWS Lambda)
+    * Websocket server deploys (AWS)
     * JWT token in-memory client storage (fully private?)
 * Versioned game package tar balls (releases)
     * Requires a difference between saves / releases
@@ -76,14 +74,13 @@
 
 
 ## Getting started
-This source code is using the [Clutch SDK](https://github.com/kitajchuk/clutch). To develop clone this repo and then:
+To develop clone this repo and then:
 
 ```shell
-# Clutch install
-npm i
+yarn install
 
 # PM2 server / Webpack watcher
-npm start
+yarn start
 ```
 
 
@@ -93,13 +90,14 @@ The studio software is an [Electron](https://www.electronjs.org/) application. C
 
 ```shell
 # Install the software dependencies
-npm i studio
+cd studio && yarn install
 
+# From project root
 # Runs the Electron application
-npm run studio
+yarn studio
 
 # Webpack watcher
-npm run watch
+yarn watch
 ```
 
 **It's important to note I take no credit for the Nintendo IPs used for testing nor for the artwork and designs. All I've done is increased the resolution of sprites and tilesets I've compiled from the internet.**
@@ -113,17 +111,17 @@ A 2dk game is a static webapp that contains all it's own resources and JSON file
 I've found the [Mozilla Gaming](https://developer.mozilla.org/en-US/docs/Games) docs to be quite helpful. I used these to implement the [Gamepad](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API) API so I can play with my USB NES controller when developing in Firefox. There are some other debug mode features available when running a 2dk game in a desktop browser.
 
 #### Mobile Player:
-![image](./static/img/screens/mobile1.png)
+![image](./public/img/mobile1.png)
 
 #### Fullscreen mode:
-![image](./static/img/screens/mobile2.png)
+![image](./public/img/mobile2.png)
 
 #### Painting maps
-![image](./static/img/screens/mabevillage.png)
+![image](./public/img/mabevillage.png)
 
-![image](./static/img/screens/mysteriousforest.png)
+![image](./public/img/mysteriousforest.png)
 
-![image](./static/img/screens/ukukuprairie.png)
+![image](./public/img/ukukuprairie.png)
 
 
 

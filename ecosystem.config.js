@@ -1,12 +1,12 @@
 module.exports = {
     apps: [
         {
-            name: "clutch-2dk",
+            name: "2dk",
             script: "./server/app.js",
             env: {
                 NODE_ENV: "sandbox"
             },
-            watch: ["server", "template", "static/api"],
+            watch: ["server"],
             watch_delay: 1000,
             ignore_watch : ["node_modules"],
             watch_options: {

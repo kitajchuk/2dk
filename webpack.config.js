@@ -2,13 +2,9 @@ const path = require( "path" );
 const root = path.resolve( __dirname );
 const source = path.join( root, "source" );
 const studio = path.join( root, "studio", "source" );
-const config = require( "./clutch.config" );
-const lager = require( "properjs-lager" );
 const nodeModules = "node_modules";
-const webpack = require( "webpack" );
 const nodeExternals = require( "webpack-node-externals" );
 const rimraf = require( "rimraf" );
-const BrowserSyncPlugin = require( "browser-sync-webpack-plugin" );
 const ESLintPlugin = require( "eslint-webpack-plugin" );
 
 
@@ -40,7 +36,7 @@ const webpackConfig = {
 
     resolve: {
         modules: [root, source, studio, nodeModules],
-        mainFields: ["webpack", "browserify", "web", "clutch", "hobo", "main"]
+        mainFields: ["webpack", "browserify", "web", "hobo", "main"]
     }
 };
 
@@ -61,35 +57,17 @@ const sitePlugins = [
 
 
 
-if ( process.env.CLUTCH_ENV === "server" ) {
-    sitePlugins.push(
-        new BrowserSyncPlugin({
-            open: false,
-            host: "localhost",
-            port: config.browser.port,
-            proxy: `http://localhost:${config.express.port}`,
-            files: [
-                "template/**/*.html",
-                "template/**/*.json"
-            ],
-        })
-    );
-}
-
-
-
 const siteConfig = Object.assign( {}, webpackConfig, {
     plugins: sitePlugins,
 
 
     entry: {
-        "app": path.resolve( __dirname, `source/${config.theme}/js/app.js` ),
-        "2dk": path.resolve( __dirname, "source/2dk/js/2dk.js" ),
+        "2dk": path.resolve( __dirname, "client/js/2dk.js" ),
     },
 
 
     output: {
-        path: path.resolve( __dirname, "static/js" ),
+        path: path.resolve( __dirname, "public/js" ),
         filename: "[name].js"
     },
 
@@ -97,8 +75,6 @@ const siteConfig = Object.assign( {}, webpackConfig, {
     module: {
         rules: [
             {
-                // test: /source\/.*\.js$/i,
-                // exclude: /node_modules/,
                 test: /source\/.*\.js$|node_modules\/[properjs-|konami-|paramalama].*/i,
                 use: [
                     {
@@ -110,10 +86,6 @@ const siteConfig = Object.assign( {}, webpackConfig, {
                 ],
             },
             {
-                test: /(hobo|hobo.build)\.js$/i,
-                use: ["expose-loader?hobo"],
-            },
-            {
                 test: /\.s[ac]ss$/i,
                 exclude: /node_modules/,
                 use: [
@@ -122,7 +94,7 @@ const siteConfig = Object.assign( {}, webpackConfig, {
                         loader: "sass-loader",
                         options: {
                             sassOptions: {
-                                outputStyle: (config.env.sandbox ? "uncompressed" : "compressed"),
+                                outputStyle: "compressed",
                             },
                         },
                     },
@@ -198,7 +170,7 @@ const studioConfig = Object.assign( {}, webpackConfig, {
                         loader: "sass-loader",
                         options: {
                             sassOptions: {
-                                outputStyle: (config.env.sandbox ? "uncompressed" : "compressed"),
+                                outputStyle: "compressed",
                             },
                         },
                     },

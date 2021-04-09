@@ -1,4 +1,4 @@
-const CellAuto = require( "../../../source/2dk/js/lib/vendor/CellAuto" );
+const CellAuto = require( "../../../client/js/lib/vendor/CellAuto" );
 const Utils = require( "./Utils" );
 const raf = window.requestAnimationFrame;
 const caf = window.cancelAnimationFrame;

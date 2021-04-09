@@ -1,10 +1,10 @@
 const $ = require( "../../node_modules/properjs-hobo/dist/hobo.build" );
-const { MapLayer } = require( "../../../source/2dk/js/lib/Map" );
+const { MapLayer } = require( "../../../client/js/lib/Map" );
 const { ipcRenderer } = require( "electron" );
 const Config = require( "./Config" );
-const ConfigLib = require( "../../../source/2dk/js/lib/Config" );
-const Utils = require( "../../../source/2dk/js/lib/Utils" );
-const Loader = require( "../../../source/2dk/js/lib/Loader" );
+const ConfigLib = require( "../../../client/js/lib/Config" );
+const Utils = require( "../../../client/js/lib/Utils" );
+const Loader = require( "../../../client/js/lib/Loader" );
 const EditorCellAuto = require( "./EditorCellAuto" );
 
 

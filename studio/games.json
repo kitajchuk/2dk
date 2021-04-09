@@ -31,7 +31,7 @@
         "resolution": 1,
         "fullscreen": false,
         "icon": "/games/cellauto/icon.png",
-        "save": 47,
+        "save": 50,
         "release": 1,
         "plugin": "topview"
     }

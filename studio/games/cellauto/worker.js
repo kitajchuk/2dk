@@ -1,4 +1,4 @@
-const CACHE_NAME = "v47";
+const CACHE_NAME = "v50";
 const CACHE_KEEP = [CACHE_NAME];
 const CACHE_URLS = [
     "/games/cellauto/game.json",
