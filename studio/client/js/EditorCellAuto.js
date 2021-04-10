@@ -1,5 +1,5 @@
 const CellAuto = require( "../../../client/js/lib/vendor/CellAuto" );
-const Utils = require( "./Utils" );
+const Utils = require( "../../../client/js/lib/Utils" );
 const raf = window.requestAnimationFrame;
 const caf = window.cancelAnimationFrame;
 
@@ -17,7 +17,7 @@ class EditorCellAuto {
 
 
     register ( map ) {
-        this.map = Utils.copyObj( map ); // Always use a clone of the live map data
+        this.map = Utils.copy( map ); // Always use a clone of the live map data
         this.tiles = [];
         this.textures = this.map.textures.background; // For now we're just testing background renders...
         this.world = new CellAuto.World({
@@ -97,11 +97,11 @@ class EditorCellAuto {
                 if ( this.tiles.join( "" ) === tiles.join( "" ) ) {
                     caf( this.rafId );
                     this.rafId = null;
-                    resolve( Utils.copyObj( this.textures ) );
+                    resolve( Utils.copy( this.textures ) );
 
                 } else {
                     this.tiles = tiles;
-                    this.call( Utils.copyObj( this.textures ) );
+                    this.call( Utils.copy( this.textures ) );
                 }
             };
 

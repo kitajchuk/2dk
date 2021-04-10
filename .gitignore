@@ -14,12 +14,21 @@
 .sass-cache
 
 
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+
 # 2dk Studio
 public/js
 public/css
 public/games
 studio/static/js
 studio/static/css
+studio/public/js
+studio/public/css
 studio/games/**/assets/snapshots
 
 

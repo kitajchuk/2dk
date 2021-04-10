@@ -4,7 +4,7 @@ const EditorCanvas = require( "./EditorCanvas" );
 const EditorUtils = require( "./EditorUtils" );
 const Config = require( "./Config" );
 const ConfigLib = require( "../../../client/js/lib/Config" );
-const Cache = require( "./Cache" );
+const cache = require( "../../server/cache" );
 const { ipcRenderer } = require( "electron" );
 
 
@@ -137,7 +137,7 @@ class Editor {
 
 
     postMap ( postData ) {
-        postData.fileName = `${Cache.slugify( postData.name )}.json`;
+        postData.fileName = `${cache.slugify( postData.name )}.json`;
         this.mode = Config.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-map";
 

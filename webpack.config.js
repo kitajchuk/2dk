@@ -1,7 +1,7 @@
 const path = require( "path" );
 const root = path.resolve( __dirname );
-const source = path.join( root, "source" );
-const studio = path.join( root, "studio", "source" );
+const source = path.join( root, "client" );
+const studio = path.join( root, "studio", "client" );
 const nodeModules = "node_modules";
 const nodeExternals = require( "webpack-node-externals" );
 const rimraf = require( "rimraf" );
@@ -120,7 +120,7 @@ const studioConfig = Object.assign( {}, webpackConfig, {
             emitWarning: false,
             failOnError: true,
             quiet: true,
-            context: path.resolve( __dirname, "studio", "source" ),
+            context: path.resolve( __dirname, "studio", "client" ),
             exclude: [
                 "electron",
                 "node_modules",
@@ -129,10 +129,10 @@ const studioConfig = Object.assign( {}, webpackConfig, {
         new StudioHooksPlugin({
             afterCompile: () => {
                 setTimeout(() => {
-                    rimraf.sync( `${__dirname}/studio/static/js/editor*` );
-                    rimraf.sync( `${__dirname}/studio/static/js/menu*` );
-                    rimraf.sync( `${__dirname}/studio/static/js/styles*` );
-                    rimraf.sync( `${__dirname}/studio/static/js/scripts*` );
+                    rimraf.sync( `${__dirname}/studio/public/js/editor*` );
+                    rimraf.sync( `${__dirname}/studio/public/js/menu*` );
+                    rimraf.sync( `${__dirname}/studio/public/js/styles*` );
+                    rimraf.sync( `${__dirname}/studio/public/js/scripts*` );
 
                 }, 100 );
             },
@@ -147,14 +147,14 @@ const studioConfig = Object.assign( {}, webpackConfig, {
 
 
     entry: {
-        "styles": path.resolve( __dirname, "studio/source/sass/screen.js" ),
-        "editor": path.resolve( __dirname, "studio/source/js/Editor.js" ),
-        "menu": path.resolve( __dirname, "studio/menu.js" ),
+        "styles": path.resolve( __dirname, "studio/client/sass/screen.js" ),
+        "editor": path.resolve( __dirname, "studio/client/js/Editor.js" ),
+        "menu": path.resolve( __dirname, "studio/server/menu.js" ),
     },
 
 
     output: {
-        path: path.resolve( __dirname, "studio/static/js" ),
+        path: path.resolve( __dirname, "studio/public/js" ),
         filename: "[name].js",
     },
 

@@ -2,7 +2,7 @@
 // It has the same sandbox as a Chrome extension.
 process.once( "loaded", () => {
     // Setup global 2dk package for renderers
-    const Editor = require( "./source/js/Editor" );
+    const Editor = require( "./client/js/Editor" );
 
     global._2dk = {
         Editor,

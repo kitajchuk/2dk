@@ -1,5 +1,5 @@
 const MediaBox = require( "properjs-mediabox" );
-const Cache = require( "./Cache" );
+const cache = require("../../server/cache");
 const mediabox = new MediaBox();
 const channel = "bgm";
 const duration = 1;
@@ -21,7 +21,7 @@ const EditorUtils = {
     processSound ( sampler, gameId ) {
         const select = sampler.find( ".js-select-sound" );
         const sound = select[ 0 ].value;
-        const soundId = Cache.slugify( `${sound}${sampler.data().spot}` );
+        const soundId = cache.slugify( `${sound}${sampler.data().spot}` );
         const addMedia = ( snd, sId ) => {
             mediabox.addAudio({
                 id: sId,
@@ -41,7 +41,7 @@ const EditorUtils = {
                 }
 
                 const _snd = nextUp[ 0 ].value;
-                const _sId = Cache.slugify( `${_snd}${sampler.data().spot}` );
+                const _sId = cache.slugify( `${_snd}${sampler.data().spot}` );
 
                 select[ 0 ].selectedIndex = nextUp.index();
 

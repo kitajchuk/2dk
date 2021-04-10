@@ -2,7 +2,7 @@
 const { app, BrowserWindow } = require( "electron" );
 const isMac = (process.platform === "darwin");
 const path = require( "path" );
-const menu = require( "./menu" );
+const menu = require( "./server/menu" );
 
 // Keep a global reference of the window object, if you don"t, the window will
 // be closed automatically when the JavaScript object is garbage collected.
