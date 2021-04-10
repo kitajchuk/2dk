@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "fs-extra": "^8.1.0",
-    "jimp": "^0.9.3",
+    "jimp": "^0.16.1",
     "paramalama": "^0.2.0",
     "properjs-lager": "^0.1.2",
     "properjs-mediabox": "^0.3.4"
