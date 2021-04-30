@@ -27,7 +27,7 @@ public/css
 public/games
 studio/static/js
 studio/static/css
-studio/public/js
+#studio/public/js
 studio/public/css
 studio/games/**/assets/snapshots
 
