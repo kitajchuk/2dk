@@ -203,7 +203,7 @@ Can all be handled in plugin GameBox
     checkMap ( poi, sprite ) {
         let ret = false;
         const hitbox = sprite.getHitbox( poi );
-        const isHero = sprite === this.hero;
+        // const isHero = sprite === this.hero;
 
         for ( let i = this.map.data.collision.length; i--; ) {
             const collider = this.map.data.collider;
@@ -217,10 +217,10 @@ Can all be handled in plugin GameBox
 
             if ( Utils.collide( hitbox, tile ) ) {
                 ret = true;
-                isHero && this.map.setCollider( tile );
+                // isHero && this.map.setCollider( tile );
 
             } else {
-                isHero && this.map.clearCollider( tile );
+                // isHero && this.map.clearCollider( tile );
             }
         }
 
@@ -281,7 +281,7 @@ Can all be handled in plugin GameBox
 
     checkNPC ( poi, sprite ) {
         let ret = false;
-        let collider;
+        // let collider;
         const hitbox = sprite.getHitbox( poi );
 
         for ( let i = this.map.npcs.length; i--; ) {
@@ -291,20 +291,20 @@ Can all be handled in plugin GameBox
                 continue;
             }
 
-            collider = {
-                x: this.map.npcs[ i ].position.x,
-                y: this.map.npcs[ i ].position.y,
-                width: this.map.npcs[ i ].width,
-                height: this.map.npcs[ i ].height,
-                layer: this.map.npcs[ i ].layer,
-            };
+            // collider = {
+            //     x: this.map.npcs[ i ].position.x,
+            //     y: this.map.npcs[ i ].position.y,
+            //     width: this.map.npcs[ i ].width,
+            //     height: this.map.npcs[ i ].height,
+            //     layer: this.map.npcs[ i ].layer,
+            // };
 
             if ( Utils.collide( hitbox, this.map.npcs[ i ].hitbox ) ) {
                 ret = this.map.npcs[ i ];
-                this.map.setCollider( collider );
+                // this.map.setCollider( collider );
 
             } else {
-                this.map.clearCollider( collider );
+                // this.map.clearCollider( collider );
             }
         }
 
@@ -312,7 +312,7 @@ Can all be handled in plugin GameBox
     }
 
 
-    checkTiles ( poi, sprite ) {
+    checkTiles ( poi /*, sprite*/ ) {
         let ret = false;
         const tiles = {
             action: [],
@@ -321,7 +321,7 @@ Can all be handled in plugin GameBox
         };
         const hitbox = this.hero.getHitbox( poi );
         const footbox = this.hero.getFootbox( poi );
-        const isHero = sprite === this.hero;
+        // const isHero = sprite === this.hero;
 
         for ( let i = this.map.activeTiles.length; i--; ) {
             const instance = this.map.activeTiles[ i ];
@@ -366,7 +366,7 @@ Can all be handled in plugin GameBox
                     }
 
                 } else {
-                    isHero && this.map.clearCollider( tilebox );
+                    // isHero && this.map.clearCollider( tilebox );
                 }
             }
         }
@@ -376,7 +376,7 @@ Can all be handled in plugin GameBox
             tiles.attack = tiles.attack.sort( tileSortFunc );
             tiles.passive = tiles.passive.sort( tileSortFunc );
 
-            isHero && this.map.setTileColliders( tiles );
+            // isHero && this.map.setTileColliders( tiles );
 
             ret = tiles;
         }

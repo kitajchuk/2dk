@@ -77,12 +77,12 @@ class ActiveTiles {
 
     attack ( coords ) {
         this.splice( coords );
-        this.map.clearCollider({
-            x: coords[ 0 ] * this.map.data.tilesize,
-            y: coords[ 1 ] * this.map.data.tilesize,
-            width: this.map.data.tilesize,
-            height: this.map.data.tilesize,
-        });
+        // this.map.clearCollider({
+        //     x: coords[ 0 ] * this.map.data.tilesize,
+        //     y: coords[ 1 ] * this.map.data.tilesize,
+        //     width: this.map.data.tilesize,
+        //     height: this.map.data.tilesize,
+        // });
     }
 
 
@@ -342,9 +342,9 @@ class Map {
         // ActiveTiles get rendered above as they are mapped into
         // the texture layers while handling the renderBox mapping logic.
         // The following is to render debug-level canvas stuff for testing.
-        if ( this.colliders.length && this.gamebox.player.query.debug ) {
-            this.drawColliders();
-        }
+        // if ( this.colliders.length && this.gamebox.player.query.debug ) {
+        //     this.drawColliders();
+        // }
 
         // Draw NPCs
         // They can draw to either background OR foreground
