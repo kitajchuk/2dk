@@ -34,15 +34,33 @@ class Player {
 
 
     detect () {
-        const rDevice = /Android|iPhone/;
-
         this.device = (() => {
-            const match = rDevice.exec( window.navigator.userAgent );
+            const match = /Android|iPhone/.exec( window.navigator.userAgent );
 
             return (match && match[ 0 ] ? true : false);
         })();
 
         this.installed = (window.navigator.standalone || window.matchMedia( "(display-mode: standalone)" ).matches);
+    }
+
+
+    // Debugging and feature flagging...
+    debug () {
+        if ( this.query.map ) {
+            this.data.hero.map = `/games/${this.data.game.id}/maps/${this.query.map}`;
+        }
+
+        if ( this.query.resolution ) {
+            this.data.game.resolution = Number( this.query.resolution );
+        }
+
+        if ( this.query.spawn ) {
+            this.data.hero.spawn = Number( this.query.spawn );
+        }
+
+        if ( this.query.sockets ) {
+            this.socket = new Socket( this );
+        }
     }
 
 
@@ -52,11 +70,11 @@ class Player {
             this.data = data;
             this.data.hero = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
             this.debug();
+            this.data.game.resolution = (this.device ? 2 : this.data.game.resolution);
             this.width = (this.device && this.data.game.fullscreen) ? Math.max( window.screen.height, screen.width ) : this.data.game.width / this.data.game.resolution;
             this.height = (this.device && this.data.game.fullscreen) ? Math.min( window.screen.height, screen.width ) : this.data.game.height / this.data.game.resolution;
             this.build();
             this.onRotate();
-            this.socket = new Socket( this );
 
             let counter = 0;
 
@@ -114,25 +132,6 @@ class Player {
 
     getOrientation () {
         return (("orientation" in window) ? window.orientation : window.screen.orientation.angle);
-    }
-
-
-    debug () {
-        if ( this.query.map ) {
-            this.data.hero.map = `/games/${this.data.game.id}/maps/${this.query.map}`;
-        }
-
-        if ( this.query.resolution ) {
-            this.data.game.resolution = Number( this.query.resolution );
-        }
-
-        if ( this.query.spawn ) {
-            this.data.hero.spawn = Number( this.query.spawn );
-        }
-
-        if ( this.device ) {
-            this.data.game.resolution = 2;
-        }
     }
 
 
@@ -300,7 +299,7 @@ class Player {
         }
 
         // Blit the socket (broadcasts)
-        if ( !this.stopped ) {
+        if ( !this.stopped && this.socket ) {
             this.socket.blit( elapsed );
         }
     }
