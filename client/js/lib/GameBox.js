@@ -185,6 +185,96 @@ Can all be handled in plugin GameBox
 * Collision checks
 * Can all be handled in plugin GameBox
 *******************************************************************************/
+    getVisibleColliders() {
+        const colliders = [];
+
+        for ( let i = this.map.data.collision.length; i--; ) {
+            const collides = Utils.collide( this.camera, {
+                width: this.map.data.collider,
+                height: this.map.data.collider,
+                x: this.map.data.collision[ i ][ 0 ] * this.map.data.collider,
+                y: this.map.data.collision[ i ][ 1 ] * this.map.data.collider,
+            });
+
+            if ( collides ) {
+                colliders.push( this.map.data.collision[ i ] );
+            }
+        }
+
+        // console.log( `Total colliders: ${this.map.data.collision.length}`, `Visible colliders: ${colliders.length}` );
+
+        return colliders;
+    }
+
+
+    getVisibleEvents() {
+        const events = [];
+
+        for ( let i = this.map.data.events.length; i--; ) {
+            const collides = Utils.collide( this.camera, {
+                width: this.map.data.tilesize,
+                height: this.map.data.tilesize,
+                x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.tilesize,
+                y: this.map.data.events[ i ].coords[ 1 ] * this.map.data.tilesize,
+            });
+
+            if ( collides ) {
+                events.push( this.map.data.events[ i ] );
+            }
+        }
+
+        // console.log( `Total events: ${this.map.data.events.length}`, `Visible events: ${events.length}` );
+
+        return events;
+    }
+
+
+    getVisibleNPCs() {
+        const npcs = [];
+
+        for ( let i = this.map.npcs.length; i--; ) {
+            const collides = Utils.collide( this.camera, {
+                x: this.map.npcs[ i ].position.x,
+                y: this.map.npcs[ i ].position.y,
+                width: this.map.npcs[ i ].width,
+                height: this.map.npcs[ i ].height,
+            });
+
+            if ( collides ) {
+                npcs.push( this.map.npcs[ i ] );
+            }
+        }
+
+        // console.log( `Total npcs: ${this.map.npcs.length}`, `Visible npcs: ${npcs.length}` );
+
+        return npcs;
+    }
+
+
+    getVisibleActiveTiles() {
+        const activeTiles = [];
+
+        for ( let i = this.map.activeTiles.length; i--; ) {
+            for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
+                const collides = Utils.collide( this.camera, {
+                    width: this.map.data.tilesize,
+                    height: this.map.data.tilesize,
+                    x: this.map.activeTiles[ i ].data.coords[ j ][ 0 ] * this.map.data.tilesize,
+                    y: this.map.activeTiles[ i ].data.coords[ j ][ 1 ] * this.map.data.tilesize,
+                });
+                
+                if ( collides && activeTiles.indexOf( this.map.activeTiles[ i ] ) === -1 ) {
+                    activeTiles.push( this.map.activeTiles[ i ] );
+                }
+            }
+        }
+
+        // console.log( `Total acvtiveTiles: ${this.map.activeTiles.length}`, `Visible activeTiles: ${activeTiles.length}` );
+
+        return this.map.activeTiles;
+    }
+
+
     checkCamera ( poi, sprite ) {
         let ret = false;
 
@@ -200,44 +290,52 @@ Can all be handled in plugin GameBox
     }
 
 
-    checkMap ( poi, sprite ) {
+    checkHero ( poi, sprite ) {
         let ret = false;
-        const hitbox = sprite.getHitbox( poi );
-        // const isHero = sprite === this.hero;
+        const collides = Utils.collide( sprite.getHitbox( poi ), this.hero.hitbox );
 
-        for ( let i = this.map.data.collision.length; i--; ) {
-            const collider = this.map.data.collider;
-            const tile = {
-                width: collider,
-                height: collider,
-                x: this.map.data.collision[ i ][ 0 ] * collider,
-                y: this.map.data.collision[ i ][ 1 ] * collider,
-                layer: "foreground",
-            };
-
-            if ( Utils.collide( hitbox, tile ) ) {
-                ret = true;
-                // isHero && this.map.setCollider( tile );
-
-            } else {
-                // isHero && this.map.clearCollider( tile );
-            }
+        if ( collides ) {
+            ret = collides;
         }
 
         return ret;
     }
 
 
-    checkEvents ( poi, sprite ) {
-        for ( let i = this.map.data.events.length; i--; ) {
+    checkMap( poi, sprite ) {
+        const hitbox = sprite.getHitbox( poi );
+        const colliders = this.getVisibleColliders();
+
+        for ( let i = colliders.length; i--; ) {
+            const tile = {
+                width: this.map.data.collider,
+                height: this.map.data.collider,
+                x: colliders[ i ][ 0 ] * this.map.data.collider,
+                y: colliders[ i ][ 1 ] * this.map.data.collider,
+                layer: "foreground",
+            };
+
+            if ( Utils.collide( hitbox, tile ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    checkEvents( poi, sprite ) {
+        const events = this.getVisibleEvents();
+
+        for ( let i = events.length; i--; ) {
             const tile = {
                 width: this.map.data.tilesize,
                 height: this.map.data.tilesize,
-                x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.tilesize,
-                y: this.map.data.events[ i ].coords[ 1 ] * this.map.data.tilesize
+                x: events[ i ].coords[ 0 ] * this.map.data.tilesize,
+                y: events[ i ].coords[ 1 ] * this.map.data.tilesize
             };
-            const hasDir = this.map.data.events[ i ].dir;
-            const isBoundary = this.map.data.events[ i ].type === Config.events.BOUNDARY;
+            const hasDir = events[ i ].dir;
+            const isBoundary = events[ i ].type === Config.events.BOUNDARY;
             const lookbox = (isBoundary ? {
                 width: sprite.width,
                 height: sprite.height,
@@ -252,14 +350,10 @@ Can all be handled in plugin GameBox
 
             // An event without a "dir" can be triggered from any direction
             if ( collides && isThresh && isDir ) {
-                // this.map.setCollider( tile );
-                return Object.assign( this.map.data.events[ i ], {
+                return Object.assign( events[ i ], {
                     collides,
                     amount,
                 });
-
-            } else {
-                // this.map.clearCollider( tile );
             }
         }
 
@@ -267,53 +361,27 @@ Can all be handled in plugin GameBox
     }
 
 
-    checkHero ( poi, sprite ) {
-        let ret = false;
-        const collides = Utils.collide( sprite.getHitbox( poi ), this.hero.hitbox );
-
-        if ( collides ) {
-            ret = collides;
-        }
-
-        return ret;
-    }
-
-
     checkNPC ( poi, sprite ) {
-        let ret = false;
-        // let collider;
         const hitbox = sprite.getHitbox( poi );
+        const npcs = this.getVisibleNPCs();
 
-        for ( let i = this.map.npcs.length; i--; ) {
+        for ( let i = npcs.length; i--; ) {
             // Companion NPC will have a Hero prop?
             // Ensure we also don't collide with ourselves :P
-            if ( this.map.npcs[ i ].hero || this.map.npcs[ i ] === sprite ) {
+            if ( npcs[ i ].hero || npcs[ i ] === sprite ) {
                 continue;
             }
 
-            // collider = {
-            //     x: this.map.npcs[ i ].position.x,
-            //     y: this.map.npcs[ i ].position.y,
-            //     width: this.map.npcs[ i ].width,
-            //     height: this.map.npcs[ i ].height,
-            //     layer: this.map.npcs[ i ].layer,
-            // };
-
-            if ( Utils.collide( hitbox, this.map.npcs[ i ].hitbox ) ) {
-                ret = this.map.npcs[ i ];
-                // this.map.setCollider( collider );
-
-            } else {
-                // this.map.clearCollider( collider );
+            if ( Utils.collide( hitbox, npcs[ i ].hitbox ) ) {
+                return npcs[ i ];
             }
         }
 
-        return ret;
+        return false;
     }
 
 
-    checkTiles ( poi /*, sprite*/ ) {
-        let ret = false;
+    checkTiles ( poi ) {
         const tiles = {
             action: [],
             attack: [],
@@ -321,13 +389,13 @@ Can all be handled in plugin GameBox
         };
         const hitbox = this.hero.getHitbox( poi );
         const footbox = this.hero.getFootbox( poi );
-        // const isHero = sprite === this.hero;
+        const activeTiles = this.getVisibleActiveTiles();
 
-        for ( let i = this.map.activeTiles.length; i--; ) {
-            const instance = this.map.activeTiles[ i ];
+        for ( let i = activeTiles.length; i--; ) {
+            const instance = activeTiles[ i ];
             const lookbox = ((footTiles.indexOf( instance.data.group ) !== -1) ? footbox : hitbox);
 
-            for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
+            for ( let j = activeTiles[ i ].data.coords.length; j--; ) {
                 const tilebox = {
                     width: this.map.data.tilesize,
                     height: this.map.data.tilesize,
@@ -364,9 +432,6 @@ Can all be handled in plugin GameBox
                     if ( (!instance.data.action && !instance.data.attack) || (instance.data.attack && match.camera) ) {
                         tiles.passive.push( match );
                     }
-
-                } else {
-                    // isHero && this.map.clearCollider( tilebox );
                 }
             }
         }
@@ -376,12 +441,10 @@ Can all be handled in plugin GameBox
             tiles.attack = tiles.attack.sort( tileSortFunc );
             tiles.passive = tiles.passive.sort( tileSortFunc );
 
-            // isHero && this.map.setTileColliders( tiles );
-
-            ret = tiles;
+            return tiles
         }
 
-        return ret;
+        return false;
     }
 }
 

@@ -77,12 +77,6 @@ class ActiveTiles {
 
     attack ( coords ) {
         this.splice( coords );
-        // this.map.clearCollider({
-        //     x: coords[ 0 ] * this.map.data.tilesize,
-        //     y: coords[ 1 ] * this.map.data.tilesize,
-        //     width: this.map.data.tilesize,
-        //     height: this.map.data.tilesize,
-        // });
     }
 
 
@@ -177,7 +171,6 @@ class Map {
             x: 0,
             y: 0
         };
-        this.colliders = [];
         this.build();
     }
 
@@ -210,7 +203,6 @@ class Map {
         this.element.parentNode.removeChild( this.element );
         this.element = null;
         this.image = null;
-        this.colliders = null;
     }
 
 
@@ -337,14 +329,6 @@ class Map {
 
         // Draw background textures
         this.renderTextures( "background" );
-
-        // Note:
-        // ActiveTiles get rendered above as they are mapped into
-        // the texture layers while handling the renderBox mapping logic.
-        // The following is to render debug-level canvas stuff for testing.
-        // if ( this.colliders.length && this.gamebox.player.query.debug ) {
-        //     this.drawColliders();
-        // }
 
         // Draw NPCs
         // They can draw to either background OR foreground
@@ -568,70 +552,6 @@ class Map {
         this[ type ].splice( this[ type ].indexOf( obj ), 1 );
         obj.destroy();
         obj = null;
-    }
-
-
-/*******************************************************************************
-* Collisions:
-* Perception Checks
-*******************************************************************************/
-    setCollider ( obj ) {
-        if ( this.gamebox.player.query.debug ) {
-            const collider = this.colliders.find( ( collid ) => (collid.x === obj.x && collid.y === obj.y) );
-
-            if ( !collider ) {
-                this.colliders.push( obj );
-            }
-        }
-    }
-
-
-    setTileColliders ( tiles ) {
-        if ( this.gamebox.player.query.debug ) {
-            for ( let id in tiles ) {
-                tiles[ id ].forEach(( tile, i ) => {
-                    // Top tile for a group is sorted as most collided...
-                    if ( i === 0 ) {
-                        tile.tilebox.color = Config.colors.green;
-                    }
-
-                    this.clearCollider( tile.tilebox );
-                    this.setCollider( tile.tilebox );
-                });
-            }
-        }
-    }
-
-
-    clearCollider ( obj ) {
-        if ( this.gamebox.player.query.debug ) {
-            for ( let i = this.colliders.length; i--; ) {
-                if ( this.colliders[ i ].x === obj.x && this.colliders[ i ].y === obj.y ) {
-                    this.colliders.splice( i, 1 );
-                    return true;
-                }
-            }
-        }
-    }
-
-
-    drawColliders () {
-        if ( this.colliders.length && this.gamebox.player.query.debug ) {
-            this.colliders.forEach(( collider ) => {
-                const layer = (collider.layer || "background");
-                const color = (collider.color || Config.colors.teal);
-
-                this.layers[ layer ].onCanvas.context.globalAlpha = 0.5;
-                this.layers[ layer ].onCanvas.context.fillStyle = color;
-                this.layers[ layer ].onCanvas.context.fillRect(
-                    this.offset.x + collider.x,
-                    this.offset.y + collider.y,
-                    collider.width,
-                    collider.height
-                );
-                this.layers[ layer ].onCanvas.context.globalAlpha = 1.0;
-            });
-        }
     }
 }
 
