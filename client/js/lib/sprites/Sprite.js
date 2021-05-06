@@ -171,35 +171,6 @@ class Sprite {
         );
 
         this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
-
-        // Debug rendering...
-        if ( this.gamebox.player.query.debug ) {
-            this.renderDebug();
-        }
-    }
-
-
-    renderDebug () {
-        this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 0.5;
-        this.map.layers[ this.layer ].onCanvas.context.fillStyle = Config.colors.red;
-
-        // Hitbox
-        this.map.layers[ this.layer ].onCanvas.context.fillRect(
-            this.offset.x + (this.data.hitbox.x / this.scale),
-            this.offset.y + (this.data.hitbox.y / this.scale),
-            this.hitbox.width,
-            this.hitbox.height
-        );
-
-        // Footbox
-        this.map.layers[ this.layer ].onCanvas.context.fillRect(
-            this.offset.x + (this.data.hitbox.x / this.scale),
-            this.offset.y + (this.data.hitbox.y / this.scale) + (this.hitbox.height / 2),
-            this.hitbox.width,
-            this.hitbox.height / 2
-        );
-
-        this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
     }
 
 

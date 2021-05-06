@@ -1109,6 +1109,12 @@ class TopView extends GameBox {
         mapData.spawn[ mapData.spawn.length - 1 ][ _css.hero_.axis ] = _css.hero_.from;
         heroData.spawn = mapData.spawn.length - 1;
 
+        // Shim a spawn position based on new initial Hero position
+        if ( heroData.companion ) {
+            heroData.companion.x = _val.map_.heroPosition.x;
+            heroData.companion.y = _val.map_.heroPosition.y;
+        }
+
         // Create new Map and apply calculations
         this.map_ = new Map( mapData, heroData, this );
         this.map_.offset = _val.map_.offset;

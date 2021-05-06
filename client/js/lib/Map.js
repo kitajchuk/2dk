@@ -223,10 +223,11 @@ class Map {
 
         // Companion?
         if ( this.heroData.companion ) {
+            console.log( this.heroData.companion );
             this.heroData.companion = this.gamebox.player.getMergedData( this.heroData.companion, "npcs" );
             this.heroData.companion.spawn = {
-                x: this.hero.position.x,
-                y: this.hero.position.y,
+                x: this.heroData.companion.x || this.hero.position.x,
+                y: this.heroData.companion.y || this.hero.position.y,
             };
 
             this.companion = new Companion( this.heroData.companion, this.hero );
