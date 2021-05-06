@@ -366,12 +366,6 @@ Can all be handled in plugin GameBox
         const npcs = this.getVisibleNPCs();
 
         for ( let i = npcs.length; i--; ) {
-            // Companion NPC will have a Hero prop?
-            // Ensure we also don't collide with ourselves :P
-            if ( npcs[ i ].hero || npcs[ i ] === sprite ) {
-                continue;
-            }
-
             if ( Utils.collide( hitbox, npcs[ i ].hitbox ) ) {
                 return npcs[ i ];
             }

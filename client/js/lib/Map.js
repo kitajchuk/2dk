@@ -4,17 +4,6 @@ const Config = require( "./Config" );
 const Hero = require( "./sprites/Hero" );
 const NPC = require( "./sprites/NPC" );
 const Companion = require( "./sprites/Companion" );
-const companionSortFunc = ( a, b ) => {
-    if ( a.hero ) {
-        return 1;
-    }
-
-    if ( b.hero ) {
-        return -1;
-    }
-
-    return 0;
-};
 
 
 
@@ -200,6 +189,11 @@ class Map {
         this.hero.destroy();
         this.hero = null;
 
+        if ( this.companion ) {
+            this.companion.destroy();
+            this.companion = null;
+        }
+
         this.element.parentNode.removeChild( this.element );
         this.element = null;
         this.image = null;
@@ -235,7 +229,7 @@ class Map {
                 y: this.hero.position.y,
             };
 
-            this.npcs.push( new Companion( this.heroData.companion, this.hero ) );
+            this.companion = new Companion( this.heroData.companion, this.hero );
         }
 
         // NPCs
@@ -290,6 +284,10 @@ class Map {
         });
 
         this.hero.blit( elapsed );
+        
+        if ( this.companion ) {
+            this.companion.blit( elapsed );
+        }
 
         this.fx.forEach(( fx ) => {
             fx.blit( elapsed );
@@ -299,6 +297,10 @@ class Map {
 
     update ( offset ) {
         this.offset = offset;
+
+        if ( this.companion ) {
+            this.companion.update();
+        }
 
         this.npcs.forEach(( npc ) => {
             npc.update();
@@ -319,10 +321,7 @@ class Map {
         // Separate FLOAT NPCs from the normies
         const npcs = this.npcs.filter(( npc ) => {
             return npc.data.type !== Config.npc.FLOAT;
-
-        // Sort non-FLOAT companions to top of stack
-        // Only a companion NPC can have a hero reference
-        }).sort( companionSortFunc );
+        });
         const floats = this.npcs.filter(( npc ) => {
             return npc.data.type === Config.npc.FLOAT;
         });
@@ -336,13 +335,23 @@ class Map {
             npc.render();
         });
 
+        // Draw Companion?
+        if ( this.companion && this.companion.data.type !== Config.npc.FLOAT ) {
+            this.companion.render();
+        }
+
         // Draw Hero
         this.hero.render();
 
         // Draw foreground textures
         this.renderTextures( "foreground" );
 
-        // Draw float companions (render AFTER texture foreground)
+        // Draw Companion?
+        if ( this.companion && this.companion.data.type === Config.npc.FLOAT ) {
+            this.companion.render();
+        }
+
+        // Draw float NPCs (render AFTER texture foreground)
         floats.forEach(( float ) => {
             float.render();
         });

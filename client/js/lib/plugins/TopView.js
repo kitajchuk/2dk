@@ -1155,6 +1155,7 @@ class TopView extends GameBox {
         return new Promise(( resolve ) => {
             const controller = new Controller();
             const _update = ( t ) => {
+                // Only a Hero has a position
                 if ( obj.position ) {
                     obj.position.x = (css.axis === "x" ? t : obj.position.x);
                     obj.position.y = (css.axis === "y" ? t : obj.position.y);
