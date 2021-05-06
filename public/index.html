@@ -4,6 +4,138 @@
         <meta charset="utf-8" />
         <title>2dk</title>
         <link href="/css/2dk.css" rel="stylesheet" />
+        <style>
+            html,
+            body {
+                height: auto;
+                overflow: auto;
+                line-height: 1.5;
+            }
+            body {
+                max-width: 768px;
+                margin: 0 auto;
+                padding: 64px 32px;
+                text-align: center;
+            }
+            html.suppressed,
+            html.suppressed body {
+                height: 100%;
+                overflow: hidden;
+            }
+            h1 {
+                font-size: 32px;
+            }
+            h2 {
+                font-size: 24px;
+                padding-top: 64px;
+            }
+            ul {
+                padding-top: 32px;
+            }
+            ul li {
+                margin: 16px 0;
+                display: block;
+            }
+            a {
+                color: #2AFFEA;
+                display: block;
+                text-decoration: underline;
+            }
+            span {
+                color: #2AFFEA;
+            }
+            footer {
+                padding-top: 64px;
+            }
+            .player {
+                width: 100%;
+                padding-bottom: 56.25%;
+                position: relative;
+                overflow: hidden;
+                margin-top: 32px;
+                border: 3px solid #333;
+                border-radius: 32px;
+            }
+            .player:after {
+                position: auto;
+                content: "";
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 2;
+            }
+            .player iframe {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 1;
+            }
+            .player.focused {
+                border-color: #2AFFEA;
+            }
+        </style>
     </head>
-    <body></body>
+    <body title="Click to unfocus">
+        <h1>2dk development demos</h1>
+        <p>Focus the below frame and use the keys for the <span>la</span> demo.</p>
+        <div class="player" title="Click to focus">
+            <iframe src="/games/la/?resolution=2"></iframe>
+        </div>
+        <ul>
+            <li>
+                <a target="_blank" href="/games/la/">link's awakening style</a>
+            </li>
+            <li>
+                <a target="_blank" href="/games/loz/">original zelda style</a>
+            </li>
+            <li>
+                <a target="_blank" href="/games/cellauto/">cellular automata generation (la style)</a>
+            </li>
+        </ul>
+        <h2>Quick developer notes:</h2>
+        <ul>
+            <li>
+                <p>Browser: Arrow keys, X is A, Z is B, Enter is Start.</p>
+            </li>
+            <li>
+                <p>Use <span>A (X key)</span> to grab objects and throw them as well as to jump.</p>
+            </li>
+            <li>
+                <p>Native Gamepad support tested with NES & SNES USB controllers.</p>
+            </li>
+            <li>
+                <p>Designed for mobile with a highly functional 8-point touch D-pad.</p>
+            </li>
+            <li>
+                <p>Save to homescreen on your mobile phone to play anywhere.</p>
+            </li>
+            <li>
+                <p>*Audio is disabled on mobile due to autoplay issues on devices.</p>
+            </li>
+        </ul>
+        <footer>
+            <a target="_blank" href="https://github.com/kitajchuk/2dk">github.com/kitajchuk/2dk</a>
+        </footer>
+        <script>
+            const player = document.querySelector( ".player" );
+            const iframe = document.querySelector( ".player iframe" );
+
+            player.addEventListener( "click", function () {
+                player.classList.add( "focused" );
+                document.documentElement.classList.add( "suppressed" );
+                iframe.focus();
+            }, false );
+
+            document.documentElement.addEventListener( "click", function ( e ) {
+                if ( e.target !== player && e.target !== iframe && player.classList.contains( "focused" ) ) {
+                    player.classList.remove( "focused" );
+                    document.documentElement.classList.remove( "suppressed" );
+                }
+            }, false );
+        </script>
+    </body>
 </html>
