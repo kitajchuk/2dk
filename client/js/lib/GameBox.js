@@ -2,7 +2,9 @@ const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Loader = require( "./Loader" );
 const Dialogue = require( "./Dialogue" );
-const { Map } = require( "./Map" );
+const { Map, MapLayer } = require( "./Map" );
+const Hero = require( "./sprites/Hero" );
+const Companion = require( "./sprites/Companion" );
 const FX = require( "./sprites/FX" );
 const tileSortFunc = ( tileA, tileB ) => {
     if ( tileA.amount > tileB.amount ) {
@@ -37,6 +39,18 @@ const cameraTiles = [
 
 
 
+class Camera {
+    constructor ( x, y, width, height, resolution ) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.resolution = resolution;
+    }
+}
+
+
+
 class GameBox {
     constructor ( player ) {
         this.player = player;
@@ -45,19 +59,47 @@ class GameBox {
             x: 0,
             y: 0,
         };
-        this.camera = {
-            x: 0,
-            y: 0,
-            width: this.player.width * this.player.data.game.resolution,
-            height: this.player.height * this.player.data.game.resolution,
-            resolution: this.player.data.game.resolution,
+        this.camera = new Camera(
+            0,
+            0,
+            this.player.width * this.player.data.game.resolution,
+            this.player.height * this.player.data.game.resolution,
+            this.player.data.game.resolution
+        );
+        this.layers = {
+            background: null,
+            heroground: null,
+            foreground: null,
         };
 
-        // Map
-        this.map = new Map( Loader.cash( this.player.data.hero.map ), this.player.data.hero, this );
+        const initMapData = Loader.cash( this.player.data.hero.map );
+        const initHeroData = this.player.data.hero;
 
-        // NPCs
-        this.npcs = [];
+        // Map
+        this.map = new Map( initMapData, this );
+
+        // Hero
+        initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
+        this.hero = new Hero( initHeroData, this.map );
+
+        for ( let id in initHeroData.sounds ) {
+            this.player.gameaudio.addSound({
+                id,
+                src: initHeroData.sounds[ id ],
+                channel: "sfx",
+            });
+        }
+
+        // Companion?
+        if ( initHeroData.companion ) {
+            initHeroData.companion = this.player.getMergedData( initHeroData.companion, "npcs" );
+            initHeroData.companion.spawn = {
+                x: this.hero.position.x,
+                y: this.hero.position.y,
+            };
+
+            this.companion = new Companion( initHeroData.companion, this.hero );
+        }
 
         // Dialogues
         this.dialogue = new Dialogue();
@@ -67,8 +109,23 @@ class GameBox {
     }
 
 
+    clear () {
+        for ( let id in this.layers ) {
+            this.layers[ id ].onCanvas.clear();
+        }
+    }
+
+
     build () {
-        this.player.screen.appendChild( this.map.element );
+        this.element = document.createElement( "div" );
+        this.element.className = "_2dk__gamebox";
+
+        // Render layers
+        for ( let id in this.layers ) {
+            this.addLayer( id );
+        }
+
+        this.player.screen.appendChild( this.element );
         this.player.screen.appendChild( this.dialogue.element );
     }
 
@@ -84,15 +141,31 @@ class GameBox {
     }
 
 
+    addLayer ( id ) {
+        this.layers[ id ] = {};
+        this.layers[ id ].onCanvas = new MapLayer({
+            id,
+            width: this.camera.width,
+            height: this.camera.height,
+        });
+
+        this.layers[ id ].onCanvas.canvas.width = `${this.camera.width * this.camera.resolution}`;
+        this.layers[ id ].onCanvas.canvas.height = `${this.camera.height * this.camera.resolution}`;
+
+        this.element.appendChild( this.layers[ id ].onCanvas.canvas );
+    }
+
+
     initMap () {
-        // Shortcut ref to Hero sprite
-        this.hero = this.map.hero;
         this.update( this.hero.position );
         this.hero.applyOffset();
         this.player.gameaudio.addSound({
             id: this.map.data.id,
             src: this.map.data.sound,
             channel: "bgm",
+        });
+        this.dialogue.auto({
+            text: [this.map.data.name]
         });
     }
 
@@ -366,7 +439,8 @@ Can all be handled in plugin GameBox
         const npcs = this.getVisibleNPCs();
 
         for ( let i = npcs.length; i--; ) {
-            if ( Utils.collide( hitbox, npcs[ i ].hitbox ) ) {
+            // A thrown object Sprite will have a hero prop
+            if ( !npcs[ i ].hero && npcs[ i ] !== sprite && Utils.collide( hitbox, npcs[ i ].hitbox ) ) {
                 return npcs[ i ];
             }
         }

@@ -1,9 +1,7 @@
 const Utils = require( "./Utils" );
 const Loader = require( "./Loader" );
 const Config = require( "./Config" );
-const Hero = require( "./sprites/Hero" );
 const NPC = require( "./sprites/NPC" );
-const Companion = require( "./sprites/Companion" );
 
 
 
@@ -141,9 +139,8 @@ class MapLayer {
 * manages Map offset and Camera position.
 *******************************************************************************/
 class Map {
-    constructor ( data, heroData, gamebox ) {
+    constructor ( data, gamebox ) {
         this.data = data;
-        this.heroData = heroData;
         this.gamebox = gamebox;
         this.camera = this.gamebox.camera;
         this.width = this.data.width;
@@ -166,7 +163,6 @@ class Map {
 
     destroy () {
         for ( let id in this.layers ) {
-            this.layers[ id ].onCanvas.destroy();
             this.layers[ id ].offCanvas.destroy();
         }
         this.layers = null;
@@ -186,51 +182,14 @@ class Map {
         });
         this.fx = null;
 
-        this.hero.destroy();
-        this.hero = null;
-
-        if ( this.companion ) {
-            this.companion.destroy();
-            this.companion = null;
-        }
-
-        this.element.parentNode.removeChild( this.element );
-        this.element = null;
         this.image = null;
     }
 
 
     build () {
-        this.element = document.createElement( "div" );
-        this.element.className = "_2dk__map";
-
         // Render layers
         for ( let id in this.layers ) {
             this.addLayer( id );
-        }
-
-        // Hero
-        this.heroData.spawn = this.data.spawn[ this.heroData.spawn ];
-        this.hero = new Hero( this.heroData, this );
-
-        for ( let id in this.hero.data.sounds ) {
-            this.gamebox.player.gameaudio.addSound({
-                id,
-                src: this.hero.data.sounds[ id ],
-                channel: "sfx",
-            });
-        }
-
-        // Companion?
-        if ( this.heroData.companion ) {
-            console.log( this.heroData.companion );
-            this.heroData.companion = this.gamebox.player.getMergedData( this.heroData.companion, "npcs" );
-            this.heroData.companion.spawn = {
-                x: this.heroData.companion.x || this.hero.position.x,
-                y: this.heroData.companion.y || this.hero.position.y,
-            };
-
-            this.companion = new Companion( this.heroData.companion, this.hero );
         }
 
         // NPCs
@@ -250,23 +209,14 @@ class Map {
         const offHeight = this.gamebox.camera.height + (this.data.tilesize * 2);
 
         this.layers[ id ] = {};
-        this.layers[ id ].onCanvas = new MapLayer({
-            id,
-            width: this.gamebox.camera.width,
-            height: this.gamebox.camera.height,
-        });
         this.layers[ id ].offCanvas = new MapLayer({
             id,
             width: offWidth,
             height: offHeight,
         });
 
-        this.layers[ id ].onCanvas.canvas.width = `${this.gamebox.camera.width * this.gamebox.camera.resolution}`;
-        this.layers[ id ].onCanvas.canvas.height = `${this.gamebox.camera.height * this.gamebox.camera.resolution}`;
         this.layers[ id ].offCanvas.canvas.width = `${offWidth * this.gamebox.camera.resolution}`;
         this.layers[ id ].offCanvas.canvas.height = `${offHeight * this.gamebox.camera.resolution}`;
-
-        this.element.appendChild( this.layers[ id ].onCanvas.canvas );
     }
 
 
@@ -284,12 +234,6 @@ class Map {
             npc.blit( elapsed );
         });
 
-        this.hero.blit( elapsed );
-        
-        if ( this.companion ) {
-            this.companion.blit( elapsed );
-        }
-
         this.fx.forEach(( fx ) => {
             fx.blit( elapsed );
         });
@@ -298,10 +242,6 @@ class Map {
 
     update ( offset ) {
         this.offset = offset;
-
-        if ( this.companion ) {
-            this.companion.update();
-        }
 
         this.npcs.forEach(( npc ) => {
             npc.update();
@@ -336,21 +276,8 @@ class Map {
             npc.render();
         });
 
-        // Draw Companion?
-        if ( this.companion && this.companion.data.type !== Config.npc.FLOAT ) {
-            this.companion.render();
-        }
-
-        // Draw Hero
-        this.hero.render();
-
         // Draw foreground textures
         this.renderTextures( "foreground" );
-
-        // Draw Companion?
-        if ( this.companion && this.companion.data.type === Config.npc.FLOAT ) {
-            this.companion.render();
-        }
 
         // Draw float NPCs (render AFTER texture foreground)
         floats.forEach(( float ) => {
@@ -375,8 +302,8 @@ class Map {
             this.data.tilesize
         );
 
-        // Draw offscreen canvases to the onscreen canvases
-        this.layers[ id ].onCanvas.context.drawImage(
+        // Draw offscreen Map canvases to the onscreen World canvases
+        this.gamebox.layers[ id ].onCanvas.context.drawImage(
             this.layers[ id ].offCanvas.canvas,
             0,
             0,
@@ -392,7 +319,6 @@ class Map {
 
     clear () {
         for ( let id in this.layers ) {
-            this.layers[ id ].onCanvas.clear();
             this.layers[ id ].offCanvas.clear();
         }
     }

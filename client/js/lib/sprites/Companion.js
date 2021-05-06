@@ -12,6 +12,7 @@ const { TweenLite, Power2 } = require( "gsap" );
 class Companion extends Sprite {
     constructor ( data, hero ) {
         super( data, hero.map );
+        this.layer = "heroground";
         this.hero = hero;
         this.watchFPS = 24;
         this.watchFrame = 0;
@@ -214,7 +215,7 @@ class Companion extends Sprite {
 
         if ( !this.origin ) {
             this.origin = this.position;
-            console.log( `Spawn Origin ${this.data.id} (${this.position.x}, ${this.position.y})` );
+            // console.log( `Spawn Origin ${this.data.id} (${this.position.x}, ${this.position.y})`, this );
         }
 
         if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) && (this.hero.verb !== Config.verbs.GRAB) ) {

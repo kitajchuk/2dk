@@ -122,17 +122,13 @@ class Sprite {
         }
 
         // Move betweeb BG and FG relative to Hero
-        if ( this !== this.map.hero ) {
+        if ( this !== this.gamebox.hero && this !== this.gamebox.companion ) {
             // Assume that FLOAT should always render to the foreground
             if ( this.data.type === Config.npc.FLOAT ) {
                 this.layer = "foreground";
 
-            // Companions can flip between layers depending on hero position
-            } else if ( this.hero && (this.hitbox.y > this.map.hero.hitbox.y) ) {
-                this.layer = "foreground";
-
             // Sprites that have a smaller hitbox than their actual size can flip layer
-            } else if ( (this.hitbox.width * this.hitbox.height) !== (this.width * this.height) && (this.hitbox.y > this.map.hero.hitbox.y) ) {
+            } else if ( (this.hitbox.width * this.hitbox.height) !== (this.width * this.height) && (this.hitbox.y > this.gamebox.hero.hitbox.y) ) {
                 this.layer = "foreground";
 
             } else {
@@ -141,7 +137,7 @@ class Sprite {
         }
 
         if ( this.data.shadow ) {
-            this.map.layers.background.onCanvas.context.drawImage(
+            this.map.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
                 Math.abs( this.data.shadow.offsetX ),
                 Math.abs( this.data.shadow.offsetY ),
@@ -155,10 +151,10 @@ class Sprite {
         }
 
         if ( this.opacity ) {
-            this.map.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
+            this.map.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
         }
 
-        this.map.layers[ this.layer ].onCanvas.context.drawImage(
+        this.map.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
             this.image,
             this.spritecel[ 0 ],
             this.spritecel[ 1 ],
@@ -170,7 +166,7 @@ class Sprite {
             this.height
         );
 
-        this.map.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
+        this.map.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
     }
 
 

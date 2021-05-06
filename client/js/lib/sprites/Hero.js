@@ -10,6 +10,7 @@ const Sprite = require( "./Sprite" );
 class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
+        this.layer = "heroground";
     }
 
 
@@ -57,7 +58,6 @@ class Hero extends Sprite {
         };
 
         if ( absolute.x <= 0 ) {
-            // this.offset.x = Math.max( 0, poi.x );
             this.offset.x = this.position.x;
         }
 
@@ -66,7 +66,6 @@ class Hero extends Sprite {
         }
 
         if ( absolute.y <= 0 ) {
-            // this.offset.y = Math.max( 0, poi.y );
             this.offset.y = this.position.y;
         }
 

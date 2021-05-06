@@ -69,8 +69,7 @@
     }
 }
 ._2dk__splash__load,
-._2dk__splash__info,
-._2dk__splash__home {
+._2dk__splash__info {
     display: none;
     position: absolute;
     left: 0;
@@ -116,9 +115,6 @@
         padding-bottom: $padding-1;
     }
 }
-._2dk__splash__home {
-    pointer-events: none;
-}
 
 
 
@@ -134,13 +130,6 @@
             animation: bounce (240ms * 2) infinite;
             transition: all 240ms $ease;
             transform: translate3d( 0, 0, 0 );
-        }
-    }
-
-    ._2dk__splash__home {
-        .is-started & {
-            display: flex;
-            pointer-events: auto;
         }
     }
 }

@@ -4,7 +4,7 @@ const Loader = require( "../Loader" );
 const GameBox = require( "../GameBox" );
 const { Map } = require( "../Map" );
 const Sprite = require( "../sprites/Sprite" );
-const Controller = require( "properjs-controller" ).default;
+const Companion = require( "../sprites/Companion" );
 const { TweenLite, Power4 } = require( "gsap" );
 
 
@@ -12,10 +12,6 @@ const { TweenLite, Power4 } = require( "gsap" );
 class TopView extends GameBox {
     constructor ( player ) {
         super( player );
-
-        // Map switch
-        this.map_ = null;
-        this.cam_ = null;
 
         // Interactions
         this.interact = {
@@ -44,21 +40,34 @@ class TopView extends GameBox {
 * Order is: blit, update, render
 *******************************************************************************/
     blit ( elapsed ) {
+        this.clear();
+
+        // blit hero
+        this.hero.blit( elapsed );
+        
+        // blit companion
+        if ( this.companion ) {
+            this.companion.blit( elapsed );
+        }
+
         // blit map
-        // blits hero
         this.map.blit( elapsed );
 
         // blit map_?
         if ( this.map_ ) {
-            // blits hero_
             this.map_.blit( elapsed );
         }
+
+        // update gamebox (camera)
+        this.update();
 
         // update hero
         this.hero.update();
 
-        // update gamebox (camera)
-        this.update();
+        // update companion
+        if ( this.companion ) {
+            this.companion.update();
+        }
 
         // update map
         this.map.update( this.offset );
@@ -68,14 +77,24 @@ class TopView extends GameBox {
             this.map_.update( this.map_.offset );
         }
 
+        // render companion behind hero?
+        if ( this.companion && this.companion.data.type !== Config.npc.FLOAT && this.companion.hitbox.y < this.hero.hitbox.y ) {
+            this.companion.render();
+        }
+
+        // render hero
+        this.hero.render();
+
+        // render companion infront of hero?
+        if ( this.companion && (this.companion.data.type === Config.npc.FLOAT || this.companion.hitbox.y > this.hero.hitbox.y) ) {
+            this.companion.render();
+        }
+
         // render map
-        // also renders hero...
-        // ...currently all canvas rendering happens here...
         this.map.render( this.camera );
 
         // render map_?
         if ( this.map_ ) {
-            // renders hero_
             this.map_.render( this.cam_ );
         }
     }
@@ -436,11 +455,9 @@ class TopView extends GameBox {
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -16;
-        this.hero.layer = "foreground";
         this.player.gameaudio.hitSound( Config.verbs.JUMP );
         this.keyTimer = setTimeout(() => {
             this.jumping = false;
-            this.hero.layer = "background";
             this.hero.face( this.hero.dir );
 
         }, 500 );
@@ -461,7 +478,6 @@ class TopView extends GameBox {
             }
 
             this.parkour = false;
-            this.hero.layer = "background";
             this.hero.face( this.hero.dir );
         }
     }
@@ -480,7 +496,6 @@ class TopView extends GameBox {
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -16;
-        this.hero.layer = "foreground";
         this.player.controls[ this.hero.dir ] = true;
         this.player.gameaudio.hitSound( "parkour" );
         this.keyTimer = setTimeout(() => {
@@ -510,11 +525,14 @@ class TopView extends GameBox {
 
     handleHeroEventDoor ( poi, dir, event ) {
         this.changeMap( event );
+        this.player.stop();
     }
 
 
     handleHeroEventBoundary ( poi, dir, event ) {
-        this.switchMap( event );
+        // this.switchMap( event );
+        this.changeMap( event );
+        this.player.stop();
     }
 
 
@@ -600,6 +618,7 @@ class TopView extends GameBox {
 
 
     handleHeroNPCAction ( poi, dir, obj ) {
+        console.log(obj);
         if ( obj.canInteract( dir ) ) {
             obj.doInteract( dir );
         }
@@ -857,32 +876,63 @@ class TopView extends GameBox {
 /*******************************************************************************
 * Map Switching
 *******************************************************************************/
+    getNewHeroPosition () {
+        if ( this.hero.dir === "down" ) {
+            return {
+                x: this.hero.position.x,
+                y: 0,
+                z: 0,
+            };
+
+        } else if ( this.hero.dir === "up" ) {
+            return {
+                x: this.hero.position.x,
+                y: this.map.height - this.hero.height,
+                z: 0,
+            };
+
+        } else if ( this.hero.dir === "right" ) {
+            return {
+                x: 0,
+                y: this.hero.position.y,
+                z: 0,
+            };
+
+        } else if ( this.hero.dir === "left" ) {
+            return {
+                x: this.map.width - this.hero.width,
+                y: this.hero.position.y,
+                z: 0,
+            };
+        }
+    }
+
+
     changeMap ( event ) {
         // Pause the Player so no game buttons dispatch
-        // Pausing triggers the GameBox to call this.hero.face( this.hero.dir )
         this.player.pause();
 
         // Fade out...
         this.player.element.classList.add( "is-fader" );
 
         setTimeout(() => {
-            // Dupe the Hero
-            const mapData = Loader.cash( event.map );
-            const heroData = Utils.copy( this.hero.data );
+            // New Map data
+            const newMapData = Loader.cash( event.map );
+            const newHeroPos = this.getNewHeroPosition();
 
             // Set a spawn index...
-            heroData.spawn = (event.spawn || 0);
+            this.hero.position.x = (event.spawn !== undefined ? newMapData.spawn[ event.spawn ].x : newHeroPos.x);
+            this.hero.position.y = (event.spawn !== undefined ? newMapData.spawn[ event.spawn ].y : newHeroPos.y);
 
             // Destroy old Map
             this.map.destroy();
 
             // Create new Map
-            this.map = new Map( mapData, heroData, this );
-
-            // Inject the new Map element into the DOM
-            this.player.screen.appendChild( this.map.element );
+            this.map = new Map( newMapData, this );
+            this.hero.map = this.map;
 
             // Initialize the new Map
+            // Applies new hero offset!
             this.initMap();
 
             // Handle the `dropin` effect
@@ -891,307 +941,24 @@ class TopView extends GameBox {
                 this.hero.position.z = -(this.camera.height / 2);
             }
 
+            // Create a new Companion
+            if ( this.companion ) {
+                const newCompanionData = Utils.copy( this.hero.data.companion );
+                newCompanionData.spawn = {
+                    x: this.hero.position.x,
+                    y: this.hero.position.y,
+                };
+                this.companion.destroy();
+                this.companion = new Companion( newCompanionData, this.hero );
+            }
+
             // Fade in...
             this.player.element.classList.remove( "is-fader" );
 
             // Resume game blit cycle...
             this.player.resume();
 
-            // Show contextual location text...
-            this.dialogue.auto({
-                text: [
-                    mapData.name
-                ]
-            });
-
         }, 1000 );
-    }
-
-
-    switchMap ( event ) {
-        // Pause the Player so no game buttons dispatch
-        // Pausing triggers the GameBox to call this.hero.face( this.hero.dir )
-        this.player.pause();
-
-        // Get the Map data
-        const mapData = Loader.cash( event.map );
-
-        // Create new Camera
-        this.cam_ = Utils.copy( this.camera );
-
-        // Will be the animation values for transition...
-        const _css = {
-            map: null,
-            map_: null,
-            hero: null,
-            hero_: null,
-        };
-        // Will be the new values for map_ and cam_
-        const _val = {
-            cam_: this.cam_,
-            map_: {
-                offset: null,
-                transform: null,
-                heroPosition: null,
-            }
-        };
-
-        // Stage new Map / new Hero for animation
-        if ( this.hero.dir === "down" ) {
-            // Presets
-            _val.cam_.y = 0;
-            _val.map_.offset = {
-                x: this.map.offset.x,
-                y: 0,
-            };
-            _val.map_.transform = `translate3d(
-                0,
-                ${this.player.height}px,
-                0
-            )`;
-            _val.map_.heroPosition = {
-                x: this.hero.position.x,
-                y: -this.hero.height,
-                z: 0,
-            };
-
-            // Animation values
-            _css.map_ = {
-                axis: "y",
-                from: this.player.height,
-                to: 0,
-            };
-            _css.map = {
-                axis: "y",
-                from: 0,
-                to: -this.player.height,
-            };
-            _css.hero_ = {
-                axis: "y",
-                from: -this.hero.height,
-                to: 0,
-            };
-            _css.hero = {
-                axis: "y",
-                from: this.hero.position.y,
-                to: this.hero.position.y + this.hero.height,
-            };
-
-        } else if ( this.hero.dir === "up" ) {
-            // Presets
-            _val.cam_.y = this.map.height - this.camera.height;
-            _val.map_.offset = {
-                x: this.map.offset.x,
-                y: -(this.map.height - this.camera.height),
-            };
-            _val.map_.transform = `translate3d(
-                0,
-                ${-this.player.height}px,
-                0
-            )`;
-            _val.map_.heroPosition = {
-                x: this.hero.position.x,
-                y: this.map.height,
-                z: 0,
-            };
-
-            // Animation values
-            _css.map_ = {
-                axis: "y",
-                from: -this.player.height,
-                to: 0,
-            };
-            _css.map = {
-                axis: "y",
-                from: 0,
-                to: this.player.height,
-            };
-            _css.hero_ = {
-                axis: "y",
-                from: this.map.height,
-                to: this.map.height - this.hero.height,
-            };
-            _css.hero = {
-                axis: "y",
-                from: this.hero.position.y,
-                to: this.hero.position.y - this.hero.height,
-            };
-
-        } else if ( this.hero.dir === "right" ) {
-            // Presets
-            _val.cam_.x = 0;
-            _val.map_.offset = {
-                x: 0,
-                y: this.map.offset.y,
-            };
-            _val.map_transform = `translate3d(
-                ${this.player.width}px,
-                0,
-                0
-            )`;
-            _val.map_.heroPosition = {
-                x: -this.hero.width,
-                y: this.hero.position.y,
-                z: 0,
-            };
-
-            // Animation values
-            _css.map_ = {
-                axis: "x",
-                from: this.player.width,
-                to: 0,
-            };
-            _css.map = {
-                axis: "x",
-                from: 0,
-                to: -this.player.width,
-            };
-            _css.hero_ = {
-                axis: "x",
-                from: -this.hero.width,
-                to: 0,
-            };
-            _css.hero = {
-                axis: "x",
-                from: this.hero.position.x,
-                to: this.hero.position.x + this.hero.width,
-            };
-
-        } else if ( this.hero.dir === "left" ) {
-            // Presets
-            _val.cam_.x = this.map.width - this.camera.width;
-            _val.map_.offset = {
-                x: -(this.map.width - this.camera.width),
-                y: this.map.offset.y,
-            };
-            _val.map_.transform = `translate3d(
-                ${-this.player.width}px,
-                0,
-                0
-            )`;
-            _val.map_.heroPosition = {
-                x: this.map.width,
-                y: this.hero.position.y,
-                z: 0,
-            };
-
-            // Animation values
-            _css.map_ = {
-                axis: "x",
-                from: -this.player.width,
-                to: 0,
-            };
-            _css.map = {
-                axis: "x",
-                from: 0,
-                to: this.player.width,
-            };
-            _css.hero_ = {
-                axis: "x",
-                from: this.map.width,
-                to: this.map.width - this.hero.width,
-            };
-            _css.hero = {
-                axis: "x",
-                from: this.hero.position.x,
-                to: this.hero.position.x - this.hero.width,
-            };
-        }
-
-        // New values for cam_
-        this.cam_ = _val.cam_;
-
-        // Dupe current Hero data
-        const heroData = Utils.copy( this.hero.data );
-
-        // Shim a spawn index based on initial new Hero position
-        mapData.spawn.push( _val.map_.heroPosition );
-        mapData.spawn[ mapData.spawn.length - 1 ][ _css.hero_.axis ] = _css.hero_.from;
-        heroData.spawn = mapData.spawn.length - 1;
-
-        // Shim a spawn position based on new initial Hero position
-        if ( heroData.companion ) {
-            heroData.companion.x = _val.map_.heroPosition.x;
-            heroData.companion.y = _val.map_.heroPosition.y;
-        }
-
-        // Create new Map and apply calculations
-        this.map_ = new Map( mapData, heroData, this );
-        this.map_.offset = _val.map_.offset;
-        this.map_.hero.position = _val.map_.heroPosition;
-        this.map_.element.style.webkitTransform = _val.map_.transform;
-
-        // Update new Map's Hero
-        this.map_.hero.face( this.hero.dir );
-        this.map_.hero.idle = this.hero.idle;
-
-        // Inject the new Map element into the DOM
-        this.player.screen.appendChild( this.map_.element );
-
-        // Animate Maps and Hero and resolve all tweens for clean-up
-        Promise.all([
-            // New Map, New Hero
-            this.switchMapTween( this.map_, _css.map_ ),
-            this.switchMapTween( this.map_.hero, _css.hero_ ),
-
-            // Old Map, Old Hero
-            this.switchMapTween( this.map, _css.map ),
-            this.switchMapTween( this.hero, _css.hero ),
-
-        ]).then(() => {
-            setTimeout(() => {
-                // Destroy old Map & Set the new Map
-                this.map.destroy();
-                this.map = this.map_;
-                this.map_ = null;
-                this.cam_ = null;
-
-                // Initialize the new Map
-                this.initMap();
-
-                // Resume game blit cycle...
-                this.player.resume();
-
-            }, 250 );
-        });
-    }
-
-
-    switchMapTween ( obj, css ) {
-        return new Promise(( resolve ) => {
-            const controller = new Controller();
-            const _update = ( t ) => {
-                // Only a Hero has a position
-                if ( obj.position ) {
-                    obj.position.x = (css.axis === "x" ? t : obj.position.x);
-                    obj.position.y = (css.axis === "y" ? t : obj.position.y);
-                    obj.applyOffset();
-                }
-
-                // Only a Map has a Hero
-                if ( obj.hero ) {
-                    const transform = Utils.getTransform( obj.element );
-
-                    obj.element.style.webkitTransform = `translate3d(
-                        ${css.axis === "x" ? t : transform.x}px,
-                        ${css.axis === "y" ? t : transform.y}px,
-                        0
-                    )`;
-                }
-            };
-
-            controller.tween({
-                from: css.from,
-                to: css.to,
-                update: ( t ) => {
-                    _update( t );
-                },
-                complete: ( t ) => {
-                    _update( t );
-                    resolve();
-                }
-            });
-        });
     }
 }
 

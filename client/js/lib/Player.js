@@ -151,12 +151,8 @@ class Player {
         this.splashLoad = document.createElement( "div" );
         this.splashLoad.className = "_2dk__splash__load";
         this.splashLoad.innerHTML = this.getSplash( "Loading game bundle..." );
-        this.splashHome = document.createElement( "div" );
-        this.splashHome.className = "_2dk__splash__home";
-        this.splashHome.innerHTML = `<a href="/">Tap for 2dk home</a>`;
         this.splash.appendChild( this.splashInfo );
         this.splash.appendChild( this.splashLoad );
-        this.splash.appendChild( this.splashHome );
         this.element.appendChild( this.splash );
         this.element.appendChild( this.screen );
         document.body.appendChild( this.element );
