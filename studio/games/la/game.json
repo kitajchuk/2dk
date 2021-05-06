@@ -4,7 +4,6 @@
         "name": "LA",
         "width": 768,
         "height": 576,
-        "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/icon.png",
         "save": 276,

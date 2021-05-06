@@ -71,8 +71,8 @@ class Player {
             this.data.hero = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
             this.debug();
             this.data.game.resolution = (this.device ? 2 : this.data.game.resolution);
-            this.width = (this.device && this.data.game.fullscreen) ? Math.max( window.screen.height, screen.width ) : this.data.game.width / this.data.game.resolution;
-            this.height = (this.device && this.data.game.fullscreen) ? Math.min( window.screen.height, screen.width ) : this.data.game.height / this.data.game.resolution;
+            this.width = this.data.game.width / this.data.game.resolution;
+            this.height = this.data.game.height / this.data.game.resolution;
             this.build();
             this.onRotate();
 

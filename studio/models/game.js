@@ -5,7 +5,6 @@ module.exports = {
         "width": 768,
         "height": 576,
         "resolution": 1,
-        "fullscreen": false,
         "icon": "",
         "save": 1,
         "release": 1.0,

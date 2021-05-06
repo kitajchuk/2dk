@@ -8,6 +8,55 @@
 
 
 
+## Getting started
+To develop clone this repo and then:
+
+```shell
+yarn install
+
+# PM2 server / Webpack watcher
+yarn start
+```
+
+
+
+## Studio software
+The studio software is an [Electron](https://www.electronjs.org/) application. Currently there are no package scripts for the software distribution as the project is still in what I would consider pre-beta development. For source execution:
+
+```shell
+# Install the software dependencies
+cd studio && yarn install
+
+# From project root
+# Runs the Electron application
+yarn studio
+
+# Webpack watcher
+yarn watch
+```
+
+**It's important to note I take no credit for the Nintendo IPs used for testing nor for the artwork and designs. All I've done is increased the resolution of sprites and tilesets I've compiled from the internet.**
+
+Currently you can create and paint maps quite well for the background, foreground and collision layers. It's basically Photoshop for 2D map painting.
+
+I've been using the game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. If you run the Studio you'll find it's there, named [LA](https://2dk.kitajchuk.com/games/la/).
+
+A 2dk game is a static webapp that contains all its own resources and JSON files. The Player, or engine, has a mobile first philosophy behind it and is designed to be played as a standalone webapp on your phone. I spent a fair amount of time making the touch controls, specifically the 8-point dpad, work very well.
+
+I've found the [Mozilla Gaming](https://developer.mozilla.org/en-US/docs/Games) docs to be quite helpful. I used these to implement the [Gamepad](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API) API so I can play with my USB NES controller when developing in Firefox. There are some other debug mode features available when running a 2dk game in a desktop browser.
+
+#### Mobile Player:
+![image](./public/img/mobile1.png)
+
+#### Painting maps
+![image](./public/img/mabevillage.png)
+
+![image](./public/img/mysteriousforest.png)
+
+![image](./public/img/ukukuprairie.png)
+
+
+
 ## Development roadmap
 
 * Code docs (framework?)
@@ -70,58 +119,6 @@
 * Versioned game package tar balls (releases)
     * Requires a difference between saves / releases
     * Implement "Package Release" button to create tar ball
-
-
-
-## Getting started
-To develop clone this repo and then:
-
-```shell
-yarn install
-
-# PM2 server / Webpack watcher
-yarn start
-```
-
-
-
-## Studio software
-The studio software is an [Electron](https://www.electronjs.org/) application. Currently there are no package scripts for the software distribution as the project is still in what I would consider pre-beta development. For source execution:
-
-```shell
-# Install the software dependencies
-cd studio && yarn install
-
-# From project root
-# Runs the Electron application
-yarn studio
-
-# Webpack watcher
-yarn watch
-```
-
-**It's important to note I take no credit for the Nintendo IPs used for testing nor for the artwork and designs. All I've done is increased the resolution of sprites and tilesets I've compiled from the internet.**
-
-Currently you can create and paint maps quite well for the background, foreground and collision layers. It's basically Photoshop for 2D map painting.
-
-I've been using the game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. If you run the Studio you'll find it's there, named [LA](https://2dk.kitajchuk.com/games/la/?buster=260).
-
-A 2dk game is a static webapp that contains all it's own resources and JSON files. The Player, or engine, has a mobile first philosophy behind it and is designed to be played as a standalone webapp on your phone. I spent a fair amount of time making the touch controls, specifically the 8-point dpad, work very well.
-
-I've found the [Mozilla Gaming](https://developer.mozilla.org/en-US/docs/Games) docs to be quite helpful. I used these to implement the [Gamepad](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API) API so I can play with my USB NES controller when developing in Firefox. There are some other debug mode features available when running a 2dk game in a desktop browser.
-
-#### Mobile Player:
-![image](./public/img/mobile1.png)
-
-#### Fullscreen mode:
-![image](./public/img/mobile2.png)
-
-#### Painting maps
-![image](./public/img/mabevillage.png)
-
-![image](./public/img/mysteriousforest.png)
-
-![image](./public/img/ukukuprairie.png)
 
 
 

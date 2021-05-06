@@ -5,7 +5,6 @@
         "width": 768,
         "height": 576,
         "resolution": 1,
-        "fullscreen": false,
         "icon": "/games/cellauto/icon.png",
         "save": 50,
         "release": 1,
