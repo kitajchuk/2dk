@@ -4,10 +4,9 @@
         "name": "LA",
         "width": 768,
         "height": 576,
-        "fullscreen": false,
         "resolution": 1,
         "icon": "/games/la/icon.png",
-        "save": 276,
+        "save": 277,
         "release": 1,
         "plugin": "topview"
     },

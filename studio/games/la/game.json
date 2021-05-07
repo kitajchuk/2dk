@@ -6,7 +6,7 @@
         "height": 576,
         "resolution": 1,
         "icon": "/games/la/icon.png",
-        "save": 276,
+        "save": 277,
         "release": 1,
         "plugin": "topview"
     },
@@ -24,8 +24,8 @@
             "parkour": "/games/la/assets/sounds/sfx-dropping.mp3"
         },
         "companion": {
-            "id": "dog",
-            "type": "walk"
+            "id": "ghost",
+            "type": "float"
         }
     },
     "heroes": [
