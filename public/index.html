@@ -10,6 +10,8 @@
             body {
                 line-height: 1.5;
                 font-size: 14px;
+                height: auto;
+                overflow: scroll;
             }
             body {
                 padding: 64px 0;
@@ -62,24 +64,6 @@
                 margin-top: 32px;
                 border: 3px solid #333;
             }
-            @media (max-width: 768px) {
-                .player {
-                    width: 384px;
-                    height: 288px;
-                }
-                h1 {
-                    font-size: 22px;
-                }
-                h2 {
-                    font-size: 18px;
-                }
-            }
-            @media (max-width: 384px) {
-                .player,
-                header > p {
-                    display: none;
-                }
-            }
             .player:after {
                 position: auto;
                 content: "";
@@ -100,6 +84,24 @@
             }
             .player.focused {
                 border-color: #2AFFEA;
+            }
+            @media (max-width: 768px) {
+                .player {
+                    width: 384px;
+                    height: 288px;
+                }
+                h1 {
+                    font-size: 22px;
+                }
+                h2 {
+                    font-size: 18px;
+                }
+            }
+            @media (max-width: 384px) {
+                .player,
+                header > p {
+                    display: none;
+                }
             }
         </style>
     </head>
