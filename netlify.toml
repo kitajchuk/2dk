@@ -1,0 +1,3 @@
+[build]
+  command = "cd studio && yarn install && cd ../ && yarn build"
+  publish = "public"
