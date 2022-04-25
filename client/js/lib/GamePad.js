@@ -507,6 +507,10 @@ class GamePad extends Controller {
         }
 
         this.player.element.appendChild( this.element );
+
+        if ( !this.player.device ) {
+            this.element.style.display = "none";
+        }
     }
 
 

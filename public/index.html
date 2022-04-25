@@ -12,8 +12,6 @@
                 line-height: 1.5;
             }
             body {
-                max-width: 768px;
-                margin: 0 auto;
                 padding: 64px 32px;
                 text-align: center;
             }
@@ -38,23 +36,33 @@
             }
             a {
                 color: #2AFFEA;
-                display: block;
                 text-decoration: underline;
             }
             span {
                 color: #2AFFEA;
             }
+            img {
+                width: 100%;
+                max-width: 1440px;
+                margin: 32px auto 0;
+            }
             footer {
                 padding-top: 64px;
             }
             .player {
-                width: 100%;
-                padding-bottom: 56.25%;
+                width: 768px;
+                height: 576px;
+                margin: 0 auto;
                 position: relative;
                 overflow: hidden;
                 margin-top: 32px;
                 border: 3px solid #333;
-                border-radius: 32px;
+            }
+            @media (max-width: 832px) {
+                .player {
+                    width: 384px;
+                    height: 288px;
+                }
             }
             .player:after {
                 position: auto;
@@ -80,43 +88,54 @@
         </style>
     </head>
     <body title="Click to unfocus">
-        <h1>2dk development demos</h1>
-        <p>Focus the below frame and use the keys for the <span>la</span> demo.</p>
-        <div class="player" title="Click to focus">
-            <iframe src="/games/la/?resolution=2"></iframe>
-        </div>
-        <ul>
-            <li>
-                <a target="_blank" href="/games/la/">link's awakening style</a>
-            </li>
-            <li>
-                <a target="_blank" href="/games/loz/">original zelda style</a>
-            </li>
-            <li>
-                <a target="_blank" href="/games/cellauto/">cellular automata generation (la style)</a>
-            </li>
-        </ul>
-        <h2>Quick developer notes:</h2>
-        <ul>
-            <li>
-                <p>Browser: Arrow keys, X is A, Z is B, Enter is Start.</p>
-            </li>
-            <li>
-                <p>Use <span>A (X key)</span> to grab objects and throw them as well as to jump.</p>
-            </li>
-            <li>
-                <p>Native Gamepad support tested with NES & SNES USB controllers.</p>
-            </li>
-            <li>
-                <p>Designed for mobile with a highly functional 8-point touch D-pad.</p>
-            </li>
-            <li>
-                <p>Save to homescreen on your mobile phone to play anywhere.</p>
-            </li>
-            <li>
-                <p>*Audio is disabled on mobile due to autoplay issues on devices.</p>
-            </li>
-        </ul>
+        <header>
+            <h1>2dk development demos</h1>
+            <p>Focus the below frame and press <span>Enter</span> for the <span>la</span> demo.</p>
+        </header>
+        <main>
+            <div class="player" title="Click to focus">
+                <iframe src=""></iframe>
+            </div>
+            <ul>
+                <li>
+                    <p>Save one to your homescreen on your mobile phone to play anywhere:</p>
+                </li>
+                <li>
+                    <a target="_blank" href="/games/loz/">original zelda style</a>
+                </li>
+                <li>
+                    <a target="_blank" href="/games/la/">link's awakening style</a>
+                </li>
+                <li>
+                    <a target="_blank" href="/games/cellauto/">cellular automata generation (la style)</a>
+                </li>
+            </ul>
+            <h2>Quick developer notes:</h2>
+            <ul>
+                <li>
+                    <p>Browser: Arrow keys, X is A, Z is B, Enter is Start.</p>
+                </li>
+                <li>
+                    <p>Use <span>A (X key)</span> to grab objects and throw them as well as to jump.</p>
+                </li>
+                <li>
+                    <p>Native <span>Gamepad</span> support tested with NES & SNES USB controllers.</p>
+                </li>
+                <li>
+                    <p>Designed for mobile with a highly functional <span>8-point touch D-pad</span>.</p>
+                </li>
+                <li>
+                    <p><span>Save to homescreen</span> on your mobile phone to play anywhere.</p>
+                </li>
+                <li>
+                    <p>*Audio is disabled on mobile due to autoplay issues on devices.</p>
+                </li>
+            </ul>
+            <h2>Electron Studio Software Screenshots:</h2>
+            <img src="/img/mabevillage.png" loading="lazy" />
+            <img src="/img/mysteriousforest.png" loading="lazy" />
+            <img src="/img/ukukuprairie.png" loading="lazy" />
+        </main>
         <footer>
             <a target="_blank" href="https://github.com/kitajchuk/2dk">github.com/kitajchuk/2dk</a>
         </footer>
@@ -124,10 +143,27 @@
             const player = document.querySelector( ".player" );
             const iframe = document.querySelector( ".player iframe" );
 
+            let timeout = null;
+
+            function updatePlayer() {
+                if ( window.innerWidth <= 832 ) {
+                    iframe.src = "/games/la/?resolution=2";
+                } else {
+                    iframe.src = "/games/la/";
+                }
+            }
+
             player.addEventListener( "click", function () {
                 player.classList.add( "focused" );
                 document.documentElement.classList.add( "suppressed" );
                 iframe.focus();
+            }, false );
+
+            window.addEventListener( "resize", function () {
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    updatePlayer();
+                }, 300 );
             }, false );
 
             document.documentElement.addEventListener( "click", function ( e ) {
@@ -136,6 +172,8 @@
                     document.documentElement.classList.remove( "suppressed" );
                 }
             }, false );
+
+            updatePlayer();
         </script>
     </body>
 </html>
