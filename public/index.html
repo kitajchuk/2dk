@@ -8,12 +8,11 @@
         <style>
             html,
             body {
-                height: auto;
-                overflow: auto;
                 line-height: 1.5;
+                font-size: 14px;
             }
             body {
-                padding: 64px 32px;
+                padding: 64px 0;
                 text-align: center;
             }
             html.suppressed,
@@ -22,10 +21,10 @@
                 overflow: hidden;
             }
             h1 {
-                font-size: 32px;
+                font-size: 28px;
             }
             h2 {
-                font-size: 24px;
+                font-size: 22px;
                 padding-top: 64px;
             }
             ul {
@@ -47,8 +46,12 @@
                 max-width: 1440px;
                 margin: 32px auto 0;
             }
+            main,
+            header {
+                padding: 0 16px;
+            }
             footer {
-                padding-top: 64px;
+                padding: 64px 16px 0;
             }
             .player {
                 width: 768px;
@@ -59,10 +62,22 @@
                 margin-top: 32px;
                 border: 3px solid #333;
             }
-            @media (max-width: 832px) {
+            @media (max-width: 768px) {
                 .player {
                     width: 384px;
                     height: 288px;
+                }
+                h1 {
+                    font-size: 22px;
+                }
+                h2 {
+                    font-size: 18px;
+                }
+            }
+            @media (max-width: 384px) {
+                .player,
+                header > p {
+                    display: none;
                 }
             }
             .player:after {
