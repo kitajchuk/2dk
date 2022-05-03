@@ -1,8 +1,12 @@
 {
   "name": "2dk",
-  "version": "0.1.0",
+  "version": "0.0.1",
+  "private": true,
   "description": "For the love of 2D. A JavaScript SDK.",
   "repository": "https://github.com/kitajchuk/2dk",
+  "engines": {
+    "node": ">=14"
+  },
   "author": {
     "name": "Brandon Lee Kitajchuk",
     "email": "bk@kitajchuk.com",
@@ -16,53 +20,122 @@
     "video games",
     "game development"
   ],
-  "private": true,
+  "main": "./lib/js/index.js",
   "scripts": {
-    "prestart": "yarn games",
-    "start": "concurrently 'yarn server' 'yarn watch:webpack' 'yarn watch:games'",
-    "studio": "cd studio && yarn start",
-    "games": "cp -R studio/games public",
-    "watch": "(yarn watch:webpack & yarn watch:games)",
-    "watch:webpack": "./node_modules/.bin/webpack --env.sandbox --hide-modules --colors --watch",
+    "prepare": "husky install",
+    "predev": "yarn build:2dk && yarn games",
+    "dev": "webpack serve --config ./configs/webpack.config.dev.js",
+    "games": "cp -R studio/games dist",
     "watch:games": "./node_modules/.bin/chokidar \"studio/games/**/*.json\" -c \"yarn games\"",
-    "server": "./node_modules/.bin/pm2 --no-daemon --watch -a start ecosystem.config.js",
-    "server:stop": "./node_modules/.bin/pm2 stop 'all' --watch",
-    "bundle": "./node_modules/.bin/webpack --env.production --progress --profile --display-modules --colors -p",
-    "build": "yarn bundle",
-    "postbuild": "yarn games"
+    "watch:studio": "./node_modules/.bin/chokidar \"studio/client/**/*.scss\" -c \"yarn build:studio\"",
+    "prebuild": "rm -rf dist",
+    "build": "webpack --config ./configs/webpack.config.prod.js",
+    "postbuild": "yarn games",
+    "prebuild:lib": "rm -rf dist",
+    "build:2dk": "webpack --config ./configs/webpack.config.2dk.js",
+    "postbuild:2dk": "node-sass --output-style 'compressed' ./src/sass/2dk.scss ./dist/2dk.css",
+    "build:studio": "node-sass --output-style 'compressed' ./studio/client/sass/studio.scss ./studio/public/css/studio.css",
+    "predocs": "rm -rf docs",
+    "docs": "jsdoc --readme 'README.md' --destination 'docs' --recurse src public",
+    "postdocs": "cp -R ./public ./docs/public",
+    "serve": "serve --single -p 3001 dist",
+    "serve:docs": "serve -p 3002 docs",
+    "lint": "eslint 'src/**/*.js' 'configs/**/*.js' --max-warnings 100",
+    "test": "jest --detectOpenHandles",
+    "test:coverage": "jest --detectOpenHandles --coverage"
   },
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "compression": "^1.7.4",
-    "consolidate": "^0.15.1",
-    "cookie-parser": "^1.4.3",
-    "express": "^4.17.1",
-    "express-session": "^1.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "pm2": "^4.2.3",
-    "websocket": "^1.0.31"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.13.14",
-    "@babel/core": "^7.13.15",
-    "@babel/preset-env": "^7.13.15",
-    "babel-loader": "^8.2.2",
-    "chokidar-cli": "^2.1.0",
-    "concurrently": "^6.0.1",
-    "css-loader": "^5.2.1",
-    "env-cmd": "^10.1.0",
-    "eslint": "^7.24.0",
-    "eslint-webpack-plugin": "^2.5.3",
-    "file-loader": "^6.2.0",
     "gsap": "^3.6.0",
     "paramalama": "^0.3.0",
-    "properjs-controller": "^0.3.1",
-    "rimraf": "^3.0.2",
-    "sass": "^1.32.8",
-    "sass-loader": "^11.0.1",
-    "svg-inline-loader": "^0.8.2",
-    "webpack": "^5.21.2",
-    "webpack-cli": "^3.3.11",
-    "webpack-node-externals": "^2.5.2"
+    "properjs-controller": "^0.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.2",
+    "@babel/eslint-parser": "^7.17.0",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@testing-library/dom": "^8.13.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "babel-jest": "^27.5.1",
+    "babel-loader": "^8.2.3",
+    "chokidar-cli": "^2.1.0",
+    "copy-webpack-plugin": "^10.2.4",
+    "css-loader": "^6.6.0",
+    "eslint": "^8.9.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jest": "^26.1.0",
+    "eslint-plugin-jsdoc": "^37.9.1",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-webpack-plugin": "^3.1.1",
+    "html-webpack-plugin": "^5.5.0",
+    "husky": "^7.0.4",
+    "jest": "^27.5.1",
+    "jsdoc": "^3.6.10",
+    "lint-staged": "^12.3.4",
+    "node-sass": "^7.0.1",
+    "resolve-url-loader": "^5.0.0",
+    "sass-loader": "^12.5.0",
+    "serve": "^13.0.2",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.68.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
+  },
+  "lint-staged": {
+    "*.js": "yarn lint"
+  },
+  "jest": {
+    "displayName": "2dk",
+    "rootDir": "lib",
+    "testRegex": "/[^/]*test[^/]*.js$",
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "^src(.*)$": "<rootDir>/$1",
+      "^.+\\.(css|less|scss)$": "babel-jest"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/jest-setup.js"
+    ],
+    "coverageDirectory": "../coverage",
+    "collectCoverageFrom": [
+      "**/*.js"
+    ],
+    "coveragePathIgnorePatterns": []
+  },
+  "eslintConfig": {
+    "parser": "@babel/eslint-parser",
+    "settings": {},
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "jest": true,
+      "node": true
+    },
+    "plugins": [
+      "jsx-a11y",
+      "jsdoc"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:jsdoc/recommended",
+      "plugin:jsx-a11y/recommended"
+    ],
+    "parserOptions": {
+      "ecmaFeatures": {}
+    },
+    "ignorePatterns": [
+      "node_modules"
+    ],
+    "rules": {}
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime"
+    ]
   }
 }
