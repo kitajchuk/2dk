@@ -2094,7 +2094,8 @@ var Player = /*#__PURE__*/function () {
     key: "debug",
     value: function debug() {
       if (this.query.map) {
-        this.data.hero.map = "/games/".concat(this.data.game.id, "/maps/").concat(this.query.map);
+        this.data.hero.map = "maps/".concat(this.query.map);
+        this.data.hero.spawn = 0; // Can be overriden with below query string
       }
 
       if (this.query.resolution) {
@@ -9230,7 +9231,8 @@ var App = /*#__PURE__*/function () {
 
     (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, App);
 
-    this.scope = window.location.pathname;
+    // When playing from `file:` protocol within electron we need to clean the pathname
+    this.scope = window.location.pathname.replace(/index\.html$/, "");
     this.config = {
       scope: this.scope
     };

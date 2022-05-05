@@ -1,7 +1,18 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v286";
+const CACHE_NAME = "v294";
 const CACHE_URLS = [
+    "",
+    "index.html",
     "game.json",
+    "2dk.css",
+    "app.js",
+    "favicon.ico",
+    "manifest.json",
+    "icon.png",
+    "icon192.png",
+    "icon384.png",
+    "icon512.png",
+    "icon1024.png",
     "assets/tiles/tiles.png",
     "assets/tiles/inside.png",
     "assets/sprites/npcs.png",
@@ -97,6 +108,10 @@ const getScope = () => {
     return location.pathname.replace( "sw.js", "" );
 };
 
+const getScopedUrls = () => {
+    return CACHE_URLS.map( url => `${getScope()}${url}` );
+};
+
 const deleteOldCaches = async () => {
     const cacheKeepList = [CACHE_NAME];
     const keyList = await caches.keys();
@@ -105,7 +120,8 @@ const deleteOldCaches = async () => {
 };
 
 self.addEventListener( "install", ( event ) => {
-    event.waitUntil( addResourcesToCache( CACHE_URLS ) );
+    const scopedUrls = getScopedUrls();
+    event.waitUntil( addResourcesToCache( scopedUrls ) );
 });
 
 self.addEventListener( "activate", ( event ) => {
@@ -118,7 +134,7 @@ self.addEventListener( "fetch", ( event ) => {
         cacheFirst({
             request: event.request,
             preloadResponsePromise: event.preloadResponse,
-            fallbackUrl: "icon.png",
+            fallbackUrl: `${getScope()}icon.png`,
         })
     );
 });

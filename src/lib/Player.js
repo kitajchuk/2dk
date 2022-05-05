@@ -46,7 +46,8 @@ class Player {
     // Debugging and feature flagging...
     debug () {
         if ( this.query.map ) {
-            this.data.hero.map = `/games/${this.data.game.id}/maps/${this.query.map}`;
+            this.data.hero.map = `maps/${this.query.map}`;
+            this.data.hero.spawn = 0; // Can be overriden with below query string
         }
 
         if ( this.query.resolution ) {

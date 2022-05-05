@@ -382,7 +382,18 @@ class DB {
         const game = this.cache.get( "game" );
         const bundle = [];
         const caches = [
-            `"game.json",`,
+            `"",`,
+            `    "index.html",`,
+            `    "game.json",`,
+            `    "2dk.css",`,
+            `    "app.js",`,
+            `    "favicon.ico",`,
+            `    "manifest.json",`,
+            `    "icon.png",`,
+            `    "icon192.png",`,
+            `    "icon384.png",`,
+            `    "icon512.png",`,
+            `    "icon1024.png",`,
         ];
 
         this.cache.get( "tiles" ).forEach(( tile ) => {
@@ -412,7 +423,7 @@ class DB {
         worker = worker.replace( "{__CACHE_LIST__}", caches.join( "\n" ) );
 
         utils.writeFile( file, worker, () => {
-            lager.info( `DB-${this.gameId}: worker updated` );
+            lager.info( `DB-${this.gameId}: service worker updated` );
 
             DB.updateGame( game );
         });

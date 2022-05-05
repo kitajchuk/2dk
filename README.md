@@ -14,6 +14,12 @@ To develop clone this repo and then:
 ```shell
 # Install packages
 yarn
+
+# Build all resources
+yarn build
+
+# Run local dev server for static frontend
+yarn dev
 ```
 
 

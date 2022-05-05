@@ -36,6 +36,7 @@ class Editor {
             gameLoad: window.hobo( "#editor-game-load" ),
             iconImage: window.hobo( "#editor-game-icon-image" ),
             iconField: window.hobo( "#editor-game-icon" ),
+            demoGame: window.hobo( "#editor-demo-game" ),
         };
         this.selects = {
             all: window.hobo( ".js-select" ),
@@ -797,6 +798,26 @@ class Editor {
                 const activeTileData = EditorUtils.parseFields( this.fields.activeTile );
 
                 this.canvas.applyActiveTiles( activeTileData );
+            }
+        });
+
+        this.dom.demoGame.on( "click", ( e ) => {
+            if ( !this.canGameFunction() ) {
+                return false;
+            }
+
+            if ( this.canMapFunction() ) {
+                window.open(
+                    `./games/${this.data.game.id}/index.html?map=${this.data.map.id}.json`,
+                    "_blank",
+                    `width=${this.data.game.width},height=${this.data.game.height}`
+                );
+            } else {
+                window.open(
+                    `./games/${this.data.game.id}/index.html`,
+                    "_blank",
+                    `width=${this.data.game.width},height=${this.data.game.height}`
+                );
             }
         });
 

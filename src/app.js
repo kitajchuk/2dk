@@ -7,7 +7,8 @@ import Player from "./lib/Player";
 // The Player can just load "game.json" to get started
 class App {
     constructor () {
-        this.scope = window.location.pathname;
+        // When playing from `file:` protocol within electron we need to clean the pathname
+        this.scope = window.location.pathname.replace( /index\.html$/, "" );
         this.config = { scope: this.scope };
         this.worker = `${this.scope}sw.js`;
 
