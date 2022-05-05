@@ -5,8 +5,6 @@ const {
     fontRules,
     imageRules,
     babelRules,
-    entryConfig,
-    // outputConfig,
     resolveConfig,
     styleRulesOurs,
     devServerConfig,
@@ -18,7 +16,7 @@ const {
 
 module.exports = {
     mode: 'production',
-    entry: entryConfig,
+    entry: {},
     devServer: devServerConfig,
     // optimization: optimizationConfig,
     resolve: resolveConfig,
@@ -47,6 +45,7 @@ module.exports = {
     //     filename: '[name].[chunkhash].js',
     //     chunkFilename: '[name].[chunkhash].js',
     // },
+    output: {},
     module: {
         rules: [
             babelRules,

@@ -1,4 +1,4 @@
-const Config = require( "./Config" );
+const EditorConfig = require( "./EditorConfig" );
 
 
 
@@ -35,7 +35,7 @@ class EditorLayers {
     _handleEditLayer ( targ ) {
         const elem = targ.is( ".js-edit-layer" ) ? targ : targ.closest( ".js-edit-layer" );
         const layer = elem.data().layer.toUpperCase();
-        const mode = Config.EditorLayers.modes[ layer ];
+        const mode = EditorConfig.EditorLayers.modes[ layer ];
 
         if ( elem.is( ".is-active" ) ) {
             this.mode = null;
@@ -49,7 +49,7 @@ class EditorLayers {
             this.editor.canvas.setActiveLayer( mode );
         }
 
-        if ( mode === Config.EditorLayers.modes.COLLISION ) {
+        if ( mode === EditorConfig.EditorLayers.modes.COLLISION ) {
             this.editor.canvas.clearTileset();
         }
     }

@@ -8,10 +8,10 @@
     "tileheight": 32,
     "collider": 16,
     "cellauto": false,
-    "image": "/games/la/assets/tiles/tiles.png",
-    "snapshot": "/games/la/assets/snapshots/ukuku-prairie-west.png",
-    "thumbnail": "/games/la/assets/snapshots/ukuku-prairie-west-thumb.png",
-    "sound": "/games/la/assets/sounds/bgm-overworld.mp3",
+    "image": "assets/tiles/tiles.png",
+    "snapshot": "assets/snapshots/ukuku-prairie-west.png",
+    "thumbnail": "assets/snapshots/ukuku-prairie-west-thumb.png",
+    "sound": "assets/sounds/bgm-overworld.mp3",
     "spawn": [
         {
             "x": 686,
@@ -188,7 +188,7 @@
                 10
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "left"
         },
         {
@@ -197,7 +197,7 @@
                 2
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "left"
         },
         {
@@ -206,7 +206,7 @@
                 3
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "left"
         }
     ],

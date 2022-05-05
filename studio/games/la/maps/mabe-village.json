@@ -8,10 +8,10 @@
     "tileheight": 32,
     "collider": 16,
     "cellauto": false,
-    "image": "/games/la/assets/tiles/tiles.png",
-    "snapshot": "/games/la/assets/snapshots/mabe-village.png",
-    "thumbnail": "/games/la/assets/snapshots/mabe-village-thumb.png",
-    "sound": "/games/la/assets/sounds/bgm-mabe-village.mp3",
+    "image": "assets/tiles/tiles.png",
+    "snapshot": "assets/snapshots/mabe-village.png",
+    "thumbnail": "assets/snapshots/mabe-village-thumb.png",
+    "sound": "assets/sounds/bgm-mabe-village.mp3",
     "spawn": [
         {
             "x": 1585,
@@ -243,7 +243,7 @@
                 4
             ],
             "type": "door",
-            "map": "/games/la/maps/papahls-house.json",
+            "map": "maps/papahls-house.json",
             "dir": "up",
             "spawn": 0
         },
@@ -253,7 +253,7 @@
                 4
             ],
             "type": "door",
-            "map": "/games/la/maps/papahls-house.json",
+            "map": "maps/papahls-house.json",
             "dir": "up",
             "spawn": 1
         },
@@ -263,7 +263,7 @@
                 20
             ],
             "type": "door",
-            "map": "/games/la/maps/marins-house.json",
+            "map": "maps/marins-house.json",
             "dir": "up",
             "spawn": 0
         },
@@ -273,7 +273,7 @@
                 21
             ],
             "type": "door",
-            "map": "/games/la/maps/bottom-of-the-well.json",
+            "map": "maps/bottom-of-the-well.json",
             "dir": "down",
             "spawn": 0
         },
@@ -283,7 +283,7 @@
                 31
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mysterious-forest.json",
+            "map": "maps/mysterious-forest.json",
             "dir": "down"
         },
         {
@@ -292,7 +292,7 @@
                 0
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mysterious-forest.json",
+            "map": "maps/mysterious-forest.json",
             "dir": "up"
         },
         {
@@ -301,7 +301,7 @@
                 0
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mysterious-forest.json",
+            "map": "maps/mysterious-forest.json",
             "dir": "up"
         },
         {
@@ -310,7 +310,7 @@
                 0
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mysterious-forest.json",
+            "map": "maps/mysterious-forest.json",
             "dir": "up"
         },
         {
@@ -319,7 +319,7 @@
                 0
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mysterious-forest.json",
+            "map": "maps/mysterious-forest.json",
             "dir": "up"
         },
         {
@@ -328,7 +328,7 @@
                 10
             ],
             "type": "boundary",
-            "map": "/games/la/maps/ukuku-prairie-west.json",
+            "map": "maps/ukuku-prairie-west.json",
             "dir": "right"
         },
         {
@@ -337,7 +337,7 @@
                 2
             ],
             "type": "boundary",
-            "map": "/games/la/maps/ukuku-prairie-west.json",
+            "map": "maps/ukuku-prairie-west.json",
             "dir": "right"
         },
         {
@@ -346,7 +346,7 @@
                 3
             ],
             "type": "boundary",
-            "map": "/games/la/maps/ukuku-prairie-west.json",
+            "map": "maps/ukuku-prairie-west.json",
             "dir": "right"
         }
     ],

@@ -1,16 +1,12 @@
-const { MapLayer } = require( "../../../client/js/lib/Map" );
 const { ipcRenderer } = require( "electron" );
-const Config = require( "./Config" );
-const ConfigLib = require( "../../../client/js/lib/Config" );
-const Utils = require( "../../../client/js/lib/Utils" );
-const Loader = require( "../../../client/js/lib/Loader" );
+const EditorConfig = require( "./EditorConfig" );
 const EditorCellAuto = require( "./EditorCellAuto" );
 
 
 
 const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
     ctx.globalAlpha = alpha || 0.75;
-    ctx.fillStyle = color || Config.colors.blue;
+    ctx.fillStyle = color || EditorConfig.colors.blue;
     ctx.fillRect( x, y, w, h );
 };
 const clearTile = ( ctx, x, y, w, h ) => {
@@ -37,7 +33,7 @@ const sortCoords = ( cA, cB ) => {
 
 class EditorCanvas {
     constructor ( editor ) {
-        this.loader = new Loader();
+        this.loader = new window.lib2dk.Loader();
         this.cellauto = new EditorCellAuto();
         this.editor = editor;
         this.mode = null;
@@ -201,28 +197,28 @@ class EditorCanvas {
         this.layers.selection.innerHTML = "";
 
         // Create new map layers
-        this.contexts.background = new MapLayer({
+        this.contexts.background = new window.lib2dk.MapLayer({
             id: "background",
             map: this.map,
             cash: false,
             width: this.map.width,
             height: this.map.height
         });
-        this.contexts.foreground = new MapLayer({
+        this.contexts.foreground = new window.lib2dk.MapLayer({
             id: "foreground",
             map: this.map,
             cash: false,
             width: this.map.width,
             height: this.map.height
         });
-        this.contexts.collision = new MapLayer({
+        this.contexts.collision = new window.lib2dk.MapLayer({
             id: "collision",
             map: this.map,
             cash: false,
             width: this.map.width,
             height: this.map.height
         });
-        this.contexts.selection = new MapLayer({
+        this.contexts.selection = new window.lib2dk.MapLayer({
             id: "selection",
             map: this.map,
             cash: false,
@@ -270,7 +266,7 @@ class EditorCanvas {
         });
 
         // Load the tileset
-        this.loader.loadImage( `.${this.map.image}` ).then(( img ) => {
+        this.loader.loadImage( `./games/${this.editor.data.game.id}/${this.map.image}` ).then(( img ) => {
             this.addTileset( img );
             this.addCanvas();
         });
@@ -284,26 +280,26 @@ class EditorCanvas {
         this.clearCanvas( this.contexts.selection.canvas );
         this.clearCanvas( this.canvases.mapgrid );
 
-        Utils.drawGridLines(
+        window.lib2dk.Utils.drawGridLines(
             this.canvases.collider.getContext( "2d" ),
             this.canvases.collider.width,
             this.canvases.collider.height,
             this.map.collider
         );
-        Utils.drawGridLines(
+        window.lib2dk.Utils.drawGridLines(
             this.canvases.mapgrid.getContext( "2d" ),
             this.canvases.mapgrid.width,
             this.canvases.mapgrid.height,
             this.map.tilesize
         );
-        Utils.drawMapTiles(
+        window.lib2dk.Utils.drawMapTiles(
             this.contexts.background.context,
             this.dom.tileset,
             this.map.textures.background,
             this.map.tilesize,
             this.map.tilesize
         );
-        Utils.drawMapTiles(
+        window.lib2dk.Utils.drawMapTiles(
             this.contexts.foreground.context,
             this.dom.tileset,
             this.map.textures.foreground,
@@ -333,7 +329,7 @@ class EditorCanvas {
                 this.map.tilesize
             );
 
-            Utils.drawMapTile(
+            window.lib2dk.Utils.drawMapTile(
                 this.contexts[ layer ].context,
                 this.dom.tileset,
                 tile.renderTree,
@@ -453,7 +449,7 @@ class EditorCanvas {
         this.clearCanvas( this.canvases.tilepaint );
         this.clearCanvas( this.canvases.tilegrid );
 
-        Utils.drawGridLines(
+        window.lib2dk.Utils.drawGridLines(
             this.canvases.tilegrid.getContext( "2d" ),
             this.canvases.tilegrid.width,
             this.canvases.tilegrid.height,
@@ -480,7 +476,7 @@ class EditorCanvas {
             coord[ 1 ] * this.map.tilesize,
             this.map.tilesize,
             this.map.tilesize,
-            Config.colors.blueDark,
+            EditorConfig.colors.blueDark,
             0.5
         );
     }
@@ -583,7 +579,7 @@ class EditorCanvas {
         // Attack is an internalized VERB object (static)
         if ( data.attack ) {
             data.attack = {
-                verb: ConfigLib.verbs.ATTACK,
+                verb: window.lib2dk.Config.verbs.ATTACK,
             };
         }
 
@@ -856,13 +852,13 @@ class EditorCanvas {
 
 
     applyLayer ( layer, coords ) {
-        if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
+        if ( this.editor.actions.mode === EditorConfig.EditorActions.modes.BRUSH ) {
             this.brush( layer, coords );
 
-        } else if ( this.editor.actions.mode === Config.EditorActions.modes.BUCKET ) {
+        } else if ( this.editor.actions.mode === EditorConfig.EditorActions.modes.BUCKET ) {
             this.bucket( layer, coords );
 
-        } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+        } else if ( this.editor.actions.mode === EditorConfig.EditorActions.modes.ERASE ) {
             this.trash( layer, coords );
         }
     }
@@ -871,7 +867,7 @@ class EditorCanvas {
     applyCellAuto ( data ) {
         this.map.textures.background = data;
         this.clearCanvas( this.contexts.background.canvas );
-        Utils.drawMapTiles(
+        window.lib2dk.Utils.drawMapTiles(
             this.contexts.background.context,
             this.dom.tileset,
             this.map.textures.background,
@@ -925,18 +921,18 @@ class EditorCanvas {
                 return;
             }
 
-            this.isSpacebar = (e.which === Config.keys.SPACEBAR);
+            this.isSpacebar = (e.which === EditorConfig.keys.SPACEBAR);
 
             if ( this.isSpacebar ) {
                 this.editor.blurSelectMenus();
             }
 
-            if ( this.editor.mode !== Config.Editor.modes.SAVING && (this.isSpacebar && this.mode !== Config.EditorCanvas.modes.DRAG) ) {
+            if ( this.editor.mode !== EditorConfig.Editor.modes.SAVING && (this.isSpacebar && this.mode !== EditorConfig.EditorCanvas.modes.DRAG) ) {
                 e.preventDefault();
 
                 this.draggable.enable();
 
-                this.mode = Config.EditorCanvas.modes.DRAG;
+                this.mode = EditorConfig.EditorCanvas.modes.DRAG;
             }
         });
 
@@ -947,7 +943,7 @@ class EditorCanvas {
                 this.draggable.disable();
             }
 
-            if ( this.editor.mode !== Config.Editor.modes.SAVING && this.mode === Config.EditorCanvas.modes.DRAG ) {
+            if ( this.editor.mode !== EditorConfig.Editor.modes.SAVING && this.mode === EditorConfig.EditorCanvas.modes.DRAG ) {
                 e.preventDefault();
 
                 this.mode = null;
@@ -981,10 +977,10 @@ class EditorCanvas {
 
             if ( this.editor.canMapFunction() && this.isMouseDownCollider ) {
                 if ( this.canApplyCollider() ) {
-                    if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
+                    if ( this.editor.actions.mode === EditorConfig.EditorActions.modes.BRUSH ) {
                         this.applyCollider( coords );
 
-                    } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+                    } else if ( this.editor.actions.mode === EditorConfig.EditorActions.modes.ERASE ) {
                         this.removeCollider( coords );
                     }
                 }
@@ -1233,8 +1229,8 @@ class EditorCanvas {
 
     canApplySelection () {
         return (
-            this.editor.actions.mode === Config.EditorActions.modes.SELECT &&
-            (this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND)
+            this.editor.actions.mode === EditorConfig.EditorActions.modes.SELECT &&
+            (this.editor.layers.mode === EditorConfig.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === EditorConfig.EditorLayers.modes.FOREGROUND)
         );
     }
 
@@ -1242,10 +1238,10 @@ class EditorCanvas {
     canApplyLayer () {
         return (
             this.tilesetCoords.length &&
-            (this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND)
+            (this.editor.layers.mode === EditorConfig.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === EditorConfig.EditorLayers.modes.FOREGROUND)
         ) || (
-            this.editor.actions.mode === Config.EditorActions.modes.ERASE &&
-            (this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND)
+            this.editor.actions.mode === EditorConfig.EditorActions.modes.ERASE &&
+            (this.editor.layers.mode === EditorConfig.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === EditorConfig.EditorLayers.modes.FOREGROUND)
         );
     }
 
@@ -1253,8 +1249,8 @@ class EditorCanvas {
     canApplyCollider () {
         return (
             this.isMouseDownCollider &&
-            this.editor.layers.mode === Config.EditorLayers.modes.COLLISION &&
-            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
+            this.editor.layers.mode === EditorConfig.EditorLayers.modes.COLLISION &&
+            this.editor.actions.mode !== EditorConfig.EditorActions.modes.BUCKET
         );
     }
 
@@ -1262,8 +1258,8 @@ class EditorCanvas {
     canApplyTiles () {
         return (
             this.isMouseDownTiles &&
-            this.editor.actions.mode !== Config.EditorActions.modes.ERASE &&
-            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
+            this.editor.actions.mode !== EditorConfig.EditorActions.modes.ERASE &&
+            this.editor.actions.mode !== EditorConfig.EditorActions.modes.BUCKET
         );
     }
 
@@ -1271,8 +1267,8 @@ class EditorCanvas {
     canBeginApplyTiles () {
         return (
             this.editor.canMapFunction() &&
-            this.editor.actions.mode !== Config.EditorActions.modes.ERASE &&
-            this.editor.actions.mode !== Config.EditorActions.modes.SELECT
+            this.editor.actions.mode !== EditorConfig.EditorActions.modes.ERASE &&
+            this.editor.actions.mode !== EditorConfig.EditorActions.modes.SELECT
         );
     }
 }

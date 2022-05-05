@@ -8,12 +8,12 @@ module.exports = {
     mode: 'development',
     devtool: false,
     entry: {
-        '2dk': path.resolve(process.cwd(), 'src/lib/index.js'),
+        app: path.resolve(process.cwd(), 'src/app.js'),
     },
     resolve: resolveConfig,
     output: {
-        path: path.resolve(process.cwd(), 'studio/public/js'),
-        filename: '2dk.js',
+        path: path.resolve(process.cwd(), 'studio/templates'),
+        filename: 'app.js',
     },
     module: {
         rules: [

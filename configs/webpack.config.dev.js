@@ -3,8 +3,6 @@ const {
     fontRules,
     imageRules,
     babelRules,
-    entryConfig,
-    outputConfig,
     resolveConfig,
     styleRulesOurs,
     devServerConfig,
@@ -16,14 +14,14 @@ const {
 module.exports = {
     mode: 'development',
     devtool: 'eval-source-map',
-    entry: entryConfig,
+    entry: {},
     devServer: devServerConfig,
     // optimization: optimizationConfig,
     resolve: resolveConfig,
     plugins: [
         new HtmlWebpackPlugin(htmlPluginConfig),
     ],
-    output: outputConfig,
+    output: {},
     module: {
         rules: [
             babelRules,

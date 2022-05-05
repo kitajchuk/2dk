@@ -4,6 +4,7 @@ import NPC from "./sprites/NPC";
 import Hero from "./sprites/Hero";
 import Sprite from "./sprites/Sprite";
 import Companion from "./sprites/Companion";
+import CellAuto from "./vendor/CellAuto";
 import Config from "./Config";
 import Dialogue from "./Dialogue";
 import GameAudio from "./GameAudio";
@@ -16,8 +17,7 @@ import Utils from "./Utils";
 
 
 
-
-export {
+const lib = {
     // plugins
     TopView,
 
@@ -27,6 +27,9 @@ export {
     Hero,
     Sprite,
     Companion,
+
+    // vendor
+    CellAuto,
 
     // ...rest
     Config,
@@ -39,3 +42,13 @@ export {
     Player,
     Utils,
 };
+
+
+
+if (window !== undefined) {
+    window.lib2dk = lib;
+}
+
+
+
+export default lib;

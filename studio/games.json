@@ -5,32 +5,8 @@
         "width": 768,
         "height": 576,
         "resolution": 1,
-        "icon": "/games/la/icon.png",
-        "save": 277,
-        "release": 1,
-        "plugin": "topview"
-    },
-    {
-        "id": "loz",
-        "name": "LOZ",
-        "width": 768,
-        "height": 576,
-        "resolution": 1,
-        "fullscreen": false,
-        "icon": "/games/loz/icon.png",
-        "save": 51,
-        "release": 1,
-        "plugin": "topview"
-    },
-    {
-        "id": "cellauto",
-        "name": "Cellauto",
-        "width": 768,
-        "height": 576,
-        "resolution": 1,
-        "fullscreen": false,
-        "icon": "/games/cellauto/icon.png",
-        "save": 50,
+        "icon": "icon.png",
+        "save": 286,
         "release": 1,
         "plugin": "topview"
     }

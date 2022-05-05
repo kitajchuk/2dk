@@ -1,6 +1,6 @@
 {
   "name": "2dk",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha",
   "private": true,
   "description": "For the love of 2D. A JavaScript SDK.",
   "repository": "https://github.com/kitajchuk/2dk",
@@ -20,20 +20,21 @@
     "video games",
     "game development"
   ],
-  "main": "./lib/js/index.js",
+  "main": "./src/lib/index.js",
   "scripts": {
     "prepare": "husky install",
-    "predev": "yarn build:2dk && yarn games",
+    "predev": "yarn games",
     "dev": "webpack serve --config ./configs/webpack.config.dev.js",
-    "games": "cp -R studio/games dist",
+    "games": "cp -R studio/games public",
     "watch:games": "./node_modules/.bin/chokidar \"studio/games/**/*.json\" -c \"yarn games\"",
     "watch:studio": "./node_modules/.bin/chokidar \"studio/client/**/*.scss\" -c \"yarn build:studio\"",
-    "prebuild": "rm -rf dist",
-    "build": "webpack --config ./configs/webpack.config.prod.js",
-    "postbuild": "yarn games",
-    "prebuild:lib": "rm -rf dist",
+    "prebuild": "rm -rf dist && mkdir dist && cp -R studio/games dist",
+    "build": "yarn build:site && yarn build:2dk && yarn build:app && yarn build:studio",
+    "postbuild": "echo 'Build complete'",
+    "build:site": "webpack --config ./configs/webpack.config.prod.js",
     "build:2dk": "webpack --config ./configs/webpack.config.2dk.js",
-    "postbuild:2dk": "node-sass --output-style 'compressed' ./src/sass/2dk.scss ./dist/2dk.css",
+    "postbuild:2dk": "node-sass --output-style 'compressed' ./src/sass/2dk.scss ./studio/templates/2dk.css",
+    "build:app": "webpack --config ./configs/webpack.config.app.js",
     "build:studio": "node-sass --output-style 'compressed' ./studio/client/sass/studio.scss ./studio/public/css/studio.css",
     "predocs": "rm -rf docs",
     "docs": "jsdoc --readme 'README.md' --destination 'docs' --recurse src public",
@@ -84,7 +85,7 @@
     "webpack-dev-server": "^4.7.4"
   },
   "lint-staged": {
-    "*.js": "yarn lint"
+    "src/*.js": "yarn lint"
   },
   "jest": {
     "displayName": "2dk",

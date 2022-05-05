@@ -1,5 +1,3 @@
-const CellAuto = require( "../../../client/js/lib/vendor/CellAuto" );
-const Utils = require( "../../../client/js/lib/Utils" );
 const raf = window.requestAnimationFrame;
 const caf = window.cancelAnimationFrame;
 
@@ -17,10 +15,10 @@ class EditorCellAuto {
 
 
     register ( map ) {
-        this.map = Utils.copy( map ); // Always use a clone of the live map data
+        this.map = window.lib2dk.copy( map ); // Always use a clone of the live map data
         this.tiles = [];
         this.textures = this.map.textures.background; // For now we're just testing background renders...
-        this.world = new CellAuto.World({
+        this.world = new window.lib2dk.CellAuto.World({
             width: this.map.tilewidth,
             height: this.map.tileheight,
             cellSize: this.map.tilesize,
@@ -97,11 +95,11 @@ class EditorCellAuto {
                 if ( this.tiles.join( "" ) === tiles.join( "" ) ) {
                     caf( this.rafId );
                     this.rafId = null;
-                    resolve( Utils.copy( this.textures ) );
+                    resolve( window.lib2dk.Utils.copy( this.textures ) );
 
                 } else {
                     this.tiles = tiles;
-                    this.call( Utils.copy( this.textures ) );
+                    this.call( window.lib2dk.Utils.copy( this.textures ) );
                 }
             };
 

@@ -2,8 +2,7 @@ const EditorActions = require( "./EditorActions" );
 const EditorLayers = require( "./EditorLayers" );
 const EditorCanvas = require( "./EditorCanvas" );
 const EditorUtils = require( "./EditorUtils" );
-const Config = require( "./Config" );
-const ConfigLib = require( "../../../client/js/lib/Config" );
+const EditorConfig = require( "./EditorConfig" );
 const cache = require( "../../server/cache" );
 const { ipcRenderer } = require( "electron" );
 
@@ -138,7 +137,7 @@ class Editor {
 
     postMap ( postData ) {
         postData.fileName = `${cache.slugify( postData.name )}.json`;
-        this.mode = Config.Editor.modes.SAVING;
+        this.mode = EditorConfig.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-map";
 
         ipcRenderer.send( "renderer-newmap", postData );
@@ -148,7 +147,7 @@ class Editor {
 
 
     postGame ( postData ) {
-        this.mode = Config.Editor.modes.SAVING;
+        this.mode = EditorConfig.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-game";
 
         ipcRenderer.send( "renderer-newgame", postData );
@@ -165,14 +164,14 @@ class Editor {
 
 
     loadMapMenus () {
-        EditorUtils.buildSelectMenu( this.selects.actions, ConfigLib.verbs );
+        EditorUtils.buildSelectMenu( this.selects.actions, window.lib2dk.Config.verbs );
     }
 
 
     canGameFunction () {
         return (
             this.data.game &&
-            this.mode !== Config.Editor.modes.SAVING
+            this.mode !== EditorConfig.Editor.modes.SAVING
         );
     }
 
@@ -180,8 +179,8 @@ class Editor {
     canMapFunction () {
         return (
             this.data.map &&
-            this.mode !== Config.Editor.modes.SAVING &&
-            this.canvas.mode !== Config.EditorCanvas.modes.DRAG
+            this.mode !== EditorConfig.Editor.modes.SAVING &&
+            this.canvas.mode !== EditorConfig.EditorCanvas.modes.DRAG
         );
     }
 
@@ -194,7 +193,7 @@ class Editor {
         this.menus.activeGame.find( ".js-game-field[name='save']" )[ 0 ].value = game.save;
         this.menus.activeGame.find( ".js-game-field[name='release']" )[ 0 ].value = game.release;
         this.dom.iconField[ 0 ].value = game.icon;
-        this.dom.iconImage[ 0 ].src = `.${game.icon}`;
+        this.dom.iconImage[ 0 ].src = `./games/${game.id}/${game.icon}`;
     }
 
 
@@ -397,7 +396,7 @@ class Editor {
             return false;
         }
 
-        this.mode = Config.Editor.modes.SAVING;
+        this.mode = EditorConfig.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-map";
         // this.cleanMap();
 
@@ -470,7 +469,7 @@ class Editor {
         this.dom.loadout[ 0 ].innerHTML = games.map(( game ) => {
             return `<div class="js-game-tile" data-game="${game.id}">
                 <div>
-                    <img src=".${game.icon}" />
+                    <img src="./games/${game.id}/${game.icon}" />
                 </div>
                 <div>${game.name}</div>
             </div>`;
@@ -485,7 +484,7 @@ class Editor {
         this.dom.loadout[ 0 ].innerHTML = maps.map(( map ) => {
             return `<div class="js-map-tile" data-map="${map.id}">
                 <div>
-                    <img src="./${map.thumbnail}" />
+                    <img src="./games/${this.data.game.id}/${map.thumbnail}" />
                 </div>
                 <div>${map.name}</div>
             </div>`;
@@ -594,7 +593,7 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-reloadicon", ( e, game ) => {
-            this.dom.iconImage[ 0 ].src = `.${game.icon}?buster=${Date.now()}`;
+            this.dom.iconImage[ 0 ].src = `./games/${game.id}/${game.icon}?buster=${Date.now()}`;
             this.dom.iconField[ 0 ].value = game.icon;
         });
     }
@@ -681,7 +680,7 @@ class Editor {
             };
 
             if ( confirm( `Sure you want to delete the file "${select[ 0 ].value}"? This may affect other data referencing this file.` ) ) {
-                this.mode = Config.Editor.modes.SAVING;
+                this.mode = EditorConfig.Editor.modes.SAVING;
                 this.dom.root[ 0 ].className = "is-deleting-file";
 
                 ipcRenderer.send( "renderer-deletefile", postData );
@@ -705,7 +704,7 @@ class Editor {
                 type: button.data().type,
             };
 
-            this.mode = Config.Editor.modes.SAVING;
+            this.mode = EditorConfig.Editor.modes.SAVING;
             this.dom.root[ 0 ].className = "is-saving-file";
 
             this.readFile( fileInput ).then(( response ) => {
@@ -807,7 +806,7 @@ class Editor {
         //     }
         //
         //     if ( confirm( `Sure you want to delete the map "${active.map.name}"?` ) ) {
-        //         this.mode = Config.Editor.modes.SAVING;
+        //         this.mode = EditorConfig.Editor.modes.SAVING;
         //         this.dom.root[ 0 ].className = "is-deleting-map";
         //
         //         ipcRenderer.send( "renderer-deletemap", this.data.map );

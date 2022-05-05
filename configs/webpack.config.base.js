@@ -12,7 +12,6 @@ const devServerConfig = {
     open: true,
     port: 3000,
     host: 'localhost',
-    static: ['dist'],
     historyApiFallback: true,
 };
 const optimizationConfig = {
@@ -22,14 +21,6 @@ const optimizationConfig = {
 };
 const resolveConfig = {
     modules: ['node_modules'],
-};
-const entryConfig = {
-    app: path.resolve(process.cwd(), 'src/app.js'),
-};
-const outputConfig = {
-    path: path.resolve(process.cwd(), 'dist'),
-    publicPath: '/',
-    filename: 'app.js',
 };
 const htmlPluginConfig = {
     title: '2dk',
@@ -90,8 +81,6 @@ module.exports = {
     fontRules,
     imageRules,
     babelRules,
-    entryConfig,
-    outputConfig,
     resolveConfig,
     styleRulesOurs,
     devServerConfig,

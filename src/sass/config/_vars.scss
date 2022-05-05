@@ -1,14 +1,10 @@
 /******************************************************************************
  * Fonts
 *******************************************************************************/
-$font-path: "/fonts/";
+$font-path: "fonts/";
 $font-sans: "Calamity";
 $font-sans-regular: "#{$font-sans}-Regular";
 $font-sans-bold: "#{$font-sans}-Bold";
-$font-monospace: "panicsans";
-$font-monospace-italic: "#{$font-monospace}italic";
-$font-monospace-bold: "#{$font-monospace}bold";
-$font-monospace-bold-italic: "#{$font-monospace}bolditalic";
 
 
 
@@ -44,62 +40,6 @@ $expander-1: $expander-0 * 3; // 108
 $expander-m: $expander-1 / 2; // 54
 $expander-v: #{$expander-1 / 1440px * 100}vw; // 7.5vw
 $expander-v2: $expander-v / 2;
-
-
-
-/******************************************************************************
- * Sizes
-*******************************************************************************/
-$text-width: 960px;
-$text-width-2: 1180px;
-$text-width-3: 812px;
-$text-width-2-fluid: 81.25vw;
-$slider-width: 62.5vw;
-$slider-height: 41.40625vw;
-$slider-height-m: 54vw;
-$input-height: 60px;
-$input-height-m: 50px;
-$textarea-height: 256px;
-$tall-width-0: 620px;
-$header-height: 315px;
-$header-height-tablet: 224px;
-$header-height-mobile: 96px;
-$header-padding: 29px;
-$form-width: 480px;
-$thumb-height: 90px;
-$meta-nudge: 10px;
-$meta-nudge-2: 20px;
-$cap-width: 768px;
-$cinema-padding: 56.25%;
-
-
-
-/******************************************************************************
- * Typography
-*******************************************************************************/
-$h1-size-mobile: 25px;
-$h1-size-fluid: calc( #{$h1-size-mobile} + 0.764vw );
-$h1-size: 36px;
-$h1-line: 52 / 36;
-
-$h2-size-mobile: 22px;
-$h2-size-fluid: calc( #{$h2-size-mobile} + 0.695vw );
-$h2-size: 32px;
-$h2-line: 42 / 32;
-
-$h3-size-mobile: 18px;
-$h3-size-fluid: calc( #{$h3-size-mobile} + 0.695vw );
-$h3-size: 28px;
-$h3-line: 38 / 28;
-
-$p-size-mobile: 18px;
-$p-size-fluid: calc( #{$p-size-mobile} + 0.4125vw );
-$p-size: 24px;
-$p-line: 36 / 24;
-
-$m-size-mobile: 16px;
-$m-size: 18px;
-$m-line: 28 / 18;
 
 
 

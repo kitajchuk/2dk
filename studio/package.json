@@ -1,6 +1,6 @@
 {
   "name": "2dk-studio",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha",
   "description": "For the love of 2D. A JavaScript SDK.",
   "repository": "https://github.com/kitajchuk/2dk",
   "author": {
@@ -20,16 +20,17 @@
   ],
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "dev": "electron ."
   },
   "devDependencies": {
     "electron": "^11.2.3"
   },
   "dependencies": {
     "fs-extra": "^8.1.0",
-    "jimp": "^0.16.1",
     "paramalama": "^0.2.0",
     "properjs-lager": "^0.1.2",
-    "properjs-mediabox": "^0.3.4"
+    "properjs-mediabox": "^0.3.4",
+    "sharp": "^0.30.4",
+    "shelljs": "^0.8.5"
   }
 }

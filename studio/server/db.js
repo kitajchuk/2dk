@@ -2,7 +2,7 @@ const path = require( "path" );
 const utils = require( "./utils" );
 const cache = require( "./cache" );
 const lager = require( "properjs-lager" );
-const jimp = require( "jimp" );
+const sharp = require( "sharp" );
 const paths = {
     games: path.join( process.cwd(), "games.json" ),
     models: path.join( process.cwd(), "models" ),
@@ -172,16 +172,15 @@ class DB {
 
                 this.cache.set( data.type, files );
 
-                utils.writeFile( file, buffer, () => {
+                utils.writeFile( file, buffer, async () => {
                     if ( data.type === "snapshots" ) {
-                        jimp.read( file ).then(( snapshot ) => {
-                            const thumbFile = file.replace( /\.png$/, "-thumb.png" );
+                        const thumbFile = file.replace( /\.png$/, "-thumb.png" );
 
-                            snapshot.resize( 512, jimp.AUTO );
-                            snapshot.quality( 100 );
-                            snapshot.write( thumbFile );
-                            lager.info( `DB-${this.gameId}: write file ${thumbFile.split( "/" ).pop()}` );
-                        });
+                        await sharp( file )
+                            .resize( 512 )
+                            .toFile( thumbFile );
+                        
+                        lager.info( `DB-${this.gameId}: write file ${thumbFile.split( "/" ).pop()}` );
 
                     } else {
                         this.updateWorker();
@@ -210,10 +209,10 @@ class DB {
             map.height = map.tileheight * map.tilesize;
             map.width = map.tilewidth * map.tilesize;
             map.cellauto = data.cellauto;
-            map.image = `/games/${this.gameId}/assets/tiles/${data.image}`;
-            map.sound = data.sound ? `/games/${this.gameId}/assets/sounds/${data.sound}` : map.sound;
-            // map.snapshot = `/games/${this.gameId}/assets/snapshots/${map.id}.png`;
-            // map.thumbnail = `/games/${this.gameId}/assets/snapshots/${map.id}-thumb.png`;
+            map.image = `assets/tiles/${data.image}`;
+            map.sound = data.sound ? `assets/sounds/${data.sound}` : map.sound;
+            // map.snapshot = `assets/snapshots/${map.id}.png`;
+            // map.thumbnail = `assets/snapshots/${map.id}-thumb.png`;
 
             for ( let y = map.tileheight; y--; ) {
                 map.textures.background[ y ] = [];
@@ -262,10 +261,10 @@ class DB {
             map.height = map.tileheight * map.tilesize;
             map.width = map.tilewidth * map.tilesize;
             map.cellauto = data.cellauto;
-            map.image = `/games/${this.gameId}/assets/tiles/${data.image}`;
-            map.sound = data.sound ? `/games/${this.gameId}/assets/sounds/${data.sound}` : map.sound;
-            map.snapshot = `/games/${this.gameId}/assets/snapshots/${map.id}.png`;
-            map.thumbnail = `/games/${this.gameId}/assets/snapshots/${map.id}-thumb.png`;
+            map.image = `assets/tiles/${data.image}`;
+            map.sound = data.sound ? `assets/sounds/${data.sound}` : map.sound;
+            map.snapshot = `assets/snapshots/${map.id}.png`;
+            map.thumbnail = `assets/snapshots/${map.id}-thumb.png`;
             map.collision = data.collision;
             map.textures = data.textures;
 
@@ -290,7 +289,7 @@ class DB {
     }
 
     updateIcon ( data ) {
-        return new Promise(( resolve ) => {
+        return new Promise(async ( resolve ) => {
             const buffer = Buffer.from( data.fileData.replace( /^data:.*?;base64,/, "" ), "base64" );
             const game = this.cache.get( "game" );
             const file = path.join( process.cwd(), "games", game.game.id, "icon.png" );
@@ -298,84 +297,25 @@ class DB {
             lager.info( `DB-${this.gameId}: update game icon` );
 
             // Create webapp icons...
-            jimp.read( file ).then(( icon ) => {
-                let img = icon.clone();
-
-                // apple-icon.png / 192x192
-                img.resize( 192, 192 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-precomposed.png / 192x192
-                img.resize( 192, 192 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-precomposed.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-57x57.png
-                img.resize( 57, 57 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-57x57.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-60x60.png
-                img.resize( 60, 60 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-60x60.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-72x72.png
-                img.resize( 72, 72 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-72x72.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-76x76.png
-                img.resize( 76, 76 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-76x76.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-114x114.png
-                img.resize( 114, 114 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-114x114.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-120x120.png
-                img.resize( 120, 120 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-120x120.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-144x144.png
-                img.resize( 144, 144 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-144x144.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-152x152.png
-                img.resize( 152, 152 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-152x152.png" ) );
-
-                img = icon.clone();
-
-                // apple-icon-180x180.png
-                img.resize( 180, 180 );
-                img.quality( 100 );
-                img.write( file.replace( "icon.png", "apple-icon-180x180.png" ) );
-            });
+            await sharp( file )
+                .resize( 1024 )
+                .toFile( file.replace( "icon.png", "icon1024.png" ) );
+            
+            await sharp( file )
+                .resize( 512 )
+                .toFile( file.replace( "icon.png", "icon512.png" ) );
+            
+            await sharp( file )
+                .resize( 384 )
+                .toFile( file.replace( "icon.png", "icon384.png" ) );
+            
+            await sharp( file )
+                .resize( 192 )
+                .toFile( file.replace( "icon.png", "icon192.png" ) );
+            
+            await sharp( file )
+                .resize( 64 )
+                .toFile( file.replace( "icon.png", "favicon.ico" ) );
 
             utils.writeFile( file, buffer, () => {
                 resolve( game.game );
@@ -437,32 +377,32 @@ class DB {
      * Service Worker CACHE LIST
     *******************************************************************************/
     updateWorker () {
-        let worker = DB.getTemplate( "worker.js" );
-        const file = path.join( this.gameRoot, "worker.js" );
+        let worker = DB.getTemplate( "sw.js" );
+        const file = path.join( this.gameRoot, "sw.js" );
         const game = this.cache.get( "game" );
         const bundle = [];
         const caches = [
-            `"/games/${this.gameId}/game.json",`,
+            `"game.json",`,
         ];
 
         this.cache.get( "tiles" ).forEach(( tile ) => {
-            caches.push( `    "/games/${this.gameId}/assets/tiles/${tile}",` );
-            bundle.push( `/games/${this.gameId}/assets/tiles/${tile}` );
+            caches.push( `    "assets/tiles/${tile}",` );
+            bundle.push( `assets/tiles/${tile}` );
         });
 
         this.cache.get( "sprites" ).forEach(( sprite ) => {
-            caches.push( `    "/games/${this.gameId}/assets/sprites/${sprite}",` );
-            bundle.push( `/games/${this.gameId}/assets/sprites/${sprite}` );
+            caches.push( `    "assets/sprites/${sprite}",` );
+            bundle.push( `assets/sprites/${sprite}` );
         });
 
         this.cache.get( "sounds" ).forEach(( sound ) => {
-            caches.push( `    "/games/${this.gameId}/assets/sounds/${sound}",` );
-            bundle.push( `/games/${this.gameId}/assets/sounds/${sound}` );
+            caches.push( `    "assets/sounds/${sound}",` );
+            bundle.push( `assets/sounds/${sound}` );
         });
 
         this.cache.get( "maps" ).forEach(( map ) => {
-            caches.push( `    "/games/${this.gameId}/maps/${map.id}.json",` );
-            bundle.push( `/games/${this.gameId}/maps/${map.id}.json` );
+            caches.push( `    "maps/${map.id}.json",` );
+            bundle.push( `maps/${map.id}.json` );
         });
 
         game.game.save = game.game.save + 1;
@@ -506,6 +446,8 @@ DB.getGames = () => {
 
 DB.updateGame = ( data ) => {
     const gameDir = path.join( process.cwd(), "games", data.game.id );
+    const manifestJson = DB.getTemplate( "manifest.json" )
+                           .replace( /\{__GAME_NAME__\}/g, data.game.name );
     const indexHtml = DB.getTemplate( "index.html" )
                         .replace( /\{__GAME_ID__\}/g, data.game.id )
                         .replace( /\{__GAME_NAME__\}/g, data.game.name )
@@ -513,9 +455,27 @@ DB.updateGame = ( data ) => {
 
     // Update game index.html
     utils.writeFile( path.join( gameDir, "index.html" ), indexHtml );
+    lager.info( `DB-static: saved new index.html for ${data.game.id}` );
+
+    // Update web app manifest
+    utils.writeFile( path.join( gameDir, "manifest.json" ), manifestJson );
+    lager.info( `DB-static: saved new manifest.json for ${data.game.id}` );
 
     // Save new game data
     utils.writeJson( path.join( gameDir, "game.json" ), data );
+    lager.info( `DB-static: saved new game.json for ${data.game.id}` );
+
+    // Update core 2dk lib and styles
+    utils.copyFile( path.join( paths.templates, "app.js" ), path.join( gameDir, "app.js" ) );
+    utils.copyFile( path.join( paths.templates, "2dk.css" ), path.join( gameDir, "2dk.css" ) );
+    lager.info( `DB-static: copied app.js and 2dk.css for ${data.game.id}` );
+
+    // Update core fonts
+    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff" ), path.join( gameDir, "fonts", "Calamity-Regular.woff" ) );
+    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff2" ), path.join( gameDir, "fonts", "Calamity-Regular.woff2" ) );
+    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff" ), path.join( gameDir, "fonts", "Calamity-Bold.woff" ) );
+    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff2" ), path.join( gameDir, "fonts", "Calamity-Bold.woff2" ) );
+    lager.info( `DB-static: copied fonts for ${data.game.id}` );
 
     // Update games.json root
     DB.getGames().then(( json ) => {
@@ -541,13 +501,16 @@ DB.addGame = ( data ) => {
             gameModel.game.width = Number( data.width ) || gameModel.game.width;
             gameModel.game.height = Number( data.height ) || gameModel.game.height;
             gameModel.game.resolution = Number( data.resolution ) || gameModel.game.resolution;
-            gameModel.game.icon = `/games/${gameModel.game.id}/icon.png`;
+            gameModel.game.icon = "icon.png";
 
             games.push( gameModel.game );
 
             const gameDir = path.join( process.cwd(), "games", gameModel.game.id );
             const mapsDir = path.join( gameDir, "maps" );
+            const fontsDir = path.join( gameDir, "fonts" );
             const assetsDir = path.join( gameDir, "assets" );
+            const manifestJson = DB.getTemplate( "manifest.json" )
+                                .replace( /\{__GAME_NAME__\}/g, gameModel.game.name );
             const indexHtml = DB.getTemplate( "index.html" )
                                 .replace( /\{__GAME_ID__\}/g, gameModel.game.id )
                                 .replace( /\{__GAME_NAME__\}/g, gameModel.game.name )
@@ -555,13 +518,21 @@ DB.addGame = ( data ) => {
 
             utils.makeDir( gameDir );
             utils.makeDir( mapsDir );
+            utils.makeDir( fontsDir );
             utils.makeDir( assetsDir );
             utils.makeDir( path.join( assetsDir, "tiles" ) );
             utils.makeDir( path.join( assetsDir, "sprites" ) );
             utils.makeDir( path.join( assetsDir, "sounds" ) );
             utils.makeDir( path.join( assetsDir, "snapshots" ) );
             utils.writeFile( path.join( gameDir, "index.html" ), indexHtml );
+            utils.writeFile( path.join( gameDir, "manifest.json" ), manifestJson );
             utils.copyFile( path.join( paths.templates, "icon.png" ), path.join( gameDir, "icon.png" ) );
+            utils.copyFile( path.join( paths.templates, "app.js" ), path.join( gameDir, "app.js" ) );
+            utils.copyFile( path.join( paths.templates, "2dk.css" ), path.join( gameDir, "2dk.css" ) );
+            utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff" ), path.join( gameDir, "fonts", "Calamity-Regular.woff" ) );
+            utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff2" ), path.join( gameDir, "fonts", "Calamity-Regular.woff2" ) );
+            utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff" ), path.join( gameDir, "fonts", "Calamity-Bold.woff" ) );
+            utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff2" ), path.join( gameDir, "fonts", "Calamity-Bold.woff2" ) );
 
             utils.writeJson( paths.games, games, () => {
                 utils.writeJson( path.join( gameDir, "game.json" ), gameModel, () => {
