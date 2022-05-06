@@ -23,27 +23,21 @@
   "main": "./src/lib/index.js",
   "scripts": {
     "prepare": "husky install",
-    "predev": "yarn games",
+    "predev": "rm -rf dist && mkdir dist && cp -R studio/games dist",
     "dev": "webpack serve --config ./configs/webpack.config.dev.js",
-    "games": "cp -R studio/games public",
-    "watch:games": "./node_modules/.bin/chokidar \"studio/games/**/*.json\" -c \"yarn games\"",
     "watch:studio": "./node_modules/.bin/chokidar \"studio/client/**/*.scss\" -c \"yarn build:studio\"",
-    "prebuild": "rm -rf dist && mkdir dist && cp -R studio/games dist",
+    "watch:games": "./node_modules/.bin/chokidar \"studio/games/**/*.json\" -c \"cp -R studio/games dist\"",
+    "prebuild": "rm -rf dist",
     "build": "yarn build:site && yarn build:2dk && yarn build:app && yarn build:studio",
-    "postbuild": "echo 'Build complete'",
+    "postbuild": "cp -R studio/games dist",
     "build:site": "webpack --config ./configs/webpack.config.prod.js",
     "build:2dk": "webpack --config ./configs/webpack.config.2dk.js",
     "postbuild:2dk": "node-sass --output-style 'compressed' ./src/sass/2dk.scss ./studio/templates/2dk.css",
     "build:app": "webpack --config ./configs/webpack.config.app.js",
     "build:studio": "node-sass --output-style 'compressed' ./studio/client/sass/studio.scss ./studio/public/css/studio.css",
-    "predocs": "rm -rf docs",
-    "docs": "jsdoc --readme 'README.md' --destination 'docs' --recurse src public",
-    "postdocs": "cp -R ./public ./docs/public",
-    "serve": "serve --single -p 3001 dist",
-    "serve:docs": "serve -p 3002 docs",
+    "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src",
     "lint": "eslint 'src/**/*.js' 'configs/**/*.js' --max-warnings 100",
-    "test": "jest --detectOpenHandles",
-    "test:coverage": "jest --detectOpenHandles --coverage"
+    "test": "jest --detectOpenHandles"
   },
   "dependencies": {
     "gsap": "^3.6.0",
@@ -63,12 +57,9 @@
     "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.6.0",
     "eslint": "^8.9.0",
-    "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jest": "^26.1.0",
     "eslint-plugin-jsdoc": "^37.9.1",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.28.0",
     "eslint-webpack-plugin": "^3.1.1",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^7.0.4",
@@ -89,21 +80,15 @@
   },
   "jest": {
     "displayName": "2dk",
-    "rootDir": "lib",
+    "rootDir": "src",
     "testRegex": "/[^/]*test[^/]*.js$",
     "testEnvironment": "jsdom",
     "moduleNameMapper": {
-      "^src(.*)$": "<rootDir>/$1",
-      "^.+\\.(css|less|scss)$": "babel-jest"
+      "^src(.*)$": "<rootDir>/$1"
     },
     "setupFilesAfterEnv": [
       "<rootDir>/tests/jest-setup.js"
-    ],
-    "coverageDirectory": "../coverage",
-    "collectCoverageFrom": [
-      "**/*.js"
-    ],
-    "coveragePathIgnorePatterns": []
+    ]
   },
   "eslintConfig": {
     "parser": "@babel/eslint-parser",
@@ -120,8 +105,7 @@
     ],
     "extends": [
       "eslint:recommended",
-      "plugin:jsdoc/recommended",
-      "plugin:jsx-a11y/recommended"
+      "plugin:jsdoc/recommended"
     ],
     "parserOptions": {
       "ecmaFeatures": {}
