@@ -12,7 +12,7 @@ module.exports = {
     },
     resolve: resolveConfig,
     output: {
-        path: path.resolve(process.cwd(), 'studio/templates'),
+        path: path.resolve(process.cwd(), 'studio/src/templates'),
         filename: 'app.js',
     },
     module: {

@@ -20,13 +20,10 @@
 
 # 2dk Studio
 dist
-build
-publish
-public/games
 studio/public/js/2dk.js
 studio/public/css
-studio/templates/2dk.css
-studio/templates/app.js
+studio/src/templates/2dk.css
+studio/src/templates/app.js
 # studio/games/**/assets/snapshots
 
 
