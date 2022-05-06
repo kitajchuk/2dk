@@ -13,7 +13,6 @@ const CACHE_URLS = [
     "icon384.png",
     "icon512.png",
     "icon1024.png",
-    "assets/tiles/tiles.webp",
     "assets/tiles/tiles.png",
     "assets/tiles/inside.png",
     "assets/sprites/npcs.png",
