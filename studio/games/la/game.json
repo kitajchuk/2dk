@@ -704,7 +704,6 @@
         }
     ],
     "bundle": [
-        "assets/tiles/tiles.webp",
         "assets/tiles/tiles.png",
         "assets/tiles/inside.png",
         "assets/sprites/npcs.png",
