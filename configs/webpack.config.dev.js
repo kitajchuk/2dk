@@ -1,12 +1,8 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {
-    fontRules,
-    imageRules,
     babelRules,
     resolveConfig,
-    styleRulesOurs,
     devServerConfig,
-    styleRulesTheirs,
     htmlPluginConfig,
     // optimizationConfig,
 } = require('./webpack.config.base');
@@ -25,10 +21,6 @@ module.exports = {
     module: {
         rules: [
             babelRules,
-            styleRulesOurs,
-            styleRulesTheirs,
-            imageRules,
-            fontRules,
         ],
     },
 };

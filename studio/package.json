@@ -18,7 +18,7 @@
     "video games",
     "game development"
   ],
-  "main": "main.js",
+  "main": "./src/main.js",
   "scripts": {
     "dev": "electron ."
   },
@@ -30,7 +30,6 @@
     "paramalama": "^0.2.0",
     "properjs-lager": "^0.1.2",
     "properjs-mediabox": "^0.3.4",
-    "sharp": "^0.30.4",
-    "shelljs": "^0.8.5"
+    "sharp": "^0.30.4"
   }
 }

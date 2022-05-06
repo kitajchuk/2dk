@@ -1,6 +1,7 @@
-const isMac = (process.platform === "darwin");
-const { app, Menu, MenuItem, ipcMain } = require( "electron" );
+const { app, Menu, ipcMain, shell } = require( "electron" );
 const { DB } = require( "./db" );
+
+const isMac = (process.platform === "darwin");
 
 // Global mainWindow
 let mainWindow;
@@ -251,7 +252,6 @@ const getHelpMenu = () => {
             {
                 label: "Learn More",
                 click: async () => {
-                    const { shell } = require( "electron" );
                     await shell.openExternal( "https://2dk.kitajchuk.com" );
                 }
             }

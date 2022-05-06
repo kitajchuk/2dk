@@ -5,8 +5,8 @@ const lager = require( "properjs-lager" );
 const sharp = require( "sharp" );
 const paths = {
     games: path.join( process.cwd(), "games.json" ),
-    models: path.join( process.cwd(), "models" ),
-    templates: path.join( process.cwd(), "templates" ),
+    models: path.join( process.cwd(), "src", "models" ),
+    templates: path.join( process.cwd(), "src", "templates" ),
 };
 
 

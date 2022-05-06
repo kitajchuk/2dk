@@ -2,13 +2,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ESLintWebpackPlugin = require('eslint-webpack-plugin');
 const {
-    fontRules,
-    imageRules,
     babelRules,
     resolveConfig,
-    styleRulesOurs,
     devServerConfig,
-    styleRulesTheirs,
     htmlPluginConfig,
     copyPluginConfig,
     // optimizationConfig,
@@ -49,10 +45,6 @@ module.exports = {
     module: {
         rules: [
             babelRules,
-            styleRulesOurs,
-            styleRulesTheirs,
-            imageRules,
-            fontRules,
         ],
     },
 };
