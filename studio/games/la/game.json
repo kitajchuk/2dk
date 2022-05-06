@@ -6,7 +6,7 @@
         "height": 576,
         "resolution": 1,
         "icon": "icon.png",
-        "save": 295,
+        "save": 319,
         "release": 1,
         "plugin": "topview"
     },
@@ -704,6 +704,7 @@
         }
     ],
     "bundle": [
+        "assets/tiles/tiles.webp",
         "assets/tiles/tiles.png",
         "assets/tiles/inside.png",
         "assets/sprites/npcs.png",

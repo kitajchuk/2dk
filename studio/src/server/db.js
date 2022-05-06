@@ -1,8 +1,10 @@
 const path = require( "path" );
-const utils = require( "./utils" );
-const cache = require( "./cache" );
 const lager = require( "properjs-lager" );
 const sharp = require( "sharp" );
+const shell = require( "shelljs" );
+const Lame = require( "node-lame" ).Lame;
+const utils = require( "./utils" );
+const cache = require( "./cache" );
 const paths = {
     games: path.join( process.cwd(), "games.json" ),
     models: path.join( process.cwd(), "src", "models" ),
@@ -184,6 +186,34 @@ class DB {
 
                     } else {
                         this.updateWorker();
+                    }
+
+                    if ( shell.which( "lame" ) && ext === "mp3" ) {
+                        lager.info( `DB-${this.gameId}: compressing audio file with lame` );
+
+                        const fileComp = file.replace( ".mp3", ".compressed.mp3" );
+                        const encoder = new Lame({
+                            output: fileComp,
+                            mp3Input: true,
+                            bitrate: 192,
+                        }).setFile( file );
+                        
+                        encoder
+                            .encode()
+                            .then(() => {
+                                // Encoding finished
+                                utils.removeFile( file, () => {
+                                    utils.copyFile( fileComp, file, () => {
+                                        utils.removeFile( fileComp, () => {
+                                            lager.info( `DB-${this.gameId}: compressed audio file with lame` );
+                                        });
+                                    });
+                                });
+                            })
+                            .catch(( error ) => {
+                                // Something went wrong
+                                lager.error( error );
+                            });
                     }
 
                     resolve({
@@ -455,38 +485,46 @@ DB.getGames = () => {
 };
 
 
-DB.updateGame = ( data ) => {
-    const gameDir = path.join( process.cwd(), "games", data.game.id );
-    const manifestJson = DB.getTemplate( "manifest.json" )
-                           .replace( /\{__GAME_NAME__\}/g, data.game.name );
-    const indexHtml = DB.getTemplate( "index.html" )
-                        .replace( /\{__GAME_ID__\}/g, data.game.id )
-                        .replace( /\{__GAME_NAME__\}/g, data.game.name )
-                        .replace( /\{__GAME_VERSION__\}/g, data.game.save );
 
-    // Update game index.html
+DB.updateCommon = ( game, gameDir ) => {
+    const manifestJson = DB.getTemplate( "manifest.json" )
+                           .replace( /\{__GAME_NAME__\}/g, game.name )
+                           .replace( /\{__GAME_VERSION__\}/g, game.save );
+    const indexHtml = DB.getTemplate( "index.html" )
+                        .replace( /\{__GAME_ID__\}/g, game.id )
+                        .replace( /\{__GAME_NAME__\}/g, game.name )
+                        .replace( /\{__GAME_VERSION__\}/g, game.save );
+
+    // Update index.html
     utils.writeFile( path.join( gameDir, "index.html" ), indexHtml );
-    lager.info( `DB-static: saved new index.html for ${data.game.id}` );
+    lager.info( `DB-static: saved new index.html for ${game.id}` );
 
     // Update web app manifest
     utils.writeFile( path.join( gameDir, "manifest.json" ), manifestJson );
-    lager.info( `DB-static: saved new manifest.json for ${data.game.id}` );
+    lager.info( `DB-static: saved new manifest.json for ${game.id}` );
+
+    // Update css and js entry
+    utils.copyFile( path.join( paths.templates, "app.js" ), path.join( gameDir, "app.js" ) );
+    utils.copyFile( path.join( paths.templates, "2dk.css" ), path.join( gameDir, "2dk.css" ) );
+    lager.info( `DB-static: copied app.js and 2dk.css for ${game.id}` );
+
+    // Update fonts
+    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff" ), path.join( gameDir, "fonts", "Calamity-Regular.woff" ) );
+    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff2" ), path.join( gameDir, "fonts", "Calamity-Regular.woff2" ) );
+    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff" ), path.join( gameDir, "fonts", "Calamity-Bold.woff" ) );
+    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff2" ), path.join( gameDir, "fonts", "Calamity-Bold.woff2" ) );
+    lager.info( `DB-static: copied fonts for ${game.id}` );
+};
+
+
+DB.updateGame = ( data ) => {
+    const gameDir = path.join( process.cwd(), "games", data.game.id );
 
     // Save new game data
     utils.writeJson( path.join( gameDir, "game.json" ), data );
     lager.info( `DB-static: saved new game.json for ${data.game.id}` );
 
-    // Update core 2dk lib and styles
-    utils.copyFile( path.join( paths.templates, "app.js" ), path.join( gameDir, "app.js" ) );
-    utils.copyFile( path.join( paths.templates, "2dk.css" ), path.join( gameDir, "2dk.css" ) );
-    lager.info( `DB-static: copied app.js and 2dk.css for ${data.game.id}` );
-
-    // Update core fonts
-    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff" ), path.join( gameDir, "fonts", "Calamity-Regular.woff" ) );
-    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff2" ), path.join( gameDir, "fonts", "Calamity-Regular.woff2" ) );
-    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff" ), path.join( gameDir, "fonts", "Calamity-Bold.woff" ) );
-    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff2" ), path.join( gameDir, "fonts", "Calamity-Bold.woff2" ) );
-    lager.info( `DB-static: copied fonts for ${data.game.id}` );
+    DB.updateCommon( data.game, gameDir );
 
     // Update games.json root
     DB.getGames().then(( json ) => {
@@ -520,12 +558,6 @@ DB.addGame = ( data ) => {
             const mapsDir = path.join( gameDir, "maps" );
             const fontsDir = path.join( gameDir, "fonts" );
             const assetsDir = path.join( gameDir, "assets" );
-            const manifestJson = DB.getTemplate( "manifest.json" )
-                                .replace( /\{__GAME_NAME__\}/g, gameModel.game.name );
-            const indexHtml = DB.getTemplate( "index.html" )
-                                .replace( /\{__GAME_ID__\}/g, gameModel.game.id )
-                                .replace( /\{__GAME_NAME__\}/g, gameModel.game.name )
-                                .replace( /\{__GAME_VERSION__\}/g, gameModel.game.save );
 
             utils.makeDir( gameDir );
             utils.makeDir( mapsDir );
@@ -535,15 +567,9 @@ DB.addGame = ( data ) => {
             utils.makeDir( path.join( assetsDir, "sprites" ) );
             utils.makeDir( path.join( assetsDir, "sounds" ) );
             utils.makeDir( path.join( assetsDir, "snapshots" ) );
-            utils.writeFile( path.join( gameDir, "index.html" ), indexHtml );
-            utils.writeFile( path.join( gameDir, "manifest.json" ), manifestJson );
             utils.copyFile( path.join( paths.templates, "icon.png" ), path.join( gameDir, "icon.png" ) );
-            utils.copyFile( path.join( paths.templates, "app.js" ), path.join( gameDir, "app.js" ) );
-            utils.copyFile( path.join( paths.templates, "2dk.css" ), path.join( gameDir, "2dk.css" ) );
-            utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff" ), path.join( gameDir, "fonts", "Calamity-Regular.woff" ) );
-            utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff2" ), path.join( gameDir, "fonts", "Calamity-Regular.woff2" ) );
-            utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff" ), path.join( gameDir, "fonts", "Calamity-Bold.woff" ) );
-            utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff2" ), path.join( gameDir, "fonts", "Calamity-Bold.woff2" ) );
+
+            DB.updateCommon( gameModel.game, gameDir );
 
             utils.writeJson( paths.games, games, () => {
                 utils.writeJson( path.join( gameDir, "game.json" ), gameModel, () => {

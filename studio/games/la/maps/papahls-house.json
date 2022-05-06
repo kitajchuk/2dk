@@ -8,7 +8,7 @@
     "tileheight": 16,
     "collider": 16,
     "cellauto": false,
-    "image": "assets/tiles/inside.png",
+    "image": "assets/tiles/inside.pwebpng",
     "snapshot": "assets/snapshots/papahls-house.png",
     "thumbnail": "assets/snapshots/papahls-house-thumb.png",
     "sound": "assets/sounds/bgm-house.mp3",

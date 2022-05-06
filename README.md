@@ -42,9 +42,10 @@ yarn dev
 ```
 
 #### Map painting
-Currently you can create and paint maps quite well for the background, foreground and collision layers. It's basically Photoshop for 2D map painting.
+Currently you can create and paint maps quite well for the background, foreground and collision layers. It's basically Photoshop for 2D map painting. I've been using the game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. If you run the Studio you'll find it's there, named [LA](https://2dk.kitajchuk.com/games/la/).
 
-I've been using the game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. If you run the Studio you'll find it's there, named [LA](https://2dk.kitajchuk.com/games/la/).
+#### Audio compression
+As of right now the ability for uploaded audio files (mp3) to be compressed requires the installation of [lame](https://lame.sourceforge.io/). For macos you can simply `brew install lame`. The electron software then uses [node-lame](https://www.npmjs.com/package/node-lame) for the compression (only if `lame` is available). Ideally the software will bundle the lame executable for each distro when we get there.
 
 #### Game bundles
 A 2dk game is a static [PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) that contains all its own resources and data files. The Player, or engine, has a mobile first philosophy behind it and is designed to be played as a standalone web app on your phone. It handles offline mode with a [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) that caches all the game resources.
