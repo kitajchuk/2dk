@@ -12,7 +12,7 @@ import { TweenLite, Power2 } from "gsap";
 class Companion extends Sprite {
     constructor ( data, hero ) {
         super( data, hero.map );
-        this.layer = "heroground";
+        this.layer = (this.data.type === Config.npc.FLOAT ? "foreground" : "heroground");
         this.hero = hero;
         this.watchFPS = 24;
         this.watchFrame = 0;
