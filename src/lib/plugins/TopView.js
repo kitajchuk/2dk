@@ -53,11 +53,6 @@ class TopView extends GameBox {
         // blit map
         this.map.blit( elapsed );
 
-        // blit map_?
-        if ( this.map_ ) {
-            this.map_.blit( elapsed );
-        }
-
         // update gamebox (camera)
         this.update();
 
@@ -71,11 +66,6 @@ class TopView extends GameBox {
 
         // update map
         this.map.update( this.offset );
-
-        // update map_?
-        if ( this.map_ ) {
-            this.map_.update( this.map_.offset );
-        }
 
         // render companion behind hero?
         if ( this.companion && this.companion.data.type !== Config.npc.FLOAT && this.companion.hitbox.y < this.hero.hitbox.y ) {
@@ -92,11 +82,6 @@ class TopView extends GameBox {
 
         // render map
         this.map.render( this.camera );
-
-        // render map_?
-        if ( this.map_ ) {
-            this.map_.render( this.cam_ );
-        }
     }
 
 
