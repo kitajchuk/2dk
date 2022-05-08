@@ -375,7 +375,12 @@ class Map {
                             const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
 
                             // Render the textures
-                            ret[ id ][ y ][ x ] = celsCopy;
+                            // Shift foreground behind hero render if coords determine so
+                            if ( id === "foreground" && lookupY < this.gamebox.hero.hitbox.y ) {
+                                ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
+                            } else {
+                                ret[ id ][ y ][ x ] = celsCopy;
+                            }
 
                             // Push any ActiveTiles to the cel stack
                             if ( activeTile ) {
