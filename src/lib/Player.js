@@ -213,17 +213,11 @@ class Player {
 
     onRotate () {
         if ( Math.abs( this.getOrientation() ) === 90 ) {
-            this.element.classList.remove( "is-portrait" );
-            this.element.classList.add( "is-landscape" );
-
             if ( this.ready ) {
                 this.resume();
             }
 
         } else {
-            this.element.classList.remove( "is-landscape" );
-            this.element.classList.add( "is-portrait" );
-
             if ( this.ready ) {
                 this.pause();
                 this.stop();

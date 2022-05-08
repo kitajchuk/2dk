@@ -1812,26 +1812,26 @@ var Map = /*#__PURE__*/function () {
     value: function render(camera) {
       this.clear();
       this.camera = camera;
-      this.renderBox = this.getRenderbox(camera); // Separate FLOAT NPCs from the normies
+      this.renderBox = this.getRenderbox(camera); // Separate background / foreground NPCs
 
-      var npcs = this.npcs.filter(function (npc) {
-        return npc.data.type !== _Config__WEBPACK_IMPORTED_MODULE_4__["default"].npc.FLOAT;
+      var npcsBg = this.npcs.filter(function (npc) {
+        return npc.data.type !== _Config__WEBPACK_IMPORTED_MODULE_4__["default"].npc.FLOAT && npc.layer === "background";
       });
-      var floats = this.npcs.filter(function (npc) {
-        return npc.data.type === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].npc.FLOAT;
+      var npcsFg = this.npcs.filter(function (npc) {
+        return npc.data.type === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].npc.FLOAT || npc.layer === "foreground";
       }); // Draw background textures
 
-      this.renderTextures("background"); // Draw NPCs
-      // They can draw to either background OR foreground
+      this.renderTextures("background"); // Draw NPCs to background
 
-      npcs.forEach(function (npc) {
+      npcsBg.forEach(function (npc) {
         npc.render();
       }); // Draw foreground textures
 
-      this.renderTextures("foreground"); // Draw float NPCs (render AFTER texture foreground)
+      this.renderTextures("foreground"); // Draw NPCs to foreground
+      // Float NPCs are included always
 
-      floats.forEach(function (_float) {
-        _float.render();
+      npcsFg.forEach(function (npc) {
+        npc.render();
       }); // Draw FX
       // This is the topmost layer so we can do cool stuff...
 
@@ -2255,16 +2255,10 @@ var Player = /*#__PURE__*/function () {
     key: "onRotate",
     value: function onRotate() {
       if (Math.abs(this.getOrientation()) === 90) {
-        this.element.classList.remove("is-portrait");
-        this.element.classList.add("is-landscape");
-
         if (this.ready) {
           this.resume();
         }
       } else {
-        this.element.classList.remove("is-landscape");
-        this.element.classList.add("is-portrait");
-
         if (this.ready) {
           this.pause();
           this.stop();
@@ -2740,7 +2734,6 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       this.map.render(this.camera); // render companion infront of everything?
 
       if (this.companion && this.companion.data.type === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT) {
-        console.log(this.companion);
         this.companion.render();
       }
     }
@@ -3256,8 +3249,6 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleHeroNPCAction",
     value: function handleHeroNPCAction(poi, dir, obj) {
-      console.log(obj);
-
       if (obj.canInteract(dir)) {
         obj.doInteract(dir);
       }

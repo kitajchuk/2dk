@@ -59,11 +59,6 @@
         opacity: 0;
     }
 
-    // .is-started.is-portrait & {
-    //     opacity: 1;
-    //     transition-duration: 0ms;
-    // }
-
     .is-fader & {
         opacity: 1;
     }
@@ -97,7 +92,6 @@
 ._2dk__splash__info {
     > div:last-child {
         @include wrap();
-        // background-image: url( "img/icon/apple-icon.png" );
         background-repeat: no-repeat;
         background-size: 64px 64px;
         background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} );
@@ -121,10 +115,19 @@
 @media ( orientation: portrait ) {
     ._2dk__splash {
         z-index: 11;
+
+        .is-started & {
+            opacity: 1;
+            transition-duration: 0ms;
+        }
     }
 
     ._2dk__splash__info {
         display: flex;
+
+        .is-started & {
+            display: flex;
+        }
 
         > div:last-child {
             animation: bounce (240ms * 2) infinite;

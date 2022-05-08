@@ -608,7 +608,6 @@ class TopView extends GameBox {
 
 
     handleHeroNPCAction ( poi, dir, obj ) {
-        console.log(obj);
         if ( obj.canInteract( dir ) ) {
             obj.doInteract( dir );
         }

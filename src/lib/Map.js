@@ -259,29 +259,29 @@ class Map {
         this.camera = camera;
         this.renderBox = this.getRenderbox( camera );
 
-        // Separate FLOAT NPCs from the normies
-        const npcs = this.npcs.filter(( npc ) => {
-            return npc.data.type !== Config.npc.FLOAT;
+        // Separate background / foreground NPCs
+        const npcsBg = this.npcs.filter(( npc ) => {
+            return npc.data.type !== Config.npc.FLOAT && npc.layer === "background";
         });
-        const floats = this.npcs.filter(( npc ) => {
-            return npc.data.type === Config.npc.FLOAT;
+        const npcsFg = this.npcs.filter(( npc ) => {
+            return npc.data.type === Config.npc.FLOAT || npc.layer === "foreground";
         });
 
         // Draw background textures
         this.renderTextures( "background" );
 
-        // Draw NPCs
-        // They can draw to either background OR foreground
-        npcs.forEach(( npc ) => {
+        // Draw NPCs to background
+        npcsBg.forEach(( npc ) => {
             npc.render();
         });
 
         // Draw foreground textures
         this.renderTextures( "foreground" );
 
-        // Draw float NPCs (render AFTER texture foreground)
-        floats.forEach(( float ) => {
-            float.render();
+        // Draw NPCs to foreground
+        // Float NPCs are included always
+        npcsFg.forEach(( npc ) => {
+            npc.render();
         });
 
         // Draw FX

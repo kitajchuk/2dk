@@ -5,6 +5,7 @@ const devServerConfig = {
     open: true,
     port: 3000,
     host: 'localhost',
+    static: ['dist'],
     historyApiFallback: true,
 };
 const optimizationConfig = {
