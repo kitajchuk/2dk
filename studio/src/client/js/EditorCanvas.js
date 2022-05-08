@@ -42,6 +42,7 @@ class EditorCanvas {
         this.selectionCoords = [];
         this.isZoomable = false;
         this.isSpacebar = false;
+        this.isEscape = false;
         this.isMouseDownTiles = false;
         this.isMouseMovedTiles = false;
         this.isMouseDownCanvas = false;
@@ -921,7 +922,13 @@ class EditorCanvas {
                 return;
             }
 
-            this.isSpacebar = (e.which === EditorConfig.keys.SPACEBAR);
+            this.isSpacebar = (e.keyCode === EditorConfig.keys.SPACEBAR);
+            this.isEscape = (e.keyCode === EditorConfig.keys.ESCAPE);
+
+            if ( this.isEscape ) {
+                this.clearTileset();
+                this.clearSelection();
+            }
 
             if ( this.isSpacebar ) {
                 this.editor.blurSelectMenus();
@@ -938,6 +945,7 @@ class EditorCanvas {
 
         $document.on( "keyup", ( e ) => {
             this.isSpacebar = false;
+            this.isEscape = false;
 
             if ( !this.isSpacebar && !this.isDraggableAlive ) {
                 this.draggable.disable();

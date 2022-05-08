@@ -230,6 +230,24 @@
 }
 .editor__panel__sound {
     border-right: 1px solid $grey-dark;
+
+    .feather {
+        display: inline-block;
+    }
+
+    .feather-pause-circle {
+        display: none;
+    }
+
+    &.is-playing {
+        .feather-play-circle {
+            display: none;
+        }
+
+        .feather-pause-circle {
+            display: inline-block;
+        }
+    }
 }
 
 
@@ -479,8 +497,22 @@
     transform: translateY( -50% );
     color: $grey;
 
-    &.is-active:before {
-        content: "\e921";
+    .feather {
+        display: inline-block;
+    }
+
+    .feather-eye-off {
+        display: none;
+    }
+
+    &.is-active {
+        .feather-eye {
+            display: none;
+        }
+
+        .feather-eye-off {
+            display: inline-block;
+        }
     }
 }
 .editor__layer__label {

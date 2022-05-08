@@ -71,11 +71,7 @@ a {
     font-family: $font-monospace;
     color: $grey;
 
-    &:after {
-        color: $grey;
-        content: "\e91c";
-        font-family: $font-icons;
-        font-size: 18px;
+    &__icon {
         position: absolute;
         right: 14px;
         top: 50%;

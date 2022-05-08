@@ -5,7 +5,6 @@
 // selectively enable features needed in the rendering
 // process.
 window.onload = () => {
-    const _2dk = window._2dk;
-
-    window.editor = new _2dk.Editor();
+    window.studio.instance = new window.studio.Editor();
+    window.feather.replace();
 };

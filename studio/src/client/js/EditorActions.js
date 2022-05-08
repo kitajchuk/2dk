@@ -23,7 +23,7 @@ class EditorActions {
             }
 
             if ( this.editor.canMapFunction() ) {
-                const test = window.hobo( `.js-edit-action[data-key="${e.which}"]` );
+                const test = window.hobo( `.js-edit-action[data-key="${e.keyCode}"]` );
 
                 if ( test.length ) {
                     this._handleAction( test );

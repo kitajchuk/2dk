@@ -35,6 +35,7 @@ const EditorConfig = {
         Z: 90,
         X: 88,
         P: 80,
+        ESCAPE: 27,
         SPACEBAR: 32,
     },
     colors: {

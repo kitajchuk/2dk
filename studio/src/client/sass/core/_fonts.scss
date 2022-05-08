@@ -39,12 +39,3 @@
     font-style: normal;
     font-stretch: normal;
 }
-@font-face {
-    font-family: $font-icons;
-    src: url("#{$font-path}editor-icons.woff?#{$font-uid}") format("woff"),
-         url("#{$font-path}editor-icons.ttf?#{$font-uid}") format("truetype"),
-         url("#{$font-path}editor-icons.svg?#{$font-uid}#editor-icons") format("svg");
-    font-weight: normal;
-    font-style: normal;
-    font-display: block;
-}

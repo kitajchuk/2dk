@@ -253,10 +253,10 @@ const onTouchEnd = ( e ) => {
 
 
 const onKeyDown = ( e ) => {
-    if ( inputStream.indexOf( e.which ) === -1 ) {
-        inputStream.push( e.which );
+    if ( inputStream.indexOf( e.keyCode ) === -1 ) {
+        inputStream.push( e.keyCode );
 
-        const control = getControl( e.which );
+        const control = getControl( e.keyCode );
 
         if ( control ) {
             startTouch( control );
@@ -267,10 +267,10 @@ const onKeyDown = ( e ) => {
 
 
 const onKeyUp = ( e ) => {
-    if ( inputStream.indexOf( e.which ) !== -1 ) {
-        inputStream.splice( inputStream.indexOf( e.which ), 1 );
+    if ( inputStream.indexOf( e.keyCode ) !== -1 ) {
+        inputStream.splice( inputStream.indexOf( e.keyCode ), 1 );
 
-        const control = getControl( e.which );
+        const control = getControl( e.keyCode );
 
         if ( control ) {
             cancelTouch( control );
