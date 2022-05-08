@@ -76,12 +76,18 @@ class TopView extends GameBox {
         this.hero.render();
 
         // render companion infront of hero?
-        if ( this.companion && (this.companion.data.type === Config.npc.FLOAT || this.companion.hitbox.y > this.hero.hitbox.y) ) {
+        if ( this.companion && (this.companion.data.type !== Config.npc.FLOAT && this.companion.hitbox.y > this.hero.hitbox.y) ) {
             this.companion.render();
         }
 
         // render map
         this.map.render( this.camera );
+
+        // render companion infront of everything?
+        if ( this.companion && this.companion.data.type === Config.npc.FLOAT ) {
+            console.log( this.companion );
+            this.companion.render();
+        }
     }
 
 

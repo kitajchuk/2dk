@@ -1901,8 +1901,14 @@ var Map = /*#__PURE__*/function () {
               if (this.data.textures[id][lookupY][lookupX]) {
                 var celsCopy = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].copy(this.data.textures[id][lookupY][lookupX]);
                 var activeTile = this.getActiveTile(id, [lookupX, lookupY], celsCopy); // Render the textures
+                // Shift foreground behind hero render if coords determine so
 
-                ret[id][y][x] = celsCopy; // Push any ActiveTiles to the cel stack
+                if (id === "foreground" && lookupY * this.data.tilesize < this.gamebox.hero.position.y) {
+                  ret.background[y][x] = ret.background[y][x].concat(celsCopy);
+                } else {
+                  ret[id][y][x] = celsCopy;
+                } // Push any ActiveTiles to the cel stack
+
 
                 if (activeTile) {
                   ret[id][y][x].push(activeTile);
@@ -2706,12 +2712,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       } // blit map
 
 
-      this.map.blit(elapsed); // blit map_?
-
-      if (this.map_) {
-        this.map_.blit(elapsed);
-      } // update gamebox (camera)
-
+      this.map.blit(elapsed); // update gamebox (camera)
 
       this.update(); // update hero
 
@@ -2722,12 +2723,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       } // update map
 
 
-      this.map.update(this.offset); // update map_?
-
-      if (this.map_) {
-        this.map_.update(this.map_.offset);
-      } // render companion behind hero?
-
+      this.map.update(this.offset); // render companion behind hero?
 
       if (this.companion && this.companion.data.type !== _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT && this.companion.hitbox.y < this.hero.hitbox.y) {
         this.companion.render();
@@ -2736,15 +2732,16 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
       this.hero.render(); // render companion infront of hero?
 
-      if (this.companion && (this.companion.data.type === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT || this.companion.hitbox.y > this.hero.hitbox.y)) {
+      if (this.companion && this.companion.data.type !== _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT && this.companion.hitbox.y > this.hero.hitbox.y) {
         this.companion.render();
       } // render map
 
 
-      this.map.render(this.camera); // render map_?
+      this.map.render(this.camera); // render companion infront of everything?
 
-      if (this.map_) {
-        this.map_.render(this.cam_);
+      if (this.companion && this.companion.data.type === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT) {
+        console.log(this.companion);
+        this.companion.render();
       }
     }
   }, {
@@ -3638,7 +3635,7 @@ var Companion = /*#__PURE__*/function (_Sprite) {
     (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, Companion);
 
     _this = _super.call(this, data, hero.map);
-    _this.layer = "heroground";
+    _this.layer = _this.data.type === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT ? "foreground" : "heroground";
     _this.hero = hero;
     _this.watchFPS = 24;
     _this.watchFrame = 0;
@@ -4352,7 +4349,7 @@ var Sprite = /*#__PURE__*/function () {
     this.image = _Loader__WEBPACK_IMPORTED_MODULE_3__["default"].cash(this.data.image);
     this.speed = 1;
     this.frame = 0;
-    this.opacity = data.opacity || 1;
+    this.opacity = data.opacity || 1.0;
     this.position = {
       x: this.data.spawn && this.data.spawn.x || 0,
       y: this.data.spawn && this.data.spawn.y || 0,

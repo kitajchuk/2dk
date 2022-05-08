@@ -22,7 +22,7 @@ class Sprite {
         this.image = Loader.cash( this.data.image );
         this.speed = 1;
         this.frame = 0;
-        this.opacity = (data.opacity || 1);
+        this.opacity = (data.opacity || 1.0);
         this.position = {
             x: (this.data.spawn && this.data.spawn.x || 0),
             y: (this.data.spawn && this.data.spawn.y || 0),

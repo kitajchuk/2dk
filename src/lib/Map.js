@@ -376,7 +376,7 @@ class Map {
 
                             // Render the textures
                             // Shift foreground behind hero render if coords determine so
-                            if ( id === "foreground" && lookupY < this.gamebox.hero.hitbox.y ) {
+                            if ( id === "foreground" && (lookupY * this.data.tilesize) < this.gamebox.hero.position.y ) {
                                 ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
                             } else {
                                 ret[ id ][ y ][ x ] = celsCopy;
