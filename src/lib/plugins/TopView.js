@@ -85,7 +85,6 @@ class TopView extends GameBox {
 
         // render companion infront of everything?
         if ( this.companion && this.companion.data.type === Config.npc.FLOAT ) {
-            console.log( this.companion );
             this.companion.render();
         }
     }
