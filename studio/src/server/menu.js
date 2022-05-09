@@ -375,6 +375,7 @@ ipcMain.on( "renderer-deletemap", ( event, data ) => {
     dBase.deleteMap( data ).then(( response ) => {
         activeMaps = response.maps;
         setMenu();
+        loadGame();
     });
 });
 

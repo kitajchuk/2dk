@@ -92,6 +92,11 @@ class Editor {
 
 
     loadGame ( game ) {
+        // When a map is deleted the ipc renderer<->menu will cycle this again...
+        if ( this.mode === EditorConfig.Editor.modes.SAVING ) {
+            this.mode = null;
+        }
+
         if ( this.data.game && this.data.game.id === game.game.id ) {
             return;
         }
@@ -478,7 +483,7 @@ class Editor {
         this.dom.loadout[ 0 ].innerHTML = maps.map(( map ) => {
             return `<div class="js-map-tile" data-map="${map.id}">
                 <div>
-                    <img src="./games/${this.data.game.id}/${map.thumbnail}" />
+                    <img src="./games/${this.data.game.id}/${map.thumbnail || map.image}" />
                 </div>
                 <div>${map.name}</div>
             </div>`;
@@ -808,34 +813,34 @@ class Editor {
             }
         });
 
-        // this.dom.deleteMap.on( "click", ( e ) => {
-        //     if ( !this.canMapFunction() ) {
-        //         return false;
-        //     }
-        //
-        //     if ( confirm( `Sure you want to delete the map "${active.map.name}"?` ) ) {
-        //         this.mode = EditorConfig.Editor.modes.SAVING;
-        //         this.dom.root[ 0 ].className = "is-deleting-map";
-        //
-        //         ipcRenderer.send( "renderer-deletemap", this.data.map );
-        //         // window.location.reload();
-        //     }
-        // });
+        this.dom.deleteMap.on( "click", ( e ) => {
+            if ( !this.canMapFunction() ) {
+                return false;
+            }
+        
+            if ( confirm( `Sure you want to delete the map "${this.data.map.name}"? This may affect other data referencing this map.` ) ) {
+                this.mode = EditorConfig.Editor.modes.SAVING;
+                this.dom.root[ 0 ].className = "is-deleting-map";
+                this.closeMenus();
+                this.actions.resetActions();
+                ipcRenderer.send( "renderer-deletemap", this.data.map );
+            }
+        });
 
 
-        // this.dom.deleteGame.on( "click", ( e ) => {
-        //     if ( !this.canGameFunction() ) {
-        //         return false;
-        //     }
-        //
-        //     if ( confirm( `Sure you want to delete the game "${this.data.game.name}"?` ) ) {
-        //         this.mode = Library.Editor.modes.SAVING;
-        //         this.dom.root[ 0 ].className = "is-deleting-game";
-        //
-        //         ipcRenderer.send( "renderer-deletegame", this.data.game );
-        //         // window.location.reload();
-        //     }
-        // });
+        this.dom.deleteGame.on( "click", ( e ) => {
+            if ( !this.canGameFunction() ) {
+                return false;
+            }
+        
+            if ( confirm( `Sure you want to delete the game "${this.data.game.name}"? This cannot be undone.` ) ) {
+                this.mode = EditorConfig.Editor.modes.SAVING;
+                this.dom.root[ 0 ].className = "is-deleting-game";
+        
+                ipcRenderer.send( "renderer-deletegame", this.data.game );
+                window.location.reload(); // Clunky maybe but best simple solution for now :-P
+            }
+        });
     }
 }
 

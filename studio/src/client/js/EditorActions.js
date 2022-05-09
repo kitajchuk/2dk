@@ -40,6 +40,13 @@ class EditorActions {
     }
 
 
+    resetActions () {
+        this.mode = null;
+        this.elements.removeClass( "is-active" );
+        this.editor.canvas.clearSelection();
+    }
+
+
     disableKeys () {
         this.keysDisabled = true;
     }
@@ -55,9 +62,7 @@ class EditorActions {
         const action = elem.data().action.toUpperCase();
 
         if ( elem.is( ".is-active" ) ) {
-            this.mode = null;
-            this.elements.removeClass( "is-active" );
-            this.editor.canvas.clearSelection();
+            this.resetActions();
 
         } else {
             this.elements.removeClass( "is-active" );

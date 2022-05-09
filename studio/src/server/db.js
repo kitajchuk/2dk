@@ -357,10 +357,18 @@ class DB {
     deleteMap ( data ) {
         return new Promise(( resolve ) => {
             const file = path.join( this.mapsPath, `${data.id}.json` );
+            const snapshot = path.join( this.gameRoot, data.snapshot );
+            const thumbnail = path.join( this.gameRoot, data.thumbnail );
             const maps = this.cache.get( "maps" );
             const map = this._getMap( data.id );
             const idx = maps.indexOf( map );
 
+            utils.removeFile( snapshot, () => {
+                lager.info( `DB-${this.gameId}: deleted map snapshot ${map.id}` );
+            });
+            utils.removeFile( thumbnail, () => {
+                lager.info( `DB-${this.gameId}: deleted map thumbnail ${map.id}` );
+            });
             utils.removeFile( file, () => {
                 maps.splice( idx, 1 );
 
