@@ -25,7 +25,7 @@ const EditorConfig = {
             BACKGROUND: "background",
             FOREGROUND: "foreground",
             COLLISION: "collision",
-            OBJECTS: "objects",
+            NPC: "npc",
         }
     },
     keys: {

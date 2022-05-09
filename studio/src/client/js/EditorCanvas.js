@@ -1,6 +1,5 @@
 const { ipcRenderer } = require( "electron" );
 const EditorConfig = require( "./EditorConfig" );
-const EditorCellAuto = require( "./EditorCellAuto" );
 
 
 
@@ -34,7 +33,6 @@ const sortCoords = ( cA, cB ) => {
 class EditorCanvas {
     constructor ( editor ) {
         this.loader = new window.lib2dk.Loader();
-        this.cellauto = new EditorCellAuto();
         this.editor = editor;
         this.mode = null;
         this.map = null;
@@ -63,6 +61,7 @@ class EditorCanvas {
             collision: document.getElementById( "editor-c" ),
             selection: document.getElementById( "editor-sel" ),
             mapgrid: document.getElementById( "editor-mapgrid" ),
+            npc: document.getElementById( "editor-npc" ),
         };
         this.contexts = {
             background: null,
@@ -78,14 +77,9 @@ class EditorCanvas {
             preview: document.getElementById( "editor-preview-canvas" ),
             cursor: document.getElementById( "editor-cursor-canvas" ),
         };
-        this.buttons = {
-            container: document.getElementById( "editor-canvas-buttons" ),
-            cellauto: document.getElementById( "editor-cellauto-button" ),
-        };
         this.draggable = this.getDraggable();
         this.draggable.disable();
 
-        this.bindCellauto();
         this.bindMenuEvents();
         this.bindMapgridEvents();
         this.bindColliderEvents();
@@ -170,10 +164,8 @@ class EditorCanvas {
             this.layers.foreground.innerHTML = "";
             this.layers.collision.innerHTML = "";
             this.layers.selection.innerHTML = "";
+            this.layers.npc.innerHTML = "";
             this.dom.$canvasPane.removeClass( "is-loaded" );
-
-            // CellAuto?
-            this.buttons.container.classList.remove( "is-cellauto" );
         }
     }
 
@@ -196,6 +188,7 @@ class EditorCanvas {
         this.layers.foreground.innerHTML = "";
         this.layers.collision.innerHTML = "";
         this.layers.selection.innerHTML = "";
+        this.layers.npc.innerHTML = "";
 
         // Create new map layers
         this.contexts.background = new window.lib2dk.MapLayer({
@@ -226,12 +219,13 @@ class EditorCanvas {
             width: this.map.width,
             height: this.map.height
         });
-
-        // CellAuto registration
-        if ( this.map.cellauto ) {
-            // this.cellauto.register( this.map );
-            this.buttons.container.classList.add( "is-cellauto" );
-        }
+        this.contexts.npc = new window.lib2dk.MapLayer({
+            id: "npc",
+            map: this.map,
+            cash: false,
+            width: this.map.width,
+            height: this.map.height
+        });
 
         this.contexts.background.canvas.style.width = `${this.map.width}px`;
         this.contexts.background.canvas.style.height = `${this.map.height}px`;
@@ -241,11 +235,14 @@ class EditorCanvas {
         this.contexts.collision.canvas.style.height = `${this.map.height}px`;
         this.contexts.selection.canvas.style.width = `${this.map.width}px`;
         this.contexts.selection.canvas.style.height = `${this.map.height}px`;
+        this.contexts.npc.canvas.style.width = `${this.map.width}px`;
+        this.contexts.npc.canvas.style.height = `${this.map.height}px`;
 
         this.layers.background.appendChild( this.contexts.background.canvas );
         this.layers.foreground.appendChild( this.contexts.foreground.canvas );
         this.layers.collision.appendChild( this.contexts.collision.canvas );
         this.layers.selection.appendChild( this.contexts.selection.canvas );
+        this.layers.npc.appendChild( this.contexts.npc.canvas );
 
         this.canvases.mapgrid.width = this.map.width;
         this.canvases.mapgrid.height = this.map.height;
@@ -279,6 +276,7 @@ class EditorCanvas {
         this.clearCanvas( this.contexts.foreground.canvas );
         this.clearCanvas( this.contexts.collision.canvas );
         this.clearCanvas( this.contexts.selection.canvas );
+        this.clearCanvas( this.contexts.npc.canvas );
         this.clearCanvas( this.canvases.mapgrid );
 
         window.lib2dk.Utils.drawGridLines(
@@ -307,6 +305,7 @@ class EditorCanvas {
             this.map.tilesize,
             this.map.tilesize
         );
+        // Draw npcs to canvas layer here...
         this.drawColliders();
     }
 
@@ -611,7 +610,7 @@ class EditorCanvas {
 
 
     setActiveLayer ( layer ) {
-        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-objects" );
+        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc" );
         this.dom.$canvasPane.removeClass( "is-selection" );
 
         if ( layer ) {
@@ -865,19 +864,6 @@ class EditorCanvas {
     }
 
 
-    applyCellAuto ( data ) {
-        this.map.textures.background = data;
-        this.clearCanvas( this.contexts.background.canvas );
-        window.lib2dk.Utils.drawMapTiles(
-            this.contexts.background.context,
-            this.dom.tileset,
-            this.map.textures.background,
-            this.map.tilesize,
-            this.map.tilesize
-        );
-    }
-
-
     getMouseCoords ( e, grid ) {
         return [
             Math.floor( e.offsetX / grid ),
@@ -889,25 +875,6 @@ class EditorCanvas {
     getFoundCoords ( source, ref ) {
         return source.find(( coord ) => {
             return (coord[ 0 ] === ref[ 0 ] && coord[ 1 ] === ref[ 1 ]);
-        });
-    }
-
-
-    bindCellauto () {
-        let isCellGen = false;
-        const $cellauto = window.hobo( this.buttons.cellauto );
-
-        this.cellauto.step( this.applyCellAuto.bind( this ) );
-
-        $cellauto.on( "click", () => {
-            if ( !isCellGen ) {
-                isCellGen = true;
-
-                this.cellauto.register( this.map ).generate().then(( data ) => {
-                    isCellGen = false;
-                    this.applyCellAuto( data ); // Final render !!!
-                });
-            }
         });
     }
 

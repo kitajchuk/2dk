@@ -17,14 +17,12 @@
                     <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
                     <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
                     <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
+                    <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
                     <div class="editor__canvas__layer editor__selection" id="editor-sel"></div>
                     <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
                         <canvas class="canvas layer layer--grid" id="editor-mapgrid-canvas"></canvas>
                         <canvas class="canvas layer layer--grid" id="editor-collider-canvas"></canvas>
                     </div>
-                </div>
-                <div class="editor__canvas__buttons" id="editor-canvas-buttons">
-                    <button id="editor-cellauto-button" class="button editor__button">Generate Cellauto</button>
                 </div>
             </div>
             <!-- Topbar -->
@@ -104,12 +102,12 @@
                             <i data-feather="eye-off"></i>
                         </span>
                     </div>
-                    <div class="editor__layer js-edit-layer" data-layer="objects">
+                    <div class="editor__layer js-edit-layer" data-layer="npc">
                         <span class="icon icon--nudge">
                             <i data-feather="layers"></i>
                         </span>
                         <span>NPC/Object</span>
-                        <span class="editor__layer__hide icon js-hide-layer" data-layer="objects">
+                        <span class="editor__layer__hide icon js-hide-layer" data-layer="npc">
                             <i data-feather="eye"></i>
                             <i data-feather="eye-off"></i>
                         </span>
@@ -188,7 +186,8 @@
                     </div>
                     <div class="txt">
                         How games work:<br />
-                        Screen width and height define the visible play area for your game. We call this the Camera and your maps scroll within these bounds.
+                        Screen width and height define the visible play area for your game. 
+                        We call this the Camera and your maps scroll within these bounds.
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Game name</div>
@@ -281,7 +280,10 @@
                     </div>
                     <div class="txt">
                         How maps work:<br />
-                        Tilesize is your raw editing size. Resolution determines how JS canvas displays on retina devices. For high-res JS canvas, set a tilesize of 64px and a game resolution of 2. This will create gameplay at a sharp 32px on mobile.
+                        Tilesize is your raw editing size. Resolution determines how JS canvas displays on devices. 
+                        The player engine manages resolution scaling for you. 
+                        For instance, a tilesize of 64px will render at a sharp 32px on mobile devices. 
+                        So if you want a map area of 2560x2048 pixels your tile width and height would be 40x32 (multiply by 64px tilesize).
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Map name</div>
@@ -322,12 +324,6 @@
                                 <i data-feather="chevron-down"></i>
                             </span>
                         </div>
-                    </div>
-                    <div class="editor__setting">
-                        <label class="checkbox">
-                            <input class="check js-addmap-field" type="checkbox" name="cellauto" />
-                            <span class="label">CellAuto</span>
-                        </label>
                     </div>
                     <div class="editor__setting editor__setting--multi">
                         <button class="button editor__button editor__upload-button js-post-save" data-type="map">Create</button>
@@ -385,12 +381,6 @@
                         </div>
                     </div>
                     <div class="editor__setting">
-                        <label class="checkbox">
-                            <input class="check js-map-field" type="checkbox" name="cellauto" readonly disabled />
-                            <span class="label">CellAuto</span>
-                        </label>
-                    </div>
-                    <div class="editor__setting">
                         <button class="button button--grey editor__button editor__cancel-button js-close-settings">Close</button>
                     </div>
                 </div>
@@ -405,7 +395,11 @@
                         </div>
                         <div class="txt">
                             How Active Tiles work:<br />
-                            Active Tiles can be frame animated background or foreground tiles with their own timing function. They can also be interaction tiles that can be lifted, tossed, pushed and even attacked. The Discover option is for dynamic Active Tiles in the game engine. With this setting you can select just a single tile in the Editor, apply your settings and all matching tiles on the map will become Active Tiles in the live game engine.
+                            Active Tiles can be frame animated background or foreground tiles with their own timing function. 
+                            They can also be interaction tiles that can be lifted, tossed, pushed and even attacked. 
+                            The Discover option is for dynamic Active Tiles in the game engine. 
+                            With this setting you can select just a single tile in the Editor, 
+                            apply your settings and all matching tiles on the map will become Active Tiles in the live game engine.
                         </div>
                     </div>
                     <!-- Discover allows dynamic Active Tiles based on tileset position -->
@@ -508,7 +502,10 @@
                         </div>
                         <div class="txt">
                             How tilesets work:<br />
-                            Tiles are your swatches for painting maps. You should design your tiles with the same tilesize as your maps. You can upload tile images here and select which tileset you want to use when making a new map. You must use PNG format (.png).
+                            Tiles are your swatches for painting maps. 
+                            You should design your tiles with the same tilesize as your maps. 
+                            You can upload tile images here and select which tileset you want to use when making a new map. 
+                            You must use PNG format (.png).
                         </div>
                         <div class="editor__upload">
                             <button class="button editor__upload__button editor__button">
@@ -527,7 +524,8 @@
                     </div>
                     <div class="txt">
                         Remove tileset:<br />
-                        You can delete a tileset you've uploaded by selecting it here and using the delete button. You get one confirmation for your delete action.
+                        You can delete a tileset you've uploaded by selecting it here and using the delete button. 
+                        You get one confirmation for your delete action.
                     </div>
                     <div class="editor__setting">
                         <div class="select">
@@ -552,7 +550,8 @@
                         </div>
                         <div class="txt">
                             How sounds work:<br />
-                            Sounds are the background music that will play for a map. You must use MP3 format (.mp3).
+                            Sounds are the background music that will play for a map. 
+                            You must use MP3 format (.mp3).
                         </div>
                         <div class="editor__upload">
                             <button class="button editor__upload__button editor__button">
@@ -571,7 +570,8 @@
                     </div>
                     <div class="txt">
                         Remove sounds:<br />
-                        You can delete sounds you've uploaded by selecting it here and using the delete button. You get one confirmation for your delete action.
+                        You can delete sounds you've uploaded by selecting it here and using the delete button. 
+                        You get one confirmation for your delete action.
                     </div>
                     <div class="editor__setting">
                         <div class="select">

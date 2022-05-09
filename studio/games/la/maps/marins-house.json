@@ -7,7 +7,6 @@
     "tilewidth": 20,
     "tileheight": 16,
     "collider": 16,
-    "cellauto": false,
     "image": "assets/tiles/inside.png",
     "snapshot": "assets/snapshots/marins-house.png",
     "thumbnail": "assets/snapshots/marins-house-thumb.png",

@@ -7,7 +7,6 @@
     "tilewidth": 40,
     "tileheight": 32,
     "collider": 16,
-    "cellauto": false,
     "image": "assets/tiles/tiles.png",
     "snapshot": "assets/snapshots/mysterious-forest.png",
     "thumbnail": "assets/snapshots/mysterious-forest-thumb.png",

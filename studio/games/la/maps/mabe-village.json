@@ -7,7 +7,6 @@
     "tilewidth": 40,
     "tileheight": 32,
     "collider": 16,
-    "cellauto": false,
     "image": "assets/tiles/tiles.png",
     "snapshot": "assets/snapshots/mabe-village.png",
     "thumbnail": "assets/snapshots/mabe-village-thumb.png",

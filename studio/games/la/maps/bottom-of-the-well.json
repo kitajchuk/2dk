@@ -7,7 +7,6 @@
     "tilewidth": 20,
     "tileheight": 16,
     "collider": 16,
-    "cellauto": false,
     "image": "assets/tiles/tiles.png",
     "snapshot": "assets/snapshots/bottom-of-the-well.png",
     "thumbnail": "assets/snapshots/bottom-of-the-well-thumb.png",

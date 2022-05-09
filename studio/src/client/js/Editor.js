@@ -205,13 +205,6 @@ class Editor {
         this.menus.activeMap.find( ".js-map-field[name='tileheight']" )[ 0 ].value = map.tileheight;
         this.menus.activeMap.find( ".js-map-field[name='image']" )[ 0 ].value = map.image.split( "/" ).pop();
 
-        if ( map.cellauto ) {
-            this.menus.activeMap.find( ".js-map-field[name='cellauto']" )[ 0 ].checked = true;
-
-        } else {
-            this.menus.activeMap.find( ".js-map-field[name='cellauto']" )[ 0 ].checked = false;
-        }
-
         if ( map.sound ) {
             this.menus.activeMap.find( ".js-map-field[name='sound']" )[ 0 ].value = map.sound.split( "/" ).pop();
         }

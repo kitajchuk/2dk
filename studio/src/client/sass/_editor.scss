@@ -181,13 +181,6 @@
     display: block;
     border: 1px solid $grey-dark;
 }
-#editor-cellauto-button {
-    display: none;
-
-    .is-cellauto & {
-        display: inline-block;
-    }
-}
 #editor-demo-game {
     pointer-events: auto;
 }
@@ -346,7 +339,8 @@
 
     &.is-background,
     &.is-foreground,
-    &.is-selection {
+    &.is-selection,
+    &.is-npc {
         #editor-mapgrid-canvas {
             display: block;
         }

@@ -4,7 +4,6 @@ import NPC from "./sprites/NPC";
 import Hero from "./sprites/Hero";
 import Sprite from "./sprites/Sprite";
 import Companion from "./sprites/Companion";
-import CellAuto from "./vendor/CellAuto";
 import Config from "./Config";
 import Dialogue from "./Dialogue";
 import GameAudio from "./GameAudio";
@@ -27,9 +26,6 @@ const lib = {
     Hero,
     Sprite,
     Companion,
-
-    // vendor
-    CellAuto,
 
     // ...rest
     Config,

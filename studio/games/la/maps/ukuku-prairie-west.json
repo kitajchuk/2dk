@@ -7,7 +7,7 @@
     "tilewidth": 40,
     "tileheight": 32,
     "collider": 16,
-    "cellauto": false,
+    "celluto": false,
     "image": "assets/tiles/tiles.png",
     "snapshot": "assets/snapshots/ukuku-prairie-west.png",
     "thumbnail": "assets/snapshots/ukuku-prairie-west-thumb.png",
