@@ -43,6 +43,7 @@ class Editor {
             maps: window.hobo( ".js-select-map" ),
             tiles: window.hobo( ".js-select-tiles" ),
             sounds: window.hobo( ".js-select-sound" ),
+            sprites: window.hobo( ".js-select-sprites" ),
             actions: window.hobo( ".js-select-action" ),
         };
         this.menus = {
@@ -188,7 +189,6 @@ class Editor {
 
     prefillGameFields ( game ) {
         this.menus.activeGame.find( ".js-game-field[name='name']" )[ 0 ].value = game.name;
-        // this.menus.activeGame.find( ".js-game-field[name='resolution']" )[ 0 ].value = game.resolution;
         this.menus.activeGame.find( ".js-game-field[name='width']" )[ 0 ].value = game.width;
         this.menus.activeGame.find( ".js-game-field[name='height']" )[ 0 ].value = game.height;
         this.menus.activeGame.find( ".js-game-field[name='save']" )[ 0 ].value = game.save;
@@ -570,6 +570,10 @@ class Editor {
 
         ipcRenderer.on( "menu-newsound", () => {
             this._openUpload( "sound", "editor-addsound-menu" );
+        });
+
+        ipcRenderer.on( "menu-newsprite", () => {
+            this._openUpload( "sprite", "editor-addsprites-menu" );
         });
 
         ipcRenderer.on( "menu-loadgame", ( e, game ) => {

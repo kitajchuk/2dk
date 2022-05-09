@@ -163,15 +163,11 @@
     &.is-loaded {
         display: grid;
         grid-gap: 100px;
-        grid-template-columns: repeat( 9, 1fr );
+        grid-template-columns: repeat( 5, 1fr );
         grid-template-rows: max-content;
 
-        @include respond( $break-desktop-medium ) {
-            grid-template-columns: repeat( 7, 1fr );
-        }
-
-        @include respond( $break-laptop-full ) {
-            grid-template-columns: repeat( 5, 1fr );
+        @include respond( $break-laptop-medium ) {
+            grid-template-columns: repeat( 3, 1fr );
         }
     }
 }

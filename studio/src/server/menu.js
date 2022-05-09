@@ -23,7 +23,7 @@ const loadAssets = () => {
     const assets = [
         "tiles",
         "sounds",
-        // "sprites",
+        "sprites",
     ];
 
     assets.forEach(( type ) => {
@@ -76,7 +76,6 @@ const getGamesMenu = () => {
         gamesLoadout.submenu.push({
             label: game.name,
             click () {
-                // if ( !activeGame || game.id !== activeGame.id ) {}
                 activeGame = game;
                 loadGame();
             }
@@ -98,7 +97,30 @@ const getGamesMenu = () => {
                 label: "Project Settings",
                 click () {
                     mainWindow.webContents.send( "menu-gamesettings", null );
-                }
+                },
+                enabled: activeGame ? true : false,
+            },
+            { type: "separator" },
+            {
+                label: "Manage Sprites",
+                click () {
+                    mainWindow.webContents.send( "menu-newsprite", null );
+                },
+                enabled: activeGame ? true : false,
+            },
+            {
+                label: "Manage Tilesets",
+                click () {
+                    mainWindow.webContents.send( "menu-newtileset", null );
+                },
+                enabled: activeGame ? true : false,
+            },
+            {
+                label: "Manage Sounds",
+                click () {
+                    mainWindow.webContents.send( "menu-newsound", null );
+                },
+                enabled: activeGame ? true : false,
             },
         ]
     };
@@ -107,17 +129,18 @@ const getMapsMenu = () => {
     const mapsLoadout = {
         label: "Load Map",
         submenu: [],
+        enabled: activeGame ? true : false,
     };
     const selectionLoadout = {
         label: "Selection",
         submenu: activeSelect ? getContextMenu() : [],
+        enabled: activeMap ? true : false,
     };
 
     activeMaps.forEach(( map ) => {
         mapsLoadout.submenu.push({
             label: map.name,
             click () {
-                // if ( !activeMap || map.id !== activeMap.id ) {}
                 activeMap = map;
                 loadMap();
             }
@@ -131,7 +154,8 @@ const getMapsMenu = () => {
                 label: "New Map",
                 click () {
                     mainWindow.webContents.send( "menu-newmap", null );
-                }
+                },
+                enabled: activeGame ? true : false,
             },
             mapsLoadout,
             { type: "separator" },
@@ -139,20 +163,8 @@ const getMapsMenu = () => {
                 label: "Map Settings",
                 click () {
                     mainWindow.webContents.send( "menu-mapsettings", null );
-                }
-            },
-            { type: "separator" },
-            {
-                label: "Manage Tilesets",
-                click () {
-                    mainWindow.webContents.send( "menu-newtileset", null );
-                }
-            },
-            {
-                label: "Manage Sounds",
-                click () {
-                    mainWindow.webContents.send( "menu-newsound", null );
-                }
+                },
+                enabled: activeMap ? true : false,
             },
             { type: "separator" },
             {
@@ -160,28 +172,32 @@ const getMapsMenu = () => {
                 accelerator: "CmdOrCtrl+S",
                 click () {
                     mainWindow.webContents.send( "menu-savemap", null );
-                }
+                },
+                enabled: activeMap ? true : false,
             },
             {
                 label: "Toggle Grid",
                 accelerator: "CmdOrCtrl+;",
                 click () {
                     mainWindow.webContents.send( "menu-togglegrid", null );
-                }
+                },
+                enabled: activeMap ? true : false,
             },
             {
                 label: "Undo Paint (TODO)",
                 accelerator: "CmdOrCtrl+Z",
                 click () {
                     mainWindow.webContents.send( "menu-undomap", null );
-                }
+                },
+                enabled: activeMap ? true : false,
             },
             {
                 label: "Redo Paint (TODO)",
                 accelerator: "Shift+CmdOrCtrl+Z",
                 click () {
                     mainWindow.webContents.send( "menu-redomap", null );
-                }
+                },
+                enabled: activeMap ? true : false,
             },
             { type: "separator" },
             selectionLoadout

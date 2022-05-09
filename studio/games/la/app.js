@@ -1178,9 +1178,9 @@ var onTouchEnd = function onTouchEnd(e) {
 };
 
 var onKeyDown = function onKeyDown(e) {
-  if (inputStream.indexOf(e.which) === -1) {
-    inputStream.push(e.which);
-    var control = getControl(e.which);
+  if (inputStream.indexOf(e.keyCode) === -1) {
+    inputStream.push(e.keyCode);
+    var control = getControl(e.keyCode);
 
     if (control) {
       startTouch(control);
@@ -1189,9 +1189,9 @@ var onKeyDown = function onKeyDown(e) {
 };
 
 var onKeyUp = function onKeyUp(e) {
-  if (inputStream.indexOf(e.which) !== -1) {
-    inputStream.splice(inputStream.indexOf(e.which), 1);
-    var control = getControl(e.which);
+  if (inputStream.indexOf(e.keyCode) !== -1) {
+    inputStream.splice(inputStream.indexOf(e.keyCode), 1);
+    var control = getControl(e.keyCode);
 
     if (control) {
       cancelTouch(control);
