@@ -1,6 +1,6 @@
 {
-    "short_name": "{__GAME_NAME__}: {__GAME_VERSION__}",
-    "name": "{__GAME_NAME__}: {__GAME_VERSION__}",
+    "short_name": "{ name }: { save }",
+    "name": "{ name }: { save }",
     "icons": [
       {
         "src": "favicon.ico",

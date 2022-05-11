@@ -31,6 +31,7 @@
     "paramalama": "^0.2.0",
     "properjs-lager": "^0.1.2",
     "properjs-mediabox": "^0.3.4",
+    "properjs-template": "^0.2.0",
     "sharp": "^0.30.4",
     "shelljs": "^0.8.5"
   }

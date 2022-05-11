@@ -1,4 +1,4 @@
-const EditorConfig = {
+const Config = {
     Editor: {
         modes: {
             SAVING: "saving",
@@ -57,4 +57,4 @@ const EditorConfig = {
 
 
 // Expose
-module.exports = EditorConfig;
+module.exports = Config;

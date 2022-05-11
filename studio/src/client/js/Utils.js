@@ -6,7 +6,7 @@ const duration = 1;
 
 
 
-const EditorUtils = {
+const Utils = {
     destroySound () {
         const sounds = mediabox.getAudios();
 
@@ -149,4 +149,4 @@ const EditorUtils = {
 
 
 // Expose
-module.exports = EditorUtils;
+module.exports = Utils;

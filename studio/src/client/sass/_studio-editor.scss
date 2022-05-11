@@ -162,7 +162,7 @@
         grid-template-columns: repeat( 5, 1fr );
         grid-template-rows: max-content;
 
-        @include respond( $break-laptop-medium ) {
+        @media ( max-width: 1440px ) {
             grid-template-columns: repeat( 3, 1fr );
         }
     }
@@ -356,6 +356,12 @@
     position: absolute;
     top: 0;
     width: 100%;
+
+    > canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
 
     &.is-hidden {
         display: none;

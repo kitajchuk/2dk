@@ -1,9 +1,9 @@
 const EditorActions = require( "./EditorActions" );
 const EditorLayers = require( "./EditorLayers" );
 const EditorCanvas = require( "./EditorCanvas" );
-const EditorUtils = require( "./EditorUtils" );
-const EditorConfig = require( "./EditorConfig" );
-const cache = require( "../../server/cache" );
+const Utils = require( "./Utils" );
+const Config = require( "./Config" );
+const Cache = require( "../../server/cache" );
 const { ipcRenderer } = require( "electron" );
 
 
@@ -15,7 +15,7 @@ class Editor {
         this.layers = new EditorLayers( this );
         this.canvas = new EditorCanvas( this );
         this.actions = new EditorActions( this );
-        this.utils = EditorUtils;
+        this.utils = Utils;
         this.dom = {
             root: window.hobo( "#editor" ),
             settings: window.hobo( ".js-settings" ),
@@ -93,23 +93,22 @@ class Editor {
 
     loadGame ( game ) {
         // When a map is deleted the ipc renderer<->menu will cycle this again...
-        if ( this.mode === EditorConfig.Editor.modes.SAVING ) {
+        if ( this.mode === Config.Editor.modes.SAVING ) {
             this.mode = null;
         }
 
-        if ( this.data.game && this.data.game.id === game.game.id ) {
+        if ( this.data.game && this.data.game.id === game.id ) {
             return;
         }
 
-        this.data.game = game.game;
-        this.data.hero = game.hero;
+        this.data.game = game;
         this.data.map = null;
 
         // reset canvas in case we had a map loaded...
         this.canvas.reset();
 
         // Kill any MediaBox audio that is playing...
-        EditorUtils.destroySound();
+        Utils.destroySound();
 
         // Prefill the game data fields
         this.prefillGameFields( this.data.game );
@@ -143,8 +142,8 @@ class Editor {
 
 
     postMap ( postData ) {
-        postData.fileName = `${cache.slugify( postData.name )}.json`;
-        this.mode = EditorConfig.Editor.modes.SAVING;
+        postData.fileName = `${Cache.slugify( postData.name )}.json`;
+        this.mode = Config.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-map";
 
         ipcRenderer.send( "renderer-newmap", postData );
@@ -154,7 +153,7 @@ class Editor {
 
 
     postGame ( postData ) {
-        this.mode = EditorConfig.Editor.modes.SAVING;
+        this.mode = Config.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-game";
 
         ipcRenderer.send( "renderer-newgame", postData );
@@ -165,20 +164,20 @@ class Editor {
 
     loadAssets ( assets ) {
         if ( this.selects[ assets.type ] ) {
-            EditorUtils.buildSelectMenu( this.selects[ assets.type ], assets.files );
+            Utils.buildSelectMenu( this.selects[ assets.type ], assets.files );
         }
     }
 
 
     loadMapMenus () {
-        EditorUtils.buildSelectMenu( this.selects.actions, window.lib2dk.Config.verbs );
+        Utils.buildSelectMenu( this.selects.actions, window.lib2dk.Config.verbs );
     }
 
 
     canGameFunction () {
         return (
             this.data.game &&
-            this.mode !== EditorConfig.Editor.modes.SAVING
+            this.mode !== Config.Editor.modes.SAVING
         );
     }
 
@@ -186,8 +185,8 @@ class Editor {
     canMapFunction () {
         return (
             this.data.map &&
-            this.mode !== EditorConfig.Editor.modes.SAVING &&
-            this.canvas.mode !== EditorConfig.EditorCanvas.modes.DRAG
+            this.mode !== Config.Editor.modes.SAVING &&
+            this.canvas.mode !== Config.EditorCanvas.modes.DRAG
         );
     }
 
@@ -245,24 +244,6 @@ class Editor {
     }
 
 
-    /* @todo: Remove this method (no longer in use as "cleanTiles" is more performant during layer updates)
-    cleanMap () {
-        for ( const l in this.data.map.textures ) {
-            if ( Object.prototype.hasOwnProperty.call( this.data.map.textures, l ) ) {
-                for ( let y = this.data.map.textures[ l ].length; y--; ) {
-                    for ( let x = this.data.map.textures[ l ][ y ].length; x--; ) {
-                        // Purge the tile cels ensuring no duplicates Array[Array[x, y], Array[x, y]]
-                        if ( Array.isArray( this.data.map.textures[ l ][ y ][ x ] ) ) {
-                            this.data.map.textures[ l ][ y ][ x ] = this.cleanTiles( this.data.map.textures[ l ][ y ][ x ] );
-                        }
-                    }
-                }
-            }
-        }
-    }
-    */
-
-
     updateMapLayer ( layer, coords, coordMap ) {
         coordMap.tiles.forEach(( tile ) => {
             if ( tile.paintTile ) {
@@ -293,8 +274,6 @@ class Editor {
                 tile.renderTree = this.data.map.textures[ layer ][ cy ][ cx ];
             }
         });
-
-        // this.cleanMap();
     }
 
 
@@ -395,13 +374,13 @@ class Editor {
             return false;
         }
 
-        this.mode = EditorConfig.Editor.modes.SAVING;
+        this.mode = Config.Editor.modes.SAVING;
         this.dom.root[ 0 ].className = "is-saving-map";
         // this.cleanMap();
 
         // Save map JSON
         const postData = this.data.map;
-        const mapData = EditorUtils.parseFields( this.fields.map );
+        const mapData = Utils.parseFields( this.fields.map );
 
         for ( const i in mapData ) {
             if ( Object.prototype.hasOwnProperty.call( mapData, i ) ) {
@@ -626,7 +605,7 @@ class Editor {
             const targ = window.hobo( e.target );
             const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
 
-            EditorUtils.processSound( sampler, this.data.game.id );
+            Utils.processSound( sampler, this.data.game.id );
         });
     }
 
@@ -673,7 +652,7 @@ class Editor {
             };
 
             if ( confirm( `Sure you want to delete the file "${select[ 0 ].value}"? This may affect other data referencing this file.` ) ) {
-                this.mode = EditorConfig.Editor.modes.SAVING;
+                this.mode = Config.Editor.modes.SAVING;
                 this.dom.root[ 0 ].className = "is-deleting-file";
 
                 ipcRenderer.send( "renderer-deletefile", postData );
@@ -697,7 +676,7 @@ class Editor {
                 type: button.data().type,
             };
 
-            this.mode = EditorConfig.Editor.modes.SAVING;
+            this.mode = Config.Editor.modes.SAVING;
             this.dom.root[ 0 ].className = "is-saving-file";
 
             this.readFile( fileInput ).then(( response ) => {
@@ -726,7 +705,7 @@ class Editor {
             const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
 
             if ( sampler.length && sampler.is( ".is-playing" ) ) {
-                EditorUtils.processSound( sampler, this.data.game.id );
+                Utils.processSound( sampler, this.data.game.id );
             }
         });
 
@@ -760,9 +739,9 @@ class Editor {
             }
 
             const postData = (elemData.type === "game" ?
-                EditorUtils.parseFields( this.fields.addGame ) :
+                Utils.parseFields( this.fields.addGame ) :
                 // "map" is the only post besides game...
-                EditorUtils.parseFields( this.fields.addMap ));
+                Utils.parseFields( this.fields.addMap ));
 
             if ( postData.name ) {
                 if ( elemData.type === "game" ) {
@@ -787,7 +766,7 @@ class Editor {
             }
 
             if ( elemData.type === "activetiles" ) {
-                const activeTileData = EditorUtils.parseFields( this.fields.activeTile );
+                const activeTileData = Utils.parseFields( this.fields.activeTile );
 
                 this.canvas.applyActiveTiles( activeTileData );
             }
@@ -819,7 +798,7 @@ class Editor {
             }
         
             if ( confirm( `Sure you want to delete the map "${this.data.map.name}"? This may affect other data referencing this map.` ) ) {
-                this.mode = EditorConfig.Editor.modes.SAVING;
+                this.mode = Config.Editor.modes.SAVING;
                 this.dom.root[ 0 ].className = "is-deleting-map";
                 this.closeMenus();
                 this.actions.resetActions();
@@ -834,7 +813,7 @@ class Editor {
             }
         
             if ( confirm( `Sure you want to delete the game "${this.data.game.name}"? This cannot be undone.` ) ) {
-                this.mode = EditorConfig.Editor.modes.SAVING;
+                this.mode = Config.Editor.modes.SAVING;
                 this.dom.root[ 0 ].className = "is-deleting-game";
         
                 ipcRenderer.send( "renderer-deletegame", this.data.game );

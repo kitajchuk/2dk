@@ -1,15 +1,13 @@
 {
-    "game": {
-        "id": "la",
-        "name": "LA",
-        "width": 768,
-        "height": 576,
-        "resolution": 1,
-        "icon": "icon.png",
-        "save": 345,
-        "release": 1,
-        "plugin": "topview"
-    },
+    "id": "la",
+    "name": "LA",
+    "width": 768,
+    "height": 576,
+    "resolution": 1,
+    "icon": "icon.png",
+    "save": 360,
+    "release": 1,
+    "plugin": "topview",
     "hero": {
         "sprite": 0,
         "spawn": 3,

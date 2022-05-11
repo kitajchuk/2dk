@@ -1,6 +1,7 @@
-$font-size-overlay: 32px;
-$font-size-editor: 11px;
-$font-size-forms: 11px;
+$font-size-overlay: 2rem;
+$font-size-editor: 0.75rem;
+$font-size-icons: 1.125rem;
+$font-size-forms: 0.75rem;
 $box-shadow: 0 0 5px 5px rgba( 0, 0, 0, 0.15 );
 $cursor: cell;
 
@@ -160,7 +161,7 @@ button {
     background-color: $green;
     color: mix( black, $green, 90% );
 
-    .is-hoverable &:hover {
+    &:hover {
         background-color: mix( black, $green, 25% );
     }
 }
@@ -168,7 +169,7 @@ button {
     background-color: $yellow;
     color: mix( black, $yellow, 90% );
 
-    .is-hoverable &:hover {
+    &:hover {
         background-color: mix( black, $yellow, 25% );
     }
 }
@@ -176,7 +177,7 @@ button {
     background-color: $red;
     color: mix( black, $red, 90% );
 
-    .is-hoverable &:hover {
+    &:hover {
         background-color: mix( black, $red, 25% );
     }
 }
@@ -184,7 +185,7 @@ button {
     background-color: $pink;
     color: mix( black, $pink, 90% );
 
-    .is-hoverable &:hover {
+    &:hover {
         background-color: mix( black, $pink, 25% );
     }
 }
@@ -192,7 +193,7 @@ button {
     background-color: $purple;
     color: mix( black, $purple, 90% );
 
-    .is-hoverable &:hover {
+    &:hover {
         background-color: mix( black, $purple, 25% );
     }
 }
@@ -200,7 +201,7 @@ button {
     background-color: $blue;
     color: mix( black, $blue, 90% );
 
-    .is-hoverable &:hover {
+    &:hover {
         background-color: mix( black, $blue, 25% );
     }
 }
@@ -208,7 +209,7 @@ button {
     background-color: $grey;
     color: mix( black, $grey, 90% );
 
-    .is-hoverable &:hover {
+    &:hover {
         background-color: mix( black, $grey, 25% );
     }
 }

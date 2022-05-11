@@ -68,7 +68,7 @@ const resetAll = () => {
 };
 const getGamesMenu = () => {
     const gamesLoadout = {
-        label: "Load Project",
+        label: "Load Game",
         submenu: [],
     };
 
@@ -83,10 +83,10 @@ const getGamesMenu = () => {
     });
 
     return {
-        label: "Project",
+        label: "Games",
         submenu: [
             {
-                label: "New Project",
+                label: "New Game",
                 click () {
                     mainWindow.webContents.send( "menu-newgame", null );
                 }
@@ -94,7 +94,7 @@ const getGamesMenu = () => {
             gamesLoadout,
             { type: "separator" },
             {
-                label: "Project Settings",
+                label: "Game Settings",
                 click () {
                     mainWindow.webContents.send( "menu-gamesettings", null );
                 },

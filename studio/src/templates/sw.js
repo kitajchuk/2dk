@@ -1,7 +1,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "{__CACHE_VERSION__}";
+const CACHE_NAME = "{ save }";
 const CACHE_URLS = [
-    {__CACHE_LIST__}
+    { bundle }
 ];
 
 

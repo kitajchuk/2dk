@@ -1,4 +1,4 @@
-const EditorConfig = require( "./EditorConfig" );
+const Config = require( "./Config" );
 
 
 
@@ -67,13 +67,13 @@ class EditorActions {
         } else {
             this.elements.removeClass( "is-active" );
             elem.addClass( "is-active" );
-            this.mode = EditorConfig.EditorActions.modes[ action ];
+            this.mode = Config.EditorActions.modes[ action ];
 
-            if ( this.mode !== EditorConfig.EditorActions.modes.BRUSH ) {
+            if ( this.mode !== Config.EditorActions.modes.BRUSH ) {
                 this.editor.canvas.clearTileset();
             }
 
-            if ( this.mode !== EditorConfig.EditorActions.modes.SELECT ) {
+            if ( this.mode !== Config.EditorActions.modes.SELECT ) {
                 this.editor.canvas.clearSelection();
             }
         }

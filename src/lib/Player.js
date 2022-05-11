@@ -51,7 +51,7 @@ class Player {
         }
 
         if ( this.query.resolution ) {
-            this.data.game.resolution = Number( this.query.resolution );
+            this.data.resolution = Number( this.query.resolution );
         }
 
         if ( this.query.spawn ) {
@@ -66,9 +66,9 @@ class Player {
             this.data = data;
             this.data.hero = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
             this.debug();
-            this.data.game.resolution = (this.device ? 2 : this.data.game.resolution);
-            this.width = this.data.game.width / this.data.game.resolution;
-            this.height = this.data.game.height / this.data.game.resolution;
+            this.data.resolution = (this.device ? 2 : this.data.resolution);
+            this.width = this.data.width / this.data.resolution;
+            this.height = this.data.height / this.data.resolution;
             this.build();
             this.onRotate();
 
@@ -98,7 +98,7 @@ class Player {
                 this.gameaudio = new GameAudio( this );
                 this.gamepad = new GamePad( this );
 
-                if ( this.data.game.plugin === Config.plugins.TOPVIEW ) {
+                if ( this.data.plugin === Config.plugins.TOPVIEW ) {
                     this.gamebox = new TopView( this );
                 }
 
@@ -111,7 +111,7 @@ class Player {
     getSplash ( display ) {
         return `
             <div>
-                <div>${this.data.game.name}: Save #${this.data.game.save}, Release v${this.data.game.release}</div>
+                <div>${this.data.name}: Save #${this.data.save}, Release v${this.data.release}</div>
                 <div>${display}</div>
             </div>
         `;
@@ -134,7 +134,7 @@ class Player {
     build () {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk";
-        this.element.dataset.resolution = this.data.game.resolution;
+        this.element.dataset.resolution = this.data.resolution;
         this.screen = document.createElement( "div" );
         this.screen.className = "_2dk__screen";
         this.screen.style.width = `${this.width}px`;

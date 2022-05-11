@@ -778,6 +778,11 @@ properjs-mediabox@^0.3.4:
   dependencies:
     properjs-tween "~0.2"
 
+properjs-template@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/properjs-template/-/properjs-template-0.2.0.tgz#95996bb41d4e3b0717eb3b32f11f416e75bc6d90"
+  integrity sha1-lZlrtB1OOwcX6zsy8R9BbnW8bZA=
+
 properjs-tween@~0.2:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/properjs-tween/-/properjs-tween-0.2.0.tgz#b311639b75a309504c5074b1c70936a8ce4e10cc"

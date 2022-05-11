@@ -65,9 +65,9 @@ class GameBox {
         this.camera = new Camera(
             0,
             0,
-            this.player.width * this.player.data.game.resolution,
-            this.player.height * this.player.data.game.resolution,
-            this.player.data.game.resolution
+            this.player.width * this.player.data.resolution,
+            this.player.height * this.player.data.resolution,
+            this.player.data.resolution
         );
         this.layers = {
             background: null,

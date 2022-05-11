@@ -4,17 +4,29 @@ const sharp = require( "sharp" );
 const shell = require( "shelljs" );
 const Lame = require( "node-lame" ).Lame;
 const utils = require( "./utils" );
-const cache = require( "./cache" );
+const Cache = require( "./Cache" );
+
+
+
 const paths = {
     games: path.join( process.cwd(), "games.json" ),
     models: path.join( process.cwd(), "src", "models" ),
     templates: path.join( process.cwd(), "src", "templates" ),
 };
+const models = {
+    game: require( path.join( paths.models, "game" ) ),
+    map: require( path.join( paths.models, "map" ) ),
+    tile: require( path.join( paths.models, "tile" ) ),
+};
+const templates = {
+    "sw": utils.readFile( path.join( paths.templates, "sw.js" ) ),
+    "index": utils.readFile( path.join( paths.templates, "index.html" ) ),
+    "manifest": utils.readFile( path.join( paths.templates, "manifest.json" ) ),
+};
+
 
 
 class DB {
-    constructor () {}
-
     /******************************************************************************
      * OPEN DB
     *******************************************************************************/
@@ -30,8 +42,7 @@ class DB {
                 sounds: path.join( this.gameRoot, "assets", "sounds" ),
                 snapshots: path.join( this.gameRoot, "assets", "snapshots" )
             };
-            this.cache = new cache();
-            this.cache.clear();
+            this.cache = new Cache();
 
             lager.info( `DB-${this.gameId}: opened` );
 
@@ -157,7 +168,7 @@ class DB {
             let files = null;
             const ext = data.fileName.split( "." ).pop();
             const rExt = new RegExp( `.${ext}$` );
-            const name = `${cache.slugify( data.fileName.replace( rExt, "" ) )}.${ext}`;
+            const name = `${Cache.slugify( data.fileName.replace( rExt, "" ) )}.${ext}`;
             const file = path.join( this.files[ data.type ], name );
             const buffer = Buffer.from( data.fileData.replace( /^data:.*?;base64,/, "" ), "base64" );
 
@@ -174,15 +185,16 @@ class DB {
 
                 this.cache.set( data.type, files );
 
-                utils.writeFile( file, buffer, async () => {
+                utils.writeFile( file, buffer, () => {
                     if ( data.type === "snapshots" ) {
                         const thumbFile = file.replace( /\.png$/, "-thumb.png" );
 
-                        await sharp( file )
+                        sharp( buffer )
                             .resize( 512 )
-                            .toFile( thumbFile );
-                        
-                        lager.info( `DB-${this.gameId}: write file ${thumbFile.split( "/" ).pop()}` );
+                            .toFile( thumbFile )
+                            .then(() => {
+                                lager.info( `DB-${this.gameId}: write file ${thumbFile.split( "/" ).pop()}` );
+                            });
 
                     } else {
                         this.updateWorker();
@@ -231,7 +243,7 @@ class DB {
             // const game = this.cache.get( "game" );
             const mapjson = path.join( this.mapsPath, data.fileName );
 
-            map.id = cache.slugify( data.name );
+            map.id = Cache.slugify( data.name );
             map.name = data.name;
             map.tilesize = Number( data.tilesize );
             map.tilewidth = Number( data.tilewidth );
@@ -282,7 +294,7 @@ class DB {
             const idx = maps.indexOf( map );
             const file = path.join( this.mapsPath, `${map.id}.json` );
 
-            // map.id = cache.slugify( data.name );
+            // map.id = Cache.slugify( data.name );
             map.name = data.name;
             map.tilesize = Number( data.tilesize );
             map.tilewidth = Number( data.tilewidth );
@@ -317,36 +329,51 @@ class DB {
     }
 
     updateIcon ( data ) {
-        return new Promise(async ( resolve ) => {
+        return new Promise(( resolve ) => {
             const buffer = Buffer.from( data.fileData.replace( /^data:.*?;base64,/, "" ), "base64" );
             const game = this.cache.get( "game" );
-            const file = path.join( process.cwd(), "games", game.game.id, "icon.png" );
+            const file = path.join( process.cwd(), "games", game.id, "icon.png" );
 
             lager.info( `DB-${this.gameId}: update game icon` );
 
             // Create webapp icons...
-            await sharp( file )
+            sharp( file )
                 .resize( 1024 )
-                .toFile( file.replace( "icon.png", "icon1024.png" ) );
+                .toFile( file.replace( "icon.png", "icon1024.png" ) )
+                .then(() => {
+                    lager.info( `DB-${this.gameId}: wrote game icon icon1024.png` );
+                });
             
-            await sharp( file )
+            sharp( file )
                 .resize( 512 )
-                .toFile( file.replace( "icon.png", "icon512.png" ) );
+                .toFile( file.replace( "icon.png", "icon512.png" ) )
+                .then(() => {
+                    lager.info( `DB-${this.gameId}: wrote game icon icon512.png` );
+                });
             
-            await sharp( file )
+            sharp( file )
                 .resize( 384 )
-                .toFile( file.replace( "icon.png", "icon384.png" ) );
+                .toFile( file.replace( "icon.png", "icon384.png" ) )
+                .then(() => {
+                    lager.info( `DB-${this.gameId}: wrote game icon icon384.png` );
+                });
             
-            await sharp( file )
+            sharp( file )
                 .resize( 192 )
-                .toFile( file.replace( "icon.png", "icon192.png" ) );
+                .toFile( file.replace( "icon.png", "icon192.png" ) )
+                .then(() => {
+                    lager.info( `DB-${this.gameId}: wrote game icon icon192.png` );
+                });
             
-            await sharp( file )
+            sharp( file )
                 .resize( 64 )
-                .toFile( file.replace( "icon.png", "favicon.ico" ) );
+                .toFile( file.replace( "icon.png", "favicon.ico" ) )
+                .then(() => {
+                    lager.info( `DB-${this.gameId}: wrote game icon favicon.ico` );
+                });
 
             utils.writeFile( file, buffer, () => {
-                resolve( game.game );
+                resolve( game );
             });
         });
     }
@@ -413,7 +440,6 @@ class DB {
      * Service Worker CACHE LIST
     *******************************************************************************/
     updateWorker () {
-        let worker = DB.getTemplate( "sw.js" );
         const file = path.join( this.gameRoot, "sw.js" );
         const game = this.cache.get( "game" );
         const bundle = [];
@@ -452,165 +478,182 @@ class DB {
             bundle.push( `maps/${map.id}.json` );
         });
 
-        game.game.save = game.game.save + 1;
+        game.save = game.save + 1;
         game.bundle = bundle;
 
-        worker = worker.replace( "{__CACHE_VERSION__}", `v${game.game.save}` );
-        worker = worker.replace( "{__CACHE_LIST__}", caches.join( "\n" ) );
+        const swJS = DB.updateTemplate( "sw", {
+            save: `v${game.save}`,
+            bundle: caches.join( "\n" ),
+        });
 
-        utils.writeFile( file, worker, () => {
+        utils.writeFile( file, swJS, () => {
             lager.info( `DB-${this.gameId}: service worker updated` );
 
             DB.updateGame( game );
         });
     }
-}
 
+    /******************************************************************************
+     * STATIC METHODS
+    *******************************************************************************/
+    static renderTemplate ( str, data ) {
+        // Allow varying bracket styles, {{foo}} or {foo}
+        return str.replace( /\{{1,2}([^{}]*)\}{1,2}/g, ( match, p1 ) => {
+            // Replace spaces, allowing { foo } or {{ foo }} style
+            const ret = data[ p1.replace( /\s/g, "" ) ];
 
-/******************************************************************************
- * STATIC methods...
-*******************************************************************************/
-DB.getModel = ( model ) => {
-    return utils.copyObj( require( path.join( paths.models, model ) ) );
-};
+            // Very basic -- Allows string or numeral replacement
+            return ( typeof ret === "string" || typeof ret === "number" ) ? ret : match;
+        });
+    }
 
-
-DB.getTemplate = ( template ) => {
-    return utils.readFile( path.join( paths.templates, template ) );
-};
-
-
-DB.getGames = () => {
-    return new Promise(( resolve ) => {
-        utils.readJson( paths.games, ( json ) => {
-            resolve({
-                games: json,
+    static getModel ( model ) {
+        return utils.copyObj( models[ model ] );
+    }
+    
+    static getGames () {
+        return new Promise(( resolve ) => {
+            utils.readJson( paths.games, ( json ) => {
+                resolve({
+                    games: json,
+                });
             });
         });
-    });
-};
+    }
 
+    static getGameSlice ( data ) {
+        return {
+            id: data.id,
+            name: data.name,
+            width: data.width,
+            height: data.height,
+            resolution: data.resolution,
+            icon: data.icon,
+            save: data.save,
+            release: data.release,
+            plugin: data.plugin,
+        };
+    }
 
-
-DB.updateCommon = ( game, gameDir ) => {
-    const manifestJson = DB.getTemplate( "manifest.json" )
-                           .replace( /\{__GAME_NAME__\}/g, game.name )
-                           .replace( /\{__GAME_VERSION__\}/g, game.save );
-    const indexHtml = DB.getTemplate( "index.html" )
-                        .replace( /\{__GAME_ID__\}/g, game.id )
-                        .replace( /\{__GAME_NAME__\}/g, game.name )
-                        .replace( /\{__GAME_VERSION__\}/g, game.save );
-
-    // Update index.html
-    utils.writeFile( path.join( gameDir, "index.html" ), indexHtml );
-    lager.info( `DB-static: saved new index.html for ${game.id}` );
-
-    // Update web app manifest
-    utils.writeFile( path.join( gameDir, "manifest.json" ), manifestJson );
-    lager.info( `DB-static: saved new manifest.json for ${game.id}` );
-
-    // Update css and js entry
-    utils.copyFile( path.join( paths.templates, "app.js" ), path.join( gameDir, "app.js" ) );
-    utils.copyFile( path.join( paths.templates, "2dk.css" ), path.join( gameDir, "2dk.css" ) );
-    lager.info( `DB-static: copied app.js and 2dk.css for ${game.id}` );
-
-    // Update fonts
-    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff" ), path.join( gameDir, "fonts", "Calamity-Regular.woff" ) );
-    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff2" ), path.join( gameDir, "fonts", "Calamity-Regular.woff2" ) );
-    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff" ), path.join( gameDir, "fonts", "Calamity-Bold.woff" ) );
-    utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff2" ), path.join( gameDir, "fonts", "Calamity-Bold.woff2" ) );
-    lager.info( `DB-static: copied fonts for ${game.id}` );
-};
-
-
-DB.updateGame = ( data ) => {
-    const gameDir = path.join( process.cwd(), "games", data.game.id );
-
-    // Save new game data
-    utils.writeJson( path.join( gameDir, "game.json" ), data );
-    lager.info( `DB-static: saved new game.json for ${data.game.id}` );
-
-    DB.updateCommon( data.game, gameDir );
-
-    // Update games.json root
-    DB.getGames().then(( json ) => {
-        json.games.forEach(( gm, i ) => {
-            if ( gm.id === data.game.id ) {
-                json.games[ i ] = data.game;
-            }
-        });
-
-        utils.writeJson( paths.games, json.games );
-    });
-};
-
-
-DB.addGame = ( data ) => {
-    return new Promise(( resolve ) => {
+    static updateTemplate ( template, data ) {
+        return DB.renderTemplate( templates[ template ], data );
+    }
+    
+    static updateCommon ( game, gameDir ) {
+        const indexHtml = DB.updateTemplate( "index", game );
+        const manifestJson = DB.updateTemplate( "manifest", game );
+    
+        // Update index.html
+        utils.writeFile( path.join( gameDir, "index.html" ), indexHtml );
+        lager.info( `DB-static: saved new index.html for ${game.id}` );
+    
+        // Update web app manifest
+        utils.writeFile( path.join( gameDir, "manifest.json" ), manifestJson );
+        lager.info( `DB-static: saved new manifest.json for ${game.id}` );
+    
+        // Update css and js entry
+        utils.copyFile( path.join( paths.templates, "app.js" ), path.join( gameDir, "app.js" ) );
+        utils.copyFile( path.join( paths.templates, "2dk.css" ), path.join( gameDir, "2dk.css" ) );
+        lager.info( `DB-static: copied app.js and 2dk.css for ${game.id}` );
+    
+        // Update fonts
+        utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff" ), path.join( gameDir, "fonts", "Calamity-Regular.woff" ) );
+        utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff2" ), path.join( gameDir, "fonts", "Calamity-Regular.woff2" ) );
+        utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff" ), path.join( gameDir, "fonts", "Calamity-Bold.woff" ) );
+        utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff2" ), path.join( gameDir, "fonts", "Calamity-Bold.woff2" ) );
+        lager.info( `DB-static: copied fonts for ${game.id}` );
+    }
+    
+    
+    static updateGame ( data ) {
+        const gameDir = path.join( process.cwd(), "games", data.id );
+    
+        // Save new game data
+        utils.writeJson( path.join( gameDir, "game.json" ), data );
+        lager.info( `DB-static: saved new game.json for ${data.id}` );
+    
+        DB.updateCommon( data, gameDir );
+    
+        // Update games.json root
         DB.getGames().then(( json ) => {
-            const games = json.games;
-            const gameModel = DB.getModel( "game" );
-
-            gameModel.game.id = cache.slugify( data.name );
-            gameModel.game.name = data.name;
-            gameModel.game.width = Number( data.width ) || gameModel.game.width;
-            gameModel.game.height = Number( data.height ) || gameModel.game.height;
-            gameModel.game.resolution = Number( data.resolution ) || gameModel.game.resolution;
-            gameModel.game.icon = "icon.png";
-
-            games.push( gameModel.game );
-
-            const gameDir = path.join( process.cwd(), "games", gameModel.game.id );
-            const mapsDir = path.join( gameDir, "maps" );
-            const fontsDir = path.join( gameDir, "fonts" );
-            const assetsDir = path.join( gameDir, "assets" );
-
-            utils.makeDir( gameDir );
-            utils.makeDir( mapsDir );
-            utils.makeDir( fontsDir );
-            utils.makeDir( assetsDir );
-            utils.makeDir( path.join( assetsDir, "tiles" ) );
-            utils.makeDir( path.join( assetsDir, "sprites" ) );
-            utils.makeDir( path.join( assetsDir, "sounds" ) );
-            utils.makeDir( path.join( assetsDir, "snapshots" ) );
-            utils.copyFile( path.join( paths.templates, "icon.png" ), path.join( gameDir, "icon.png" ) );
-
-            DB.updateCommon( gameModel.game, gameDir );
-
-            utils.writeJson( paths.games, games, () => {
-                utils.writeJson( path.join( gameDir, "game.json" ), gameModel, () => {
-                    lager.info( `DB-static: created game ${gameModel.game.id}` );
-
-                    resolve({
-                        game: gameModel,
-                        games,
+            json.games.forEach(( gm, i ) => {
+                if ( gm.id === data.id ) {
+                    json.games[ i ] = DB.getGameSlice( data );
+                }
+            });
+    
+            utils.writeJson( paths.games, json.games );
+        });
+    }
+    
+    
+    static addGame ( data ) {
+        return new Promise(( resolve ) => {
+            DB.getGames().then(( json ) => {
+                const games = json.games;
+                const gameModel = DB.getModel( "game" );
+    
+                gameModel.id = Cache.slugify( data.name );
+                gameModel.name = data.name;
+                gameModel.width = Number( data.width ) || gameModel.width;
+                gameModel.height = Number( data.height ) || gameModel.height;
+                gameModel.resolution = Number( data.resolution ) || gameModel.resolution;
+                gameModel.icon = "icon.png";
+    
+                games.push( DB.getGameSlice( gameModel ) );
+    
+                const gameDir = path.join( process.cwd(), "games", gameModel.id );
+                const mapsDir = path.join( gameDir, "maps" );
+                const fontsDir = path.join( gameDir, "fonts" );
+                const assetsDir = path.join( gameDir, "assets" );
+    
+                utils.makeDir( gameDir );
+                utils.makeDir( mapsDir );
+                utils.makeDir( fontsDir );
+                utils.makeDir( assetsDir );
+                utils.makeDir( path.join( assetsDir, "tiles" ) );
+                utils.makeDir( path.join( assetsDir, "sprites" ) );
+                utils.makeDir( path.join( assetsDir, "sounds" ) );
+                utils.makeDir( path.join( assetsDir, "snapshots" ) );
+                utils.copyFile( path.join( paths.templates, "icon.png" ), path.join( gameDir, "icon.png" ) );
+    
+                DB.updateCommon( gameModel, gameDir );
+    
+                utils.writeJson( paths.games, games, () => {
+                    utils.writeJson( path.join( gameDir, "game.json" ), gameModel, () => {
+                        lager.info( `DB-static: created game ${gameModel.id}` );
+    
+                        resolve({
+                            game: gameModel,
+                            games,
+                        });
                     });
                 });
             });
         });
-    });
-};
-
-
-DB.deleteGame = ( data ) => {
-    return new Promise(( resolve ) => {
-        DB.getGames().then(( json ) => {
-            const gamePath = path.join( process.cwd(), "games", data.id );
-            const game = json.games.find(( gm ) => {
-                return (gm.id === data.id);
-            });
-
-            json.games.splice( json.games.indexOf( game ), 1 );
-
-            utils.writeJson( paths.games, json.games );
-            utils.removeDir( gamePath, () => {
-                lager.info( `DB-static: deleted game ${game.id}` );
-
-                resolve( json );
+    }
+    
+    
+    static deleteGame ( data ) {
+        return new Promise(( resolve ) => {
+            DB.getGames().then(( json ) => {
+                const gamePath = path.join( process.cwd(), "games", data.id );
+                const game = json.games.find(( gm ) => {
+                    return (gm.id === data.id);
+                });
+    
+                json.games.splice( json.games.indexOf( game ), 1 );
+    
+                utils.writeJson( paths.games, json.games );
+                utils.removeDir( gamePath, () => {
+                    lager.info( `DB-static: deleted game ${game.id}` );
+    
+                    resolve( json );
+                });
             });
         });
-    });
-};
+    }
+}
 
 
 // Export

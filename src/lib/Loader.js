@@ -3,7 +3,13 @@ const cache = {};
 
 
 class Loader {
-    constructor () {}
+    static cash ( id, val ) {
+        if ( val ) {
+            cache[ id ] = val;
+        }
+    
+        return (id ? cache[ id ] : cache);
+    }
 
 
     load ( url ) {
@@ -81,16 +87,6 @@ class Loader {
         });
     }
 }
-
-
-
-Loader.cash = ( id, val ) => {
-    if ( val ) {
-        cache[ id ] = val;
-    }
-
-    return (id ? cache[ id ] : cache);
-};
 
 
 

@@ -1,6 +1,5 @@
-// Singleton
-let instance = null;
-let cache = {};
+// Store
+const cache = {};
 
 
 /**
@@ -14,12 +13,33 @@ let cache = {};
  *
  */
 class Cache {
-    constructor () {
-        if ( !instance ) {
-            instance = this;
-        }
+    /**
+     *
+     * @global
+     * @static
+     * @method slugify
+     * @description Clean and slug-format a cache value's key.
+     * @param {string} str The key to format
+     * @memberof Cache
+     * @author kitajchuk
+     * @returns {string}
+     *
+     */
+    static slugify ( str ) {
+        return str.toString().toLowerCase().trim()
+            // Replace & with "and"
+            .replace( /&/g, "-and-" )
 
-        return instance;
+            // Replace spaces, non-word characters and dashes with a single dash (-)
+            .replace( /[\s\W-]+/g, "-" )
+
+            // Replace leading trailing slashes with an empty string - nothing
+            .replace( /^[-]+|[-]+$/g, "" );
+    }
+
+    constructor () {
+        this.key = Symbol();
+        this.clear();
     }
 
     /**
@@ -35,7 +55,7 @@ class Cache {
      *
      */
     set ( key, val ) {
-        cache[ Cache.slugify( key ) ] = val;
+        cache[ this.key ][ Cache.slugify( key ) ] = val;
     }
 
     /**
@@ -51,7 +71,7 @@ class Cache {
      *
      */
     get ( key ) {
-        return (key ? cache[ Cache.slugify( key ) ] : cache);
+        return (key ? cache[ this.key ][ Cache.slugify( key ) ] : cache[ this.key ]);
     }
 
     /**
@@ -66,7 +86,7 @@ class Cache {
      *
      */
     remove ( key ) {
-        delete cache[ Cache.slugify( key ) ];
+        delete cache[ this.key ][ Cache.slugify( key ) ];
     }
 
     /**
@@ -80,34 +100,10 @@ class Cache {
      *
      */
     clear () {
-        cache = {};
+        cache[ this.key ] = {};
     }
 }
 
-
-/**
- *
- * @global
- * @static
- * @method slugify
- * @description Clean and slug-format a cache value's key.
- * @param {string} str The key to format
- * @memberof Cache
- * @author kitajchuk
- * @returns {string}
- *
- */
-Cache.slugify = function ( str ) {
-    return str.toString().toLowerCase().trim()
-        // Replace & with "and"
-        .replace( /&/g, "-and-" )
-
-        // Replace spaces, non-word characters and dashes with a single dash (-)
-        .replace( /[\s\W-]+/g, "-" )
-
-        // Replace leading trailing slashes with an empty string - nothing
-        .replace( /^[-]+|[-]+$/g, "" );
-};
 
 
 // Expose
