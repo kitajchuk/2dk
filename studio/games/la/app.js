@@ -456,7 +456,7 @@ var GameBox = /*#__PURE__*/function () {
       x: 0,
       y: 0
     };
-    this.camera = new Camera(0, 0, this.player.width * this.player.data.game.resolution, this.player.height * this.player.data.game.resolution, this.player.data.game.resolution);
+    this.camera = new Camera(0, 0, this.player.width * this.player.data.resolution, this.player.height * this.player.data.resolution, this.player.data.resolution);
     this.layers = {
       background: null,
       heroground: null,
@@ -1521,18 +1521,19 @@ var Loader = /*#__PURE__*/function () {
         });
       });
     }
+  }], [{
+    key: "cash",
+    value: function cash(id, val) {
+      if (val) {
+        cache[id] = val;
+      }
+
+      return id ? cache[id] : cache;
+    }
   }]);
 
   return Loader;
 }();
-
-Loader.cash = function (id, val) {
-  if (val) {
-    cache[id] = val;
-  }
-
-  return id ? cache[id] : cache;
-};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Loader);
 
@@ -2105,7 +2106,7 @@ var Player = /*#__PURE__*/function () {
       }
 
       if (this.query.resolution) {
-        this.data.game.resolution = Number(this.query.resolution);
+        this.data.resolution = Number(this.query.resolution);
       }
 
       if (this.query.spawn) {
@@ -2124,9 +2125,9 @@ var Player = /*#__PURE__*/function () {
 
         _this.debug();
 
-        _this.data.game.resolution = _this.device ? 2 : _this.data.game.resolution;
-        _this.width = _this.data.game.width / _this.data.game.resolution;
-        _this.height = _this.data.game.height / _this.data.game.resolution;
+        _this.data.resolution = _this.device ? 2 : _this.data.resolution;
+        _this.width = _this.data.width / _this.data.resolution;
+        _this.height = _this.data.height / _this.data.resolution;
 
         _this.build();
 
@@ -2150,7 +2151,7 @@ var Player = /*#__PURE__*/function () {
           _this.gameaudio = new _GameAudio__WEBPACK_IMPORTED_MODULE_6__["default"](_this);
           _this.gamepad = new _GamePad__WEBPACK_IMPORTED_MODULE_4__["default"](_this);
 
-          if (_this.data.game.plugin === _Config__WEBPACK_IMPORTED_MODULE_3__["default"].plugins.TOPVIEW) {
+          if (_this.data.plugin === _Config__WEBPACK_IMPORTED_MODULE_3__["default"].plugins.TOPVIEW) {
             _this.gamebox = new _plugins_TopView__WEBPACK_IMPORTED_MODULE_5__["default"](_this);
           }
 
@@ -2161,7 +2162,7 @@ var Player = /*#__PURE__*/function () {
   }, {
     key: "getSplash",
     value: function getSplash(display) {
-      return "\n            <div>\n                <div>".concat(this.data.game.name, ": Save #").concat(this.data.game.save, ", Release v").concat(this.data.game.release, "</div>\n                <div>").concat(display, "</div>\n            </div>\n        ");
+      return "\n            <div>\n                <div>".concat(this.data.name, ": Save #").concat(this.data.save, ", Release v").concat(this.data.release, "</div>\n                <div>").concat(display, "</div>\n            </div>\n        ");
     }
   }, {
     key: "getMergedData",
@@ -2180,7 +2181,7 @@ var Player = /*#__PURE__*/function () {
     value: function build() {
       this.element = document.createElement("div");
       this.element.className = "_2dk";
-      this.element.dataset.resolution = this.data.game.resolution;
+      this.element.dataset.resolution = this.data.resolution;
       this.screen = document.createElement("div");
       this.screen.className = "_2dk__screen";
       this.screen.style.width = "".concat(this.width, "px");

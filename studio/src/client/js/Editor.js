@@ -92,6 +92,8 @@ class Editor {
 
 
     loadGame ( game ) {
+        console.log( game );
+
         // When a map is deleted the ipc renderer<->menu will cycle this again...
         if ( this.mode === Config.Editor.modes.SAVING ) {
             this.mode = null;

@@ -1,3 +1,4 @@
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ESLintWebpackPlugin = require('eslint-webpack-plugin');
@@ -12,7 +13,9 @@ const {
 
 module.exports = {
     mode: 'production',
-    entry: {},
+    entry: {
+        app: path.resolve(process.cwd(), 'src/index.js'),
+    },
     devServer: devServerConfig,
     // optimization: optimizationConfig,
     resolve: resolveConfig,
@@ -41,7 +44,10 @@ module.exports = {
     //     filename: '[name].[chunkhash].js',
     //     chunkFilename: '[name].[chunkhash].js',
     // },
-    output: {},
+    output: {
+        path: path.resolve(process.cwd(), 'dist'),
+        filename: 'index.js',
+    },
     module: {
         rules: [
             babelRules,

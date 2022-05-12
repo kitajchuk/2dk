@@ -2,7 +2,7 @@ const path = require( "path" );
 const lager = require( "properjs-lager" );
 const sharp = require( "sharp" );
 const shell = require( "shelljs" );
-const Lame = require( "node-lame" ).Lame;
+const { Lame } = require( "node-lame" );
 const utils = require( "./utils" );
 const Cache = require( "./Cache" );
 
@@ -165,16 +165,34 @@ class DB {
     // { fileName, fileData, type }
     addFile ( data ) {
         return new Promise(( resolve ) => {
-            let files = null;
+            const files = this.cache.get( data.type );
             const ext = data.fileName.split( "." ).pop();
             const rExt = new RegExp( `.${ext}$` );
             const name = `${Cache.slugify( data.fileName.replace( rExt, "" ) )}.${ext}`;
             const file = path.join( this.files[ data.type ], name );
-            const buffer = Buffer.from( data.fileData.replace( /^data:.*?;base64,/, "" ), "base64" );
+            const buffer = DB.getBuffer( data.fileData );
+            const onDone = () => {
+                if ( data.type === "snapshots" ) {
+                    const thumbFile = file.replace( /\.png$/, "-thumb.png" );
+
+                    sharp( buffer )
+                        .resize( 512 )
+                        .toFile( thumbFile )
+                        .then(() => {
+                            lager.info( `DB-${this.gameId}: write file ${thumbFile.split( "/" ).pop()}` );
+                        });
+
+                } else {
+                    this.updateWorker();
+                }
+
+                resolve({
+                    type: data.type,
+                    files,
+                });
+            };
 
             utils.isFile( file, ( exists ) => {
-                files = this.cache.get( data.type );
-
                 if ( exists ) {
                     lager.info( `DB-${this.gameId}: overwrite file ${name}` );
 
@@ -185,54 +203,33 @@ class DB {
 
                 this.cache.set( data.type, files );
 
-                utils.writeFile( file, buffer, () => {
-                    if ( data.type === "snapshots" ) {
-                        const thumbFile = file.replace( /\.png$/, "-thumb.png" );
+                // If we have access to `lame` we can create a compressed audio file...
+                if ( shell.which( "lame" ) && ext === "mp3" ) {
+                    lager.info( `DB-${this.gameId}: compressing audio file with lame` );
 
-                        sharp( buffer )
-                            .resize( 512 )
-                            .toFile( thumbFile )
-                            .then(() => {
-                                lager.info( `DB-${this.gameId}: write file ${thumbFile.split( "/" ).pop()}` );
-                            });
+                    const encoder = new Lame({
+                        output: file,
+                        mp3Input: true,
+                        bitrate: 192,
+                    }).setBuffer( buffer );
+                    
+                    encoder
+                        .encode()
+                        .then(() => {
+                            // Encoding finished
+                            lager.info( `DB-${this.gameId}: compressed audio file with lame` );
+                            onDone();
+                        })
+                        .catch(( error ) => {
+                            // Something went wrong
+                            lager.error( error );
+                        });
 
-                    } else {
-                        this.updateWorker();
-                    }
-
-                    if ( shell.which( "lame" ) && ext === "mp3" ) {
-                        lager.info( `DB-${this.gameId}: compressing audio file with lame` );
-
-                        const fileComp = file.replace( ".mp3", ".compressed.mp3" );
-                        const encoder = new Lame({
-                            output: fileComp,
-                            mp3Input: true,
-                            bitrate: 192,
-                        }).setFile( file );
-                        
-                        encoder
-                            .encode()
-                            .then(() => {
-                                // Encoding finished
-                                utils.removeFile( file, () => {
-                                    utils.copyFile( fileComp, file, () => {
-                                        utils.removeFile( fileComp, () => {
-                                            lager.info( `DB-${this.gameId}: compressed audio file with lame` );
-                                        });
-                                    });
-                                });
-                            })
-                            .catch(( error ) => {
-                                // Something went wrong
-                                lager.error( error );
-                            });
-                    }
-
-                    resolve({
-                        type: data.type,
-                        files,
+                } else {
+                    utils.writeFile( file, buffer, () => {
+                        onDone();
                     });
-                });
+                }
             });
         });
     }
@@ -330,42 +327,42 @@ class DB {
 
     updateIcon ( data ) {
         return new Promise(( resolve ) => {
-            const buffer = Buffer.from( data.fileData.replace( /^data:.*?;base64,/, "" ), "base64" );
+            const buffer = DB.getBuffer( data.fileData );
             const game = this.cache.get( "game" );
             const file = path.join( process.cwd(), "games", game.id, "icon.png" );
 
             lager.info( `DB-${this.gameId}: update game icon` );
 
             // Create webapp icons...
-            sharp( file )
+            sharp( buffer )
                 .resize( 1024 )
                 .toFile( file.replace( "icon.png", "icon1024.png" ) )
                 .then(() => {
                     lager.info( `DB-${this.gameId}: wrote game icon icon1024.png` );
                 });
             
-            sharp( file )
+            sharp( buffer )
                 .resize( 512 )
                 .toFile( file.replace( "icon.png", "icon512.png" ) )
                 .then(() => {
                     lager.info( `DB-${this.gameId}: wrote game icon icon512.png` );
                 });
             
-            sharp( file )
+            sharp( buffer )
                 .resize( 384 )
                 .toFile( file.replace( "icon.png", "icon384.png" ) )
                 .then(() => {
                     lager.info( `DB-${this.gameId}: wrote game icon icon384.png` );
                 });
             
-            sharp( file )
+            sharp( buffer )
                 .resize( 192 )
                 .toFile( file.replace( "icon.png", "icon192.png" ) )
                 .then(() => {
                     lager.info( `DB-${this.gameId}: wrote game icon icon192.png` );
                 });
             
-            sharp( file )
+            sharp( buffer )
                 .resize( 64 )
                 .toFile( file.replace( "icon.png", "favicon.ico" ) )
                 .then(() => {
@@ -393,9 +390,11 @@ class DB {
             utils.removeFile( snapshot, () => {
                 lager.info( `DB-${this.gameId}: deleted map snapshot ${map.id}` );
             });
+
             utils.removeFile( thumbnail, () => {
                 lager.info( `DB-${this.gameId}: deleted map thumbnail ${map.id}` );
             });
+
             utils.removeFile( file, () => {
                 maps.splice( idx, 1 );
 
@@ -505,6 +504,10 @@ class DB {
             // Very basic -- Allows string or numeral replacement
             return ( typeof ret === "string" || typeof ret === "number" ) ? ret : match;
         });
+    }
+
+    static getBuffer ( data ) {
+        return Buffer.from( data.replace( /^data:.*?;base64,/, "" ), "base64" );
     }
 
     static getModel ( model ) {

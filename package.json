@@ -31,6 +31,7 @@
     "build": "yarn build:site && yarn build:2dk && yarn build:app && yarn build:studio",
     "postbuild": "cp -R studio/games dist",
     "build:site": "webpack --config ./configs/webpack.config.prod.js",
+    "postbuild:site": "node-sass --output-style 'compressed' ./src/sass/2dk.scss ./dist/2dk.css",
     "build:2dk": "webpack --config ./configs/webpack.config.2dk.js",
     "postbuild:2dk": "node-sass --output-style 'compressed' ./src/sass/2dk.scss ./studio/src/templates/2dk.css",
     "build:app": "webpack --config ./configs/webpack.config.app.js",
@@ -95,7 +96,6 @@
       "node": true
     },
     "plugins": [
-      "jsx-a11y",
       "jsdoc"
     ],
     "extends": [

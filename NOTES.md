@@ -1,30 +1,9 @@
-2dk dev roadmap...
+Dreaming about 2dk
 ==================
 
-> The hobbyist dream implementations.
+> More like notes on things I would like to implement...
 
 
-
-#### Studio Software
-* Game configure starting data hero (spawn, map, sounds, companion, sprite)
-* Map Active Tiles (group, layer, coords, offsetX, offsetY, dur, stepsX, action, attack)
-* Map Spawnpoints (x, y, dir)
-* Map Objects, Sprites & NPCs (id, ai, spawn, payload)
-* Map Events (coords, type, map, dir, spawn?)
-* Map FX Maker
-* Map NPC Maker
-* Map Hero Maker (companion?)
-* Quest status system
-* Refactor dialogue(s) system for quest status
-* Resolution rendering
-* External storage
-* Engine upgrades
-* Software upgrades
-* Distribution
-* Software player (...debugger)
-* Map collider should be dynamic (precision: 4)
-* Uploads with progress, bulk uploads?
-* History states for painting (undo/redo)
 
 #### Game Engine
 * HUD (health, item, status)
@@ -33,7 +12,6 @@
 * Save State (local storage, persistence?)
 * Audio (mobile has issues...)
 * GameCycle manager for states (intro, title, credits, cutscenes etc...)
-* Render foreground textures to background if BEHIND Hero?
 * Hero weapon animations / collisions (sword...?)
 * Tile interactions (fall, etc...)
 * Hero sprite masking?
@@ -47,6 +25,12 @@
 * Charged Hero + Release Attack
 * Move resistance (pushing, tiles, etc...)
 * Object interaction hints (A Open, A Check, etc...)
+
+#### Studio Software
+* Quest status system
+* Distribution
+* Map collider should be dynamic (precision: 4)
+* History states for painting (undo/redo)
 
 #### NPC AIs
 * Butterflies / Bugs
