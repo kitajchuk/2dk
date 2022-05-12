@@ -3,15 +3,15 @@
 *******************************************************************************/
 @font-face {
     font-family: $font-sans-regular;
-    src: url( "#{$font-path}#{$font-sans-regular}.woff" ) format( "woff" ),
-         url( "#{$font-path}#{$font-sans-regular}.woff2" ) format( "woff2" );
+    src: url( "#{$font-path}#{$font-sans-regular}.woff" ) format( "woff" );
     font-style: normal;
     font-stretch: normal;
+    font-display: swap;
 }
 @font-face {
     font-family: $font-sans-bold;
-    src: url( "#{$font-path}#{$font-sans-bold}.woff" ) format( "woff" ),
-         url( "#{$font-path}#{$font-sans-bold}.woff2" ) format( "woff2" );
+    src: url( "#{$font-path}#{$font-sans-bold}.woff" ) format( "woff" );
     font-style: normal;
     font-stretch: normal;
+    font-display: swap;
 }
