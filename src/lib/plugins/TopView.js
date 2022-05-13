@@ -520,7 +520,6 @@ class TopView extends GameBox {
 
 
     handleHeroEventBoundary ( poi, dir, event ) {
-        // this.switchMap( event );
         this.changeMap( event );
         this.player.stop();
     }
@@ -615,8 +614,6 @@ class TopView extends GameBox {
 
 
     handleHeroTileAction ( poi, dir, tile ) {
-        // const activeTiles = this.map.getActiveTiles( tile.group );
-
         if ( tile.instance.canInteract() ) {
             this.interact.tile = tile;
 
@@ -738,9 +735,11 @@ class TopView extends GameBox {
 
 
     handleRoam ( sprite ) {
+        const dirs = ["left", "right", "up", "down"];
+
         if ( !sprite.counter ) {
             sprite.counter = Utils.random( 64, 192 );
-            sprite.dir = ["left", "right", "up", "down"][ Utils.random( 0, 4 ) ];
+            sprite.dir = dirs[ Utils.random( 0, dirs.length ) ];
 
             // console.log(
             //     `Roam: ${sprite.data.id}`,
@@ -751,30 +750,14 @@ class TopView extends GameBox {
             sprite.counter--;
         }
 
-        if ( sprite.dir === "left" ) {
-            sprite.controls.left = 1;
-            sprite.controls.right = 0;
-            sprite.controls.up = 0;
-            sprite.controls.down = 0;
+        dirs.forEach(( dir ) => {
+            if ( dir === sprite.dir ) {
+                sprite.controls[ dir ] = 1;
 
-        } else if ( sprite.dir === "right" ) {
-            sprite.controls.left = 0;
-            sprite.controls.right = 1;
-            sprite.controls.up = 0;
-            sprite.controls.down = 0;
-
-        } else if ( sprite.dir === "up" ) {
-            sprite.controls.left = 0;
-            sprite.controls.right = 0;
-            sprite.controls.up = 1;
-            sprite.controls.down = 0;
-
-        } else if ( sprite.dir === "down" ) {
-            sprite.controls.left = 0;
-            sprite.controls.right = 0;
-            sprite.controls.up = 0;
-            sprite.controls.down = 1;
-        }
+            } else {
+                sprite.controls[ dir ] = 0;
+            }
+        });
     }
 
 
@@ -795,6 +778,8 @@ class TopView extends GameBox {
         } else {
             sprite.counter--;
         }
+
+        // use better logic and opposites to simplify here...
 
         if ( sprite.stepsX ) {
             sprite.stepsX--;
