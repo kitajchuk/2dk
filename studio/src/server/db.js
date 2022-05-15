@@ -561,9 +561,7 @@ class DB {
     
         // Update fonts
         utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff" ), path.join( gameDir, "fonts", "Calamity-Regular.woff" ) );
-        utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Regular.woff2" ), path.join( gameDir, "fonts", "Calamity-Regular.woff2" ) );
         utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff" ), path.join( gameDir, "fonts", "Calamity-Bold.woff" ) );
-        utils.copyFile( path.join( process.cwd(), "public/fonts/Calamity-Bold.woff2" ), path.join( gameDir, "fonts", "Calamity-Bold.woff2" ) );
         lager.info( `DB-static: copied fonts for ${game.id}` );
     }
     

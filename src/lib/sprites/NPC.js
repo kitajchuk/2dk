@@ -18,6 +18,8 @@ class NPC extends Sprite {
         // Initial cooldown period upon spawn (don't immediately move)
         // requestAnimationFrame runs 60fps so we use (60 * seconds)
         this.counter = this.data.ai ? (60 * 1) : 0;
+        this.cooldown = 0;
+        this.collided = false;
         this.shift();
     }
 
@@ -90,7 +92,30 @@ class NPC extends Sprite {
             hero: this.gamebox.checkHero( poi, this ),
             tiles: this.gamebox.checkTiles( poi, this ),
         };
+        const isCollision = (
+            collision.map || 
+            collision.npc || 
+            collision.hero || 
+            this.gamebox.canHeroTileStop( poi, null, collision )
+        );
+        const isNotCollision = (
+            !collision.map && 
+            !collision.npc && 
+            !collision.hero && 
+            !this.gamebox.canHeroTileStop( poi, null, collision )
+        );
 
+        // Reset the sprite counter if NPC has collisions...
+        if ( isCollision && !this.collided ) {
+            this.collided = true;
+            this.cooldown = (60 * 4);
+            this.counter = 0;
+            this.controls = {};
+            this.verb = Config.verbs.FACE;
+            // console.log( `Sprite counter reset for NPC: ${this.data.id}` );
+        }
+
+        // Roaming NPCs can push the hero back...
         if ( collision.hero && this.data.ai === Config.npc.ROAM ) {
             if ( this.dir === "left" ) {
                 this.gamebox.hero.physics.vx = -1;
@@ -105,7 +130,7 @@ class NPC extends Sprite {
                 this.gamebox.hero.physics.vy = 1;
             }
 
-        } else if ( !collision.map && !collision.npc && !collision.hero && !this.gamebox.canHeroTileStop( poi, null, collision ) ) {
+        } else if ( isNotCollision ) {
             this.position = poi;
         }
     }

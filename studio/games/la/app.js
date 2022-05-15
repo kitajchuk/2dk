@@ -3155,7 +3155,6 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleHeroEventBoundary",
     value: function handleHeroEventBoundary(poi, dir, event) {
-      // this.switchMap( event );
       this.changeMap(event);
       this.player.stop();
     }
@@ -3257,7 +3256,6 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleHeroTileAction",
     value: function handleHeroTileAction(poi, dir, tile) {
-      // const activeTiles = this.map.getActiveTiles( tile.group );
       if (tile.instance.canInteract()) {
         this.interact.tile = tile;
 
@@ -3374,9 +3372,15 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleRoam",
     value: function handleRoam(sprite) {
+      if (sprite.cooldown) {
+        return sprite.cooldown--;
+      }
+
+      var dirs = ["left", "right", "up", "down"];
+
       if (!sprite.counter) {
         sprite.counter = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(64, 192);
-        sprite.dir = ["left", "right", "up", "down"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 4)]; // console.log(
+        sprite.dir = dirs[_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, dirs.length)]; // console.log(
         //     `Roam: ${sprite.data.id}`,
         //     `Steps: ${sprite.dir} ${sprite.counter}`,
         // );
@@ -3384,35 +3388,35 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         sprite.counter--;
       }
 
-      if (sprite.dir === "left") {
-        sprite.controls.left = 1;
-        sprite.controls.right = 0;
-        sprite.controls.up = 0;
-        sprite.controls.down = 0;
-      } else if (sprite.dir === "right") {
-        sprite.controls.left = 0;
-        sprite.controls.right = 1;
-        sprite.controls.up = 0;
-        sprite.controls.down = 0;
-      } else if (sprite.dir === "up") {
-        sprite.controls.left = 0;
-        sprite.controls.right = 0;
-        sprite.controls.up = 1;
-        sprite.controls.down = 0;
-      } else if (sprite.dir === "down") {
-        sprite.controls.left = 0;
-        sprite.controls.right = 0;
-        sprite.controls.up = 0;
-        sprite.controls.down = 1;
-      }
+      dirs.forEach(function (dir) {
+        if (dir === sprite.dir) {
+          sprite.controls[dir] = 1;
+        } else {
+          sprite.controls[dir] = 0;
+        }
+      });
     }
   }, {
     key: "handleWander",
     value: function handleWander(sprite) {
+      if (sprite.cooldown) {
+        return sprite.cooldown--;
+      }
+
       if (!sprite.counter) {
         sprite.counter = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(100, 200);
         sprite.stepsX = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(4, 60);
         sprite.stepsY = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(4, 60);
+
+        if (sprite.collided) {
+          sprite.collided = false;
+          sprite.dirX = _Config__WEBPACK_IMPORTED_MODULE_6__["default"].opposites[sprite.dirX];
+          sprite.dirY = _Config__WEBPACK_IMPORTED_MODULE_6__["default"].opposites[sprite.dirY]; // console.log( `Wander: ${sprite.data.id} collided so using opposites` );
+        } else {
+          sprite.dirX = ["left", "right"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)];
+          sprite.dirY = ["down", "up"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)];
+        }
+
         sprite.dirX = ["left", "right"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)];
         sprite.dirY = ["down", "up"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)]; // console.log(
         //     `Wander: ${sprite.data.id}`,
@@ -3425,21 +3429,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
       if (sprite.stepsX) {
         sprite.stepsX--;
+        sprite.controls[sprite.dirX] = 1;
+        sprite.controls[_Config__WEBPACK_IMPORTED_MODULE_6__["default"].opposites[sprite.dirX]] = 0;
 
-        if (sprite.dirX === "left") {
-          sprite.controls.left = 1;
-          sprite.controls.right = 0;
-
-          if (sprite.data.verbs[sprite.verb].left) {
-            sprite.dir = "left";
-          }
-        } else {
-          sprite.controls.right = 1;
-          sprite.controls.left = 0;
-
-          if (sprite.data.verbs[sprite.verb].right) {
-            sprite.dir = "right";
-          }
+        if (sprite.data.verbs[sprite.verb][sprite.dirX]) {
+          sprite.dir = sprite.dirX;
         }
       } else {
         sprite.controls.left = 0;
@@ -3448,21 +3442,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
       if (sprite.stepsY) {
         sprite.stepsY--;
+        sprite.controls[sprite.dirY] = 1;
+        sprite.controls[_Config__WEBPACK_IMPORTED_MODULE_6__["default"].opposites[sprite.dirY]] = 0;
 
-        if (sprite.dirY === "up") {
-          sprite.controls.up = 1;
-          sprite.controls.down = 0;
-
-          if (sprite.data.verbs[sprite.verb].up) {
-            sprite.dir = "up";
-          }
-        } else {
-          sprite.controls.down = 1;
-          sprite.controls.up = 0;
-
-          if (sprite.data.verbs[sprite.verb].down) {
-            sprite.dir = "down";
-          }
+        if (sprite.data.verbs[sprite.verb][sprite.dirY]) {
+          sprite.dir = sprite.dirY;
         }
       } else {
         sprite.controls.up = 0;
@@ -4159,6 +4143,8 @@ var NPC = /*#__PURE__*/function (_Sprite) {
     // requestAnimationFrame runs 60fps so we use (60 * seconds)
 
     _this.counter = _this.data.ai ? 60 * 1 : 0;
+    _this.cooldown = 0;
+    _this.collided = false;
 
     _this.shift();
 
@@ -4236,6 +4222,18 @@ var NPC = /*#__PURE__*/function (_Sprite) {
         hero: this.gamebox.checkHero(poi, this),
         tiles: this.gamebox.checkTiles(poi, this)
       };
+      var isCollision = collision.map || collision.npc || collision.hero || this.gamebox.canHeroTileStop(poi, null, collision);
+      var isNotCollision = !collision.map && !collision.npc && !collision.hero && !this.gamebox.canHeroTileStop(poi, null, collision); // Reset the sprite counter if NPC has collisions...
+
+      if (isCollision && !this.collided) {
+        this.collided = true;
+        this.cooldown = 60 * 4;
+        this.counter = 0;
+        this.controls = {};
+        this.verb = _Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.FACE;
+        console.log("Sprite counter reset for NPC: ".concat(this.data.id));
+      } // Roaming NPCs can push the hero back...
+
 
       if (collision.hero && this.data.ai === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.ROAM) {
         if (this.dir === "left") {
@@ -4247,7 +4245,7 @@ var NPC = /*#__PURE__*/function (_Sprite) {
         } else if (this.dir === "down") {
           this.gamebox.hero.physics.vy = 1;
         }
-      } else if (!collision.map && !collision.npc && !collision.hero && !this.gamebox.canHeroTileStop(poi, null, collision)) {
+      } else if (isNotCollision) {
         this.position = poi;
       }
     }
@@ -9239,6 +9237,11 @@ var App = /*#__PURE__*/function () {
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(App, [{
     key: "register",
     value: function register() {
+      if (/^file:/.test(window.location.href)) {
+        console.log("[2dk] Skip service worker for studio dev demo!");
+        return;
+      }
+
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register(this.worker, this.config).then(function (registration) {
           if (registration.installing) {

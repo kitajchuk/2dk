@@ -735,6 +735,10 @@ class TopView extends GameBox {
 
 
     handleRoam ( sprite ) {
+        if ( sprite.cooldown ) {
+            return sprite.cooldown--;
+        }
+
         const dirs = ["left", "right", "up", "down"];
 
         if ( !sprite.counter ) {
@@ -762,10 +766,27 @@ class TopView extends GameBox {
 
 
     handleWander ( sprite ) {
+        if ( sprite.cooldown ) {
+            return sprite.cooldown--;
+        }
+
         if ( !sprite.counter ) {
             sprite.counter = Utils.random( 100, 200 );
             sprite.stepsX = Utils.random( 4, 60 );
             sprite.stepsY = Utils.random( 4, 60 );
+
+            if ( sprite.collided ) {
+                sprite.collided = false;
+                sprite.dirX = Config.opposites[ sprite.dirX ];
+                sprite.dirY = Config.opposites[ sprite.dirY ];
+                // console.log( `Wander: ${sprite.data.id} collided so using opposites` );
+
+
+            } else {
+                sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
+                sprite.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
+            }
+
             sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
             sprite.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
 
@@ -779,26 +800,14 @@ class TopView extends GameBox {
             sprite.counter--;
         }
 
-        // use better logic and opposites to simplify here...
-
         if ( sprite.stepsX ) {
             sprite.stepsX--;
 
-            if ( sprite.dirX === "left" ) {
-                sprite.controls.left = 1;
-                sprite.controls.right = 0;
+            sprite.controls[ sprite.dirX ] = 1;
+            sprite.controls[ Config.opposites[ sprite.dirX ] ] = 0;
 
-                if ( sprite.data.verbs[ sprite.verb ].left ) {
-                    sprite.dir = "left";
-                }
-
-            } else {
-                sprite.controls.right = 1;
-                sprite.controls.left = 0;
-
-                if ( sprite.data.verbs[ sprite.verb ].right ) {
-                    sprite.dir = "right";
-                }
+            if ( sprite.data.verbs[ sprite.verb ][ sprite.dirX ] ) {
+                sprite.dir = sprite.dirX;
             }
 
         } else {
@@ -809,21 +818,11 @@ class TopView extends GameBox {
         if ( sprite.stepsY ) {
             sprite.stepsY--;
 
-            if ( sprite.dirY === "up" ) {
-                sprite.controls.up = 1;
-                sprite.controls.down = 0;
+            sprite.controls[ sprite.dirY ] = 1;
+            sprite.controls[ Config.opposites[ sprite.dirY ] ] = 0;
 
-                if ( sprite.data.verbs[ sprite.verb ].up ) {
-                    sprite.dir = "up";
-                }
-
-            } else {
-                sprite.controls.down = 1;
-                sprite.controls.up = 0;
-
-                if ( sprite.data.verbs[ sprite.verb ].down ) {
-                    sprite.dir = "down";
-                }
+            if ( sprite.data.verbs[ sprite.verb ][ sprite.dirY ] ) {
+                sprite.dir = sprite.dirY;
             }
 
         } else {

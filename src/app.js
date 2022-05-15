@@ -20,6 +20,11 @@ class App {
     }
 
     register () {
+        if ( /^file:/.test( window.location.href ) ) {
+            console.log( "[2dk] Skip service worker for studio dev demo!" );
+            return;
+        }
+
         if ( "serviceWorker" in navigator ) {
             navigator.serviceWorker.register( this.worker, this.config ).then(( registration ) => {
                 if ( registration.installing ) {
