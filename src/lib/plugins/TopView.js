@@ -787,9 +787,6 @@ class TopView extends GameBox {
                 sprite.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
             }
 
-            sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
-            sprite.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
-
             // console.log(
             //     `Wander: ${sprite.data.id}`,
             //     `StepsX: ${sprite.dirX} ${sprite.stepsX}`,
