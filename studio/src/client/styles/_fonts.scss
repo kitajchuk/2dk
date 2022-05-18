@@ -2,43 +2,43 @@
  * Font Declarations
 *******************************************************************************/
 @font-face {
-    font-family: $font-sans-regular;
-    src: url( "#{$font-path}#{$font-sans-regular}.woff" ) format( "woff" );
+    font-family: "Calamity-Regular";
+    src: url( "../fonts/Calamity-Regular.woff" ) format( "woff" );
     font-style: normal;
     font-stretch: normal;
     font-display: swap;
 }
 @font-face {
-    font-family: $font-sans-bold;
-    src: url( "#{$font-path}#{$font-sans-bold}.woff" ) format( "woff" );
+    font-family: "Calamity-Bold";
+    src: url( "../fonts/Calamity-Bold.woff" ) format( "woff" );
     font-style: normal;
     font-stretch: normal;
     font-display: swap;
 }
 @font-face {
-    font-family: $font-monospace;
-    src: url( "#{$font-path}#{$font-monospace}.woff" ) format( "woff" );
+    font-family: "panicsans";
+    src: url( "../fonts/panicsans.woff" ) format( "woff" );
     font-style: normal;
     font-stretch: normal;
     font-display: swap;
 }
 @font-face {
-    font-family: $font-monospace-italic;
-    src: url( "#{$font-path}#{$font-monospace-italic}.woff" ) format( "woff" );
+    font-family: "panicsansitalic";
+    src: url( "../fonts/panicsansitalic.woff" ) format( "woff" );
     font-style: normal;
     font-stretch: normal;
     font-display: swap;
 }
 @font-face {
-    font-family: $font-monospace-bold;
-    src: url( "#{$font-path}#{$font-monospace-bold}.woff" ) format( "woff" );
+    font-family: "panicsansbold";
+    src: url( "../fonts/panicsansbold.woff" ) format( "woff" );
     font-style: normal;
     font-stretch: normal;
     font-display: swap;
 }
 @font-face {
-    font-family: $font-monospace-bold-italic;
-    src: url( "#{$font-path}#{$font-monospace-bold-italic}.woff" ) format( "woff" );
+    font-family: "panicsansbolditalic";
+    src: url( "../fonts/panicsansbolditalic.woff" ) format( "woff" );
     font-style: normal;
     font-stretch: normal;
     font-display: swap;

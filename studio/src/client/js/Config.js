@@ -38,20 +38,6 @@ const Config = {
         ESCAPE: 27,
         SPACEBAR: 32,
     },
-    colors: {
-        grey: "#959595",
-        red: "#F30541",
-        pink: "#F49AC1",
-        blue: "#1795D4",
-        teal: "#2AFFEA",
-        black: "#000000",
-        white: "#FFFFFF",
-        green: "#10FF59",
-        yellow: "#EEFD02",
-        purple: "#6441A4",
-        greyDark: "#333",
-        blueDark: "#004080",
-    },
 };
 
 

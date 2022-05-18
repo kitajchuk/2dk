@@ -1,3 +1,12 @@
+const styleRoot = window.getComputedStyle( document.documentElement );
+
+
+const getStyleVar = ( prop ) => {
+    return styleRoot.getPropertyValue( prop );
+};
+
+
+
 const Config = {
     // VERBS and TILES:
     // These alone sort of "break" the idea of the "anybody's game".
@@ -71,18 +80,20 @@ const Config = {
         right: "left",
     },
     colors: {
-        red: "#F30541",
-        grey: "#959595",
-        pink: "#F49AC1",
-        blue: "#1795D4",
-        teal: "#2AFFEA",
-        black: "#000000",
-        white: "#FFFFFF",
-        green: "#10FF59",
-        yellow: "#EEFD02",
-        purple: "#6441A4",
-        greyDark: "#333",
-        blueDark: "#004080",
+        red: getStyleVar( "--red" ),
+        grey: getStyleVar( "--grey" ),
+        blue: getStyleVar( "--blue" ),
+        teal: getStyleVar( "--teal" ),
+        pink: getStyleVar( "--pink" ),
+        black: getStyleVar( "--black" ),
+        green: getStyleVar( "--green" ),
+        white: getStyleVar( "--white" ),
+        purple: getStyleVar( "--purple" ),
+        yellow: getStyleVar( "--yellow" ),
+        greyDark: getStyleVar( "--grey-dark" ),
+        blueDark: getStyleVar( "--blue-dark" ),
+        charcoal: getStyleVar( "--charcoal" ),
+        charcoal2: getStyleVar( "--charcoal2" ),
     },
 };
 

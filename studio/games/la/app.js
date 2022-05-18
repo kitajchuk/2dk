@@ -4230,8 +4230,7 @@ var NPC = /*#__PURE__*/function (_Sprite) {
         this.cooldown = 60 * 4;
         this.counter = 0;
         this.controls = {};
-        this.verb = _Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.FACE;
-        console.log("Sprite counter reset for NPC: ".concat(this.data.id));
+        this.verb = _Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.FACE; // console.log( `Sprite counter reset for NPC: ${this.data.id}` );
       } // Roaming NPCs can push the hero back...
 
 

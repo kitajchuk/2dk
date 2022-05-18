@@ -1,0 +1,164 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-stretch: normal;
+    font-style: normal;
+    font-family: "Calamity-Bold";
+    background-color: var( --black );
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+span {
+    display: inline-block;
+    vertical-align: middle;
+}
+a {
+    color: var( --white );
+    display: inline-block;
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+
+
+.icon {
+    font-size: var( --font-size-icons );
+    cursor: pointer;
+    pointer-events: none;
+
+    &.js-hide-layer,
+    &.js-sound-button {
+        pointer-events: auto;
+    }
+}
+.icon--nudge {
+    margin-right: 10px;
+}
+.txt {
+    line-height: 1.75;
+    padding: 10px 0;
+    color: var( --grey );
+}
+.input {
+    background-color: var( --charcoal );
+    border: 1px solid var( --grey-dark );
+    color: var( --white );
+    box-sizing: border-box;
+    font-family: "panicsans";
+    outline: none;
+    padding: 10px 16px;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+    display: inline-block;
+    font-size: var( --font-size-forms );
+
+    &:focus {
+        outline: none;
+    }
+}
+.select {
+    position: relative;
+    font-family: "panicsans";
+    color: var( --grey );
+
+    &[disabled]:after {
+        display: none;
+    }
+}
+.select__icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY( -50% );
+    pointer-events: none;
+}
+.select__field {
+    border-radius: 0;
+    background-color: var( --charcoal );
+    border: 1px solid var( --grey-dark );
+    color: var( --grey );
+    font-family: "panicsans";
+    outline: none;
+    padding: 10px 56px 10px 14px;
+    position: relative;
+    min-width: 185px;
+    width: 100%;
+    -webkit-appearance: none;
+    font-size: var( --font-size-forms );
+
+    &:focus {
+        outline: none;
+        border: 1px solid var( --grey );
+    }
+}
+.checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: var( --font-size-forms );
+
+    span,
+    input {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    span {
+        margin-left: 5px;
+    }
+
+    & + .checkbox {
+        margin-left: 32px;
+    }
+}
+button {
+    &:focus {
+        outline: 0;
+    }
+}
+.button {
+    border: 0;
+    outline: none;
+    box-sizing: border-box;
+    display: inline-block;
+    font-family: inherit;
+    padding: 14px;
+    width: 100%;
+    cursor: pointer;
+    text-align: center;
+    background-color: var( --blue );
+    color: var( --black );
+    transition: background-color 240ms ease;
+    font-size: var( --font-size-forms );
+}
+.button--slim {
+    padding: 7px 14px 8px;
+    background-color: var( --charcoal );
+    border: 1px solid var( --blue );
+    color: var( --blue );
+}
+.button.button--green {
+    background-color: var( --green );
+}
+.button.button--yellow {
+    background-color: var ( --yellow );
+}
+.button.button--red {
+    background-color: var( --red );
+}
+.button.button--pink {
+    background-color: var( --pink );
+}
+.button.button--purple {
+    background-color: var( --purple );
+}
+.button.button--blue {
+    background-color: var( --blue );
+}
+.button.button--grey {
+    background-color: var( --grey );
+}

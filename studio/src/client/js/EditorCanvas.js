@@ -5,7 +5,7 @@ const Config = require( "./Config" );
 
 const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
     ctx.globalAlpha = alpha || 0.75;
-    ctx.fillStyle = color || Config.colors.blue;
+    ctx.fillStyle = color || window.lib2dk.Config.colors.blue;
     ctx.fillRect( x, y, w, h );
 };
 const clearTile = ( ctx, x, y, w, h ) => {
@@ -268,7 +268,7 @@ class EditorCanvas {
         //             coord[ 1 ] * this.map.tilesize,
         //             this.map.tilesize,
         //             this.map.tilesize,
-        //             Config.colors.purple,
+        //             window.lib2dk.Config.colors.purple,
         //             0.5
         //         );
         //     });
@@ -409,7 +409,7 @@ class EditorCanvas {
                 collider[ 1 ] * this.map.collider,
                 this.map.collider,
                 this.map.collider,
-                Config.colors.red,
+                window.lib2dk.Config.colors.red,
                 0.5
             );
         });
@@ -449,7 +449,7 @@ class EditorCanvas {
                 coord[ 1 ] * this.map.collider,
                 this.map.collider,
                 this.map.collider,
-                Config.colors.red,
+                window.lib2dk.Config.colors.red,
                 0.5
             );
         }
@@ -530,7 +530,7 @@ class EditorCanvas {
             coord[ 1 ] * this.map.tilesize,
             this.map.tilesize,
             this.map.tilesize,
-            Config.colors.blueDark,
+            window.lib2dk.Config.colors.blueDark,
             0.5
         );
     }

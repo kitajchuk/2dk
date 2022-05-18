@@ -1,16 +1,16 @@
 /******************************************************************************
  * Commons
 *******************************************************************************/
-@import "config/vars";
-@import "config/func";
-@import "core/reset";
-@import "core/fonts";
+@import "vars";
+@import "reset";
+@import "fonts";
 
 
 
 /******************************************************************************
- * Studio
+ * 2dk
 *******************************************************************************/
-@import "studio-icons";
-@import "studio-shared";
-@import "studio-editor";
+@import "doc";
+@import "player";
+@import "maps";
+@import "gamepad";

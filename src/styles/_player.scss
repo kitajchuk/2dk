@@ -14,7 +14,7 @@
     overflow: hidden;
 }
 ._2dk__dialogue {
-    box-shadow: $box-shadow;
+    box-shadow: var( --box-shadow );
     background-color: rgba( 0, 0, 0, 0.8 );
     position: absolute;
     left: 50%;
@@ -44,8 +44,8 @@
     }
 }
 ._2dk__splash {
-    color: $teal;
-    background-color: $black;
+    color: var( --teal );
+    background-color: var( --black );
     position: absolute;
     left: 0;
     top: 0;
@@ -79,9 +79,15 @@
     }
 
     > div:first-child {
-        @include wrap();
+        padding-left: 36px;
+        padding-right: 36px;
         z-index: 12;
         text-align: center;
+
+        @media ( max-width: 640px ) {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
     }
 
     > div > div {
@@ -91,10 +97,11 @@
 
 ._2dk__splash__info {
     > div:last-child {
-        @include wrap();
+        padding-left: 36px;
+        padding-right: 36px;
         background-repeat: no-repeat;
         background-size: 64px 64px;
-        background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} );
+        background-position: 50% calc( 100% - 65px - 36px );
         position: fixed;
         left: 0;
         bottom: 0;
@@ -106,7 +113,12 @@
         align-items: flex-end;
         z-index: 13;
         text-align: center;
-        padding-bottom: $padding-1;
+        padding-bottom: 65px;
+
+        @media ( max-width: 640px ) {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
     }
 }
 
@@ -130,8 +142,8 @@
         }
 
         > div:last-child {
-            animation: bounce (240ms * 2) infinite;
-            transition: all 240ms $ease;
+            animation: bounce 480ms infinite;
+            transition: all 240ms ease;
             transform: translate3d( 0, 0, 0 );
         }
     }
@@ -148,9 +160,9 @@
 
 
 @keyframes bounce {
-    0% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 4px ); }
-    49.99999% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 8px ); }
-    50% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 8px ); }
-    99.99999% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} - 4px ); }
-    100% { background-position: 50% calc( 100% - #{$padding-1} - #{$expander-0} ); }
+    0% { background-position: 50% calc( 100% - 65px - 36px - 4px ); }
+    49.99999% { background-position: 50% calc( 100% - 65px - 36px - 8px ); }
+    50% { background-position: 50% calc( 100% - 65px - 36px - 8px ); }
+    99.99999% { background-position: 50% calc( 100% - 65px - 36px - 4px ); }
+    100% { background-position: 50% calc( 100% - 65px - 36px ); }
 }

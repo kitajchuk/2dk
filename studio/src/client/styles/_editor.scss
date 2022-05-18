@@ -1,8 +1,8 @@
 /* IDs */
 #editor {
-    color: $grey;
-    font-size: $font-size-editor;
-    font-family: $font-sans-bold;
+    color: var( --grey );
+    font-size: var( --font-size-editor );
+    font-family: "Calamity-Bold";
     position: relative;
     width: 100%;
     height: 100%;
@@ -26,8 +26,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: $white;
-        font-size: $font-size-overlay;
+        color: var( --white );
+        font-size: var( --font-size-overlay );
     }
     &.is-saving-map:after {
         content: "Saving map...";
@@ -47,14 +47,14 @@
     position: relative;
     height: 100%;
     overflow: auto;
-    outline: 1px solid $grey-dark;
-    background-color: $charcoal2;
+    outline: 1px solid var( --grey-dark );
+    background-color: var( --charcoal2 );
 
     .layer {
         position: absolute;
         left: 50%;
         top: 0;
-        cursor: $cursor;
+        cursor: var( --cursor );
         transform: translateX( -50% );
     }
     .layer--preview {
@@ -63,7 +63,7 @@
         left: 50%;
         top: 50%;
         transform: translate3d( -50%, -50%, 0 );
-        outline: 1px solid $teal;
+        outline: 1px solid var( --teal );
         pointer-events: none;
     }
     .layer--tilepaint {
@@ -122,7 +122,7 @@
 }
 #editor-loadout {
     display: none;
-    font-size: $font-size-editor;
+    font-size: var( --font-size-editor );
     padding: 20px;
 
     > div {
@@ -145,8 +145,8 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                box-shadow: $box-shadow;
-                background-color: $black;
+                box-shadow: var( --box-shadow );
+                background-color: var( --black );
             }
         }
 
@@ -171,7 +171,7 @@
     width: 96px;
     margin: 0 auto;
     display: block;
-    border: 1px solid $grey-dark;
+    border: 1px solid var( --grey-dark );
 }
 #editor-demo-game {
     pointer-events: auto;
@@ -181,9 +181,9 @@
 
 /* Top panel */
 .editor__panel {
-    background-color: $black;
-    border-bottom: 1px solid $grey-dark;
-    box-shadow: $box-shadow;
+    background-color: var( --black );
+    border-bottom: 1px solid var( --grey-dark );
+    box-shadow: var( --box-shadow );
     height: 50px;
     left: 0;
     position: fixed;
@@ -203,7 +203,7 @@
     height: 50px;
     justify-content: center;
     align-items: center;
-    border-right: 1px solid $grey-dark;
+    border-right: 1px solid var( --grey-dark );
     padding: 0 20px;
 }
 .editor__panel__res {
@@ -214,7 +214,7 @@
     border-right: 0;
 }
 .editor__panel__sound {
-    border-right: 1px solid $grey-dark;
+    border-right: 1px solid var( --grey-dark );
 
     .feather {
         display: inline-block;
@@ -239,14 +239,14 @@
 
 /* Sidebar */
 .editor__sidebar {
-    background-color: $black;
+    background-color: var( --black );
     right: 0;
     width: calc( 384px + 32px );
     position: fixed;
     top: 0;
     z-index: 2;
     height: 100%;
-    box-shadow: $box-shadow;
+    box-shadow: var( --box-shadow );
 }
 .editor__sidebar__layers {
     height: 100%;
@@ -256,7 +256,7 @@
 }
 .editor__sidebar__tools {
     padding-top: 50px;
-    background-color: $black;
+    background-color: var( --black );
     width: auto;
     overflow: hidden;
     position: absolute;
@@ -264,19 +264,19 @@
     z-index: 2;
     left: 0;
     height: 100%;
-    border-left: 1px solid $grey-dark;
-    border-right: 1px solid $grey-dark;
-    box-shadow: $box-shadow;
+    border-left: 1px solid var( --grey-dark );
+    border-right: 1px solid var( --grey-dark );
+    box-shadow: var( --box-shadow );
     transform: translate3d( -100%, 0, 0 );
 }
 .editor__toolbar {
     padding: 5px;
 }
 .editor__toolbar__tools {
-    border-bottom: 1px solid $grey-dark;
+    border-bottom: 1px solid var( --grey-dark );
 }
 .editor__toolbar__menus {
-    border-top: 1px solid $grey-dark;
+    border-top: 1px solid var( --grey-dark );
     position: absolute;
     bottom: 0;
 }
@@ -293,7 +293,7 @@
     top: 50px;
     z-index: 1;
     overflow: hidden;
-    background-color: $charcoal2;
+    background-color: var( --charcoal2 );
 }
 .editor__canvas__buttons {
     pointer-events: none;
@@ -326,7 +326,7 @@
     &.is-foreground,
     &.is-collision,
     &.is-selection {
-        cursor: $cursor;
+        cursor: var( --cursor );
     }
 
     &.is-background,
@@ -397,14 +397,14 @@
 
 /* Actions */
 .editor__action {
-    background-color: $charcoal2;
-    border: 1px solid $grey-dark;
+    background-color: var( --charcoal2 );
+    border: 1px solid var( --grey-dark );
     cursor: pointer;
     position: relative;
     width: 32px;
     height: 32px;
     text-align: center;
-    color: $grey;
+    color: var( --grey );
     display: flex;
     align-items: center;
     justify-content: center;
@@ -414,18 +414,18 @@
     }
 
     &:hover {
-        color: $white;
+        color: var( --white );
     }
 
     &.is-active,
     &.is-active:hover {
-        color: $white;
-        background-color: $blue;
-        border-color: $blue;
+        color: var( --white );
+        background-color: var( --blue );
+        border-color: var( --blue );
     }
 
     &[disabled]:hover {
-        color: $grey;
+        color: var( --grey );
     }
 }
 
@@ -433,7 +433,7 @@
 
 /* Layers */
 .editor__box {
-    border-bottom: 1px solid $grey-dark;
+    border-bottom: 1px solid var( --grey-dark );
 }
 .editor__label {
     margin-bottom: 10px;
@@ -451,8 +451,8 @@
 .editor__layer {
     padding: 16px;
     position: relative;
-    color: $grey;
-    border-bottom: 1px solid $grey-dark;
+    color: var( --grey );
+    border-bottom: 1px solid var( --grey-dark );
     width: 100%;
     display: flex;
     align-items: center;
@@ -478,8 +478,8 @@
 
     &.is-active,
     &.is-active:hover {
-        background-color: $charcoal;
-        color: $blue;
+        background-color: var( --charcoal );
+        color: var( --blue );
     }
 }
 .editor__layer__hide {
@@ -487,7 +487,7 @@
     right: 20px;
     top: 50%;
     transform: translateY( -50% );
-    color: $grey;
+    color: var( --grey );
 
     .feather {
         display: inline-block;
@@ -547,9 +547,9 @@
 
 /* Menus */
 .editor__menu {
-    background-color: $black;
-    border: 1px solid $grey-dark;
-    box-shadow: $box-shadow;
+    background-color: var( --black );
+    border: 1px solid var( --grey-dark );
+    box-shadow: var( --box-shadow );
     padding: 32px;
     position: fixed;
     left: 50%;
