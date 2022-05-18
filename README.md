@@ -8,6 +8,8 @@
 
 
 
+<img src="./public/2dk.png" width="100%" />
+
 <img src="./public/img/ios-adventure-02.jpeg" width="100%" />
 
 <img src="./public/img/screen-mysterious-forest.jpg" width="100%" />
