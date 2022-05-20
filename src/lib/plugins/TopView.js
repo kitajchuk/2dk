@@ -735,10 +735,6 @@ class TopView extends GameBox {
 
 
     handleRoam ( sprite ) {
-        if ( sprite.cooldown ) {
-            return sprite.cooldown--;
-        }
-
         const dirs = ["left", "right", "up", "down"];
 
         if ( !sprite.counter ) {

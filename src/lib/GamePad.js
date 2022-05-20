@@ -280,46 +280,79 @@ const onKeyUp = ( e ) => {
 
 
 
-const onGamepadConnected = () => {
-    instance.stop();
-    instance.go(() => {
-        const gamepad = navigator.getGamepads()[ 0 ];
+const handleGamepadAxes = ( gamepad ) => {
+    const controls = {
+        x: getAxes( 0, gamepad.axes[ 0 ] ),
+        y: getAxes( 1, gamepad.axes[ 1 ] ),
+    };
 
-        // GamePad Axes (dpad): [x, y]
-        const controls = {
-            x: getAxes( 0, gamepad.axes[ 0 ] ),
-            y: getAxes( 1, gamepad.axes[ 1 ] ),
-        };
+    if ( controls.x && inputStream.indexOf( controls.x.key ) === -1 ) {
+        inputStream.push( controls.x.key );
+        startTouch( controls.x );
 
-        if ( controls.x ) {
-            startTouch( controls.x );
-
-        } else {
+    } else if ( !controls.x ) {
+        if ( inputStream.indexOf( Config.keys.LEFT ) !== -1 ) {
+            inputStream.splice( inputStream.indexOf( Config.keys.LEFT ), 1 );
             cancelTouch( touchControls.left );
+        }
+
+        if ( inputStream.indexOf( Config.keys.RIGHT ) !== -1 ) {
+            inputStream.splice( inputStream.indexOf( Config.keys.RIGHT ), 1 );
             cancelTouch( touchControls.right );
         }
+    }
 
-        if ( controls.y ) {
-            startTouch( controls.y );
+    if ( controls.y && inputStream.indexOf( controls.y.key ) === -1 ) {
+        inputStream.push( controls.y.key );
+        startTouch( controls.y );
 
-        } else {
+    } else if ( !controls.y ) {
+        if ( inputStream.indexOf( Config.keys.UP ) !== -1 ) {
+            inputStream.splice( inputStream.indexOf( Config.keys.UP ), 1 );
             cancelTouch( touchControls.up );
+        }
+
+        if ( inputStream.indexOf( Config.keys.DOWN ) !== -1 ) {
+            inputStream.splice( inputStream.indexOf( Config.keys.DOWN ), 1 );
             cancelTouch( touchControls.down );
         }
+    }
+};
 
-        for ( let i = gamepad.buttons.length; i--; ) {
-            const control = getGamepad( i );
 
-            if ( control && gamepad.buttons[ i ].pressed ) {
-                startTouch( control );
 
-            } else if ( control ) {
-                cancelTouch( control );
-            }
+const handleGamepadButtons = ( gamepad ) => {
+    for ( let i = gamepad.buttons.length; i--; ) {
+        const control = getGamepad( i );
+
+        if ( control && inputStream.indexOf( control.key ) === -1 && gamepad.buttons[ i ].pressed ) {
+            inputStream.push( control.key );
+            startTouch( control );
+
+        } else if ( control && inputStream.indexOf( control.key ) !== -1 && !gamepad.buttons[ i ].pressed ) {
+            inputStream.splice( inputStream.indexOf( control.key ), 1 );
+            cancelTouch( control );
         }
+    }
+};
+
+
+
+const onGamepadConnected = () => {
+    let gamepad = navigator.getGamepads()[ 0 ];
+
+    instance.stop();
+    instance.go(() => {
+        gamepad = navigator.getGamepads()[ 0 ];
+
+        // GamePad Axes (dpad): [x, y]
+        handleGamepadAxes( gamepad );
+        
+        // GamePad Buttons (a, b, start, select)
+        handleGamepadButtons( gamepad );
     });
 
-    console.log( `GamePad Connected: ${navigator.getGamepads()[ 0 ].id}` );
+    console.log( `GamePad Connected: ${gamepad.id}`, gamepad );
 };
 
 

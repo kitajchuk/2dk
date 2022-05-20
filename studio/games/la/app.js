@@ -12,6 +12,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+var styleRoot = window.getComputedStyle(document.documentElement);
+
+var getStyleVar = function getStyleVar(prop) {
+  return styleRoot.getPropertyValue(prop);
+};
+
 var Config = {
   // VERBS and TILES:
   // These alone sort of "break" the idea of the "anybody's game".
@@ -85,18 +91,20 @@ var Config = {
     right: "left"
   },
   colors: {
-    red: "#F30541",
-    grey: "#959595",
-    pink: "#F49AC1",
-    blue: "#1795D4",
-    teal: "#2AFFEA",
-    black: "#000000",
-    white: "#FFFFFF",
-    green: "#10FF59",
-    yellow: "#EEFD02",
-    purple: "#6441A4",
-    greyDark: "#333",
-    blueDark: "#004080"
+    red: getStyleVar("--red"),
+    grey: getStyleVar("--grey"),
+    blue: getStyleVar("--blue"),
+    teal: getStyleVar("--teal"),
+    pink: getStyleVar("--pink"),
+    black: getStyleVar("--black"),
+    green: getStyleVar("--green"),
+    white: getStyleVar("--white"),
+    purple: getStyleVar("--purple"),
+    yellow: getStyleVar("--yellow"),
+    greyDark: getStyleVar("--grey-dark"),
+    blueDark: getStyleVar("--blue-dark"),
+    charcoal: getStyleVar("--charcoal"),
+    charcoal2: getStyleVar("--charcoal2")
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Config);
@@ -1199,41 +1207,68 @@ var onKeyUp = function onKeyUp(e) {
   }
 };
 
-var onGamepadConnected = function onGamepadConnected() {
-  instance.stop();
-  instance.go(function () {
-    var gamepad = navigator.getGamepads()[0]; // GamePad Axes (dpad): [x, y]
+var handleGamepadAxes = function handleGamepadAxes(gamepad) {
+  var controls = {
+    x: getAxes(0, gamepad.axes[0]),
+    y: getAxes(1, gamepad.axes[1])
+  };
 
-    var controls = {
-      x: getAxes(0, gamepad.axes[0]),
-      y: getAxes(1, gamepad.axes[1])
-    };
-
-    if (controls.x) {
-      startTouch(controls.x);
-    } else {
+  if (controls.x && inputStream.indexOf(controls.x.key) === -1) {
+    inputStream.push(controls.x.key);
+    startTouch(controls.x);
+  } else if (!controls.x) {
+    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.LEFT) !== -1) {
+      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.LEFT), 1);
       cancelTouch(touchControls.left);
+    }
+
+    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.RIGHT) !== -1) {
+      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.RIGHT), 1);
       cancelTouch(touchControls.right);
     }
+  }
 
-    if (controls.y) {
-      startTouch(controls.y);
-    } else {
+  if (controls.y && inputStream.indexOf(controls.y.key) === -1) {
+    inputStream.push(controls.y.key);
+    startTouch(controls.y);
+  } else if (!controls.y) {
+    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP) !== -1) {
+      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP), 1);
       cancelTouch(touchControls.up);
+    }
+
+    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN) !== -1) {
+      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN), 1);
       cancelTouch(touchControls.down);
     }
+  }
+};
 
-    for (var i = gamepad.buttons.length; i--;) {
-      var control = getGamepad(i);
+var handleGamepadButtons = function handleGamepadButtons(gamepad) {
+  for (var i = gamepad.buttons.length; i--;) {
+    var control = getGamepad(i);
 
-      if (control && gamepad.buttons[i].pressed) {
-        startTouch(control);
-      } else if (control) {
-        cancelTouch(control);
-      }
+    if (control && inputStream.indexOf(control.key) === -1 && gamepad.buttons[i].pressed) {
+      inputStream.push(control.key);
+      startTouch(control);
+    } else if (control && inputStream.indexOf(control.key) !== -1 && !gamepad.buttons[i].pressed) {
+      inputStream.splice(inputStream.indexOf(control.key), 1);
+      cancelTouch(control);
     }
+  }
+};
+
+var onGamepadConnected = function onGamepadConnected() {
+  var gamepad = navigator.getGamepads()[0];
+  instance.stop();
+  instance.go(function () {
+    gamepad = navigator.getGamepads()[0]; // GamePad Axes (dpad): [x, y]
+
+    handleGamepadAxes(gamepad); // GamePad Buttons (a, b, start, select)
+
+    handleGamepadButtons(gamepad);
   });
-  console.log("GamePad Connected: ".concat(navigator.getGamepads()[0].id));
+  console.log("GamePad Connected: ".concat(gamepad.id), gamepad);
 };
 
 var onGamepadDisconnected = function onGamepadDisconnected() {
@@ -3372,10 +3407,6 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleRoam",
     value: function handleRoam(sprite) {
-      if (sprite.cooldown) {
-        return sprite.cooldown--;
-      }
-
       var dirs = ["left", "right", "up", "down"];
 
       if (!sprite.counter) {
@@ -3415,14 +3446,12 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         } else {
           sprite.dirX = ["left", "right"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)];
           sprite.dirY = ["down", "up"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)];
-        }
-
-        sprite.dirX = ["left", "right"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)];
-        sprite.dirY = ["down", "up"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)]; // console.log(
+        } // console.log(
         //     `Wander: ${sprite.data.id}`,
         //     `StepsX: ${sprite.dirX} ${sprite.stepsX}`,
         //     `StepsY: ${sprite.dirY} ${sprite.stepsY}`,
         // );
+
       } else {
         sprite.counter--;
       }
@@ -4201,20 +4230,6 @@ var NPC = /*#__PURE__*/function (_Sprite) {
   }, {
     key: "applyPosition",
     value: function applyPosition() {
-      var dirs = [];
-
-      if (this.controls.left) {
-        dirs.push("left");
-      } else if (this.controls.right) {
-        dirs.push("right");
-      }
-
-      if (this.controls.up) {
-        dirs.push("up");
-      } else if (this.controls.down) {
-        dirs.push("down");
-      }
-
       var poi = this.getNextPoi();
       var collision = {
         map: this.gamebox.checkMap(poi, this),
@@ -4225,12 +4240,11 @@ var NPC = /*#__PURE__*/function (_Sprite) {
       var isCollision = collision.map || collision.npc || collision.hero || this.gamebox.canHeroTileStop(poi, null, collision);
       var isNotCollision = !collision.map && !collision.npc && !collision.hero && !this.gamebox.canHeroTileStop(poi, null, collision); // Reset the sprite counter if NPC has collisions...
 
-      if (isCollision && !this.collided) {
+      if (isCollision && !this.collided && this.data.ai === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.WANDER) {
         this.collided = true;
         this.cooldown = 60 * 4;
         this.counter = 0;
-        this.controls = {};
-        this.verb = _Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.FACE; // console.log( `Sprite counter reset for NPC: ${this.data.id}` );
+        this.controls = {}; // console.log( `Sprite counter reset for NPC: ${this.data.id}` );
       } // Roaming NPCs can push the hero back...
 
 

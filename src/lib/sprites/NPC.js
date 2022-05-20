@@ -69,22 +69,6 @@ class NPC extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
-        const dirs = [];
-
-        if ( this.controls.left ) {
-            dirs.push( "left" );
-
-        } else if ( this.controls.right ) {
-            dirs.push( "right" );
-        }
-
-        if ( this.controls.up ) {
-            dirs.push( "up" );
-
-        } else if ( this.controls.down ) {
-            dirs.push( "down" );
-        }
-
         const poi = this.getNextPoi();
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
@@ -106,12 +90,12 @@ class NPC extends Sprite {
         );
 
         // Reset the sprite counter if NPC has collisions...
-        if ( isCollision && !this.collided ) {
+        if ( isCollision && !this.collided && this.data.ai === Config.npc.WANDER ) {
             this.collided = true;
             this.cooldown = (60 * 4);
             this.counter = 0;
             this.controls = {};
-            this.verb = Config.verbs.FACE;
+
             // console.log( `Sprite counter reset for NPC: ${this.data.id}` );
         }
 

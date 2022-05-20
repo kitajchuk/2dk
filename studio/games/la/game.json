@@ -5,7 +5,7 @@
     "height": 576,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 385,
+    "save": 410,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -365,6 +365,24 @@
                 "height": 64
             },
             "verbs": {
+                "face": {
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -256
+                    },
+                    "down": {
+                        "offsetX": -128,
+                        "offsetY": -256
+                    },
+                    "up": {
+                        "offsetX": -256,
+                        "offsetY": -256
+                    },
+                    "right": {
+                        "offsetX": -384,
+                        "offsetY": -256
+                    }
+                },
                 "walk": {
                     "dur": 500,
                     "left": {

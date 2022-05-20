@@ -72,7 +72,7 @@
     "webpack-dev-server": "^4.7.4"
   },
   "lint-staged": {
-    "src/*.js": "yarn lint"
+    "src/**/*.js": "yarn lint"
   },
   "jest": {
     "displayName": "2dk",
