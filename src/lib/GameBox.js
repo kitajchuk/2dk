@@ -277,8 +277,6 @@ Can all be handled in plugin GameBox
             }
         }
 
-        // console.log( `Total colliders: ${this.map.data.collision.length}`, `Visible colliders: ${colliders.length}` );
-
         return colliders;
     }
 
@@ -299,8 +297,6 @@ Can all be handled in plugin GameBox
             }
         }
 
-        // console.log( `Total events: ${this.map.data.events.length}`, `Visible events: ${events.length}` );
-
         return events;
     }
 
@@ -320,8 +316,6 @@ Can all be handled in plugin GameBox
                 npcs.push( this.map.npcs[ i ] );
             }
         }
-
-        // console.log( `Total npcs: ${this.map.npcs.length}`, `Visible npcs: ${npcs.length}` );
 
         return npcs;
     }
@@ -344,8 +338,6 @@ Can all be handled in plugin GameBox
                 }
             }
         }
-
-        // console.log( `Total acvtiveTiles: ${this.map.activeTiles.length}`, `Visible activeTiles: ${activeTiles.length}` );
 
         return this.map.activeTiles;
     }

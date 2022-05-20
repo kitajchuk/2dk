@@ -1,3 +1,4 @@
+import Utils from "./Utils";
 import Config from "./Config";
 import Controller from "properjs-controller";
 
@@ -346,7 +347,7 @@ const onGamepadConnected = () => {
         handleGamepadButtons( gamepad );
     });
 
-    console.log( `GamePad Connected: ${gamepad.id}`, gamepad );
+    Utils.log( `GamePad Connected: ${gamepad.id}`, gamepad );
 };
 
 
@@ -410,7 +411,6 @@ const startTouch = ( control ) => {
 const handleTouchStart = ( control ) => {
     if ( control.touched && control.menu && control.hold > 0 ) {
         control.hold++;
-        // console.log( `suspended ${control.btn}` );
         return;
     }
 
@@ -419,22 +419,18 @@ const handleTouchStart = ( control ) => {
 
         if ( control.hold > touchRepeated ) {
             instance.fire( `${control.btn[ 0 ]}-holdpress` );
-            // console.log( `${control.btn[ 0 ]}-holdpress` );
 
         } else {
             instance.fire( `${control.btn[ 0 ]}-press` );
-            // console.log( `${control.btn[ 0 ]}-press` );
         }
 
     } else if ( control.dpad ) {
         control.dpad.forEach(( dpad, i ) => {
             instance.fire( `${control.btn[ i ]}-press`, dpad );
-            // console.log( `${control.btn[ i ]}-press` );
         });
 
     } else {
         instance.fire( `${control.btn[ 0 ]}-press`, null );
-        // console.log( `${control.btn[ 0 ]}-press` );
     }
 };
 
@@ -444,11 +440,9 @@ const handleTouchEnd = ( control ) => {
     if ( Object.prototype.hasOwnProperty.call( control, "hold" ) ) {
         if ( control.hold > touchRepeated ) {
             instance.fire( `${control.btn[ 0 ]}-holdrelease` );
-            // console.log( `${control.btn[ 0 ]}-holdrelease` );
 
         } else {
             instance.fire( `${control.btn[ 0 ]}-release` );
-            // console.log( `${control.btn[ 0 ]}-release` );
         }
 
         control.hold = 0;
@@ -456,12 +450,10 @@ const handleTouchEnd = ( control ) => {
     } else if ( control.dpad ) {
         control.dpad.forEach(( dpad, i ) => {
             instance.fire( `${control.btn[ i ]}-release`, dpad );
-            // console.log( `${control.btn[ i ]}-release` );
         });
 
     } else {
         instance.fire( `${control.btn[ 0 ]}-release`, null );
-        // console.log( `${control.btn[ 0 ]}-release` );
     }
 };
 

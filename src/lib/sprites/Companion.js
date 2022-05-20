@@ -148,7 +148,6 @@ class Companion extends Sprite {
 
         if ( !this.origin ) {
             this.origin = this.position;
-            // console.log( `Companion spawn origin ${this.data.id} (${this.position.x}, ${this.position.y})` );
         }
 
         if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) ) {
@@ -215,7 +214,6 @@ class Companion extends Sprite {
 
         if ( !this.origin ) {
             this.origin = this.position;
-            // console.log( `Spawn Origin ${this.data.id} (${this.position.x}, ${this.position.y})`, this );
         }
 
         if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) && (this.hero.verb !== Config.verbs.GRAB) ) {

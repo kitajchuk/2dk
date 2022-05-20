@@ -95,8 +95,6 @@ class NPC extends Sprite {
             this.cooldown = (60 * 4);
             this.counter = 0;
             this.controls = {};
-
-            // console.log( `Sprite counter reset for NPC: ${this.data.id}` );
         }
 
         // Roaming NPCs can push the hero back...

@@ -249,7 +249,7 @@ class Sprite {
 
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
             if ( this.verb === Config.verbs.LIFT && (this.idle.x && this.idle.y) ) {
-                // console.log( "static lift..." );
+                Utils.log( "static lift..." );
 
             } else {
                 const diff = (elapsed - this.previousElapsed);

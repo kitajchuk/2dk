@@ -8,7 +8,6 @@ class GameAudio {
 
     build () {
         if ( this.player.device ) {
-            // console.log( "GameAudio disabled for mobile...", this );
             return;
         }
 
@@ -32,7 +31,6 @@ class GameAudio {
 
     addSound ( data ) {
         if ( this.player.device ) {
-            // console.log( "GameAudio disabled for mobile...", data );
             return;
         }
 

@@ -87,8 +87,6 @@ class Player {
                     counter++;
 
                     this.splashLoad.innerHTML = this.getSplash( `Loaded ${counter} of ${resources.length} game resources...` );
-
-                    // console.log( `Loaded ${counter} of ${resources.length} game resources...` );
                 });
 
             })

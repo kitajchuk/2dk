@@ -184,7 +184,7 @@ class TopView extends GameBox {
             return;
         }
 
-        console.log( "A Hold" );
+        Utils.log( "A Hold" );
     }
 
 
@@ -231,7 +231,7 @@ class TopView extends GameBox {
             return;
         }
 
-        console.log( "B Hold" );
+        Utils.log( "B Hold" );
     }
 
 
@@ -249,7 +249,7 @@ class TopView extends GameBox {
             return;
         }
 
-        console.log( "B Hold Release" );
+        Utils.log( "B Hold Release" );
     }
 
 
@@ -741,10 +741,10 @@ class TopView extends GameBox {
             sprite.counter = Utils.random( 64, 192 );
             sprite.dir = dirs[ Utils.random( 0, dirs.length ) ];
 
-            // console.log(
-            //     `Roam: ${sprite.data.id}`,
-            //     `Steps: ${sprite.dir} ${sprite.counter}`,
-            // );
+            Utils.log(
+                `Roam: ${sprite.data.id}`,
+                `Steps: ${sprite.dir} ${sprite.counter}`,
+            );
 
         } else {
             sprite.counter--;
@@ -775,19 +775,12 @@ class TopView extends GameBox {
                 sprite.collided = false;
                 sprite.dirX = Config.opposites[ sprite.dirX ];
                 sprite.dirY = Config.opposites[ sprite.dirY ];
-                // console.log( `Wander: ${sprite.data.id} collided so using opposites` );
 
 
             } else {
                 sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
                 sprite.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
             }
-
-            // console.log(
-            //     `Wander: ${sprite.data.id}`,
-            //     `StepsX: ${sprite.dirX} ${sprite.stepsX}`,
-            //     `StepsY: ${sprite.dirY} ${sprite.stepsY}`,
-            // );
 
         } else {
             sprite.counter--;
@@ -880,6 +873,9 @@ class TopView extends GameBox {
 
         // Fade out...
         this.player.element.classList.add( "is-fader" );
+
+        // Emit map change event
+        this.player.gamecycle.fire( Config.broadcast.MAPEVENT, event );
 
         setTimeout(() => {
             // New Map data

@@ -64,6 +64,9 @@ const Config = {
         BOUNDARY: "boundary",
         CUTSCENE: "cutscene",
     },
+    broadcast: {
+        MAPEVENT: "mapevent",
+    },
     npc: {
         TILE: "tile",
         WALK: "walk",

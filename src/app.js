@@ -1,4 +1,6 @@
 import Player from "./lib/Player";
+import Config from "./lib/Config";
+import Utils from "./lib/Utils";
 
 
 
@@ -13,35 +15,45 @@ class App {
         this.worker = `${this.scope}sw.js`;
 
         window.onload = () => {
-            this.register();
             this.player = new Player();
             this.player.load();
+            this.register();
+            this.bind();
         };
     }
 
+    bind () {
+        this.player.gamecycle.on( Config.broadcast.MAPEVENT, ( event ) => {
+            Utils.log(
+                Config.broadcast.MAPEVENT,
+                event
+            );
+        });
+    }
+
     register () {
-        if ( /^file:/.test( window.location.href ) ) {
-            console.log( "[2dk] Skip service worker for studio dev demo!" );
+        if ( Utils.dev() ) {
+            Utils.log( "[2dk] Skip service worker for studio dev demo!" );
             return;
         }
 
         if ( "serviceWorker" in navigator ) {
             navigator.serviceWorker.register( this.worker, this.config ).then(( registration ) => {
                 if ( registration.installing ) {
-                    console.log( "[2dk] Service worker installing." );
+                    Utils.log( "[2dk] Service worker installing." );
 
                 } else if ( registration.waiting ) {
-                    console.log( "[2dk] Service worker installed." );
+                    Utils.log( "[2dk] Service worker installed." );
 
                 } else if ( registration.active ) {
-                    console.log( "[2dk] Service worker active!" );
+                    Utils.log( "[2dk] Service worker active!" );
                 }
 
             }).catch(( error ) => {
-                console.error( `[2dk] Service worker failed with ${error}` );
+                Utils.error( `[2dk] Service worker failed with ${error}` );
             });
         } else {
-            console.log( "[2dk] Service workers not available!" );
+            Utils.log( "[2dk] Service workers not available!" );
         }
     }
 
@@ -50,7 +62,7 @@ class App {
         navigator.serviceWorker.getRegistrations().then(( registrations ) => {
             registrations.forEach(( registration ) => {
                 registration.unregister().then(( bool ) => {
-                    console.log( "[2dk] Unregistered Service Worker", bool );
+                    Utils.log( "[2dk] Unregistered Service Worker", bool );
                 });
             });
         });

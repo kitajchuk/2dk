@@ -75,6 +75,9 @@ var Config = {
     BOUNDARY: "boundary",
     CUTSCENE: "cutscene"
   },
+  broadcast: {
+    MAPEVENT: "mapevent"
+  },
   npc: {
     TILE: "tile",
     WALK: "walk",
@@ -315,7 +318,6 @@ var GameAudio = /*#__PURE__*/function () {
     key: "build",
     value: function build() {
       if (this.player.device) {
-        // console.log( "GameAudio disabled for mobile...", this );
         return;
       }
 
@@ -338,7 +340,6 @@ var GameAudio = /*#__PURE__*/function () {
     key: "addSound",
     value: function addSound(data) {
       if (this.player.device) {
-        // console.log( "GameAudio disabled for mobile...", data );
         return;
       }
 
@@ -681,8 +682,7 @@ var GameBox = /*#__PURE__*/function () {
         if (collides) {
           colliders.push(this.map.data.collision[i]);
         }
-      } // console.log( `Total colliders: ${this.map.data.collision.length}`, `Visible colliders: ${colliders.length}` );
-
+      }
 
       return colliders;
     }
@@ -702,8 +702,7 @@ var GameBox = /*#__PURE__*/function () {
         if (collides) {
           events.push(this.map.data.events[i]);
         }
-      } // console.log( `Total events: ${this.map.data.events.length}`, `Visible events: ${events.length}` );
-
+      }
 
       return events;
     }
@@ -723,8 +722,7 @@ var GameBox = /*#__PURE__*/function () {
         if (collides) {
           npcs.push(this.map.npcs[i]);
         }
-      } // console.log( `Total npcs: ${this.map.npcs.length}`, `Visible npcs: ${npcs.length}` );
-
+      }
 
       return npcs;
     }
@@ -746,8 +744,7 @@ var GameBox = /*#__PURE__*/function () {
             activeTiles.push(this.map.activeTiles[i]);
           }
         }
-      } // console.log( `Total acvtiveTiles: ${this.map.activeTiles.length}`, `Visible activeTiles: ${activeTiles.length}` );
-
+      }
 
       return this.map.activeTiles;
     }
@@ -942,8 +939,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
 /* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
-/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
-/* harmony import */ var properjs_controller__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! properjs-controller */ "./node_modules/properjs-controller/Controller.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Utils */ "./src/lib/Utils.js");
+/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
+/* harmony import */ var properjs_controller__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! properjs-controller */ "./node_modules/properjs-controller/Controller.js");
 
 
 
@@ -957,12 +955,13 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 
 
+
 var inputStream = [];
 var touchInterval = 8;
 var touchRepeated = 50;
 var touchControls = {
   a: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.A,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.A,
     elem: null,
     timer: null,
     touched: false,
@@ -971,7 +970,7 @@ var touchControls = {
     gamepad: [0]
   },
   b: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.B,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.B,
     elem: null,
     timer: null,
     touched: false,
@@ -980,7 +979,7 @@ var touchControls = {
     gamepad: [1]
   },
   start: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.START,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.START,
     elem: null,
     timer: null,
     touched: false,
@@ -990,7 +989,7 @@ var touchControls = {
     gamepad: [9]
   },
   select: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.SELECT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.SELECT,
     elem: null,
     hold: 0,
     timer: null,
@@ -1001,14 +1000,14 @@ var touchControls = {
   },
   // D-Pad
   "up-left": {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UPLEFT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UPLEFT,
     elem: null,
     timer: null,
     touched: false,
     dpad: ["left", "up"]
   },
   up: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UP,
     elem: null,
     timer: null,
     touched: false,
@@ -1016,14 +1015,14 @@ var touchControls = {
     axes: [0, -1]
   },
   "up-right": {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UPRIGHT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UPRIGHT,
     elem: null,
     timer: null,
     touched: false,
     dpad: ["right", "up"]
   },
   left: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.LEFT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.LEFT,
     elem: null,
     timer: null,
     touched: false,
@@ -1035,7 +1034,7 @@ var touchControls = {
     dpad: []
   },
   right: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.RIGHT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.RIGHT,
     elem: null,
     timer: null,
     touched: false,
@@ -1043,14 +1042,14 @@ var touchControls = {
     axes: [1, 0]
   },
   "down-left": {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWNLEFT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWNLEFT,
     elem: null,
     timer: null,
     touched: false,
     dpad: ["left", "down"]
   },
   down: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWN,
     elem: null,
     timer: null,
     touched: false,
@@ -1058,7 +1057,7 @@ var touchControls = {
     axes: [0, 1]
   },
   "down-right": {
-    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWNRIGHT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWNRIGHT,
     elem: null,
     timer: null,
     touched: false,
@@ -1217,13 +1216,13 @@ var handleGamepadAxes = function handleGamepadAxes(gamepad) {
     inputStream.push(controls.x.key);
     startTouch(controls.x);
   } else if (!controls.x) {
-    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.LEFT) !== -1) {
-      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.LEFT), 1);
+    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.LEFT) !== -1) {
+      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.LEFT), 1);
       cancelTouch(touchControls.left);
     }
 
-    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.RIGHT) !== -1) {
-      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.RIGHT), 1);
+    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.RIGHT) !== -1) {
+      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.RIGHT), 1);
       cancelTouch(touchControls.right);
     }
   }
@@ -1232,13 +1231,13 @@ var handleGamepadAxes = function handleGamepadAxes(gamepad) {
     inputStream.push(controls.y.key);
     startTouch(controls.y);
   } else if (!controls.y) {
-    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP) !== -1) {
-      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP), 1);
+    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UP) !== -1) {
+      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UP), 1);
       cancelTouch(touchControls.up);
     }
 
-    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN) !== -1) {
-      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN), 1);
+    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWN) !== -1) {
+      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWN), 1);
       cancelTouch(touchControls.down);
     }
   }
@@ -1268,7 +1267,7 @@ var onGamepadConnected = function onGamepadConnected() {
 
     handleGamepadButtons(gamepad);
   });
-  console.log("GamePad Connected: ".concat(gamepad.id), gamepad);
+  _Utils__WEBPACK_IMPORTED_MODULE_6__["default"].log("GamePad Connected: ".concat(gamepad.id), gamepad);
 };
 
 var onGamepadDisconnected = function onGamepadDisconnected() {
@@ -1316,8 +1315,7 @@ var startTouch = function startTouch(control) {
 
 var handleTouchStart = function handleTouchStart(control) {
   if (control.touched && control.menu && control.hold > 0) {
-    control.hold++; // console.log( `suspended ${control.btn}` );
-
+    control.hold++;
     return;
   }
 
@@ -1325,34 +1323,34 @@ var handleTouchStart = function handleTouchStart(control) {
     control.hold++;
 
     if (control.hold > touchRepeated) {
-      instance.fire("".concat(control.btn[0], "-holdpress")); // console.log( `${control.btn[ 0 ]}-holdpress` );
+      instance.fire("".concat(control.btn[0], "-holdpress"));
     } else {
-      instance.fire("".concat(control.btn[0], "-press")); // console.log( `${control.btn[ 0 ]}-press` );
+      instance.fire("".concat(control.btn[0], "-press"));
     }
   } else if (control.dpad) {
     control.dpad.forEach(function (dpad, i) {
-      instance.fire("".concat(control.btn[i], "-press"), dpad); // console.log( `${control.btn[ i ]}-press` );
+      instance.fire("".concat(control.btn[i], "-press"), dpad);
     });
   } else {
-    instance.fire("".concat(control.btn[0], "-press"), null); // console.log( `${control.btn[ 0 ]}-press` );
+    instance.fire("".concat(control.btn[0], "-press"), null);
   }
 };
 
 var handleTouchEnd = function handleTouchEnd(control) {
   if (Object.prototype.hasOwnProperty.call(control, "hold")) {
     if (control.hold > touchRepeated) {
-      instance.fire("".concat(control.btn[0], "-holdrelease")); // console.log( `${control.btn[ 0 ]}-holdrelease` );
+      instance.fire("".concat(control.btn[0], "-holdrelease"));
     } else {
-      instance.fire("".concat(control.btn[0], "-release")); // console.log( `${control.btn[ 0 ]}-release` );
+      instance.fire("".concat(control.btn[0], "-release"));
     }
 
     control.hold = 0;
   } else if (control.dpad) {
     control.dpad.forEach(function (dpad, i) {
-      instance.fire("".concat(control.btn[i], "-release"), dpad); // console.log( `${control.btn[ i ]}-release` );
+      instance.fire("".concat(control.btn[i], "-release"), dpad);
     });
   } else {
-    instance.fire("".concat(control.btn[0], "-release"), null); // console.log( `${control.btn[ 0 ]}-release` );
+    instance.fire("".concat(control.btn[0], "-release"), null);
   }
 };
 
@@ -1448,7 +1446,7 @@ var GamePad = /*#__PURE__*/function (_Controller) {
 
 
       return ctrls.sort(function (ctrl) {
-        if (ctrl.key === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP || ctrl.key === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN) {
+        if (ctrl.key === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UP || ctrl.key === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWN) {
           return 1;
         } else {
           return -1;
@@ -1458,7 +1456,7 @@ var GamePad = /*#__PURE__*/function (_Controller) {
   }]);
 
   return GamePad;
-}(properjs_controller__WEBPACK_IMPORTED_MODULE_7__["default"]);
+}(properjs_controller__WEBPACK_IMPORTED_MODULE_8__["default"]);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GamePad);
 
@@ -2178,7 +2176,7 @@ var Player = /*#__PURE__*/function () {
         resources = resources.map(function (url) {
           return _this.loader.load(url).then(function () {
             counter++;
-            _this.splashLoad.innerHTML = _this.getSplash("Loaded ".concat(counter, " of ").concat(resources.length, " game resources...")); // console.log( `Loaded ${counter} of ${resources.length} game resources...` );
+            _this.splashLoad.innerHTML = _this.getSplash("Loaded ".concat(counter, " of ").concat(resources.length, " game resources..."));
           });
         });
         Promise.all(resources).then(function () {
@@ -2448,6 +2446,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
 
 var Utils = {
+  dev: function dev() {
+    return /^file:|^localhost/.test(window.location.href);
+  },
+  log: function log() {
+    if (Utils.dev()) {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      console.log.apply(console, args);
+    }
+  },
+  error: function error() {
+    if (Utils.dev()) {
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+
+      console.error.apply(console, args);
+    }
+  },
   copy: function copy(obj) {
     return JSON.parse(JSON.stringify(obj));
   },
@@ -2531,27 +2550,6 @@ var Utils = {
       ctx.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_0__["default"].colors.teal;
       ctx.fillRect(x * g, 0, 1, g * h);
     }
-  },
-  getTransform: function getTransform(el) {
-    var transform = el ? window.getComputedStyle(el)["transform"] : "none";
-    var values = transform.replace(/matrix|3d|\(|\)|\s/g, "").split(",");
-    var ret = {}; // No Transform
-
-    if (values[0] === "none") {
-      ret.x = 0;
-      ret.y = 0;
-      ret.z = 0; // Matrix 3D
-    } else if (values.length === 16) {
-      ret.x = parseFloat(values[12]);
-      ret.y = parseFloat(values[13]);
-      ret.z = parseFloat(values[14]);
-    } else {
-      ret.x = parseFloat(values[4]);
-      ret.y = parseFloat(values[5]);
-      ret.z = 0;
-    }
-
-    return ret;
   },
   // From Akihabara helpers:
   // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L78
@@ -2862,7 +2860,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         return;
       }
 
-      console.log("A Hold");
+      _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].log("A Hold");
     }
   }, {
     key: "releaseA",
@@ -2908,7 +2906,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         return;
       }
 
-      console.log("B Hold");
+      _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].log("B Hold");
     }
   }, {
     key: "releaseB",
@@ -2926,7 +2924,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         return;
       }
 
-      console.log("B Hold Release");
+      _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].log("B Hold Release");
     }
     /*******************************************************************************
     * Hero Handlers...
@@ -3411,10 +3409,8 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
       if (!sprite.counter) {
         sprite.counter = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(64, 192);
-        sprite.dir = dirs[_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, dirs.length)]; // console.log(
-        //     `Roam: ${sprite.data.id}`,
-        //     `Steps: ${sprite.dir} ${sprite.counter}`,
-        // );
+        sprite.dir = dirs[_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, dirs.length)];
+        _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].log("Roam: ".concat(sprite.data.id), "Steps: ".concat(sprite.dir, " ").concat(sprite.counter));
       } else {
         sprite.counter--;
       }
@@ -3442,16 +3438,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         if (sprite.collided) {
           sprite.collided = false;
           sprite.dirX = _Config__WEBPACK_IMPORTED_MODULE_6__["default"].opposites[sprite.dirX];
-          sprite.dirY = _Config__WEBPACK_IMPORTED_MODULE_6__["default"].opposites[sprite.dirY]; // console.log( `Wander: ${sprite.data.id} collided so using opposites` );
+          sprite.dirY = _Config__WEBPACK_IMPORTED_MODULE_6__["default"].opposites[sprite.dirY];
         } else {
           sprite.dirX = ["left", "right"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)];
           sprite.dirY = ["down", "up"][_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].random(0, 2)];
-        } // console.log(
-        //     `Wander: ${sprite.data.id}`,
-        //     `StepsX: ${sprite.dirX} ${sprite.stepsX}`,
-        //     `StepsY: ${sprite.dirY} ${sprite.stepsY}`,
-        // );
-
+        }
       } else {
         sprite.counter--;
       }
@@ -3536,7 +3527,9 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       // Pause the Player so no game buttons dispatch
       this.player.pause(); // Fade out...
 
-      this.player.element.classList.add("is-fader");
+      this.player.element.classList.add("is-fader"); // Emit map change event
+
+      this.player.gamecycle.fire(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.MAPEVENT, event);
       setTimeout(function () {
         // New Map data
         var newMapData = _Loader__WEBPACK_IMPORTED_MODULE_7__["default"].cash(event.map);
@@ -3774,7 +3767,7 @@ var Companion = /*#__PURE__*/function (_Sprite) {
       }
 
       if (!this.origin) {
-        this.origin = this.position; // console.log( `Companion spawn origin ${this.data.id} (${this.position.x}, ${this.position.y})` );
+        this.origin = this.position;
       }
 
       if (poi.x && poi.y && this.checkFrame !== this.watchFrame) {
@@ -3839,7 +3832,7 @@ var Companion = /*#__PURE__*/function (_Sprite) {
       }
 
       if (!this.origin) {
-        this.origin = this.position; // console.log( `Spawn Origin ${this.data.id} (${this.position.x}, ${this.position.y})`, this );
+        this.origin = this.position;
       }
 
       if (poi.x && poi.y && this.checkFrame !== this.watchFrame && this.hero.verb !== _Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.GRAB) {
@@ -4244,7 +4237,7 @@ var NPC = /*#__PURE__*/function (_Sprite) {
         this.collided = true;
         this.cooldown = 60 * 4;
         this.counter = 0;
-        this.controls = {}; // console.log( `Sprite counter reset for NPC: ${this.data.id}` );
+        this.controls = {};
       } // Roaming NPCs can push the hero back...
 
 
@@ -4555,7 +4548,8 @@ var Sprite = /*#__PURE__*/function () {
       this.frame = 0;
 
       if (this.data.verbs[this.verb][this.dir].stepsX) {
-        if (this.verb === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT && this.idle.x && this.idle.y) {// console.log( "static lift..." );
+        if (this.verb === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT && this.idle.x && this.idle.y) {
+          _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].log("static lift...");
         } else {
           var diff = elapsed - this.previousElapsed;
           this.frame = Math.floor(diff / this.data.verbs[this.verb].dur * this.data.verbs[this.verb][this.dir].stepsX);
@@ -9219,6 +9213,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
 /* harmony import */ var _lib_Player__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./lib/Player */ "./src/lib/Player.js");
+/* harmony import */ var _lib_Config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./lib/Config */ "./src/lib/Config.js");
+/* harmony import */ var _lib_Utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./lib/Utils */ "./src/lib/Utils.js");
+
+
 
 
  // 2dk entry point
@@ -9239,36 +9237,45 @@ var App = /*#__PURE__*/function () {
     this.worker = "".concat(this.scope, "sw.js");
 
     window.onload = function () {
-      _this.register();
-
       _this.player = new _lib_Player__WEBPACK_IMPORTED_MODULE_2__["default"]();
 
       _this.player.load();
+
+      _this.register();
+
+      _this.bind();
     };
   }
 
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(App, [{
+    key: "bind",
+    value: function bind() {
+      this.player.gamecycle.on(_lib_Config__WEBPACK_IMPORTED_MODULE_3__["default"].broadcast.MAPEVENT, function (event) {
+        _lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].log(_lib_Config__WEBPACK_IMPORTED_MODULE_3__["default"].broadcast.MAPEVENT, event);
+      });
+    }
+  }, {
     key: "register",
     value: function register() {
-      if (/^file:/.test(window.location.href)) {
-        console.log("[2dk] Skip service worker for studio dev demo!");
+      if (_lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].dev()) {
+        _lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].log("[2dk] Skip service worker for studio dev demo!");
         return;
       }
 
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register(this.worker, this.config).then(function (registration) {
           if (registration.installing) {
-            console.log("[2dk] Service worker installing.");
+            _lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].log("[2dk] Service worker installing.");
           } else if (registration.waiting) {
-            console.log("[2dk] Service worker installed.");
+            _lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].log("[2dk] Service worker installed.");
           } else if (registration.active) {
-            console.log("[2dk] Service worker active!");
+            _lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].log("[2dk] Service worker active!");
           }
         })["catch"](function (error) {
-          console.error("[2dk] Service worker failed with ".concat(error));
+          _lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].error("[2dk] Service worker failed with ".concat(error));
         });
       } else {
-        console.log("[2dk] Service workers not available!");
+        _lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].log("[2dk] Service workers not available!");
       }
     }
   }, {
@@ -9278,7 +9285,7 @@ var App = /*#__PURE__*/function () {
       navigator.serviceWorker.getRegistrations().then(function (registrations) {
         registrations.forEach(function (registration) {
           registration.unregister().then(function (bool) {
-            console.log("[2dk] Unregistered Service Worker", bool);
+            _lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].log("[2dk] Unregistered Service Worker", bool);
           });
         });
       });

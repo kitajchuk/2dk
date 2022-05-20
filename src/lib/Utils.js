@@ -3,6 +3,25 @@ import Config from "./Config";
 
 
 const Utils = {
+    dev () {
+        return /^file:|^localhost/.test( window.location.href );
+    },
+
+
+    log ( ...args ) {
+        if ( Utils.dev() ) {
+            console.log.apply( console, args );
+        }
+    },
+
+
+    error ( ...args ) {
+        if ( Utils.dev() ) {
+            console.error.apply( console, args );
+        }
+    },
+
+
     copy ( obj ) {
         return JSON.parse( JSON.stringify( obj ) );
     },
@@ -126,34 +145,8 @@ const Utils = {
     },
 
 
-    getTransform ( el ) {
-        const transform = el ? window.getComputedStyle( el )[ "transform" ] : "none";
-        const values = transform.replace( /matrix|3d|\(|\)|\s/g, "" ).split( "," );
-        const ret = {};
-
-        // No Transform
-        if ( values[ 0 ] === "none" ) {
-            ret.x = 0;
-            ret.y = 0;
-            ret.z = 0;
-
-        // Matrix 3D
-        } else if ( values.length === 16 ) {
-            ret.x = parseFloat( values[ 12 ] );
-            ret.y = parseFloat( values[ 13 ] );
-            ret.z = parseFloat( values[ 14 ] );
-
-        } else {
-            ret.x = parseFloat( values[ 4 ] );
-            ret.y = parseFloat( values[ 5 ] );
-            ret.z = 0;
-        }
-
-        return ret;
-    },
-
-
     // From Akihabara helpers:
+
 
     // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L78
     random  ( min, range ) {
@@ -192,10 +185,11 @@ const Utils = {
     * @param {Float} add The angle you're adding to the base angle.
     * @returns The resultant angle, always between 0 and 2*pi.
     */
-    addAngle: function (a, add) {
-        a = (a + add) % (Math.PI * 2);
-        if (a < 0) {
-            return (Math.PI * 2) + a;
+    addAngle ( a, add ) {
+        a = ( a + add ) % ( Math.PI * 2 );
+        if ( a < 0 ) {
+            return ( Math.PI * 2 ) + a;
+
         } else {
             return a;
         }
@@ -208,8 +202,8 @@ const Utils = {
     * @param {Object} p2 This is an object containing x and y params for the second point.
     * @returns The distance between p1 and p2.
     */
-    getDistance: function (p1, p2) {
-        return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+    getDistance ( p1, p2 ) {
+        return Math.sqrt( Math.pow( p2.x - p1.x, 2 ) + Math.pow( p2.y - p1.y, 2 ) );
     },
 
 
@@ -220,8 +214,8 @@ const Utils = {
     * @param {Float} transl (Optional) Adds an angle (in radians) to the result. Defaults to 0.
     * @returns The angle between points p1 and p2, plus transl.
     */
-    getAngle: function (p1, p2, transl) {
-        return Utils.addAngle(Math.atan2(p2.y - p1.y, p2.x - p1.x), (transl ? transl : 0));
+    getAngle ( p1, p2, transl ) {
+        return Utils.addAngle( Math.atan2( p2.y - p1.y, p2.x - p1.x ), ( transl ? transl : 0 )) ;
     },
 
 
@@ -231,8 +225,11 @@ const Utils = {
     * @param {Float} a The angle of translation (rad).
     * @param {Float} d The distance of translation.
     */
-    translate: function (p1, a, d) {
-        return {x: p1.x + Math.cos(a) * d, y: p1.y + Math.sin(a) * d};
+    translate ( p1, a, d ) {
+        return {
+            x: p1.x + Math.cos( a ) * d,
+            y: p1.y + Math.sin( a ) * d
+        };
     },
 
 
@@ -242,8 +239,8 @@ const Utils = {
     * @param {Float} a The angle of translation (rad).
     * @param {Float} d The distance of translation.
     */
-    translateX: function (x1, a, d) {
-        return x1 + Math.cos(a) * d;
+    translateX ( x1, a, d ) {
+        return x1 + Math.cos( a ) * d;
     },
 
 
@@ -253,8 +250,8 @@ const Utils = {
     * @param {Float} a The angle of translation (rad).
     * @param {Float} d The distance of translation.
     */
-    translateY: function (y1, a, d) {
-        return y1 + Math.sin(a) * d;
+    translateY ( y1, a, d ) {
+        return y1 + Math.sin( a ) * d;
     }
 };
 
