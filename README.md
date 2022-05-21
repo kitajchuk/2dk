@@ -59,7 +59,7 @@ As of right now the ability for uploaded audio files (mp3) to be compressed requ
 A 2dk game is a static [PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) that contains all its own resources and data files. The Player, or engine, has a mobile first philosophy behind it and is designed to be played as a standalone web app on your phone. It handles offline mode with a [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) that caches all the game resources.
 
 #### Resources
-I've found the [Mozilla Gaming](https://developer.mozilla.org/en-US/docs/Games) docs to be quite helpful. I used these to implement the [Gamepad](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API) API so I can play with my USB NES controller when developing in Firefox. There are some other debug mode features available when running a 2dk game in a desktop browser.
+I've found the [Mozilla Gaming](https://developer.mozilla.org/en-US/docs/Games) docs to be quite helpful. I used these to implement the [Gamepad](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API) API so I can play with my USB NES controller when developing in electron.
 
 
 
