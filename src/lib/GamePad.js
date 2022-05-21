@@ -116,49 +116,43 @@ let instance = null;
 
 
 const getControl = ( key ) => {
-    for ( let btn in touchControls ) {
-        if ( touchControls[ btn ].key === key ) {
-            return touchControls[ btn ];
-        }
-    }
+    let ret = null;
 
-    return null;
+    Object.keys( touchControls ).forEach(( btn ) => {
+        if ( touchControls[ btn ].key === key ) {
+            ret = touchControls[ btn ];
+        }
+    });
+
+    return ret;
 };
 
 
 
-// const getDpad = ( key ) => {
-//     for ( let btn in touchControls ) {
-//         if ( touchControls[ btn ].key === key && touchControls[ btn ].dpad ) {
-//             return touchControls[ btn ];
-//         }
-//     }
-//
-//     return null;
-// };
-
-
-
 const getGamepad = ( val ) => {
-    for ( let btn in touchControls ) {
-        if ( touchControls[ btn ].gamepad && touchControls[ btn ].gamepad.indexOf( val ) !== -1 ) {
-            return touchControls[ btn ];
-        }
-    }
+    let ret = null;
 
-    return null;
+    Object.keys( touchControls ).forEach(( btn ) => {
+        if ( touchControls[ btn ].gamepad && touchControls[ btn ].gamepad.indexOf( val ) !== -1 ) {
+            ret = touchControls[ btn ];
+        }
+    });
+
+    return ret;
 };
 
 
 
 const getAxes = ( xy, val ) => {
-    for ( let btn in touchControls ) {
-        if ( touchControls[ btn ].axes && touchControls[ btn ].axes[ xy ] === val ) {
-            return touchControls[ btn ];
-        }
-    }
+    let ret = null;
 
-    return null;
+    Object.keys( touchControls ).forEach(( btn ) => {
+        if ( touchControls[ btn ].axes && touchControls[ btn ].axes[ xy ] === val ) {
+            ret = touchControls[ btn ];
+        }
+    });
+
+    return ret;
 };
 
 
@@ -212,7 +206,7 @@ const onTouchMove = ( e ) => {
             }
         }
 
-        for ( let btn in touchControls ) {
+        Object.keys( touchControls ).forEach(( btn ) => {
             if ( touchControls[ btn ].touched ) {
                 const touched = getTouched( e.touches, touchControls[ btn ] );
 
@@ -220,7 +214,7 @@ const onTouchMove = ( e ) => {
                     cancelTouch( touchControls[ btn ] );
                 }
             }
-        }
+        });
     }
 
     return false;
@@ -236,7 +230,7 @@ const onTouchEnd = ( e ) => {
         cancelTouches();
 
     } else {
-        for ( let btn in touchControls ) {
+        Object.keys( touchControls ).forEach(( btn ) => {
             if ( touchControls[ btn ].touched ) {
                 const touched = getTouched( e.touches, touchControls[ btn ] );
 
@@ -244,7 +238,7 @@ const onTouchEnd = ( e ) => {
                     cancelTouch( touchControls[ btn ] );
                 }
             }
-        }
+        });
     }
 
     return false;
@@ -364,19 +358,19 @@ const onGamepadDisconnected = () => {
 
 
 const clearTouches = () => {
-    for ( let btn in touchControls ) {
+    Object.keys( touchControls ).forEach(( btn ) => {
         touchControls[ btn ].elem.classList.remove( "is-active" );
-    }
+    });
 };
 
 
 
 const cancelTouches = () => {
-    for ( let btn in touchControls ) {
+    Object.keys( touchControls ).forEach(( btn ) => {
         if ( touchControls[ btn ].touched ) {
             cancelTouch( touchControls[ btn ] );
         }
-    }
+    });
 };
 
 
@@ -521,7 +515,7 @@ class GamePad extends Controller {
         this.element.appendChild( this.dpad );
         this.element.appendChild( this.btns );
 
-        for ( let btn in touchControls ) {
+        Object.keys( touchControls ).forEach(( btn ) => {
             touchControls[ btn ].btn = btn.split( "-" );
             touchControls[ btn ].elem = document.createElement( "div" );
             touchControls[ btn ].elem.className = `_2dk__gamepad__${btn}`;
@@ -537,7 +531,7 @@ class GamePad extends Controller {
             } else {
                 this.btns.appendChild( touchControls[ btn ].elem );
             }
-        }
+        });
 
         this.player.element.appendChild( this.element );
 
@@ -550,11 +544,11 @@ class GamePad extends Controller {
     checkDpad () {
         const ctrls = [];
 
-        for ( let btn in touchControls ) {
+        Object.keys( touchControls ).forEach(( btn ) => {
             if ( touchControls[ btn ].touched && touchControls[ btn ].dpad ) {
                 ctrls.push( touchControls[ btn ] );
             }
-        }
+        });
 
         // Sort UP and DOWN so they dispatch last in a stream of directions
         return ctrls.sort(( ctrl ) => {
