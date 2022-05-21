@@ -150,7 +150,7 @@ class Companion extends Sprite {
             this.origin = this.position;
         }
 
-        if ( (poi.x && poi.y) && (this.checkFrame !== this.watchFrame) ) {
+        if ( ( poi.x && poi.y ) && ( this.checkFrame !== this.watchFrame ) ) {
             this.watchFrame = this.checkFrame;
 
             if ( this.tween ) {

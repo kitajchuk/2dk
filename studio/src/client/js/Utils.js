@@ -12,9 +12,9 @@ const Utils = {
 
         mediabox.stopChannel( channel );
 
-        for ( let id in sounds ) {
+        Object.keys( sounds ).forEach(( id ) => {
             mediabox.destroyMedia( id );
-        }
+        });
     },
 
 
@@ -89,9 +89,9 @@ const Utils = {
             if ( !Array.isArray( data ) ) {
                 const arr = [];
 
-                for ( let i in data ) {
+                Object.keys( data ).forEach(( i ) => {
                     arr.push( data[ i ] );
-                }
+                });
 
                 data = arr;
             }

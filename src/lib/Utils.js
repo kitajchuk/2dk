@@ -23,6 +23,7 @@ const Utils = {
 
 
     copy ( obj ) {
+        // Deep copy for non-mutation of origin `obj`
         return JSON.parse( JSON.stringify( obj ) );
     },
 
@@ -31,11 +32,11 @@ const Utils = {
         base = Utils.copy( base );
         pr = Utils.copy( pr );
 
-        for ( let i in pr ) {
+        Object.keys( pr ).forEach(( i ) => {
             if ( !base[ i ] || f ) {
                 base[ i ] = pr[ i ];
             }
-        }
+        });
 
         return base;
     },
