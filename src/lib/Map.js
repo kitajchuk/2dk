@@ -352,27 +352,29 @@ class Map {
     getTextures ( renderBox ) {
         const height = (renderBox.height / this.data.tilesize);
         const width = (renderBox.width / this.data.tilesize);
-        let ret = {};
+        const ret = {};
+        let celsCopy;
+        let activeTile;
+        let lookupY;
+        let lookupX;
+        let y = 0;
+        let x = 0;
 
         Object.keys( this.data.textures ).forEach(( id ) => {
             ret[ id ] = [];
 
-            let y = 0;
-
             while ( y < height ) {
                 ret[ id ][ y ] = [];
 
-                const lookupY = renderBox.y + y;
+                lookupY = renderBox.y + y;
 
                 if ( this.data.textures[ id ][ lookupY ] ) {
-                    let x = 0;
-
                     while ( x < width ) {
-                        const lookupX = renderBox.x + x;
+                        lookupX = renderBox.x + x;
 
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
-                            const celsCopy = Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
-                            const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
+                            celsCopy = Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
+                            activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
 
                             // Render the textures
                             // Shift foreground behind hero render if coords determine so
@@ -417,14 +419,12 @@ class Map {
 
     getActiveTile ( layer, celsCoords, celsCopy ) {
         // Either return a tile or don't if it's a static thing...
-        for ( let i = this.data.tiles.length; i--; ) {
-            const tiles = this.data.tiles[ i ];
+        const layerTiles = this.data.tiles.filter(( tiles ) => {
+            return tiles.layer === layer;
+        });
 
-            // Skip if not even the right layer to begin with...
-            if ( layer !== tiles.layer ) {
-                continue;
-            }
-
+        for ( let i = layerTiles.length; i--; ) {
+            const tiles = layerTiles[ i ];
             const topCel = celsCopy[ celsCopy.length - 1 ];
 
             if ( tiles.coords.length ) {
