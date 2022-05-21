@@ -4,10 +4,13 @@ import Utils from "./Utils";
 
 class Dialogue {
     constructor () {
+        this.data = null;
         this.ready = false;
         this.pressed = false;
         this.active = false;
-        this.autoplay = false;
+        this.isResolve = false;
+        this.resolve = null;
+        this.reject = null;
         this.timeout = null;
         this.debounce = 750;
         this.duration = 250;
@@ -146,11 +149,13 @@ class Dialogue {
         this.data = null;
         this.ready = false;
         this.pressed = false;
-        this.timeout = null;
-
-        setTimeout(() => {
+        this.isResolve = false;
+        this.resolve = null;
+        this.reject = null; 
+        this.timeout = setTimeout(() => {
             this.element.innerHTML = "";
             this.active = false;
+            this.timeout = null;
 
         }, this.duration );
     }
