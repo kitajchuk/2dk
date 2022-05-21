@@ -162,9 +162,9 @@ class Map {
 
 
     destroy () {
-        for ( let id in this.layers ) {
+        Object.keys( this.layers ).forEach(( id ) => {
             this.layers[ id ].offCanvas.destroy();
-        }
+        });
         this.layers = null;
 
         this.activeTiles.forEach(( activeTiles ) => {
@@ -188,9 +188,9 @@ class Map {
 
     build () {
         // Render layers
-        for ( let id in this.layers ) {
+        Object.keys( this.layers ).forEach(( id ) => {
             this.addLayer( id );
-        }
+        });
 
         // NPCs
         this.data.npcs.forEach(( data ) => {
@@ -318,9 +318,9 @@ class Map {
 
 
     clear () {
-        for ( let id in this.layers ) {
+        Object.keys( this.layers ).forEach(( id ) => {
             this.layers[ id ].offCanvas.clear();
-        }
+        });
     }
 
 
@@ -350,12 +350,13 @@ class Map {
 
 
     getTextures ( renderBox ) {
+        const height = (renderBox.height / this.data.tilesize);
+        const width = (renderBox.width / this.data.tilesize);
         let ret = {};
 
-        for ( let id in this.data.textures ) {
+        Object.keys( this.data.textures ).forEach(( id ) => {
             ret[ id ] = [];
 
-            const height = (renderBox.height / this.data.tilesize);
             let y = 0;
 
             while ( y < height ) {
@@ -364,7 +365,6 @@ class Map {
                 const lookupY = renderBox.y + y;
 
                 if ( this.data.textures[ id ][ lookupY ] ) {
-                    const width = (renderBox.width / this.data.tilesize);
                     let x = 0;
 
                     while ( x < width ) {
@@ -397,7 +397,7 @@ class Map {
 
                 y++;
             }
-        }
+        });
 
         return ret;
     }
