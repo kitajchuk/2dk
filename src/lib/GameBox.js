@@ -85,13 +85,13 @@ class GameBox {
         initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
         this.hero = new Hero( initHeroData, this.map );
 
-        for ( let id in initHeroData.sounds ) {
+        Object.keys( initHeroData.sounds ).forEach(( id ) => {
             this.player.gameaudio.addSound({
                 id,
                 src: initHeroData.sounds[ id ],
                 channel: "sfx",
             });
-        }
+        });
 
         // Companion?
         if ( initHeroData.companion ) {
@@ -113,9 +113,9 @@ class GameBox {
 
 
     clear () {
-        for ( let id in this.layers ) {
+        Object.keys( this.layers ).forEach(( id ) => {
             this.layers[ id ].onCanvas.clear();
-        }
+        });
     }
 
 
@@ -124,9 +124,9 @@ class GameBox {
         this.element.className = "_2dk__gamebox";
 
         // Render layers
-        for ( let id in this.layers ) {
+        Object.keys( this.layers ).forEach(( id ) => {
             this.addLayer( id );
-        }
+        });
 
         this.player.screen.appendChild( this.element );
         this.player.screen.appendChild( this.dialogue.element );
