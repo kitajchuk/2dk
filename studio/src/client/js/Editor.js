@@ -384,11 +384,9 @@ class Editor {
         const postData = this.data.map;
         const mapData = Utils.parseFields( this.fields.map );
 
-        for ( const i in mapData ) {
-            if ( Object.prototype.hasOwnProperty.call( mapData, i ) ) {
-                postData[ i ] = mapData[ i ];
-            }
-        }
+        Object.keys( mapData ).forEach(( i ) => {
+            postData[ i ] = mapData[ i ];
+        });
 
         ipcRenderer.send( "renderer-savemap", postData );
         this.closeMenus();
