@@ -339,7 +339,7 @@ Can all be handled in plugin GameBox
             }
         }
 
-        return this.map.activeTiles;
+        return activeTiles;
     }
 
 
