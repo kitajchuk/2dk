@@ -10,6 +10,8 @@
 2dk is a hobby project combining my love for web technology and my nostalgic passion for 2D gaming, specifically the Game Boy era. 
 It's a never ending creative outlet, whenever I have the time, to tinker and develop new features across the engine and studio software.
 
+[This PR here](https://github.com/kitajchuk/2dk/pull/29) is tracking towards an MVP version with the ability to create functional sandbox games without writing a lick of code using the studio software and running in the 2dk engine.
+
 <img src="./public/2dk.png" width="100%" />
 
 ## Game bundles
