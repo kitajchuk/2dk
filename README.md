@@ -79,4 +79,4 @@ I've been trying to keep track of where I've found resources online. Stuff like 
 
 
 ## Disclaimer
-**It's important to note I take no credit for the Nintendo IPs used for testing nor for the artwork and designs. All I've done is increased the resolution of sprites and tilesets I've compiled from the internet.**
+*I take no credit for the Nintendo IPs used for the Zelda demo game nor for the artwork and designs. All I've done is increased the resolution of sprites and tilesets I've compiled from the internet.*
