@@ -29,6 +29,7 @@
             }
             h1 {
                 font-size: 28px;
+                padding-top: 64px;
             }
             h2 {
                 font-size: 22px;
@@ -42,11 +43,11 @@
                 display: block;
             }
             a {
-                color: #2AFFEA;
+                color: var(--teal);
                 text-decoration: underline;
             }
             span {
-                color: #2AFFEA;
+                color: var(--teal);
             }
             img {
                 width: 100%;
@@ -78,35 +79,9 @@
                 width: 50%;
                 padding: 32px;
             }
-            .player {
-                width: 768px;
-                height: 576px;
-                margin: 0 auto;
-                position: relative;
-                overflow: hidden;
-                margin-top: 32px;
-                border: 3px solid #333;
-            }
-            .player:after {
-                position: auto;
-                content: "";
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                left: 0;
-                top: 0;
-                z-index: 2;
-            }
-            .player iframe {
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                left: 0;
-                top: 0;
-                z-index: 1;
-            }
-            .player.focused {
-                border-color: #2AFFEA;
+            .meta {
+                color: var(--grey);
+                font-size: 12px;
             }
             @media (max-width: 832px) {
                 .screens img {
@@ -115,10 +90,6 @@
                 }
             }
             @media (max-width: 768px) {
-                .player {
-                    width: 384px;
-                    height: 288px;
-                }
                 h1 {
                     font-size: 22px;
                 }
@@ -126,38 +97,32 @@
                     font-size: 18px;
                 }
             }
-            @media (max-width: 384px) {
-                .player,
-                header > p {
-                    display: none;
-                }
-            }
         </style>
     </head>
-    <body title="Click to unfocus">
+    <body>
         <header>
             <img src="/2dk.png" />
         </header>
         <main>
-            <h2>2dk dev demo</h2>
+            <h1>2dk dev demo</h1>
             <ul>
                 <li>
-                    <p><a target="_blank" href="/games/la/">Save to your Home Screen</a> on your mobile phone.</p>
+                    <p><a target="_blank" href="/games/la/">Save to your Home Screen</a>.</p>
                 </li>
                 <li>
-                    <p>Designed for mobile with a slick <span>8-point touch D-pad</span>.</p>
+                    <p>Mobile <span>8-point D-touchpad</span>.</p>
                 </li>
                 <li>
-                    <p>Browser: Arrow keys, X (A), Z (B), Enter (Start).</p>
+                    <p>Browser <span>Keyboard</span> support.</p>
                 </li>
                 <li>
-                    <p>Native <span>Gamepad</span> support with NES USB controller.</p>
-                </li>
-                <li>
-                    <p>*Audio disabled on mobile while it gets sorted out...</p>
+                    <p>Native <span>Gamepad</span> support.</p>
                 </li>
                 <li>
                     <p><a target="_blank" href="https://github.com/kitajchuk/2dk">github.com/kitajchuk/2dk</a></p>
+                </li>
+                <li>
+                    <p class="meta">*Audio is currently disabled on mobile while the performance and capability is explored...</p>
                 </li>
             </ul>
             <h2>Mobile Gameplay:</h2>
