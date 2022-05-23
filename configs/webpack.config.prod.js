@@ -1,7 +1,7 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ESLintWebpackPlugin = require('eslint-webpack-plugin');
+const path = require ("path" );
+const HtmlWebpackPlugin = require( "html-webpack-plugin" );
+const CopyWebpackPlugin = require( "copy-webpack-plugin" );
+const ESLintWebpackPlugin = require( "eslint-webpack-plugin" );
 const {
     babelRules,
     resolveConfig,
@@ -9,12 +9,12 @@ const {
     htmlPluginConfig,
     copyPluginConfig,
     // optimizationConfig,
-} = require('./webpack.config.base');
+} = require( "./webpack.config.base" );
 
 module.exports = {
-    mode: 'production',
+    mode: "production",
     entry: {
-        app: path.resolve(process.cwd(), 'src/index.js'),
+        app: path.resolve( process.cwd(), "src/index.js" ),
     },
     devServer: devServerConfig,
     // optimization: optimizationConfig,
@@ -36,17 +36,17 @@ module.exports = {
                 minifyURLs: true,
             },
         }),
-        new CopyWebpackPlugin(copyPluginConfig),
+        new CopyWebpackPlugin( copyPluginConfig ),
         new ESLintWebpackPlugin(),
     ],
     // output: {
     //     ...outputConfig,
-    //     filename: '[name].[chunkhash].js',
-    //     chunkFilename: '[name].[chunkhash].js',
+    //     filename: "[name].[chunkhash].js",
+    //     chunkFilename: "[name].[chunkhash].js",
     // },
     output: {
-        path: path.resolve(process.cwd(), 'dist'),
-        filename: 'index.js',
+        path: path.resolve( process.cwd(), "dist" ),
+        filename: "index.js",
     },
     module: {
         rules: [

@@ -1,33 +1,33 @@
-const path = require('path');
+const path = require( "path" );
 
 const devServerConfig = {
     hot: true,
     open: true,
     port: 3000,
-    host: 'localhost',
-    static: ['dist'],
+    host: "localhost",
+    static: ["dist"],
     historyApiFallback: true,
 };
 const optimizationConfig = {
     splitChunks: {
-        chunks: 'all',
+        chunks: "all",
     },
 };
 const resolveConfig = {
-    modules: ['node_modules'],
+    modules: ["node_modules"],
 };
 const htmlPluginConfig = {
-    title: '2dk',
-    template: path.join(process.cwd(), 'public/index.html'),
-    publicPath: '/',
+    title: "2dk",
+    template: path.join( process.cwd(), "public/index.html" ),
+    publicPath: "/",
 };
 const copyPluginConfig = {
     patterns: [
         {
-            from: path.resolve(process.cwd(), 'public'),
+            from: path.resolve( process.cwd(), "public" ),
             globOptions: {
                 dot: true,
-                ignore: ['**/index.html'],
+                ignore: ["**/index.html"],
             },
         },
     ],
@@ -35,7 +35,7 @@ const copyPluginConfig = {
 const babelRules = {
     test: /\.js$/,
     exclude: [/node_modules/],
-    use: ['babel-loader'],
+    use: ["babel-loader"],
 };
 
 module.exports = {

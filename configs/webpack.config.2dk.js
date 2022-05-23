@@ -1,19 +1,19 @@
-const path = require('path');
+const path = require( "path" );
 const {
     babelRules,
     resolveConfig,
-} = require('./webpack.config.base');
+} = require( "./webpack.config.base" );
 
 module.exports = {
-    mode: 'development',
+    mode: "development",
     devtool: false,
     entry: {
-        '2dk': path.resolve(process.cwd(), 'src/lib/index.js'),
+        "2dk": path.resolve( process.cwd(), "src/lib/index.js" ),
     },
     resolve: resolveConfig,
     output: {
-        path: path.resolve(process.cwd(), 'studio/public/js'),
-        filename: '2dk.js',
+        path: path.resolve( process.cwd(), "studio/public/js" ),
+        filename: "2dk.js",
     },
     module: {
         rules: [

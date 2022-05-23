@@ -22,8 +22,8 @@
             "parkour": "assets/sounds/sfx-dropping.mp3"
         },
         "companion": {
-            "id": "ghost",
-            "type": "float"
+            "id": "dog",
+            "type": "walk"
         }
     },
     "heroes": [
