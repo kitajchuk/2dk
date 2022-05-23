@@ -1,31 +1,29 @@
 {
-    "game": {
-        "id": "la",
-        "name": "LA",
-        "width": 768,
-        "height": 576,
-        "resolution": 1,
-        "icon": "/games/la/icon.png",
-        "save": 277,
-        "release": 1,
-        "plugin": "topview"
-    },
+    "id": "la",
+    "name": "LA",
+    "width": 768,
+    "height": 576,
+    "resolution": 1,
+    "icon": "icon.png",
+    "save": 416,
+    "release": 1,
+    "plugin": "topview",
     "hero": {
         "sprite": 0,
         "spawn": 3,
-        "map": "/games/la/maps/mabe-village.json",
+        "map": "maps/mabe-village.json",
         "sounds": {
-            "lift": "/games/la/assets/sounds/sfx-pick-up.mp3",
-            "jump": "/games/la/assets/sounds/sfx-jump.mp3",
-            "throw": "/games/la/assets/sounds/sfx-throw.mp3",
-            "smash": "/games/la/assets/sounds/sfx-smash.mp3",
-            "chest": "/games/la/assets/sounds/sfx-chest-unlock.mp3",
-            "bounce": "/games/la/assets/sounds/sfx-bounce.mp3",
-            "parkour": "/games/la/assets/sounds/sfx-dropping.mp3"
+            "lift": "assets/sounds/sfx-pick-up.mp3",
+            "jump": "assets/sounds/sfx-jump.mp3",
+            "throw": "assets/sounds/sfx-throw.mp3",
+            "smash": "assets/sounds/sfx-smash.mp3",
+            "chest": "assets/sounds/sfx-chest-unlock.mp3",
+            "bounce": "assets/sounds/sfx-bounce.mp3",
+            "parkour": "assets/sounds/sfx-dropping.mp3"
         },
         "companion": {
-            "id": "ghost",
-            "type": "float"
+            "id": "dog",
+            "type": "walk"
         }
     },
     "heroes": [
@@ -34,7 +32,7 @@
             "name": "BK",
             "width": 92,
             "height": 92,
-            "image": "/games/la/assets/sprites/hero_la.png",
+            "image": "assets/sprites/hero_la.png",
             "hitbox": {
                 "x": 28,
                 "y": 44,
@@ -206,7 +204,7 @@
             "width": 140,
             "height": 140,
             "scale": 1.1,
-            "image": "/games/la/assets/sprites/hero_alttp.png",
+            "image": "assets/sprites/hero_alttp.png",
             "hitbox": {
                 "x": 48,
                 "y": 74,
@@ -356,7 +354,7 @@
             "name": "Octorok",
             "width": 64,
             "height": 64,
-            "image": "/games/la/assets/sprites/npcs.png",
+            "image": "assets/sprites/npcs.png",
             "verb": "walk",
             "maxv": 1,
             "controlmaxv": 1,
@@ -367,6 +365,24 @@
                 "height": 64
             },
             "verbs": {
+                "face": {
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -256
+                    },
+                    "down": {
+                        "offsetX": -128,
+                        "offsetY": -256
+                    },
+                    "up": {
+                        "offsetX": -256,
+                        "offsetY": -256
+                    },
+                    "right": {
+                        "offsetX": -384,
+                        "offsetY": -256
+                    }
+                },
                 "walk": {
                     "dur": 500,
                     "left": {
@@ -403,7 +419,7 @@
             "name": "Ghost",
             "width": 64,
             "height": 64,
-            "image": "/games/la/assets/sprites/npcs.png",
+            "image": "assets/sprites/npcs.png",
             "opacity": 0.75,
             "dir": "left",
             "layer": "foreground",
@@ -450,7 +466,7 @@
             "name": "Fisherman",
             "width": 128,
             "height": 64,
-            "image": "/games/la/assets/sprites/npcs.png",
+            "image": "assets/sprites/npcs.png",
             "hitbox": {
                 "x": 64,
                 "y": 0,
@@ -492,7 +508,7 @@
             "name": "Cucco",
             "width": 64,
             "height": 64,
-            "image": "/games/la/assets/sprites/npcs.png",
+            "image": "assets/sprites/npcs.png",
             "bounce": 1,
             "dir": "left",
             "maxv": 2,
@@ -540,7 +556,7 @@
             "name": "Dog",
             "width": 64,
             "height": 64,
-            "image": "/games/la/assets/sprites/npcs.png",
+            "image": "assets/sprites/npcs.png",
             "bounce": 1,
             "dir": "left",
             "maxv": 2,
@@ -578,7 +594,7 @@
             "name": "Sign",
             "width": 64,
             "height": 64,
-            "image": "/games/la/assets/tiles/tiles.png",
+            "image": "assets/tiles/tiles.png",
             "hitbox": {
                 "x": 0,
                 "y": 0,
@@ -611,7 +627,7 @@
             "name": "Chest",
             "width": 64,
             "height": 64,
-            "image": "/games/la/assets/tiles/tiles.png",
+            "image": "assets/tiles/tiles.png",
             "verb": "closed",
             "hitbox": {
                 "x": 0,
@@ -657,7 +673,7 @@
             "name": "Bird Statue",
             "width": 64,
             "height": 128,
-            "image": "/games/la/assets/tiles/tiles.png",
+            "image": "assets/tiles/tiles.png",
             "hitbox": {
                 "x": 0,
                 "y": 72,
@@ -696,7 +712,7 @@
             "width": 64,
             "height": 64,
             "layer": "foreground",
-            "image": "/games/la/assets/sprites/fx.png",
+            "image": "assets/sprites/fx.png",
             "offsetX": 0,
             "offsetY": 0,
             "stepsX": 5,
@@ -704,32 +720,32 @@
         }
     ],
     "bundle": [
-        "/games/la/assets/tiles/tiles.png",
-        "/games/la/assets/tiles/inside.png",
-        "/games/la/assets/sprites/npcs.png",
-        "/games/la/assets/sprites/hero_la.png",
-        "/games/la/assets/sprites/hero_alttp.png",
-        "/games/la/assets/sprites/fx.png",
-        "/games/la/assets/sounds/sfx-throw.mp3",
-        "/games/la/assets/sounds/sfx-smash.mp3",
-        "/games/la/assets/sounds/sfx-pick-up.mp3",
-        "/games/la/assets/sounds/sfx-jump.mp3",
-        "/games/la/assets/sounds/sfx-dropping.mp3",
-        "/games/la/assets/sounds/sfx-chest-unlock.mp3",
-        "/games/la/assets/sounds/sfx-bounce.mp3",
-        "/games/la/assets/sounds/bgm-shop.mp3",
-        "/games/la/assets/sounds/bgm-phone-booth.mp3",
-        "/games/la/assets/sounds/bgm-overworld.mp3",
-        "/games/la/assets/sounds/bgm-mysterious-forest.mp3",
-        "/games/la/assets/sounds/bgm-marins-house.mp3",
-        "/games/la/assets/sounds/bgm-mabe-village.mp3",
-        "/games/la/assets/sounds/bgm-house.mp3",
-        "/games/la/assets/sounds/bgm-cave.mp3",
-        "/games/la/maps/ukuku-prairie-west.json",
-        "/games/la/maps/papahls-house.json",
-        "/games/la/maps/mysterious-forest.json",
-        "/games/la/maps/marins-house.json",
-        "/games/la/maps/mabe-village.json",
-        "/games/la/maps/bottom-of-the-well.json"
+        "assets/tiles/tiles.png",
+        "assets/tiles/inside.png",
+        "assets/sprites/npcs.png",
+        "assets/sprites/hero_la.png",
+        "assets/sprites/hero_alttp.png",
+        "assets/sprites/fx.png",
+        "assets/sounds/sfx-throw.mp3",
+        "assets/sounds/sfx-smash.mp3",
+        "assets/sounds/sfx-pick-up.mp3",
+        "assets/sounds/sfx-jump.mp3",
+        "assets/sounds/sfx-dropping.mp3",
+        "assets/sounds/sfx-chest-unlock.mp3",
+        "assets/sounds/sfx-bounce.mp3",
+        "assets/sounds/bgm-shop.mp3",
+        "assets/sounds/bgm-phone-booth.mp3",
+        "assets/sounds/bgm-overworld.mp3",
+        "assets/sounds/bgm-mysterious-forest.mp3",
+        "assets/sounds/bgm-marins-house.mp3",
+        "assets/sounds/bgm-mabe-village.mp3",
+        "assets/sounds/bgm-house.mp3",
+        "assets/sounds/bgm-cave.mp3",
+        "maps/ukuku-prairie-west.json",
+        "maps/papahls-house.json",
+        "maps/mysterious-forest.json",
+        "maps/marins-house.json",
+        "maps/mabe-village.json",
+        "maps/bottom-of-the-well.json"
     ]
 }

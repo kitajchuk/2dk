@@ -7,11 +7,10 @@
     "tilewidth": 20,
     "tileheight": 16,
     "collider": 16,
-    "cellauto": false,
-    "image": "/games/la/assets/tiles/inside.png",
-    "snapshot": "/games/la/assets/snapshots/papahls-house.png",
-    "thumbnail": "/games/la/assets/snapshots/papahls-house-thumb.png",
-    "sound": "/games/la/assets/sounds/bgm-house.mp3",
+    "image": "assets/tiles/inside.png",
+    "snapshot": "assets/snapshots/papahls-house.png",
+    "thumbnail": "assets/snapshots/papahls-house-thumb.png",
+    "sound": "assets/sounds/bgm-house.mp3",
     "spawn": [
         {
             "x": 275,
@@ -59,7 +58,7 @@
                 12
             ],
             "type": "door",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "down",
             "spawn": 1
         },
@@ -69,7 +68,7 @@
                 12
             ],
             "type": "door",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "down",
             "spawn": 1
         },
@@ -79,7 +78,7 @@
                 12
             ],
             "type": "door",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "down",
             "spawn": 2
         },
@@ -89,7 +88,7 @@
                 12
             ],
             "type": "door",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "down",
             "spawn": 2
         }

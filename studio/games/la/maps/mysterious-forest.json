@@ -7,11 +7,10 @@
     "tilewidth": 40,
     "tileheight": 32,
     "collider": 16,
-    "cellauto": false,
-    "image": "/games/la/assets/tiles/tiles.png",
-    "snapshot": "/games/la/assets/snapshots/mysterious-forest.png",
-    "thumbnail": "/games/la/assets/snapshots/mysterious-forest-thumb.png",
-    "sound": "/games/la/assets/sounds/bgm-mysterious-forest.mp3",
+    "image": "assets/tiles/tiles.png",
+    "snapshot": "assets/snapshots/mysterious-forest.png",
+    "thumbnail": "assets/snapshots/mysterious-forest-thumb.png",
+    "sound": "assets/sounds/bgm-mysterious-forest.mp3",
     "spawn": [
         {
             "x": 2176,
@@ -134,7 +133,7 @@
                 0
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "up"
         },
         {
@@ -143,7 +142,7 @@
                 31
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "down"
         },
         {
@@ -152,7 +151,7 @@
                 31
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "down"
         },
         {
@@ -161,7 +160,7 @@
                 31
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "down"
         },
         {
@@ -170,7 +169,7 @@
                 31
             ],
             "type": "boundary",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "dir": "down"
         }
     ],

@@ -1,0 +1,611 @@
+/* IDs */
+#editor {
+    color: var( --grey );
+    font-size: var( --font-size-editor );
+    font-family: "Calamity-Bold";
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    &.is-not-loaded {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    &.is-saving-map:after,
+    &.is-saving-game:after,
+    &.is-saving-file:after,
+    &.is-deleting-file:after {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        background-color: rgba( 0, 0, 0, 0.75 );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var( --white );
+        font-size: var( --font-size-overlay );
+    }
+    &.is-saving-map:after {
+        content: "Saving map...";
+    }
+    &.is-saving-game:after {
+        content: "Saving game...";
+    }
+    &.is-saving-file:after {
+        content: "Saving file...";
+    }
+    &.is-deleting-file:after {
+        content: "Deleting file...";
+    }
+}
+#editor-preview,
+#editor-tileset {
+    position: relative;
+    height: 100%;
+    overflow: auto;
+    outline: 1px solid var( --grey-dark );
+    background-color: var( --charcoal2 );
+
+    .layer {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        cursor: var( --cursor );
+        transform: translateX( -50% );
+    }
+    .layer--preview {
+        width: 32px;
+        height: 32px;
+        left: 50%;
+        top: 50%;
+        transform: translate3d( -50%, -50%, 0 );
+        outline: 1px solid var( --teal );
+        pointer-events: none;
+    }
+    .layer--tilepaint {
+        z-index: 4;
+    }
+    .layer--tilegrid {
+        pointer-events: none;
+    }
+}
+#editor-preview {
+    overflow: hidden;
+}
+#editor-tileset-box {
+    height: calc( 100vh - (47px * 5) - 32px - 32px - 161px - 16px - 16px - 50px );
+    width: 100%;
+}
+#editor-preview-box {
+    height: calc( 128px + 47px );
+    pointer-events: none;
+    width: 100%;
+}
+#editor-gamesettings,
+#editor-mapsettings {
+    cursor: pointer;
+    pointer-events: auto;
+}
+#editor-master-sound {
+    cursor: pointer;
+    pointer-events: auto;
+}
+#editor-tileset-image {
+    display: block;
+    margin: 0 auto;
+}
+#editor-mapgrid {
+    .layer {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
+#editor-cursor-canvas {
+    position: absolute;
+    pointer-events: none;
+}
+#editor-mapgrid-canvas,
+#editor-collider-canvas {
+    display: none;
+}
+#editor-canvas-pane {
+    display: none;
+
+    &.is-loaded {
+        display: block;
+    }
+}
+#editor-loadout {
+    display: none;
+    font-size: var( --font-size-editor );
+    padding: 20px;
+
+    > div {
+        display: inline-block;
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+        width: 100%;
+
+        > div:first-child {
+            width: 100%;
+            padding-bottom: 100%;
+            position: relative;
+            pointer-events: none;
+
+            > img {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                box-shadow: var( --box-shadow );
+                background-color: var( --black );
+            }
+        }
+
+        > div:last-child {
+            margin-top: 16px;
+            pointer-events: none;
+        }
+    }
+
+    &.is-loaded {
+        display: grid;
+        grid-gap: 100px;
+        grid-template-columns: repeat( 5, 1fr );
+        grid-template-rows: max-content;
+
+        @media ( max-width: 1440px ) {
+            grid-template-columns: repeat( 3, 1fr );
+        }
+    }
+}
+#editor-game-icon-image {
+    width: 96px;
+    margin: 0 auto;
+    display: block;
+    border: 1px solid var( --grey-dark );
+}
+#editor-demo-game {
+    pointer-events: auto;
+}
+
+
+
+/* Top panel */
+.editor__panel {
+    background-color: var( --black );
+    border-bottom: 1px solid var( --grey-dark );
+    box-shadow: var( --box-shadow );
+    height: 50px;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.editor__panel__xy,
+.editor__panel__map,
+.editor__panel__res,
+.editor__panel__game,
+.editor__panel__sound {
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid var( --grey-dark );
+    padding: 0 20px;
+}
+.editor__panel__res {
+    display: none;
+}
+.editor__panel__xy {
+    justify-content: flex-start;
+    border-right: 0;
+}
+.editor__panel__sound {
+    border-right: 1px solid var( --grey-dark );
+
+    .feather {
+        display: inline-block;
+    }
+
+    .feather-pause-circle {
+        display: none;
+    }
+
+    &.is-playing {
+        .feather-play-circle {
+            display: none;
+        }
+
+        .feather-pause-circle {
+            display: inline-block;
+        }
+    }
+}
+
+
+
+/* Sidebar */
+.editor__sidebar {
+    background-color: var( --black );
+    right: 0;
+    width: calc( 384px + 32px );
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    height: 100%;
+    box-shadow: var( --box-shadow );
+}
+.editor__sidebar__layers {
+    height: 100%;
+    position: relative;
+    z-index: 3;
+    padding-top: 50px;
+}
+.editor__sidebar__tools {
+    padding-top: 50px;
+    background-color: var( --black );
+    width: auto;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    left: 0;
+    height: 100%;
+    border-left: 1px solid var( --grey-dark );
+    border-right: 1px solid var( --grey-dark );
+    box-shadow: var( --box-shadow );
+    transform: translate3d( -100%, 0, 0 );
+}
+.editor__toolbar {
+    padding: 5px;
+}
+.editor__toolbar__tools {
+    border-bottom: 1px solid var( --grey-dark );
+}
+.editor__toolbar__menus {
+    border-top: 1px solid var( --grey-dark );
+    position: absolute;
+    bottom: 0;
+}
+
+
+
+/* Canvas */
+.editor__canvas,
+.editor__loadout {
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: calc( 416px + 44px + 1px );
+    top: 50px;
+    z-index: 1;
+    overflow: hidden;
+    background-color: var( --charcoal2 );
+}
+.editor__canvas__buttons {
+    pointer-events: none;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 9999;
+
+    button {
+        width: auto;
+        pointer-events: auto;
+    }
+}
+.editor__canvas__pane {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.25);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+
+    &.is-dragging {
+        cursor: grabbing !important;
+    }
+
+    &.is-background,
+    &.is-foreground,
+    &.is-collision,
+    &.is-selection {
+        cursor: var( --cursor );
+    }
+
+    &.is-background,
+    &.is-foreground,
+    &.is-selection,
+    &.is-npc {
+        #editor-mapgrid-canvas {
+            display: block;
+        }
+        #editor-collider-canvas {
+            display: none;
+        }
+    }
+
+    &.is-collision {
+        #editor-mapgrid-canvas {
+            display: none;
+        }
+        #editor-collider-canvas {
+            display: block;
+        }
+    }
+}
+.editor__canvas__layer {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+
+    > canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    &.is-hidden {
+        display: none;
+    }
+
+    &.editor__mapgrid.is-hidden {
+        display: block;
+        opacity: 0;
+    }
+}
+.editor__background {
+    z-index: 1;
+    pointer-events: none;
+}
+.editor__objects {
+    z-index: 2; // This is dynamic in the player engine (toggle bg/fg based on hero position)
+    pointer-events: none;
+}
+.editor__foreground {
+    z-index: 3;
+    pointer-events: none;
+}
+.editor__collision,
+.editor__selection {
+    z-index: 4;
+    pointer-events: none;
+}
+.editor__mapgrid {
+    z-index: 4;
+}
+
+
+
+/* Actions */
+.editor__action {
+    background-color: var( --charcoal2 );
+    border: 1px solid var( --grey-dark );
+    cursor: pointer;
+    position: relative;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    color: var( --grey );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & + .editor__action {
+        margin-top: 5px;
+    }
+
+    &:hover {
+        color: var( --white );
+    }
+
+    &.is-active,
+    &.is-active:hover {
+        color: var( --white );
+        background-color: var( --blue );
+        border-color: var( --blue );
+    }
+
+    &[disabled]:hover {
+        color: var( --grey );
+    }
+}
+
+
+
+/* Layers */
+.editor__box {
+    border-bottom: 1px solid var( --grey-dark );
+}
+.editor__label {
+    margin-bottom: 10px;
+
+    & + .editor__setting--multi {
+        > div:first-child {
+            width: calc( 75% - 5px );
+        }
+
+        > div:last-child {
+            width: calc( 25% - 5px );
+        }
+    }
+}
+.editor__layer {
+    padding: 16px;
+    position: relative;
+    color: var( --grey );
+    border-bottom: 1px solid var( --grey-dark );
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    &:last-child {
+        border-bottom: 0;
+    }
+
+    &.-merge-down {
+        border-bottom: 0;
+        padding-bottom: 0;
+        height: 32px;
+    }
+
+    &.js-edit-layer {
+        cursor: pointer;
+        height: 47px;
+    }
+
+    &.-preview {
+        height: calc( 161px + 47px );
+    }
+
+    &.is-active,
+    &.is-active:hover {
+        background-color: var( --charcoal );
+        color: var( --blue );
+    }
+}
+.editor__layer__hide {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY( -50% );
+    color: var( --grey );
+
+    .feather {
+        display: inline-block;
+    }
+
+    .feather-eye-off {
+        display: none;
+    }
+
+    &.is-active {
+        .feather-eye {
+            display: none;
+        }
+
+        .feather-eye-off {
+            display: inline-block;
+        }
+    }
+}
+.editor__layer__label {
+    position: relative;
+}
+.editor__layer__content {
+    margin-top: 10px;
+}
+
+
+
+/* Forms / Fields */
+.editor__setting {
+    .select,
+    .select__field {
+        width: 100%;
+    }
+}
+.editor__setting + .editor__setting {
+    margin-top: 20px;
+}
+.editor__setting--multi {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    > div,
+    > input,
+    > button {
+        width: calc( 50% - 5px );
+    }
+}
+.editor__checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+
+
+/* Menus */
+.editor__menu {
+    background-color: var( --black );
+    border: 1px solid var( --grey-dark );
+    box-shadow: var( --box-shadow );
+    padding: 32px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate3d( -50%, -50%, 0 );
+    width: 480px;
+    z-index: -1;
+    pointer-events: none;
+    display: none;
+
+    &.is-active {
+        display: block;
+        z-index: 10;
+        pointer-events: auto;
+    }
+}
+
+
+
+/* File Uploads */
+.editor__upload {
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.editor__upload__button {
+    width: 30%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .icon {
+        margin-top: -3px;
+    }
+}
+.editor__upload__field {
+    width: 70%;
+    height: 40px;
+}
+.editor__upload__mask {
+    cursor: pointer;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.editor__sound__player {
+    width: 10%;
+    text-align: center;
+    cursor: pointer;
+}
+.editor__delete-button {
+    width: 100%;
+}

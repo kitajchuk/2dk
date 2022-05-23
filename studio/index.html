@@ -6,7 +6,7 @@
         <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
         <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
         <title>2dk Studio</title>
-        <link href="./public/css/screen.css" rel="stylesheet" />
+        <link href="./public/css/studio.css" rel="stylesheet" />
     </head>
     <body>
         <div id="editor" class="is-not-loaded">
@@ -17,45 +17,59 @@
                     <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
                     <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
                     <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
+                    <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
                     <div class="editor__canvas__layer editor__selection" id="editor-sel"></div>
                     <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
                         <canvas class="canvas layer layer--grid" id="editor-mapgrid-canvas"></canvas>
                         <canvas class="canvas layer layer--grid" id="editor-collider-canvas"></canvas>
                     </div>
                 </div>
-                <div class="editor__canvas__buttons" id="editor-canvas-buttons">
-                    <button id="editor-cellauto-button" class="button editor__button">Generate Cellauto</button>
-                </div>
             </div>
             <!-- Topbar -->
             <div class="editor__panel">
                 <div class="editor__panel__game">
-                    <span class="icon icon--nudge icon--stay_current_landscapestay_primary_landscape"></span>
-                    <span class="icon icon--nudge icon--bin" id="editor-delgame" title="Delete Game"></span>
+                    <span class="icon icon--nudge" id="editor-demo-game" title="Run Game Demo">
+                        <i data-feather="tv"></i>
+                    </span>
                     <div class="select icon--nudge" disabled>
-                        <div class="select__field" id="editor-game-load">Project</div>
+                        <div class="select__field" id="editor-game-load">Game</div>
                     </div>
-                    <span class="icon icon--settings js-settings" id="editor-gamesettings" data-type="game" title="Open Game Settings"></span>
+                    <span class="icon js-settings" id="editor-gamesettings" data-type="game" title="Open Game Settings">
+                        <i data-feather="settings"></i>
+                    </span>
                 </div>
                 <div class="editor__panel__map">
-                    <span class="icon icon--nudge icon--map"></span>
-                    <span class="icon icon--nudge icon--delete" id="editor-delmap" title="Delete Map"></span>
+                    <span class="icon icon--nudge">
+                        <i data-feather="map"></i>
+                    </span>
                     <div class="select icon--nudge" disabled>
                         <div class="select__field" id="editor-map-load">Map</div>
                     </div>
-                    <span class="icon icon--settings js-settings" id="editor-mapsettings" data-type="map" title="Open Map Settings"></span>
+                    <span class="icon js-settings" id="editor-mapsettings" data-type="map" title="Open Map Settings">
+                        <i data-feather="settings"></i>
+                    </span>
                 </div>
                 <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
-                    <span class="icon icon--nudge icon--music_note"></span>
+                    <span class="icon icon--nudge">
+                        <i data-feather="music"></i>
+                    </span>
                     <div class="select icon--nudge">
                         <select class="select__field js-map-field js-select js-select-sound" data-label="Sound Player">
                             <option value="">Sound Player</option>
                         </select>
+                        <span class="select__icon">
+                            <i data-feather="chevron-down"></i>
+                        </span>
                     </div>
-                    <span class="icon icon--play_circle_outline js-sound-button" title="Play Sounds"></span>
+                    <span class="icon js-sound-button" title="Play Sounds">
+                        <i data-feather="play-circle"></i>
+                        <i data-feather="pause-circle"></i>
+                    </span>
                 </div>
                 <div class="editor__panel__xy">
-                    <span class="icon icon--location_onplaceroom icon--nudge"></span>
+                    <span class="icon icon--nudge">
+                        <i data-feather="map-pin"></i>
+                    </span>
                     <span id="editor-move-coords">( X, Y )</span>
                 </div>
             </div>
@@ -63,29 +77,51 @@
             <div class="editor__sidebar">
                 <div class="editor__sidebar__layers">
                     <div class="editor__layer js-edit-layer" data-layer="collision">
-                        <span class="icon icon--nudge icon--layers"></span>
+                        <span class="icon icon--nudge">
+                            <i data-feather="layers"></i>
+                        </span>
                         <span>Collision</span>
-                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer" data-layer="collision"></span>
+                        <span class="editor__layer__hide icon js-hide-layer" data-layer="collision">
+                            <i data-feather="eye"></i>
+                            <i data-feather="eye-off"></i>
+                        </span>
                     </div>
                     <div class="editor__layer js-edit-layer" data-layer="foreground">
-                        <span class="icon icon--nudge icon--layers"></span>
+                        <span class="icon icon--nudge">
+                            <i data-feather="layers"></i>
+                        </span>
                         <span>Foreground</span>
-                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer" data-layer="foreground"></span>
+                        <span class="editor__layer__hide icon js-hide-layer" data-layer="foreground">
+                            <i data-feather="eye"></i>
+                            <i data-feather="eye-off"></i>
+                        </span>
                     </div>
-                    <div class="editor__layer js-edit-layer" data-layer="objects">
-                        <span class="icon icon--nudge icon--layers"></span>
-                        <span>Objects</span>
-                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer" data-layer="objects"></span>
+                    <div class="editor__layer js-edit-layer" data-layer="npc">
+                        <span class="icon icon--nudge">
+                            <i data-feather="layers"></i>
+                        </span>
+                        <span>NPC/Object</span>
+                        <span class="editor__layer__hide icon js-hide-layer" data-layer="npc">
+                            <i data-feather="eye"></i>
+                            <i data-feather="eye-off"></i>
+                        </span>
                     </div>
                     <div class="editor__layer js-edit-layer" data-layer="background">
-                        <span class="icon icon--nudge icon--layers"></span>
+                        <span class="icon icon--nudge">
+                            <i data-feather="layers"></i>
+                        </span>
                         <span>Background</span>
-                        <span class="editor__layer__hide icon icon--remove_red_eyevisibility js-hide-layer" data-layer="background"></span>
+                        <span class="editor__layer__hide icon js-hide-layer" data-layer="background">
+                            <i data-feather="eye"></i>
+                            <i data-feather="eye-off"></i>
+                        </span>
                     </div>
                     <div class="editor__layer -merge-down">
                         <div class="editor__layer__label">
-                            <span class="icon icon--nudge icon--panorama"></span>
-                            <span>Paint Preview</span>
+                            <span class="icon icon--nudge">
+                                <i data-feather="image"></i>
+                            </span>
+                            <span>Draw Preview</span>
                         </div>
                     </div>
                     <div class="editor__layer -preview">
@@ -97,7 +133,9 @@
                     </div>
                     <div class="editor__layer -merge-down">
                         <div class="editor__layer__label">
-                            <span class="icon icon--nudge icon--collectionsphoto_library"></span>
+                            <span class="icon icon--nudge">
+                                <i data-feather="grid"></i>
+                            </span>
                             <span>Tile Picker</span>
                         </div>
                     </div>
@@ -113,17 +151,17 @@
                 </div>
                 <div class="editor__sidebar__tools">
                     <div class="editor__toolbar editor__toolbar__tools">
-                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Paint Brush Tool (B)">
-                            <span class="icon icon--brush"></span>
+                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Draw Tiles Tool (B)">
+                            <i data-feather="edit-2"></i>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="bucket" data-key="70" title="Paint Bucket Tool (F)">
-                            <span class="icon icon--format_color_fill"></span>
+                        <button class="editor__action js-edit-action" data-action="bucket" data-key="70" title="Fill TIles Tool (F)">
+                            <i data-feather="edit"></i>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Cut Tool (E)">
-                            <span class="icon icon--content_cut"></span>
+                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Cut Tiles Tool (E)">
+                            <i data-feather="trash"></i>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Selection Tool (X)">
-                            <span class="icon icon--zoom_out_map"></span>
+                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select Tiles Tool (X)">
+                            <i data-feather="mouse-pointer"></i>
                         </button>
                     </div>
                 </div>
@@ -134,19 +172,21 @@
             <div class="editor__menus">
                 <!-- New game -->
                 <div class="editor__menu js-menu" id="editor-addgame-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--stay_current_landscapestay_primary_landscape"></span><span>Make a new game</span></div>
+                    <div class="editor__label">
+                        <span class="icon icon--nudge">
+                            <i data-feather="tv"></i>
+                        </span>
+                        <span>Make a new game</span>
+                    </div>
                     <div class="txt">
                         How games work:<br />
-                        Screen width and height define the visible play area for your game. We call this the Camera and your maps scroll within these bounds.
+                        Screen width and height define the visible play area for your game. 
+                        We call this the Camera and your maps scroll within these bounds.
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Game name</div>
                         <input class="input editor__field js-addgame-field" type="text" placeholder="Game name" name="name" />
                     </div>
-                    <!-- <div class="editor__setting">
-                        <div class="editor__label">Resolution</div>
-                        <input class="input editor__field js-addgame-field" type="text" placeholder="Resolution" name="resolution" />
-                    </div> -->
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Screen width</div>
@@ -165,16 +205,17 @@
                 <!-- Active game -->
                 <div class="editor__menu js-menu" id="editor-active-game-menu">
                     <div class="editor__setting">
-                        <div class="editor__label"><span class="icon icon--nudge icon--stay_current_landscapestay_primary_landscape"></span><span>Game Settings</span></div>
+                        <div class="editor__label">
+                            <span class="icon icon--nudge">
+                                <i data-feather="tv"></i>
+                            </span>
+                            <span>Game Settings</span>
+                        </div>
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Game name</div>
                         <input class="input editor__field js-game-field" type="text" name="name" readonly disabled />
                     </div>
-                    <!-- <div class="editor__setting">
-                        <div class="editor__label">Resolution</div>
-                        <input class="input editor__field js-game-field" type="text" name="resolution" readonly />
-                    </div> -->
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Save version</div>
@@ -196,10 +237,12 @@
                         </div>
                     </div>
                     <div class="editor__setting">
-                        <div class="editor__label">Webapp icon (square PNG format, at lease 320x320 pixels)</div>
+                        <div class="editor__label">Webapp icon (square PNG format, at lease 1024x1024 pixels)</div>
                         <div class="editor__upload">
                             <button class="button editor__upload__button editor__button">
-                                <span class="icon icon--cloud_uploadbackup icon--nudge"></span>
+                                <span class="icon icon--nudge">
+                                    <i data-feather="upload-cloud"></i>
+                                </span>
                                 <span>PNG</span>
                             </button>
                             <input class="input editor__upload__field editor__field js-upload-field" type="text" placeholder="Choose a file" name="icon_copy" id="editor-game-icon" />
@@ -212,13 +255,24 @@
                     <div class="editor__setting">
                         <button class="button button--grey editor__button editor__cancel-button js-close-settings">Close</button>
                     </div>
+                    <div class="editor__setting">
+                        <button class="button button--red editor__button editor__delete-button" id="editor-delgame">Delete game</button>
+                    </div>
                 </div>
                 <!-- New map -->
                 <div class="editor__menu js-menu js-post-menu" id="editor-addmap-menu">
-                    <div class="editor__label"><span class="icon icon--nudge icon--map"></span><span>Make a new map</span></div>
+                    <div class="editor__label">
+                        <span class="icon icon--nudge">
+                            <i data-feather="map"></i>
+                        </span>
+                        <span>Make a new map</span>
+                    </div>
                     <div class="txt">
                         How maps work:<br />
-                        Tilesize is your raw editing size. Resolution determines how JS canvas displays on retina devices. For high-res JS canvas, set a tilesize of 64px and a game resolution of 2. This will create gameplay at a sharp 32px on mobile.
+                        Tilesize is your raw editing size. Resolution determines how JS canvas displays on devices. 
+                        The player engine manages resolution scaling for you. 
+                        For instance, a tilesize of 64px will render at a sharp 32px on mobile devices. 
+                        So if you want a map area of 2560x2048 pixels your tile width and height would be 40x32 (multiply by 64px tilesize).
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Map name</div>
@@ -244,6 +298,9 @@
                             <select class="select__field js-addmap-field js-select js-select-tiles" name="image" data-label="Tileset">
                                 <option value="">Tileset</option>
                             </select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -252,13 +309,10 @@
                             <select class="select__field js-addmap-field js-select js-select-sound" name="sound" data-label="Sound">
                                 <option value="">Sound</option>
                             </select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
                         </div>
-                    </div>
-                    <div class="editor__setting">
-                        <label class="checkbox">
-                            <input class="check js-addmap-field" type="checkbox" name="cellauto" />
-                            <span class="label">CellAuto</span>
-                        </label>
                     </div>
                     <div class="editor__setting editor__setting--multi">
                         <button class="button editor__button editor__upload-button js-post-save" data-type="map">Create</button>
@@ -268,7 +322,12 @@
                 <!-- Active map -->
                 <div class="editor__menu js-menu" id="editor-active-map-menu">
                     <div class="editor__setting">
-                        <div class="editor__label"><span class="icon icon--nudge icon--map"></span><span>Map Settings</span></div>
+                        <div class="editor__label">
+                            <span class="icon icon--nudge">
+                                <i data-feather="tv"></i>
+                            </span>
+                            <span>Map Settings</span>
+                        </div>
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Map name</div>
@@ -294,6 +353,9 @@
                             <select class="select__field js-map-field js-select js-select-tiles" name="image" data-label="Tileset" disabled>
                                 <option value="">Tileset</option>
                             </select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -302,25 +364,34 @@
                             <select class="select__field js-map-field js-select js-select-sound" name="sound" data-label="Sound" disabled>
                                 <option value="">Sound</option>
                             </select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
                         </div>
                     </div>
                     <div class="editor__setting">
-                        <label class="checkbox">
-                            <input class="check js-map-field" type="checkbox" name="cellauto" readonly disabled />
-                            <span class="label">CellAuto</span>
-                        </label>
+                        <button class="button button--grey editor__button editor__cancel-button js-close-settings">Close</button>
                     </div>
                     <div class="editor__setting">
-                        <button class="button button--grey editor__button editor__cancel-button js-close-settings">Close</button>
+                        <button class="button button--red editor__button editor__delete-button" id="editor-delmap">Delete map</button>
                     </div>
                 </div>
                 <!-- Active Tiles -->
                 <div class="editor__menu js-menu js-menu" id="editor-activetiles-menu">
                     <div class="editor__setting">
-                        <div class="editor__label"><span class="icon icon--nudge icon--collectionsphoto_library"></span><span>Create Active Tiles</span></div>
+                        <div class="editor__label">
+                            <span class="icon icon--nudge">
+                                <i data-feather="grid"></i>
+                            </span>
+                            <span>Create Active Tiles</span>
+                        </div>
                         <div class="txt">
                             How Active Tiles work:<br />
-                            Active Tiles can be frame animated background or foreground tiles with their own timing function. They can also be interaction tiles that can be lifted, tossed, pushed and even attacked. The Discover option is for dynamic Active Tiles in the game engine. With this setting you can select just a single tile in the Editor, apply your settings and all matching tiles on the map will become Active Tiles in the live game engine.
+                            Active Tiles can be frame animated background or foreground tiles with their own timing function. 
+                            They can also be interaction tiles that can be lifted, tossed, pushed and even attacked. 
+                            The Discover option is for dynamic Active Tiles in the game engine. 
+                            With this setting you can select just a single tile in the Editor, 
+                            apply your settings and all matching tiles on the map will become Active Tiles in the live game engine.
                         </div>
                     </div>
                     <!-- Discover allows dynamic Active Tiles based on tileset position -->
@@ -347,6 +418,9 @@
                                     <select class="select__field js-activetile-field js-select js-select-action" name="action" data-label="Action">
                                         <option value="">Action</option>
                                     </select>
+                                    <span class="select__icon">
+                                        <i data-feather="chevron-down"></i>
+                                    </span>
                                 </div>
                             </div>
                             <div class="editor__checkbox">
@@ -357,18 +431,9 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Layer is determined by active layer in Sidebar
-                    <div class="editor__setting">
-                        <div class="editor__label">Layer</div>
-                        <div class="select">
-                            <select class="select__field js-activetile-field js-select js-select-activetile" name="layer" data-label="Layer">
-                                <option value="">Layer</option>
-                            </select>
-                        </div>
-                    </div>
-                    -->
+                    <!-- Layer is determined by active layer in Sidebar -->
                     <!-- Coords is the current canvas selectionCoords -->
-                    <!-- Offset X & Y should be picked from tileset UI -->
+                    <!-- Offset X & Y will be picked from tileset UI -->
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Steps (keyframes)</div>
@@ -395,6 +460,9 @@
                                     <option value="left">left</option>
                                     <option value="right">right</option>
                                 </select>
+                                <span class="select__icon">
+                                    <i data-feather="chevron-down"></i>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -403,17 +471,75 @@
                         <button class="button button--grey editor__button editor__cancel-button js-post-cancel">Cancel</button>
                     </div>
                 </div>
-                <!-- Tileset -->
-                <div class="editor__menu js-menu js-upload-menu" id="editor-addtiles-menu">
+                <!-- Spritesheet -->
+                <div class="editor__menu js-menu js-upload-menu" id="editor-addsprites-menu">
                     <div class="editor__setting">
-                        <div class="editor__label"><span class="icon icon--nudge icon--collectionsphoto_library"></span><span>Upload a new tileset</span></div>
+                        <div class="editor__label">
+                            <span class="icon icon--nudge">
+                                <i data-feather="grid"></i>
+                            </span>
+                            <span>Upload a new sprite sheet</span>
+                        </div>
                         <div class="txt">
-                            How tilesets work:<br />
-                            Tiles are your swatches for painting maps. You should design your tiles with the same tilesize as your maps. You can upload tile images here and select which tileset you want to use when making a new map. You must use PNG format (.png).
+                            How sprites work:<br />
+                            Sprites are your character sheets. 
+                            You should design your sprites to work with the tilesize of your maps. 
+                            You can upload tile images here and select which sprite sheet you want to use when making a new Hero or NPC. 
+                            You must use PNG format (.png).
                         </div>
                         <div class="editor__upload">
                             <button class="button editor__upload__button editor__button">
-                                <span class="icon icon--cloud_uploadbackup icon--nudge"></span>
+                                <span class="icon icon--nudge">
+                                    <i data-feather="upload-cloud"></i>
+                                </span>
+                                <span>PNG</span>
+                            </button>
+                            <input class="input editor__upload__field editor__field js-upload-field" id="editor-addsprites-file-copy" type="text" placeholder="Choose a file" name="new_sprites_copy" />
+                            <input class="editor__upload__mask js-upload-file" id="editor-addsprites-file" type="file" name="new_sprites" data-target="editor-addsprites-file-copy" />
+                        </div>
+                    </div>
+                    <div class="editor__setting editor__setting--multi">
+                        <button class="button editor__button editor__upload-button js-upload-save" data-type="sprites">Upload</button>
+                        <button class="button button--grey editor__button editor__cancel-button js-upload-cancel">Cancel</button>
+                    </div>
+                    <div class="txt">
+                        Remove sprite sheet:<br />
+                        You can delete a sprite sheet you've uploaded by selecting it here and using the delete button. 
+                        You get one confirmation for your delete action.
+                    </div>
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-select js-select-delete js-select-sprites" data-label="Delete sprite sheet..."></select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <button class="button button--red editor__button editor__delete-button js-upload-delete" data-type="sprites">Delete sprite sheet...</button>
+                    </div>
+                </div>
+                <!-- Tileset -->
+                <div class="editor__menu js-menu js-upload-menu" id="editor-addtiles-menu">
+                    <div class="editor__setting">
+                        <div class="editor__label">
+                            <span class="icon icon--nudge">
+                                <i data-feather="grid"></i>
+                            </span>
+                            <span>Upload a new tileset</span>
+                        </div>
+                        <div class="txt">
+                            How tilesets work:<br />
+                            Tiles are your swatches for painting maps. 
+                            You should design your tiles with the same tilesize as your maps. 
+                            You can upload tile images here and select which tileset you want to use when making a new map. 
+                            You must use PNG format (.png).
+                        </div>
+                        <div class="editor__upload">
+                            <button class="button editor__upload__button editor__button">
+                                <span class="icon icon--nudge">
+                                    <i data-feather="upload-cloud"></i>
+                                </span>
                                 <span>PNG</span>
                             </button>
                             <input class="input editor__upload__field editor__field js-upload-field" id="editor-addtiles-file-copy" type="text" placeholder="Choose a file" name="new_tiles_copy" />
@@ -426,11 +552,15 @@
                     </div>
                     <div class="txt">
                         Remove tileset:<br />
-                        You can delete a tileset you've uploaded by selecting it here and using the delete button. You get one confirmation for your delete action.
+                        You can delete a tileset you've uploaded by selecting it here and using the delete button. 
+                        You get one confirmation for your delete action.
                     </div>
                     <div class="editor__setting">
                         <div class="select">
                             <select class="select__field js-select js-select-delete js-select-tiles" data-label="Delete tileset..."></select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -440,14 +570,22 @@
                 <!-- Sounds -->
                 <div class="editor__menu js-menu js-upload-menu" id="editor-addsound-menu">
                     <div class="editor__setting">
-                        <div class="editor__label"><span class="icon icon--nudge icon--library_music"></span><span>Upload a new sound</span></div>
+                        <div class="editor__label">
+                            <span class="icon icon--nudge">
+                                <i data-feather="music"></i>
+                            </span>
+                            <span>Upload a new sound</span>
+                        </div>
                         <div class="txt">
                             How sounds work:<br />
-                            Sounds are the background music that will play for a map. You must use MP3 format (.mp3).
+                            Sounds are the background music that will play for a map. 
+                            You must use MP3 format (.mp3).
                         </div>
                         <div class="editor__upload">
                             <button class="button editor__upload__button editor__button">
-                                <span class="icon icon--cloud_uploadbackup icon--nudge"></span>
+                                <span class="icon icon--nudge">
+                                    <i data-feather="upload-cloud"></i>
+                                </span>
                                 <span>MP3</span>
                             </button>
                             <input class="input editor__upload__field editor__field js-upload-field" id="editor-addsound-file-copy" type="text" placeholder="Choose a file" name="new_sound_copy" />
@@ -460,13 +598,17 @@
                     </div>
                     <div class="txt">
                         Remove sounds:<br />
-                        You can delete sounds you've uploaded by selecting it here and using the delete button. You get one confirmation for your delete action.
+                        You can delete sounds you've uploaded by selecting it here and using the delete button. 
+                        You get one confirmation for your delete action.
                     </div>
                     <div class="editor__setting">
                         <div class="select">
                             <select class="select__field js-select js-select-delete js-select-sound" data-label="Delete sound...">
                                 <option value="">Delete sound...</option>
                             </select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -476,8 +618,10 @@
             </div>
         </div>
         <!-- You can also require other files to run in this process -->
+        <script src="./public/js/2dk.js"></script>
         <script src="./public/js/greensock.js"></script>
+        <script src="./public/js/feather.min.js"></script>
         <script src="./public/js/hobo.build.dist.js"></script>
-        <script src="./renderer.js"></script>
+        <script src="./src/renderer.js"></script>
     </body>
 </html>

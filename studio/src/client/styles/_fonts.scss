@@ -1,0 +1,45 @@
+/******************************************************************************
+ * Font Declarations
+*******************************************************************************/
+@font-face {
+    font-family: "Calamity-Regular";
+    src: url( "../fonts/Calamity-Regular.woff" ) format( "woff" );
+    font-style: normal;
+    font-stretch: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Calamity-Bold";
+    src: url( "../fonts/Calamity-Bold.woff" ) format( "woff" );
+    font-style: normal;
+    font-stretch: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "panicsans";
+    src: url( "../fonts/panicsans.woff" ) format( "woff" );
+    font-style: normal;
+    font-stretch: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "panicsansitalic";
+    src: url( "../fonts/panicsansitalic.woff" ) format( "woff" );
+    font-style: normal;
+    font-stretch: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "panicsansbold";
+    src: url( "../fonts/panicsansbold.woff" ) format( "woff" );
+    font-style: normal;
+    font-stretch: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "panicsansbolditalic";
+    src: url( "../fonts/panicsansbolditalic.woff" ) format( "woff" );
+    font-style: normal;
+    font-stretch: normal;
+    font-display: swap;
+}

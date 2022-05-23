@@ -1,3 +1,12 @@
 [build]
-  command = "cd studio && yarn install && cd ../ && yarn build"
-  publish = "public"
+  command = "yarn build"
+  publish = "dist"
+
+[context.production]
+  environment = { NODE_VERSION = "16.14.2" }
+
+[context.deploy-preview]
+  environment = { NODE_VERSION = "16.14.2" }
+
+[context.branch-deploy]
+  environment = { NODE_VERSION = "16.14.2" }

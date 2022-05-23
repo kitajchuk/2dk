@@ -7,11 +7,10 @@
     "tilewidth": 20,
     "tileheight": 16,
     "collider": 16,
-    "cellauto": false,
-    "image": "/games/la/assets/tiles/tiles.png",
-    "snapshot": "/games/la/assets/snapshots/bottom-of-the-well.png",
-    "thumbnail": "/games/la/assets/snapshots/bottom-of-the-well-thumb.png",
-    "sound": "/games/la/assets/sounds/bgm-cave.mp3",
+    "image": "assets/tiles/tiles.png",
+    "snapshot": "assets/snapshots/bottom-of-the-well.png",
+    "thumbnail": "assets/snapshots/bottom-of-the-well-thumb.png",
+    "sound": "assets/sounds/bgm-cave.mp3",
     "spawn": [
         {
             "x": 640,
@@ -27,7 +26,7 @@
                 7
             ],
             "type": "door",
-            "map": "/games/la/maps/mabe-village.json",
+            "map": "maps/mabe-village.json",
             "spawn": 3
         }
     ],

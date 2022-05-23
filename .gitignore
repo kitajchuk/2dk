@@ -15,24 +15,18 @@
 
 
 # local env files
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
 
 
 # 2dk Studio
-public/js
-public/css
-public/games
-studio/static/js
-studio/static/css
-#studio/public/js
+dist
+studio/public/js/2dk.js
 studio/public/css
+studio/src/templates/2dk.css
+studio/src/templates/app.js
 # studio/games/**/assets/snapshots
 
 
 # Node / npm
 node_modules
 npm-debug.log
-sessions
