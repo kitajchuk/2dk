@@ -40,7 +40,6 @@
     "test": "jest --detectOpenHandles"
   },
   "dependencies": {
-    "gsap": "^3.6.0",
     "paramalama": "^0.3.0",
     "properjs-controller": "^0.3.1"
   },

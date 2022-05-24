@@ -3,9 +3,9 @@ import Config from "../Config";
 import Loader from "../Loader";
 import GameBox from "../GameBox";
 import Map from "../Map";
+import Spring from "../Spring";
 import Sprite from "../sprites/Sprite";
 import Companion from "../sprites/Companion";
-import { TweenLite, Power4 } from "gsap";
 
 
 
@@ -16,9 +16,11 @@ class TopView extends GameBox {
         // Interactions
         this.interact = {
             // tile: {
-            //     group,
-            //     coord,
+            //     group?,
+            //     coord?,
             //     throw?,
+            //     sprite?
+            //     spring?
             // }
             push: 0,
         };
@@ -52,6 +54,11 @@ class TopView extends GameBox {
 
         // blit map
         this.map.blit( elapsed );
+
+        // blit interaction tile sprite?
+        if ( this.interact.tile && this.interact.tile.sprite && this.interact.tile.spring ) {
+            this.handleThrowing( elapsed );
+        }
 
         // update gamebox (camera)
         this.update();
@@ -574,12 +581,7 @@ class TopView extends GameBox {
         this.hero.face( this.hero.dir );
         this.player.gameaudio.hitSound( Config.verbs.THROW );
         this.hero.physics.maxv = this.hero.physics.controlmaxv;
-        this.handleThrow( this.interact.tile.sprite ).then(() => {
-            this.player.gameaudio.hitSound( Config.verbs.SMASH );
-            this.map.killObj( "npcs", this.interact.tile.sprite );
-
-            delete this.interact.tile;
-        });
+        this.handleThrow( this.interact.tile.sprite );
     }
 
 
@@ -673,64 +675,64 @@ class TopView extends GameBox {
 
 
     handleThrow ( sprite ) {
-        return new Promise(( resolve ) => {
-            sprite.resolve = resolve;
-            sprite.throwing = this.hero.dir;
+        sprite.throwing = this.hero.dir;
+        
+        let throwX;
+        let throwY;
+        const dist = this.map.data.tilesize * 2;
 
-            let throwX;
-            let throwY;
-            const dist = this.map.data.tilesize * 2;
-            const props = {
-                x: sprite.position.x,
-                y: sprite.position.y,
+        if ( sprite.throwing === "left" ) {
+            throwX = sprite.position.x - dist;
+            throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+
+        } else if ( sprite.throwing === "right" ) {
+            throwX = sprite.position.x + dist;
+            throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+
+        } else if ( sprite.throwing === "up" ) {
+            throwX = sprite.position.x;
+            throwY = sprite.position.y - dist;
+
+        }  else if ( sprite.throwing === "down" ) {
+            throwX = sprite.position.x;
+            throwY = this.hero.footbox.y + dist;
+        }
+
+        this.interact.tile.spring = new Spring( sprite.position.x, sprite.position.y, 60, 3.5 );
+        this.interact.tile.spring.poi = {
+            x: throwX,
+            y: throwY,
+        };
+        this.interact.tile.spring.bind( sprite );
+    }
+
+
+    handleThrowing ( elapsed ) {
+        if ( this.interact.tile.spring.isResting ) {
+            this.handleThrew();
+
+        } else {
+            const collision = {
+                map: this.checkMap( this.interact.tile.sprite.position, this.interact.tile.sprite ),
+                npc: this.checkNPC( this.interact.tile.sprite.position, this.interact.tile.sprite ),
+                camera: this.checkCamera( this.interact.tile.sprite.position, this.interact.tile.sprite ),
             };
-            const _complete = () => {
-                this.smokeObject( sprite );
-                sprite.tween.kill();
-                sprite.tween = null;
-                sprite.resolve();
-            };
 
-            if ( sprite.throwing === "left" ) {
-                throwX = sprite.position.x - dist;
-                throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+            if ( collision.map || collision.npc || collision.camera ) {
+                this.handleThrew();
 
-            } else if ( sprite.throwing === "right" ) {
-                throwX = sprite.position.x + dist;
-                throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
-
-            } else if ( sprite.throwing === "up" ) {
-                throwX = sprite.position.x;
-                throwY = sprite.position.y - dist;
-
-            }  else if ( sprite.throwing === "down" ) {
-                throwX = sprite.position.x;
-                throwY = this.hero.footbox.y + dist;
+            } else {
+                this.interact.tile.spring.blit( elapsed );
             }
+        }
+    }
 
-            sprite.tween = TweenLite.to( props, 0.5, {
-                x: throwX,
-                y: throwY,
-                ease: Power4.easeOut,
-                onUpdate: () => {
-                    sprite.position.x = sprite.tween._targets[ 0 ].x;
-                    sprite.position.y = sprite.tween._targets[ 0 ].y;
 
-                    const collision = {
-                        map: this.checkMap( sprite.position, sprite ),
-                        npc: this.checkNPC( sprite.position, sprite ),
-                        camera: this.checkCamera( sprite.position, sprite ),
-                    };
-
-                    if ( collision.map || collision.camera || collision.npc ) {
-                        _complete();
-                    }
-                },
-                onComplete: () => {
-                    _complete();
-                }
-            });
-        });
+    handleThrew () {
+        this.smokeObject( this.interact.tile.sprite );
+        this.player.gameaudio.hitSound( Config.verbs.SMASH );
+        this.map.killObj( "npcs", this.interact.tile.sprite );
+        delete this.interact.tile;
     }
 
 
