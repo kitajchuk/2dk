@@ -27,7 +27,7 @@ class Player {
         };
         this.query = paramalama( window.location.search );
         this.gamecycle = new Controller();
-        this.previousElapsed = 0;
+        this.previousElapsed = null;
         this.detect();
     }
 
@@ -75,21 +75,19 @@ class Player {
             let counter = 0;
 
             // Audio is still experimental for mobile so disabling for now...
-            let resources = data.bundle.filter(( url ) => {
+            const resources = data.bundle.filter(( url ) => {
                 const type = url.split( "/" ).pop().split( "." ).pop();
 
                 return (this.device ? (type !== "mp3") : true);
-            });
-
+            
             // Map bundle resource URLs to a Loader promise types for initialization...
-            resources = resources.map(( url ) => {
+            }).map(( url ) => {
                 return this.loader.load( url ).then(() => {
                     counter++;
 
                     this.splashLoad.innerHTML = this.getSplash( `Loaded ${counter} of ${resources.length} game resources...` );
                 });
-
-            })
+            });
 
             Promise.all( resources ).then(() => {
                 this.splashLoad.innerHTML = this.getSplash( "Press Start" );
@@ -291,10 +289,12 @@ class Player {
 
         if ( this.paused ) {
             this.resume();
+            this.gamecycle.fire( Config.broadcast.RESUMED );
 
         } else {
             this.pause();
             this.stop();
+            this.gamecycle.fire( Config.broadcast.PAUSED );
         }
     }
 

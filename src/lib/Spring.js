@@ -1,5 +1,10 @@
+import Config from "./Config";
+
+
+
 class Spring {
-    constructor ( x = 0, y = 0, stiffness = 30, damping = 1.5, mass = 0.1 ) {
+    constructor ( player, x = 0, y = 0, stiffness = 30, damping = 1.5, mass = 0.1 ) {
+        this.player = player;
         this.position = {
             x,
             y,
@@ -18,6 +23,11 @@ class Spring {
         this.errorMargin = 0.001;
         this.isResting = false;
         this.sprite = null;
+        this.previousElapsed = null;
+
+        this.player.gamecycle.on( Config.broadcast.PAUSED, () => {
+            this.previousElapsed = null;
+        });
     }
 
 
@@ -27,7 +37,7 @@ class Spring {
 
 
     blit ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
+        if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
         }
 

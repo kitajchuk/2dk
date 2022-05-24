@@ -14,7 +14,7 @@ class Companion extends Sprite {
         super( data, hero.map );
         this.layer = (this.data.type === Config.npc.FLOAT ? "foreground" : "heroground");
         this.hero = hero;
-        this.spring = new Spring( this.position.x, this.position.y, 10 );
+        this.spring = new Spring( this.gamebox.player, this.position.x, this.position.y, 10 );
         this.spring.bind( this );
     }
 
@@ -36,7 +36,7 @@ class Companion extends Sprite {
             return;
         }
 
-        if ( typeof this.previousElapsed === "undefined" ) {
+        if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
         }
 

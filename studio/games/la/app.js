@@ -76,6 +76,8 @@ var Config = {
     CUTSCENE: "cutscene"
   },
   broadcast: {
+    PAUSED: "paused",
+    RESUMED: "resumed",
     MAPEVENT: "mapevent"
   },
   npc: {
@@ -1381,8 +1383,10 @@ var GamePad = /*#__PURE__*/function (_Controller) {
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(GamePad, [{
     key: "clear",
     value: function clear() {
-      clearTouches();
-      cancelTouches();
+      setTimeout(function () {
+        clearTouches();
+        cancelTouches();
+      }, 300);
     }
   }, {
     key: "bind",
@@ -1611,6 +1615,7 @@ var ActiveTiles = /*#__PURE__*/function () {
     this.gamebox = this.map.gamebox;
     this.frame = 0;
     this.spliced = [];
+    this.previousElapsed = null;
   }
 
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(ActiveTiles, [{
@@ -1619,7 +1624,7 @@ var ActiveTiles = /*#__PURE__*/function () {
   }, {
     key: "blit",
     value: function blit(elapsed) {
-      if (typeof this.previousElapsed === "undefined") {
+      if (this.previousElapsed === null) {
         this.previousElapsed = elapsed;
       }
 
@@ -2116,7 +2121,7 @@ var Player = /*#__PURE__*/function () {
     };
     this.query = (0,paramalama__WEBPACK_IMPORTED_MODULE_8__["default"])(window.location.search);
     this.gamecycle = new properjs_controller__WEBPACK_IMPORTED_MODULE_9__["default"]();
-    this.previousElapsed = 0;
+    this.previousElapsed = null;
     this.detect();
   }
 
@@ -2171,10 +2176,8 @@ var Player = /*#__PURE__*/function () {
 
         var resources = data.bundle.filter(function (url) {
           var type = url.split("/").pop().split(".").pop();
-          return _this.device ? type !== "mp3" : true;
-        }); // Map bundle resource URLs to a Loader promise types for initialization...
-
-        resources = resources.map(function (url) {
+          return _this.device ? type !== "mp3" : true; // Map bundle resource URLs to a Loader promise types for initialization...
+        }).map(function (url) {
           return _this.loader.load(url).then(function () {
             counter++;
             _this.splashLoad.innerHTML = _this.getSplash("Loaded ".concat(counter, " of ").concat(resources.length, " game resources..."));
@@ -2363,9 +2366,11 @@ var Player = /*#__PURE__*/function () {
 
       if (this.paused) {
         this.resume();
+        this.gamecycle.fire(_Config__WEBPACK_IMPORTED_MODULE_3__["default"].broadcast.RESUMED);
       } else {
         this.pause();
         this.stop();
+        this.gamecycle.fire(_Config__WEBPACK_IMPORTED_MODULE_3__["default"].broadcast.PAUSED);
       }
     }
   }, {
@@ -2446,19 +2451,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
+/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
+
 
 
 
 var Spring = /*#__PURE__*/function () {
-  function Spring() {
-    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    var stiffness = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 30;
-    var damping = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1.5;
-    var mass = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0.1;
+  function Spring(player) {
+    var _this = this;
+
+    var x = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var y = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var stiffness = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 30;
+    var damping = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.5;
+    var mass = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0.1;
 
     (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, Spring);
 
+    this.player = player;
     this.position = {
       x: x,
       y: y
@@ -2477,6 +2487,10 @@ var Spring = /*#__PURE__*/function () {
     this.errorMargin = 0.001;
     this.isResting = false;
     this.sprite = null;
+    this.previousElapsed = null;
+    this.player.gamecycle.on(_Config__WEBPACK_IMPORTED_MODULE_2__["default"].broadcast.PAUSED, function () {
+      _this.previousElapsed = null;
+    });
   }
 
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Spring, [{
@@ -2487,7 +2501,7 @@ var Spring = /*#__PURE__*/function () {
   }, {
     key: "blit",
     value: function blit(elapsed) {
-      if (typeof this.previousElapsed === "undefined") {
+      if (this.previousElapsed === null) {
         this.previousElapsed = elapsed;
       }
 
@@ -3454,7 +3468,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         throwY = this.hero.footbox.y + dist;
       }
 
-      this.interact.tile.spring = new _Spring__WEBPACK_IMPORTED_MODULE_10__["default"](sprite.position.x, sprite.position.y, 60, 3.5);
+      this.interact.tile.spring = new _Spring__WEBPACK_IMPORTED_MODULE_10__["default"](this.player, sprite.position.x, sprite.position.y, 60, 3.5);
       this.interact.tile.spring.poi = {
         x: throwX,
         y: throwY
@@ -3723,7 +3737,7 @@ var Companion = /*#__PURE__*/function (_Sprite) {
     _this = _super.call(this, data, hero.map);
     _this.layer = _this.data.type === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].npc.FLOAT ? "foreground" : "heroground";
     _this.hero = hero;
-    _this.spring = new _Spring__WEBPACK_IMPORTED_MODULE_8__["default"](_this.position.x, _this.position.y, 10);
+    _this.spring = new _Spring__WEBPACK_IMPORTED_MODULE_8__["default"](_this.gamebox.player, _this.position.x, _this.position.y, 10);
 
     _this.spring.bind((0,_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2__["default"])(_this));
 
@@ -3750,7 +3764,7 @@ var Companion = /*#__PURE__*/function (_Sprite) {
         return;
       }
 
-      if (typeof this.previousElapsed === "undefined") {
+      if (this.previousElapsed === null) {
         this.previousElapsed = elapsed;
       } // Companion type?
 
@@ -3922,7 +3936,7 @@ var FX = /*#__PURE__*/function (_Sprite) {
         return;
       }
 
-      if (typeof this.previousElapsed === "undefined") {
+      if (this.previousElapsed === null) {
         this.previousElapsed = elapsed;
       }
 
@@ -4362,6 +4376,7 @@ var Sprite = /*#__PURE__*/function () {
     };
     this.layer = this.data.layer || "background";
     this.spritecel = this.getCel();
+    this.previousElapsed = null;
   }
 
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Sprite, [{
@@ -4391,7 +4406,7 @@ var Sprite = /*#__PURE__*/function () {
         return;
       }
 
-      if (typeof this.previousElapsed === "undefined") {
+      if (this.previousElapsed === null) {
         this.previousElapsed = elapsed;
       } // Set frame and sprite rendering cel
 

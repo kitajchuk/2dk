@@ -698,7 +698,7 @@ class TopView extends GameBox {
             throwY = this.hero.footbox.y + dist;
         }
 
-        this.interact.tile.spring = new Spring( sprite.position.x, sprite.position.y, 60, 3.5 );
+        this.interact.tile.spring = new Spring( this.player, sprite.position.x, sprite.position.y, 60, 3.5 );
         this.interact.tile.spring.poi = {
             x: throwX,
             y: throwY,

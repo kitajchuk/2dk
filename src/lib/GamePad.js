@@ -476,8 +476,11 @@ class GamePad extends Controller {
 
 
     clear () {
-        clearTouches();
-        cancelTouches();
+        setTimeout(() => {
+            clearTouches();
+            cancelTouches();
+
+        }, 300 );
     }
 
 

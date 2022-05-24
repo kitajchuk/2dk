@@ -59,6 +59,7 @@ class Sprite {
         };
         this.layer = (this.data.layer || "background");
         this.spritecel = this.getCel();
+        this.previousElapsed = null;
     }
 
 
@@ -87,7 +88,7 @@ class Sprite {
             return;
         }
 
-        if ( typeof this.previousElapsed === "undefined" ) {
+        if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
         }
 

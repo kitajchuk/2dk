@@ -18,6 +18,7 @@ class ActiveTiles {
         this.gamebox = this.map.gamebox;
         this.frame = 0;
         this.spliced = [];
+        this.previousElapsed = null;
     }
 
 
@@ -25,7 +26,7 @@ class ActiveTiles {
 
 
     blit ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
+        if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
         }
 

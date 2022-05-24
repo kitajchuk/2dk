@@ -17,7 +17,7 @@ class FX extends Sprite {
             return;
         }
 
-        if ( typeof this.previousElapsed === "undefined" ) {
+        if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
         }
 
