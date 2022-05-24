@@ -353,33 +353,32 @@ class Map {
         const height = (renderBox.height / this.data.tilesize);
         const width = (renderBox.width / this.data.tilesize);
         const ret = {};
-        let celsCopy;
-        let activeTile;
-        let lookupY;
-        let lookupX;
-        let y = 0;
-        let x = 0;
 
         Object.keys( this.data.textures ).forEach(( id ) => {
+            let y = 0;
+
             ret[ id ] = [];
 
             while ( y < height ) {
                 ret[ id ][ y ] = [];
 
-                lookupY = renderBox.y + y;
+                const lookupY = renderBox.y + y;
 
                 if ( this.data.textures[ id ][ lookupY ] ) {
+                    let x = 0;
+
                     while ( x < width ) {
-                        lookupX = renderBox.x + x;
+                        const lookupX = renderBox.x + x;
 
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
-                            celsCopy = Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
-                            activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
+                            const celsCopy = Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
+                            const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
 
                             // Render the textures
                             // Shift foreground behind hero render if coords determine so
                             if ( id === "foreground" && (lookupY * this.data.tilesize) < this.gamebox.hero.position.y ) {
                                 ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
+
                             } else {
                                 ret[ id ][ y ][ x ] = celsCopy;
                             }
