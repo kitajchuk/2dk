@@ -1,6 +1,6 @@
 import Utils from "./Utils";
 import Config from "./Config";
-import Controller from "properjs-controller";
+import Controller from "./Controller";
 
 
 
@@ -112,350 +112,6 @@ const touchControls = {
         dpad: ["right", "down"],
     },
 };
-let instance = null;
-
-
-
-const getControl = ( key ) => {
-    let ret = null;
-
-    Object.keys( touchControls ).forEach(( btn ) => {
-        if ( touchControls[ btn ].key === key ) {
-            ret = touchControls[ btn ];
-        }
-    });
-
-    return ret;
-};
-
-
-
-const getGamepad = ( val ) => {
-    let ret = null;
-
-    Object.keys( touchControls ).forEach(( btn ) => {
-        if ( touchControls[ btn ].gamepad && touchControls[ btn ].gamepad.indexOf( val ) !== -1 ) {
-            ret = touchControls[ btn ];
-        }
-    });
-
-    return ret;
-};
-
-
-
-const getAxes = ( xy, val ) => {
-    let ret = null;
-
-    Object.keys( touchControls ).forEach(( btn ) => {
-        if ( touchControls[ btn ].axes && touchControls[ btn ].axes[ xy ] === val ) {
-            ret = touchControls[ btn ];
-        }
-    });
-
-    return ret;
-};
-
-
-
-const getTouched = ( touches, control ) => {
-    for ( let i = 0; i < touches.length; i++ ) {
-        const touched = document.elementFromPoint( touches[ i ].pageX, touches[ i ].pageY );
-        const key = Number( touched.dataset.key );
-
-        if ( key === control.key ) {
-            return control;
-        }
-    }
-
-    return null;
-};
-
-
-
-const onTouchStart = ( e ) => {
-    e.preventDefault();
-
-    for ( let i = 0; i < e.touches.length; i++ ) {
-        const touched = document.elementFromPoint( e.touches[ i ].pageX, e.touches[ i ].pageY );
-        const key = Number( touched.dataset.key );
-
-        if ( key ) {
-            const control = getControl( key );
-
-            startTouch( control );
-        }
-    }
-
-    return false;
-};
-
-
-
-const onTouchMove = ( e ) => {
-    e.preventDefault();
-
-    for ( let i = 0; i < e.touches.length; i++ ) {
-        const touched = document.elementFromPoint( e.touches[ i ].pageX, e.touches[ i ].pageY );
-        const key = Number( touched.dataset.key );
-
-        if ( key ) {
-            const control = getControl( key );
-
-            if ( control ) {
-                startTouch( control );
-            }
-        }
-
-        Object.keys( touchControls ).forEach(( btn ) => {
-            if ( touchControls[ btn ].touched ) {
-                const touched = getTouched( e.touches, touchControls[ btn ] );
-
-                if ( !touched ) {
-                    cancelTouch( touchControls[ btn ] );
-                }
-            }
-        });
-    }
-
-    return false;
-};
-
-
-
-const onTouchEnd = ( e ) => {
-    e.preventDefault();
-
-    if ( !e.touches.length ) {
-        clearTouches();
-        cancelTouches();
-
-    } else {
-        Object.keys( touchControls ).forEach(( btn ) => {
-            if ( touchControls[ btn ].touched ) {
-                const touched = getTouched( e.touches, touchControls[ btn ] );
-
-                if ( !touched ) {
-                    cancelTouch( touchControls[ btn ] );
-                }
-            }
-        });
-    }
-
-    return false;
-};
-
-
-
-const onKeyDown = ( e ) => {
-    if ( inputStream.indexOf( e.keyCode ) === -1 ) {
-        inputStream.push( e.keyCode );
-
-        const control = getControl( e.keyCode );
-
-        if ( control ) {
-            startTouch( control );
-        }
-    }
-};
-
-
-
-const onKeyUp = ( e ) => {
-    if ( inputStream.indexOf( e.keyCode ) !== -1 ) {
-        inputStream.splice( inputStream.indexOf( e.keyCode ), 1 );
-
-        const control = getControl( e.keyCode );
-
-        if ( control ) {
-            cancelTouch( control );
-        }
-    }
-};
-
-
-
-const handleGamepadAxes = ( gamepad ) => {
-    const controls = {
-        x: getAxes( 0, gamepad.axes[ 0 ] ),
-        y: getAxes( 1, gamepad.axes[ 1 ] ),
-    };
-
-    if ( controls.x && inputStream.indexOf( controls.x.key ) === -1 ) {
-        inputStream.push( controls.x.key );
-        startTouch( controls.x );
-
-    } else if ( !controls.x ) {
-        if ( inputStream.indexOf( Config.keys.LEFT ) !== -1 ) {
-            inputStream.splice( inputStream.indexOf( Config.keys.LEFT ), 1 );
-            cancelTouch( touchControls.left );
-        }
-
-        if ( inputStream.indexOf( Config.keys.RIGHT ) !== -1 ) {
-            inputStream.splice( inputStream.indexOf( Config.keys.RIGHT ), 1 );
-            cancelTouch( touchControls.right );
-        }
-    }
-
-    if ( controls.y && inputStream.indexOf( controls.y.key ) === -1 ) {
-        inputStream.push( controls.y.key );
-        startTouch( controls.y );
-
-    } else if ( !controls.y ) {
-        if ( inputStream.indexOf( Config.keys.UP ) !== -1 ) {
-            inputStream.splice( inputStream.indexOf( Config.keys.UP ), 1 );
-            cancelTouch( touchControls.up );
-        }
-
-        if ( inputStream.indexOf( Config.keys.DOWN ) !== -1 ) {
-            inputStream.splice( inputStream.indexOf( Config.keys.DOWN ), 1 );
-            cancelTouch( touchControls.down );
-        }
-    }
-};
-
-
-
-const handleGamepadButtons = ( gamepad ) => {
-    for ( let i = gamepad.buttons.length; i--; ) {
-        const control = getGamepad( i );
-
-        if ( control && inputStream.indexOf( control.key ) === -1 && gamepad.buttons[ i ].pressed ) {
-            inputStream.push( control.key );
-            startTouch( control );
-
-        } else if ( control && inputStream.indexOf( control.key ) !== -1 && !gamepad.buttons[ i ].pressed ) {
-            inputStream.splice( inputStream.indexOf( control.key ), 1 );
-            cancelTouch( control );
-        }
-    }
-};
-
-
-
-const onGamepadConnected = () => {
-    let gamepad = navigator.getGamepads()[ 0 ];
-
-    instance.stop();
-    instance.go(() => {
-        gamepad = navigator.getGamepads()[ 0 ];
-
-        // GamePad Axes (dpad): [x, y]
-        handleGamepadAxes( gamepad );
-        
-        // GamePad Buttons (a, b, start, select)
-        handleGamepadButtons( gamepad );
-    });
-
-    Utils.log( `GamePad Connected: ${gamepad.id}`, gamepad );
-};
-
-
-
-const onGamepadDisconnected = () => {
-    instance.stop();
-};
-
-
-
-const clearTouches = () => {
-    Object.keys( touchControls ).forEach(( btn ) => {
-        touchControls[ btn ].elem.classList.remove( "is-active" );
-    });
-};
-
-
-
-const cancelTouches = () => {
-    Object.keys( touchControls ).forEach(( btn ) => {
-        if ( touchControls[ btn ].touched ) {
-            cancelTouch( touchControls[ btn ] );
-        }
-    });
-};
-
-
-
-const cancelTouch = ( control ) => {
-    if ( control.timer ) {
-        clearInterval( control.timer );
-        control.timer = null;
-    }
-
-    control.elem.classList.remove( "is-active" );
-    control.touched = false;
-
-    handleTouchEnd( control );
-};
-
-
-
-const startTouch = ( control ) => {
-    if ( !control.timer ) {
-        control.elem.classList.add( "is-active" );
-        control.touched = true;
-
-        handleTouchStart( control );
-
-        if ( Object.prototype.hasOwnProperty.call( control, "hold" ) && !control.menu ) {
-            control.timer = setInterval(() => {
-                handleTouchStart( control );
-
-            }, touchInterval );
-        }
-    }
-};
-
-
-
-const handleTouchStart = ( control ) => {
-    if ( control.touched && control.menu && control.hold > 0 ) {
-        control.hold++;
-        return;
-    }
-
-    if ( Object.prototype.hasOwnProperty.call( control, "hold" ) ) {
-        control.hold++;
-
-        if ( control.hold > touchRepeated ) {
-            instance.fire( `${control.btn[ 0 ]}-holdpress` );
-
-        } else {
-            instance.fire( `${control.btn[ 0 ]}-press` );
-        }
-
-    } else if ( control.dpad ) {
-        control.dpad.forEach(( dpad, i ) => {
-            instance.fire( `${control.btn[ i ]}-press`, dpad );
-        });
-
-    } else {
-        instance.fire( `${control.btn[ 0 ]}-press`, null );
-    }
-};
-
-
-
-const handleTouchEnd = ( control ) => {
-    if ( Object.prototype.hasOwnProperty.call( control, "hold" ) ) {
-        if ( control.hold > touchRepeated ) {
-            instance.fire( `${control.btn[ 0 ]}-holdrelease` );
-
-        } else {
-            instance.fire( `${control.btn[ 0 ]}-release` );
-        }
-
-        control.hold = 0;
-
-    } else if ( control.dpad ) {
-        control.dpad.forEach(( dpad, i ) => {
-            instance.fire( `${control.btn[ i ]}-release`, dpad );
-        });
-
-    } else {
-        instance.fire( `${control.btn[ 0 ]}-release`, null );
-    }
-};
 
 
 
@@ -463,22 +119,16 @@ class GamePad extends Controller {
     constructor ( player ) {
         super();
 
-        if ( !instance ) {
-            instance = this;
-
-            this.player = player;
-            this.build();
-            this.bind();
-        }
-
-        return instance;
+        this.player = player;
+        this.build();
+        this.bind();
     }
 
 
     clear () {
         setTimeout(() => {
-            clearTouches();
-            cancelTouches();
+            this.clearTouches();
+            this.cancelTouches();
 
         }, 300 );
     }
@@ -486,17 +136,17 @@ class GamePad extends Controller {
 
     bind () {
         // Main interface is Touch
-        this.element.addEventListener( "touchstart", onTouchStart, false );
-        this.element.addEventListener( "touchmove", onTouchMove, false );
-        this.element.addEventListener( "touchend", onTouchEnd, false );
+        this.element.addEventListener( "touchstart", this.onTouchStart.bind( this ), false );
+        this.element.addEventListener( "touchmove", this.onTouchMove.bind( this ), false );
+        this.element.addEventListener( "touchend", this.onTouchEnd.bind( this ), false );
 
         // Support keys for Desktop
-        document.addEventListener( "keyup", onKeyUp, false );
-        document.addEventListener( "keydown", onKeyDown, false );
+        document.addEventListener( "keyup", this.onKeyUp.bind( this ), false );
+        document.addEventListener( "keydown", this.onKeyDown.bind( this ), false );
 
         // Native GamePad interface (NES, SNES USB controllers)
-        window.addEventListener( "gamepadconnected", onGamepadConnected );
-        window.addEventListener( "gamepaddisconnected", onGamepadDisconnected );
+        window.addEventListener( "gamepadconnected", this.onGamepadConnected.bind( this ) );
+        window.addEventListener( "gamepaddisconnected", this.onGamepadDisconnected.bind( this ) );
     }
 
 
@@ -554,6 +204,330 @@ class GamePad extends Controller {
                 return -1;
             }
         });
+    }
+
+
+    getControl ( key ) {
+        let ret = null;
+    
+        Object.keys( touchControls ).forEach(( btn ) => {
+            if ( touchControls[ btn ].key === key ) {
+                ret = touchControls[ btn ];
+            }
+        });
+    
+        return ret;
+    }
+
+
+    getGamepad ( val ) {
+        let ret = null;
+    
+        Object.keys( touchControls ).forEach(( btn ) => {
+            if ( touchControls[ btn ].gamepad && touchControls[ btn ].gamepad.indexOf( val ) !== -1 ) {
+                ret = touchControls[ btn ];
+            }
+        });
+    
+        return ret;
+    }
+
+
+    getAxes ( xy, val ) {
+        let ret = null;
+    
+        Object.keys( touchControls ).forEach(( btn ) => {
+            if ( touchControls[ btn ].axes && touchControls[ btn ].axes[ xy ] === val ) {
+                ret = touchControls[ btn ];
+            }
+        });
+    
+        return ret;
+    }
+
+
+    getTouched ( touches, control ) {
+        for ( let i = 0; i < touches.length; i++ ) {
+            const touched = document.elementFromPoint( touches[ i ].pageX, touches[ i ].pageY );
+            const key = Number( touched.dataset.key );
+    
+            if ( key === control.key ) {
+                return control;
+            }
+        }
+    
+        return null;
+    }
+
+
+    onTouchStart ( e ) {
+        e.preventDefault();
+    
+        for ( let i = 0; i < e.touches.length; i++ ) {
+            const touched = document.elementFromPoint( e.touches[ i ].pageX, e.touches[ i ].pageY );
+            const key = Number( touched.dataset.key );
+    
+            if ( key ) {
+                const control = this.getControl( key );
+    
+                this.startTouch( control );
+            }
+        }
+    
+        return false;
+    }
+
+
+    onTouchMove ( e ) {
+        e.preventDefault();
+    
+        for ( let i = 0; i < e.touches.length; i++ ) {
+            const touched = document.elementFromPoint( e.touches[ i ].pageX, e.touches[ i ].pageY );
+            const key = Number( touched.dataset.key );
+    
+            if ( key ) {
+                const control = this.getControl( key );
+    
+                if ( control ) {
+                    this.startTouch( control );
+                }
+            }
+    
+            Object.keys( touchControls ).forEach(( btn ) => {
+                if ( touchControls[ btn ].touched ) {
+                    const touched = this.getTouched( e.touches, touchControls[ btn ] );
+    
+                    if ( !touched ) {
+                        this.cancelTouch( touchControls[ btn ] );
+                    }
+                }
+            });
+        }
+    
+        return false;
+    }
+
+
+    onTouchEnd ( e ) {
+        e.preventDefault();
+    
+        if ( !e.touches.length ) {
+            this.clearTouches();
+            this.cancelTouches();
+    
+        } else {
+            Object.keys( touchControls ).forEach(( btn ) => {
+                if ( touchControls[ btn ].touched ) {
+                    const touched = this.getTouched( e.touches, touchControls[ btn ] );
+    
+                    if ( !touched ) {
+                        this.cancelTouch( touchControls[ btn ] );
+                    }
+                }
+            });
+        }
+    
+        return false;
+    }
+
+
+    onKeyDown ( e ) {
+        if ( inputStream.indexOf( e.keyCode ) === -1 ) {
+            inputStream.push( e.keyCode );
+    
+            const control = this.getControl( e.keyCode );
+    
+            if ( control ) {
+                this.startTouch( control );
+            }
+        }
+    }
+
+
+    onKeyUp ( e ) {
+        if ( inputStream.indexOf( e.keyCode ) !== -1 ) {
+            inputStream.splice( inputStream.indexOf( e.keyCode ), 1 );
+    
+            const control = this.getControl( e.keyCode );
+    
+            if ( control ) {
+                this.cancelTouch( control );
+            }
+        }
+    }
+
+
+    handleGamepadAxes ( gamepad ) {
+        const controls = {
+            x: this.getAxes( 0, gamepad.axes[ 0 ] ),
+            y: this.getAxes( 1, gamepad.axes[ 1 ] ),
+        };
+    
+        if ( controls.x && inputStream.indexOf( controls.x.key ) === -1 ) {
+            inputStream.push( controls.x.key );
+            this.startTouch( controls.x );
+    
+        } else if ( !controls.x ) {
+            if ( inputStream.indexOf( Config.keys.LEFT ) !== -1 ) {
+                inputStream.splice( inputStream.indexOf( Config.keys.LEFT ), 1 );
+                this.cancelTouch( touchControls.left );
+            }
+    
+            if ( inputStream.indexOf( Config.keys.RIGHT ) !== -1 ) {
+                inputStream.splice( inputStream.indexOf( Config.keys.RIGHT ), 1 );
+                this.cancelTouch( touchControls.right );
+            }
+        }
+    
+        if ( controls.y && inputStream.indexOf( controls.y.key ) === -1 ) {
+            inputStream.push( controls.y.key );
+            this.startTouch( controls.y );
+    
+        } else if ( !controls.y ) {
+            if ( inputStream.indexOf( Config.keys.UP ) !== -1 ) {
+                inputStream.splice( inputStream.indexOf( Config.keys.UP ), 1 );
+                this.cancelTouch( touchControls.up );
+            }
+    
+            if ( inputStream.indexOf( Config.keys.DOWN ) !== -1 ) {
+                inputStream.splice( inputStream.indexOf( Config.keys.DOWN ), 1 );
+                this.cancelTouch( touchControls.down );
+            }
+        }
+    }
+
+
+    handleGamepadButtons ( gamepad ) {
+        for ( let i = gamepad.buttons.length; i--; ) {
+            const control = this.getGamepad( i );
+    
+            if ( control && inputStream.indexOf( control.key ) === -1 && gamepad.buttons[ i ].pressed ) {
+                inputStream.push( control.key );
+                this.startTouch( control );
+    
+            } else if ( control && inputStream.indexOf( control.key ) !== -1 && !gamepad.buttons[ i ].pressed ) {
+                inputStream.splice( inputStream.indexOf( control.key ), 1 );
+                this.cancelTouch( control );
+            }
+        }
+    }
+
+
+    onGamepadConnected () {
+        let gamepad = navigator.getGamepads()[ 0 ];
+    
+        this.stop();
+        this.go(() => {
+            gamepad = navigator.getGamepads()[ 0 ];
+    
+            // GamePad Axes (dpad): [x, y]
+            this.handleGamepadAxes( gamepad );
+            
+            // GamePad Buttons (a, b, start, select)
+            this.handleGamepadButtons( gamepad );
+        });
+    
+        Utils.log( `GamePad Connected: ${gamepad.id}`, gamepad );
+    }
+
+
+    onGamepadDisconnected () {
+        this.stop();
+    }
+
+
+    clearTouches () {
+        Object.keys( touchControls ).forEach(( btn ) => {
+            touchControls[ btn ].elem.classList.remove( "is-active" );
+        });
+    }
+
+
+    cancelTouches () {
+        Object.keys( touchControls ).forEach(( btn ) => {
+            if ( touchControls[ btn ].touched ) {
+                this.cancelTouch( touchControls[ btn ] );
+            }
+        });
+    }
+
+
+    cancelTouch ( control ) {
+        if ( control.timer ) {
+            clearInterval( control.timer );
+            control.timer = null;
+        }
+    
+        control.elem.classList.remove( "is-active" );
+        control.touched = false;
+    
+        this.handleTouchEnd( control );
+    }
+
+
+    startTouch ( control ) {
+        if ( !control.timer ) {
+            control.elem.classList.add( "is-active" );
+            control.touched = true;
+    
+            this.handleTouchStart( control );
+    
+            if ( Object.prototype.hasOwnProperty.call( control, "hold" ) && !control.menu ) {
+                control.timer = setInterval(() => {
+                    this.handleTouchStart( control );
+    
+                }, touchInterval );
+            }
+        }
+    }
+
+
+    handleTouchStart ( control ) {
+        if ( control.touched && control.menu && control.hold > 0 ) {
+            control.hold++;
+            return;
+        }
+    
+        if ( Object.prototype.hasOwnProperty.call( control, "hold" ) ) {
+            control.hold++;
+    
+            if ( control.hold > touchRepeated ) {
+                this.emit( `${control.btn[ 0 ]}-holdpress` );
+    
+            } else {
+                this.emit( `${control.btn[ 0 ]}-press` );
+            }
+    
+        } else if ( control.dpad ) {
+            control.dpad.forEach(( dpad, i ) => {
+                this.emit( `${control.btn[ i ]}-press`, dpad );
+            });
+    
+        } else {
+            this.emit( `${control.btn[ 0 ]}-press`, null );
+        }
+    }
+
+
+    handleTouchEnd ( control ) {
+        if ( Object.prototype.hasOwnProperty.call( control, "hold" ) ) {
+            if ( control.hold > touchRepeated ) {
+                this.emit( `${control.btn[ 0 ]}-holdrelease` );
+    
+            } else {
+                this.emit( `${control.btn[ 0 ]}-release` );
+            }
+    
+            control.hold = 0;
+    
+        } else if ( control.dpad ) {
+            control.dpad.forEach(( dpad, i ) => {
+                this.emit( `${control.btn[ i ]}-release`, dpad );
+            });
+    
+        } else {
+            this.emit( `${control.btn[ 0 ]}-release`, null );
+        }
     }
 }
 

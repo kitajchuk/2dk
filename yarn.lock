@@ -6076,11 +6076,6 @@ param-case@^3.0.4:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
-paramalama@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/paramalama/-/paramalama-0.3.0.tgz#a03a087779dc56652ed3e6d2fa874a6e55571c6f"
-  integrity sha512-uKPhtHMKuerZ/TpdBs3/jxuzkA0MT5xBYdHsB8c7wB3YZAsGb8JoDScgoT2w+Pc4Usa+cuMg3SrmJMBgNbFm9A==
-
 parent-module@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/parent-module/-/parent-module-1.0.1.tgz#691d2709e78c79fae3a156622452d00762caaaa2"
@@ -6254,11 +6249,6 @@ prompts@^2.0.1:
   dependencies:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
-
-properjs-controller@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/properjs-controller/-/properjs-controller-0.3.1.tgz#0f3e18c4b161b2c3030282c93e9ad91aa80baba0"
-  integrity sha512-F7EIXP1aXN79NXFsPwWUL13AHQM6fgGpeA5we6GewF0+siZ7yMLIy4zrDia5hTdhrEKabmLQkEwhEIoh28n/eQ==
 
 proxy-addr@~2.0.7:
   version "2.0.7"

@@ -25,7 +25,7 @@ class Spring {
         this.sprite = null;
         this.previousElapsed = null;
 
-        this.player.gamecycle.on( Config.broadcast.PAUSED, () => {
+        this.player.on( Config.broadcast.PAUSED, () => {
             this.previousElapsed = null;
         });
     }

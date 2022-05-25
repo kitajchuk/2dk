@@ -877,7 +877,7 @@ class TopView extends GameBox {
         this.player.element.classList.add( "is-fader" );
 
         // Emit map change event
-        this.player.gamecycle.fire( Config.broadcast.MAPEVENT, event );
+        this.player.emit( Config.broadcast.MAPEVENT, event );
 
         setTimeout(() => {
             // New Map data

@@ -116,6 +116,120 @@ var Config = {
 
 /***/ }),
 
+/***/ "./src/lib/Controller.js":
+/*!*******************************!*\
+  !*** ./src/lib/Controller.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
+
+
+
+var Controller = /*#__PURE__*/function () {
+  function Controller() {
+    (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, Controller);
+
+    this.handlers = {};
+    this.animate = null;
+    this.started = false;
+    this.cycle = null;
+  }
+
+  (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Controller, [{
+    key: "go",
+    value: function go(callback) {
+      var _this = this;
+
+      if (this.started) {
+        return this;
+      }
+
+      this.started = true;
+
+      this.animate = function (elapsed) {
+        _this.cycle = window.requestAnimationFrame(_this.animate);
+
+        if (typeof callback === "function") {
+          callback(elapsed);
+        }
+      };
+
+      this.cycle = window.requestAnimationFrame(this.animate);
+    }
+  }, {
+    key: "stop",
+    value: function stop() {
+      window.cancelAnimationFrame(this.cycle);
+      this.animate = null;
+      this.started = false;
+      this.cycle = null;
+    }
+  }, {
+    key: "on",
+    value: function on(event, handler) {
+      var _this2 = this;
+
+      var events = event.split(" ");
+      events.forEach(function (event) {
+        if (typeof handler === "function") {
+          if (!_this2.handlers[event]) {
+            _this2.handlers[event] = [];
+          }
+
+          _this2.handlers[event].push(handler);
+        }
+      });
+    }
+  }, {
+    key: "off",
+    value: function off(event, handler) {
+      if (!this.handlers[event]) {
+        return this;
+      }
+
+      if (handler) {
+        for (var i = this.handlers[event].length; i--;) {
+          if (this.handlers[event][i] === handler) {
+            this.handlers[event].splice(i, 1);
+            break;
+          }
+        }
+      } else {
+        delete this.handlers[event];
+      }
+    }
+  }, {
+    key: "fire",
+    value: function fire(event) {
+      var _this3 = this;
+
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      if (!this.handlers[event]) {
+        return this;
+      }
+
+      this.handlers[event].forEach(function (handler) {
+        handler.apply(_this3, args);
+      });
+    }
+  }]);
+
+  return Controller;
+}();
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Controller);
+
+/***/ }),
+
 /***/ "./src/lib/Dialogue.js":
 /*!*****************************!*\
   !*** ./src/lib/Dialogue.js ***!
@@ -952,7 +1066,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
 /* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Utils */ "./src/lib/Utils.js");
 /* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
-/* harmony import */ var properjs_controller__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! properjs-controller */ "./node_modules/properjs-controller/Controller.js");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Controller */ "./src/lib/Controller.js");
 
 
 
@@ -1458,7 +1572,7 @@ var GamePad = /*#__PURE__*/function (_Controller) {
   }]);
 
   return GamePad;
-}(properjs_controller__WEBPACK_IMPORTED_MODULE_8__["default"]);
+}(_Controller__WEBPACK_IMPORTED_MODULE_8__["default"]);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GamePad);
 
@@ -2082,14 +2196,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
-/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Utils */ "./src/lib/Utils.js");
-/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
-/* harmony import */ var _GamePad__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./GamePad */ "./src/lib/GamePad.js");
-/* harmony import */ var _plugins_TopView__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./plugins/TopView */ "./src/lib/plugins/TopView.js");
-/* harmony import */ var _GameAudio__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./GameAudio */ "./src/lib/GameAudio.js");
-/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Loader */ "./src/lib/Loader.js");
-/* harmony import */ var paramalama__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! paramalama */ "./node_modules/paramalama/paramalama.js");
-/* harmony import */ var properjs_controller__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! properjs-controller */ "./node_modules/properjs-controller/Controller.js");
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Utils */ "./src/lib/Utils.js");
+/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
+/* harmony import */ var _GamePad__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./GamePad */ "./src/lib/GamePad.js");
+/* harmony import */ var _plugins_TopView__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./plugins/TopView */ "./src/lib/plugins/TopView.js");
+/* harmony import */ var _GameAudio__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./GameAudio */ "./src/lib/GameAudio.js");
+/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Loader */ "./src/lib/Loader.js");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Controller */ "./src/lib/Controller.js");
+
+
+
+
+
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0,_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__["default"])(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 
 
@@ -2099,17 +2224,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var Player = /*#__PURE__*/function (_Controller) {
+  (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__["default"])(Player, _Controller);
 
+  var _super = _createSuper(Player);
 
-var Player = /*#__PURE__*/function () {
   function Player() {
+    var _this;
+
     (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, Player);
 
-    this.ready = false;
-    this.paused = true;
-    this.stopped = false;
-    this.Loader = _Loader__WEBPACK_IMPORTED_MODULE_7__["default"];
-    this.controls = {
+    _this = _super.call(this);
+    _this.ready = false;
+    _this.paused = true;
+    _this.stopped = false;
+    _this.Loader = _Loader__WEBPACK_IMPORTED_MODULE_10__["default"];
+    _this.controls = {
       a: false,
       aHold: false,
       b: false,
@@ -2119,10 +2249,12 @@ var Player = /*#__PURE__*/function () {
       up: false,
       down: false
     };
-    this.query = (0,paramalama__WEBPACK_IMPORTED_MODULE_8__["default"])(window.location.search);
-    this.gamecycle = new properjs_controller__WEBPACK_IMPORTED_MODULE_9__["default"]();
-    this.previousElapsed = null;
-    this.detect();
+    _this.query = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].getParams(window.location.search);
+    _this.previousElapsed = null;
+
+    _this.detect();
+
+    return _this;
   }
 
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Player, [{
@@ -2155,44 +2287,44 @@ var Player = /*#__PURE__*/function () {
   }, {
     key: "load",
     value: function load() {
-      var _this = this;
+      var _this2 = this;
 
-      this.loader = new _Loader__WEBPACK_IMPORTED_MODULE_7__["default"]();
+      this.loader = new _Loader__WEBPACK_IMPORTED_MODULE_10__["default"]();
       this.loader.loadJson("game.json").then(function (data) {
-        _this.data = data;
-        _this.data.hero = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].merge(_this.data.heroes[_this.data.hero.sprite], _this.data.hero);
+        _this2.data = data;
+        _this2.data.hero = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].merge(_this2.data.heroes[_this2.data.hero.sprite], _this2.data.hero);
 
-        _this.debug();
+        _this2.debug();
 
-        _this.data.resolution = _this.device ? 2 : _this.data.resolution;
-        _this.width = _this.data.width / _this.data.resolution;
-        _this.height = _this.data.height / _this.data.resolution;
+        _this2.data.resolution = _this2.device ? 2 : _this2.data.resolution;
+        _this2.width = _this2.data.width / _this2.data.resolution;
+        _this2.height = _this2.data.height / _this2.data.resolution;
 
-        _this.build();
+        _this2.build();
 
-        _this.onRotate();
+        _this2.onRotate();
 
         var counter = 0; // Audio is still experimental for mobile so disabling for now...
 
         var resources = data.bundle.filter(function (url) {
           var type = url.split("/").pop().split(".").pop();
-          return _this.device ? type !== "mp3" : true; // Map bundle resource URLs to a Loader promise types for initialization...
+          return _this2.device ? type !== "mp3" : true; // Map bundle resource URLs to a Loader promise types for initialization...
         }).map(function (url) {
-          return _this.loader.load(url).then(function () {
+          return _this2.loader.load(url).then(function () {
             counter++;
-            _this.splashLoad.innerHTML = _this.getSplash("Loaded ".concat(counter, " of ").concat(resources.length, " game resources..."));
+            _this2.splashLoad.innerHTML = _this2.getSplash("Loaded ".concat(counter, " of ").concat(resources.length, " game resources..."));
           });
         });
         Promise.all(resources).then(function () {
-          _this.splashLoad.innerHTML = _this.getSplash("Press Start");
-          _this.gameaudio = new _GameAudio__WEBPACK_IMPORTED_MODULE_6__["default"](_this);
-          _this.gamepad = new _GamePad__WEBPACK_IMPORTED_MODULE_4__["default"](_this);
+          _this2.splashLoad.innerHTML = _this2.getSplash("Press Start");
+          _this2.gameaudio = new _GameAudio__WEBPACK_IMPORTED_MODULE_9__["default"](_this2);
+          _this2.gamepad = new _GamePad__WEBPACK_IMPORTED_MODULE_7__["default"](_this2);
 
-          if (_this.data.plugin === _Config__WEBPACK_IMPORTED_MODULE_3__["default"].plugins.TOPVIEW) {
-            _this.gamebox = new _plugins_TopView__WEBPACK_IMPORTED_MODULE_5__["default"](_this);
+          if (_this2.data.plugin === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].plugins.TOPVIEW) {
+            _this2.gamebox = new _plugins_TopView__WEBPACK_IMPORTED_MODULE_8__["default"](_this2);
           }
 
-          _this.bind();
+          _this2.bind();
         });
       });
     }
@@ -2204,7 +2336,7 @@ var Player = /*#__PURE__*/function () {
   }, {
     key: "getMergedData",
     value: function getMergedData(data, type) {
-      return _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].merge(this.data[type].find(function (obj) {
+      return _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].merge(this.data[type].find(function (obj) {
         return obj.id === data.id;
       }), data);
     }
@@ -2310,13 +2442,13 @@ var Player = /*#__PURE__*/function () {
         this.ready = true;
         this.element.classList.add("is-started"); // Game cycle (requestAnimationFrame)
 
-        this.gamecycle.go(this.onGameBlit.bind(this));
+        this.go(this.onGameBlit.bind(this));
       }
     }
   }, {
     key: "onGameBlit",
     value: function onGameBlit(elapsed) {
-      var _this2 = this;
+      var _this3 = this;
 
       this.previousElapsed = elapsed; // Rendering happens if NOT stopped
 
@@ -2337,7 +2469,7 @@ var Player = /*#__PURE__*/function () {
         } else {
           dpad.forEach(function (ctrl) {
             ctrl.dpad.forEach(function (dir) {
-              _this2.gamebox.pressD(dir);
+              _this3.gamebox.pressD(dir);
             });
           });
         } // Action buttons
@@ -2366,11 +2498,11 @@ var Player = /*#__PURE__*/function () {
 
       if (this.paused) {
         this.resume();
-        this.gamecycle.fire(_Config__WEBPACK_IMPORTED_MODULE_3__["default"].broadcast.RESUMED);
+        this.fire(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.RESUMED);
       } else {
         this.pause();
         this.stop();
-        this.gamecycle.fire(_Config__WEBPACK_IMPORTED_MODULE_3__["default"].broadcast.PAUSED);
+        this.fire(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.PAUSED);
       }
     }
   }, {
@@ -2433,7 +2565,7 @@ var Player = /*#__PURE__*/function () {
   }]);
 
   return Player;
-}();
+}(_Controller__WEBPACK_IMPORTED_MODULE_11__["default"]);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Player);
 
@@ -2488,7 +2620,7 @@ var Spring = /*#__PURE__*/function () {
     this.isResting = false;
     this.sprite = null;
     this.previousElapsed = null;
-    this.player.gamecycle.on(_Config__WEBPACK_IMPORTED_MODULE_2__["default"].broadcast.PAUSED, function () {
+    this.player.on(_Config__WEBPACK_IMPORTED_MODULE_2__["default"].broadcast.PAUSED, function () {
       _this.previousElapsed = null;
     });
   }
@@ -2657,6 +2789,37 @@ var Utils = {
       ctx.fillRect(x * g, 0, 1, g * h);
     }
   },
+  getParams: function getParams(str) {
+    var query = decodeURIComponent(str).match(/[#|?].*$/g);
+    var ret = {};
+
+    if (query) {
+      query = query[0].replace(/^\?|^#|^\/|\/$|\[|\]/g, "");
+      query = query.split("&");
+
+      for (var i = query.length; i--;) {
+        var pair = query[i].split("=");
+        var key = pair[0];
+        var val = pair[1];
+
+        if (ret[key]) {
+          // #2 https://github.com/kitajchuk/paramalama/issues/2
+          // This supposedly will work as of ECMA-262
+          // This works since we are not passing objects across frame boundaries
+          // and we are not considering Array-like objects. This WILL be an Array.
+          if ({}.toString.call(ret[key]) !== "[object Array]") {
+            ret[key] = [ret[key]];
+          }
+
+          ret[key].push(val);
+        } else {
+          ret[key] = val;
+        }
+      }
+    }
+
+    return ret;
+  },
   // From Akihabara helpers:
   // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L78
   random: function random(min, range) {
@@ -2681,73 +2844,14 @@ var Utils = {
   // From Akihabara trigo:
 
   /**
-  * Adds two angles together (radians).
-  * @param {Float} a Base angle.
-  * @param {Float} add The angle you're adding to the base angle.
-  * @returns The resultant angle, always between 0 and 2*pi.
-  */
-  addAngle: function addAngle(a, add) {
-    a = (a + add) % (Math.PI * 2);
-
-    if (a < 0) {
-      return Math.PI * 2 + a;
-    } else {
-      return a;
-    }
-  },
-
-  /**
-  * Gets the distance between two points.
-  * @param {Object} p1 This is an object containing x and y params for the first point.
-  * @param {Object} p2 This is an object containing x and y params for the second point.
-  * @returns The distance between p1 and p2.
-  */
+   * Gets the distance between two points.
+   * 
+   * @param {object} p1 This is an object containing x and y params for the first point.
+   * @param {object} p2 This is an object containing x and y params for the second point.
+   * @returns {number} The distance between p1 and p2.
+   */
   getDistance: function getDistance(p1, p2) {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-  },
-
-  /**
-  * Calculates the angle between two points.
-  * @param {Object} p1 This is an object containing x and y params for the first point.
-  * @param {Object} p2 This is an object containing x and y params for the second point.
-  * @param {Float} transl (Optional) Adds an angle (in radians) to the result. Defaults to 0.
-  * @returns The angle between points p1 and p2, plus transl.
-  */
-  getAngle: function getAngle(p1, p2, transl) {
-    return Utils.addAngle(Math.atan2(p2.y - p1.y, p2.x - p1.x), transl ? transl : 0);
-  },
-
-  /**
-  * Translates a point by a vector defined by angle and distance. This does not return a value but rather modifies the x and y values of p1.
-  * @param {Object} p1 This is an object containing x and y params for the point.
-  * @param {Float} a The angle of translation (rad).
-  * @param {Float} d The distance of translation.
-  */
-  translate: function translate(p1, a, d) {
-    return {
-      x: p1.x + Math.cos(a) * d,
-      y: p1.y + Math.sin(a) * d
-    };
-  },
-
-  /**
-  * Translates an x component of a coordinate by a vector defined by angle and distance. This returns its component translation.
-  * @param {Float} x1 This is an x coordinate.
-  * @param {Float} a The angle of translation (rad).
-  * @param {Float} d The distance of translation.
-  */
-  translateX: function translateX(x1, a, d) {
-    return x1 + Math.cos(a) * d;
-  },
-
-  /**
-  * Translates a y component of a coordinate by a vector defined by angle and distance. This returns its component translation.
-  * @param {Float} y1 This is a y coordinate.
-  * @param {Float} a The angle of translation (rad).
-  * @param {Float} d The distance of translation.
-  */
-  translateY: function translateY(y1, a, d) {
-    return y1 + Math.sin(a) * d;
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Utils);
@@ -3629,7 +3733,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
       this.player.element.classList.add("is-fader"); // Emit map change event
 
-      this.player.gamecycle.fire(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.MAPEVENT, event);
+      this.player.fire(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.MAPEVENT, event);
       setTimeout(function () {
         // New Map data
         var newMapData = _Loader__WEBPACK_IMPORTED_MODULE_7__["default"].cash(event.map);
@@ -4649,394 +4753,6 @@ var Sprite = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./node_modules/paramalama/paramalama.js":
-/*!***********************************************!*\
-  !*** ./node_modules/paramalama/paramalama.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (( str ) => {
-    let query = decodeURIComponent( str ).match( /[#|?].*$/g );
-    const ret = {};
-
-    if ( query ) {
-        query = query[ 0 ].replace( /^\?|^#|^\/|\/$|\[|\]/g, "" );
-        query = query.split( "&" );
-
-        for ( let i = query.length; i--; ) {
-            const pair = query[ i ].split( "=" );
-            const key = pair[ 0 ];
-            const val = pair[ 1 ];
-
-            if ( ret[ key ] ) {
-                // #2 https://github.com/kitajchuk/paramalama/issues/2
-                // This supposedly will work as of ECMA-262
-                // This works since we are not passing objects across frame boundaries
-                // and we are not considering Array-like objects. This WILL be an Array.
-                if ( {}.toString.call( ret[ key ] ) !== "[object Array]" ) {
-                    ret[ key ] = [ ret[ key ] ];
-                }
-
-                ret[ key ].push( val );
-
-            } else {
-                ret[ key ] = val;
-            }
-        }
-    }
-
-    return ret;
-});
-
-
-/***/ }),
-
-/***/ "./node_modules/properjs-controller/Controller.js":
-/*!********************************************************!*\
-  !*** ./node_modules/properjs-controller/Controller.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Controller)
-/* harmony export */ });
-const raf = window.requestAnimationFrame;
-const caf = window.cancelAnimationFrame;
-
-
-
-/**
- *
- * Easing functions
- * @namespace Easing
- * @memberof! <global>
- *
- */
-const ease = {
-    /**
-     *
-     * Produce a linear ease
-     * @method linear
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    linear ( t ) { return t; },
-
-    /**
-     *
-     * Produce a swing ease like in jQuery
-     * @method swing
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    swing ( t ) { return (1-Math.cos( t*Math.PI ))/2; },
-
-    /**
-     *
-     * Accelerating from zero velocity
-     * @method easeInQuad
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeInQuad ( t ) { return t*t; },
-
-    /**
-     *
-     * Decelerating to zero velocity
-     * @method easeOutQuad
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeOutQuad ( t ) { return t*(2-t); },
-
-    /**
-     *
-     * Acceleration until halfway, then deceleration
-     * @method easeInOutQuad
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeInOutQuad ( t ) { return t<0.5 ? 2*t*t : -1+(4-2*t)*t; },
-
-    /**
-     *
-     * Accelerating from zero velocity
-     * @method easeInCubic
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeInCubic ( t ) { return t*t*t; },
-
-    /**
-     *
-     * Decelerating to zero velocity
-     * @method easeOutCubic
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeOutCubic ( t ) { return (--t)*t*t+1; },
-
-    /**
-     *
-     * Acceleration until halfway, then deceleration
-     * @method easeInOutCubic
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeInOutCubic ( t ) { return t<0.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1; },
-
-    /**
-     *
-     * Accelerating from zero velocity
-     * @method easeInQuart
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeInQuart ( t ) { return t*t*t*t; },
-
-    /**
-     *
-     * Decelerating to zero velocity
-     * @method easeOutQuart
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeOutQuart ( t ) { return 1-(--t)*t*t*t; },
-
-    /**
-     *
-     * Acceleration until halfway, then deceleration
-     * @method easeInOutQuart
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeInOutQuart ( t ) { return t<0.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t; },
-
-    /**
-     *
-     * Accelerating from zero velocity
-     * @method easeInQuint
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeInQuint ( t ) { return t*t*t*t*t; },
-
-    /**
-     *
-     * Decelerating to zero velocity
-     * @method easeOutQuint
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeOutQuint ( t ) { return 1+(--t)*t*t*t*t; },
-
-    /**
-     *
-     * Acceleration until halfway, then deceleration
-     * @method easeInOutQuint
-     * @param {number} t Difference in time
-     * @returns a new t value
-     *
-     */
-    easeInOutQuint ( t ) { return t<0.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t; }
-};
-
-
-
-const defs = {
-    ease: ease.swing,
-    duration: 500,
-    from: 0,
-    to: 500,
-    update: () => {},
-    complete: () => {},
-};
-
-
-
-class Controller {
-    constructor () {
-        // Unique event IDs
-        this._uid = 0;
-        this._uprop = "properjsUID";
-
-        // Store for event handlers
-        this._handlers = {};
-
-        // RAF manager props
-        this._started = false;
-        this._paused = false;
-        this._cycle = null;
-    }
-
-
-    uid () {
-        this._uid = (this._uid + 1);
-
-        return this._uid;
-    }
-
-
-    go ( callback ) {
-        if ( this._started ) {
-            return this;
-        }
-
-        this._started = true;
-        this._anim = ( elapsed ) => {
-            this._cycle = raf( this._anim );
-
-            if ( typeof callback === "function" ) {
-                callback( elapsed );
-            }
-        };
-        this._cycle = raf( this._anim );
-    }
-
-
-    pause () {
-        this._paused = true;
-
-        return this;
-    }
-
-
-    play () {
-        this._paused = false;
-
-        return this;
-    }
-
-
-    stop () {
-        caf( this._cycle );
-
-        this._paused = false;
-        this._started = false;
-        this._cycle = null;
-
-        return this;
-    }
-
-
-    tween ( opts ) {
-        for ( let i in defs ) {
-            if ( opts[ i ] === undefined ) {
-                opts[ i ] = defs[ i ];
-            }
-        }
-
-        let startTime = null;
-        const tweenDiff = (opts.to - opts.from);
-
-        this.stop().go(( elapsed ) => {
-            if ( startTime === null ) {
-                startTime = elapsed;
-            }
-
-            const diff = elapsed - startTime;
-            const tweenTo = (tweenDiff * opts.ease( diff / opts.duration )) + opts.from;
-
-            opts.update( tweenTo );
-
-            if ( diff > opts.duration ) {
-                opts.complete( opts.to );
-
-                this.stop();
-            }
-        });
-    }
-
-
-    on ( event, handler ) {
-        const events = event.split( " " );
-
-        handler[ this._uprop ] = this.uid();
-
-        for ( let i = events.length; i--; ) {
-            if ( typeof handler === "function" ) {
-                if ( !this._handlers[ events[ i ] ] ) {
-                    this._handlers[ events[ i ] ] = [];
-                }
-
-                this._handlers[ events[ i ] ].push( handler );
-            }
-        }
-
-        return this;
-    }
-
-
-    off ( event, handler ) {
-        if ( !this._handlers[ event ] ) {
-            return this;
-        }
-
-        if ( handler ) {
-            this._offOne( event, handler );
-
-        } else {
-            this._offAll( event );
-        }
-
-        return this;
-    }
-
-
-    fire ( event, ...args ) {
-        if ( !this._handlers[ event ] ) {
-            return this;
-        }
-
-        for ( let i = this._handlers[ event ].length; i--; ) {
-            this._handlers[ event ][ i ].apply( this, args );
-        }
-
-        return this;
-    }
-
-
-    _offOne ( event, handler ) {
-        for ( let i = 0, len = this._handlers[ event ].length; i < len; i++ ) {
-            if ( handler[ this._uprop ] === this._handlers[ event ][ i ][ this._uprop ] ) {
-                this._handlers[ event ].splice( i, 1 );
-
-                break;
-            }
-        }
-    }
-
-
-    _offAll ( event ) {
-        for ( let i = this._handlers[ event ].length; i--; ) {
-            this._handlers[ event ][ i ] = null;
-        }
-
-        delete this._handlers[ event ];
-    }
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js":
 /*!**************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js ***!
@@ -5332,7 +5048,7 @@ var App = /*#__PURE__*/function () {
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(App, [{
     key: "bind",
     value: function bind() {
-      this.player.gamecycle.on(_lib_Config__WEBPACK_IMPORTED_MODULE_3__["default"].broadcast.MAPEVENT, function (event) {
+      this.player.on(_lib_Config__WEBPACK_IMPORTED_MODULE_3__["default"].broadcast.MAPEVENT, function (event) {
         _lib_Utils__WEBPACK_IMPORTED_MODULE_4__["default"].log(_lib_Config__WEBPACK_IMPORTED_MODULE_3__["default"].broadcast.MAPEVENT, event);
       });
     }

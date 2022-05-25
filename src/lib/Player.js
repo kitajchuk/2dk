@@ -4,13 +4,14 @@ import GamePad from "./GamePad";
 import TopView from "./plugins/TopView";
 import GameAudio from "./GameAudio";
 import Loader from "./Loader";
-import paramalama from "paramalama";
-import Controller from "properjs-controller";
+import Controller from "./Controller";
 
 
 
-class Player {
+class Player extends Controller {
     constructor () {
+        super();
+
         this.ready = false;
         this.paused = true;
         this.stopped = false;
@@ -25,8 +26,7 @@ class Player {
             up: false,
             down: false,
         };
-        this.query = paramalama( window.location.search );
-        this.gamecycle = new Controller();
+        this.query = Utils.getParams( window.location.search );
         this.previousElapsed = null;
         this.detect();
     }
@@ -228,7 +228,7 @@ class Player {
             this.element.classList.add( "is-started" );
 
             // Game cycle (requestAnimationFrame)
-            this.gamecycle.go( this.onGameBlit.bind( this ) );
+            this.go( this.onGameBlit.bind( this ) );
         }
     }
 
@@ -289,12 +289,12 @@ class Player {
 
         if ( this.paused ) {
             this.resume();
-            this.gamecycle.fire( Config.broadcast.RESUMED );
+            this.emit( Config.broadcast.RESUMED );
 
         } else {
             this.pause();
             this.stop();
-            this.gamecycle.fire( Config.broadcast.PAUSED );
+            this.emit( Config.broadcast.PAUSED );
         }
     }
 

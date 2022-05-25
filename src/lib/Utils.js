@@ -146,6 +146,36 @@ const Utils = {
     },
 
 
+    getParams ( str ) {
+        let query = decodeURIComponent( str ).match( /[#|?].*$/g );
+        const ret = {};
+
+        if ( query ) {
+            query = query[ 0 ].replace( /^\?|^#|^\/|\/$|\[|\]/g, "" );
+            query = query.split( "&" );
+
+            for ( let i = query.length; i--; ) {
+                const pair = query[ i ].split( "=" );
+                const key = pair[ 0 ];
+                const val = pair[ 1 ];
+
+                if ( ret[ key ] ) {
+                    if ( !Array.isArray( ret[ key ] ) ) {
+                        ret[ key ] = [ ret[ key ] ];
+                    }
+
+                    ret[ key ].push( val );
+
+                } else {
+                    ret[ key ] = val;
+                }
+            }
+        }
+
+        return ret;
+    },
+
+
     // From Akihabara helpers:
 
 
@@ -181,79 +211,15 @@ const Utils = {
 
 
     /**
-    * Adds two angles together (radians).
-    * @param {Float} a Base angle.
-    * @param {Float} add The angle you're adding to the base angle.
-    * @returns The resultant angle, always between 0 and 2*pi.
-    */
-    addAngle ( a, add ) {
-        a = ( a + add ) % ( Math.PI * 2 );
-        if ( a < 0 ) {
-            return ( Math.PI * 2 ) + a;
-
-        } else {
-            return a;
-        }
-    },
-
-
-    /**
-    * Gets the distance between two points.
-    * @param {Object} p1 This is an object containing x and y params for the first point.
-    * @param {Object} p2 This is an object containing x and y params for the second point.
-    * @returns The distance between p1 and p2.
-    */
+     * Gets the distance between two points.
+     * 
+     * @param {object} p1 This is an object containing x and y params for the first point.
+     * @param {object} p2 This is an object containing x and y params for the second point.
+     * @returns {number} The distance between p1 and p2.
+     */
     getDistance ( p1, p2 ) {
         return Math.sqrt( Math.pow( p2.x - p1.x, 2 ) + Math.pow( p2.y - p1.y, 2 ) );
     },
-
-
-    /**
-    * Calculates the angle between two points.
-    * @param {Object} p1 This is an object containing x and y params for the first point.
-    * @param {Object} p2 This is an object containing x and y params for the second point.
-    * @param {Float} transl (Optional) Adds an angle (in radians) to the result. Defaults to 0.
-    * @returns The angle between points p1 and p2, plus transl.
-    */
-    getAngle ( p1, p2, transl ) {
-        return Utils.addAngle( Math.atan2( p2.y - p1.y, p2.x - p1.x ), ( transl ? transl : 0 )) ;
-    },
-
-
-    /**
-    * Translates a point by a vector defined by angle and distance. This does not return a value but rather modifies the x and y values of p1.
-    * @param {Object} p1 This is an object containing x and y params for the point.
-    * @param {Float} a The angle of translation (rad).
-    * @param {Float} d The distance of translation.
-    */
-    translate ( p1, a, d ) {
-        return {
-            x: p1.x + Math.cos( a ) * d,
-            y: p1.y + Math.sin( a ) * d
-        };
-    },
-
-
-    /**
-    * Translates an x component of a coordinate by a vector defined by angle and distance. This returns its component translation.
-    * @param {Float} x1 This is an x coordinate.
-    * @param {Float} a The angle of translation (rad).
-    * @param {Float} d The distance of translation.
-    */
-    translateX ( x1, a, d ) {
-        return x1 + Math.cos( a ) * d;
-    },
-
-
-    /**
-    * Translates a y component of a coordinate by a vector defined by angle and distance. This returns its component translation.
-    * @param {Float} y1 This is a y coordinate.
-    * @param {Float} a The angle of translation (rad).
-    * @param {Float} d The distance of translation.
-    */
-    translateY ( y1, a, d ) {
-        return y1 + Math.sin( a ) * d;
-    }
 };
 
 
