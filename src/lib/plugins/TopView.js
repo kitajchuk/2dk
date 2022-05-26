@@ -590,15 +590,15 @@ class TopView extends GameBox {
 
 
     handleHeroAttack () {
-        // Need to refactor attack collision to account for weapon instead...
-        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
-        const collision = {
-            tiles: this.checkTiles( poi, this.hero ),
-        };
-        
         this.attacking = true;
         this.hero.resetElapsed = true;
         this.hero.cycle( Config.verbs.ATTACK, this.hero.dir );
+
+        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
+        const weaponBox = this.hero.getWeaponbox();
+        const collision = {
+            tiles: this.checkTiles( poi, weaponBox ),
+        };
 
         if ( collision.tiles && collision.tiles.attack.length ) {
             collision.tiles.attack.forEach(( tile ) => {

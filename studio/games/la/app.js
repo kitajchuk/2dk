@@ -990,19 +990,23 @@ var GameBox = /*#__PURE__*/function () {
     }
   }, {
     key: "checkTiles",
-    value: function checkTiles(poi) {
+    value: function checkTiles(poi, sprite) {
       var tiles = {
         action: [],
         attack: [],
         passive: []
       };
-      var hitbox = this.hero.getHitbox(poi);
-      var footbox = this.hero.getFootbox(poi);
       var activeTiles = this.getVisibleActiveTiles();
 
       for (var i = activeTiles.length; i--;) {
         var instance = activeTiles[i];
-        var lookbox = footTiles.indexOf(instance.data.group) !== -1 ? footbox : hitbox;
+        var lookbox = void 0;
+
+        if (typeof sprite.getFootbox === "function" && typeof sprite.getHitbox === "function") {
+          lookbox = footTiles.indexOf(instance.data.group) !== -1 ? sprite.getFootbox(poi) : sprite.getHitbox(poi); // Ad-hoc "sprite" object with { x, y, width, height }
+        } else {
+          lookbox = sprite;
+        }
 
         for (var j = activeTiles[i].data.coords.length; j--;) {
           var tilebox = {
@@ -3515,14 +3519,15 @@ var TopView = /*#__PURE__*/function (_GameBox) {
     value: function handleHeroAttack() {
       var _this6 = this;
 
-      // Need to refactor attack collision to account for weapon instead...
-      var poi = this.hero.getNextPoiByDir(this.hero.dir, 1);
-      var collision = {
-        tiles: this.checkTiles(poi, this.hero)
-      };
       this.attacking = true;
       this.hero.resetElapsed = true;
       this.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.ATTACK, this.hero.dir);
+      var poi = this.hero.getNextPoiByDir(this.hero.dir, 1);
+      var weaponBox = this.hero.getWeaponbox();
+      var collision = {
+        tiles: this.checkTiles(poi, weaponBox)
+      };
+      console.log(weaponBox, collision);
 
       if (collision.tiles && collision.tiles.attack.length) {
         collision.tiles.attack.forEach(function (tile) {
@@ -4215,6 +4220,18 @@ var Hero = /*#__PURE__*/function (_Sprite) {
       this.handleGravity();
       this.applyGravity();
     }
+  }, {
+    key: "renderAfter",
+    value: function renderAfter() {
+      if (this.verb === _Config__WEBPACK_IMPORTED_MODULE_5__["default"].verbs.ATTACK && this.data.weapon && this.data.weapon[this.dir].length) {
+        this.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, Math.abs(this.data.weapon[this.dir][this.frame].offsetX), Math.abs(this.data.weapon[this.dir][this.frame].offsetY), this.data.weapon[this.dir][this.frame].width, this.data.weapon[this.dir][this.frame].height, this.offset.x + this.data.weapon[this.dir][this.frame].positionX, this.offset.y + this.data.weapon[this.dir][this.frame].positionY, this.data.weapon[this.dir][this.frame].width / this.scale, this.data.weapon[this.dir][this.frame].height / this.scale);
+        var weaponBox = this.getWeaponbox();
+        this.gamebox.layers[this.layer].onCanvas.context.globalAlpha = 0.5;
+        this.gamebox.layers[this.layer].onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_5__["default"].colors.red;
+        this.gamebox.layers[this.layer].onCanvas.context.fillRect(weaponBox.x, weaponBox.y, weaponBox.width, weaponBox.height);
+        this.gamebox.layers[this.layer].onCanvas.context.globalAlpha = 1.0;
+      }
+    }
     /*******************************************************************************
     * Applications
     * Hero uses custom position and offset determinance...
@@ -4271,6 +4288,58 @@ var Hero = /*#__PURE__*/function (_Sprite) {
       } else {
         this.cycle(_Config__WEBPACK_IMPORTED_MODULE_5__["default"].verbs.WALK, this.dir);
       }
+    }
+    /*******************************************************************************
+    * Getters
+    *******************************************************************************/
+
+  }, {
+    key: "getWeaponbox",
+    value: function getWeaponbox() {
+      var _this2 = this;
+
+      var lowX = this.data.weapon[this.dir].reduce(function (accX, record) {
+        var absX = Math.abs(_this2.position.x + record.positionX);
+
+        if (absX < accX) {
+          return absX;
+        }
+
+        return accX;
+      }, 999999);
+      var lowY = this.data.weapon[this.dir].reduce(function (accY, record) {
+        var absY = Math.abs(_this2.position.y + record.positionY);
+
+        if (absY < accY) {
+          return absY;
+        }
+
+        return accY;
+      }, 999999);
+      var hiX = this.data.weapon[this.dir].reduce(function (accX, record) {
+        var absX = Math.abs(_this2.position.x + record.positionX + record.width);
+
+        if (absX > accX) {
+          return absX;
+        }
+
+        return accX;
+      }, 0);
+      var hiY = this.data.weapon[this.dir].reduce(function (accY, record) {
+        var absY = Math.abs(_this2.position.y + record.positionY + record.height);
+
+        if (absY > accY) {
+          return absY;
+        }
+
+        return accY;
+      }, 0);
+      return {
+        x: lowX,
+        y: lowY,
+        width: hiX - lowX,
+        height: hiY - lowY
+      };
     }
   }]);
 
@@ -4571,7 +4640,7 @@ var Sprite = /*#__PURE__*/function () {
     }
     /*******************************************************************************
     * Rendering
-    * Order is: blit, update, render
+    * Order is: blit, update, render { renderBefore, renderAfter }
     * Update is overridden for Sprite subclasses with different behaviors
     * Default behavior for a Sprite is to be static but with Physics forces
     *******************************************************************************/
@@ -4615,6 +4684,10 @@ var Sprite = /*#__PURE__*/function () {
     value: function render() {
       if (!this.visible()) {
         return;
+      }
+
+      if (typeof this.renderBefore === "function") {
+        this.renderBefore();
       } // Move betweeb BG and FG relative to Hero
 
 
@@ -4638,21 +4711,11 @@ var Sprite = /*#__PURE__*/function () {
       }
 
       this.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, this.spritecel[0], this.spritecel[1], this.data.width, this.data.height, this.offset.x, this.offset.y + this.position.z, this.width, this.height);
-      this.gamebox.layers[this.layer].onCanvas.context.globalAlpha = 1.0; // THIS is the HERO sprite so we can apply the weapon if attacking!!!
+      this.gamebox.layers[this.layer].onCanvas.context.globalAlpha = 1.0;
 
-      if (this === this.gamebox.hero && this.gamebox.hero.verb === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.ATTACK && this.data.weapon && this.data.weapon[this.gamebox.hero.dir].length) {
-        this.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, Math.abs(this.data.weapon[this.gamebox.hero.dir][this.frame].offsetX), Math.abs(this.data.weapon[this.gamebox.hero.dir][this.frame].offsetY), this.data.weapon[this.gamebox.hero.dir][this.frame].width, this.data.weapon[this.gamebox.hero.dir][this.frame].height, this.offset.x + this.data.weapon[this.gamebox.hero.dir][this.frame].positionX, this.offset.y + this.data.weapon[this.gamebox.hero.dir][this.frame].positionY, this.data.weapon[this.gamebox.hero.dir][this.frame].width / this.scale, this.data.weapon[this.gamebox.hero.dir][this.frame].height / this.scale);
+      if (typeof this.renderAfter === "function") {
+        this.renderAfter();
       }
-    }
-  }, {
-    key: "getWeaponbox",
-    value: function getWeaponbox() {
-      return {
-        x: this.offset.x + this.data.weapon[this.gamebox.hero.dir][this.frame].positionX,
-        y: this.offset.y + this.data.weapon[this.gamebox.hero.dir][this.frame].positionY,
-        width: this.data.weapon[this.gamebox.hero.dir][this.frame].width,
-        height: this.data.weapon[this.gamebox.hero.dir][this.frame].height
-      };
     }
   }, {
     key: "cycle",

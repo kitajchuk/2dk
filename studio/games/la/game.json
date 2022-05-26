@@ -5,7 +5,7 @@
     "height": 576,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 508,
+    "save": 523,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -52,11 +52,19 @@
             "weapon": {
                 "down": [
                     {
+                        "offsetX": -1028,
+                        "offsetY": -34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": -44,
+                        "positionY": 56
+                    },
+                    {
                         "offsetX": -940,
                         "offsetY": -20,
                         "width": 52,
                         "height": 52,
-                        "positionX": -18,
+                        "positionX": -20,
                         "positionY": 68
                     },
                     {
@@ -70,11 +78,19 @@
                 ],
                 "up": [
                     {
+                        "offsetX": -1120,
+                        "offsetY": -34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": 76,
+                        "positionY": 56
+                    },
+                    {
                         "offsetX": -756,
                         "offsetY": -20,
                         "width": 52,
                         "height": 52,
-                        "positionX": 71,
+                        "positionX": 70,
                         "positionY": -4
                     },
                     {
@@ -82,7 +98,7 @@
                         "offsetY": -16,
                         "width": 24,
                         "height": 60,
-                        "positionX": 17,
+                        "positionX": 14,
                         "positionY": -40
                     }
                 ],
@@ -96,11 +112,19 @@
                         "positionY": -40
                     },
                     {
+                        "offsetX": -1216,
+                        "offsetY": -16,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": -30,
+                        "positionY": -4
+                    },
+                    {
                         "offsetX": -1028,
                         "offsetY": -34,
                         "width": 60,
                         "height": 24,
-                        "positionX": -43,
+                        "positionX": -44,
                         "positionY": 56
                     }
                 ],
@@ -114,11 +138,19 @@
                         "positionY": -40
                     },
                     {
+                        "offsetX": -756,
+                        "offsetY": -20,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": 70,
+                        "positionY": -4
+                    },
+                    {
                         "offsetX": -1120,
                         "offsetY": -34,
                         "width": 60,
                         "height": 24,
-                        "positionX": 77,
+                        "positionX": 76,
                         "positionY": 56
                     }
                 ]
@@ -275,22 +307,22 @@
                     "down": {
                         "offsetX": -1012,
                         "offsetY": -92,
-                        "stepsX": 2
+                        "stepsX": 3
                     },
                     "up": {
                         "offsetX": -1012,
                         "offsetY": -184,
-                        "stepsX": 2
+                        "stepsX": 3
                     },
                     "left": {
                         "offsetX": -1012,
                         "offsetY": -276,
-                        "stepsX": 2
+                        "stepsX": 3
                     },
                     "right": {
                         "offsetX": -1012,
                         "offsetY": -368,
-                        "stepsX": 2
+                        "stepsX": 3
                     }
                 }
             }

@@ -80,7 +80,7 @@ class Sprite {
 
 /*******************************************************************************
 * Rendering
-* Order is: blit, update, render
+* Order is: blit, update, render { renderBefore, renderAfter }
 * Update is overridden for Sprite subclasses with different behaviors
 * Default behavior for a Sprite is to be static but with Physics forces
 *******************************************************************************/
@@ -121,6 +121,10 @@ class Sprite {
     render () {
         if ( !this.visible() ) {
             return;
+        }
+
+        if ( typeof this.renderBefore === "function" ) {
+            this.renderBefore();
         }
 
         // Move betweeb BG and FG relative to Hero
@@ -170,30 +174,9 @@ class Sprite {
 
         this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
 
-        // THIS is the HERO sprite so we can apply the weapon if attacking!!!
-        if ( this === this.gamebox.hero && this.gamebox.hero.verb === Config.verbs.ATTACK && this.data.weapon && this.data.weapon[ this.gamebox.hero.dir ].length ) {
-            this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
-                this.image,
-                Math.abs( this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].offsetX ),
-                Math.abs( this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].offsetY ),
-                this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].width,
-                this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].height,
-                this.offset.x + this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].positionX,
-                this.offset.y + this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].positionY,
-                this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].width / this.scale,
-                this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].height / this.scale
-            );
+        if ( typeof this.renderAfter === "function" ) {
+            this.renderAfter();
         }
-    }
-
-
-    getWeaponbox () {
-        return {
-            x: this.offset.x + this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].positionX,
-            y: this.offset.y + this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].positionY,
-            width: this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].width,
-            height: this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].height,
-        };
     }
 
 

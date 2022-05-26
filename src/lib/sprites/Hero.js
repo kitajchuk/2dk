@@ -34,6 +34,23 @@ class Hero extends Sprite {
     }
 
 
+    renderAfter () {
+        if ( this.verb === Config.verbs.ATTACK && this.data.weapon && this.data.weapon[ this.dir ].length ) {
+            this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+                this.image,
+                Math.abs( this.data.weapon[ this.dir ][ this.frame ].offsetX ),
+                Math.abs( this.data.weapon[ this.dir ][ this.frame ].offsetY ),
+                this.data.weapon[ this.dir ][ this.frame ].width,
+                this.data.weapon[ this.dir ][ this.frame ].height,
+                this.offset.x + this.data.weapon[ this.dir ][ this.frame ].positionX,
+                this.offset.y + this.data.weapon[ this.dir ][ this.frame ].positionY,
+                this.data.weapon[ this.dir ][ this.frame ].width / this.scale,
+                this.data.weapon[ this.dir ][ this.frame ].height / this.scale
+            );
+        }
+    }
+
+
 /*******************************************************************************
 * Applications
 * Hero uses custom position and offset determinance...
@@ -95,6 +112,61 @@ class Hero extends Sprite {
         } else {
             this.cycle( Config.verbs.WALK, this.dir );
         }
+    }
+
+
+/*******************************************************************************
+* Getters
+*******************************************************************************/
+    getWeaponbox () {
+        const lowX = this.data.weapon[ this.dir ].reduce(( accX, record ) => {
+            const absX = Math.abs( this.position.x + record.positionX );
+
+            if ( absX < accX ) {
+                return absX;
+            }
+
+            return accX;
+
+        }, 999999 );
+        const lowY = this.data.weapon[ this.dir ].reduce(( accY, record ) => {
+            const absY = Math.abs( this.position.y + record.positionY );
+
+            if ( absY < accY ) {
+                return absY;
+            }
+
+            return accY;
+
+        }, 999999 );
+        const hiX = this.data.weapon[ this.dir ].reduce(( accX, record ) => {
+            const absX = Math.abs( this.position.x + record.positionX + record.width );
+
+            if ( absX > accX ) {
+                return absX;
+            }
+
+            return accX;
+
+        }, 0 );
+        const hiY = this.data.weapon[ this.dir ].reduce(( accY, record ) => {
+            const absY = Math.abs( this.position.y + record.positionY + record.height );
+
+            if ( absY > accY ) {
+                return absY;
+            }
+
+            return accY;
+
+        }, 0 );
+
+        return {
+            x: lowX,
+            y: lowY,
+            width: hiX - lowX,
+            height: hiY - lowY,
+            
+        };
     }
 }
 

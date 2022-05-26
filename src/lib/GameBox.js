@@ -444,19 +444,25 @@ Can all be handled in plugin GameBox
     }
 
 
-    checkTiles ( poi ) {
+    checkTiles ( poi, sprite ) {
         const tiles = {
             action: [],
             attack: [],
             passive: [],
         };
-        const hitbox = this.hero.getHitbox( poi );
-        const footbox = this.hero.getFootbox( poi );
         const activeTiles = this.getVisibleActiveTiles();
 
         for ( let i = activeTiles.length; i--; ) {
             const instance = activeTiles[ i ];
-            const lookbox = ((footTiles.indexOf( instance.data.group ) !== -1) ? footbox : hitbox);
+            let lookbox;
+
+            if ( (typeof sprite.getFootbox === "function") && (typeof sprite.getHitbox === "function") ) {
+                lookbox = (footTiles.indexOf( instance.data.group ) !== -1) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
+
+            // Ad-hoc "sprite" object with { x, y, width, height }
+            } else {
+                lookbox = sprite;
+            }
 
             for ( let j = activeTiles[ i ].data.coords.length; j--; ) {
                 const tilebox = {
