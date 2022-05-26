@@ -33,12 +33,8 @@ class Player extends Controller {
 
 
     detect () {
-        this.device = (() => {
-            const match = /Android|iPhone/.exec( window.navigator.userAgent );
-
-            return (match && match[ 0 ] ? true : false);
-        })();
-
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_tablet_or_desktop
+        this.device = /Mobi/i.test( window.navigator.userAgent );
         this.installed = (window.navigator.standalone || window.matchMedia( "(display-mode: standalone)" ).matches);
     }
 
