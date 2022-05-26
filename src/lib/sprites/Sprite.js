@@ -134,11 +134,13 @@ class Sprite {
                 this.layer = "foreground";
 
             // Sprites that have a smaller hitbox than their actual size can flip layer
-            } else if ( (this.hitbox.width * this.hitbox.height) !== (this.width * this.height) && (this.hitbox.y > this.gamebox.hero.hitbox.y) ) {
-                this.layer = "foreground";
+            } else if ( (this.hitbox.width * this.hitbox.height) !== (this.width * this.height) ) {
+                if ( this.hitbox.y > this.gamebox.hero.hitbox.y ) {
+                    this.layer = "foreground";
 
-            } else {
-                this.layer = "background";
+                } else {
+                    this.layer = "background";
+                }
             }
         }
 

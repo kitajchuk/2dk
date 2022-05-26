@@ -1,4 +1,5 @@
 import Sprite from "./Sprite";
+import Config from "../Config";
 
 
 
@@ -19,6 +20,10 @@ class FX extends Sprite {
 
         if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
+        }
+
+        if ( this.data.type === Config.npc.FLOAT ) {
+            this.position.y--;
         }
 
         this.applyFrame( elapsed );
@@ -42,7 +47,14 @@ class FX extends Sprite {
             this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
 
             if ( diff >= this.data.dur ) {
-                this.map.killObj( "fx", this );
+                if ( this.data.kill ) {
+                    this.map.killObj( "fx", this );
+
+                } else {
+                    this.previousElapsed = elapsed;
+                    this.frame = this.data.stepsX - 1;
+                    this.position.y = this.data.spawn.y;
+                }
             }
         }
 

@@ -201,21 +201,14 @@ Can all be handled in plugin GameBox
 * FX utilities
 *******************************************************************************/
     smokeObject ( obj ) {
-        let data = {
+        const data = this.player.getMergedData({
             id: "smoke",
+            kill: true,
             spawn: {
                 x: obj.position.x + (obj.width / 2) - (this.map.data.tilesize / 2),
                 y: obj.position.y + (obj.height / 2) - (this.map.data.tilesize / 2),
             },
-        };
-
-        data = this.player.getMergedData( data, "fx" );
-        data.hitbox = {
-            x: 0,
-            y: 0,
-            width: data.width,
-            height: data.height,
-        };
+        }, "fx" );
 
         this.map.addFX( new FX( data, this.map ) );
         this.map.addFX( new FX( Utils.merge( data, {

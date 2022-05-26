@@ -2,6 +2,7 @@ import Utils from "./Utils";
 import Loader from "./Loader";
 import Config from "./Config";
 import NPC from "./sprites/NPC";
+import FX from "./sprites/FX";
 
 
 
@@ -199,6 +200,11 @@ class Map {
         // Render layers
         Object.keys( this.layers ).forEach(( id ) => {
             this.addLayer( id );
+        });
+
+        // FX
+        this.data.fx.forEach(( data ) => {
+            this.fx.push( new FX( this.gamebox.player.getMergedData( data, "fx", true ), this ) );
         });
 
         // NPCs

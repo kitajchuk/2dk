@@ -33,6 +33,17 @@
             "dir": "down"
         }
     ],
+    "fx": [
+        {
+            "id": "smoke",
+            "dur": 2000,
+            "spawn": {
+                "x": 896,
+                "y": 1728
+            },
+            "type": "float"
+        }
+    ],
     "tiles": [
         {
             "group": "ledge",

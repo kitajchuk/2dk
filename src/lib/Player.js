@@ -110,11 +110,11 @@ class Player extends Controller {
     }
 
 
-    getMergedData ( data, type ) {
+    getMergedData ( data, type, force = false ) {
         return Utils.merge(this.data[ type ].find(( obj ) => {
             return (obj.id === data.id);
 
-        }), data );
+        }), data, force );
     }
 
 

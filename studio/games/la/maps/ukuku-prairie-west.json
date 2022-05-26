@@ -19,6 +19,7 @@
             "dir": "down"
         }
     ],
+    "fx": [],
     "tiles": [
         {
             "group": "ledge",

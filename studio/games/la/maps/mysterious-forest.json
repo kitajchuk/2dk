@@ -18,6 +18,7 @@
             "dir": "down"
         }
     ],
+    "fx": [],
     "tiles": [
         {
             "group": "water",

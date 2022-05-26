@@ -23,6 +23,7 @@
             "dir": "up"
         }
     ],
+    "fx": [],
     "tiles": [
         {
             "group": "stairs",

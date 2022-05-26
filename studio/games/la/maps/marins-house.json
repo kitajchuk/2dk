@@ -18,6 +18,7 @@
             "dir": "up"
         }
     ],
+    "fx": [],
     "tiles": [
         {
             "group": "pots",

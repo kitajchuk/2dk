@@ -754,20 +754,14 @@ var GameBox = /*#__PURE__*/function () {
   }, {
     key: "smokeObject",
     value: function smokeObject(obj) {
-      var data = {
+      var data = this.player.getMergedData({
         id: "smoke",
+        kill: true,
         spawn: {
           x: obj.position.x + obj.width / 2 - this.map.data.tilesize / 2,
           y: obj.position.y + obj.height / 2 - this.map.data.tilesize / 2
         }
-      };
-      data = this.player.getMergedData(data, "fx");
-      data.hitbox = {
-        x: 0,
-        y: 0,
-        width: data.width,
-        height: data.height
-      };
+      }, "fx");
       this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_9__["default"](data, this.map));
       this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_9__["default"](_Utils__WEBPACK_IMPORTED_MODULE_2__["default"].merge(data, {
         spawn: {
@@ -1757,6 +1751,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Loader */ "./src/lib/Loader.js");
 /* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
 /* harmony import */ var _sprites_NPC__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./sprites/NPC */ "./src/lib/sprites/NPC.js");
+/* harmony import */ var _sprites_FX__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./sprites/FX */ "./src/lib/sprites/FX.js");
+
 
 
 
@@ -1962,6 +1958,10 @@ var Map = /*#__PURE__*/function () {
       // Render layers
       Object.keys(this.layers).forEach(function (id) {
         _this2.addLayer(id);
+      }); // FX
+
+      this.data.fx.forEach(function (data) {
+        _this2.fx.push(new _sprites_FX__WEBPACK_IMPORTED_MODULE_6__["default"](_this2.gamebox.player.getMergedData(data, "fx", true), _this2));
       }); // NPCs
 
       this.data.npcs.forEach(function (data) {
@@ -2391,9 +2391,10 @@ var Player = /*#__PURE__*/function (_Controller) {
   }, {
     key: "getMergedData",
     value: function getMergedData(data, type) {
+      var force = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       return _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].merge(this.data[type].find(function (obj) {
         return obj.id === data.id;
-      }), data);
+      }), data, force);
     }
   }, {
     key: "getOrientation",
@@ -4088,6 +4089,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
 /* harmony import */ var _Sprite__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Sprite */ "./src/lib/sprites/Sprite.js");
+/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Config */ "./src/lib/Config.js");
 
 
 
@@ -4097,6 +4099,7 @@ __webpack_require__.r(__webpack_exports__);
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0,_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__["default"])(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
 
 
 /*******************************************************************************
@@ -4126,6 +4129,10 @@ var FX = /*#__PURE__*/function (_Sprite) {
         this.previousElapsed = elapsed;
       }
 
+      if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT) {
+        this.position.y--;
+      }
+
       this.applyFrame(elapsed);
     }
   }, {
@@ -4143,7 +4150,13 @@ var FX = /*#__PURE__*/function (_Sprite) {
         this.frame = Math.floor(diff / this.data.dur * this.data.stepsX);
 
         if (diff >= this.data.dur) {
-          this.map.killObj("fx", this);
+          if (this.data.kill) {
+            this.map.killObj("fx", this);
+          } else {
+            this.previousElapsed = elapsed;
+            this.frame = this.data.stepsX - 1;
+            this.position.y = this.data.spawn.y;
+          }
         }
       }
 
@@ -4697,10 +4710,12 @@ var Sprite = /*#__PURE__*/function () {
         // Assume that FLOAT should always render to the foreground
         if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].npc.FLOAT) {
           this.layer = "foreground"; // Sprites that have a smaller hitbox than their actual size can flip layer
-        } else if (this.hitbox.width * this.hitbox.height !== this.width * this.height && this.hitbox.y > this.gamebox.hero.hitbox.y) {
-          this.layer = "foreground";
-        } else {
-          this.layer = "background";
+        } else if (this.hitbox.width * this.hitbox.height !== this.width * this.height) {
+          if (this.hitbox.y > this.gamebox.hero.hitbox.y) {
+            this.layer = "foreground";
+          } else {
+            this.layer = "background";
+          }
         }
       }
 
