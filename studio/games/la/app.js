@@ -245,6 +245,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
 /* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Utils */ "./src/lib/Utils.js");
+/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
+
 
 
 
@@ -273,6 +275,16 @@ var Dialogue = /*#__PURE__*/function () {
       this.element.className = "_2dk__dialogue";
     }
   }, {
+    key: "write",
+    value: function write(text) {
+      this.element.innerHTML = "<p>".concat(text, "</p>");
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      this.element.innerHTML = "";
+    }
+  }, {
     key: "auto",
     value: function auto(data) {
       var _this = this;
@@ -292,7 +304,7 @@ var Dialogue = /*#__PURE__*/function () {
       this.data = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].copy(data);
       this.element.classList.add("_2dk__dialogue--".concat(this.data.type));
       this.element.classList.add("is-texting");
-      this.element.innerHTML = this.data.text.shift();
+      this.write(this.data.text.shift());
       this.timeout = setTimeout(function () {
         _this.teardown();
       }, this.debounce * 3);
@@ -317,7 +329,8 @@ var Dialogue = /*#__PURE__*/function () {
 
         _this2.element.classList.add("is-texting");
 
-        _this2.element.innerHTML = _this2.data.text.shift();
+        _this2.write(_this2.data.text.shift());
+
         _this2.timeout = setTimeout(function () {
           _this2.ready = true;
         }, _this2.debounce);
@@ -338,7 +351,7 @@ var Dialogue = /*#__PURE__*/function () {
 
       if (this.data.type === "text") {
         if (this.data.text.length) {
-          this.element.innerHTML = this.data.text.shift();
+          this.write(this.data.text.shift());
           this.timeout = setTimeout(function () {
             _this3.pressed = false;
           }, this.debounce);
@@ -358,10 +371,10 @@ var Dialogue = /*#__PURE__*/function () {
           var text = [this.data.text.shift()]; // No more text so show prompts...
 
           if (!this.data.text.length) {
-            text.push("<span class=\"teal\">A: ".concat(this.data.yes.label, "</span>, <span class=\"blue\">B: ").concat(this.data.no.label, "</span>"));
+            text.push("\n                        <span style=\"color: ".concat(_Config__WEBPACK_IMPORTED_MODULE_3__["default"].colors.teal, ";\">A: ").concat(this.data.yes.label, "</span>, \n                        <span style=\"color: ").concat(_Config__WEBPACK_IMPORTED_MODULE_3__["default"].colors.blue, ";\">B: ").concat(this.data.no.label, "</span>"));
           }
 
-          this.element.innerHTML = text.join("<br />");
+          this.write(text.join("<br />"));
           this.timeout = setTimeout(function () {
             _this3.pressed = false;
           }, this.debounce); // A-button will confirm if there is no more text...
@@ -400,7 +413,8 @@ var Dialogue = /*#__PURE__*/function () {
       this.resolve = null;
       this.reject = null;
       this.timeout = setTimeout(function () {
-        _this4.element.innerHTML = "";
+        _this4.clear();
+
         _this4.active = false;
         _this4.timeout = null;
       }, this.duration);
@@ -2292,11 +2306,8 @@ var Player = /*#__PURE__*/function (_Controller) {
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Player, [{
     key: "detect",
     value: function detect() {
-      this.device = function () {
-        var match = /Android|iPhone/.exec(window.navigator.userAgent);
-        return match && match[0] ? true : false;
-      }();
-
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_tablet_or_desktop
+      this.device = /Mobi/i.test(window.navigator.userAgent);
       this.installed = window.navigator.standalone || window.matchMedia("(display-mode: standalone)").matches;
     } // Debugging and feature flagging...
 
