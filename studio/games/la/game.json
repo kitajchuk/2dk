@@ -5,7 +5,7 @@
     "height": 576,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 468,
+    "save": 506,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -22,8 +22,8 @@
             "parkour": "assets/sounds/sfx-dropping.mp3"
         },
         "companion": {
-            "id": "ghost",
-            "type": "float"
+            "id": "dog",
+            "type": "walk"
         }
     },
     "heroes": [
@@ -48,6 +48,80 @@
             "shadow": {
                 "offsetX": -368,
                 "offsetY": 0
+            },
+            "weapon": {
+                "down": [
+                    {
+                        "offsetX": -940,
+                        "offsetY": -20,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": -18,
+                        "positionY": 68
+                    },
+                    {
+                        "offsetX": -862,
+                        "offsetY": -16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 50,
+                        "positionY": 84
+                    }
+                ],
+                "up": [
+                    {
+                        "offsetX": -756,
+                        "offsetY": -20,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": 71,
+                        "positionY": -4
+                    },
+                    {
+                        "offsetX": -678,
+                        "offsetY": -16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 17,
+                        "positionY": -40
+                    }
+                ],
+                "left": [
+                    {
+                        "offsetX": -678,
+                        "offsetY": -16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 20,
+                        "positionY": -40
+                    },
+                    {
+                        "offsetX": -1028,
+                        "offsetY": -34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": -43,
+                        "positionY": 56
+                    }
+                ],
+                "right": [
+                    {
+                        "offsetX": -678,
+                        "offsetY": -16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 48,
+                        "positionY": -40
+                    },
+                    {
+                        "offsetX": -1120,
+                        "offsetY": -34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": 77,
+                        "positionY": 56
+                    }
+                ]
             },
             "verbs": {
                 "face": {
@@ -195,154 +269,28 @@
                         "offsetY": -368,
                         "stepsX": 3
                     }
-                }
-            }
-        },
-        {
-            "id": "alttp",
-            "name": "BK",
-            "width": 140,
-            "height": 140,
-            "scale": 1.1,
-            "image": "assets/sprites/hero_alttp.png",
-            "hitbox": {
-                "x": 48,
-                "y": 74,
-                "width": 44,
-                "height": 44
-            },
-            "stats": {
-                "power": 1,
-                "health": 3,
-                "stamina": 3,
-                "strength": 1
-            },
-            "shadow": {
-                "offsetX": -560,
-                "offsetY": 0
-            },
-            "verbs": {
-                "face": {
-                    "down": {
-                        "offsetX": 0,
-                        "offsetY": 0
-                    },
-                    "up": {
-                        "offsetX": -140,
-                        "offsetY": 0
-                    },
-                    "left": {
-                        "offsetX": -280,
-                        "offsetY": 0
-                    },
-                    "right": {
-                        "offsetX": -420,
-                        "offsetY": 0
-                    }
                 },
-                "walk": {
-                    "dur": 500,
+                "attack": {
+                    "dur": 125,
                     "down": {
-                        "offsetX": 0,
-                        "offsetY": -140,
-                        "stepsX": 8
+                        "offsetX": -1012,
+                        "offsetY": -92,
+                        "stepsX": 2
                     },
                     "up": {
-                        "offsetX": 0,
-                        "offsetY": -280,
-                        "stepsX": 8
+                        "offsetX": -1012,
+                        "offsetY": -184,
+                        "stepsX": 2
                     },
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": -420,
-                        "stepsX": 8
+                        "offsetX": -1012,
+                        "offsetY": -276,
+                        "stepsX": 2
                     },
                     "right": {
-                        "offsetX": 0,
-                        "offsetY": -560,
-                        "stepsX": 8
-                    }
-                },
-                "push": {
-                    "dur": 500,
-                    "down": {
-                        "offsetX": -1120,
-                        "offsetY": -140,
-                        "stepsX": 6
-                    },
-                    "up": {
-                        "offsetX": -1120,
-                        "offsetY": -280,
-                        "stepsX": 4
-                    },
-                    "left": {
-                        "offsetX": -1120,
-                        "offsetY": -420,
-                        "stepsX": 5
-                    },
-                    "right": {
-                        "offsetX": -1120,
-                        "offsetY": -560,
-                        "stepsX": 5
-                    }
-                },
-                "grab": {
-                    "down": {
-                        "offsetX": -1960,
-                        "offsetY": -140
-                    },
-                    "up": {
-                        "offsetX": -1960,
-                        "offsetY": -280
-                    },
-                    "left": {
-                        "offsetX": -1960,
-                        "offsetY": -420
-                    },
-                    "right": {
-                        "offsetX": -1960,
-                        "offsetY": -560
-                    }
-                },
-                "pull": {
-                    "down": {
-                        "offsetX": -2100,
-                        "offsetY": -140
-                    },
-                    "up": {
-                        "offsetX": -2100,
-                        "offsetY": -280
-                    },
-                    "left": {
-                        "offsetX": -2100,
-                        "offsetY": -420
-                    },
-                    "right": {
-                        "offsetX": -2100,
-                        "offsetY": -560
-                    }
-                },
-                "lift": {
-                    "dur": 750,
-                    "down": {
-                        "offsetX": -2240,
-                        "offsetY": -140,
-                        "stepsX": 8
-                    },
-                    "up": {
-                        "offsetX": -2240,
-                        "offsetY": -280,
-                        "stepsX": 8
-                    },
-                    "left": {
-                        "offsetX": -2240,
-                        "offsetY": -420,
-                        "stepsX": 8
-                    },
-                    "right": {
-                        "offsetX": -2240,
-                        "offsetY": -560,
-                        "stepsX": 8
+                        "offsetX": -1012,
+                        "offsetY": -368,
+                        "stepsX": 2
                     }
                 }
             }

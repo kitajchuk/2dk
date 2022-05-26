@@ -131,6 +131,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// A cleanup of the original ProperJS Controller
+// https://github.com/kitajchuk/Controller
 var Controller = /*#__PURE__*/function () {
   function Controller() {
     (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, Controller);
@@ -205,8 +207,8 @@ var Controller = /*#__PURE__*/function () {
       }
     }
   }, {
-    key: "fire",
-    value: function fire(event) {
+    key: "emit",
+    value: function emit(event) {
       var _this3 = this;
 
       for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -1060,21 +1062,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/assertThisInitialized */ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js");
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
-/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Utils */ "./src/lib/Utils.js");
-/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Controller */ "./src/lib/Controller.js");
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Utils */ "./src/lib/Utils.js");
+/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Controller */ "./src/lib/Controller.js");
 
 
 
 
 
 
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0,_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__["default"])(this, result); }; }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0,_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__["default"])(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -1086,7 +1086,7 @@ var touchInterval = 8;
 var touchRepeated = 50;
 var touchControls = {
   a: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.A,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.A,
     elem: null,
     timer: null,
     touched: false,
@@ -1095,7 +1095,7 @@ var touchControls = {
     gamepad: [0]
   },
   b: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.B,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.B,
     elem: null,
     timer: null,
     touched: false,
@@ -1104,7 +1104,7 @@ var touchControls = {
     gamepad: [1]
   },
   start: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.START,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.START,
     elem: null,
     timer: null,
     touched: false,
@@ -1114,7 +1114,7 @@ var touchControls = {
     gamepad: [9]
   },
   select: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.SELECT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.SELECT,
     elem: null,
     hold: 0,
     timer: null,
@@ -1125,14 +1125,14 @@ var touchControls = {
   },
   // D-Pad
   "up-left": {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UPLEFT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UPLEFT,
     elem: null,
     timer: null,
     touched: false,
     dpad: ["left", "up"]
   },
   up: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UP,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP,
     elem: null,
     timer: null,
     touched: false,
@@ -1140,14 +1140,14 @@ var touchControls = {
     axes: [0, -1]
   },
   "up-right": {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UPRIGHT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UPRIGHT,
     elem: null,
     timer: null,
     touched: false,
     dpad: ["right", "up"]
   },
   left: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.LEFT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.LEFT,
     elem: null,
     timer: null,
     touched: false,
@@ -1159,7 +1159,7 @@ var touchControls = {
     dpad: []
   },
   right: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.RIGHT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.RIGHT,
     elem: null,
     timer: null,
     touched: false,
@@ -1167,14 +1167,14 @@ var touchControls = {
     axes: [1, 0]
   },
   "down-left": {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWNLEFT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWNLEFT,
     elem: null,
     timer: null,
     touched: false,
     dpad: ["left", "down"]
   },
   down: {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWN,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN,
     elem: null,
     timer: null,
     touched: false,
@@ -1182,296 +1182,16 @@ var touchControls = {
     axes: [0, 1]
   },
   "down-right": {
-    key: _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWNRIGHT,
+    key: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWNRIGHT,
     elem: null,
     timer: null,
     touched: false,
     dpad: ["right", "down"]
   }
 };
-var instance = null;
-
-var getControl = function getControl(key) {
-  var ret = null;
-  Object.keys(touchControls).forEach(function (btn) {
-    if (touchControls[btn].key === key) {
-      ret = touchControls[btn];
-    }
-  });
-  return ret;
-};
-
-var getGamepad = function getGamepad(val) {
-  var ret = null;
-  Object.keys(touchControls).forEach(function (btn) {
-    if (touchControls[btn].gamepad && touchControls[btn].gamepad.indexOf(val) !== -1) {
-      ret = touchControls[btn];
-    }
-  });
-  return ret;
-};
-
-var getAxes = function getAxes(xy, val) {
-  var ret = null;
-  Object.keys(touchControls).forEach(function (btn) {
-    if (touchControls[btn].axes && touchControls[btn].axes[xy] === val) {
-      ret = touchControls[btn];
-    }
-  });
-  return ret;
-};
-
-var getTouched = function getTouched(touches, control) {
-  for (var i = 0; i < touches.length; i++) {
-    var touched = document.elementFromPoint(touches[i].pageX, touches[i].pageY);
-    var key = Number(touched.dataset.key);
-
-    if (key === control.key) {
-      return control;
-    }
-  }
-
-  return null;
-};
-
-var onTouchStart = function onTouchStart(e) {
-  e.preventDefault();
-
-  for (var i = 0; i < e.touches.length; i++) {
-    var touched = document.elementFromPoint(e.touches[i].pageX, e.touches[i].pageY);
-    var key = Number(touched.dataset.key);
-
-    if (key) {
-      var control = getControl(key);
-      startTouch(control);
-    }
-  }
-
-  return false;
-};
-
-var onTouchMove = function onTouchMove(e) {
-  e.preventDefault();
-
-  for (var i = 0; i < e.touches.length; i++) {
-    var touched = document.elementFromPoint(e.touches[i].pageX, e.touches[i].pageY);
-    var key = Number(touched.dataset.key);
-
-    if (key) {
-      var control = getControl(key);
-
-      if (control) {
-        startTouch(control);
-      }
-    }
-
-    Object.keys(touchControls).forEach(function (btn) {
-      if (touchControls[btn].touched) {
-        var _touched = getTouched(e.touches, touchControls[btn]);
-
-        if (!_touched) {
-          cancelTouch(touchControls[btn]);
-        }
-      }
-    });
-  }
-
-  return false;
-};
-
-var onTouchEnd = function onTouchEnd(e) {
-  e.preventDefault();
-
-  if (!e.touches.length) {
-    clearTouches();
-    cancelTouches();
-  } else {
-    Object.keys(touchControls).forEach(function (btn) {
-      if (touchControls[btn].touched) {
-        var touched = getTouched(e.touches, touchControls[btn]);
-
-        if (!touched) {
-          cancelTouch(touchControls[btn]);
-        }
-      }
-    });
-  }
-
-  return false;
-};
-
-var onKeyDown = function onKeyDown(e) {
-  if (inputStream.indexOf(e.keyCode) === -1) {
-    inputStream.push(e.keyCode);
-    var control = getControl(e.keyCode);
-
-    if (control) {
-      startTouch(control);
-    }
-  }
-};
-
-var onKeyUp = function onKeyUp(e) {
-  if (inputStream.indexOf(e.keyCode) !== -1) {
-    inputStream.splice(inputStream.indexOf(e.keyCode), 1);
-    var control = getControl(e.keyCode);
-
-    if (control) {
-      cancelTouch(control);
-    }
-  }
-};
-
-var handleGamepadAxes = function handleGamepadAxes(gamepad) {
-  var controls = {
-    x: getAxes(0, gamepad.axes[0]),
-    y: getAxes(1, gamepad.axes[1])
-  };
-
-  if (controls.x && inputStream.indexOf(controls.x.key) === -1) {
-    inputStream.push(controls.x.key);
-    startTouch(controls.x);
-  } else if (!controls.x) {
-    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.LEFT) !== -1) {
-      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.LEFT), 1);
-      cancelTouch(touchControls.left);
-    }
-
-    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.RIGHT) !== -1) {
-      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.RIGHT), 1);
-      cancelTouch(touchControls.right);
-    }
-  }
-
-  if (controls.y && inputStream.indexOf(controls.y.key) === -1) {
-    inputStream.push(controls.y.key);
-    startTouch(controls.y);
-  } else if (!controls.y) {
-    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UP) !== -1) {
-      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UP), 1);
-      cancelTouch(touchControls.up);
-    }
-
-    if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWN) !== -1) {
-      inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWN), 1);
-      cancelTouch(touchControls.down);
-    }
-  }
-};
-
-var handleGamepadButtons = function handleGamepadButtons(gamepad) {
-  for (var i = gamepad.buttons.length; i--;) {
-    var control = getGamepad(i);
-
-    if (control && inputStream.indexOf(control.key) === -1 && gamepad.buttons[i].pressed) {
-      inputStream.push(control.key);
-      startTouch(control);
-    } else if (control && inputStream.indexOf(control.key) !== -1 && !gamepad.buttons[i].pressed) {
-      inputStream.splice(inputStream.indexOf(control.key), 1);
-      cancelTouch(control);
-    }
-  }
-};
-
-var onGamepadConnected = function onGamepadConnected() {
-  var gamepad = navigator.getGamepads()[0];
-  instance.stop();
-  instance.go(function () {
-    gamepad = navigator.getGamepads()[0]; // GamePad Axes (dpad): [x, y]
-
-    handleGamepadAxes(gamepad); // GamePad Buttons (a, b, start, select)
-
-    handleGamepadButtons(gamepad);
-  });
-  _Utils__WEBPACK_IMPORTED_MODULE_6__["default"].log("GamePad Connected: ".concat(gamepad.id), gamepad);
-};
-
-var onGamepadDisconnected = function onGamepadDisconnected() {
-  instance.stop();
-};
-
-var clearTouches = function clearTouches() {
-  Object.keys(touchControls).forEach(function (btn) {
-    touchControls[btn].elem.classList.remove("is-active");
-  });
-};
-
-var cancelTouches = function cancelTouches() {
-  Object.keys(touchControls).forEach(function (btn) {
-    if (touchControls[btn].touched) {
-      cancelTouch(touchControls[btn]);
-    }
-  });
-};
-
-var cancelTouch = function cancelTouch(control) {
-  if (control.timer) {
-    clearInterval(control.timer);
-    control.timer = null;
-  }
-
-  control.elem.classList.remove("is-active");
-  control.touched = false;
-  handleTouchEnd(control);
-};
-
-var startTouch = function startTouch(control) {
-  if (!control.timer) {
-    control.elem.classList.add("is-active");
-    control.touched = true;
-    handleTouchStart(control);
-
-    if (Object.prototype.hasOwnProperty.call(control, "hold") && !control.menu) {
-      control.timer = setInterval(function () {
-        handleTouchStart(control);
-      }, touchInterval);
-    }
-  }
-};
-
-var handleTouchStart = function handleTouchStart(control) {
-  if (control.touched && control.menu && control.hold > 0) {
-    control.hold++;
-    return;
-  }
-
-  if (Object.prototype.hasOwnProperty.call(control, "hold")) {
-    control.hold++;
-
-    if (control.hold > touchRepeated) {
-      instance.fire("".concat(control.btn[0], "-holdpress"));
-    } else {
-      instance.fire("".concat(control.btn[0], "-press"));
-    }
-  } else if (control.dpad) {
-    control.dpad.forEach(function (dpad, i) {
-      instance.fire("".concat(control.btn[i], "-press"), dpad);
-    });
-  } else {
-    instance.fire("".concat(control.btn[0], "-press"), null);
-  }
-};
-
-var handleTouchEnd = function handleTouchEnd(control) {
-  if (Object.prototype.hasOwnProperty.call(control, "hold")) {
-    if (control.hold > touchRepeated) {
-      instance.fire("".concat(control.btn[0], "-holdrelease"));
-    } else {
-      instance.fire("".concat(control.btn[0], "-release"));
-    }
-
-    control.hold = 0;
-  } else if (control.dpad) {
-    control.dpad.forEach(function (dpad, i) {
-      instance.fire("".concat(control.btn[i], "-release"), dpad);
-    });
-  } else {
-    instance.fire("".concat(control.btn[0], "-release"), null);
-  }
-};
 
 var GamePad = /*#__PURE__*/function (_Controller) {
-  (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__["default"])(GamePad, _Controller);
+  (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__["default"])(GamePad, _Controller);
 
   var _super = _createSuper(GamePad);
 
@@ -1481,45 +1201,44 @@ var GamePad = /*#__PURE__*/function (_Controller) {
     (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, GamePad);
 
     _this = _super.call(this);
+    _this.player = player;
 
-    if (!instance) {
-      instance = (0,_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2__["default"])(_this);
-      _this.player = player;
+    _this.build();
 
-      _this.build();
+    _this.bind();
 
-      _this.bind();
-    }
-
-    return (0,_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__["default"])(_this, instance);
+    return _this;
   }
 
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(GamePad, [{
     key: "clear",
     value: function clear() {
+      var _this2 = this;
+
       setTimeout(function () {
-        clearTouches();
-        cancelTouches();
+        _this2.clearTouches();
+
+        _this2.cancelTouches();
       }, 300);
     }
   }, {
     key: "bind",
     value: function bind() {
       // Main interface is Touch
-      this.element.addEventListener("touchstart", onTouchStart, false);
-      this.element.addEventListener("touchmove", onTouchMove, false);
-      this.element.addEventListener("touchend", onTouchEnd, false); // Support keys for Desktop
+      this.element.addEventListener("touchstart", this.onTouchStart.bind(this), false);
+      this.element.addEventListener("touchmove", this.onTouchMove.bind(this), false);
+      this.element.addEventListener("touchend", this.onTouchEnd.bind(this), false); // Support keys for Desktop
 
-      document.addEventListener("keyup", onKeyUp, false);
-      document.addEventListener("keydown", onKeyDown, false); // Native GamePad interface (NES, SNES USB controllers)
+      document.addEventListener("keyup", this.onKeyUp.bind(this), false);
+      document.addEventListener("keydown", this.onKeyDown.bind(this), false); // Native GamePad interface (NES, SNES USB controllers)
 
-      window.addEventListener("gamepadconnected", onGamepadConnected);
-      window.addEventListener("gamepaddisconnected", onGamepadDisconnected);
+      window.addEventListener("gamepadconnected", this.onGamepadConnected.bind(this));
+      window.addEventListener("gamepaddisconnected", this.onGamepadDisconnected.bind(this));
     }
   }, {
     key: "build",
     value: function build() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.element = document.createElement("div");
       this.dpad = document.createElement("div");
@@ -1540,9 +1259,9 @@ var GamePad = /*#__PURE__*/function (_Controller) {
         }
 
         if (touchControls[btn].dpad) {
-          _this2.dpad.appendChild(touchControls[btn].elem);
+          _this3.dpad.appendChild(touchControls[btn].elem);
         } else {
-          _this2.btns.appendChild(touchControls[btn].elem);
+          _this3.btns.appendChild(touchControls[btn].elem);
         }
       });
       this.player.element.appendChild(this.element);
@@ -1562,17 +1281,330 @@ var GamePad = /*#__PURE__*/function (_Controller) {
       }); // Sort UP and DOWN so they dispatch last in a stream of directions
 
       return ctrls.sort(function (ctrl) {
-        if (ctrl.key === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.UP || ctrl.key === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].keys.DOWN) {
+        if (ctrl.key === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP || ctrl.key === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN) {
           return 1;
         } else {
           return -1;
         }
       });
     }
+  }, {
+    key: "getControl",
+    value: function getControl(key) {
+      var ret = null;
+      Object.keys(touchControls).forEach(function (btn) {
+        if (touchControls[btn].key === key) {
+          ret = touchControls[btn];
+        }
+      });
+      return ret;
+    }
+  }, {
+    key: "getGamepad",
+    value: function getGamepad(val) {
+      var ret = null;
+      Object.keys(touchControls).forEach(function (btn) {
+        if (touchControls[btn].gamepad && touchControls[btn].gamepad.indexOf(val) !== -1) {
+          ret = touchControls[btn];
+        }
+      });
+      return ret;
+    }
+  }, {
+    key: "getAxes",
+    value: function getAxes(xy, val) {
+      var ret = null;
+      Object.keys(touchControls).forEach(function (btn) {
+        if (touchControls[btn].axes && touchControls[btn].axes[xy] === val) {
+          ret = touchControls[btn];
+        }
+      });
+      return ret;
+    }
+  }, {
+    key: "getTouched",
+    value: function getTouched(touches, control) {
+      for (var i = 0; i < touches.length; i++) {
+        var touched = document.elementFromPoint(touches[i].pageX, touches[i].pageY);
+        var key = Number(touched.dataset.key);
+
+        if (key === control.key) {
+          return control;
+        }
+      }
+
+      return null;
+    }
+  }, {
+    key: "onTouchStart",
+    value: function onTouchStart(e) {
+      e.preventDefault();
+
+      for (var i = 0; i < e.touches.length; i++) {
+        var touched = document.elementFromPoint(e.touches[i].pageX, e.touches[i].pageY);
+        var key = Number(touched.dataset.key);
+
+        if (key) {
+          var control = this.getControl(key);
+          this.startTouch(control);
+        }
+      }
+
+      return false;
+    }
+  }, {
+    key: "onTouchMove",
+    value: function onTouchMove(e) {
+      var _this4 = this;
+
+      e.preventDefault();
+
+      for (var i = 0; i < e.touches.length; i++) {
+        var touched = document.elementFromPoint(e.touches[i].pageX, e.touches[i].pageY);
+        var key = Number(touched.dataset.key);
+
+        if (key) {
+          var control = this.getControl(key);
+
+          if (control) {
+            this.startTouch(control);
+          }
+        }
+
+        Object.keys(touchControls).forEach(function (btn) {
+          if (touchControls[btn].touched) {
+            var _touched = _this4.getTouched(e.touches, touchControls[btn]);
+
+            if (!_touched) {
+              _this4.cancelTouch(touchControls[btn]);
+            }
+          }
+        });
+      }
+
+      return false;
+    }
+  }, {
+    key: "onTouchEnd",
+    value: function onTouchEnd(e) {
+      var _this5 = this;
+
+      e.preventDefault();
+
+      if (!e.touches.length) {
+        this.clearTouches();
+        this.cancelTouches();
+      } else {
+        Object.keys(touchControls).forEach(function (btn) {
+          if (touchControls[btn].touched) {
+            var touched = _this5.getTouched(e.touches, touchControls[btn]);
+
+            if (!touched) {
+              _this5.cancelTouch(touchControls[btn]);
+            }
+          }
+        });
+      }
+
+      return false;
+    }
+  }, {
+    key: "onKeyDown",
+    value: function onKeyDown(e) {
+      if (inputStream.indexOf(e.keyCode) === -1) {
+        inputStream.push(e.keyCode);
+        var control = this.getControl(e.keyCode);
+
+        if (control) {
+          this.startTouch(control);
+        }
+      }
+    }
+  }, {
+    key: "onKeyUp",
+    value: function onKeyUp(e) {
+      if (inputStream.indexOf(e.keyCode) !== -1) {
+        inputStream.splice(inputStream.indexOf(e.keyCode), 1);
+        var control = this.getControl(e.keyCode);
+
+        if (control) {
+          this.cancelTouch(control);
+        }
+      }
+    }
+  }, {
+    key: "handleGamepadAxes",
+    value: function handleGamepadAxes(gamepad) {
+      var controls = {
+        x: this.getAxes(0, gamepad.axes[0]),
+        y: this.getAxes(1, gamepad.axes[1])
+      };
+
+      if (controls.x && inputStream.indexOf(controls.x.key) === -1) {
+        inputStream.push(controls.x.key);
+        this.startTouch(controls.x);
+      } else if (!controls.x) {
+        if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.LEFT) !== -1) {
+          inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.LEFT), 1);
+          this.cancelTouch(touchControls.left);
+        }
+
+        if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.RIGHT) !== -1) {
+          inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.RIGHT), 1);
+          this.cancelTouch(touchControls.right);
+        }
+      }
+
+      if (controls.y && inputStream.indexOf(controls.y.key) === -1) {
+        inputStream.push(controls.y.key);
+        this.startTouch(controls.y);
+      } else if (!controls.y) {
+        if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP) !== -1) {
+          inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.UP), 1);
+          this.cancelTouch(touchControls.up);
+        }
+
+        if (inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN) !== -1) {
+          inputStream.splice(inputStream.indexOf(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].keys.DOWN), 1);
+          this.cancelTouch(touchControls.down);
+        }
+      }
+    }
+  }, {
+    key: "handleGamepadButtons",
+    value: function handleGamepadButtons(gamepad) {
+      for (var i = gamepad.buttons.length; i--;) {
+        var control = this.getGamepad(i);
+
+        if (control && inputStream.indexOf(control.key) === -1 && gamepad.buttons[i].pressed) {
+          inputStream.push(control.key);
+          this.startTouch(control);
+        } else if (control && inputStream.indexOf(control.key) !== -1 && !gamepad.buttons[i].pressed) {
+          inputStream.splice(inputStream.indexOf(control.key), 1);
+          this.cancelTouch(control);
+        }
+      }
+    }
+  }, {
+    key: "onGamepadConnected",
+    value: function onGamepadConnected() {
+      var _this6 = this;
+
+      var gamepad = navigator.getGamepads()[0];
+      this.stop();
+      this.go(function () {
+        gamepad = navigator.getGamepads()[0]; // GamePad Axes (dpad): [x, y]
+
+        _this6.handleGamepadAxes(gamepad); // GamePad Buttons (a, b, start, select)
+
+
+        _this6.handleGamepadButtons(gamepad);
+      });
+      _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].log("GamePad Connected: ".concat(gamepad.id), gamepad);
+    }
+  }, {
+    key: "onGamepadDisconnected",
+    value: function onGamepadDisconnected() {
+      this.stop();
+    }
+  }, {
+    key: "clearTouches",
+    value: function clearTouches() {
+      Object.keys(touchControls).forEach(function (btn) {
+        touchControls[btn].elem.classList.remove("is-active");
+      });
+    }
+  }, {
+    key: "cancelTouches",
+    value: function cancelTouches() {
+      var _this7 = this;
+
+      Object.keys(touchControls).forEach(function (btn) {
+        if (touchControls[btn].touched) {
+          _this7.cancelTouch(touchControls[btn]);
+        }
+      });
+    }
+  }, {
+    key: "cancelTouch",
+    value: function cancelTouch(control) {
+      if (control.timer) {
+        clearInterval(control.timer);
+        control.timer = null;
+      }
+
+      control.elem.classList.remove("is-active");
+      control.touched = false;
+      this.handleTouchEnd(control);
+    }
+  }, {
+    key: "startTouch",
+    value: function startTouch(control) {
+      var _this8 = this;
+
+      if (!control.timer) {
+        control.elem.classList.add("is-active");
+        control.touched = true;
+        this.handleTouchStart(control);
+
+        if (Object.prototype.hasOwnProperty.call(control, "hold") && !control.menu) {
+          control.timer = setInterval(function () {
+            _this8.handleTouchStart(control);
+          }, touchInterval);
+        }
+      }
+    }
+  }, {
+    key: "handleTouchStart",
+    value: function handleTouchStart(control) {
+      var _this9 = this;
+
+      if (control.touched && control.menu && control.hold > 0) {
+        control.hold++;
+        return;
+      }
+
+      if (Object.prototype.hasOwnProperty.call(control, "hold")) {
+        control.hold++;
+
+        if (control.hold > touchRepeated) {
+          this.emit("".concat(control.btn[0], "-holdpress"));
+        } else {
+          this.emit("".concat(control.btn[0], "-press"));
+        }
+      } else if (control.dpad) {
+        control.dpad.forEach(function (dpad, i) {
+          _this9.emit("".concat(control.btn[i], "-press"), dpad);
+        });
+      } else {
+        this.emit("".concat(control.btn[0], "-press"), null);
+      }
+    }
+  }, {
+    key: "handleTouchEnd",
+    value: function handleTouchEnd(control) {
+      var _this10 = this;
+
+      if (Object.prototype.hasOwnProperty.call(control, "hold")) {
+        if (control.hold > touchRepeated) {
+          this.emit("".concat(control.btn[0], "-holdrelease"));
+        } else {
+          this.emit("".concat(control.btn[0], "-release"));
+        }
+
+        control.hold = 0;
+      } else if (control.dpad) {
+        control.dpad.forEach(function (dpad, i) {
+          _this10.emit("".concat(control.btn[i], "-release"), dpad);
+        });
+      } else {
+        this.emit("".concat(control.btn[0], "-release"), null);
+      }
+    }
   }]);
 
   return GamePad;
-}(_Controller__WEBPACK_IMPORTED_MODULE_8__["default"]);
+}(_Controller__WEBPACK_IMPORTED_MODULE_7__["default"]);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GamePad);
 
@@ -2498,11 +2530,11 @@ var Player = /*#__PURE__*/function (_Controller) {
 
       if (this.paused) {
         this.resume();
-        this.fire(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.RESUMED);
+        this.emit(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.RESUMED);
       } else {
         this.pause();
         this.stop();
-        this.fire(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.PAUSED);
+        this.emit(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.PAUSED);
       }
     }
   }, {
@@ -2803,11 +2835,7 @@ var Utils = {
         var val = pair[1];
 
         if (ret[key]) {
-          // #2 https://github.com/kitajchuk/paramalama/issues/2
-          // This supposedly will work as of ECMA-262
-          // This works since we are not passing objects across frame boundaries
-          // and we are not considering Array-like objects. This WILL be an Array.
-          if ({}.toString.call(ret[key]) !== "[object Array]") {
+          if (!Array.isArray(ret[key])) {
             ret[key] = [ret[key]];
           }
 
@@ -2926,6 +2954,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
     //     landing: { x, y }
     // }
 
+    _this.attacking = false;
     _this.parkour = false;
     _this.jumping = false;
     _this.falling = false;
@@ -3032,7 +3061,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "releaseD",
     value: function releaseD() {
-      if (this.locked || this.jumping || this.falling) {
+      if (this.locked || this.jumping || this.falling || this.attacking) {
         return;
       }
 
@@ -3049,7 +3078,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "pressA",
     value: function pressA() {
-      if (this.locked || this.jumping || this.falling) {
+      if (this.locked || this.jumping || this.falling || this.attacking) {
         return;
       }
 
@@ -3073,7 +3102,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "holdA",
     value: function holdA() {
-      if (this.jumping || this.falling) {
+      if (this.jumping || this.falling || this.attacking) {
         return;
       }
 
@@ -3082,7 +3111,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "releaseA",
     value: function releaseA() {
-      if (this.jumping || this.falling) {
+      if (this.jumping || this.falling || this.attacking) {
         return;
       }
 
@@ -3092,7 +3121,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "releaseHoldA",
     value: function releaseHoldA() {
-      if (this.jumping || this.falling) {
+      if (this.jumping || this.falling || this.attacking) {
         return;
       }
 
@@ -3101,25 +3130,19 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "pressB",
     value: function pressB() {
-      var _this2 = this;
+      if (this.attacking) {
+        return;
+      } // There will be extra blocking checks wrapped around this action
 
-      var poi = this.hero.getNextPoiByDir(this.hero.dir, 1);
-      var collision = {
-        tiles: this.checkTiles(poi, this.hero)
-      }; // Apply attack cycle...
 
-      if (collision.tiles && collision.tiles.attack.length) {
-        collision.tiles.attack.forEach(function (tile) {
-          if (tile.attack) {
-            _this2.handleHeroTileAttack(poi, _this2.hero.dir, tile);
-          }
-        });
+      if (!this.jumping) {
+        this.handleHeroAttack();
       }
     }
   }, {
     key: "holdB",
     value: function holdB() {
-      if (this.jumping || this.falling) {
+      if (this.jumping || this.falling || this.attacking) {
         return;
       }
 
@@ -3132,6 +3155,10 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         return;
       }
 
+      if (this.attacking) {
+        this.attacking = false;
+      }
+
       this.dialogue.check(false, true);
     }
   }, {
@@ -3139,6 +3166,10 @@ var TopView = /*#__PURE__*/function (_GameBox) {
     value: function releaseHoldB() {
       if (this.jumping || this.falling) {
         return;
+      }
+
+      if (this.attacking) {
+        this.attacking = false;
       }
 
       _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].log("B Hold Release");
@@ -3150,7 +3181,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleReleaseA",
     value: function handleReleaseA() {
-      if (this.jumping) {
+      if (this.jumping || this.attacking) {
         return;
       }
 
@@ -3195,6 +3226,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       this.parkour = false;
       this.jumping = false;
       this.falling = false;
+      this.attacking = false;
     }
   }, {
     key: "handleHero",
@@ -3211,7 +3243,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         this.interact.push = 0;
       }
 
-      if (this.locked || this.falling) {
+      if (this.locked || this.falling || this.attacking) {
         return;
       } else if (this.parkour) {
         if (collision.event) {
@@ -3323,29 +3355,29 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleHeroJump",
     value: function handleHeroJump() {
-      var _this3 = this;
+      var _this2 = this;
 
       this.jumping = true;
       this.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.JUMP, this.hero.dir);
       this.hero.physics.vz = -16;
       this.player.gameaudio.hitSound(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.JUMP);
       this.keyTimer = setTimeout(function () {
-        _this3.jumping = false;
+        _this2.jumping = false;
 
-        _this3.hero.face(_this3.hero.dir);
-      }, 500);
+        _this2.hero.face(_this2.hero.dir);
+      }, this.hero.getDur(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.JUMP));
     }
   }, {
     key: "applyHeroTileJump",
     value: function applyHeroTileJump(poi, dir) {
-      var _this4 = this;
+      var _this3 = this;
 
       this.player.controls[this.hero.dir] = true;
 
       if (dir === "left" && this.hero.position.x <= this.parkour.landing.x || dir === "right" && this.hero.position.x >= this.parkour.landing.x || dir === "up" && this.hero.position.y <= this.parkour.landing.y || dir === "down" && this.hero.position.y >= this.parkour.landing.y) {
         var dpad = this.player.gamepad.checkDpad();
         var dpadDir = dpad.find(function (ctrl) {
-          return ctrl.btn[0] === _this4.hero.dir;
+          return ctrl.btn[0] === _this3.hero.dir;
         });
 
         if (!dpadDir) {
@@ -3359,7 +3391,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleHeroTileJump",
     value: function handleHeroTileJump(poi, dir, tile) {
-      var _this5 = this;
+      var _this4 = this;
 
       var distance = this.map.data.tilesize + this.map.data.tilesize * tile.instance.data.elevation;
       this.parkour = {
@@ -3375,10 +3407,10 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       this.player.controls[this.hero.dir] = true;
       this.player.gameaudio.hitSound("parkour");
       this.keyTimer = setTimeout(function () {
-        _this5.jumping = false;
+        _this4.jumping = false;
 
-        _this5.hero.face(_this5.hero.dir);
-      }, 500);
+        _this4.hero.face(_this4.hero.dir);
+      }, this.hero.getDur(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.JUMP));
     }
   }, {
     key: "handleHeroPush",
@@ -3411,34 +3443,34 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleHeroLift",
     value: function handleHeroLift(poi, dir) {
-      var _this6 = this;
+      var _this5 = this;
 
       this.locked = true;
       this.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.PULL, dir);
       setTimeout(function () {
-        var activeTiles = _this6.map.getActiveTiles(_this6.interact.tile.group);
+        var activeTiles = _this5.map.getActiveTiles(_this5.interact.tile.group);
 
         var tileCel = activeTiles.getTile();
 
-        _this6.player.gameaudio.hitSound(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.LIFT);
+        _this5.player.gameaudio.hitSound(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.LIFT);
 
-        _this6.map.spliceActiveTile(_this6.interact.tile.group, _this6.interact.tile.coord);
+        _this5.map.spliceActiveTile(_this5.interact.tile.group, _this5.interact.tile.coord);
 
-        _this6.interact.tile.sprite = new _sprites_Sprite__WEBPACK_IMPORTED_MODULE_11__["default"]({
+        _this5.interact.tile.sprite = new _sprites_Sprite__WEBPACK_IMPORTED_MODULE_11__["default"]({
           type: _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT,
           layer: "foreground",
-          width: _this6.map.data.tilesize,
-          height: _this6.map.data.tilesize,
+          width: _this5.map.data.tilesize,
+          height: _this5.map.data.tilesize,
           spawn: {
-            x: _this6.interact.tile.coord[0] * _this6.map.data.tilesize,
-            y: _this6.interact.tile.coord[1] * _this6.map.data.tilesize
+            x: _this5.interact.tile.coord[0] * _this5.map.data.tilesize,
+            y: _this5.interact.tile.coord[1] * _this5.map.data.tilesize
           },
-          image: _this6.map.data.image,
+          image: _this5.map.data.image,
           hitbox: {
             x: 0,
             y: 0,
-            width: _this6.map.data.tilesize,
-            height: _this6.map.data.tilesize
+            width: _this5.map.data.tilesize,
+            height: _this5.map.data.tilesize
           },
           verbs: {
             face: {
@@ -3448,16 +3480,16 @@ var TopView = /*#__PURE__*/function (_GameBox) {
               }
             }
           }
-        }, _this6.map);
-        _this6.interact.tile.sprite.hero = _this6.hero;
+        }, _this5.map);
+        _this5.interact.tile.sprite.hero = _this5.hero;
 
-        _this6.map.addNPC(_this6.interact.tile.sprite);
+        _this5.map.addNPC(_this5.interact.tile.sprite);
 
-        _this6.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.LIFT, _this6.hero.dir);
+        _this5.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.LIFT, _this5.hero.dir);
 
-        _this6.hero.physics.maxv = _this6.hero.physics.controlmaxv / 2;
-        _this6.locked = false;
-      }, 250);
+        _this5.hero.physics.maxv = _this5.hero.physics.controlmaxv / 2;
+        _this5.locked = false;
+      }, this.hero.getDur(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.LIFT));
     }
   }, {
     key: "handleHeroThrow",
@@ -3466,6 +3498,33 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       this.player.gameaudio.hitSound(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.THROW);
       this.hero.physics.maxv = this.hero.physics.controlmaxv;
       this.handleThrow(this.interact.tile.sprite);
+    }
+  }, {
+    key: "handleHeroAttack",
+    value: function handleHeroAttack() {
+      var _this6 = this;
+
+      // Need to refactor attack collision to account for weapon instead...
+      var poi = this.hero.getNextPoiByDir(this.hero.dir, 1);
+      var collision = {
+        tiles: this.checkTiles(poi, this.hero)
+      };
+      this.attacking = true;
+      this.hero.resetElapsed = true;
+      this.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.ATTACK, this.hero.dir);
+
+      if (collision.tiles && collision.tiles.attack.length) {
+        collision.tiles.attack.forEach(function (tile) {
+          if (tile.attack) {
+            _this6.handleHeroTileAttack(poi, _this6.hero.dir, tile);
+          }
+        });
+      }
+
+      setTimeout(function () {
+        // this.attacking = false;
+        _this6.hero.face(_this6.hero.dir);
+      }, this.hero.getDur(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.ATTACK));
     }
   }, {
     key: "handleHeroTiles",
@@ -3733,7 +3792,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
       this.player.element.classList.add("is-fader"); // Emit map change event
 
-      this.player.fire(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.MAPEVENT, event);
+      this.player.emit(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].broadcast.MAPEVENT, event);
       setTimeout(function () {
         // New Map data
         var newMapData = _Loader__WEBPACK_IMPORTED_MODULE_7__["default"].cash(event.map);
@@ -4193,7 +4252,9 @@ var Hero = /*#__PURE__*/function (_Sprite) {
       if (this.verb === _Config__WEBPACK_IMPORTED_MODULE_5__["default"].verbs.LIFT) {
         this.cycle(_Config__WEBPACK_IMPORTED_MODULE_5__["default"].verbs.LIFT, this.dir); // Jumping needs to be captured...
       } else if (this.gamebox.jumping) {
-        this.cycle(_Config__WEBPACK_IMPORTED_MODULE_5__["default"].verbs.JUMP, this.dir); // Idle comes next...LIFT has it's own idle face...
+        this.cycle(_Config__WEBPACK_IMPORTED_MODULE_5__["default"].verbs.JUMP, this.dir); // Attack needs to be captured...
+      } else if (this.gamebox.attacking) {
+        this.cycle(_Config__WEBPACK_IMPORTED_MODULE_5__["default"].verbs.ATTACK, this.dir); // Idle comes next...LIFT has it's own idle face...
       } else if (this.idle.x && this.idle.y) {
         this.face(this.dir);
       } else {
@@ -4481,6 +4542,7 @@ var Sprite = /*#__PURE__*/function () {
     this.layer = this.data.layer || "background";
     this.spritecel = this.getCel();
     this.previousElapsed = null;
+    this.resetElapsed = false;
   }
 
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Sprite, [{
@@ -4557,15 +4619,29 @@ var Sprite = /*#__PURE__*/function () {
       }
 
       if (this.data.shadow) {
-        this.map.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, Math.abs(this.data.shadow.offsetX), Math.abs(this.data.shadow.offsetY), this.data.width, this.data.height, this.offset.x, this.offset.y, this.width, this.height);
+        this.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, Math.abs(this.data.shadow.offsetX), Math.abs(this.data.shadow.offsetY), this.data.width, this.data.height, this.offset.x, this.offset.y, this.width, this.height);
       }
 
       if (this.opacity) {
-        this.map.gamebox.layers[this.layer].onCanvas.context.globalAlpha = this.opacity;
+        this.gamebox.layers[this.layer].onCanvas.context.globalAlpha = this.opacity;
       }
 
-      this.map.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, this.spritecel[0], this.spritecel[1], this.data.width, this.data.height, this.offset.x, this.offset.y + this.position.z, this.width, this.height);
-      this.map.gamebox.layers[this.layer].onCanvas.context.globalAlpha = 1.0;
+      this.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, this.spritecel[0], this.spritecel[1], this.data.width, this.data.height, this.offset.x, this.offset.y + this.position.z, this.width, this.height);
+      this.gamebox.layers[this.layer].onCanvas.context.globalAlpha = 1.0; // THIS is the HERO sprite so we can apply the weapon if attacking!!!
+
+      if (this === this.gamebox.hero && this.gamebox.hero.verb === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.ATTACK && this.data.weapon && this.data.weapon[this.gamebox.hero.dir].length) {
+        this.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, Math.abs(this.data.weapon[this.gamebox.hero.dir][this.frame].offsetX), Math.abs(this.data.weapon[this.gamebox.hero.dir][this.frame].offsetY), this.data.weapon[this.gamebox.hero.dir][this.frame].width, this.data.weapon[this.gamebox.hero.dir][this.frame].height, this.offset.x + this.data.weapon[this.gamebox.hero.dir][this.frame].positionX, this.offset.y + this.data.weapon[this.gamebox.hero.dir][this.frame].positionY, this.data.weapon[this.gamebox.hero.dir][this.frame].width / this.scale, this.data.weapon[this.gamebox.hero.dir][this.frame].height / this.scale);
+      }
+    }
+  }, {
+    key: "getWeaponbox",
+    value: function getWeaponbox() {
+      return {
+        x: this.offset.x + this.data.weapon[this.gamebox.hero.dir][this.frame].positionX,
+        y: this.offset.y + this.data.weapon[this.gamebox.hero.dir][this.frame].positionY,
+        width: this.data.weapon[this.gamebox.hero.dir][this.frame].width,
+        height: this.data.weapon[this.gamebox.hero.dir][this.frame].height
+      };
     }
   }, {
     key: "cycle",
@@ -4644,7 +4720,12 @@ var Sprite = /*#__PURE__*/function () {
   }, {
     key: "applyFrame",
     value: function applyFrame(elapsed) {
-      this.frame = 0;
+      this.frame = 0; // Useful for ensuring clean maths below for cycles like attacking...
+
+      if (this.resetElapsed) {
+        this.resetElapsed = false;
+        this.previousElapsed = elapsed;
+      }
 
       if (this.data.verbs[this.verb][this.dir].stepsX) {
         if (this.verb === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT && this.idle.x && this.idle.y) {
@@ -4670,6 +4751,11 @@ var Sprite = /*#__PURE__*/function () {
     key: "getCel",
     value: function getCel() {
       return [Math.abs(this.data.verbs[this.verb][this.dir].offsetX) + this.data.width * this.frame, Math.abs(this.data.verbs[this.verb][this.dir].offsetY)];
+    }
+  }, {
+    key: "getDur",
+    value: function getDur(verb) {
+      return this.data.verbs[verb].dur || 0;
     }
   }, {
     key: "getNextX",

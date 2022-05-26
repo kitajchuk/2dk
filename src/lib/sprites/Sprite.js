@@ -60,6 +60,7 @@ class Sprite {
         this.layer = (this.data.layer || "background");
         this.spritecel = this.getCel();
         this.previousElapsed = null;
+        this.resetElapsed = false;
     }
 
 
@@ -138,7 +139,7 @@ class Sprite {
         }
 
         if ( this.data.shadow ) {
-            this.map.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+            this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
                 Math.abs( this.data.shadow.offsetX ),
                 Math.abs( this.data.shadow.offsetY ),
@@ -152,10 +153,10 @@ class Sprite {
         }
 
         if ( this.opacity ) {
-            this.map.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
+            this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
         }
 
-        this.map.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+        this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
             this.image,
             this.spritecel[ 0 ],
             this.spritecel[ 1 ],
@@ -167,7 +168,32 @@ class Sprite {
             this.height
         );
 
-        this.map.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
+        this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
+
+        // THIS is the HERO sprite so we can apply the weapon if attacking!!!
+        if ( this === this.gamebox.hero && this.gamebox.hero.verb === Config.verbs.ATTACK && this.data.weapon && this.data.weapon[ this.gamebox.hero.dir ].length ) {
+            this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+                this.image,
+                Math.abs( this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].offsetX ),
+                Math.abs( this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].offsetY ),
+                this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].width,
+                this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].height,
+                this.offset.x + this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].positionX,
+                this.offset.y + this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].positionY,
+                this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].width / this.scale,
+                this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].height / this.scale
+            );
+        }
+    }
+
+
+    getWeaponbox () {
+        return {
+            x: this.offset.x + this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].positionX,
+            y: this.offset.y + this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].positionY,
+            width: this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].width,
+            height: this.data.weapon[ this.gamebox.hero.dir ][ this.frame ].height,
+        };
     }
 
 
@@ -248,6 +274,12 @@ class Sprite {
     applyFrame( elapsed ) {
         this.frame = 0;
 
+        // Useful for ensuring clean maths below for cycles like attacking...
+        if ( this.resetElapsed ) {
+            this.resetElapsed = false;
+            this.previousElapsed = elapsed;
+        }
+
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
             if ( this.verb === Config.verbs.LIFT && (this.idle.x && this.idle.y) ) {
                 Utils.log( "static lift..." );
@@ -276,6 +308,11 @@ class Sprite {
             Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetX ) + (this.data.width * this.frame),
             Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetY ),
         ];
+    }
+
+
+    getDur ( verb ) {
+        return this.data.verbs[ verb ].dur || 0;
     }
 
 

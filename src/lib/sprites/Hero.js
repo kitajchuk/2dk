@@ -83,6 +83,10 @@ class Hero extends Sprite {
         // Jumping needs to be captured...
         } else if ( this.gamebox.jumping ) {
             this.cycle( Config.verbs.JUMP, this.dir );
+        
+        // Attack needs to be captured...
+        } else if ( this.gamebox.attacking ) {
+            this.cycle( Config.verbs.ATTACK, this.dir );
 
         // Idle comes next...LIFT has it's own idle face...
         } else if ( this.idle.x && this.idle.y ) {

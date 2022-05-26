@@ -28,6 +28,7 @@ class TopView extends GameBox {
         //     distance,
         //     landing: { x, y }
         // }
+        this.attacking = false;
         this.parkour = false;
         this.jumping = false;
         this.falling = false;
@@ -143,7 +144,7 @@ class TopView extends GameBox {
 
 
     releaseD () {
-        if ( this.locked || this.jumping || this.falling ) {
+        if ( this.locked || this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -161,7 +162,7 @@ class TopView extends GameBox {
 
 
     pressA () {
-        if ( this.locked || this.jumping || this.falling ) {
+        if ( this.locked || this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -187,7 +188,7 @@ class TopView extends GameBox {
 
 
     holdA () {
-        if ( this.jumping || this.falling ) {
+        if ( this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -196,7 +197,7 @@ class TopView extends GameBox {
 
 
     releaseA () {
-        if ( this.jumping || this.falling ) {
+        if ( this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -207,7 +208,7 @@ class TopView extends GameBox {
 
 
     releaseHoldA () {
-        if ( this.jumping || this.falling ) {
+        if ( this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -216,25 +217,19 @@ class TopView extends GameBox {
 
 
     pressB () {
-        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
-        const collision = {
-            tiles: this.checkTiles( poi, this.hero ),
-        };
+        if ( this.attacking ) {
+            return;
+        }
 
-        // Apply attack cycle...
-
-        if ( collision.tiles && collision.tiles.attack.length ) {
-            collision.tiles.attack.forEach(( tile ) => {
-                if ( tile.attack ) {
-                    this.handleHeroTileAttack( poi, this.hero.dir, tile );
-                }
-            });
+        // There will be extra blocking checks wrapped around this action
+        if ( !this.jumping ) {
+            this.handleHeroAttack();
         }
     }
 
 
     holdB () {
-        if ( this.jumping || this.falling ) {
+        if ( this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -247,6 +242,10 @@ class TopView extends GameBox {
             return;
         }
 
+        if ( this.attacking ) {
+            this.attacking = false;
+        }
+
         this.dialogue.check( false, true );
     }
 
@@ -254,6 +253,10 @@ class TopView extends GameBox {
     releaseHoldB () {
         if ( this.jumping || this.falling ) {
             return;
+        }
+
+        if ( this.attacking ) {
+            this.attacking = false;
         }
 
         Utils.log( "B Hold Release" );
@@ -264,7 +267,7 @@ class TopView extends GameBox {
 * Hero Handlers...
 *******************************************************************************/
     handleReleaseA () {
-        if ( this.jumping ) {
+        if ( this.jumping || this.attacking ) {
             return;
         }
 
@@ -315,6 +318,7 @@ class TopView extends GameBox {
         this.parkour = false;
         this.jumping = false;
         this.falling = false;
+        this.attacking = false;
     }
 
 
@@ -331,7 +335,7 @@ class TopView extends GameBox {
             this.interact.push = 0;
         }
 
-        if ( this.locked || this.falling ) {
+        if ( this.locked || this.falling || this.attacking ) {
             return;
 
         } else if ( this.parkour ) {
@@ -457,7 +461,7 @@ class TopView extends GameBox {
             this.jumping = false;
             this.hero.face( this.hero.dir );
 
-        }, 500 );
+        }, this.hero.getDur( Config.verbs.JUMP ) );
     }
 
 
@@ -499,7 +503,7 @@ class TopView extends GameBox {
             this.jumping = false;
             this.hero.face( this.hero.dir );
 
-        }, 500 );
+        }, this.hero.getDur( Config.verbs.JUMP ) );
     }
 
 
@@ -573,7 +577,7 @@ class TopView extends GameBox {
             this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
             this.locked = false;
 
-        }, 250 );
+        }, this.hero.getDur( Config.verbs.LIFT ) );
     }
 
 
@@ -582,6 +586,33 @@ class TopView extends GameBox {
         this.player.gameaudio.hitSound( Config.verbs.THROW );
         this.hero.physics.maxv = this.hero.physics.controlmaxv;
         this.handleThrow( this.interact.tile.sprite );
+    }
+
+
+    handleHeroAttack () {
+        // Need to refactor attack collision to account for weapon instead...
+        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
+        const collision = {
+            tiles: this.checkTiles( poi, this.hero ),
+        };
+        
+        this.attacking = true;
+        this.hero.resetElapsed = true;
+        this.hero.cycle( Config.verbs.ATTACK, this.hero.dir );
+
+        if ( collision.tiles && collision.tiles.attack.length ) {
+            collision.tiles.attack.forEach(( tile ) => {
+                if ( tile.attack ) {
+                    this.handleHeroTileAttack( poi, this.hero.dir, tile );
+                }
+            });
+        }
+
+        setTimeout(() => {
+            // this.attacking = false;
+            this.hero.face( this.hero.dir );
+
+        }, this.hero.getDur( Config.verbs.ATTACK ) );
     }
 
 
