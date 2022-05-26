@@ -27,6 +27,9 @@
             "offsetY": 192,
             "action": {
                 "verb": "lift"
+            },
+            "attack": {
+                "verb": "attack"
             }
         }
     ],

@@ -1823,6 +1823,14 @@ var ActiveTiles = /*#__PURE__*/function () {
     key: "attack",
     value: function attack(coords) {
       this.splice(coords);
+      this.map.gamebox.smokeObject({
+        position: {
+          x: coords[0] * this.map.data.tilesize,
+          y: coords[1] * this.map.data.tilesize
+        },
+        width: this.map.data.tilesize,
+        height: this.map.data.tilesize
+      });
     }
   }, {
     key: "splice",
@@ -3527,7 +3535,6 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       var collision = {
         tiles: this.checkTiles(poi, weaponBox)
       };
-      console.log(weaponBox, collision);
 
       if (collision.tiles && collision.tiles.attack.length) {
         collision.tiles.attack.forEach(function (tile) {
@@ -4225,11 +4232,6 @@ var Hero = /*#__PURE__*/function (_Sprite) {
     value: function renderAfter() {
       if (this.verb === _Config__WEBPACK_IMPORTED_MODULE_5__["default"].verbs.ATTACK && this.data.weapon && this.data.weapon[this.dir].length) {
         this.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, Math.abs(this.data.weapon[this.dir][this.frame].offsetX), Math.abs(this.data.weapon[this.dir][this.frame].offsetY), this.data.weapon[this.dir][this.frame].width, this.data.weapon[this.dir][this.frame].height, this.offset.x + this.data.weapon[this.dir][this.frame].positionX, this.offset.y + this.data.weapon[this.dir][this.frame].positionY, this.data.weapon[this.dir][this.frame].width / this.scale, this.data.weapon[this.dir][this.frame].height / this.scale);
-        var weaponBox = this.getWeaponbox();
-        this.gamebox.layers[this.layer].onCanvas.context.globalAlpha = 0.5;
-        this.gamebox.layers[this.layer].onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_5__["default"].colors.red;
-        this.gamebox.layers[this.layer].onCanvas.context.fillRect(weaponBox.x, weaponBox.y, weaponBox.width, weaponBox.height);
-        this.gamebox.layers[this.layer].onCanvas.context.globalAlpha = 1.0;
       }
     }
     /*******************************************************************************
