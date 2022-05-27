@@ -5,7 +5,7 @@
     "height": 576,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 540,
+    "save": 543,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -332,15 +332,15 @@
         {
             "id": "octorok",
             "name": "Octorok",
-            "width": 64,
-            "height": 64,
+            "width": 68,
+            "height": 68,
             "image": "assets/sprites/npcs.png",
             "verb": "walk",
             "maxv": 1,
             "controlmaxv": 1,
             "hitbox": {
-                "x": 0,
-                "y": 0,
+                "x": 2,
+                "y": 2,
                 "width": 64,
                 "height": 64
             },
@@ -348,41 +348,41 @@
                 "face": {
                     "left": {
                         "offsetX": 0,
-                        "offsetY": -256
+                        "offsetY": -274
                     },
                     "down": {
-                        "offsetX": -128,
-                        "offsetY": -256
+                        "offsetX": -138,
+                        "offsetY": -274
                     },
                     "up": {
-                        "offsetX": -256,
-                        "offsetY": -256
+                        "offsetX": -274,
+                        "offsetY": -274
                     },
                     "right": {
-                        "offsetX": -384,
-                        "offsetY": -256
+                        "offsetX": -410,
+                        "offsetY": -274
                     }
                 },
                 "walk": {
                     "dur": 500,
                     "left": {
                         "offsetX": 0,
-                        "offsetY": -256,
+                        "offsetY": -274,
                         "stepsX": 2
                     },
                     "down": {
-                        "offsetX": -128,
-                        "offsetY": -256,
+                        "offsetX": -138,
+                        "offsetY": -274,
                         "stepsX": 2
                     },
                     "up": {
-                        "offsetX": -256,
-                        "offsetY": -256,
+                        "offsetX": -274,
+                        "offsetY": -274,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": -384,
-                        "offsetY": -256,
+                        "offsetX": -410,
+                        "offsetY": -274,
                         "stepsX": 2
                     }
                 }
@@ -397,8 +397,8 @@
         {
             "id": "ghost",
             "name": "Ghost",
-            "width": 64,
-            "height": 64,
+            "width": 68,
+            "height": 68,
             "image": "assets/sprites/npcs.png",
             "opacity": 0.75,
             "dir": "left",
@@ -413,23 +413,23 @@
                 "face": {
                     "dur": 1000,
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": -192,
+                        "offsetX": -2,
+                        "offsetY": -206,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": -128,
-                        "offsetY": -192,
+                        "offsetX": -138,
+                        "offsetY": -206,
                         "stepsX": 2
                     },
                     "up-left": {
-                        "offsetX": -256,
-                        "offsetY": -192,
+                        "offsetX": -274,
+                        "offsetY": -206,
                         "stepsX": 2
                     },
                     "up-right": {
-                        "offsetX": -384,
-                        "offsetY": -192,
+                        "offsetX": -410,
+                        "offsetY": -206,
                         "stepsX": 2
                     }
                 }
@@ -458,14 +458,14 @@
                     "dur": 500,
                     "down": {
                         "offsetX": 0,
-                        "offsetY": -128,
+                        "offsetY": -140,
                         "stepsX": 2
                     }
                 },
                 "talk": {
                     "down": {
                         "offsetX": -256,
-                        "offsetY": -128
+                        "offsetY": -140
                     }
                 }
             },
@@ -486,16 +486,16 @@
         {
             "id": "cucco",
             "name": "Cucco",
-            "width": 64,
-            "height": 64,
+            "width": 68,
+            "height": 68,
             "image": "assets/sprites/npcs.png",
             "bounce": 1,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 0,
-                "y": 0,
+                "x": 2,
+                "y": 2,
                 "width": 64,
                 "height": 64
             },
@@ -503,23 +503,23 @@
                 "face": {
                     "left": {
                         "offsetX": 0,
-                        "offsetY": -64
+                        "offsetY": -70
                     },
                     "right": {
-                        "offsetX": -128,
-                        "offsetY": -64
+                        "offsetX": -136,
+                        "offsetY": -70
                     }
                 },
                 "walk": {
                     "dur": 250,
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": -64,
+                        "offsetX": -2,
+                        "offsetY": -70,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": -128,
-                        "offsetY": -64,
+                        "offsetX": -138,
+                        "offsetY": -70,
                         "stepsX": 2
                     }
                 }
@@ -534,16 +534,16 @@
         {
             "id": "dog",
             "name": "Dog",
-            "width": 64,
-            "height": 64,
+            "width": 68,
+            "height": 68,
             "image": "assets/sprites/npcs.png",
             "bounce": 1,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 0,
-                "y": 0,
+                "x": 2,
+                "y": 2,
                 "width": 64,
                 "height": 64
             },
@@ -551,13 +551,13 @@
                 "face": {
                     "dur": 500,
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": 0,
+                        "offsetX": -2,
+                        "offsetY": -2,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": -128,
-                        "offsetY": 0,
+                        "offsetX": -138,
+                        "offsetY": -2,
                         "stepsX": 2
                     }
                 }

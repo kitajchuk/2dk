@@ -289,51 +289,6 @@
         },
         {
             "coords": [
-                5,
-                31
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "down"
-        },
-        {
-            "coords": [
-                4,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
-                5,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
-                6,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
-                7,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
                 39,
                 10
             ],

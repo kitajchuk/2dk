@@ -485,7 +485,12 @@ class TopView extends GameBox {
 
 
     handleHeroTileJump ( poi, dir, tile ) {
+        const dirs = ["left", "right", "up", "down"];
         const distance = this.map.data.tilesize + (this.map.data.tilesize * tile.instance.data.elevation);
+
+        dirs.forEach(( d ) => {
+            this.player.controls[ d ] = false;
+        });
 
         this.parkour = {
             distance,
@@ -495,13 +500,13 @@ class TopView extends GameBox {
             },
         };
         this.jumping = true;
-        this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
+        this.hero.cycle( Config.verbs.JUMP, dir );
         this.hero.physics.vz = -16;
-        this.player.controls[ this.hero.dir ] = true;
+        this.player.controls[ dir ] = true;
         this.player.gameaudio.hitSound( "parkour" );
         this.keyTimer = setTimeout(() => {
             this.jumping = false;
-            this.hero.face( this.hero.dir );
+            this.hero.face( dir );
 
         }, this.hero.getDur( Config.verbs.JUMP ) );
     }

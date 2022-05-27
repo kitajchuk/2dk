@@ -3417,7 +3417,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
     value: function handleHeroTileJump(poi, dir, tile) {
       var _this4 = this;
 
+      var dirs = ["left", "right", "up", "down"];
       var distance = this.map.data.tilesize + this.map.data.tilesize * tile.instance.data.elevation;
+      dirs.forEach(function (d) {
+        _this4.player.controls[d] = false;
+      });
       this.parkour = {
         distance: distance,
         landing: {
@@ -3426,14 +3430,14 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         }
       };
       this.jumping = true;
-      this.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.JUMP, this.hero.dir);
+      this.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.JUMP, dir);
       this.hero.physics.vz = -16;
-      this.player.controls[this.hero.dir] = true;
+      this.player.controls[dir] = true;
       this.player.gameaudio.hitSound("parkour");
       this.keyTimer = setTimeout(function () {
         _this4.jumping = false;
 
-        _this4.hero.face(_this4.hero.dir);
+        _this4.hero.face(dir);
       }, this.hero.getDur(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.JUMP));
     }
   }, {
@@ -4155,7 +4159,10 @@ var FX = /*#__PURE__*/function (_Sprite) {
           } else {
             this.previousElapsed = elapsed;
             this.frame = this.data.stepsX - 1;
-            this.position.y = this.data.spawn.y;
+
+            if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT) {
+              this.position.y = this.data.spawn.y;
+            }
           }
         }
       }

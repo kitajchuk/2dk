@@ -130,15 +130,6 @@
     "events": [
         {
             "coords": [
-                5,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mabe-village.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
                 4,
                 31
             ],
