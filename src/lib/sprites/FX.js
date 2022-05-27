@@ -53,7 +53,10 @@ class FX extends Sprite {
                 } else {
                     this.previousElapsed = elapsed;
                     this.frame = this.data.stepsX - 1;
-                    this.position.y = this.data.spawn.y;
+
+                    if ( this.data.type === Config.npc.FLOAT ) {
+                        this.position.y = this.data.spawn.y;
+                    }
                 }
             }
         }
