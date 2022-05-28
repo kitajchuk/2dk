@@ -65,6 +65,8 @@ const Config = {
         CUTSCENE: "cutscene",
     },
     broadcast: {
+        PAUSED: "paused",
+        RESUMED: "resumed",
         MAPEVENT: "mapevent",
     },
     npc: {

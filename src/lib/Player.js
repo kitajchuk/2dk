@@ -4,13 +4,14 @@ import GamePad from "./GamePad";
 import TopView from "./plugins/TopView";
 import GameAudio from "./GameAudio";
 import Loader from "./Loader";
-import paramalama from "paramalama";
-import Controller from "properjs-controller";
+import Controller from "./Controller";
 
 
 
-class Player {
+class Player extends Controller {
     constructor () {
+        super();
+
         this.ready = false;
         this.paused = true;
         this.stopped = false;
@@ -25,20 +26,15 @@ class Player {
             up: false,
             down: false,
         };
-        this.query = paramalama( window.location.search );
-        this.gamecycle = new Controller();
-        this.previousElapsed = 0;
+        this.query = Utils.getParams( window.location.search );
+        this.previousElapsed = null;
         this.detect();
     }
 
 
     detect () {
-        this.device = (() => {
-            const match = /Android|iPhone/.exec( window.navigator.userAgent );
-
-            return (match && match[ 0 ] ? true : false);
-        })();
-
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_tablet_or_desktop
+        this.device = /Mobi/i.test( window.navigator.userAgent );
         this.installed = (window.navigator.standalone || window.matchMedia( "(display-mode: standalone)" ).matches);
     }
 
@@ -75,21 +71,19 @@ class Player {
             let counter = 0;
 
             // Audio is still experimental for mobile so disabling for now...
-            let resources = data.bundle.filter(( url ) => {
+            const resources = data.bundle.filter(( url ) => {
                 const type = url.split( "/" ).pop().split( "." ).pop();
 
                 return (this.device ? (type !== "mp3") : true);
-            });
-
+            
             // Map bundle resource URLs to a Loader promise types for initialization...
-            resources = resources.map(( url ) => {
+            }).map(( url ) => {
                 return this.loader.load( url ).then(() => {
                     counter++;
 
                     this.splashLoad.innerHTML = this.getSplash( `Loaded ${counter} of ${resources.length} game resources...` );
                 });
-
-            })
+            });
 
             Promise.all( resources ).then(() => {
                 this.splashLoad.innerHTML = this.getSplash( "Press Start" );
@@ -116,11 +110,11 @@ class Player {
     }
 
 
-    getMergedData ( data, type ) {
+    getMergedData ( data, type, force = false ) {
         return Utils.merge(this.data[ type ].find(( obj ) => {
             return (obj.id === data.id);
 
-        }), data );
+        }), data, force );
     }
 
 
@@ -230,7 +224,7 @@ class Player {
             this.element.classList.add( "is-started" );
 
             // Game cycle (requestAnimationFrame)
-            this.gamecycle.go( this.onGameBlit.bind( this ) );
+            this.go( this.onGameBlit.bind( this ) );
         }
     }
 
@@ -291,10 +285,12 @@ class Player {
 
         if ( this.paused ) {
             this.resume();
+            this.emit( Config.broadcast.RESUMED );
 
         } else {
             this.pause();
             this.stop();
+            this.emit( Config.broadcast.PAUSED );
         }
     }
 

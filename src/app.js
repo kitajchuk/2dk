@@ -23,7 +23,7 @@ class App {
     }
 
     bind () {
-        this.player.gamecycle.on( Config.broadcast.MAPEVENT, ( event ) => {
+        this.player.on( Config.broadcast.MAPEVENT, ( event ) => {
             Utils.log(
                 Config.broadcast.MAPEVENT,
                 event

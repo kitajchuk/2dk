@@ -1,4 +1,5 @@
 import Utils from "./Utils";
+import Config from "./Config";
 
 
 
@@ -24,6 +25,16 @@ class Dialogue {
     }
 
 
+    write ( text ) {
+        this.element.innerHTML = `<p>${text}</p>`;
+    }
+
+
+    clear () {
+        this.element.innerHTML = "";
+    }
+
+
     auto ( data ) {
         if ( this.active ) {
             return;
@@ -40,7 +51,7 @@ class Dialogue {
         this.data = Utils.copy( data );
         this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
         this.element.classList.add( "is-texting" );
-        this.element.innerHTML = this.data.text.shift();
+        this.write( this.data.text.shift() );
         this.timeout = setTimeout(() => {
             this.teardown();
 
@@ -62,7 +73,7 @@ class Dialogue {
             this.reject = reject;
             this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
             this.element.classList.add( "is-texting" );
-            this.element.innerHTML = this.data.text.shift();
+            this.write( this.data.text.shift() );
             this.timeout = setTimeout(() => {
                 this.ready = true;
 
@@ -83,7 +94,7 @@ class Dialogue {
         // Plain text...
         if ( this.data.type === "text" ) {
             if ( this.data.text.length ) {
-                this.element.innerHTML = this.data.text.shift();
+                this.write( this.data.text.shift() );
                 this.timeout = setTimeout(() => {
                     this.pressed = false;
 
@@ -108,10 +119,13 @@ class Dialogue {
 
                 // No more text so show prompts...
                 if ( !this.data.text.length ) {
-                    text.push( `<span class="teal">A: ${this.data.yes.label}</span>, <span class="blue">B: ${this.data.no.label}</span>` );
+                    text.push( `
+                        <span style="color: ${Config.colors.teal};">A: ${this.data.yes.label}</span>, 
+                        <span style="color: ${Config.colors.blue};">B: ${this.data.no.label}</span>`
+                    );
                 }
 
-                this.element.innerHTML = text.join( "<br />" );
+                this.write( text.join( "<br />" ) );
                 this.timeout = setTimeout(() => {
                     this.pressed = false;
 
@@ -153,7 +167,7 @@ class Dialogue {
         this.resolve = null;
         this.reject = null; 
         this.timeout = setTimeout(() => {
-            this.element.innerHTML = "";
+            this.clear();
             this.active = false;
             this.timeout = null;
 

@@ -2,6 +2,7 @@ import Utils from "./Utils";
 import Loader from "./Loader";
 import Config from "./Config";
 import NPC from "./sprites/NPC";
+import FX from "./sprites/FX";
 
 
 
@@ -18,6 +19,7 @@ class ActiveTiles {
         this.gamebox = this.map.gamebox;
         this.frame = 0;
         this.spliced = [];
+        this.previousElapsed = null;
     }
 
 
@@ -25,7 +27,7 @@ class ActiveTiles {
 
 
     blit ( elapsed ) {
-        if ( typeof this.previousElapsed === "undefined" ) {
+        if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
         }
 
@@ -64,6 +66,14 @@ class ActiveTiles {
 
     attack ( coords ) {
         this.splice( coords );
+        this.map.gamebox.smokeObject({
+            position: {
+                x: coords[ 0 ] * this.map.data.tilesize,
+                y: coords[ 1 ] * this.map.data.tilesize,
+            },
+            width: this.map.data.tilesize,
+            height: this.map.data.tilesize,
+        });
     }
 
 
@@ -192,6 +202,11 @@ class Map {
             this.addLayer( id );
         });
 
+        // FX
+        this.data.fx.forEach(( data ) => {
+            this.fx.push( new FX( this.gamebox.player.getMergedData( data, "fx", true ), this ) );
+        });
+
         // NPCs
         this.data.npcs.forEach(( data ) => {
             this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
@@ -289,6 +304,22 @@ class Map {
         this.fx.forEach(( fx ) => {
             fx.render();
         });
+
+        // Visual event debugging....
+        if ( this.gamebox.player.query.debug ) {
+            this.data.events.forEach(( event ) => {
+                this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+                this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.blue;
+                this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                    this.offset.x + (event.coords[ 0 ] * this.data.tilesize),
+                    this.offset.y + (event.coords[ 1 ] * this.data.tilesize),
+                    this.data.tilesize,
+                    this.data.tilesize
+                );
+            });
+    
+            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
+        }
     }
 
 

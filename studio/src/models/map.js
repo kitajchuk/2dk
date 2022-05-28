@@ -18,6 +18,7 @@ module.exports = {
             "dir": "down"
         }
     ],
+    "fx": [],
     "tiles": [],
     "events": [],
     "npcs": [],

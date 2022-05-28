@@ -5,7 +5,7 @@
     "height": 576,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 416,
+    "save": 624,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -48,6 +48,112 @@
             "shadow": {
                 "offsetX": -368,
                 "offsetY": 0
+            },
+            "weapon": {
+                "down": [
+                    {
+                        "offsetX": -1028,
+                        "offsetY": -34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": -44,
+                        "positionY": 56
+                    },
+                    {
+                        "offsetX": -940,
+                        "offsetY": -20,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": -20,
+                        "positionY": 68
+                    },
+                    {
+                        "offsetX": -862,
+                        "offsetY": -16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 50,
+                        "positionY": 84
+                    }
+                ],
+                "up": [
+                    {
+                        "offsetX": -1120,
+                        "offsetY": -34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": 76,
+                        "positionY": 56
+                    },
+                    {
+                        "offsetX": -756,
+                        "offsetY": -20,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": 70,
+                        "positionY": -4
+                    },
+                    {
+                        "offsetX": -678,
+                        "offsetY": -16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 14,
+                        "positionY": -40
+                    }
+                ],
+                "left": [
+                    {
+                        "offsetX": -678,
+                        "offsetY": -16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 20,
+                        "positionY": -40
+                    },
+                    {
+                        "offsetX": -1216,
+                        "offsetY": -16,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": -30,
+                        "positionY": -4
+                    },
+                    {
+                        "offsetX": -1028,
+                        "offsetY": -34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": -44,
+                        "positionY": 56
+                    }
+                ],
+                "right": [
+                    {
+                        "offsetX": -678,
+                        "offsetY": -16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 48,
+                        "positionY": -40
+                    },
+                    {
+                        "offsetX": -756,
+                        "offsetY": -20,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": 70,
+                        "positionY": -4
+                    },
+                    {
+                        "offsetX": -1120,
+                        "offsetY": -34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": 76,
+                        "positionY": 56
+                    }
+                ]
             },
             "verbs": {
                 "face": {
@@ -195,154 +301,52 @@
                         "offsetY": -368,
                         "stepsX": 3
                     }
-                }
-            }
-        },
-        {
-            "id": "alttp",
-            "name": "BK",
-            "width": 140,
-            "height": 140,
-            "scale": 1.1,
-            "image": "assets/sprites/hero_alttp.png",
-            "hitbox": {
-                "x": 48,
-                "y": 74,
-                "width": 44,
-                "height": 44
-            },
-            "stats": {
-                "power": 1,
-                "health": 3,
-                "stamina": 3,
-                "strength": 1
-            },
-            "shadow": {
-                "offsetX": -560,
-                "offsetY": 0
-            },
-            "verbs": {
-                "face": {
+                },
+                "attack": {
+                    "dur": 125,
                     "down": {
-                        "offsetX": 0,
-                        "offsetY": 0
+                        "offsetX": -1012,
+                        "offsetY": -92,
+                        "stepsX": 3
                     },
                     "up": {
-                        "offsetX": -140,
-                        "offsetY": 0
+                        "offsetX": -1012,
+                        "offsetY": -184,
+                        "stepsX": 3
                     },
                     "left": {
-                        "offsetX": -280,
-                        "offsetY": 0
+                        "offsetX": -1012,
+                        "offsetY": -276,
+                        "stepsX": 3
                     },
                     "right": {
-                        "offsetX": -420,
-                        "offsetY": 0
+                        "offsetX": -1012,
+                        "offsetY": -368,
+                        "stepsX": 3
                     }
                 },
-                "walk": {
-                    "dur": 500,
+                "fall": {
+                    "dur": 1000,
+                    "stop": true,
                     "down": {
-                        "offsetX": 0,
-                        "offsetY": -140,
-                        "stepsX": 8
+                        "offsetX": -460,
+                        "offsetY": 0,
+                        "stepsX": 2
                     },
                     "up": {
-                        "offsetX": 0,
-                        "offsetY": -280,
-                        "stepsX": 8
+                        "offsetX": -460,
+                        "offsetY": 0,
+                        "stepsX": 2
                     },
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": -420,
-                        "stepsX": 8
+                        "offsetX": -460,
+                        "offsetY": 0,
+                        "stepsX": 2
                     },
                     "right": {
-                        "offsetX": 0,
-                        "offsetY": -560,
-                        "stepsX": 8
-                    }
-                },
-                "push": {
-                    "dur": 500,
-                    "down": {
-                        "offsetX": -1120,
-                        "offsetY": -140,
-                        "stepsX": 6
-                    },
-                    "up": {
-                        "offsetX": -1120,
-                        "offsetY": -280,
-                        "stepsX": 4
-                    },
-                    "left": {
-                        "offsetX": -1120,
-                        "offsetY": -420,
-                        "stepsX": 5
-                    },
-                    "right": {
-                        "offsetX": -1120,
-                        "offsetY": -560,
-                        "stepsX": 5
-                    }
-                },
-                "grab": {
-                    "down": {
-                        "offsetX": -1960,
-                        "offsetY": -140
-                    },
-                    "up": {
-                        "offsetX": -1960,
-                        "offsetY": -280
-                    },
-                    "left": {
-                        "offsetX": -1960,
-                        "offsetY": -420
-                    },
-                    "right": {
-                        "offsetX": -1960,
-                        "offsetY": -560
-                    }
-                },
-                "pull": {
-                    "down": {
-                        "offsetX": -2100,
-                        "offsetY": -140
-                    },
-                    "up": {
-                        "offsetX": -2100,
-                        "offsetY": -280
-                    },
-                    "left": {
-                        "offsetX": -2100,
-                        "offsetY": -420
-                    },
-                    "right": {
-                        "offsetX": -2100,
-                        "offsetY": -560
-                    }
-                },
-                "lift": {
-                    "dur": 750,
-                    "down": {
-                        "offsetX": -2240,
-                        "offsetY": -140,
-                        "stepsX": 8
-                    },
-                    "up": {
-                        "offsetX": -2240,
-                        "offsetY": -280,
-                        "stepsX": 8
-                    },
-                    "left": {
-                        "offsetX": -2240,
-                        "offsetY": -420,
-                        "stepsX": 8
-                    },
-                    "right": {
-                        "offsetX": -2240,
-                        "offsetY": -560,
-                        "stepsX": 8
+                        "offsetX": -460,
+                        "offsetY": 0,
+                        "stepsX": 2
                     }
                 }
             }
@@ -352,15 +356,15 @@
         {
             "id": "octorok",
             "name": "Octorok",
-            "width": 64,
-            "height": 64,
+            "width": 68,
+            "height": 68,
             "image": "assets/sprites/npcs.png",
             "verb": "walk",
             "maxv": 1,
             "controlmaxv": 1,
             "hitbox": {
-                "x": 0,
-                "y": 0,
+                "x": 2,
+                "y": 2,
                 "width": 64,
                 "height": 64
             },
@@ -368,41 +372,41 @@
                 "face": {
                     "left": {
                         "offsetX": 0,
-                        "offsetY": -256
+                        "offsetY": -274
                     },
                     "down": {
-                        "offsetX": -128,
-                        "offsetY": -256
+                        "offsetX": -138,
+                        "offsetY": -274
                     },
                     "up": {
-                        "offsetX": -256,
-                        "offsetY": -256
+                        "offsetX": -274,
+                        "offsetY": -274
                     },
                     "right": {
-                        "offsetX": -384,
-                        "offsetY": -256
+                        "offsetX": -410,
+                        "offsetY": -274
                     }
                 },
                 "walk": {
                     "dur": 500,
                     "left": {
                         "offsetX": 0,
-                        "offsetY": -256,
+                        "offsetY": -274,
                         "stepsX": 2
                     },
                     "down": {
-                        "offsetX": -128,
-                        "offsetY": -256,
+                        "offsetX": -138,
+                        "offsetY": -274,
                         "stepsX": 2
                     },
                     "up": {
-                        "offsetX": -256,
-                        "offsetY": -256,
+                        "offsetX": -274,
+                        "offsetY": -274,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": -384,
-                        "offsetY": -256,
+                        "offsetX": -410,
+                        "offsetY": -274,
                         "stepsX": 2
                     }
                 }
@@ -417,8 +421,8 @@
         {
             "id": "ghost",
             "name": "Ghost",
-            "width": 64,
-            "height": 64,
+            "width": 68,
+            "height": 68,
             "image": "assets/sprites/npcs.png",
             "opacity": 0.75,
             "dir": "left",
@@ -433,23 +437,23 @@
                 "face": {
                     "dur": 1000,
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": -192,
+                        "offsetX": -2,
+                        "offsetY": -206,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": -128,
-                        "offsetY": -192,
+                        "offsetX": -138,
+                        "offsetY": -206,
                         "stepsX": 2
                     },
                     "up-left": {
-                        "offsetX": -256,
-                        "offsetY": -192,
+                        "offsetX": -274,
+                        "offsetY": -206,
                         "stepsX": 2
                     },
                     "up-right": {
-                        "offsetX": -384,
-                        "offsetY": -192,
+                        "offsetX": -410,
+                        "offsetY": -206,
                         "stepsX": 2
                     }
                 }
@@ -478,14 +482,14 @@
                     "dur": 500,
                     "down": {
                         "offsetX": 0,
-                        "offsetY": -128,
+                        "offsetY": -140,
                         "stepsX": 2
                     }
                 },
                 "talk": {
                     "down": {
                         "offsetX": -256,
-                        "offsetY": -128
+                        "offsetY": -140
                     }
                 }
             },
@@ -506,16 +510,16 @@
         {
             "id": "cucco",
             "name": "Cucco",
-            "width": 64,
-            "height": 64,
+            "width": 68,
+            "height": 68,
             "image": "assets/sprites/npcs.png",
             "bounce": 1,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 0,
-                "y": 0,
+                "x": 2,
+                "y": 2,
                 "width": 64,
                 "height": 64
             },
@@ -523,23 +527,23 @@
                 "face": {
                     "left": {
                         "offsetX": 0,
-                        "offsetY": -64
+                        "offsetY": -70
                     },
                     "right": {
-                        "offsetX": -128,
-                        "offsetY": -64
+                        "offsetX": -136,
+                        "offsetY": -70
                     }
                 },
                 "walk": {
                     "dur": 250,
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": -64,
+                        "offsetX": -2,
+                        "offsetY": -70,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": -128,
-                        "offsetY": -64,
+                        "offsetX": -138,
+                        "offsetY": -70,
                         "stepsX": 2
                     }
                 }
@@ -554,16 +558,16 @@
         {
             "id": "dog",
             "name": "Dog",
-            "width": 64,
-            "height": 64,
+            "width": 68,
+            "height": 68,
             "image": "assets/sprites/npcs.png",
             "bounce": 1,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 0,
-                "y": 0,
+                "x": 2,
+                "y": 2,
                 "width": 64,
                 "height": 64
             },
@@ -571,13 +575,13 @@
                 "face": {
                     "dur": 500,
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": 0,
+                        "offsetX": -2,
+                        "offsetY": -2,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": -128,
-                        "offsetY": 0,
+                        "offsetX": -138,
+                        "offsetY": -2,
                         "stepsX": 2
                     }
                 }
@@ -716,7 +720,13 @@
             "offsetX": 0,
             "offsetY": 0,
             "stepsX": 5,
-            "dur": 500
+            "dur": 500,
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 64
+            }
         }
     ],
     "bundle": [

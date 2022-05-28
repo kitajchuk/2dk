@@ -1,7 +1,7 @@
-Dreaming about 2dk
-==================
+Notes
+=====
 
-> More like notes on things I would like to implement...
+> What's on my 2D mind...
 
 
 

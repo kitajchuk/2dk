@@ -201,21 +201,14 @@ Can all be handled in plugin GameBox
 * FX utilities
 *******************************************************************************/
     smokeObject ( obj ) {
-        let data = {
+        const data = this.player.getMergedData({
             id: "smoke",
+            kill: true,
             spawn: {
                 x: obj.position.x + (obj.width / 2) - (this.map.data.tilesize / 2),
                 y: obj.position.y + (obj.height / 2) - (this.map.data.tilesize / 2),
             },
-        };
-
-        data = this.player.getMergedData( data, "fx" );
-        data.hitbox = {
-            x: 0,
-            y: 0,
-            width: data.width,
-            height: data.height,
-        };
+        }, "fx" );
 
         this.map.addFX( new FX( data, this.map ) );
         this.map.addFX( new FX( Utils.merge( data, {
@@ -405,16 +398,15 @@ Can all be handled in plugin GameBox
             const hasDir = events[ i ].dir;
             const isBoundary = events[ i ].type === Config.events.BOUNDARY;
             const lookbox = (isBoundary ? {
+                ...sprite.position,
                 width: sprite.width,
                 height: sprite.height,
-                x: sprite.position.x,
-                y: sprite.position.y,
 
             } : sprite.hitbox);
             const collides = Utils.collide( lookbox, tile );
-            const amount = (collides.width * collides.height);
+            const amount = (collides.width * collides.height) / (tile.width * tile.height) * 100
             const isDir = hasDir ? (sprite.dir === hasDir) : true;
-            const isThresh = isBoundary ? true : !hasDir ? (amount >= (1280 / this.camera.resolution)) : (amount >= (256 / this.camera.resolution));
+            const isThresh = isBoundary ? (amount >= 50) : (amount >= 20);
 
             // An event without a "dir" can be triggered from any direction
             if ( collides && isThresh && isDir ) {
@@ -444,19 +436,25 @@ Can all be handled in plugin GameBox
     }
 
 
-    checkTiles ( poi ) {
+    checkTiles ( poi, sprite ) {
         const tiles = {
             action: [],
             attack: [],
             passive: [],
         };
-        const hitbox = this.hero.getHitbox( poi );
-        const footbox = this.hero.getFootbox( poi );
         const activeTiles = this.getVisibleActiveTiles();
 
         for ( let i = activeTiles.length; i--; ) {
             const instance = activeTiles[ i ];
-            const lookbox = ((footTiles.indexOf( instance.data.group ) !== -1) ? footbox : hitbox);
+            let lookbox;
+
+            if ( (typeof sprite.getFootbox === "function") && (typeof sprite.getHitbox === "function") ) {
+                lookbox = (footTiles.indexOf( instance.data.group ) !== -1) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
+
+            // Ad-hoc "sprite" object with { x, y, width, height }
+            } else {
+                lookbox = sprite;
+            }
 
             for ( let j = activeTiles[ i ].data.coords.length; j--; ) {
                 const tilebox = {
@@ -469,7 +467,7 @@ Can all be handled in plugin GameBox
 
                 if ( collides ) {
                     // Utils.collides returns a useful collider object...
-                    const amount = collides.width * collides.height;
+                    const amount = (collides.width * collides.height) / (this.map.data.tilesize * this.map.data.tilesize) * 100;
                     const match = {
                         jump: (instance.data.action && instance.data.action.verb === Config.verbs.JUMP),
                         stop: (instance.data.action && stopVerbs.indexOf( instance.data.action.verb ) !== -1),

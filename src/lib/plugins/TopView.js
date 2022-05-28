@@ -3,9 +3,9 @@ import Config from "../Config";
 import Loader from "../Loader";
 import GameBox from "../GameBox";
 import Map from "../Map";
+import Spring from "../Spring";
 import Sprite from "../sprites/Sprite";
 import Companion from "../sprites/Companion";
-import { TweenLite, Power4 } from "gsap";
 
 
 
@@ -16,9 +16,11 @@ class TopView extends GameBox {
         // Interactions
         this.interact = {
             // tile: {
-            //     group,
-            //     coord,
+            //     group?,
+            //     coord?,
             //     throw?,
+            //     sprite?
+            //     spring?
             // }
             push: 0,
         };
@@ -26,6 +28,7 @@ class TopView extends GameBox {
         //     distance,
         //     landing: { x, y }
         // }
+        this.attacking = false;
         this.parkour = false;
         this.jumping = false;
         this.falling = false;
@@ -52,6 +55,11 @@ class TopView extends GameBox {
 
         // blit map
         this.map.blit( elapsed );
+
+        // blit interaction tile sprite?
+        if ( this.interact.tile && this.interact.tile.sprite && this.interact.tile.spring ) {
+            this.handleThrowing( elapsed );
+        }
 
         // update gamebox (camera)
         this.update();
@@ -136,7 +144,7 @@ class TopView extends GameBox {
 
 
     releaseD () {
-        if ( this.locked || this.jumping || this.falling ) {
+        if ( this.locked || this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -154,7 +162,7 @@ class TopView extends GameBox {
 
 
     pressA () {
-        if ( this.locked || this.jumping || this.falling ) {
+        if ( this.locked || this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -180,7 +188,7 @@ class TopView extends GameBox {
 
 
     holdA () {
-        if ( this.jumping || this.falling ) {
+        if ( this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -189,7 +197,7 @@ class TopView extends GameBox {
 
 
     releaseA () {
-        if ( this.jumping || this.falling ) {
+        if ( this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -200,7 +208,7 @@ class TopView extends GameBox {
 
 
     releaseHoldA () {
-        if ( this.jumping || this.falling ) {
+        if ( this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -209,25 +217,19 @@ class TopView extends GameBox {
 
 
     pressB () {
-        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
-        const collision = {
-            tiles: this.checkTiles( poi, this.hero ),
-        };
+        if ( this.attacking ) {
+            return;
+        }
 
-        // Apply attack cycle...
-
-        if ( collision.tiles && collision.tiles.attack.length ) {
-            collision.tiles.attack.forEach(( tile ) => {
-                if ( tile.attack ) {
-                    this.handleHeroTileAttack( poi, this.hero.dir, tile );
-                }
-            });
+        // There will be extra blocking checks wrapped around this action
+        if ( !this.jumping ) {
+            this.handleHeroAttack();
         }
     }
 
 
     holdB () {
-        if ( this.jumping || this.falling ) {
+        if ( this.jumping || this.falling || this.attacking ) {
             return;
         }
 
@@ -240,6 +242,10 @@ class TopView extends GameBox {
             return;
         }
 
+        if ( this.attacking ) {
+            this.attacking = false;
+        }
+
         this.dialogue.check( false, true );
     }
 
@@ -247,6 +253,10 @@ class TopView extends GameBox {
     releaseHoldB () {
         if ( this.jumping || this.falling ) {
             return;
+        }
+
+        if ( this.attacking ) {
+            this.attacking = false;
         }
 
         Utils.log( "B Hold Release" );
@@ -257,7 +267,7 @@ class TopView extends GameBox {
 * Hero Handlers...
 *******************************************************************************/
     handleReleaseA () {
-        if ( this.jumping ) {
+        if ( this.jumping || this.attacking ) {
             return;
         }
 
@@ -308,6 +318,7 @@ class TopView extends GameBox {
         this.parkour = false;
         this.jumping = false;
         this.falling = false;
+        this.attacking = false;
     }
 
 
@@ -324,12 +335,12 @@ class TopView extends GameBox {
             this.interact.push = 0;
         }
 
-        if ( this.locked || this.falling ) {
+        if ( this.locked || this.falling || this.attacking ) {
             return;
 
         } else if ( this.parkour ) {
             if ( collision.event ) {
-                if ( this.canHeroEventDoor( poi, dir, collision ) && collision.event.amount >= (786 / this.camera.resolution) ) {
+                if ( this.canHeroEventDoor( poi, dir, collision ) && collision.event.amount >= 50 ) {
                     this.dropin = true;
                     this.handleCriticalReset();
                     this.handleHeroEventDoor( poi, dir, collision.event );
@@ -366,14 +377,8 @@ class TopView extends GameBox {
         }
 
         if ( collision.map ) {
-            // Tile will allow leaping from it's edge, like a ledge...
-            if ( this.canHeroTileJump( poi, dir, collision ) ) {
-                this.handleHeroTileJump(  poi, dir, collision.tiles.action[ 0 ] );
-
-            } else {
-                this.handleHeroPush( poi, dir );
-                return;
-            }
+            this.handleHeroPush( poi, dir );
+            return;
         }
 
         if ( collision.camera ) {
@@ -392,8 +397,12 @@ class TopView extends GameBox {
         if ( collision.tiles ) {
             this.handleHeroTiles( poi, dir, collision.tiles );
 
+            // Tile will allow leaping from it's edge, like a ledge...
+            if ( this.canHeroTileJump( poi, dir, collision ) ) {
+                this.handleHeroTileJump(  poi, dir, collision.tiles.action[ 0 ] );
+
             // Tile is behaves like a WALL, or Object you cannot walk on
-            if ( this.canHeroTileStop( poi, dir, collision ) ) {
+            } else if ( this.canHeroTileStop( poi, dir, collision ) ) {
                 this.handleHeroPush( poi, dir, collision.tiles.action[ 0 ] );
                 return;
             }
@@ -450,7 +459,7 @@ class TopView extends GameBox {
             this.jumping = false;
             this.hero.face( this.hero.dir );
 
-        }, 500 );
+        }, this.hero.getDur( Config.verbs.JUMP ) );
     }
 
 
@@ -474,7 +483,12 @@ class TopView extends GameBox {
 
 
     handleHeroTileJump ( poi, dir, tile ) {
+        const dirs = ["left", "right", "up", "down"];
         const distance = this.map.data.tilesize + (this.map.data.tilesize * tile.instance.data.elevation);
+
+        dirs.forEach(( d ) => {
+            this.player.controls[ d ] = false;
+        });
 
         this.parkour = {
             distance,
@@ -484,15 +498,15 @@ class TopView extends GameBox {
             },
         };
         this.jumping = true;
-        this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
-        this.hero.physics.vz = -16;
-        this.player.controls[ this.hero.dir ] = true;
+        this.hero.cycle( Config.verbs.JUMP, dir );
+        this.hero.physics.vz = -24;
+        this.player.controls[ dir ] = true;
         this.player.gameaudio.hitSound( "parkour" );
         this.keyTimer = setTimeout(() => {
             this.jumping = false;
-            this.hero.face( this.hero.dir );
+            this.hero.face( dir );
 
-        }, 500 );
+        }, this.hero.getDur( Config.verbs.JUMP ) );
     }
 
 
@@ -566,7 +580,7 @@ class TopView extends GameBox {
             this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
             this.locked = false;
 
-        }, 250 );
+        }, this.hero.getDur( Config.verbs.LIFT ) );
     }
 
 
@@ -574,12 +588,34 @@ class TopView extends GameBox {
         this.hero.face( this.hero.dir );
         this.player.gameaudio.hitSound( Config.verbs.THROW );
         this.hero.physics.maxv = this.hero.physics.controlmaxv;
-        this.handleThrow( this.interact.tile.sprite ).then(() => {
-            this.player.gameaudio.hitSound( Config.verbs.SMASH );
-            this.map.killObj( "npcs", this.interact.tile.sprite );
+        this.handleThrow( this.interact.tile.sprite );
+    }
 
-            delete this.interact.tile;
-        });
+
+    handleHeroAttack () {
+        this.attacking = true;
+        this.hero.resetElapsed = true;
+        this.hero.cycle( Config.verbs.ATTACK, this.hero.dir );
+
+        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
+        const weaponBox = this.hero.getWeaponbox();
+        const collision = {
+            tiles: this.checkTiles( poi, weaponBox ),
+        };
+
+        if ( collision.tiles && collision.tiles.attack.length ) {
+            collision.tiles.attack.forEach(( tile ) => {
+                if ( tile.attack ) {
+                    this.handleHeroTileAttack( poi, this.hero.dir, tile );
+                }
+            });
+        }
+
+        setTimeout(() => {
+            // this.attacking = false;
+            this.hero.face( this.hero.dir );
+
+        }, this.hero.getDur( Config.verbs.ATTACK ) );
     }
 
 
@@ -673,64 +709,64 @@ class TopView extends GameBox {
 
 
     handleThrow ( sprite ) {
-        return new Promise(( resolve ) => {
-            sprite.resolve = resolve;
-            sprite.throwing = this.hero.dir;
+        sprite.throwing = this.hero.dir;
+        
+        let throwX;
+        let throwY;
+        const dist = this.map.data.tilesize * 2;
 
-            let throwX;
-            let throwY;
-            const dist = this.map.data.tilesize * 2;
-            const props = {
-                x: sprite.position.x,
-                y: sprite.position.y,
+        if ( sprite.throwing === "left" ) {
+            throwX = sprite.position.x - dist;
+            throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+
+        } else if ( sprite.throwing === "right" ) {
+            throwX = sprite.position.x + dist;
+            throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+
+        } else if ( sprite.throwing === "up" ) {
+            throwX = sprite.position.x;
+            throwY = sprite.position.y - dist;
+
+        }  else if ( sprite.throwing === "down" ) {
+            throwX = sprite.position.x;
+            throwY = this.hero.footbox.y + dist;
+        }
+
+        this.interact.tile.spring = new Spring( this.player, sprite.position.x, sprite.position.y, 60, 3.5 );
+        this.interact.tile.spring.poi = {
+            x: throwX,
+            y: throwY,
+        };
+        this.interact.tile.spring.bind( sprite );
+    }
+
+
+    handleThrowing ( elapsed ) {
+        if ( this.interact.tile.spring.isResting ) {
+            this.handleThrew();
+
+        } else {
+            const collision = {
+                map: this.checkMap( this.interact.tile.sprite.position, this.interact.tile.sprite ),
+                npc: this.checkNPC( this.interact.tile.sprite.position, this.interact.tile.sprite ),
+                camera: this.checkCamera( this.interact.tile.sprite.position, this.interact.tile.sprite ),
             };
-            const _complete = () => {
-                this.smokeObject( sprite );
-                sprite.tween.kill();
-                sprite.tween = null;
-                sprite.resolve();
-            };
 
-            if ( sprite.throwing === "left" ) {
-                throwX = sprite.position.x - dist;
-                throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+            if ( collision.map || collision.npc || collision.camera ) {
+                this.handleThrew();
 
-            } else if ( sprite.throwing === "right" ) {
-                throwX = sprite.position.x + dist;
-                throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
-
-            } else if ( sprite.throwing === "up" ) {
-                throwX = sprite.position.x;
-                throwY = sprite.position.y - dist;
-
-            }  else if ( sprite.throwing === "down" ) {
-                throwX = sprite.position.x;
-                throwY = this.hero.footbox.y + dist;
+            } else {
+                this.interact.tile.spring.blit( elapsed );
             }
+        }
+    }
 
-            sprite.tween = TweenLite.to( props, 0.5, {
-                x: throwX,
-                y: throwY,
-                ease: Power4.easeOut,
-                onUpdate: () => {
-                    sprite.position.x = sprite.tween._targets[ 0 ].x;
-                    sprite.position.y = sprite.tween._targets[ 0 ].y;
 
-                    const collision = {
-                        map: this.checkMap( sprite.position, sprite ),
-                        npc: this.checkNPC( sprite.position, sprite ),
-                        camera: this.checkCamera( sprite.position, sprite ),
-                    };
-
-                    if ( collision.map || collision.camera || collision.npc ) {
-                        _complete();
-                    }
-                },
-                onComplete: () => {
-                    _complete();
-                }
-            });
-        });
+    handleThrew () {
+        this.smokeObject( this.interact.tile.sprite );
+        this.player.gameaudio.hitSound( Config.verbs.SMASH );
+        this.map.killObj( "npcs", this.interact.tile.sprite );
+        delete this.interact.tile;
     }
 
 
@@ -875,7 +911,7 @@ class TopView extends GameBox {
         this.player.element.classList.add( "is-fader" );
 
         // Emit map change event
-        this.player.gamecycle.fire( Config.broadcast.MAPEVENT, event );
+        this.player.emit( Config.broadcast.MAPEVENT, event );
 
         setTimeout(() => {
             // New Map data
