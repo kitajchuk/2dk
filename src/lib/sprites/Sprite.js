@@ -61,6 +61,7 @@ class Sprite {
         this.spritecel = this.getCel();
         this.previousElapsed = null;
         this.resetElapsed = false;
+        this.frameStopped = false;
     }
 
 
@@ -144,7 +145,7 @@ class Sprite {
             }
         }
 
-        if ( this.data.shadow ) {
+        if ( this.data.shadow && this.verb !== Config.verbs.FALL ) {
             this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
                 Math.abs( this.data.shadow.offsetX ),
@@ -257,6 +258,10 @@ class Sprite {
 
 
     applyFrame( elapsed ) {
+        if ( this.frameStopped ) {
+            return;
+        }
+
         this.frame = 0;
 
         // Useful for ensuring clean maths below for cycles like attacking...
@@ -273,10 +278,18 @@ class Sprite {
                 const diff = (elapsed - this.previousElapsed);
 
                 this.frame = Math.floor( (diff / this.data.verbs[ this.verb ].dur) * this.data.verbs[ this.verb ][ this.dir ].stepsX );
+                this.frame = Math.min( this.frame, (this.data.verbs[ this.verb ][ this.dir ].stepsX - 1) );
 
                 if ( diff >= this.data.verbs[ this.verb ].dur ) {
                     this.previousElapsed = elapsed;
-                    this.frame = this.data.verbs[ this.verb ][ this.dir ].stepsX - 1;
+
+                    if ( this.data.verbs[ this.verb ].stop ) {
+                        this.frameStopped = true;
+                        console.log( this.frame );
+
+                    } else {
+                        this.frame = 0;
+                    }
                 }
             }
         }

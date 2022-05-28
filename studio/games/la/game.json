@@ -5,7 +5,7 @@
     "height": 576,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 543,
+    "save": 624,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -323,6 +323,30 @@
                         "offsetX": -1012,
                         "offsetY": -368,
                         "stepsX": 3
+                    }
+                },
+                "fall": {
+                    "dur": 1000,
+                    "stop": true,
+                    "down": {
+                        "offsetX": -460,
+                        "offsetY": 0,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": -460,
+                        "offsetY": 0,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": -460,
+                        "offsetY": 0,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": -460,
+                        "offsetY": 0,
+                        "stepsX": 2
                     }
                 }
             }

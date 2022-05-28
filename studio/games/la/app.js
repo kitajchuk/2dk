@@ -547,17 +547,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "GameBox": () => (/* binding */ GameBox),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
-/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Utils */ "./src/lib/Utils.js");
-/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
-/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Loader */ "./src/lib/Loader.js");
-/* harmony import */ var _Dialogue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Dialogue */ "./src/lib/Dialogue.js");
-/* harmony import */ var _Map__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Map */ "./src/lib/Map.js");
-/* harmony import */ var _sprites_Hero__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./sprites/Hero */ "./src/lib/sprites/Hero.js");
-/* harmony import */ var _sprites_Companion__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./sprites/Companion */ "./src/lib/sprites/Companion.js");
-/* harmony import */ var _sprites_FX__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sprites/FX */ "./src/lib/sprites/FX.js");
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Utils */ "./src/lib/Utils.js");
+/* harmony import */ var _Config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Config */ "./src/lib/Config.js");
+/* harmony import */ var _Loader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Loader */ "./src/lib/Loader.js");
+/* harmony import */ var _Dialogue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Dialogue */ "./src/lib/Dialogue.js");
+/* harmony import */ var _Map__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Map */ "./src/lib/Map.js");
+/* harmony import */ var _sprites_Hero__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./sprites/Hero */ "./src/lib/sprites/Hero.js");
+/* harmony import */ var _sprites_Companion__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sprites/Companion */ "./src/lib/sprites/Companion.js");
+/* harmony import */ var _sprites_FX__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./sprites/FX */ "./src/lib/sprites/FX.js");
 
+
+
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 
 
@@ -576,15 +583,15 @@ var tileSortFunc = function tileSortFunc(tileA, tileB) {
   }
 };
 
-var stopVerbs = [_Config__WEBPACK_IMPORTED_MODULE_3__["default"].verbs.GRAB, _Config__WEBPACK_IMPORTED_MODULE_3__["default"].verbs.MOVE, _Config__WEBPACK_IMPORTED_MODULE_3__["default"].verbs.LIFT];
-var actionVerbs = [_Config__WEBPACK_IMPORTED_MODULE_3__["default"].verbs.LIFT];
-var attackVerbs = [_Config__WEBPACK_IMPORTED_MODULE_3__["default"].verbs.ATTACK]; // @see notes in ./Config.js as these are related to that line of thought...
+var stopVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.GRAB, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.MOVE, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT];
+var actionVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT];
+var attackVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.ATTACK]; // @see notes in ./Config.js as these are related to that line of thought...
 
-var footTiles = [_Config__WEBPACK_IMPORTED_MODULE_3__["default"].tiles.STAIRS, _Config__WEBPACK_IMPORTED_MODULE_3__["default"].tiles.WATER, _Config__WEBPACK_IMPORTED_MODULE_3__["default"].tiles.GRASS, _Config__WEBPACK_IMPORTED_MODULE_3__["default"].tiles.HOLES];
-var cameraTiles = [_Config__WEBPACK_IMPORTED_MODULE_3__["default"].tiles.STAIRS, _Config__WEBPACK_IMPORTED_MODULE_3__["default"].tiles.GRASS];
+var footTiles = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.STAIRS, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.WATER, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.GRASS, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.HOLES];
+var cameraTiles = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.STAIRS, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.GRASS];
 
-var Camera = /*#__PURE__*/(0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_0__["default"])(function Camera(x, y, width, height, resolution) {
-  (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__["default"])(this, Camera);
+var Camera = /*#__PURE__*/(0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(function Camera(x, y, width, height, resolution) {
+  (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__["default"])(this, Camera);
 
   this.x = x;
   this.y = y;
@@ -597,7 +604,7 @@ var GameBox = /*#__PURE__*/function () {
   function GameBox(player) {
     var _this = this;
 
-    (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__["default"])(this, GameBox);
+    (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__["default"])(this, GameBox);
 
     this.player = player;
     this.step = 1;
@@ -611,13 +618,13 @@ var GameBox = /*#__PURE__*/function () {
       heroground: null,
       foreground: null
     };
-    var initMapData = _Loader__WEBPACK_IMPORTED_MODULE_4__["default"].cash(this.player.data.hero.map);
+    var initMapData = _Loader__WEBPACK_IMPORTED_MODULE_5__["default"].cash(this.player.data.hero.map);
     var initHeroData = this.player.data.hero; // Map
 
-    this.map = new _Map__WEBPACK_IMPORTED_MODULE_6__["default"](initMapData, this); // Hero
+    this.map = new _Map__WEBPACK_IMPORTED_MODULE_7__["default"](initMapData, this); // Hero
 
     initHeroData.spawn = initMapData.spawn[initHeroData.spawn];
-    this.hero = new _sprites_Hero__WEBPACK_IMPORTED_MODULE_7__["default"](initHeroData, this.map);
+    this.hero = new _sprites_Hero__WEBPACK_IMPORTED_MODULE_8__["default"](initHeroData, this.map);
     Object.keys(initHeroData.sounds).forEach(function (id) {
       _this.player.gameaudio.addSound({
         id: id,
@@ -632,16 +639,16 @@ var GameBox = /*#__PURE__*/function () {
         x: this.hero.position.x,
         y: this.hero.position.y
       };
-      this.companion = new _sprites_Companion__WEBPACK_IMPORTED_MODULE_8__["default"](initHeroData.companion, this.hero);
+      this.companion = new _sprites_Companion__WEBPACK_IMPORTED_MODULE_9__["default"](initHeroData.companion, this.hero);
     } // Dialogues
 
 
-    this.dialogue = new _Dialogue__WEBPACK_IMPORTED_MODULE_5__["default"]();
+    this.dialogue = new _Dialogue__WEBPACK_IMPORTED_MODULE_6__["default"]();
     this.build();
     this.initMap();
   }
 
-  (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_0__["default"])(GameBox, [{
+  (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(GameBox, [{
     key: "clear",
     value: function clear() {
       var _this2 = this;
@@ -678,7 +685,7 @@ var GameBox = /*#__PURE__*/function () {
     key: "addLayer",
     value: function addLayer(id) {
       this.layers[id] = {};
-      this.layers[id].onCanvas = new _Map__WEBPACK_IMPORTED_MODULE_6__.MapLayer({
+      this.layers[id].onCanvas = new _Map__WEBPACK_IMPORTED_MODULE_7__.MapLayer({
         id: id,
         width: this.camera.width,
         height: this.camera.height
@@ -762,8 +769,8 @@ var GameBox = /*#__PURE__*/function () {
           y: obj.position.y + obj.height / 2 - this.map.data.tilesize / 2
         }
       }, "fx");
-      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_9__["default"](data, this.map));
-      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_9__["default"](_Utils__WEBPACK_IMPORTED_MODULE_2__["default"].merge(data, {
+      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_10__["default"](data, this.map));
+      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_10__["default"](_Utils__WEBPACK_IMPORTED_MODULE_3__["default"].merge(data, {
         spawn: {
           x: origin.x - this.map.data.tilesize / 4,
           y: origin.y - this.map.data.tilesize / 4
@@ -771,7 +778,7 @@ var GameBox = /*#__PURE__*/function () {
         vx: -8,
         vy: -8
       }), this.map));
-      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_9__["default"](_Utils__WEBPACK_IMPORTED_MODULE_2__["default"].merge(data, {
+      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_10__["default"](_Utils__WEBPACK_IMPORTED_MODULE_3__["default"].merge(data, {
         spawn: {
           x: origin.x + this.map.data.tilesize / 4,
           y: origin.y - this.map.data.tilesize / 4
@@ -779,7 +786,7 @@ var GameBox = /*#__PURE__*/function () {
         vx: 8,
         vy: -8
       }), this.map));
-      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_9__["default"](_Utils__WEBPACK_IMPORTED_MODULE_2__["default"].merge(data, {
+      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_10__["default"](_Utils__WEBPACK_IMPORTED_MODULE_3__["default"].merge(data, {
         spawn: {
           x: origin.x - this.map.data.tilesize / 4,
           y: origin.y + this.map.data.tilesize / 4
@@ -787,7 +794,7 @@ var GameBox = /*#__PURE__*/function () {
         vx: -8,
         vy: 8
       }), this.map));
-      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_9__["default"](_Utils__WEBPACK_IMPORTED_MODULE_2__["default"].merge(data, {
+      this.map.addFX(new _sprites_FX__WEBPACK_IMPORTED_MODULE_10__["default"](_Utils__WEBPACK_IMPORTED_MODULE_3__["default"].merge(data, {
         spawn: {
           x: origin.x + this.map.data.tilesize / 4,
           y: origin.y + this.map.data.tilesize / 4
@@ -807,7 +814,7 @@ var GameBox = /*#__PURE__*/function () {
       var colliders = [];
 
       for (var i = this.map.data.collision.length; i--;) {
-        var collides = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(this.camera, {
+        var collides = _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(this.camera, {
           width: this.map.data.collider,
           height: this.map.data.collider,
           x: this.map.data.collision[i][0] * this.map.data.collider,
@@ -827,7 +834,7 @@ var GameBox = /*#__PURE__*/function () {
       var events = [];
 
       for (var i = this.map.data.events.length; i--;) {
-        var collides = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(this.camera, {
+        var collides = _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(this.camera, {
           width: this.map.data.tilesize,
           height: this.map.data.tilesize,
           x: this.map.data.events[i].coords[0] * this.map.data.tilesize,
@@ -847,7 +854,7 @@ var GameBox = /*#__PURE__*/function () {
       var npcs = [];
 
       for (var i = this.map.npcs.length; i--;) {
-        var collides = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(this.camera, {
+        var collides = _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(this.camera, {
           x: this.map.npcs[i].position.x,
           y: this.map.npcs[i].position.y,
           width: this.map.npcs[i].width,
@@ -868,7 +875,7 @@ var GameBox = /*#__PURE__*/function () {
 
       for (var i = this.map.activeTiles.length; i--;) {
         for (var j = this.map.activeTiles[i].data.coords.length; j--;) {
-          var collides = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(this.camera, {
+          var collides = _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(this.camera, {
             width: this.map.data.tilesize,
             height: this.map.data.tilesize,
             x: this.map.activeTiles[i].data.coords[j][0] * this.map.data.tilesize,
@@ -902,7 +909,7 @@ var GameBox = /*#__PURE__*/function () {
     key: "checkHero",
     value: function checkHero(poi, sprite) {
       var ret = false;
-      var collides = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(sprite.getHitbox(poi), this.hero.hitbox);
+      var collides = _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(sprite.getHitbox(poi), this.hero.hitbox);
 
       if (collides) {
         ret = collides;
@@ -925,7 +932,7 @@ var GameBox = /*#__PURE__*/function () {
           layer: "foreground"
         };
 
-        if (_Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(hitbox, tile)) {
+        if (_Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(hitbox, tile)) {
           return true;
         }
       }
@@ -945,17 +952,15 @@ var GameBox = /*#__PURE__*/function () {
           y: events[i].coords[1] * this.map.data.tilesize
         };
         var hasDir = events[i].dir;
-        var isBoundary = events[i].type === _Config__WEBPACK_IMPORTED_MODULE_3__["default"].events.BOUNDARY;
-        var lookbox = isBoundary ? {
+        var isBoundary = events[i].type === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].events.BOUNDARY;
+        var lookbox = isBoundary ? _objectSpread(_objectSpread({}, sprite.position), {}, {
           width: sprite.width,
-          height: sprite.height,
-          x: sprite.position.x,
-          y: sprite.position.y
-        } : sprite.hitbox;
-        var collides = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(lookbox, tile);
-        var amount = collides.width * collides.height;
+          height: sprite.height
+        }) : sprite.hitbox;
+        var collides = _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(lookbox, tile);
+        var amount = collides.width * collides.height / (tile.width * tile.height) * 100;
         var isDir = hasDir ? sprite.dir === hasDir : true;
-        var isThresh = isBoundary ? true : !hasDir ? amount >= 1280 / this.camera.resolution : amount >= 256 / this.camera.resolution; // An event without a "dir" can be triggered from any direction
+        var isThresh = isBoundary ? amount >= 50 : amount >= 20; // An event without a "dir" can be triggered from any direction
 
         if (collides && isThresh && isDir) {
           return Object.assign(events[i], {
@@ -975,7 +980,7 @@ var GameBox = /*#__PURE__*/function () {
 
       for (var i = npcs.length; i--;) {
         // A thrown object Sprite will have a hero prop
-        if (!npcs[i].hero && npcs[i] !== sprite && _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(hitbox, npcs[i].hitbox)) {
+        if (!npcs[i].hero && npcs[i] !== sprite && _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(hitbox, npcs[i].hitbox)) {
           return npcs[i];
         }
       }
@@ -1009,13 +1014,13 @@ var GameBox = /*#__PURE__*/function () {
             x: instance.data.coords[j][0] * this.map.data.tilesize,
             y: instance.data.coords[j][1] * this.map.data.tilesize
           };
-          var collides = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(lookbox, tilebox);
+          var collides = _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(lookbox, tilebox);
 
           if (collides) {
             // Utils.collides returns a useful collider object...
-            var amount = collides.width * collides.height;
+            var amount = collides.width * collides.height / (this.map.data.tilesize * this.map.data.tilesize) * 100;
             var match = {
-              jump: instance.data.action && instance.data.action.verb === _Config__WEBPACK_IMPORTED_MODULE_3__["default"].verbs.JUMP,
+              jump: instance.data.action && instance.data.action.verb === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.JUMP,
               stop: instance.data.action && stopVerbs.indexOf(instance.data.action.verb) !== -1,
               group: instance.data.group,
               coord: instance.data.coords[j],
@@ -2019,6 +2024,8 @@ var Map = /*#__PURE__*/function () {
   }, {
     key: "render",
     value: function render(camera) {
+      var _this3 = this;
+
       this.clear();
       this.camera = camera;
       this.renderBox = this.getRenderbox(camera); // Separate background / foreground NPCs
@@ -2046,7 +2053,17 @@ var Map = /*#__PURE__*/function () {
 
       this.fx.forEach(function (fx) {
         fx.render();
-      });
+      }); // Visual event debugging....
+
+      if (this.gamebox.player.query.debug) {
+        this.data.events.forEach(function (event) {
+          _this3.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+          _this3.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_4__["default"].colors.blue;
+
+          _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + event.coords[0] * _this3.data.tilesize, _this3.offset.y + event.coords[1] * _this3.data.tilesize, _this3.data.tilesize, _this3.data.tilesize);
+        });
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
+      }
     }
   }, {
     key: "renderTextures",
@@ -2059,10 +2076,10 @@ var Map = /*#__PURE__*/function () {
   }, {
     key: "clear",
     value: function clear() {
-      var _this3 = this;
+      var _this4 = this;
 
       Object.keys(this.layers).forEach(function (id) {
-        _this3.layers[id].offCanvas.clear();
+        _this4.layers[id].offCanvas.clear();
       });
     }
   }, {
@@ -2091,7 +2108,7 @@ var Map = /*#__PURE__*/function () {
   }, {
     key: "getTextures",
     value: function getTextures(renderBox) {
-      var _this4 = this;
+      var _this5 = this;
 
       var height = renderBox.height / this.data.tilesize;
       var width = renderBox.width / this.data.tilesize;
@@ -2104,20 +2121,20 @@ var Map = /*#__PURE__*/function () {
           ret[id][y] = [];
           var lookupY = renderBox.y + y;
 
-          if (_this4.data.textures[id][lookupY]) {
+          if (_this5.data.textures[id][lookupY]) {
             var x = 0;
 
             while (x < width) {
               var lookupX = renderBox.x + x;
 
-              if (_this4.data.textures[id][lookupY][lookupX]) {
-                var celsCopy = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].copy(_this4.data.textures[id][lookupY][lookupX]);
+              if (_this5.data.textures[id][lookupY][lookupX]) {
+                var celsCopy = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].copy(_this5.data.textures[id][lookupY][lookupX]);
 
-                var activeTile = _this4.getActiveTile(id, [lookupX, lookupY], celsCopy); // Render the textures
+                var activeTile = _this5.getActiveTile(id, [lookupX, lookupY], celsCopy); // Render the textures
                 // Shift foreground behind hero render if coords determine so
 
 
-                if (id === "foreground" && lookupY * _this4.data.tilesize < _this4.gamebox.hero.position.y) {
+                if (id === "foreground" && lookupY * _this5.data.tilesize < _this5.gamebox.hero.position.y) {
                   ret.background[y][x] = ret.background[y][x].concat(celsCopy);
                 } else {
                   ret[id][y][x] = celsCopy;
@@ -3271,7 +3288,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         return;
       } else if (this.parkour) {
         if (collision.event) {
-          if (this.canHeroEventDoor(poi, dir, collision) && collision.event.amount >= 786 / this.camera.resolution) {
+          if (this.canHeroEventDoor(poi, dir, collision) && collision.event.amount >= 50) {
             this.dropin = true;
             this.handleCriticalReset();
             this.handleHeroEventDoor(poi, dir, collision.event);
@@ -3306,13 +3323,8 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       }
 
       if (collision.map) {
-        // Tile will allow leaping from it's edge, like a ledge...
-        if (this.canHeroTileJump(poi, dir, collision)) {
-          this.handleHeroTileJump(poi, dir, collision.tiles.action[0]);
-        } else {
-          this.handleHeroPush(poi, dir);
-          return;
-        }
+        this.handleHeroPush(poi, dir);
+        return;
       }
 
       if (collision.camera) {
@@ -3329,9 +3341,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       }
 
       if (collision.tiles) {
-        this.handleHeroTiles(poi, dir, collision.tiles); // Tile is behaves like a WALL, or Object you cannot walk on
+        this.handleHeroTiles(poi, dir, collision.tiles); // Tile will allow leaping from it's edge, like a ledge...
 
-        if (this.canHeroTileStop(poi, dir, collision)) {
+        if (this.canHeroTileJump(poi, dir, collision)) {
+          this.handleHeroTileJump(poi, dir, collision.tiles.action[0]); // Tile is behaves like a WALL, or Object you cannot walk on
+        } else if (this.canHeroTileStop(poi, dir, collision)) {
           this.handleHeroPush(poi, dir, collision.tiles.action[0]);
           return;
         }
@@ -3431,7 +3445,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       };
       this.jumping = true;
       this.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.JUMP, dir);
-      this.hero.physics.vz = -16;
+      this.hero.physics.vz = -24;
       this.player.controls[dir] = true;
       this.player.gameaudio.hitSound("parkour");
       this.keyTimer = setTimeout(function () {
@@ -4645,6 +4659,7 @@ var Sprite = /*#__PURE__*/function () {
     this.spritecel = this.getCel();
     this.previousElapsed = null;
     this.resetElapsed = false;
+    this.frameStopped = false;
   }
 
   (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(Sprite, [{
@@ -4726,7 +4741,7 @@ var Sprite = /*#__PURE__*/function () {
         }
       }
 
-      if (this.data.shadow) {
+      if (this.data.shadow && this.verb !== _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.FALL) {
         this.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, Math.abs(this.data.shadow.offsetX), Math.abs(this.data.shadow.offsetY), this.data.width, this.data.height, this.offset.x, this.offset.y, this.width, this.height);
       }
 
@@ -4818,6 +4833,10 @@ var Sprite = /*#__PURE__*/function () {
   }, {
     key: "applyFrame",
     value: function applyFrame(elapsed) {
+      if (this.frameStopped) {
+        return;
+      }
+
       this.frame = 0; // Useful for ensuring clean maths below for cycles like attacking...
 
       if (this.resetElapsed) {
@@ -4831,10 +4850,17 @@ var Sprite = /*#__PURE__*/function () {
         } else {
           var diff = elapsed - this.previousElapsed;
           this.frame = Math.floor(diff / this.data.verbs[this.verb].dur * this.data.verbs[this.verb][this.dir].stepsX);
+          this.frame = Math.min(this.frame, this.data.verbs[this.verb][this.dir].stepsX - 1);
 
           if (diff >= this.data.verbs[this.verb].dur) {
             this.previousElapsed = elapsed;
-            this.frame = this.data.verbs[this.verb][this.dir].stepsX - 1;
+
+            if (this.data.verbs[this.verb].stop) {
+              this.frameStopped = true;
+              console.log(this.frame);
+            } else {
+              this.frame = 0;
+            }
           }
         }
       }
@@ -5002,6 +5028,33 @@ function _createClass(Constructor, protoProps, staticProps) {
     writable: false
   });
   return Constructor;
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/defineProperty.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ _defineProperty)
+/* harmony export */ });
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
 }
 
 /***/ }),

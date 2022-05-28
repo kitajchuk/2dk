@@ -340,7 +340,7 @@ class TopView extends GameBox {
 
         } else if ( this.parkour ) {
             if ( collision.event ) {
-                if ( this.canHeroEventDoor( poi, dir, collision ) && collision.event.amount >= (786 / this.camera.resolution) ) {
+                if ( this.canHeroEventDoor( poi, dir, collision ) && collision.event.amount >= 50 ) {
                     this.dropin = true;
                     this.handleCriticalReset();
                     this.handleHeroEventDoor( poi, dir, collision.event );
@@ -377,14 +377,8 @@ class TopView extends GameBox {
         }
 
         if ( collision.map ) {
-            // Tile will allow leaping from it's edge, like a ledge...
-            if ( this.canHeroTileJump( poi, dir, collision ) ) {
-                this.handleHeroTileJump(  poi, dir, collision.tiles.action[ 0 ] );
-
-            } else {
-                this.handleHeroPush( poi, dir );
-                return;
-            }
+            this.handleHeroPush( poi, dir );
+            return;
         }
 
         if ( collision.camera ) {
@@ -403,8 +397,12 @@ class TopView extends GameBox {
         if ( collision.tiles ) {
             this.handleHeroTiles( poi, dir, collision.tiles );
 
+            // Tile will allow leaping from it's edge, like a ledge...
+            if ( this.canHeroTileJump( poi, dir, collision ) ) {
+                this.handleHeroTileJump(  poi, dir, collision.tiles.action[ 0 ] );
+
             // Tile is behaves like a WALL, or Object you cannot walk on
-            if ( this.canHeroTileStop( poi, dir, collision ) ) {
+            } else if ( this.canHeroTileStop( poi, dir, collision ) ) {
                 this.handleHeroPush( poi, dir, collision.tiles.action[ 0 ] );
                 return;
             }
@@ -501,7 +499,7 @@ class TopView extends GameBox {
         };
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, dir );
-        this.hero.physics.vz = -16;
+        this.hero.physics.vz = -24;
         this.player.controls[ dir ] = true;
         this.player.gameaudio.hitSound( "parkour" );
         this.keyTimer = setTimeout(() => {

@@ -398,16 +398,15 @@ Can all be handled in plugin GameBox
             const hasDir = events[ i ].dir;
             const isBoundary = events[ i ].type === Config.events.BOUNDARY;
             const lookbox = (isBoundary ? {
+                ...sprite.position,
                 width: sprite.width,
                 height: sprite.height,
-                x: sprite.position.x,
-                y: sprite.position.y,
 
             } : sprite.hitbox);
             const collides = Utils.collide( lookbox, tile );
-            const amount = (collides.width * collides.height);
+            const amount = (collides.width * collides.height) / (tile.width * tile.height) * 100
             const isDir = hasDir ? (sprite.dir === hasDir) : true;
-            const isThresh = isBoundary ? true : !hasDir ? (amount >= (1280 / this.camera.resolution)) : (amount >= (256 / this.camera.resolution));
+            const isThresh = isBoundary ? (amount >= 50) : (amount >= 20);
 
             // An event without a "dir" can be triggered from any direction
             if ( collides && isThresh && isDir ) {
@@ -468,7 +467,7 @@ Can all be handled in plugin GameBox
 
                 if ( collides ) {
                     // Utils.collides returns a useful collider object...
-                    const amount = collides.width * collides.height;
+                    const amount = (collides.width * collides.height) / (this.map.data.tilesize * this.map.data.tilesize) * 100;
                     const match = {
                         jump: (instance.data.action && instance.data.action.verb === Config.verbs.JUMP),
                         stop: (instance.data.action && stopVerbs.indexOf( instance.data.action.verb ) !== -1),

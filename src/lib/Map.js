@@ -304,6 +304,22 @@ class Map {
         this.fx.forEach(( fx ) => {
             fx.render();
         });
+
+        // Visual event debugging....
+        if ( this.gamebox.player.query.debug ) {
+            this.data.events.forEach(( event ) => {
+                this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+                this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.blue;
+                this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                    this.offset.x + (event.coords[ 0 ] * this.data.tilesize),
+                    this.offset.y + (event.coords[ 1 ] * this.data.tilesize),
+                    this.data.tilesize,
+                    this.data.tilesize
+                );
+            });
+    
+            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
+        }
     }
 
 
