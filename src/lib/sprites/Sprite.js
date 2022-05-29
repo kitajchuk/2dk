@@ -219,6 +219,7 @@ class Sprite {
 *******************************************************************************/
     applyPosition () {
         // A lifted object
+        // Need to NOT hardcode the 42 here...
         if ( this.hero ) {
             if ( !this.throwing ) {
                 this.position.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
@@ -276,16 +277,17 @@ class Sprite {
 
             } else {
                 const diff = (elapsed - this.previousElapsed);
-
-                this.frame = Math.floor( (diff / this.data.verbs[ this.verb ].dur) * this.data.verbs[ this.verb ][ this.dir ].stepsX );
-                this.frame = Math.min( this.frame, (this.data.verbs[ this.verb ][ this.dir ].stepsX - 1) );
+                
+                this.frame = Math.min(
+                    Math.floor( (diff / this.data.verbs[ this.verb ].dur) * this.data.verbs[ this.verb ][ this.dir ].stepsX ),
+                    (this.data.verbs[ this.verb ][ this.dir ].stepsX - 1)
+                );
 
                 if ( diff >= this.data.verbs[ this.verb ].dur ) {
                     this.previousElapsed = elapsed;
 
                     if ( this.data.verbs[ this.verb ].stop ) {
                         this.frameStopped = true;
-                        console.log( this.frame );
 
                     } else {
                         this.frame = 0;
