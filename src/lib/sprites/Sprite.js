@@ -38,8 +38,8 @@ class Sprite {
         // Hero offset is based on camera.
         // NPCs offset snaps to position.
         this.offset = {
-            x: this.map.offset.x + this.position.x,
-            y: this.map.offset.y + this.position.y,
+            x: this.gamebox.offset.x + this.position.x,
+            y: this.gamebox.offset.y + this.position.y,
         };
         this.idle = {
             x: true,
@@ -69,7 +69,7 @@ class Sprite {
 
 
     visible () {
-        return Utils.collide( this.map.camera, {
+        return Utils.collide( this.gamebox.camera, {
             x: this.position.x,
             y: this.position.y,
             width: this.width,
@@ -243,8 +243,8 @@ class Sprite {
 
     applyOffset () {
         this.offset = {
-            x: this.map.offset.x + this.position.x,
-            y: this.map.offset.y + this.position.y,
+            x: this.gamebox.offset.x + this.position.x,
+            y: this.gamebox.offset.y + this.position.y,
         };
     }
 
