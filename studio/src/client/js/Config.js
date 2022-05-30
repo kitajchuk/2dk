@@ -2,7 +2,7 @@ const Config = {
     Editor: {
         modes: {
             SAVING: "saving",
-        }
+        },
     },
     EditorActions: {
         modes: {
@@ -11,14 +11,14 @@ const Config = {
             ERASE: "erase",
             SELECT: "select",
             ZOOM: "zoom",
-        }
+        },
     },
     EditorCanvas: {
         modes: {
             DRAG: "drag",
             DRAW: "draw",
             ERASE: "erase",
-        }
+        },
     },
     EditorLayers: {
         modes: {
@@ -26,7 +26,7 @@ const Config = {
             FOREGROUND: "foreground",
             COLLISION: "collision",
             NPC: "npc",
-        }
+        },
     },
     keys: {
         B: 66,

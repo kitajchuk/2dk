@@ -128,7 +128,7 @@ class EditorCanvas {
                     if ( !this.isSpacebar ) {
                         this.draggable.disable();
                     }
-                }
+                },
             }
 
         )[ 0 ];
@@ -196,7 +196,7 @@ class EditorCanvas {
             map: this.map,
             cash: false,
             width: this.map.width,
-            height: this.map.height
+            height: this.map.height,
         });
         // this.contexts.backgroundActiveTiles = new window.lib2dk.MapLayer({
         //     id: "background-active-tiles",
@@ -210,28 +210,28 @@ class EditorCanvas {
             map: this.map,
             cash: false,
             width: this.map.width,
-            height: this.map.height
+            height: this.map.height,
         });
         this.contexts.collision = new window.lib2dk.MapLayer({
             id: "collision",
             map: this.map,
             cash: false,
             width: this.map.width,
-            height: this.map.height
+            height: this.map.height,
         });
         this.contexts.selection = new window.lib2dk.MapLayer({
             id: "selection",
             map: this.map,
             cash: false,
             width: this.map.width,
-            height: this.map.height
+            height: this.map.height,
         });
         this.contexts.npc = new window.lib2dk.MapLayer({
             id: "npc",
             map: this.map,
             cash: false,
             width: this.map.width,
-            height: this.map.height
+            height: this.map.height,
         });
 
         this.contexts.background.canvas.style.width = `${this.map.width}px`;
@@ -290,11 +290,11 @@ class EditorCanvas {
         this.dom.$canvasPane.addClass( "is-loaded" );
 
         this.draggable.update({
-            applyBounds: true
+            applyBounds: true,
         });
 
         // Load the tileset
-        this.loader.loadImage( `./games/${this.editor.data.game.id}/${this.map.image}` ).then(( img ) => {
+        this.loader.loadImage( `./games/${this.editor.data.game.id}/${this.map.image}` ).then( ( img ) => {
             this.addTileset( img );
             this.addCanvas();
         });
@@ -309,7 +309,7 @@ class EditorCanvas {
                 if ( this.map.textures[ tiles.layer ][ y ][ x ] ) {
                     const len = this.map.textures[ tiles.layer ][ y ][ x ].length;
                     const topCel = this.map.textures[ tiles.layer ][ y ][ x ][ len - 1 ];
-    
+
                     if ( topCel[ 0 ] === tiles.offsetX && topCel[ 1 ] === tiles.offsetY ) {
                         coords.push( [ x, y ] );
                     }
@@ -373,8 +373,8 @@ class EditorCanvas {
     refreshTile ( layer, coords, tile ) {
         if ( tile.paintTile ) {
             this.contexts[ layer ].context.clearRect(
-                (coords[ 0 ] + tile.drawCoord[ 0 ]) * this.map.tilesize,
-                (coords[ 1 ] + tile.drawCoord[ 1 ]) * this.map.tilesize,
+                ( coords[ 0 ] + tile.drawCoord[ 0 ] ) * this.map.tilesize,
+                ( coords[ 1 ] + tile.drawCoord[ 1 ] ) * this.map.tilesize,
                 this.map.tilesize,
                 this.map.tilesize
             );
@@ -393,7 +393,7 @@ class EditorCanvas {
 
 
     refreshTiles ( layer, coords, coordMap ) {
-        coordMap.tiles.forEach(( tile ) => {
+        coordMap.tiles.forEach( ( tile ) => {
             if ( tile.paintTile ) {
                 this.refreshTile( layer, coords, tile );
             }
@@ -402,7 +402,7 @@ class EditorCanvas {
 
 
     drawColliders () {
-        this.map.collision.forEach(( collider ) => {
+        this.map.collision.forEach( ( collider ) => {
             renderTile(
                 this.contexts.collision.context,
                 collider[ 0 ] * this.map.collider,
@@ -417,8 +417,8 @@ class EditorCanvas {
 
 
     removeCollider ( coord ) {
-        const collider = this.map.collision.find(( collider ) => {
-            return (collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ]);
+        const collider = this.map.collision.find( ( collider ) => {
+            return ( collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ] );
         });
 
         if ( collider ) {
@@ -436,8 +436,8 @@ class EditorCanvas {
 
 
     applyCollider ( coord ) {
-        const collider = this.map.collision.find(( collider ) => {
-            return (collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ]);
+        const collider = this.map.collision.find( ( collider ) => {
+            return ( collider[ 0 ] === coord[ 0 ] && collider[ 1 ] === coord[ 1 ] );
         });
 
         if ( !collider ) {
@@ -537,7 +537,7 @@ class EditorCanvas {
 
 
     clearSelection () {
-        this.selectionCoords.forEach(( coord ) => {
+        this.selectionCoords.forEach( ( coord ) => {
             clearTile(
                 this.contexts.selection.context,
                 coord[ 0 ] * this.map.tilesize,
@@ -647,8 +647,8 @@ class EditorCanvas {
         }
 
         // Check for this Active Tiles group
-        const tiles = this.map.tiles.find(( obj ) => {
-            return (obj.group === data.group);
+        const tiles = this.map.tiles.find( ( obj ) => {
+            return ( obj.group === data.group );
         });
 
         if ( !tiles ) {
@@ -725,7 +725,7 @@ class EditorCanvas {
 
 
     clearTileset () {
-        this.tilesetCoords.forEach(( coord ) => {
+        this.tilesetCoords.forEach( ( coord ) => {
             clearTile(
                 this.canvases.tilepaint.getContext( "2d" ),
                 coord[ 0 ] * this.gridsize,
@@ -755,7 +755,7 @@ class EditorCanvas {
 
 
     getCoordMap () {
-        const sortedX = this.tilesetCoords.sort(( cA, cB ) => {
+        const sortedX = this.tilesetCoords.sort( ( cA, cB ) => {
             if ( cA[ 0 ] < cB[ 0 ] ) {
                 return -1;
 
@@ -765,7 +765,7 @@ class EditorCanvas {
         });
         const smallX = sortedX[ 0 ][ 0 ];
         const largeX = sortedX[ sortedX.length - 1 ][ 0 ];
-        const sortedY = this.tilesetCoords.sort(( cA, cB ) => {
+        const sortedY = this.tilesetCoords.sort( ( cA, cB ) => {
             if ( cA[ 1 ] < cB[ 1 ] ) {
                 return -1;
 
@@ -776,15 +776,15 @@ class EditorCanvas {
         const smallY = sortedY[ 0 ][ 1 ];
         const largeY = sortedY[ sortedY.length - 1 ][ 1 ];
         const coordMap = {
-            width: (largeX - smallX) + 1,
-            height: (largeY - smallY) + 1,
+            width: ( largeX - smallX ) + 1,
+            height: ( largeY - smallY ) + 1,
             tiles: [],
         };
 
         for ( let y = smallY; y <= largeY; y++ ) {
             for ( let x = smallX; x <= largeX; x++ ) {
-                const foundCoord = this.tilesetCoords.find(( coord ) => {
-                    return (coord[ 0 ] === x && coord[ 1 ] === y);
+                const foundCoord = this.tilesetCoords.find( ( coord ) => {
+                    return ( coord[ 0 ] === x && coord[ 1 ] === y );
                 });
 
                 coordMap.tiles.push({
@@ -851,16 +851,16 @@ class EditorCanvas {
         this.canvases.preview.style.width = `${width}px`;
         this.canvases.preview.style.height = `${height}px`;
 
-        coordMap.tiles.forEach(( tile ) => {
+        coordMap.tiles.forEach( ( tile ) => {
             if ( tile.paintTile ) {
                 ctx.drawImage(
                     this.dom.tileset,
-                    (tile.tileCoord[ 0 ] * this.map.tilesize),
-                    (tile.tileCoord[ 1 ] * this.map.tilesize),
+                    ( tile.tileCoord[ 0 ] * this.map.tilesize ),
+                    ( tile.tileCoord[ 1 ] * this.map.tilesize ),
                     this.map.tilesize,
                     this.map.tilesize,
-                    (tile.drawCoord[ 0 ] * this.map.tilesize),
-                    (tile.drawCoord[ 1 ] * this.map.tilesize),
+                    ( tile.drawCoord[ 0 ] * this.map.tilesize ),
+                    ( tile.drawCoord[ 1 ] * this.map.tilesize ),
                     this.map.tilesize,
                     this.map.tilesize
                 );
@@ -887,16 +887,16 @@ class EditorCanvas {
         this.canvases.cursor.style.width = `${width}px`;
         this.canvases.cursor.style.height = `${height}px`;
 
-        coordMap.tiles.forEach(( tile ) => {
+        coordMap.tiles.forEach( ( tile ) => {
             if ( tile.paintTile ) {
                 ctx.drawImage(
                     this.dom.tileset,
-                    (tile.tileCoord[ 0 ] * this.map.tilesize),
-                    (tile.tileCoord[ 1 ] * this.map.tilesize),
+                    ( tile.tileCoord[ 0 ] * this.map.tilesize ),
+                    ( tile.tileCoord[ 1 ] * this.map.tilesize ),
                     this.map.tilesize,
                     this.map.tilesize,
-                    (tile.drawCoord[ 0 ] * this.map.tilesize),
-                    (tile.drawCoord[ 1 ] * this.map.tilesize),
+                    ( tile.drawCoord[ 0 ] * this.map.tilesize ),
+                    ( tile.drawCoord[ 1 ] * this.map.tilesize ),
                     this.map.tilesize,
                     this.map.tilesize
                 );
@@ -921,14 +921,14 @@ class EditorCanvas {
     getMouseCoords ( e, grid ) {
         return [
             Math.floor( e.offsetX / grid ),
-            Math.floor( e.offsetY / grid )
+            Math.floor( e.offsetY / grid ),
         ];
     }
 
 
     getFoundCoords ( source, ref ) {
-        return source.find(( coord ) => {
-            return (coord[ 0 ] === ref[ 0 ] && coord[ 1 ] === ref[ 1 ]);
+        return source.find( ( coord ) => {
+            return ( coord[ 0 ] === ref[ 0 ] && coord[ 1 ] === ref[ 1 ] );
         });
     }
 
@@ -943,8 +943,8 @@ class EditorCanvas {
                 return;
             }
 
-            this.isSpacebar = (e.keyCode === Config.keys.SPACEBAR);
-            this.isEscape = (e.keyCode === Config.keys.ESCAPE);
+            this.isSpacebar = ( e.keyCode === Config.keys.SPACEBAR );
+            this.isEscape = ( e.keyCode === Config.keys.ESCAPE );
 
             if ( this.isEscape ) {
                 this.clearTileset();
@@ -955,7 +955,7 @@ class EditorCanvas {
                 this.editor.blurSelectMenus();
             }
 
-            if ( this.editor.mode !== Config.Editor.modes.SAVING && (this.isSpacebar && this.mode !== Config.EditorCanvas.modes.DRAG) ) {
+            if ( this.editor.mode !== Config.Editor.modes.SAVING && ( this.isSpacebar && this.mode !== Config.EditorCanvas.modes.DRAG ) ) {
                 e.preventDefault();
 
                 this.draggable.enable();
@@ -1067,7 +1067,7 @@ class EditorCanvas {
             if ( this.editor.canMapFunction() ) {
                 if ( this.canApplyTiles() ) {
                     const foundCoord = this.getFoundCoords( this.tilesetCoords, coords );
-                    const sameCoord = (coords[ 0 ] === this.currentTileCoord[ 0 ] && coords[ 1 ] === this.currentTileCoord[ 1 ]);
+                    const sameCoord = ( coords[ 0 ] === this.currentTileCoord[ 0 ] && coords[ 1 ] === this.currentTileCoord[ 1 ] );
 
                     if ( !foundCoord && !sameCoord ) {
                         this.applyTile( coords );
@@ -1259,7 +1259,7 @@ class EditorCanvas {
     canApplySelection () {
         return (
             this.editor.actions.mode === Config.EditorActions.modes.SELECT &&
-            (this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND)
+            ( this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND )
         );
     }
 
@@ -1267,10 +1267,10 @@ class EditorCanvas {
     canApplyLayer () {
         return (
             this.tilesetCoords.length &&
-            (this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND)
+            ( this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND )
         ) || (
             this.editor.actions.mode === Config.EditorActions.modes.ERASE &&
-            (this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND)
+            ( this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND )
         );
     }
 

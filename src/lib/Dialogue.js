@@ -52,10 +52,10 @@ class Dialogue {
         this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
         this.element.classList.add( "is-texting" );
         this.write( this.data.text.shift() );
-        this.timeout = setTimeout(() => {
+        this.timeout = setTimeout( () => {
             this.teardown();
 
-        }, (this.debounce * 3) );
+        }, ( this.debounce * 3 ) );
     }
 
 
@@ -66,7 +66,7 @@ class Dialogue {
 
         this.active = true;
 
-        return new Promise(( resolve, reject ) => {
+        return new Promise( ( resolve, reject ) => {
             this.data = Utils.copy( data );
             this.isResolve = true;
             this.resolve = resolve;
@@ -74,7 +74,7 @@ class Dialogue {
             this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
             this.element.classList.add( "is-texting" );
             this.write( this.data.text.shift() );
-            this.timeout = setTimeout(() => {
+            this.timeout = setTimeout( () => {
                 this.ready = true;
 
             }, this.debounce );
@@ -85,7 +85,7 @@ class Dialogue {
     check ( a, b ) {
         // Inactive dialogue: No ones talking...
         // Active dialogue: Button was press to advance...
-        if ( !this.active || !this.ready || (this.active && this.pressed) ) {
+        if ( !this.active || !this.ready || ( this.active && this.pressed ) ) {
             return;
         }
 
@@ -95,7 +95,7 @@ class Dialogue {
         if ( this.data.type === "text" ) {
             if ( this.data.text.length ) {
                 this.write( this.data.text.shift() );
-                this.timeout = setTimeout(() => {
+                this.timeout = setTimeout( () => {
                     this.pressed = false;
 
                 }, this.debounce );
@@ -126,7 +126,7 @@ class Dialogue {
                 }
 
                 this.write( text.join( "<br />" ) );
-                this.timeout = setTimeout(() => {
+                this.timeout = setTimeout( () => {
                     this.pressed = false;
 
                 }, this.debounce );
@@ -136,7 +136,7 @@ class Dialogue {
                 this.isResolve = true;
                 this.data.type = "text";
                 this.data.text = this.data.yes.text;
-                this.timeout = setTimeout(() => {
+                this.timeout = setTimeout( () => {
                     this.pressed = false;
                     this.check( true, false );
 
@@ -147,7 +147,7 @@ class Dialogue {
                 this.isResolve = false;
                 this.data.type = "text";
                 this.data.text = this.data.no.text;
-                this.timeout = setTimeout(() => {
+                this.timeout = setTimeout( () => {
                     this.pressed = false;
                     this.check( false, true );
 
@@ -165,8 +165,8 @@ class Dialogue {
         this.pressed = false;
         this.isResolve = false;
         this.resolve = null;
-        this.reject = null; 
-        this.timeout = setTimeout(() => {
+        this.reject = null;
+        this.timeout = setTimeout( () => {
             this.clear();
             this.active = false;
             this.timeout = null;

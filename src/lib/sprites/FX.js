@@ -32,7 +32,7 @@ class FX extends Sprite {
 
     getCel () {
         return [
-            Math.abs( this.data.offsetX ) + (this.data.width * this.frame),
+            Math.abs( this.data.offsetX ) + ( this.data.width * this.frame ),
             Math.abs( this.data.offsetY ),
         ];
     }
@@ -42,9 +42,9 @@ class FX extends Sprite {
         this.frame = 0;
 
         if ( this.data.stepsX ) {
-            const diff = (elapsed - this.previousElapsed);
+            const diff = ( elapsed - this.previousElapsed );
 
-            this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
+            this.frame = Math.floor( ( diff / this.data.dur ) * this.data.stepsX );
 
             if ( diff >= this.data.dur ) {
                 if ( this.data.kill ) {

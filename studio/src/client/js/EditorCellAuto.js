@@ -26,20 +26,20 @@ class EditorCellAuto {
         this.registerType( "ground", 1 );
         this.registerType( "flower", 2 );
         this.registerType( "bush", 3 );
-        this.world.initialize([
+        this.world.initialize( [
             {
                 name: "ground",
-                distribution: 96
+                distribution: 96,
             },
             {
                 name: "flower",
-                distribution: 2
+                distribution: 2,
             },
             {
                 name: "bush",
-                distribution: 2
-            }
-        ]);
+                distribution: 2,
+            },
+        ] );
 
         return this;
     }
@@ -64,7 +64,7 @@ class EditorCellAuto {
 
 
     generate () {
-        return new Promise(( resolve ) => {
+        return new Promise( ( resolve ) => {
             const tiles = [];
             const cycle = () => {
                 this.rafId = raf( cycle );
@@ -130,7 +130,7 @@ class EditorCellAuto {
 
             reset: function () {
                 this.wasAlive = this.alive;
-            }
+            },
 
         }, function () {
             this.alive = Math.random() > 0.5;

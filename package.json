@@ -36,8 +36,8 @@
     "build:app": "webpack --config ./configs/webpack.config.app.js",
     "build:studio": "node-sass --output-style 'compressed' ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
     "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src",
-    "lint": "eslint 'src/**/*.js' 'configs/**/*.js' --max-warnings 100",
-    "test": "jest --detectOpenHandles"
+    "lint:src": "eslint 'src/**/*.js' 'configs/**/*.js' --max-warnings 100",
+    "lint:studio": "eslint 'studio/src/client/**/*.js' 'studio/src/server/**/*.js' --max-warnings 100"
   },
   "dependencies": {},
   "devDependencies": {
@@ -67,7 +67,8 @@
     "webpack-dev-server": "^4.7.4"
   },
   "lint-staged": {
-    "src/**/*.js": "yarn lint"
+    "src/**/*.js": "yarn lint:src",
+    "studio/src/**/*.js": "yarn lint:studio"
   },
   "jest": {
     "displayName": "2dk",
@@ -83,6 +84,12 @@
   },
   "eslintConfig": {
     "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "babelOptions": {
+        "ignore": ["./studio"]
+      },
+      "ecmaFeatures": {}
+    },
     "settings": {},
     "env": {
       "browser": true,
@@ -94,16 +101,29 @@
       "jsdoc"
     ],
     "extends": [
-      "eslint:recommended",
-      "plugin:jsdoc/recommended"
+      "eslint:recommended"
     ],
-    "parserOptions": {
-      "ecmaFeatures": {}
-    },
     "ignorePatterns": [
+      "vendor",
       "node_modules"
     ],
-    "rules": {}
+    "rules": {
+      "quotes": ["error", "double"],
+      "space-in-parens": ["error", "always", { "exceptions": ["{}"] }],
+      "space-before-function-paren": ["error", "always"],
+      "arrow-parens": ["error", "always"],
+      "max-len": ["error", { "code": 160 }],
+      "no-trailing-spaces": ["error", { "ignoreComments": true }],
+      "space-infix-ops": "error",
+      "space-unary-ops": "error",
+      "comma-dangle": ["error", {
+        "functions": "never",
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline"
+      }]
+    }
   },
   "babel": {
     "presets": [

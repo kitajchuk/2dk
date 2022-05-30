@@ -49,22 +49,22 @@ class Spring {
 
         const timeSinceLastFrame = elapsed - this.previousElapsed;
         const timeStep = timeSinceLastFrame / 1000;
-        
+
         this.previousElapsed = elapsed;
         this.isResting = false;
-        
-        const springX = -this.stiffness * (this.position.x - this.poi.x);
+
+        const springX = -this.stiffness * ( this.position.x - this.poi.x );
         const damperX = -this.damping * this.velocity.x;
-        const accelerationX = (springX + damperX) / this.mass;
+        const accelerationX = ( springX + damperX ) / this.mass;
 
-        const springY = -this.stiffness * (this.position.y - this.poi.y);
+        const springY = -this.stiffness * ( this.position.y - this.poi.y );
         const damperY = -this.damping * this.velocity.y;
-        const accelerationY = (springY + damperY) / this.mass;
+        const accelerationY = ( springY + damperY ) / this.mass;
 
-        this.velocity.x += (accelerationX * timeStep);
-        this.velocity.y += (accelerationY * timeStep);
-        this.position.x += (this.velocity.x * timeStep);
-        this.position.y += (this.velocity.y * timeStep);
+        this.velocity.x += ( accelerationX * timeStep );
+        this.velocity.y += ( accelerationY * timeStep );
+        this.position.x += ( this.velocity.x * timeStep );
+        this.position.y += ( this.velocity.y * timeStep );
 
         if ( this.sprite ) {
             this.sprite.position.x = this.position.x;

@@ -34,9 +34,9 @@ class ActiveTiles {
         this.frame = 0;
 
         if ( this.data.stepsX ) {
-            const diff = (elapsed - this.previousElapsed);
+            const diff = ( elapsed - this.previousElapsed );
 
-            this.frame = Math.floor( (diff / this.data.dur) * this.data.stepsX );
+            this.frame = Math.floor( ( diff / this.data.dur ) * this.data.stepsX );
 
             if ( diff >= this.data.dur ) {
                 this.previousElapsed = elapsed;
@@ -48,7 +48,7 @@ class ActiveTiles {
 
     getTile () {
         return [
-            (this.data.offsetX + (this.frame * this.map.data.tilesize)),
+            ( this.data.offsetX + ( this.frame * this.map.data.tilesize ) ),
             this.data.offsetY,
         ];
     }
@@ -165,29 +165,29 @@ class Map {
         this.npcs = [];
         this.offset = {
             x: 0,
-            y: 0
+            y: 0,
         };
         this.build();
     }
 
 
     destroy () {
-        Object.keys( this.layers ).forEach(( id ) => {
+        Object.keys( this.layers ).forEach( ( id ) => {
             this.layers[ id ].offCanvas.destroy();
         });
         this.layers = null;
 
-        this.activeTiles.forEach(( activeTiles ) => {
+        this.activeTiles.forEach( ( activeTiles ) => {
             activeTiles.destroy();
         });
         this.activeTiles = null;
 
-        this.npcs.forEach(( npc ) => {
+        this.npcs.forEach( ( npc ) => {
             npc.destroy();
         });
         this.npcs = null;
 
-        this.fx.forEach(( fx ) => {
+        this.fx.forEach( ( fx ) => {
             fx.destroy();
         });
         this.fx = null;
@@ -198,30 +198,30 @@ class Map {
 
     build () {
         // Render layers
-        Object.keys( this.layers ).forEach(( id ) => {
+        Object.keys( this.layers ).forEach( ( id ) => {
             this.addLayer( id );
         });
 
         // FX
-        this.data.fx.forEach(( data ) => {
+        this.data.fx.forEach( ( data ) => {
             this.fx.push( new FX( this.gamebox.player.getMergedData( data, "fx", true ), this ) );
         });
 
         // NPCs
-        this.data.npcs.forEach(( data ) => {
+        this.data.npcs.forEach( ( data ) => {
             this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
         });
 
         // Tiles
-        this.data.tiles.forEach(( data ) => {
+        this.data.tiles.forEach( ( data ) => {
             this.activeTiles.push( new ActiveTiles( data, this ) );
         });
     }
 
 
     addLayer ( id ) {
-        const offWidth = this.gamebox.camera.width + (this.data.tilesize * 2);
-        const offHeight = this.gamebox.camera.height + (this.data.tilesize * 2);
+        const offWidth = this.gamebox.camera.width + ( this.data.tilesize * 2 );
+        const offHeight = this.gamebox.camera.height + ( this.data.tilesize * 2 );
 
         this.layers[ id ] = {};
         this.layers[ id ].offCanvas = new MapLayer({
@@ -241,15 +241,15 @@ class Map {
 * Map data order is: tiles, objects, hero, npcs, fx
 *******************************************************************************/
     blit ( elapsed ) {
-        this.activeTiles.forEach(( activeTiles ) => {
+        this.activeTiles.forEach( ( activeTiles ) => {
             activeTiles.blit( elapsed );
         });
 
-        this.npcs.forEach(( npc ) => {
+        this.npcs.forEach( ( npc ) => {
             npc.blit( elapsed );
         });
 
-        this.fx.forEach(( fx ) => {
+        this.fx.forEach( ( fx ) => {
             fx.blit( elapsed );
         });
     }
@@ -258,11 +258,11 @@ class Map {
     update ( offset ) {
         this.offset = offset;
 
-        this.npcs.forEach(( npc ) => {
+        this.npcs.forEach( ( npc ) => {
             npc.update();
         });
 
-        this.fx.forEach(( fx ) => {
+        this.fx.forEach( ( fx ) => {
             fx.update();
         });
     }
@@ -275,10 +275,10 @@ class Map {
         this.renderBox = this.getRenderbox( camera );
 
         // Separate background / foreground NPCs
-        const npcsBg = this.npcs.filter(( npc ) => {
+        const npcsBg = this.npcs.filter( ( npc ) => {
             return npc.data.type !== Config.npc.FLOAT && npc.layer === "background";
         });
-        const npcsFg = this.npcs.filter(( npc ) => {
+        const npcsFg = this.npcs.filter( ( npc ) => {
             return npc.data.type === Config.npc.FLOAT || npc.layer === "foreground";
         });
 
@@ -286,7 +286,7 @@ class Map {
         this.renderTextures( "background" );
 
         // Draw NPCs to background
-        npcsBg.forEach(( npc ) => {
+        npcsBg.forEach( ( npc ) => {
             npc.render();
         });
 
@@ -295,29 +295,29 @@ class Map {
 
         // Draw NPCs to foreground
         // Float NPCs are included always
-        npcsFg.forEach(( npc ) => {
+        npcsFg.forEach( ( npc ) => {
             npc.render();
         });
 
         // Draw FX
         // This is the topmost layer so we can do cool stuff...
-        this.fx.forEach(( fx ) => {
+        this.fx.forEach( ( fx ) => {
             fx.render();
         });
 
         // Visual event debugging....
         if ( this.gamebox.player.query.debug ) {
-            this.data.events.forEach(( event ) => {
+            this.data.events.forEach( ( event ) => {
                 this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
                 this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.blue;
                 this.gamebox.layers.foreground.onCanvas.context.fillRect(
-                    this.offset.x + (event.coords[ 0 ] * this.data.tilesize),
-                    this.offset.y + (event.coords[ 1 ] * this.data.tilesize),
+                    this.offset.x + ( event.coords[ 0 ] * this.data.tilesize ),
+                    this.offset.y + ( event.coords[ 1 ] * this.data.tilesize ),
                     this.data.tilesize,
                     this.data.tilesize
                 );
             });
-    
+
             this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
         }
     }
@@ -349,7 +349,7 @@ class Map {
 
 
     clear () {
-        Object.keys( this.layers ).forEach(( id ) => {
+        Object.keys( this.layers ).forEach( ( id ) => {
             this.layers[ id ].offCanvas.clear();
         });
     }
@@ -359,8 +359,8 @@ class Map {
         const renderBox = {
             x: Math.floor( camera.x / this.data.tilesize ) - 1,
             y: Math.floor( camera.y / this.data.tilesize ) - 1,
-            width: camera.width + (this.data.tilesize * 2),
-            height: camera.height + (this.data.tilesize * 2),
+            width: camera.width + ( this.data.tilesize * 2 ),
+            height: camera.height + ( this.data.tilesize * 2 ),
             bleed: {},
             textures: {},
         };
@@ -374,18 +374,18 @@ class Map {
 
     getBleed ( renderBox, camera ) {
         return {
-            x: -(camera.x - (renderBox.x * this.data.tilesize)),
-            y: -(camera.y - (renderBox.y * this.data.tilesize)),
+            x: -( camera.x - ( renderBox.x * this.data.tilesize ) ),
+            y: -( camera.y - ( renderBox.y * this.data.tilesize ) ),
         };
     }
 
 
     getTextures ( renderBox ) {
-        const height = (renderBox.height / this.data.tilesize);
-        const width = (renderBox.width / this.data.tilesize);
+        const height = ( renderBox.height / this.data.tilesize );
+        const width = ( renderBox.width / this.data.tilesize );
         const ret = {};
 
-        Object.keys( this.data.textures ).forEach(( id ) => {
+        Object.keys( this.data.textures ).forEach( ( id ) => {
             let y = 0;
 
             ret[ id ] = [];
@@ -407,7 +407,7 @@ class Map {
 
                             // Render the textures
                             // Shift foreground behind hero render if coords determine so
-                            if ( id === "foreground" && (lookupY * this.data.tilesize) < this.gamebox.hero.position.y ) {
+                            if ( id === "foreground" && ( lookupY * this.data.tilesize ) < this.gamebox.hero.position.y ) {
                                 ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
 
                             } else {
@@ -443,13 +443,13 @@ class Map {
 
 
     getActiveTiles ( group ) {
-        return this.activeTiles.find( ( activeTiles ) => (activeTiles.data.group === group) );
+        return this.activeTiles.find( ( activeTiles ) => ( activeTiles.data.group === group ) );
     }
 
 
     getActiveTile ( layer, celsCoords, celsCopy ) {
         // Either return a tile or don't if it's a static thing...
-        const layerTiles = this.data.tiles.filter(( tiles ) => {
+        const layerTiles = this.data.tiles.filter( ( tiles ) => {
             return tiles.layer === layer;
         });
 
@@ -476,8 +476,12 @@ class Map {
 
             if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
                 // Check if tile is pushed...
-                const isTilePushed = tiles.coords.find( ( coord ) => (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]) );
-                const isTileSpliced = this.getActiveTiles( tiles.group ).spliced.find( ( coord ) => (coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ]) );
+                const isTilePushed = tiles.coords.find( ( coord ) => {
+                    return ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] );
+                });
+                const isTileSpliced = this.getActiveTiles( tiles.group ).spliced.find( ( coord ) => {
+                    return ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] );
+                });
 
                 // Push the tile to the coords Array...
                 // This lets us generate ActiveTile groups that will

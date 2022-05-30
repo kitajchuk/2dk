@@ -35,7 +35,7 @@ class Player extends Controller {
     detect () {
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_tablet_or_desktop
         this.device = /Mobi/i.test( window.navigator.userAgent );
-        this.installed = (window.navigator.standalone || window.matchMedia( "(display-mode: standalone)" ).matches);
+        this.installed = ( window.navigator.standalone || window.matchMedia( "(display-mode: standalone)" ).matches );
     }
 
 
@@ -58,11 +58,11 @@ class Player extends Controller {
 
     load () {
         this.loader = new Loader();
-        this.loader.loadJson( "game.json" ).then(( data ) => {
+        this.loader.loadJson( "game.json" ).then( ( data ) => {
             this.data = data;
             this.data.hero = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
             this.debug();
-            this.data.resolution = (this.device ? 2 : this.data.resolution);
+            this.data.resolution = ( this.device ? 2 : this.data.resolution );
             this.width = this.data.width / this.data.resolution;
             this.height = this.data.height / this.data.resolution;
             this.build();
@@ -71,21 +71,21 @@ class Player extends Controller {
             let counter = 0;
 
             // Audio is still experimental for mobile so disabling for now...
-            const resources = data.bundle.filter(( url ) => {
+            const resources = data.bundle.filter( ( url ) => {
                 const type = url.split( "/" ).pop().split( "." ).pop();
 
-                return (this.device ? (type !== "mp3") : true);
-            
+                return ( this.device ? ( type !== "mp3" ) : true );
+
             // Map bundle resource URLs to a Loader promise types for initialization...
-            }).map(( url ) => {
-                return this.loader.load( url ).then(() => {
+            }).map( ( url ) => {
+                return this.loader.load( url ).then( () => {
                     counter++;
 
                     this.splashLoad.innerHTML = this.getSplash( `Loaded ${counter} of ${resources.length} game resources...` );
                 });
             });
 
-            Promise.all( resources ).then(() => {
+            Promise.all( resources ).then( () => {
                 this.splashLoad.innerHTML = this.getSplash( "Press Start" );
                 this.gameaudio = new GameAudio( this );
                 this.gamepad = new GamePad( this );
@@ -111,15 +111,15 @@ class Player extends Controller {
 
 
     getMergedData ( data, type, force = false ) {
-        return Utils.merge(this.data[ type ].find(( obj ) => {
-            return (obj.id === data.id);
+        return Utils.merge( this.data[ type ].find( ( obj ) => {
+            return ( obj.id === data.id );
 
         }), data, force );
     }
 
 
     getOrientation () {
-        return (("orientation" in window) ? window.orientation : window.screen.orientation.angle);
+        return ( ( "orientation" in window ) ? window.orientation : window.screen.orientation.angle );
     }
 
 
@@ -252,8 +252,8 @@ class Player extends Controller {
                 );
 
             } else {
-                dpad.forEach(( ctrl ) => {
-                    ctrl.dpad.forEach(( dir ) => {
+                dpad.forEach( ( ctrl ) => {
+                    ctrl.dpad.forEach( ( dir ) => {
                         this.gamebox.pressD( dir );
                     });
                 });

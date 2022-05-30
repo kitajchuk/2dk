@@ -188,5 +188,5 @@ module.exports = {
     removeFile,
     removeDir,
     copyFile,
-    copyObj
+    copyObj,
 };

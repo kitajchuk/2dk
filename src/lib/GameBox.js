@@ -85,7 +85,7 @@ class GameBox {
         initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
         this.hero = new Hero( initHeroData, this.map );
 
-        Object.keys( initHeroData.sounds ).forEach(( id ) => {
+        Object.keys( initHeroData.sounds ).forEach( ( id ) => {
             this.player.gameaudio.addSound({
                 id,
                 src: initHeroData.sounds[ id ],
@@ -113,7 +113,7 @@ class GameBox {
 
 
     clear () {
-        Object.keys( this.layers ).forEach(( id ) => {
+        Object.keys( this.layers ).forEach( ( id ) => {
             this.layers[ id ].onCanvas.clear();
         });
     }
@@ -124,7 +124,7 @@ class GameBox {
         this.element.className = "_2dk__gamebox";
 
         // Render layers
-        Object.keys( this.layers ).forEach(( id ) => {
+        Object.keys( this.layers ).forEach( ( id ) => {
             this.addLayer( id );
         });
 
@@ -168,7 +168,7 @@ class GameBox {
             channel: "bgm",
         });
         this.dialogue.auto({
-            text: [this.map.data.name]
+            text: [this.map.data.name],
         });
     }
 
@@ -205,48 +205,48 @@ Can all be handled in plugin GameBox
             id: "smoke",
             kill: true,
             spawn: {
-                x: obj.position.x + (obj.width / 2) - (this.map.data.tilesize / 2),
-                y: obj.position.y + (obj.height / 2) - (this.map.data.tilesize / 2),
+                x: obj.position.x + ( obj.width / 2 ) - ( this.map.data.tilesize / 2 ),
+                y: obj.position.y + ( obj.height / 2 ) - ( this.map.data.tilesize / 2 ),
             },
         }, "fx" );
 
         this.map.addFX( new FX( data, this.map ) );
         this.map.addFX( new FX( Utils.merge( data, {
             spawn: {
-                x: origin.x - (this.map.data.tilesize / 4),
-                y: origin.y - (this.map.data.tilesize / 4),
+                x: origin.x - ( this.map.data.tilesize / 4 ),
+                y: origin.y - ( this.map.data.tilesize / 4 ),
             },
             vx: -8,
             vy: -8,
 
-        }), this.map ));
+        }), this.map ) );
         this.map.addFX( new FX( Utils.merge( data, {
             spawn: {
-                x: origin.x + (this.map.data.tilesize / 4),
-                y: origin.y - (this.map.data.tilesize / 4),
+                x: origin.x + ( this.map.data.tilesize / 4 ),
+                y: origin.y - ( this.map.data.tilesize / 4 ),
             },
             vx: 8,
             vy: -8,
 
-        }), this.map ));
+        }), this.map ) );
         this.map.addFX( new FX( Utils.merge( data, {
             spawn: {
-                x: origin.x - (this.map.data.tilesize / 4),
-                y: origin.y + (this.map.data.tilesize / 4),
+                x: origin.x - ( this.map.data.tilesize / 4 ),
+                y: origin.y + ( this.map.data.tilesize / 4 ),
             },
             vx: -8,
             vy: 8,
 
-        }), this.map ));
+        }), this.map ) );
         this.map.addFX( new FX( Utils.merge( data, {
             spawn: {
-                x: origin.x + (this.map.data.tilesize / 4),
-                y: origin.y + (this.map.data.tilesize / 4),
+                x: origin.x + ( this.map.data.tilesize / 4 ),
+                y: origin.y + ( this.map.data.tilesize / 4 ),
             },
             vx: 8,
             vy: 8,
 
-        }), this.map ));
+        }), this.map ) );
     }
 
 
@@ -254,7 +254,7 @@ Can all be handled in plugin GameBox
 * Collision checks
 * Can all be handled in plugin GameBox
 *******************************************************************************/
-    getVisibleColliders() {
+    getVisibleColliders () {
         const colliders = [];
 
         for ( let i = this.map.data.collision.length; i--; ) {
@@ -274,7 +274,7 @@ Can all be handled in plugin GameBox
     }
 
 
-    getVisibleEvents() {
+    getVisibleEvents () {
         const events = [];
 
         for ( let i = this.map.data.events.length; i--; ) {
@@ -294,7 +294,7 @@ Can all be handled in plugin GameBox
     }
 
 
-    getVisibleNPCs() {
+    getVisibleNPCs () {
         const npcs = [];
 
         for ( let i = this.map.npcs.length; i--; ) {
@@ -314,7 +314,7 @@ Can all be handled in plugin GameBox
     }
 
 
-    getVisibleActiveTiles() {
+    getVisibleActiveTiles () {
         const activeTiles = [];
 
         for ( let i = this.map.activeTiles.length; i--; ) {
@@ -325,7 +325,7 @@ Can all be handled in plugin GameBox
                     x: this.map.activeTiles[ i ].data.coords[ j ][ 0 ] * this.map.data.tilesize,
                     y: this.map.activeTiles[ i ].data.coords[ j ][ 1 ] * this.map.data.tilesize,
                 });
-                
+
                 if ( collides && activeTiles.indexOf( this.map.activeTiles[ i ] ) === -1 ) {
                     activeTiles.push( this.map.activeTiles[ i ] );
                 }
@@ -339,11 +339,11 @@ Can all be handled in plugin GameBox
     checkCamera ( poi, sprite ) {
         let ret = false;
 
-        if ( poi.x <= this.camera.x || poi.x >= (this.camera.x + this.camera.width - sprite.width) ) {
+        if ( poi.x <= this.camera.x || poi.x >= ( this.camera.x + this.camera.width - sprite.width ) ) {
             ret = true;
         }
 
-        if ( poi.y <= this.camera.y || poi.y >= (this.camera.y + this.camera.height - sprite.height) ) {
+        if ( poi.y <= this.camera.y || poi.y >= ( this.camera.y + this.camera.height - sprite.height ) ) {
             ret = true;
         }
 
@@ -363,7 +363,7 @@ Can all be handled in plugin GameBox
     }
 
 
-    checkMap( poi, sprite ) {
+    checkMap ( poi, sprite ) {
         const hitbox = sprite.getHitbox( poi );
         const colliders = this.getVisibleColliders();
 
@@ -385,7 +385,7 @@ Can all be handled in plugin GameBox
     }
 
 
-    checkEvents( poi, sprite ) {
+    checkEvents ( poi, sprite ) {
         const events = this.getVisibleEvents();
 
         for ( let i = events.length; i--; ) {
@@ -393,20 +393,20 @@ Can all be handled in plugin GameBox
                 width: this.map.data.tilesize,
                 height: this.map.data.tilesize,
                 x: events[ i ].coords[ 0 ] * this.map.data.tilesize,
-                y: events[ i ].coords[ 1 ] * this.map.data.tilesize
+                y: events[ i ].coords[ 1 ] * this.map.data.tilesize,
             };
             const hasDir = events[ i ].dir;
             const isBoundary = events[ i ].type === Config.events.BOUNDARY;
-            const lookbox = (isBoundary ? {
+            const lookbox = ( isBoundary ? {
                 ...sprite.position,
                 width: sprite.width,
                 height: sprite.height,
 
-            } : sprite.hitbox);
+            } : sprite.hitbox );
             const collides = Utils.collide( lookbox, tile );
-            const amount = (collides.width * collides.height) / (tile.width * tile.height) * 100
-            const isDir = hasDir ? (sprite.dir === hasDir) : true;
-            const isThresh = isBoundary ? (amount >= 50) : (amount >= 20);
+            const amount = ( collides.width * collides.height ) / ( tile.width * tile.height ) * 100
+            const isDir = hasDir ? ( sprite.dir === hasDir ) : true;
+            const isThresh = isBoundary ? ( amount >= 50 ) : ( amount >= 20 );
 
             // An event without a "dir" can be triggered from any direction
             if ( collides && isThresh && isDir ) {
@@ -448,8 +448,8 @@ Can all be handled in plugin GameBox
             const instance = activeTiles[ i ];
             let lookbox;
 
-            if ( (typeof sprite.getFootbox === "function") && (typeof sprite.getHitbox === "function") ) {
-                lookbox = (footTiles.indexOf( instance.data.group ) !== -1) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
+            if ( ( typeof sprite.getFootbox === "function" ) && ( typeof sprite.getHitbox === "function" ) ) {
+                lookbox = ( footTiles.indexOf( instance.data.group ) !== -1 ) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
 
             // Ad-hoc "sprite" object with { x, y, width, height }
             } else {
@@ -467,15 +467,15 @@ Can all be handled in plugin GameBox
 
                 if ( collides ) {
                     // Utils.collides returns a useful collider object...
-                    const amount = (collides.width * collides.height) / (this.map.data.tilesize * this.map.data.tilesize) * 100;
+                    const amount = ( collides.width * collides.height ) / ( this.map.data.tilesize * this.map.data.tilesize ) * 100;
                     const match = {
-                        jump: (instance.data.action && instance.data.action.verb === Config.verbs.JUMP),
-                        stop: (instance.data.action && stopVerbs.indexOf( instance.data.action.verb ) !== -1),
+                        jump: ( instance.data.action && instance.data.action.verb === Config.verbs.JUMP ),
+                        stop: ( instance.data.action && stopVerbs.indexOf( instance.data.action.verb ) !== -1 ),
                         group: instance.data.group,
                         coord: instance.data.coords[ j ],
-                        action: (instance.data.action && actionVerbs.indexOf( instance.data.action.verb ) !== -1),
-                        attack: (instance.data.attack && attackVerbs.indexOf( instance.data.attack.verb ) !== -1),
-                        camera: (cameraTiles.indexOf( instance.data.group ) !== -1),
+                        action: ( instance.data.action && actionVerbs.indexOf( instance.data.action.verb ) !== -1 ),
+                        attack: ( instance.data.attack && attackVerbs.indexOf( instance.data.attack.verb ) !== -1 ),
+                        camera: ( cameraTiles.indexOf( instance.data.group ) !== -1 ),
                         amount,
                         tilebox,
                         collides,
@@ -490,7 +490,7 @@ Can all be handled in plugin GameBox
                         tiles.attack.push( match );
                     }
 
-                    if ( (!instance.data.action && !instance.data.attack) || (instance.data.attack && match.camera) ) {
+                    if ( ( !instance.data.action && !instance.data.attack ) || ( instance.data.attack && match.camera ) ) {
                         tiles.passive.push( match );
                     }
                 }

@@ -71,7 +71,7 @@ class Cache {
      *
      */
     get ( key ) {
-        return (key ? cache[ this.key ][ Cache.slugify( key ) ] : cache[ this.key ]);
+        return ( key ? cache[ this.key ][ Cache.slugify( key ) ] : cache[ this.key ] );
     }
 
     /**

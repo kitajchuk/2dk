@@ -32,7 +32,7 @@ const Utils = {
         base = Utils.copy( base );
         pr = Utils.copy( pr );
 
-        Object.keys( pr ).forEach(( i ) => {
+        Object.keys( pr ).forEach( ( i ) => {
             if ( !base[ i ] || f ) {
                 base[ i ] = pr[ i ];
             }
@@ -45,16 +45,16 @@ const Utils = {
     collide ( box1, box2 ) {
         let ret = false;
 
-        if ( box1.x < (box2.x + box2.width) && (box1.x + box1.width) > box2.x && box1.y < (box2.y + box2.height) && (box1.height + box1.y) > box2.y ) {
+        if ( box1.x < ( box2.x + box2.width ) && ( box1.x + box1.width ) > box2.x && box1.y < ( box2.y + box2.height ) && ( box1.height + box1.y ) > box2.y ) {
             ret = {
                 // box1.x1 snapped to ZERO
-                x: Math.max( 0, (box1.x - box2.x) ),
+                x: Math.max( 0, ( box1.x - box2.x ) ),
                 // box1.y1 snapped to ZERO
-                y: Math.max( 0, (box1.y - box2.y) ),
+                y: Math.max( 0, ( box1.y - box2.y ) ),
                 // box1.x2 snapped to BOX2.WIDTH
-                width: (Math.min( box2.width, ((box1.x - box2.x) + box1.width) )) - (Math.max( 0, (box1.x - box2.x) )),
+                width: ( Math.min( box2.width, ( ( box1.x - box2.x ) + box1.width ) ) ) - ( Math.max( 0, ( box1.x - box2.x ) ) ),
                 // box1.y2 snapped to BOX2.HEIGHT
-                height: (Math.min( box2.height, ((box1.y - box2.y) + box1.height) )) - (Math.max( 0, (box1.y - box2.y) )),
+                height: ( Math.min( box2.height, ( ( box1.y - box2.y ) + box1.height ) ) ) - ( Math.max( 0, ( box1.y - box2.y ) ) ),
             };
         }
 
@@ -82,8 +82,8 @@ const Utils = {
             my,
             tileSize,
             tileSize,
-            (px * gridSize),
-            (py * gridSize),
+            ( px * gridSize ),
+            ( py * gridSize ),
             gridSize,
             gridSize
         );
@@ -109,8 +109,8 @@ const Utils = {
         // Position has no tile: 0
         } else {
             context.clearRect(
-                (x * gridSize),
-                (y * gridSize),
+                ( x * gridSize ),
+                ( y * gridSize ),
                 gridSize,
                 gridSize
             );
@@ -136,12 +136,12 @@ const Utils = {
 
         for ( let y = 1; y < h; y++ ) {
             ctx.fillStyle = Config.colors.teal;
-            ctx.fillRect( 0, (y * g), (g * w), 1 );
+            ctx.fillRect( 0, ( y * g ), ( g * w ), 1 );
         }
 
         for ( let x = 1; x < w; x++ ) {
             ctx.fillStyle = Config.colors.teal;
-            ctx.fillRect( (x * g), 0, 1, (g * h) );
+            ctx.fillRect( ( x * g ), 0, 1, ( g * h ) );
         }
     },
 
@@ -203,7 +203,7 @@ const Utils = {
 
     // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L122
     goToZero ( v ) {
-        return (v ? v - (v / Math.abs( v )) : 0);
+        return ( v ? v - ( v / Math.abs( v ) ) : 0 );
     },
 
 

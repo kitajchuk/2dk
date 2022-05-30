@@ -47,7 +47,7 @@ class TopView extends GameBox {
 
         // blit hero
         this.hero.blit( elapsed );
-        
+
         // blit companion
         if ( this.companion ) {
             this.companion.blit( elapsed );
@@ -84,7 +84,7 @@ class TopView extends GameBox {
         this.hero.render();
 
         // render companion infront of hero?
-        if ( this.companion && (this.companion.data.type !== Config.npc.FLOAT && this.companion.hitbox.y > this.hero.hitbox.y) ) {
+        if ( this.companion && ( this.companion.data.type !== Config.npc.FLOAT && this.companion.hitbox.y > this.hero.hitbox.y ) ) {
             this.companion.render();
         }
 
@@ -99,28 +99,28 @@ class TopView extends GameBox {
 
 
     update () {
-        const x = ( this.hero.position.x - ((this.camera.width / 2) - (this.hero.width / 2)) );
-        const y = ( this.hero.position.y - ((this.camera.height / 2) - (this.hero.height / 2)) );
+        const x = ( this.hero.position.x - ( ( this.camera.width / 2 ) - ( this.hero.width / 2 ) ) );
+        const y = ( this.hero.position.y - ( ( this.camera.height / 2 ) - ( this.hero.height / 2 ) ) );
         const offset = {};
 
-        if ( x >= 0 && x <= (this.map.width - this.camera.width) ) {
+        if ( x >= 0 && x <= ( this.map.width - this.camera.width ) ) {
             offset.x = -x;
 
         } else {
-            if ( x >= (this.map.width - this.camera.width) ) {
-                offset.x = -(this.map.width - this.camera.width);
+            if ( x >= ( this.map.width - this.camera.width ) ) {
+                offset.x = -( this.map.width - this.camera.width );
 
             } else {
                 offset.x = 0;
             }
         }
 
-        if ( y >= 0 && y <= (this.map.height - this.camera.height) ) {
+        if ( y >= 0 && y <= ( this.map.height - this.camera.height ) ) {
             offset.y = -y;
 
         } else {
-            if ( y >= (this.map.height - this.camera.height) ) {
-                offset.y = -(this.map.height - this.camera.height);
+            if ( y >= ( this.map.height - this.camera.height ) ) {
+                offset.y = -( this.map.height - this.camera.height );
 
             } else {
                 offset.y = 0;
@@ -416,37 +416,47 @@ class TopView extends GameBox {
 
 
     canHeroMoveWhileJumping ( poi, dir, collision ) {
-        return (!collision.map && !collision.npc && !(collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].stop));
+        return ( !collision.map && !collision.npc && !( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].stop ) );
     }
 
 
     canHeroResetMaxV () {
-        return (this.hero.physics.maxv !== this.hero.physics.controlmaxv && this.hero.verb !== Config.verbs.LIFT);
+        return ( this.hero.physics.maxv !== this.hero.physics.controlmaxv && this.hero.verb !== Config.verbs.LIFT );
     }
 
 
     canHeroEventDoor ( poi, dir, collision ) {
-        return (collision.event.type === Config.events.DOOR);
+        return ( collision.event.type === Config.events.DOOR );
     }
 
 
     canHeroEventBoundary ( poi, dir, collision ) {
-        return (collision.event.type === Config.events.BOUNDARY && collision.camera);
+        return ( collision.event.type === Config.events.BOUNDARY && collision.camera );
     }
 
 
     canHeroTileStop ( poi, dir, collision ) {
-        return (collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].stop);
+        return ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].stop );
     }
 
 
     canHeroLift ( poi, dir ) {
-        return (dir === Config.opposites[ this.hero.dir ]);
+        return ( dir === Config.opposites[ this.hero.dir ] );
     }
 
 
     canHeroTileJump ( poi, dir, collision ) {
-        return (collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].jump && (collision.tiles.action[ 0 ].collides.width > (collision.tiles.action[ 0 ].tilebox.width / 2) || collision.tiles.action[ 0 ].collides.height > (collision.tiles.action[ 0 ].tilebox.height / 2)) && this.hero.verb !== Config.verbs.LIFT && dir === collision.tiles.action[ 0 ].instance.data.action.require.dir);
+        return (
+            collision.tiles &&
+            collision.tiles.action.length &&
+            collision.tiles.action[ 0 ].jump &&
+            (
+                collision.tiles.action[ 0 ].collides.width > ( collision.tiles.action[ 0 ].tilebox.width / 2 ) ||
+                collision.tiles.action[ 0 ].collides.height > ( collision.tiles.action[ 0 ].tilebox.height / 2 )
+            )
+            && this.hero.verb !== Config.verbs.LIFT &&
+            dir === collision.tiles.action[ 0 ].instance.data.action.require.dir
+        );
     }
 
 
@@ -455,7 +465,7 @@ class TopView extends GameBox {
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -16;
         this.player.gameaudio.hitSound( Config.verbs.JUMP );
-        this.keyTimer = setTimeout(() => {
+        this.keyTimer = setTimeout( () => {
             this.jumping = false;
             this.hero.face( this.hero.dir );
 
@@ -466,10 +476,17 @@ class TopView extends GameBox {
     applyHeroTileJump ( poi, dir ) {
         this.player.controls[ this.hero.dir ] = true;
 
-        if ( (dir === "left" && this.hero.position.x <= this.parkour.landing.x) || (dir === "right" && this.hero.position.x >= this.parkour.landing.x) || (dir === "up" && this.hero.position.y <= this.parkour.landing.y) || (dir === "down" && this.hero.position.y >= this.parkour.landing.y) ) {
+        const isComplete = (
+            ( dir === "left" && this.hero.position.x <= this.parkour.landing.x ) ||
+            ( dir === "right" && this.hero.position.x >= this.parkour.landing.x ) ||
+            ( dir === "up" && this.hero.position.y <= this.parkour.landing.y ) ||
+            ( dir === "down" && this.hero.position.y >= this.parkour.landing.y )
+        );
+
+        if ( isComplete ) {
             const dpad = this.player.gamepad.checkDpad();
-            const dpadDir = dpad.find(( ctrl ) => {
-                return (ctrl.btn[ 0 ] === this.hero.dir);
+            const dpadDir = dpad.find( ( ctrl ) => {
+                return ( ctrl.btn[ 0 ] === this.hero.dir );
             });
 
             if ( !dpadDir ) {
@@ -484,17 +501,17 @@ class TopView extends GameBox {
 
     handleHeroTileJump ( poi, dir, tile ) {
         const dirs = ["left", "right", "up", "down"];
-        const distance = this.map.data.tilesize + (this.map.data.tilesize * tile.instance.data.elevation);
+        const distance = this.map.data.tilesize + ( this.map.data.tilesize * tile.instance.data.elevation );
 
-        dirs.forEach(( d ) => {
+        dirs.forEach( ( d ) => {
             this.player.controls[ d ] = false;
         });
 
         this.parkour = {
             distance,
             landing: {
-                x: (dir === "left" ? this.hero.position.x - distance : dir === "right" ? this.hero.position.x + distance : this.hero.position.x),
-                y: (dir === "up" ? this.hero.position.y - distance : dir === "down" ? this.hero.position.y + distance : this.hero.position.y),
+                x: ( dir === "left" ? this.hero.position.x - distance : dir === "right" ? this.hero.position.x + distance : this.hero.position.x ),
+                y: ( dir === "up" ? this.hero.position.y - distance : dir === "down" ? this.hero.position.y + distance : this.hero.position.y ),
             },
         };
         this.jumping = true;
@@ -502,7 +519,7 @@ class TopView extends GameBox {
         this.hero.physics.vz = -24;
         this.player.controls[ dir ] = true;
         this.player.gameaudio.hitSound( "parkour" );
-        this.keyTimer = setTimeout(() => {
+        this.keyTimer = setTimeout( () => {
             this.jumping = false;
             this.hero.face( dir );
 
@@ -513,7 +530,7 @@ class TopView extends GameBox {
     handleHeroPush ( poi, dir ) {
         this.interact.push++;
 
-        if ( (this.hero.verb !== Config.verbs.LIFT) && (this.interact.push > this.map.data.tilesize) ) {
+        if ( ( this.hero.verb !== Config.verbs.LIFT ) && ( this.interact.push > this.map.data.tilesize ) ) {
             this.hero.cycle( Config.verbs.PUSH, dir );
 
         } else if ( this.hero.verb !== Config.verbs.LIFT ) {
@@ -542,7 +559,7 @@ class TopView extends GameBox {
     handleHeroLift ( poi, dir ) {
         this.locked = true;
         this.hero.cycle( Config.verbs.PULL, dir );
-        setTimeout(() => {
+        setTimeout( () => {
             const activeTiles = this.map.getActiveTiles( this.interact.tile.group );
             const tileCel = activeTiles.getTile();
 
@@ -569,8 +586,8 @@ class TopView extends GameBox {
                         down: {
                             offsetX: tileCel[ 0 ],
                             offsetY: tileCel[ 1 ],
-                        }
-                    }
+                        },
+                    },
                 },
 
             }, this.map );
@@ -604,14 +621,14 @@ class TopView extends GameBox {
         };
 
         if ( collision.tiles && collision.tiles.attack.length ) {
-            collision.tiles.attack.forEach(( tile ) => {
+            collision.tiles.attack.forEach( ( tile ) => {
                 if ( tile.attack ) {
                     this.handleHeroTileAttack( poi, this.hero.dir, tile );
                 }
             });
         }
 
-        setTimeout(() => {
+        setTimeout( () => {
             // this.attacking = false;
             this.hero.face( this.hero.dir );
 
@@ -620,7 +637,7 @@ class TopView extends GameBox {
 
 
     handleHeroTiles ( poi, dir, tiles ) {
-        tiles.passive.forEach(( tile ) => {
+        tiles.passive.forEach( ( tile ) => {
             // Stairs are hard, you have to take it slow...
             if ( tile.group === Config.tiles.STAIRS ) {
                 this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
@@ -710,18 +727,18 @@ class TopView extends GameBox {
 
     handleThrow ( sprite ) {
         sprite.throwing = this.hero.dir;
-        
+
         let throwX;
         let throwY;
         const dist = this.map.data.tilesize * 2;
 
         if ( sprite.throwing === "left" ) {
             throwX = sprite.position.x - dist;
-            throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+            throwY = sprite.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
 
         } else if ( sprite.throwing === "right" ) {
             throwX = sprite.position.x + dist;
-            throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
+            throwY = sprite.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
 
         } else if ( sprite.throwing === "up" ) {
             throwX = sprite.position.x;
@@ -779,14 +796,14 @@ class TopView extends GameBox {
 
             Utils.log(
                 `Roam: ${sprite.data.id}`,
-                `Steps: ${sprite.dir} ${sprite.counter}`,
+                `Steps: ${sprite.dir} ${sprite.counter}`
             );
 
         } else {
             sprite.counter--;
         }
 
-        dirs.forEach(( dir ) => {
+        dirs.forEach( ( dir ) => {
             if ( dir === sprite.dir ) {
                 sprite.controls[ dir ] = 1;
 
@@ -913,14 +930,14 @@ class TopView extends GameBox {
         // Emit map change event
         this.player.emit( Config.broadcast.MAPEVENT, event );
 
-        setTimeout(() => {
+        setTimeout( () => {
             // New Map data
             const newMapData = Loader.cash( event.map );
             const newHeroPos = this.getNewHeroPosition();
 
             // Set a spawn index...
-            this.hero.position.x = (event.spawn !== undefined ? newMapData.spawn[ event.spawn ].x : newHeroPos.x);
-            this.hero.position.y = (event.spawn !== undefined ? newMapData.spawn[ event.spawn ].y : newHeroPos.y);
+            this.hero.position.x = ( event.spawn !== undefined ? newMapData.spawn[ event.spawn ].x : newHeroPos.x );
+            this.hero.position.y = ( event.spawn !== undefined ? newMapData.spawn[ event.spawn ].y : newHeroPos.y );
 
             // Destroy old Map
             this.map.destroy();
@@ -936,7 +953,7 @@ class TopView extends GameBox {
             // Handle the `dropin` effect
             if ( this.dropin ) {
                 this.dropin = false;
-                this.hero.position.z = -(this.camera.height / 2);
+                this.hero.position.z = -( this.camera.height / 2 );
             }
 
             // Create a new Companion

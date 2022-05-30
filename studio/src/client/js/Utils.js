@@ -1,5 +1,5 @@
 const MediaBox = require( "properjs-mediabox" );
-const cache = require("../../server/cache");
+const cache = require( "../../server/cache" );
 const mediabox = new MediaBox();
 const channel = "bgm";
 const duration = 1;
@@ -12,7 +12,7 @@ const Utils = {
 
         mediabox.stopChannel( channel );
 
-        Object.keys( sounds ).forEach(( id ) => {
+        Object.keys( sounds ).forEach( ( id ) => {
             mediabox.destroyMedia( id );
         });
     },
@@ -29,7 +29,7 @@ const Utils = {
                 channel: "bgm",
                 onloaded () {
                     mediabox.crossFadeChannel( channel, sId, duration );
-                }
+                },
             });
         };
         const addEvent = ( snd, sId ) => {
@@ -63,12 +63,12 @@ const Utils = {
 
                 sampler.addClass( "is-playing" );
 
-            } else if ( (mediabox.getMedia( soundId ) && mediabox.isPlaying( soundId )) ) {
+            } else if ( ( mediabox.getMedia( soundId ) && mediabox.isPlaying( soundId ) ) ) {
                 mediabox.fadeChannelOut( channel, duration );
 
                 sampler.removeClass( "is-playing" );
 
-            } else if ( (mediabox.getMedia( soundId ) && !mediabox.isPlaying( soundId )) ) {
+            } else if ( ( mediabox.getMedia( soundId ) && !mediabox.isPlaying( soundId ) ) ) {
                 mediabox.setMediaProp( soundId, "currentTime", 0 );
                 mediabox.crossFadeChannel( channel, soundId, duration );
 
@@ -89,17 +89,17 @@ const Utils = {
             if ( !Array.isArray( data ) ) {
                 const arr = [];
 
-                Object.keys( data ).forEach(( i ) => {
+                Object.keys( data ).forEach( ( i ) => {
                     arr.push( data[ i ] );
                 });
 
                 data = arr;
             }
 
-            data.forEach(( dt ) => {
+            data.forEach( ( dt ) => {
                 const opt = document.createElement( "option" );
-                const label = (typeof dt === "object") ? dt.name : String( dt );
-                const value = (typeof dt === "object") ? dt.id : String( dt );
+                const label = ( typeof dt === "object" ) ? dt.name : String( dt );
+                const value = ( typeof dt === "object" ) ? dt.id : String( dt );
 
                 opt.innerHTML = label;
                 opt.value = value;
@@ -111,7 +111,7 @@ const Utils = {
                 }
             });
 
-            dom[ i ].value = (hasValue ? setValue : "");
+            dom[ i ].value = ( hasValue ? setValue : "" );
         }
     },
 
@@ -143,7 +143,7 @@ const Utils = {
         }
 
         return data;
-    }
+    },
 };
 
 

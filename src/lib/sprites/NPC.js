@@ -17,7 +17,7 @@ class NPC extends Sprite {
         this.controls = {};
         // Initial cooldown period upon spawn (don't immediately move)
         // requestAnimationFrame runs 60fps so we use (60 * seconds)
-        this.counter = this.data.ai ? (60 * 1) : 0;
+        this.counter = this.data.ai ? ( 60 * 1 ) : 0;
         this.cooldown = 0;
         this.collided = false;
         this.shift();
@@ -39,10 +39,10 @@ class NPC extends Sprite {
     payload () {
         if ( this.data.payload.dialogue && !this.dialogue ) {
             this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
-            this.dialogue.then(() => {
+            this.dialogue.then( () => {
                 this.handleDialogue();
 
-            }).catch(() => {
+            }).catch( () => {
                 this.handleDialogue();
             });
         }
@@ -77,22 +77,22 @@ class NPC extends Sprite {
             tiles: this.gamebox.checkTiles( poi, this ),
         };
         const isCollision = (
-            collision.map || 
-            collision.npc || 
-            collision.hero || 
+            collision.map ||
+            collision.npc ||
+            collision.hero ||
             this.gamebox.canHeroTileStop( poi, null, collision )
         );
         const isNotCollision = (
-            !collision.map && 
-            !collision.npc && 
-            !collision.hero && 
+            !collision.map &&
+            !collision.npc &&
+            !collision.hero &&
             !this.gamebox.canHeroTileStop( poi, null, collision )
         );
 
         // Reset the sprite counter if NPC has collisions...
         if ( isCollision && !this.collided && this.data.ai === Config.npc.WANDER ) {
             this.collided = true;
-            this.cooldown = (60 * 4);
+            this.cooldown = ( 60 * 4 );
             this.counter = 0;
             this.controls = {};
         }
@@ -134,7 +134,7 @@ class NPC extends Sprite {
 * Interactions
 *******************************************************************************/
     canInteract ( dir ) {
-        return (this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir);
+        return ( this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir );
     }
 
 
@@ -149,7 +149,7 @@ class NPC extends Sprite {
 
         if ( this.state.action.verb && this.data.verbs[ this.state.action.verb ] ) {
             this.verb = this.state.action.verb;
-            this.dir = (this.state.action.dir || this.state.dir);
+            this.dir = ( this.state.action.dir || this.state.dir );
         }
 
         if ( this.state.action.shift ) {

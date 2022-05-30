@@ -7,8 +7,8 @@ class Loader {
         if ( val ) {
             cache[ id ] = val;
         }
-    
-        return (id ? cache[ id ] : cache);
+
+        return ( id ? cache[ id ] : cache );
     }
 
 
@@ -28,7 +28,7 @@ class Loader {
 
 
     loadImage ( src ) {
-        return new Promise(( resolve, reject ) => {
+        return new Promise( ( resolve, reject ) => {
             if ( cache[ src ] ) {
                 return resolve( cache[ src ] );
             }
@@ -50,7 +50,7 @@ class Loader {
 
 
     loadAudio ( src ) {
-        return new Promise(( resolve ) => {
+        return new Promise( ( resolve ) => {
             if ( cache[ src ] ) {
                 return resolve( cache[ src ] );
             }
@@ -73,13 +73,13 @@ class Loader {
 
 
     loadJson ( url ) {
-        return new Promise(( resolve ) => {
+        return new Promise( ( resolve ) => {
             if ( cache[ url ] ) {
                 return resolve( cache[ url ] );
             }
 
-            fetch( url ).then(( response ) => {
-                response.json().then(( json ) => {
+            fetch( url ).then( ( response ) => {
+                response.json().then( ( json ) => {
                     cache[ url ] = json;
                     resolve( cache[ url ] );
                 });

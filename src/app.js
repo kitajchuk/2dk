@@ -38,7 +38,7 @@ class App {
         }
 
         if ( "serviceWorker" in navigator ) {
-            navigator.serviceWorker.register( this.worker, this.config ).then(( registration ) => {
+            navigator.serviceWorker.register( this.worker, this.config ).then( ( registration ) => {
                 if ( registration.installing ) {
                     Utils.log( "[2dk] Service worker installing." );
 
@@ -49,7 +49,7 @@ class App {
                     Utils.log( "[2dk] Service worker active!" );
                 }
 
-            }).catch(( error ) => {
+            }).catch( ( error ) => {
                 Utils.error( `[2dk] Service worker failed with ${error}` );
             });
         } else {
@@ -59,9 +59,9 @@ class App {
 
     deregister () {
         // This is how you can deregister the service worker...
-        navigator.serviceWorker.getRegistrations().then(( registrations ) => {
-            registrations.forEach(( registration ) => {
-                registration.unregister().then(( bool ) => {
+        navigator.serviceWorker.getRegistrations().then( ( registrations ) => {
+            registrations.forEach( ( registration ) => {
+                registration.unregister().then( ( bool ) => {
                     Utils.log( "[2dk] Unregistered Service Worker", bool );
                 });
             });

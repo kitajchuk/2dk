@@ -68,7 +68,7 @@ class Editor {
 
 
     display () {
-        setTimeout(() => {
+        setTimeout( () => {
             this.dom.root[ 0 ].className = "";
 
         }, 1000 );
@@ -78,7 +78,7 @@ class Editor {
     done () {
         this.mode = null;
 
-        setTimeout(() => {
+        setTimeout( () => {
             this.dom.root[ 0 ].className = "";
 
         }, 1000 );
@@ -218,7 +218,7 @@ class Editor {
 
 
     blurSelectMenus () {
-        this.selects.all.forEach(( select ) => {
+        this.selects.all.forEach( ( select ) => {
             select.blur();
         });
     }
@@ -247,7 +247,7 @@ class Editor {
 
 
     updateMapLayer ( layer, coords, coordMap ) {
-        coordMap.tiles.forEach(( tile ) => {
+        coordMap.tiles.forEach( ( tile ) => {
             if ( tile.paintTile ) {
                 const cx = coords[ 0 ] + tile.drawCoord[ 0 ];
                 const cy = coords[ 1 ] + tile.drawCoord[ 1 ];
@@ -260,15 +260,15 @@ class Editor {
                         [
                             px,
                             py,
-                        ]
+                        ],
                     ];
 
                 // Position has tiles: Array[Array[x, y], Array[x, y]]
                 } else if ( Array.isArray( this.data.map.textures[ layer ][ cy ][ cx ] ) ) {
-                    this.data.map.textures[ layer ][ cy ][ cx ].push([
+                    this.data.map.textures[ layer ][ cy ][ cx ].push( [
                         px,
                         py,
-                    ]);
+                    ] );
                 }
 
                 // Clean tiles on draw so we don't have to scan the entire texture
@@ -289,18 +289,18 @@ class Editor {
         const inputs = menu.find( ".editor__field, .select__field" );
         const checks = menu.find( ".check" );
 
-        inputs.forEach(( input ) => {
+        inputs.forEach( ( input ) => {
             input.value = "";
         });
 
-        checks.forEach(( check ) => {
+        checks.forEach( ( check ) => {
             check.checked = false;
         });
     }
 
 
     readFile ( fileInput ) {
-        return new Promise(( resolve, reject ) => {
+        return new Promise( ( resolve, reject ) => {
             const fileReader = new FileReader();
             const fileData = fileInput[ 0 ].files[ 0 ];
 
@@ -384,7 +384,7 @@ class Editor {
         const postData = this.data.map;
         const mapData = Utils.parseFields( this.fields.map );
 
-        Object.keys( mapData ).forEach(( i ) => {
+        Object.keys( mapData ).forEach( ( i ) => {
             postData[ i ] = mapData[ i ];
         });
 
@@ -444,7 +444,7 @@ class Editor {
 
 
     _loadoutGames ( games ) {
-        this.dom.loadout[ 0 ].innerHTML = games.map(( game ) => {
+        this.dom.loadout[ 0 ].innerHTML = games.map( ( game ) => {
             return `<div class="js-game-tile" data-game="${game.id}">
                 <div>
                     <img src="./games/${game.id}/${game.icon}" />
@@ -459,7 +459,7 @@ class Editor {
 
 
     _loadoutMaps ( maps ) {
-        this.dom.loadout[ 0 ].innerHTML = maps.map(( map ) => {
+        this.dom.loadout[ 0 ].innerHTML = maps.map( ( map ) => {
             return `<div class="js-map-tile" data-map="${map.id}">
                 <div>
                     <img src="./games/${this.data.game.id}/${map.thumbnail || map.image}" />
@@ -617,7 +617,7 @@ class Editor {
             const data = elem.data();
 
             if ( targ[ 0 ].name === "icon" ) {
-                this.readFile( targ ).then(( response ) => {
+                this.readFile( targ ).then( ( response ) => {
                     ipcRenderer.send( "renderer-uploadicon", response );
                 });
             }
@@ -648,7 +648,7 @@ class Editor {
             const select = menu.find( ".js-select-delete" );
             const postData = {
                 type: button.data().type,
-                fileName: select[ 0 ].value
+                fileName: select[ 0 ].value,
             };
 
             if ( confirm( `Sure you want to delete the file "${select[ 0 ].value}"? This may affect other data referencing this file.` ) ) {
@@ -679,7 +679,7 @@ class Editor {
             this.mode = Config.Editor.modes.SAVING;
             this.dom.root[ 0 ].className = "is-saving-file";
 
-            this.readFile( fileInput ).then(( response ) => {
+            this.readFile( fileInput ).then( ( response ) => {
                 postData.fileName = response.fileName;
                 postData.fileData = response.fileData;
                 ipcRenderer.send( "renderer-newfile", postData );
@@ -718,7 +718,7 @@ class Editor {
             const targ = window.hobo( e.target );
             const elem = targ.is( ".js-post-cancel" ) ? targ : targ.closest( ".js-post-cancel" );
             const elemData = elem.data();
-            const canFunction = (elemData.type === "game") || this.canGameFunction();
+            const canFunction = ( elemData.type === "game" ) || this.canGameFunction();
 
             if ( !canFunction ) {
                 return false;
@@ -732,16 +732,16 @@ class Editor {
             const targ = window.hobo( e.target );
             const elem = targ.is( ".js-post-save" ) ? targ : targ.closest( ".js-post-save" );
             const elemData = elem.data();
-            const canFunction = (elemData.type === "game") || this.canGameFunction();
+            const canFunction = ( elemData.type === "game" ) || this.canGameFunction();
 
             if ( !canFunction ) {
                 return false;
             }
 
-            const postData = (elemData.type === "game" ?
+            const postData = ( elemData.type === "game" ?
                 Utils.parseFields( this.fields.addGame ) :
                 // "map" is the only post besides game...
-                Utils.parseFields( this.fields.addMap ));
+                Utils.parseFields( this.fields.addMap ) );
 
             if ( postData.name ) {
                 if ( elemData.type === "game" ) {
@@ -772,7 +772,7 @@ class Editor {
             }
         });
 
-        this.dom.demoGame.on( "click", ( e ) => {
+        this.dom.demoGame.on( "click", () => {
             if ( !this.canGameFunction() ) {
                 return false;
             }
@@ -792,11 +792,11 @@ class Editor {
             }
         });
 
-        this.dom.deleteMap.on( "click", ( e ) => {
+        this.dom.deleteMap.on( "click", () => {
             if ( !this.canMapFunction() ) {
                 return false;
             }
-        
+
             if ( confirm( `Sure you want to delete the map "${this.data.map.name}"? This may affect other data referencing this map.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
                 this.dom.root[ 0 ].className = "is-deleting-map";
@@ -807,15 +807,15 @@ class Editor {
         });
 
 
-        this.dom.deleteGame.on( "click", ( e ) => {
+        this.dom.deleteGame.on( "click", () => {
             if ( !this.canGameFunction() ) {
                 return false;
             }
-        
+
             if ( confirm( `Sure you want to delete the game "${this.data.game.name}"? This cannot be undone.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
                 this.dom.root[ 0 ].className = "is-deleting-game";
-        
+
                 ipcRenderer.send( "renderer-deletegame", this.data.game );
                 window.location.reload(); // Clunky maybe but best simple solution for now :-P
             }

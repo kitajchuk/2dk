@@ -14,26 +14,26 @@ class Sprite {
         this.data = data;
         this.map = map;
         this.gamebox = this.map.gamebox;
-        this.scale = (this.data.scale || 1);
+        this.scale = ( this.data.scale || 1 );
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
-        this.dir = (this.data.dir || this.data.spawn.dir || "down");
-        this.verb = (this.data.verb || Config.verbs.FACE);
+        this.dir = ( this.data.dir || this.data.spawn.dir || "down" );
+        this.verb = ( this.data.verb || Config.verbs.FACE );
         this.image = Loader.cash( this.data.image );
         this.speed = 1;
         this.frame = 0;
-        this.opacity = (data.opacity || 1.0);
+        this.opacity = ( data.opacity || 1.0 );
         this.position = {
-            x: (this.data.spawn && this.data.spawn.x || 0),
-            y: (this.data.spawn && this.data.spawn.y || 0),
-            z: (this.data.spawn && this.data.spawn.z || 0),
+            x: ( this.data.spawn && this.data.spawn.x || 0 ),
+            y: ( this.data.spawn && this.data.spawn.y || 0 ),
+            z: ( this.data.spawn && this.data.spawn.z || 0 ),
         };
         this.physics = {
-            vx: (this.data.vx || 0),
-            vy: (this.data.vy || 0),
-            vz: (this.data.vz || 0),
-            maxv: (this.data.maxv || 4),
-            controlmaxv: (this.data.controlmaxv || 4),
+            vx: ( this.data.vx || 0 ),
+            vy: ( this.data.vy || 0 ),
+            vz: ( this.data.vz || 0 ),
+            maxv: ( this.data.maxv || 4 ),
+            controlmaxv: ( this.data.controlmaxv || 4 ),
         };
         // Hero offset is based on camera.
         // NPCs offset snaps to position.
@@ -46,18 +46,18 @@ class Sprite {
             y: true,
         };
         this.hitbox = {
-            x: this.position.x + (this.data.hitbox.x / this.scale),
-            y: this.position.y + (this.data.hitbox.y / this.scale),
+            x: this.position.x + ( this.data.hitbox.x / this.scale ),
+            y: this.position.y + ( this.data.hitbox.y / this.scale ),
             width: this.data.hitbox.width / this.scale,
             height: this.data.hitbox.height / this.scale,
         };
         this.footbox = {
             x: this.hitbox.x,
-            y: this.hitbox.y + (this.hitbox.height / 2),
+            y: this.hitbox.y + ( this.hitbox.height / 2 ),
             width: this.hitbox.width,
             height: this.hitbox.height / 2,
         };
-        this.layer = (this.data.layer || "background");
+        this.layer = ( this.data.layer || "background" );
         this.spritecel = this.getCel();
         this.previousElapsed = null;
         this.resetElapsed = false;
@@ -135,7 +135,7 @@ class Sprite {
                 this.layer = "foreground";
 
             // Sprites that have a smaller hitbox than their actual size can flip layer
-            } else if ( (this.hitbox.width * this.hitbox.height) !== (this.width * this.height) ) {
+            } else if ( ( this.hitbox.width * this.hitbox.height ) !== ( this.width * this.height ) ) {
                 if ( this.hitbox.y > this.gamebox.hero.hitbox.y ) {
                     this.layer = "foreground";
 
@@ -222,7 +222,7 @@ class Sprite {
         // Need to NOT hardcode the 42 here...
         if ( this.hero ) {
             if ( !this.throwing ) {
-                this.position.x = this.hero.position.x + (this.hero.width / 2) - (this.width / 2);
+                this.position.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
                 this.position.y = this.hero.position.y - this.height + 42;
             }
 
@@ -234,10 +234,10 @@ class Sprite {
 
 
     applyHitbox () {
-        this.hitbox.x = this.position.x + (this.data.hitbox.x / this.scale);
-        this.hitbox.y = this.position.y + (this.data.hitbox.y / this.scale);
+        this.hitbox.x = this.position.x + ( this.data.hitbox.x / this.scale );
+        this.hitbox.y = this.position.y + ( this.data.hitbox.y / this.scale );
         this.footbox.x = this.hitbox.x;
-        this.footbox.y = this.hitbox.y + (this.hitbox.height / 2);
+        this.footbox.y = this.hitbox.y + ( this.hitbox.height / 2 );
     }
 
 
@@ -258,7 +258,7 @@ class Sprite {
     }
 
 
-    applyFrame( elapsed ) {
+    applyFrame ( elapsed ) {
         if ( this.frameStopped ) {
             return;
         }
@@ -272,15 +272,15 @@ class Sprite {
         }
 
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
-            if ( this.verb === Config.verbs.LIFT && (this.idle.x && this.idle.y) ) {
+            if ( this.verb === Config.verbs.LIFT && ( this.idle.x && this.idle.y ) ) {
                 Utils.log( "static lift..." );
 
             } else {
-                const diff = (elapsed - this.previousElapsed);
-                
+                const diff = ( elapsed - this.previousElapsed );
+
                 this.frame = Math.min(
-                    Math.floor( (diff / this.data.verbs[ this.verb ].dur) * this.data.verbs[ this.verb ][ this.dir ].stepsX ),
-                    (this.data.verbs[ this.verb ][ this.dir ].stepsX - 1)
+                    Math.floor( ( diff / this.data.verbs[ this.verb ].dur ) * this.data.verbs[ this.verb ][ this.dir ].stepsX ),
+                    ( this.data.verbs[ this.verb ][ this.dir ].stepsX - 1 )
                 );
 
                 if ( diff >= this.data.verbs[ this.verb ].dur ) {
@@ -305,7 +305,7 @@ class Sprite {
 *******************************************************************************/
     getCel () {
         return [
-            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetX ) + (this.data.width * this.frame),
+            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetX ) + ( this.data.width * this.frame ),
             Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetY ),
         ];
     }
@@ -362,8 +362,8 @@ class Sprite {
         }
 
         return {
-            x: (dir === "left" || dir === "right") ? (this.getNextX() + ahead) : this.position.x,
-            y: (dir === "up" || dir === "down") ? (this.getNextY() + ahead) : this.position.y,
+            x: ( dir === "left" || dir === "right" ) ? ( this.getNextX() + ahead ) : this.position.x,
+            y: ( dir === "up" || dir === "down" ) ? ( this.getNextY() + ahead ) : this.position.y,
             z: this.position.z,
         }
     }
@@ -371,8 +371,8 @@ class Sprite {
 
     getHitbox ( poi ) {
         return {
-            x: poi.x + (this.data.hitbox.x / this.scale),
-            y: poi.y + (this.data.hitbox.y / this.scale),
+            x: poi.x + ( this.data.hitbox.x / this.scale ),
+            y: poi.y + ( this.data.hitbox.y / this.scale ),
             width: this.hitbox.width,
             height: this.hitbox.height,
         };
@@ -381,8 +381,8 @@ class Sprite {
 
     getFootbox ( poi ) {
         return {
-            x: poi.x + (this.data.hitbox.x / this.scale),
-            y: poi.y + ((this.data.hitbox.y / this.scale) + (this.hitbox.height / 2)),
+            x: poi.x + ( this.data.hitbox.x / this.scale ),
+            y: poi.y + ( ( this.data.hitbox.y / this.scale ) + ( this.hitbox.height / 2 ) ),
             width: this.footbox.width,
             height: this.footbox.height,
         };

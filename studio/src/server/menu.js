@@ -1,7 +1,7 @@
 const { app, Menu, ipcMain, shell } = require( "electron" );
 const { DB } = require( "./db" );
 
-const isMac = (process.platform === "darwin");
+const isMac = ( process.platform === "darwin" );
 
 // Global mainWindow
 let mainWindow;
@@ -26,34 +26,34 @@ const loadAssets = () => {
         "sprites",
     ];
 
-    assets.forEach(( type ) => {
-        dBase.getFiles( type ).then(( response ) => {
+    assets.forEach( ( type ) => {
+        dBase.getFiles( type ).then( ( response ) => {
             mainWindow.webContents.send( "menu-assets", response );
         });
     });
 };
 const loadMaps = () => {
-    dBase.getMaps().then(( response ) => {
+    dBase.getMaps().then( ( response ) => {
         activeMaps = response.maps;
         mainWindow.webContents.send( "menu-loadmaps", activeMaps );
         setMenu();
     });
 };
 const loadGames = () => {
-    DB.getGames().then(( response ) => {
+    DB.getGames().then( ( response ) => {
         activeGames = response.games;
         mainWindow.webContents.send( "menu-loadgames", activeGames );
         setMenu();
     });
 };
 const loadMap = () => {
-    dBase.getMap( activeMap ).then(( response ) => {
+    dBase.getMap( activeMap ).then( ( response ) => {
         mainWindow.webContents.send( "menu-loadmap", response.map );
     });
 }
 const loadGame = () => {
-    dBase.open( activeGame.id ).then(() => {
-        dBase.getGame().then(( response ) => {
+    dBase.open( activeGame.id ).then( () => {
+        dBase.getGame().then( ( response ) => {
             mainWindow.webContents.send( "menu-loadgame", response.game );
         });
         loadAssets();
@@ -72,13 +72,13 @@ const getGamesMenu = () => {
         submenu: [],
     };
 
-    activeGames.forEach(( game ) => {
+    activeGames.forEach( ( game ) => {
         gamesLoadout.submenu.push({
             label: game.name,
             click () {
                 activeGame = game;
                 loadGame();
-            }
+            },
         });
     });
 
@@ -89,7 +89,7 @@ const getGamesMenu = () => {
                 label: "New Game",
                 click () {
                     mainWindow.webContents.send( "menu-newgame", null );
-                }
+                },
             },
             gamesLoadout,
             { type: "separator" },
@@ -122,7 +122,7 @@ const getGamesMenu = () => {
                 },
                 enabled: activeGame ? true : false,
             },
-        ]
+        ],
     };
 };
 const getMapsMenu = () => {
@@ -137,13 +137,13 @@ const getMapsMenu = () => {
         enabled: activeMap ? true : false,
     };
 
-    activeMaps.forEach(( map ) => {
+    activeMaps.forEach( ( map ) => {
         mapsLoadout.submenu.push({
             label: map.name,
             click () {
                 activeMap = map;
                 loadMap();
-            }
+            },
         });
     });
 
@@ -200,12 +200,12 @@ const getMapsMenu = () => {
                 enabled: activeMap ? true : false,
             },
             { type: "separator" },
-            selectionLoadout
-        ]
+            selectionLoadout,
+        ],
     };
 };
 const getAppMenu = () => {
-    return (isMac ? {
+    return ( isMac ? {
         label: app.name,
         submenu: [
             { role: "about" },
@@ -216,16 +216,16 @@ const getAppMenu = () => {
             { role: "hideothers" },
             { role: "unhide" },
             { type: "separator" },
-            { role: "quit" }
-        ]
+            { role: "quit" },
+        ],
     } : {});
 };
 const getFileMenu = () => {
     return {
         label: "File",
         submenu: [
-            isMac ? { role: "close" } : { role: "quit" }
-        ]
+            isMac ? { role: "close" } : { role: "quit" },
+        ],
     };
 };
 const getViewMenu = () => {
@@ -240,8 +240,8 @@ const getViewMenu = () => {
             { role: "zoomin" },
             { role: "zoomout" },
             { type: "separator" },
-            { role: "togglefullscreen" }
-        ]
+            { role: "togglefullscreen" },
+        ],
     };
 };
 const getWindowMenu = () => {
@@ -250,15 +250,15 @@ const getWindowMenu = () => {
         submenu: [
             { role: "minimize" },
             { role: "zoom" },
-            ...(isMac ? [
+            ...( isMac ? [
                 { type: "separator" },
                 { role: "front" },
                 { type: "separator" },
-                { role: "window" }
+                { role: "window" },
             ] : [
-            { role: "close" }
-            ])
-        ]
+            { role: "close" },
+            ] ),
+        ],
     };
 };
 const getHelpMenu = () => {
@@ -269,9 +269,9 @@ const getHelpMenu = () => {
                 label: "Learn More",
                 click: async () => {
                     await shell.openExternal( "https://2dk.kitajchuk.com" );
-                }
-            }
-        ]
+                },
+            },
+        ],
     };
 };
 const getContextMenu = () => {
@@ -284,32 +284,32 @@ const getContextMenu = () => {
         },
         {
             label: "Remove Active Tiles",
-            click ( menuItem, browserWindow, event ) {
+            click () {
                 mainWindow.webContents.send( "menu-contextmenu", "remove-activetiles" );
             },
         },
         {
             label: "Select Matching Tiles",
-            click ( menuItem, browserWindow, event ) {
+            click () {
                 mainWindow.webContents.send( "menu-contextmenu", "select-matching-tiles" );
             },
         },
         {
             label: "Deselect Tiles",
-            click ( menuItem, browserWindow, event ) {
+            click () {
                 mainWindow.webContents.send( "menu-contextmenu", "deselect-tiles" );
             },
         },
         {
             label: "Deselect Tile",
-            click ( menuItem, browserWindow, event ) {
+            click () {
                 mainWindow.webContents.send( "menu-contextmenu", "deselect-tile" );
             },
         },
     ];
 };
 const setMenu = () => {
-    Menu.setApplicationMenu( Menu.buildFromTemplate([
+    Menu.setApplicationMenu( Menu.buildFromTemplate( [
         getAppMenu(),
         getFileMenu(),
         getGamesMenu(),
@@ -317,7 +317,7 @@ const setMenu = () => {
         getViewMenu(),
         getWindowMenu(),
         getHelpMenu(),
-    ]));
+    ] ) );
 };
 
 
@@ -326,30 +326,30 @@ contextMenu = Menu.buildFromTemplate( getContextMenu() );
 
 
 // Listen for events from the ipcRenderer
-ipcMain.on( "renderer-unload", ( event, data ) => {
+ipcMain.on( "renderer-unload", () => {
     resetAll();
 });
 
-ipcMain.on( "renderer-loadgames", ( event, data ) => {
+ipcMain.on( "renderer-loadgames", () => {
     loadGames();
 });
 
 ipcMain.on( "renderer-loadgame", ( event, data ) => {
-    activeGame = activeGames.find(( game ) => {
-        return (game.id === data.game);
+    activeGame = activeGames.find( ( game ) => {
+        return ( game.id === data.game );
     });
     loadGame();
 });
 
 ipcMain.on( "renderer-loadmap", ( event, data ) => {
-    activeMap = activeMaps.find(( map ) => {
-        return (map.id === data.map);
+    activeMap = activeMaps.find( ( map ) => {
+        return ( map.id === data.map );
     });
     loadMap();
 });
 
 ipcMain.on( "renderer-newgame", ( event, data ) => {
-    DB.addGame( data ).then(( response ) => {
+    DB.addGame( data ).then( ( response ) => {
         activeGames = response.games;
         mainWindow.webContents.send( "menu-loadgames", activeGames );
         setMenu();
@@ -357,7 +357,7 @@ ipcMain.on( "renderer-newgame", ( event, data ) => {
 });
 
 ipcMain.on( "renderer-newmap", ( event, data ) => {
-    dBase.addMap( data ).then(( response ) => {
+    dBase.addMap( data ).then( ( response ) => {
         activeMaps = response.maps;
         mainWindow.webContents.send( "menu-loadmaps", activeMaps );
         setMenu();
@@ -365,14 +365,14 @@ ipcMain.on( "renderer-newmap", ( event, data ) => {
 });
 
 ipcMain.on( "renderer-deletegame", ( event, data ) => {
-    DB.deleteGame( data ).then(( response ) => {
+    DB.deleteGame( data ).then( ( response ) => {
         activeGames = response.games;
         setMenu();
     });
 });
 
 ipcMain.on( "renderer-deletemap", ( event, data ) => {
-    dBase.deleteMap( data ).then(( response ) => {
+    dBase.deleteMap( data ).then( ( response ) => {
         activeMaps = response.maps;
         setMenu();
         loadGame();
@@ -380,31 +380,31 @@ ipcMain.on( "renderer-deletemap", ( event, data ) => {
 });
 
 ipcMain.on( "renderer-newfile", ( event, data ) => {
-    dBase.addFile( data ).then(( response ) => {
+    dBase.addFile( data ).then( ( response ) => {
         mainWindow.webContents.send( "menu-assets", response );
     });
 });
 
 ipcMain.on( "renderer-deletefile", ( event, data ) => {
-    dBase.deleteFile( data ).then(( response ) => {
+    dBase.deleteFile( data ).then( ( response ) => {
         mainWindow.webContents.send( "menu-assets", response );
     });
 });
 
 ipcMain.on( "renderer-uploadicon", ( event, data ) => {
-    dBase.updateIcon( data ).then(( response ) => {
+    dBase.updateIcon( data ).then( ( response ) => {
         mainWindow.webContents.send( "menu-reloadicon", response );
     });
 });
 
 ipcMain.on( "renderer-savemap", ( event, data ) => {
-    dBase.updateMap( data ).then(( response ) => {
+    dBase.updateMap( data ).then( ( response ) => {
         activeMaps = response.maps;
         setMenu();
     });
 });
 
-ipcMain.on( "renderer-contextmenu", ( event ) => {
+ipcMain.on( "renderer-contextmenu", () => {
     contextMenu.popup({
         window: mainWindow,
     });
@@ -425,5 +425,5 @@ module.exports = {
         loadGames();
 
         return this;
-    }
+    },
 };

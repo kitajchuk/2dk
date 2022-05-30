@@ -41,7 +41,7 @@ class Controller {
     on ( event, handler ) {
         const events = event.split( " " );
 
-        events.forEach(( event ) => {
+        events.forEach( ( event ) => {
             if ( typeof handler === "function" ) {
                 if ( !this.handlers[ event ] ) {
                     this.handlers[event ] = [];
@@ -62,7 +62,7 @@ class Controller {
             for ( let i = this.handlers[ event ].length; i--; ) {
                 if ( this.handlers[ event ][ i ] === handler ) {
                     this.handlers[ event ].splice( i, 1 );
-    
+
                     break;
                 }
             }
@@ -78,7 +78,7 @@ class Controller {
             return this;
         }
 
-        this.handlers[ event ].forEach(( handler ) => {
+        this.handlers[ event ].forEach( ( handler ) => {
             handler.apply( this, args );
         });
     }

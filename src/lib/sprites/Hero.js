@@ -70,15 +70,15 @@ class Hero extends Sprite {
         };
 
         this.offset = {
-            x: (this.gamebox.camera.width / 2) - (this.width / 2),
-            y: (this.gamebox.camera.height / 2) - (this.height / 2),
+            x: ( this.gamebox.camera.width / 2 ) - ( this.width / 2 ),
+            y: ( this.gamebox.camera.height / 2 ) - ( this.height / 2 ),
         };
 
         if ( absolute.x <= 0 ) {
             this.offset.x = this.position.x;
         }
 
-        if ( absolute.x >= (this.map.width - this.gamebox.camera.width) ) {
+        if ( absolute.x >= ( this.map.width - this.gamebox.camera.width ) ) {
             this.offset.x = this.position.x + this.map.offset.x;
         }
 
@@ -86,7 +86,7 @@ class Hero extends Sprite {
             this.offset.y = this.position.y;
         }
 
-        if ( absolute.y >= (this.map.height - this.gamebox.camera.height) ) {
+        if ( absolute.y >= ( this.map.height - this.gamebox.camera.height ) ) {
             this.offset.y = this.position.y + this.map.offset.y;
         }
     }
@@ -100,7 +100,7 @@ class Hero extends Sprite {
         // Jumping needs to be captured...
         } else if ( this.gamebox.jumping ) {
             this.cycle( Config.verbs.JUMP, this.dir );
-        
+
         // Attack needs to be captured...
         } else if ( this.gamebox.attacking ) {
             this.cycle( Config.verbs.ATTACK, this.dir );
@@ -119,7 +119,7 @@ class Hero extends Sprite {
 * Getters
 *******************************************************************************/
     getWeaponbox () {
-        const lowX = this.data.weapon[ this.dir ].reduce(( accX, record ) => {
+        const lowX = this.data.weapon[ this.dir ].reduce( ( accX, record ) => {
             const absX = Math.abs( this.position.x + record.positionX );
 
             if ( absX < accX ) {
@@ -129,7 +129,7 @@ class Hero extends Sprite {
             return accX;
 
         }, 999999 );
-        const lowY = this.data.weapon[ this.dir ].reduce(( accY, record ) => {
+        const lowY = this.data.weapon[ this.dir ].reduce( ( accY, record ) => {
             const absY = Math.abs( this.position.y + record.positionY );
 
             if ( absY < accY ) {
@@ -139,7 +139,7 @@ class Hero extends Sprite {
             return accY;
 
         }, 999999 );
-        const hiX = this.data.weapon[ this.dir ].reduce(( accX, record ) => {
+        const hiX = this.data.weapon[ this.dir ].reduce( ( accX, record ) => {
             const absX = Math.abs( this.position.x + record.positionX + record.width );
 
             if ( absX > accX ) {
@@ -149,7 +149,7 @@ class Hero extends Sprite {
             return accX;
 
         }, 0 );
-        const hiY = this.data.weapon[ this.dir ].reduce(( accY, record ) => {
+        const hiY = this.data.weapon[ this.dir ].reduce( ( accY, record ) => {
             const absY = Math.abs( this.position.y + record.positionY + record.height );
 
             if ( absY > accY ) {
@@ -165,7 +165,7 @@ class Hero extends Sprite {
             y: lowY,
             width: hiX - lowX,
             height: hiY - lowY,
-            
+
         };
     }
 }
