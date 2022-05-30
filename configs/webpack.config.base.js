@@ -26,7 +26,7 @@ const copyPluginConfig = {
         {
             from: path.resolve( process.cwd(), "public" ),
             globOptions: {
-                dot: true,
+                dot: false,
                 ignore: ["**/index.html"],
             },
         },
