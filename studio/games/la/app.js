@@ -3288,7 +3288,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         return;
       } else if (this.parkour) {
         if (collision.event) {
-          if (this.canHeroEventDoor(poi, dir, collision) && collision.event.amount >= 50) {
+          if (this.canHeroEventDoor(poi, dir, collision) && collision.event.amount >= 30) {
             this.dropin = true;
             this.handleCriticalReset();
             this.handleHeroEventDoor(poi, dir, collision.event);
@@ -3411,8 +3411,9 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       var _this3 = this;
 
       this.player.controls[this.hero.dir] = true;
+      var isComplete = dir === "left" && this.hero.position.x <= this.parkour.landing.x || dir === "right" && this.hero.position.x >= this.parkour.landing.x || dir === "up" && this.hero.position.y <= this.parkour.landing.y || dir === "down" && this.hero.position.y >= this.parkour.landing.y;
 
-      if (dir === "left" && this.hero.position.x <= this.parkour.landing.x || dir === "right" && this.hero.position.x >= this.parkour.landing.x || dir === "up" && this.hero.position.y <= this.parkour.landing.y || dir === "down" && this.hero.position.y >= this.parkour.landing.y) {
+      if (isComplete) {
         var dpad = this.player.gamepad.checkDpad();
         var dpadDir = dpad.find(function (ctrl) {
           return ctrl.btn[0] === _this3.hero.dir;
@@ -4636,8 +4637,8 @@ var Sprite = /*#__PURE__*/function () {
     // NPCs offset snaps to position.
 
     this.offset = {
-      x: this.map.offset.x + this.position.x,
-      y: this.map.offset.y + this.position.y
+      x: this.gamebox.offset.x + this.position.x,
+      y: this.gamebox.offset.y + this.position.y
     };
     this.idle = {
       x: true,
@@ -4668,7 +4669,7 @@ var Sprite = /*#__PURE__*/function () {
   }, {
     key: "visible",
     value: function visible() {
-      return _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(this.map.camera, {
+      return _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].collide(this.gamebox.camera, {
         x: this.position.x,
         y: this.position.y,
         width: this.width,
@@ -4795,6 +4796,7 @@ var Sprite = /*#__PURE__*/function () {
     key: "applyPosition",
     value: function applyPosition() {
       // A lifted object
+      // Need to NOT hardcode the 42 here...
       if (this.hero) {
         if (!this.throwing) {
           this.position.x = this.hero.position.x + this.hero.width / 2 - this.width / 2;
@@ -4817,8 +4819,8 @@ var Sprite = /*#__PURE__*/function () {
     key: "applyOffset",
     value: function applyOffset() {
       this.offset = {
-        x: this.map.offset.x + this.position.x,
-        y: this.map.offset.y + this.position.y
+        x: this.gamebox.offset.x + this.position.x,
+        y: this.gamebox.offset.y + this.position.y
       };
     }
   }, {
@@ -4849,15 +4851,13 @@ var Sprite = /*#__PURE__*/function () {
           _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].log("static lift...");
         } else {
           var diff = elapsed - this.previousElapsed;
-          this.frame = Math.floor(diff / this.data.verbs[this.verb].dur * this.data.verbs[this.verb][this.dir].stepsX);
-          this.frame = Math.min(this.frame, this.data.verbs[this.verb][this.dir].stepsX - 1);
+          this.frame = Math.min(Math.floor(diff / this.data.verbs[this.verb].dur * this.data.verbs[this.verb][this.dir].stepsX), this.data.verbs[this.verb][this.dir].stepsX - 1);
 
           if (diff >= this.data.verbs[this.verb].dur) {
             this.previousElapsed = elapsed;
 
             if (this.data.verbs[this.verb].stop) {
               this.frameStopped = true;
-              console.log(this.frame);
             } else {
               this.frame = 0;
             }

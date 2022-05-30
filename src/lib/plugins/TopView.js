@@ -340,7 +340,7 @@ class TopView extends GameBox {
 
         } else if ( this.parkour ) {
             if ( collision.event ) {
-                if ( this.canHeroEventDoor( poi, dir, collision ) && collision.event.amount >= 50 ) {
+                if ( this.canHeroEventDoor( poi, dir, collision ) && collision.event.amount >= 30 ) {
                     this.dropin = true;
                     this.handleCriticalReset();
                     this.handleHeroEventDoor( poi, dir, collision.event );
