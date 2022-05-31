@@ -3,7 +3,7 @@ const path = require( "path" );
 const devServerConfig = {
     hot: true,
     open: true,
-    port: 3000,
+    port: 5050,
     host: "localhost",
     static: ["dist"],
     historyApiFallback: true,
