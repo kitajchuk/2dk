@@ -36,11 +36,14 @@ class ActiveTiles {
         if ( this.data.stepsX ) {
             const diff = ( elapsed - this.previousElapsed );
 
-            this.frame = Math.floor( ( diff / this.data.dur ) * this.data.stepsX );
+            this.frame = Math.min(
+                Math.floor( ( diff / this.data.dur ) * this.data.stepsX ),
+                ( this.data.stepsX - 1 )
+            );
 
             if ( diff >= this.data.dur ) {
                 this.previousElapsed = elapsed;
-                this.frame = this.data.stepsX - 1;
+                this.frame = 0;
             }
         }
     }
@@ -54,13 +57,18 @@ class ActiveTiles {
     }
 
 
-    canInteract () {
-        return this.data.action;
+    canInteract ( verb = null ) {
+        return verb ? this.data.actions.find( ( action ) => {
+            return action.verb === verb;
+
+        }) : this.data.actions;
     }
 
 
     canAttack () {
-        return this.data.attack;
+        return this.data.actions && this.data.actions.find( ( action ) => {
+            return action.verb === Config.verbs.ATTACK;
+        });
     }
 
 

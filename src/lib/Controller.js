@@ -1,5 +1,6 @@
 // A cleanup of the original ProperJS Controller
 // https://github.com/kitajchuk/Controller
+import Utils from "./Utils";
 
 class Controller {
     constructor () {
@@ -20,7 +21,7 @@ class Controller {
         this.animate = ( elapsed ) => {
             this.cycle = window.requestAnimationFrame( this.animate );
 
-            if ( typeof callback === "function" ) {
+            if ( Utils.func( callback ) ) {
                 callback( elapsed );
             }
         };
@@ -42,7 +43,7 @@ class Controller {
         const events = event.split( " " );
 
         events.forEach( ( event ) => {
-            if ( typeof handler === "function" ) {
+            if ( Utils.func( handler ) ) {
                 if ( !this.handlers[ event ] ) {
                     this.handlers[event ] = [];
                 }

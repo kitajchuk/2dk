@@ -9,14 +9,6 @@ import FX from "./sprites/FX";
 
 
 
-const tileSortFunc = ( tileA, tileB ) => {
-    if ( tileA.amount > tileB.amount ) {
-        return -1;
-
-    } else {
-        return 1;
-    }
-};
 const stopVerbs = [
     Config.verbs.GRAB,
     Config.verbs.MOVE,
@@ -24,8 +16,8 @@ const stopVerbs = [
 ];
 const actionVerbs = [
     Config.verbs.LIFT,
-];
-const attackVerbs = [
+    Config.verbs.PULL,
+    Config.verbs.PUSH,
     Config.verbs.ATTACK,
 ];
 // @see notes in ./Config.js as these are related to that line of thought...
@@ -444,37 +436,36 @@ Can all be handled in plugin GameBox
         };
         const activeTiles = this.getVisibleActiveTiles();
 
-        for ( let i = activeTiles.length; i--; ) {
-            const instance = activeTiles[ i ];
-            let lookbox;
-
-            if ( ( typeof sprite.getFootbox === "function" ) && ( typeof sprite.getHitbox === "function" ) ) {
-                lookbox = ( footTiles.indexOf( instance.data.group ) !== -1 ) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
-
+        activeTiles.forEach( ( instance ) => {
             // Ad-hoc "sprite" object with { x, y, width, height }
-            } else {
-                lookbox = sprite;
+            let lookbox = sprite;
+
+            if ( Utils.func( sprite.getFootbox ) && Utils.func( sprite.getHitbox ) ) {
+                lookbox = ( footTiles.indexOf( instance.data.group ) !== -1 ) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
             }
 
-            for ( let j = activeTiles[ i ].data.coords.length; j--; ) {
+            instance.data.coords.forEach( ( coord ) => {
                 const tilebox = {
                     width: this.map.data.tilesize,
                     height: this.map.data.tilesize,
-                    x: instance.data.coords[ j ][ 0 ] * this.map.data.tilesize,
-                    y: instance.data.coords[ j ][ 1 ] * this.map.data.tilesize,
+                    x: coord[ 0 ] * this.map.data.tilesize,
+                    y: coord[ 1 ] * this.map.data.tilesize,
                 };
                 const collides = Utils.collide( lookbox, tilebox );
 
                 if ( collides ) {
-                    // Utils.collides returns a useful collider object...
                     const amount = ( collides.width * collides.height ) / ( this.map.data.tilesize * this.map.data.tilesize ) * 100;
                     const match = {
-                        jump: ( instance.data.action && instance.data.action.verb === Config.verbs.JUMP ),
-                        stop: ( instance.data.action && stopVerbs.indexOf( instance.data.action.verb ) !== -1 ),
+                        jump: ( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ? true : false ),
+                        stop: ( instance.data.actions && instance.data.actions.find( ( action ) => {
+                            return stopVerbs.indexOf( action.verb ) !== -1;
+                        }) ? true : false ),
                         group: instance.data.group,
-                        coord: instance.data.coords[ j ],
-                        action: ( instance.data.action && actionVerbs.indexOf( instance.data.action.verb ) !== -1 ),
-                        attack: ( instance.data.attack && attackVerbs.indexOf( instance.data.attack.verb ) !== -1 ),
+                        coord,
+                        action: ( instance.data.actions && instance.data.actions.find( ( action ) => {
+                            return actionVerbs.indexOf( action.verb ) !== -1;
+                        }) ? true : false ),
+                        attack: ( instance.data.actions && instance.canAttack() ? true : false ),
                         camera: ( cameraTiles.indexOf( instance.data.group ) !== -1 ),
                         amount,
                         tilebox,
@@ -482,26 +473,22 @@ Can all be handled in plugin GameBox
                         instance,
                     };
 
-                    if ( instance.data.action ) {
+                    if ( match.action ) {
                         tiles.action.push( match );
                     }
 
-                    if ( instance.data.attack ) {
+                    if ( match.attack ) {
                         tiles.attack.push( match );
                     }
 
-                    if ( ( !instance.data.action && !instance.data.attack ) || ( instance.data.attack && match.camera ) ) {
+                    if ( ( !match.action && !match.attack ) || ( match.attack && match.camera ) ) {
                         tiles.passive.push( match );
                     }
                 }
-            }
-        }
+            });
+        });
 
         if ( tiles.action.length || tiles.attack.length || tiles.passive.length ) {
-            tiles.action = tiles.action.sort( tileSortFunc );
-            tiles.attack = tiles.attack.sort( tileSortFunc );
-            tiles.passive = tiles.passive.sort( tileSortFunc );
-
             return tiles
         }
 

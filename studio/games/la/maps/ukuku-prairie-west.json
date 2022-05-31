@@ -28,12 +28,12 @@
             "offsetX": 192,
             "offsetY": 1600,
             "elevation": 1,
-            "action": {
-                "verb": "jump",
-                "require": {
+            "actions": [
+                {
+                    "verb": "jump",
                     "dir": "left"
                 }
-            }
+            ]
         },
         {
             "group": "ledge",
@@ -91,9 +91,11 @@
             "coords": [],
             "offsetX": 64,
             "offsetY": 2176,
-            "attack": {
-                "verb": "attack"
-            }
+            "actions": [
+                {
+                    "verb": "attack"
+                }
+            ]
         },
         {
             "group": "holes",
@@ -108,9 +110,11 @@
             "coords": [],
             "offsetX": 192,
             "offsetY": 640,
-            "action": {
-                "verb": "lift"
-            }
+            "actions": [
+                {
+                    "verb": "lift"
+                }
+            ]
         },
         {
             "group": "shrubs",
@@ -118,12 +122,14 @@
             "coords": [],
             "offsetX": 0,
             "offsetY": 512,
-            "action": {
-                "verb": "lift"
-            },
-            "attack": {
-                "verb": "attack"
-            }
+            "actions": [
+                {
+                    "verb": "lift"
+                },
+                {
+                    "verb": "attack"
+                }
+            ]
         }
     ],
     "npcs": [

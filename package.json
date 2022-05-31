@@ -50,6 +50,7 @@
     "babel-jest": "^27.5.1",
     "babel-loader": "^8.2.3",
     "chokidar-cli": "^2.1.0",
+    "concurrently": "^7.2.1",
     "copy-webpack-plugin": "^10.2.4",
     "eslint": "^8.9.0",
     "eslint-plugin-import": "^2.25.4",
@@ -86,7 +87,9 @@
     "parser": "@babel/eslint-parser",
     "parserOptions": {
       "babelOptions": {
-        "ignore": ["./studio"]
+        "ignore": [
+          "./studio"
+        ]
       },
       "ecmaFeatures": {}
     },
@@ -108,21 +111,51 @@
       "node_modules"
     ],
     "rules": {
-      "quotes": ["error", "double"],
-      "space-in-parens": ["error", "always", { "exceptions": ["{}"] }],
-      "space-before-function-paren": ["error", "always"],
-      "arrow-parens": ["error", "always"],
-      "max-len": ["error", { "code": 160 }],
-      "no-trailing-spaces": ["error", { "ignoreComments": true }],
+      "quotes": [
+        "error",
+        "double"
+      ],
+      "space-in-parens": [
+        "error",
+        "always",
+        {
+          "exceptions": [
+            "{}"
+          ]
+        }
+      ],
+      "space-before-function-paren": [
+        "error",
+        "always"
+      ],
+      "arrow-parens": [
+        "error",
+        "always"
+      ],
+      "max-len": [
+        "error",
+        {
+          "code": 160
+        }
+      ],
+      "no-trailing-spaces": [
+        "error",
+        {
+          "ignoreComments": true
+        }
+      ],
       "space-infix-ops": "error",
       "space-unary-ops": "error",
-      "comma-dangle": ["error", {
-        "functions": "never",
-        "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
-        "exports": "always-multiline"
-      }]
+      "comma-dangle": [
+        "error",
+        {
+          "functions": "never",
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline"
+        }
+      ]
     }
   },
   "babel": {

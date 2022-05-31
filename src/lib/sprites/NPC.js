@@ -134,7 +134,7 @@ class NPC extends Sprite {
 * Interactions
 *******************************************************************************/
     canInteract ( dir ) {
-        return ( this.state.action && this.state.action.require && this.state.action.require.dir && dir === this.state.action.require.dir );
+        return ( this.state.action && this.state.action.dir && dir === this.state.action.dir );
     }
 
 
@@ -149,7 +149,7 @@ class NPC extends Sprite {
 
         if ( this.state.action.verb && this.data.verbs[ this.state.action.verb ] ) {
             this.verb = this.state.action.verb;
-            this.dir = ( this.state.action.dir || this.state.dir );
+            this.dir = this.state.dir;
         }
 
         if ( this.state.action.shift ) {

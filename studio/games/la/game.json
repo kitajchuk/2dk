@@ -5,7 +5,7 @@
     "height": 576,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 625,
+    "save": 646,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -499,10 +499,7 @@
                     "dir": "down",
                     "action": {
                         "verb": "talk",
-                        "dir": "down",
-                        "require": {
-                            "dir": "up"
-                        }
+                        "dir": "up"
                     }
                 }
             ]
@@ -619,9 +616,7 @@
                     "dir": "down",
                     "action": {
                         "verb": "read",
-                        "require": {
-                            "dir": "up"
-                        }
+                        "dir": "up"
                     }
                 }
             ]
@@ -659,9 +654,7 @@
                     "dir": "down",
                     "action": {
                         "verb": "open",
-                        "require": {
-                            "dir": "up"
-                        },
+                        "dir": "up",
                         "shift": 1,
                         "sound": "chest"
                     }
@@ -700,9 +693,7 @@
                     "dir": "down",
                     "action": {
                         "verb": "read",
-                        "require": {
-                            "dir": "up"
-                        },
+                        "dir": "up",
                         "counter": 1
                     }
                 }

@@ -47,12 +47,14 @@
             "coords": [],
             "offsetX": 320,
             "offsetY": 192,
-            "action": {
-                "verb": "lift"
-            },
-            "attack": {
-                "verb": "attack"
-            }
+            "actions": [
+                {
+                    "verb": "lift"
+                },
+                {
+                    "verb": "attack"
+                }
+            ]
         }
     ],
     "events": [

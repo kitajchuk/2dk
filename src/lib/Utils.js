@@ -15,6 +15,16 @@ const Utils = {
     },
 
 
+    func ( fn ) {
+        return typeof fn === "function";
+    },
+
+
+    def ( el ) {
+        return el !== undefined;
+    },
+
+
     error ( ...args ) {
         if ( Utils.dev() ) {
             console.error.apply( console, args );

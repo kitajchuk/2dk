@@ -52,12 +52,12 @@
             "offsetX": 448,
             "offsetY": 1792,
             "elevation": 2,
-            "action": {
-                "verb": "jump",
-                "require": {
+            "actions": [
+                {
+                    "verb": "jump",
                     "dir": "down"
                 }
-            }
+            ]
         },
         {
             "group": "stairs",
@@ -72,9 +72,11 @@
             "coords": [],
             "offsetX": 64,
             "offsetY": 2176,
-            "attack": {
-                "verb": "attack"
-            }
+            "actions": [
+                {
+                    "verb": "attack"
+                }
+            ]
         },
         {
             "group": "water",
@@ -100,9 +102,11 @@
             "coords": [],
             "offsetX": 192,
             "offsetY": 640,
-            "action": {
-                "verb": "lift"
-            }
+            "actions": [
+                {
+                    "verb": "lift"
+                }
+            ]
         },
         {
             "group": "shrubs",
@@ -110,12 +114,14 @@
             "coords": [],
             "offsetX": 0,
             "offsetY": 512,
-            "action": {
-                "verb": "lift"
-            },
-            "attack": {
-                "verb": "attack"
-            }
+            "actions": [
+                {
+                    "verb": "lift"
+                },
+                {
+                    "verb": "attack"
+                }
+            ]
         }
     ],
     "npcs": [

@@ -124,7 +124,7 @@ class Sprite {
             return;
         }
 
-        if ( typeof this.renderBefore === "function" ) {
+        if ( Utils.func( this.renderBefore ) ) {
             this.renderBefore();
         }
 
@@ -177,7 +177,7 @@ class Sprite {
 
         this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
 
-        if ( typeof this.renderAfter === "function" ) {
+        if ( Utils.func( this.renderAfter ) ) {
             this.renderAfter();
         }
     }
