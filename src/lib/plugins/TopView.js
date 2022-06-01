@@ -268,7 +268,9 @@ class TopView extends GameBox {
 * Hero Conditions...
 *******************************************************************************/
     canHeroMoveWhileJumping ( poi, dir, collision ) {
-        return ( !collision.map && !collision.npc && !( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].stop ) );
+        return ( !collision.map && !collision.npc && !( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
+            return tile.stop;
+        }) ) );
     }
 
 
@@ -288,7 +290,9 @@ class TopView extends GameBox {
 
 
     canHeroTileStop ( poi, dir, collision ) {
-        return ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].stop );
+        return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
+            return tile.stop;
+        }) );
     }
 
 

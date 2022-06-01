@@ -13,11 +13,13 @@ const stopVerbs = [
     Config.verbs.GRAB,
     Config.verbs.MOVE,
     Config.verbs.LIFT,
+    Config.verbs.BOMB,
 ];
 const actionVerbs = [
     Config.verbs.LIFT,
     Config.verbs.PULL,
     Config.verbs.PUSH,
+    Config.verbs.BOMB,
     Config.verbs.ATTACK,
 ];
 // @see notes in ./Config.js as these are related to that line of thought...

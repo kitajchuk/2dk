@@ -5,7 +5,7 @@
     "height": 576,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 646,
+    "save": 658,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -618,6 +618,33 @@
                         "verb": "read",
                         "dir": "up"
                     }
+                }
+            ]
+        },
+        {
+            "id": "tree",
+            "name": "Tree",
+            "width": 128,
+            "height": 128,
+            "image": "assets/tiles/tiles.png",
+            "hitbox": {
+                "x": 0,
+                "y": 64,
+                "width": 128,
+                "height": 64
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": 1024
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down"
                 }
             ]
         },

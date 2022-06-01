@@ -28,6 +28,7 @@ const Config = {
         SWIM: "swim",
         JUMP: "jump",
         FALL: "fall",
+        BOMB: "bomb",
         THROW: "throw",
         SMASH: "smash",
         ATTACK: "attack",

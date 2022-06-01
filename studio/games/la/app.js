@@ -39,6 +39,7 @@ var Config = {
     SWIM: "swim",
     JUMP: "jump",
     FALL: "fall",
+    BOMB: "bomb",
     THROW: "throw",
     SMASH: "smash",
     ATTACK: "attack"
@@ -576,8 +577,8 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 
-var stopVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.GRAB, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.MOVE, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT];
-var actionVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.PULL, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.PUSH, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.ATTACK]; // @see notes in ./Config.js as these are related to that line of thought...
+var stopVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.GRAB, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.MOVE, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.BOMB];
+var actionVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.PULL, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.PUSH, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.BOMB, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.ATTACK]; // @see notes in ./Config.js as these are related to that line of thought...
 
 var footTiles = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.STAIRS, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.WATER, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.GRASS, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.HOLES];
 var cameraTiles = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.STAIRS, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.GRASS];
@@ -2405,9 +2406,10 @@ var Player = /*#__PURE__*/function (_Controller) {
     key: "getMergedData",
     value: function getMergedData(data, type) {
       var force = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      return _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].merge(this.data[type].find(function (obj) {
+      var baseData = this.data[type].find(function (obj) {
         return obj.id === data.id;
-      }), data, force);
+      });
+      return baseData ? _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].merge(baseData, data, force) : data;
     }
   }, {
     key: "getOrientation",
@@ -3225,7 +3227,9 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "canHeroMoveWhileJumping",
     value: function canHeroMoveWhileJumping(poi, dir, collision) {
-      return !collision.map && !collision.npc && !(collision.tiles && collision.tiles.action.length && collision.tiles.action[0].stop);
+      return !collision.map && !collision.npc && !(collision.tiles && collision.tiles.action.length && collision.tiles.action.find(function (tile) {
+        return tile.stop;
+      }));
     }
   }, {
     key: "canHeroResetMaxV",
@@ -3245,7 +3249,9 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "canHeroTileStop",
     value: function canHeroTileStop(poi, dir, collision) {
-      return collision.tiles && collision.tiles.action.length && collision.tiles.action[0].stop;
+      return collision.tiles && collision.tiles.action.length && collision.tiles.action.find(function (tile) {
+        return tile.stop;
+      });
     }
   }, {
     key: "canHeroLift",
