@@ -26,7 +26,7 @@
     "predev": "rm -rf dist && mkdir dist && cp -R studio/games dist && yarn build",
     "dev": "concurrently \"yarn serve:dev\" \"yarn watch:src\" \"yarn watch:studio\" \"yarn watch:games\"",
     "serve:dev": "webpack serve --config ./configs/webpack.config.dev.js",
-    "watch:src": "chokidar \"src/lib/*\" -c \"yarn build:2dk && yarn build:app\"",
+    "watch:src": "chokidar \"src/**/*\" -c \"yarn build:2dk && yarn build:app && cp -R studio/src/templates/2dk.css dist/games/la && cp -R studio/src/templates/app.js dist/games/la\"",
     "watch:studio": "chokidar \"studio/client/**/*.scss\" -c \"yarn build:studio\"",
     "watch:games": "chokidar \"studio/games/**/*.json\" -c \"cp -R studio/games dist\"",
     "build": "yarn build:site && yarn build:2dk && yarn build:app && yarn build:studio",

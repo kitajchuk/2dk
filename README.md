@@ -33,10 +33,8 @@ To develop clone this repo and then:
 # Install packages
 yarn
 
-# Build all resources
-yarn build
-
 # Run local dev server for static frontend
+# Runs watch scripts for all resources for an easy dev experience at localhost:5050
 yarn dev
 ```
 
@@ -46,6 +44,9 @@ yarn dev
 The studio software is an [Electron](https://www.electronjs.org/) application. Currently there are no package scripts for the software distribution as the project is still in what I would consider alpha development. To run the electron application for local development:
 
 ```shell
+# From project root install packages
+yarn
+
 # From project root build all resources
 yarn build
 
