@@ -38,8 +38,8 @@
     "build:app": "webpack --config ./configs/webpack.config.app.js",
     "build:studio": "node-sass --output-style 'compressed' ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
     "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src",
-    "lint:src": "eslint 'src/**/*.js' 'configs/**/*.js' --max-warnings 100",
-    "lint:studio": "eslint 'studio/src/client/**/*.js' 'studio/src/server/**/*.js' --max-warnings 100"
+    "lint:src": "eslint 'src/**/*.js' 'configs/**/*.js'",
+    "lint:studio": "eslint 'studio/src/client/**/*.js' 'studio/src/server/**/*.js'"
   },
   "dependencies": {},
   "devDependencies": {
@@ -71,7 +71,8 @@
   },
   "lint-staged": {
     "src/**/*.js": "yarn lint:src",
-    "studio/src/**/*.js": "yarn lint:studio"
+    "studio/src/client/**/*.js": "yarn lint:studio",
+    "studio/src/server/**/*.js": "yarn lint:studio"
   },
   "jest": {
     "displayName": "2dk",

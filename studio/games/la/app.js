@@ -605,14 +605,14 @@ var GameBox = /*#__PURE__*/function () {
       x: 0,
       y: 0
     };
-    this.camera = new Camera(0, 0, this.player.width * this.player.data.resolution, this.player.height * this.player.data.resolution, this.player.data.resolution);
+    this.camera = new Camera(0, 0, this.player.width * this.player.resolution, this.player.height * this.player.resolution, this.player.resolution);
     this.layers = {
       background: null,
       heroground: null,
       foreground: null
     };
-    var initMapData = _Loader__WEBPACK_IMPORTED_MODULE_5__["default"].cash(this.player.data.hero.map);
-    var initHeroData = this.player.data.hero; // Map
+    var initMapData = _Loader__WEBPACK_IMPORTED_MODULE_5__["default"].cash(this.player.heroData.map);
+    var initHeroData = this.player.heroData; // Map
 
     this.map = new _Map__WEBPACK_IMPORTED_MODULE_7__["default"](initMapData, this); // Hero
 
@@ -867,12 +867,12 @@ var GameBox = /*#__PURE__*/function () {
       var activeTiles = [];
 
       for (var i = this.map.activeTiles.length; i--;) {
-        for (var j = this.map.activeTiles[i].data.coords.length; j--;) {
+        for (var j = this.map.activeTiles[i].pushed.length; j--;) {
           var collides = _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(this.camera, {
             width: this.map.data.tilesize,
             height: this.map.data.tilesize,
-            x: this.map.activeTiles[i].data.coords[j][0] * this.map.data.tilesize,
-            y: this.map.activeTiles[i].data.coords[j][1] * this.map.data.tilesize
+            x: this.map.activeTiles[i].pushed[j][0] * this.map.data.tilesize,
+            y: this.map.activeTiles[i].pushed[j][1] * this.map.data.tilesize
           });
 
           if (collides && activeTiles.indexOf(this.map.activeTiles[i]) === -1) {
@@ -999,7 +999,7 @@ var GameBox = /*#__PURE__*/function () {
           lookbox = footTiles.indexOf(instance.data.group) !== -1 ? sprite.getFootbox(poi) : sprite.getHitbox(poi);
         }
 
-        instance.data.coords.forEach(function (coord) {
+        instance.pushed.forEach(function (coord) {
           var tilebox = {
             width: _this4.map.data.tilesize,
             height: _this4.map.data.tilesize,
@@ -1771,6 +1771,7 @@ var ActiveTiles = /*#__PURE__*/function () {
     this.map = map;
     this.gamebox = this.map.gamebox;
     this.frame = 0;
+    this.pushed = [];
     this.spliced = [];
     this.previousElapsed = null;
   }
@@ -1833,13 +1834,36 @@ var ActiveTiles = /*#__PURE__*/function () {
   }, {
     key: "splice",
     value: function splice(coords) {
-      for (var i = this.data.coords.length; i--;) {
-        if (this.data.coords[i][0] === coords[0] && this.data.coords[i][1] === coords[1]) {
-          this.spliced.push(this.data.coords[i]);
-          this.data.coords.splice(i, 1);
-          return true;
+      if (!this.isSpliced(coords)) {
+        for (var i = this.pushed.length; i--;) {
+          if (this.pushed[i][0] === coords[0] && this.pushed[i][1] === coords[1]) {
+            this.spliced.push(this.pushed[i]);
+            this.pushed.splice(i, 1);
+            return true;
+          }
         }
       }
+    }
+  }, {
+    key: "push",
+    value: function push(coords) {
+      if (!this.isPushed(coords)) {
+        this.pushed.push(coords);
+      }
+    }
+  }, {
+    key: "isPushed",
+    value: function isPushed(testCoords) {
+      return this.pushed.find(function (coord) {
+        return coord[0] === testCoords[0] && coord[1] === testCoords[1];
+      });
+    }
+  }, {
+    key: "isSpliced",
+    value: function isSpliced(testCoords) {
+      return this.spliced.find(function (coord) {
+        return coord[0] === testCoords[0] && coord[1] === testCoords[1];
+      });
     }
   }]);
 
@@ -2059,6 +2083,18 @@ var Map = /*#__PURE__*/function () {
 
           _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + event.coords[0] * _this3.data.tilesize, _this3.offset.y + event.coords[1] * _this3.data.tilesize, _this3.data.tilesize, _this3.data.tilesize);
         });
+        this.data.spawn.forEach(function (spawn) {
+          _this3.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_4__["default"].colors.yellow;
+
+          _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + spawn.x, _this3.offset.y + spawn.y, _this3.gamebox.hero.width, _this3.gamebox.hero.height);
+        });
+        var visibleTiles = this.gamebox.getVisibleActiveTiles();
+        this.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_4__["default"].colors.pink;
+        visibleTiles.forEach(function (activeTiles) {
+          activeTiles.pushed.forEach(function (coord) {
+            _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + coord[0] * _this3.data.tilesize, _this3.offset.y + coord[1] * _this3.data.tilesize, _this3.data.tilesize, _this3.data.tilesize);
+          });
+        });
         this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
       }
     }
@@ -2178,17 +2214,18 @@ var Map = /*#__PURE__*/function () {
       for (var i = layerTiles.length; i--;) {
         var tiles = layerTiles[i];
         var topCel = celsCopy[celsCopy.length - 1];
+        var activeTiles = this.getActiveTiles(tiles.group);
 
-        if (tiles.coords.length) {
-          for (var j = tiles.coords.length; j--;) {
-            var coord = tiles.coords[j]; // Correct tile coords
+        if (activeTiles.pushed.length) {
+          for (var j = activeTiles.pushed.length; j--;) {
+            var coord = activeTiles.pushed[j]; // Correct tile coords
 
             if (coord[0] === celsCoords[0] && coord[1] === celsCoords[1]) {
               // (tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ])
               var isTileAnimated = tiles.stepsX; // Make sure we don't dupe a tile match if it's NOT animated...
 
               if (isTileAnimated) {
-                return this.getActiveTiles(tiles.group).getTile();
+                return activeTiles.getTile();
               }
             }
           }
@@ -2196,27 +2233,15 @@ var Map = /*#__PURE__*/function () {
 
         if (tiles.offsetX === topCel[0] && tiles.offsetY === topCel[1]) {
           // Check if tile is pushed...
-          var isTilePushed = tiles.coords.find(function (coord) {
-            return coord[0] === celsCoords[0] && coord[1] === celsCoords[1];
-          });
-          var isTileSpliced = this.getActiveTiles(tiles.group).spliced.find(function (coord) {
-            return coord[0] === celsCoords[0] && coord[1] === celsCoords[1];
-          }); // Push the tile to the coords Array...
+          var isTilePushed = activeTiles.isPushed(celsCoords);
+          var isTileSpliced = activeTiles.isSpliced(celsCoords); // Push the tile to the coords Array...
           // This lets us generate ActiveTile groups that will
-          // find their coordinates in real-time using background-position...
-
-          /* Example: This will find stairs tiles and push them into the coords stack...
-              {
-                  "group": "stairs",
-                  "layer": "background",
-                  "coords": [],
-                  "offsetX": 256,
-                  "offsetY": 384
-              }
-          */
+          // find their coordinates in real-time using spritesheet background-position...
 
           if (!isTilePushed && !isTileSpliced) {
-            tiles.coords.push(celsCoords);
+            // Really we should have a ActiveTiles.prototype.coords
+            // Then this should find ActiveTiles instance and push there...
+            activeTiles.push(celsCoords);
             return true; // An ActiveTiles coord can be spliced during interaction.
             // Example: Hero picks up an action tile and throws it.
             // The original tile cel still exists in the textures data,
@@ -2341,16 +2366,16 @@ var Player = /*#__PURE__*/function (_Controller) {
     key: "debug",
     value: function debug() {
       if (this.query.map) {
-        this.data.hero.map = "maps/".concat(this.query.map);
-        this.data.hero.spawn = 0; // Can be overriden with below query string
+        this.heroData.map = "maps/".concat(this.query.map);
+        this.heroData.spawn = 0; // Can be overriden with below query string
       }
 
       if (this.query.resolution) {
-        this.data.resolution = Number(this.query.resolution);
+        this.resolution = Number(this.query.resolution);
       }
 
       if (this.query.spawn) {
-        this.data.hero.spawn = Number(this.query.spawn);
+        this.heroData.spawn = Number(this.query.spawn);
       }
     }
   }, {
@@ -2361,13 +2386,13 @@ var Player = /*#__PURE__*/function (_Controller) {
       this.loader = new _Loader__WEBPACK_IMPORTED_MODULE_10__["default"]();
       this.loader.loadJson("game.json").then(function (data) {
         _this2.data = data;
-        _this2.data.hero = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].merge(_this2.data.heroes[_this2.data.hero.sprite], _this2.data.hero);
+        _this2.heroData = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].merge(_this2.data.heroes[_this2.data.hero.sprite], _this2.data.hero);
+        _this2.resolution = _this2.device ? 2 : _this2.data.resolution;
 
         _this2.debug();
 
-        _this2.data.resolution = _this2.device ? 2 : _this2.data.resolution;
-        _this2.width = _this2.data.width / _this2.data.resolution;
-        _this2.height = _this2.data.height / _this2.data.resolution;
+        _this2.width = _this2.data.width / _this2.resolution;
+        _this2.height = _this2.data.height / _this2.resolution;
 
         _this2.build();
 
@@ -2421,7 +2446,7 @@ var Player = /*#__PURE__*/function (_Controller) {
     value: function build() {
       this.element = document.createElement("div");
       this.element.className = "_2dk";
-      this.element.dataset.resolution = this.data.resolution;
+      this.element.dataset.resolution = this.resolution;
       this.screen = document.createElement("div");
       this.screen.className = "_2dk__screen";
       this.screen.style.width = "".concat(this.width, "px");
@@ -4282,6 +4307,26 @@ var Hero = /*#__PURE__*/function (_Sprite) {
     value: function renderAfter() {
       if (this.verb === _Config__WEBPACK_IMPORTED_MODULE_5__["default"].verbs.ATTACK && this.data.weapon && this.data.weapon[this.dir].length) {
         this.gamebox.layers[this.layer].onCanvas.context.drawImage(this.image, Math.abs(this.data.weapon[this.dir][this.frame].offsetX), Math.abs(this.data.weapon[this.dir][this.frame].offsetY), this.data.weapon[this.dir][this.frame].width, this.data.weapon[this.dir][this.frame].height, this.offset.x + this.data.weapon[this.dir][this.frame].positionX, this.offset.y + this.data.weapon[this.dir][this.frame].positionY, this.data.weapon[this.dir][this.frame].width / this.scale, this.data.weapon[this.dir][this.frame].height / this.scale);
+      } // Visual box debugging....
+
+
+      if (this.gamebox.player.query.debug) {
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.25;
+        this.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_5__["default"].colors.white;
+        this.gamebox.layers.foreground.onCanvas.context.fillRect(this.offset.x, this.offset.y, this.width, this.height);
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+        this.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_5__["default"].colors.red;
+        this.gamebox.layers.foreground.onCanvas.context.fillRect(this.offset.x + this.data.hitbox.x / this.scale, this.offset.y + this.data.hitbox.y / this.scale, this.hitbox.width, this.hitbox.height);
+        this.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_5__["default"].colors.green;
+        this.gamebox.layers.foreground.onCanvas.context.fillRect(this.offset.x + this.data.hitbox.x / this.scale, this.offset.y + this.data.hitbox.y / this.scale + this.hitbox.height / 2, this.footbox.width, this.footbox.height);
+
+        if (this.gamebox.attacking) {
+          var weaponbox = this.getWeaponbox("offset");
+          this.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_5__["default"].colors.teal;
+          this.gamebox.layers.foreground.onCanvas.context.fillRect(weaponbox.x, weaponbox.y, weaponbox.width, weaponbox.height);
+        }
+
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
       }
     }
     /*******************************************************************************
@@ -4344,14 +4389,16 @@ var Hero = /*#__PURE__*/function (_Sprite) {
     /*******************************************************************************
     * Getters
     *******************************************************************************/
+    // Use "offset" to draw weaponbox debug box
 
   }, {
     key: "getWeaponbox",
     value: function getWeaponbox() {
       var _this2 = this;
 
+      var prop = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "position";
       var lowX = this.data.weapon[this.dir].reduce(function (accX, record) {
-        var absX = Math.abs(_this2.position.x + record.positionX);
+        var absX = Math.abs(_this2[prop].x + record.positionX);
 
         if (absX < accX) {
           return absX;
@@ -4360,7 +4407,7 @@ var Hero = /*#__PURE__*/function (_Sprite) {
         return accX;
       }, 999999);
       var lowY = this.data.weapon[this.dir].reduce(function (accY, record) {
-        var absY = Math.abs(_this2.position.y + record.positionY);
+        var absY = Math.abs(_this2[prop].y + record.positionY);
 
         if (absY < accY) {
           return absY;
@@ -4369,7 +4416,7 @@ var Hero = /*#__PURE__*/function (_Sprite) {
         return accY;
       }, 999999);
       var hiX = this.data.weapon[this.dir].reduce(function (accX, record) {
-        var absX = Math.abs(_this2.position.x + record.positionX + record.width);
+        var absX = Math.abs(_this2[prop].x + record.positionX + record.width);
 
         if (absX > accX) {
           return absX;
@@ -4378,7 +4425,7 @@ var Hero = /*#__PURE__*/function (_Sprite) {
         return accX;
       }, 0);
       var hiY = this.data.weapon[this.dir].reduce(function (accY, record) {
-        var absY = Math.abs(_this2.position.y + record.positionY + record.height);
+        var absY = Math.abs(_this2[prop].y + record.positionY + record.height);
 
         if (absY > accY) {
           return absY;

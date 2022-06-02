@@ -18,6 +18,7 @@ class ActiveTiles {
         this.map = map;
         this.gamebox = this.map.gamebox;
         this.frame = 0;
+        this.pushed = [];
         this.spliced = [];
         this.previousElapsed = null;
     }
@@ -86,13 +87,36 @@ class ActiveTiles {
 
 
     splice ( coords ) {
-        for ( let i = this.data.coords.length; i--; ) {
-            if ( this.data.coords[ i ][ 0 ] === coords[ 0 ] && this.data.coords[ i ][ 1 ] === coords[ 1 ] ) {
-                this.spliced.push( this.data.coords[ i ] );
-                this.data.coords.splice( i, 1 );
-                return true;
+        if ( !this.isSpliced( coords ) ) {
+            for ( let i = this.pushed.length; i--; ) {
+                if ( this.pushed[ i ][ 0 ] === coords[ 0 ] && this.pushed[ i ][ 1 ] === coords[ 1 ] ) {
+                    this.spliced.push( this.pushed[ i ] );
+                    this.pushed.splice( i, 1 );
+                    return true;
+                }
             }
         }
+    }
+
+
+    push ( coords ) {
+        if ( !this.isPushed( coords ) ) {
+            this.pushed.push( coords );
+        }
+    }
+
+
+    isPushed ( testCoords ) {
+        return this.pushed.find( ( coord ) => {
+            return ( coord[ 0 ] === testCoords[ 0 ] && coord[ 1 ] === testCoords[ 1 ] );
+        });
+    }
+
+
+    isSpliced ( testCoords ) {
+        return this.spliced.find( ( coord ) => {
+            return ( coord[ 0 ] === testCoords[ 0 ] && coord[ 1 ] === testCoords[ 1 ] );
+        });
     }
 }
 
@@ -325,6 +349,30 @@ class Map {
                     this.data.tilesize
                 );
             });
+            this.data.spawn.forEach( ( spawn ) => {
+                this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.yellow;
+                this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                    this.offset.x + spawn.x,
+                    this.offset.y + spawn.y,
+                    this.gamebox.hero.width,
+                    this.gamebox.hero.height
+                );
+            });
+
+            const visibleTiles = this.gamebox.getVisibleActiveTiles();
+
+            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.pink;
+
+            visibleTiles.forEach( ( activeTiles ) => {
+                activeTiles.pushed.forEach( ( coord ) => {
+                    this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                        this.offset.x + ( coord[ 0 ] * this.data.tilesize ),
+                        this.offset.y + ( coord[ 1 ] * this.data.tilesize ),
+                        this.data.tilesize,
+                        this.data.tilesize
+                    );
+                });
+            });
 
             this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
         }
@@ -464,10 +512,11 @@ class Map {
         for ( let i = layerTiles.length; i--; ) {
             const tiles = layerTiles[ i ];
             const topCel = celsCopy[ celsCopy.length - 1 ];
+            const activeTiles = this.getActiveTiles( tiles.group );
 
-            if ( tiles.coords.length ) {
-                for ( let j = tiles.coords.length; j--; ) {
-                    const coord = tiles.coords[ j ];
+            if ( activeTiles.pushed.length ) {
+                for ( let j = activeTiles.pushed.length; j--; ) {
+                    const coord = activeTiles.pushed[ j ];
 
                     // Correct tile coords
                     if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] ) {
@@ -476,7 +525,7 @@ class Map {
 
                         // Make sure we don't dupe a tile match if it's NOT animated...
                         if ( isTileAnimated ) {
-                            return this.getActiveTiles( tiles.group ).getTile();
+                            return activeTiles.getTile();
                         }
                     }
                 }
@@ -484,27 +533,16 @@ class Map {
 
             if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
                 // Check if tile is pushed...
-                const isTilePushed = tiles.coords.find( ( coord ) => {
-                    return ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] );
-                });
-                const isTileSpliced = this.getActiveTiles( tiles.group ).spliced.find( ( coord ) => {
-                    return ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] );
-                });
+                const isTilePushed = activeTiles.isPushed( celsCoords );
+                const isTileSpliced = activeTiles.isSpliced( celsCoords );
 
                 // Push the tile to the coords Array...
                 // This lets us generate ActiveTile groups that will
-                // find their coordinates in real-time using background-position...
-                /* Example: This will find stairs tiles and push them into the coords stack...
-                    {
-                        "group": "stairs",
-                        "layer": "background",
-                        "coords": [],
-                        "offsetX": 256,
-                        "offsetY": 384
-                    }
-                */
+                // find their coordinates in real-time using spritesheet background-position...
                 if ( !isTilePushed && !isTileSpliced ) {
-                    tiles.coords.push( celsCoords );
+                    // Really we should have a ActiveTiles.prototype.coords
+                    // Then this should find ActiveTiles instance and push there...
+                    activeTiles.push( celsCoords );
                     return true;
 
                 // An ActiveTiles coord can be spliced during interaction.

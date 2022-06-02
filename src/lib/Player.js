@@ -42,16 +42,16 @@ class Player extends Controller {
     // Debugging and feature flagging...
     debug () {
         if ( this.query.map ) {
-            this.data.hero.map = `maps/${this.query.map}`;
-            this.data.hero.spawn = 0; // Can be overriden with below query string
+            this.heroData.map = `maps/${this.query.map}`;
+            this.heroData.spawn = 0; // Can be overriden with below query string
         }
 
         if ( this.query.resolution ) {
-            this.data.resolution = Number( this.query.resolution );
+            this.resolution = Number( this.query.resolution );
         }
 
         if ( this.query.spawn ) {
-            this.data.hero.spawn = Number( this.query.spawn );
+            this.heroData.spawn = Number( this.query.spawn );
         }
     }
 
@@ -60,11 +60,11 @@ class Player extends Controller {
         this.loader = new Loader();
         this.loader.loadJson( "game.json" ).then( ( data ) => {
             this.data = data;
-            this.data.hero = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
+            this.heroData = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
+            this.resolution = ( this.device ? 2 : this.data.resolution );
             this.debug();
-            this.data.resolution = ( this.device ? 2 : this.data.resolution );
-            this.width = this.data.width / this.data.resolution;
-            this.height = this.data.height / this.data.resolution;
+            this.width = this.data.width / this.resolution;
+            this.height = this.data.height / this.resolution;
             this.build();
             this.onRotate();
 
@@ -127,7 +127,7 @@ class Player extends Controller {
     build () {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk";
-        this.element.dataset.resolution = this.data.resolution;
+        this.element.dataset.resolution = this.resolution;
         this.screen = document.createElement( "div" );
         this.screen.className = "_2dk__screen";
         this.screen.style.width = `${this.width}px`;

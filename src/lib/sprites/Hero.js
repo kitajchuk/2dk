@@ -48,6 +48,47 @@ class Hero extends Sprite {
                 this.data.weapon[ this.dir ][ this.frame ].height / this.scale
             );
         }
+
+        // Visual box debugging....
+        if ( this.gamebox.player.query.debug ) {
+            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.25;
+            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.white;
+            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                this.offset.x,
+                this.offset.y,
+                this.width,
+                this.height
+            );
+            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.red;
+            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                this.offset.x + ( this.data.hitbox.x / this.scale ),
+                this.offset.y + ( this.data.hitbox.y / this.scale ),
+                this.hitbox.width,
+                this.hitbox.height
+            );
+            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.green;
+            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                this.offset.x + ( this.data.hitbox.x / this.scale ),
+                this.offset.y + ( this.data.hitbox.y / this.scale ) + ( this.hitbox.height / 2 ),
+                this.footbox.width,
+                this.footbox.height
+            );
+
+            if ( this.gamebox.attacking ) {
+                const weaponbox = this.getWeaponbox( "offset" );
+
+                this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.teal;
+                this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                    weaponbox.x,
+                    weaponbox.y,
+                    weaponbox.width,
+                    weaponbox.height
+                );
+            }
+
+            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
+        }
     }
 
 
@@ -118,9 +159,10 @@ class Hero extends Sprite {
 /*******************************************************************************
 * Getters
 *******************************************************************************/
-    getWeaponbox () {
+    // Use "offset" to draw weaponbox debug box
+    getWeaponbox ( prop = "position" ) {
         const lowX = this.data.weapon[ this.dir ].reduce( ( accX, record ) => {
-            const absX = Math.abs( this.position.x + record.positionX );
+            const absX = Math.abs( this[ prop ].x + record.positionX );
 
             if ( absX < accX ) {
                 return absX;
@@ -130,7 +172,7 @@ class Hero extends Sprite {
 
         }, 999999 );
         const lowY = this.data.weapon[ this.dir ].reduce( ( accY, record ) => {
-            const absY = Math.abs( this.position.y + record.positionY );
+            const absY = Math.abs( this[ prop ].y + record.positionY );
 
             if ( absY < accY ) {
                 return absY;
@@ -140,7 +182,7 @@ class Hero extends Sprite {
 
         }, 999999 );
         const hiX = this.data.weapon[ this.dir ].reduce( ( accX, record ) => {
-            const absX = Math.abs( this.position.x + record.positionX + record.width );
+            const absX = Math.abs( this[ prop ].x + record.positionX + record.width );
 
             if ( absX > accX ) {
                 return absX;
@@ -150,7 +192,7 @@ class Hero extends Sprite {
 
         }, 0 );
         const hiY = this.data.weapon[ this.dir ].reduce( ( accY, record ) => {
-            const absY = Math.abs( this.position.y + record.positionY + record.height );
+            const absY = Math.abs( this[ prop ].y + record.positionY + record.height );
 
             if ( absY > accY ) {
                 return absY;
@@ -165,7 +207,6 @@ class Hero extends Sprite {
             y: lowY,
             width: hiX - lowX,
             height: hiY - lowY,
-
         };
     }
 }

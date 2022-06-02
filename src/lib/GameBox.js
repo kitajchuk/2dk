@@ -59,9 +59,9 @@ class GameBox {
         this.camera = new Camera(
             0,
             0,
-            this.player.width * this.player.data.resolution,
-            this.player.height * this.player.data.resolution,
-            this.player.data.resolution
+            this.player.width * this.player.resolution,
+            this.player.height * this.player.resolution,
+            this.player.resolution
         );
         this.layers = {
             background: null,
@@ -69,8 +69,8 @@ class GameBox {
             foreground: null,
         };
 
-        const initMapData = Loader.cash( this.player.data.hero.map );
-        const initHeroData = this.player.data.hero;
+        const initMapData = Loader.cash( this.player.heroData.map );
+        const initHeroData = this.player.heroData;
 
         // Map
         this.map = new Map( initMapData, this );
@@ -312,12 +312,12 @@ Can all be handled in plugin GameBox
         const activeTiles = [];
 
         for ( let i = this.map.activeTiles.length; i--; ) {
-            for ( let j = this.map.activeTiles[ i ].data.coords.length; j--; ) {
+            for ( let j = this.map.activeTiles[ i ].pushed.length; j--; ) {
                 const collides = Utils.collide( this.camera, {
                     width: this.map.data.tilesize,
                     height: this.map.data.tilesize,
-                    x: this.map.activeTiles[ i ].data.coords[ j ][ 0 ] * this.map.data.tilesize,
-                    y: this.map.activeTiles[ i ].data.coords[ j ][ 1 ] * this.map.data.tilesize,
+                    x: this.map.activeTiles[ i ].pushed[ j ][ 0 ] * this.map.data.tilesize,
+                    y: this.map.activeTiles[ i ].pushed[ j ][ 1 ] * this.map.data.tilesize,
                 });
 
                 if ( collides && activeTiles.indexOf( this.map.activeTiles[ i ] ) === -1 ) {
@@ -446,7 +446,7 @@ Can all be handled in plugin GameBox
                 lookbox = ( footTiles.indexOf( instance.data.group ) !== -1 ) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
             }
 
-            instance.data.coords.forEach( ( coord ) => {
+            instance.pushed.forEach( ( coord ) => {
                 const tilebox = {
                     width: this.map.data.tilesize,
                     height: this.map.data.tilesize,

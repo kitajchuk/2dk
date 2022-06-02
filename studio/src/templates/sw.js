@@ -30,7 +30,7 @@ const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
         putInCache( request, preloadResponse.clone() );
         return preloadResponse;
     }
-  
+
     // Next try to get the resource from the network
     try {
         const responseFromNetwork = await fetch( request );
@@ -62,7 +62,7 @@ const enableNavigationPreload = async () => {
     }
 };
 
-const deleteCache = async key => {
+const deleteCache = async ( key ) => {
     await caches.delete( key );
 };
 
@@ -88,14 +88,14 @@ self.addEventListener( "install", ( event ) => {
 
 self.addEventListener( "activate", ( event ) => {
     event.waitUntil( deleteOldCaches() );
-    event.waitUntil( enableNavigationPreload() );
+    // event.waitUntil( enableNavigationPreload() );
 });
 
 self.addEventListener( "fetch", ( event ) => {
     event.respondWith(
         cacheFirst({
             request: event.request,
-            preloadResponsePromise: event.preloadResponse,
+            // preloadResponsePromise: event.preloadResponse,
             fallbackUrl: `${getScope()}icon.png`,
         })
     );
