@@ -71,7 +71,8 @@ const getScope = () => {
 };
 
 const getScopedUrls = () => {
-    return CACHE_URLS.map( url => `${getScope()}${url}` );
+    const scope = getScope();
+    return CACHE_URLS.map( url => `${scope}${url}` );
 };
 
 const deleteOldCaches = async () => {
