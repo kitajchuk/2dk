@@ -15,6 +15,11 @@ class TopView extends GameBox {
 
         // Interactions
         this.interact = {
+            // npc: {
+            //     sprite?
+            //     spring?
+            // }
+            npc: null,
             // tile: {
             //     group?,
             //     coord?,
@@ -60,6 +65,11 @@ class TopView extends GameBox {
         // blit interaction tile sprite?
         if ( this.interact.tile && this.interact.tile.sprite && this.interact.tile.spring ) {
             this.handleThrowing( elapsed );
+        }
+
+        // blit interaction npc sprite?
+        if ( this.interact.npc && this.interact.npc.sprite && this.interact.npc.spring ) {
+            this.handleAttackNCP( elapsed );
         }
 
         // update gamebox (camera)
@@ -626,8 +636,55 @@ class TopView extends GameBox {
         const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
         const weaponBox = this.hero.getWeaponbox();
         const collision = {
+            npc: this.checkNPC( poi, weaponBox ),
             tiles: this.checkTiles( poi, weaponBox ),
         };
+
+        if ( collision.npc ) {
+            const poi = {};
+
+            if ( this.hero.dir === "left" || this.hero.dir === "right" ) {
+                if ( this.hero.position.y < collision.npc.position.y ) {
+                    poi.y = collision.npc.position.y - ( collision.npc.position.y - this.hero.position.y );
+
+                } else {
+                    poi.y = this.hero.position.y - ( this.hero.position.y - collision.npc.position.y );
+                }
+
+            // up or down
+            } else {
+                if ( this.hero.position.x < collision.npc.position.x ) {
+                    poi.x = collision.npc.position.x - ( collision.npc.position.x - this.hero.position.x );
+
+                } else {
+                    poi.x = this.hero.position.x - ( this.hero.position.x - collision.npc.position.x );
+                }
+            }
+
+            if ( this.hero.dir === "left" ) {
+                poi.x = collision.npc.position.x - this.map.data.tilesize;
+            }
+
+            if ( this.hero.dir === "right" ) {
+                poi.x = collision.npc.position.x + this.map.data.tilesize;
+            }
+
+            if ( this.hero.dir === "up" ) {
+                poi.y = collision.npc.position.y - this.map.data.tilesize;
+            }
+
+            if ( this.hero.dir === "down" ) {
+                poi.y = collision.npc.position.y + this.map.data.tilesize;
+            }
+
+            this.interact.npc = {};
+            this.interact.npc.sprite = collision.npc;
+            this.interact.npc.sprite.attacked = true;
+            this.interact.npc.spring = new Spring( this.player, collision.npc.position.x, collision.npc.position.y, 120, 3.5 );
+            this.interact.npc.spring.poi = poi;
+            // Don't bind so we can manage collision better
+            // this.interact.npc.spring.bind( collision.npc );
+        }
 
         if ( collision.tiles && collision.tiles.attack.length ) {
             collision.tiles.attack.forEach( ( tile ) => {
@@ -637,10 +694,46 @@ class TopView extends GameBox {
             });
         }
 
+        this.player.gameaudio.hitSound( Config.verbs.ATTACK );
+
         setTimeout( () => {
             this.hero.face( this.hero.dir );
 
         }, this.hero.getDur( Config.verbs.ATTACK ) );
+    }
+
+
+    handleAttackNCP ( elapsed ) {
+        if ( this.interact.npc.spring.isResting ) {
+            this.interact.npc.sprite.attacked = false;
+
+            if ( this.interact.npc.sprite.stats ) {
+                this.interact.npc.sprite.stats.health -= this.hero.data.stats.power;
+
+                if ( this.interact.npc.sprite.stats.health <= 0 ) {
+                    this.smokeObject( this.interact.npc.sprite );
+                    this.player.gameaudio.hitSound( Config.verbs.SMASH );
+                    this.map.killObj( "npcs", this.interact.npc.sprite );
+                }
+            }
+
+            this.interact.npc = null;
+
+        } else {
+            this.interact.npc.spring.blit( elapsed );
+
+            const collision = {
+                map: this.checkMap( this.interact.npc.spring.position, this.interact.npc.sprite ),
+                npc: this.checkNPC( this.interact.npc.spring.position, this.interact.npc.sprite ),
+                tiles: this.checkTiles( this.interact.npc.spring.position, this.interact.npc.sprite ),
+                camera: this.checkCamera( this.interact.npc.spring.position, this.interact.npc.sprite ),
+            };
+
+            if ( !collision.map && !collision.npc && !collision.camera && !this.canHeroTileStop( this.interact.npc.sprite.position, null, collision ) ) {
+                this.interact.npc.sprite.position.x = this.interact.npc.spring.position.x;
+                this.interact.npc.sprite.position.y = this.interact.npc.spring.position.y;
+            }
+        }
     }
 
 
@@ -722,7 +815,8 @@ class TopView extends GameBox {
 
         // Handle sprite AI logics...
         // Hero sprite will NEVER have AI data...
-        if ( sprite.data.ai ) {
+        // Sprite movement is hindered when attacked...
+        if ( sprite.data.ai && !sprite.attacked ) {
             if ( sprite.data.ai === Config.npc.ROAM ) {
                 this.handleRoam( sprite );
 

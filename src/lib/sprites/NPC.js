@@ -20,6 +20,12 @@ class NPC extends Sprite {
         this.counter = this.data.ai ? ( 60 * 1 ) : 0;
         this.cooldown = 0;
         this.collided = false;
+        this.attacked = false;
+
+        if ( this.data.stats ) {
+            this.stats = Utils.copy( this.data.stats );
+        }
+
         this.shift();
     }
 

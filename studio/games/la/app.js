@@ -968,12 +968,17 @@ var GameBox = /*#__PURE__*/function () {
   }, {
     key: "checkNPC",
     value: function checkNPC(poi, sprite) {
-      var hitbox = sprite.getHitbox(poi);
-      var npcs = this.getVisibleNPCs();
+      var npcs = this.getVisibleNPCs(); // Ad-hoc "sprite" object with { x, y, width, height }
+
+      var lookbox = sprite;
+
+      if (_Utils__WEBPACK_IMPORTED_MODULE_3__["default"].func(sprite.getHitbox)) {
+        lookbox = sprite.getHitbox(poi);
+      }
 
       for (var i = npcs.length; i--;) {
         // A thrown object Sprite will have a hero prop
-        if (!npcs[i].hero && npcs[i] !== sprite && _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(hitbox, npcs[i].hitbox)) {
+        if (!npcs[i].hero && npcs[i] !== sprite && _Utils__WEBPACK_IMPORTED_MODULE_3__["default"].collide(lookbox, npcs[i].hitbox)) {
           return npcs[i];
         }
       }
@@ -3011,6 +3016,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
     _this = _super.call(this, player); // Interactions
 
     _this.interact = {
+      // npc: {
+      //     sprite?
+      //     spring?
+      // }
+      npc: null,
       // tile: {
       //     group?,
       //     coord?,
@@ -3056,6 +3066,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
       if (this.interact.tile && this.interact.tile.sprite && this.interact.tile.spring) {
         this.handleThrowing(elapsed);
+      } // blit interaction npc sprite?
+
+
+      if (this.interact.npc && this.interact.npc.sprite && this.interact.npc.spring) {
+        this.handleAttackNCP(elapsed);
       } // update gamebox (camera)
 
 
@@ -3595,8 +3610,51 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       var poi = this.hero.getNextPoiByDir(this.hero.dir, 1);
       var weaponBox = this.hero.getWeaponbox();
       var collision = {
+        npc: this.checkNPC(poi, weaponBox),
         tiles: this.checkTiles(poi, weaponBox)
       };
+
+      if (collision.npc) {
+        var _poi = {};
+
+        if (this.hero.dir === "left" || this.hero.dir === "right") {
+          if (this.hero.position.y < collision.npc.position.y) {
+            _poi.y = collision.npc.position.y - (collision.npc.position.y - this.hero.position.y);
+          } else {
+            _poi.y = this.hero.position.y - (this.hero.position.y - collision.npc.position.y);
+          } // up or down
+
+        } else {
+          if (this.hero.position.x < collision.npc.position.x) {
+            _poi.x = collision.npc.position.x - (collision.npc.position.x - this.hero.position.x);
+          } else {
+            _poi.x = this.hero.position.x - (this.hero.position.x - collision.npc.position.x);
+          }
+        }
+
+        if (this.hero.dir === "left") {
+          _poi.x = collision.npc.position.x - this.map.data.tilesize;
+        }
+
+        if (this.hero.dir === "right") {
+          _poi.x = collision.npc.position.x + this.map.data.tilesize;
+        }
+
+        if (this.hero.dir === "up") {
+          _poi.y = collision.npc.position.y - this.map.data.tilesize;
+        }
+
+        if (this.hero.dir === "down") {
+          _poi.y = collision.npc.position.y + this.map.data.tilesize;
+        }
+
+        this.interact.npc = {};
+        this.interact.npc.sprite = collision.npc;
+        this.interact.npc.sprite.attacked = true;
+        this.interact.npc.spring = new _Spring__WEBPACK_IMPORTED_MODULE_10__["default"](this.player, collision.npc.position.x, collision.npc.position.y, 120, 3.5);
+        this.interact.npc.spring.poi = _poi; // Don't bind so we can manage collision better
+        // this.interact.npc.spring.bind( collision.npc );
+      }
 
       if (collision.tiles && collision.tiles.attack.length) {
         collision.tiles.attack.forEach(function (tile) {
@@ -3606,9 +3664,42 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         });
       }
 
+      this.player.gameaudio.hitSound(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.ATTACK);
       setTimeout(function () {
         _this6.hero.face(_this6.hero.dir);
       }, this.hero.getDur(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.ATTACK));
+    }
+  }, {
+    key: "handleAttackNCP",
+    value: function handleAttackNCP(elapsed) {
+      if (this.interact.npc.spring.isResting) {
+        this.interact.npc.sprite.attacked = false;
+
+        if (this.interact.npc.sprite.stats) {
+          this.interact.npc.sprite.stats.health -= this.hero.data.stats.power;
+
+          if (this.interact.npc.sprite.stats.health <= 0) {
+            this.smokeObject(this.interact.npc.sprite);
+            this.player.gameaudio.hitSound(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.SMASH);
+            this.map.killObj("npcs", this.interact.npc.sprite);
+          }
+        }
+
+        this.interact.npc = null;
+      } else {
+        this.interact.npc.spring.blit(elapsed);
+        var collision = {
+          map: this.checkMap(this.interact.npc.spring.position, this.interact.npc.sprite),
+          npc: this.checkNPC(this.interact.npc.spring.position, this.interact.npc.sprite),
+          tiles: this.checkTiles(this.interact.npc.spring.position, this.interact.npc.sprite),
+          camera: this.checkCamera(this.interact.npc.spring.position, this.interact.npc.sprite)
+        };
+
+        if (!collision.map && !collision.npc && !collision.camera && !this.canHeroTileStop(this.interact.npc.sprite.position, null, collision)) {
+          this.interact.npc.sprite.position.x = this.interact.npc.spring.position.x;
+          this.interact.npc.sprite.position.y = this.interact.npc.spring.position.y;
+        }
+      }
     }
   }, {
     key: "handleHeroTiles",
@@ -3683,9 +3774,10 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         sprite.idle.y = true;
       } // Handle sprite AI logics...
       // Hero sprite will NEVER have AI data...
+      // Sprite movement is hindered when attacked...
 
 
-      if (sprite.data.ai) {
+      if (sprite.data.ai && !sprite.attacked) {
         if (sprite.data.ai === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.ROAM) {
           this.handleRoam(sprite);
         } else if (sprite.data.ai === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.WANDER) {
@@ -4505,6 +4597,11 @@ var NPC = /*#__PURE__*/function (_Sprite) {
     _this.counter = _this.data.ai ? 60 * 1 : 0;
     _this.cooldown = 0;
     _this.collided = false;
+    _this.attacked = false;
+
+    if (_this.data.stats) {
+      _this.stats = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].copy(_this.data.stats);
+    }
 
     _this.shift();
 

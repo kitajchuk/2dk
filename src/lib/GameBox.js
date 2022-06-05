@@ -416,12 +416,18 @@ Can all be handled in plugin GameBox
 
 
     checkNPC ( poi, sprite ) {
-        const hitbox = sprite.getHitbox( poi );
         const npcs = this.getVisibleNPCs();
+
+        // Ad-hoc "sprite" object with { x, y, width, height }
+        let lookbox = sprite;
+
+        if ( Utils.func( sprite.getHitbox ) ) {
+            lookbox = sprite.getHitbox( poi );
+        }
 
         for ( let i = npcs.length; i--; ) {
             // A thrown object Sprite will have a hero prop
-            if ( !npcs[ i ].hero && npcs[ i ] !== sprite && Utils.collide( hitbox, npcs[ i ].hitbox ) ) {
+            if ( !npcs[ i ].hero && npcs[ i ] !== sprite && Utils.collide( lookbox, npcs[ i ].hitbox ) ) {
                 return npcs[ i ];
             }
         }
