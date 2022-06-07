@@ -39,7 +39,7 @@
             "coords": [],
             "offsetX": 192,
             "offsetY": 1600,
-            "elevation": 1,
+            "elevation": 2,
             "actions": [
                 {
                     "verb": "jump",
@@ -107,7 +107,12 @@
             "layer": "background",
             "coords": [],
             "offsetX": 128,
-            "offsetY": 448
+            "offsetY": 448,
+            "actions": [
+                {
+                    "verb": "fall"
+                }
+            ]
         },
         {
             "group": "stones",

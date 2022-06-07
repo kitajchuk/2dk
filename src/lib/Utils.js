@@ -52,10 +52,32 @@ const Utils = {
     },
 
 
+
+    contains ( box1, box2 ) {
+        let ret = false;
+
+        if (
+            ( box2.x + box2.width ) <= ( box1.x + box1.width ) &&
+            box2.x >= box1.x &&
+            ( box2.y + box2.height ) <= ( box1.y + box1.height ) &&
+            box2.y >= box1.y
+        ) {
+            ret = true;
+        }
+
+        return ret;
+    },
+
+
     collide ( box1, box2 ) {
         let ret = false;
 
-        if ( box1.x < ( box2.x + box2.width ) && ( box1.x + box1.width ) > box2.x && box1.y < ( box2.y + box2.height ) && ( box1.height + box1.y ) > box2.y ) {
+        if (
+            box1.x < ( box2.x + box2.width ) &&
+            ( box1.x + box1.width ) > box2.x &&
+            box1.y < ( box2.y + box2.height ) &&
+            ( box1.height + box1.y ) > box2.y
+        ) {
             ret = {
                 // box1.x1 snapped to ZERO
                 x: Math.max( 0, ( box1.x - box2.x ) ),

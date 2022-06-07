@@ -20,6 +20,7 @@ const actionVerbs = [
     Config.verbs.PULL,
     Config.verbs.PUSH,
     Config.verbs.BOMB,
+    Config.verbs.FALL,
     Config.verbs.ATTACK,
 ];
 // @see notes in ./Config.js as these are related to that line of thought...
@@ -465,6 +466,7 @@ Can all be handled in plugin GameBox
                     const amount = ( collides.width * collides.height ) / ( this.map.data.tilesize * this.map.data.tilesize ) * 100;
                     const match = {
                         jump: ( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ? true : false ),
+                        fall: ( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ? true : false ),
                         stop: ( instance.data.actions && instance.data.actions.find( ( action ) => {
                             return stopVerbs.indexOf( action.verb ) !== -1;
                         }) ? true : false ),

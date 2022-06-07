@@ -4,6 +4,7 @@ import Loader from "../Loader";
 import GameBox from "../GameBox";
 import Map from "../Map";
 import Spring from "../Spring";
+import Tween from "../Tween";
 import Sprite from "../sprites/Sprite";
 import Companion from "../sprites/Companion";
 
@@ -28,11 +29,14 @@ class TopView extends GameBox {
             //     spring?
             // }
             tile: null,
+            // fall: {
+            //     tween?
+            // }
+            fall: null,
             push: 0,
         };
         // parkour: {
-        //     distance?
-        //     landing?
+        //     tween?
         // }
         this.parkour = null;
         this.attacking = false;
@@ -233,7 +237,7 @@ class TopView extends GameBox {
         }
 
         // There will be extra blocking checks wrapped around this action
-        if ( !this.jumping ) {
+        if ( !this.jumping && this.hero.verb !== Config.verbs.LIFT ) {
             this.handleHeroAttack();
         }
     }
@@ -306,6 +310,17 @@ class TopView extends GameBox {
     }
 
 
+    canHeroTileFall ( poi, dir, collision ) {
+        return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
+            if ( tile.fall ) {
+                console.log( Utils.contains( tile.tilebox, this.hero.footbox ) );
+            }
+
+            return tile.fall && Utils.contains( tile.tilebox, this.hero.footbox );
+        }) );
+    }
+
+
     canHeroLift ( poi, dir ) {
         return ( dir === Config.opposites[ this.hero.dir ] );
     }
@@ -338,30 +353,6 @@ class TopView extends GameBox {
 
         // Apply the sprite animation cycle
         this.hero.applyCycle();
-    }
-
-
-    applyHeroTileJump ( poi, dir ) {
-        this.player.controls[ this.hero.dir ] = true;
-
-        if (
-            ( dir === "left" && this.hero.position.x <= this.parkour.landing.x ) ||
-            ( dir === "right" && this.hero.position.x >= this.parkour.landing.x ) ||
-            ( dir === "up" && this.hero.position.y <= this.parkour.landing.y ) ||
-            ( dir === "down" && this.hero.position.y >= this.parkour.landing.y )
-        ) {
-            const dpad = this.player.gamepad.checkDpad();
-            const dpadDir = dpad.find( ( ctrl ) => {
-                return ( ctrl.btn[ 0 ] === this.hero.dir );
-            });
-
-            if ( !dpadDir ) {
-                this.player.controls[ this.hero.dir ] = false;
-            }
-
-            this.parkour = null;
-            this.hero.face( this.hero.dir );
-        }
     }
 
 
@@ -425,21 +416,7 @@ class TopView extends GameBox {
             this.interact.push = 0;
         }
 
-        if ( this.locked || this.falling || this.attacking ) {
-            return;
-
-        } else if ( this.parkour ) {
-            if ( collision.event ) {
-                if ( this.canHeroEventDoor( poi, dir, collision ) && collision.event.amount >= 30 ) {
-                    this.dropin = true;
-                    this.handleCriticalReset();
-                    this.handleHeroEventDoor( poi, dir, collision.event );
-                    return;
-                }
-            }
-
-            this.applyHeroTileJump( poi, dir );
-            this.applyHero( poi, dir );
+        if ( this.locked || this.falling || this.parkour || this.attacking ) {
             return;
 
         } else if ( this.jumping ) {
@@ -493,6 +470,11 @@ class TopView extends GameBox {
             } else if ( this.canHeroTileStop( poi, dir, collision ) ) {
                 this.handleHeroPush( poi, dir, collision.tiles.action[ 0 ] );
                 return;
+
+            // When you fall down, you gotta get back up again...
+            } else if ( this.canHeroTileFall( poi, dir, collision ) ) {
+                this.handleHeroFall( poi, dir, collision.tiles );
+                return;
             }
 
             this.handleHeroTiles( poi, dir, collision.tiles );
@@ -519,30 +501,96 @@ class TopView extends GameBox {
 
 
     handleHeroTileJump ( poi, dir, tile ) {
+        let destPos;
+        let destTile;
         const dirs = ["left", "right", "up", "down"];
-        const distance = this.map.data.tilesize + ( this.map.data.tilesize * tile.instance.data.elevation );
+
+        if ( this.hero.dir === "left" ) {
+            destTile = {
+                x: tile.tilebox.x - ( this.map.data.tilesize * tile.instance.data.elevation ),
+                y: tile.tilebox.y,
+            };
+            destPos = {
+                x: destTile.x,
+                y: destTile.y - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
+            };
+        }
+
+        if ( this.hero.dir === "right" ) {
+            destTile = {
+                x: tile.tilebox.x + ( this.map.data.tilesize * tile.instance.data.elevation ),
+                y: tile.tilebox.y,
+            };
+            destPos = {
+                x: destTile.x - ( this.hero.width - this.map.data.tilesize ),
+                y: destTile.y - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
+            };
+        }
+
+        if ( this.hero.dir === "up" ) {
+            destTile = {
+                x: tile.tilebox.x,
+                y: tile.tilebox.y - ( this.map.data.tilesize * tile.instance.data.elevation ),
+            };
+            destPos = {
+                x: destTile.x - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
+                y: destTile.y,
+            };
+        }
+
+        if ( this.hero.dir === "down" ) {
+            destTile = {
+                x: tile.tilebox.x,
+                y: tile.tilebox.y + ( this.map.data.tilesize * tile.instance.data.elevation ),
+            };
+            destPos = {
+                x: destTile.x - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
+                y: destTile.y - ( this.hero.height - this.map.data.tilesize ),
+            };
+        }
+
+        const destEvent = this.getVisibleEvents().find( ( evt ) => {
+            return ( evt.coords[ 0 ] * this.map.data.tilesize === destTile.x && evt.coords[ 1 ] * this.map.data.tilesize === destTile.y );
+        });
 
         dirs.forEach( ( d ) => {
             this.player.controls[ d ] = false;
         });
 
-        this.parkour = {
-            distance,
-            landing: {
-                x: ( dir === "left" ? this.hero.position.x - distance : dir === "right" ? this.hero.position.x + distance : this.hero.position.x ),
-                y: ( dir === "up" ? this.hero.position.y - distance : dir === "down" ? this.hero.position.y + distance : this.hero.position.y ),
-            },
-        };
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, dir );
         this.hero.physics.vz = -24;
-        this.player.controls[ dir ] = true;
         this.player.gameaudio.hitSound( "parkour" );
-        this.keyTimer = setTimeout( () => {
-            this.jumping = false;
-            this.hero.face( dir );
+        this.parkour = {};
+        this.parkour.tween = new Tween();
+        this.parkour.tween.bind( this.hero );
+        this.parkour.tween.tween({
+            to: destPos,
+            from: {
+                x: this.hero.position.x,
+                y: this.hero.position.y,
+            },
+            duration: this.hero.getDur( Config.verbs.JUMP ),
+            complete: () => {
+                if ( destEvent ) {
+                    this.hero.cycle( Config.verbs.FALL, dir );
+                    setTimeout( () => {
+                        this.dropin = true;
+                        this.hero.frameStopped = false;
+                        this.handleCriticalReset();
+                        this.handleHeroEventDoor( poi, dir, destEvent );
+                        this.jumping = false;
+                        this.parkour = null;
 
-        }, this.hero.getDur( Config.verbs.JUMP ) );
+                    }, this.hero.getDur( Config.verbs.FALL ) );
+
+                } else {
+                    this.jumping = false;
+                    this.parkour = null;
+                    this.hero.face( dir );
+                }
+            },
+        });
     }
 
 
@@ -640,7 +688,7 @@ class TopView extends GameBox {
             tiles: this.checkTiles( poi, weaponBox ),
         };
 
-        if ( collision.npc ) {
+        if ( collision.npc && collision.npc.data.ai ) {
             const poi = {};
 
             if ( this.hero.dir === "left" || this.hero.dir === "right" ) {
@@ -737,6 +785,95 @@ class TopView extends GameBox {
     }
 
 
+    handleHeroFall ( poi, dir, tiles ) {
+        let resetTile;
+        let finalDest;
+        const cycleDur = this.hero.getDur( Config.verbs.FALL );
+        const fallTile = tiles.action.find( ( tile ) => {
+            return tile.fall;
+        });
+
+        if ( this.hero.dir === "left" ) {
+            resetTile = {
+                x: ( fallTile.coord[ 0 ] + 1 ) * this.map.data.tilesize,
+                y: fallTile.coord[ 1 ] * this.map.data.tilesize,
+            };
+            finalDest = {
+                x: resetTile.x,
+                y: resetTile.y - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
+            };
+        }
+
+        if ( this.hero.dir === "right" ) {
+            resetTile = {
+                x: ( fallTile.coord[ 0 ] - 1 ) * this.map.data.tilesize,
+                y: fallTile.coord[ 1 ] * this.map.data.tilesize,
+            };
+            finalDest = {
+                x: resetTile.x - ( this.hero.width - this.map.data.tilesize ),
+                y: resetTile.y - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
+            };
+        }
+
+        if ( this.hero.dir === "up" ) {
+            resetTile = {
+                x: fallTile.coord[ 0 ] * this.map.data.tilesize,
+                y: ( fallTile.coord[ 1 ] + 1 ) * this.map.data.tilesize,
+            };
+            finalDest = {
+                x: resetTile.x - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
+                y: resetTile.y,
+            };
+        }
+
+        if ( this.hero.dir === "down" ) {
+            resetTile = {
+                x: fallTile.coord[ 0 ] * this.map.data.tilesize,
+                y: ( fallTile.coord[ 1 ] - 1 ) * this.map.data.tilesize,
+            };
+            finalDest = {
+                x: resetTile.x - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
+                y: resetTile.y - ( this.hero.height - this.map.data.tilesize ),
+            };
+        }
+
+        this.falling = true;
+        this.interact.fall = {};
+        this.interact.fall.tween = new Tween();
+        this.interact.fall.tween.bind( this.hero );
+        this.interact.fall.tween.tween({
+            to: {
+                x: ( fallTile.coord[ 0 ] * this.map.data.tilesize ) - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
+                y: ( fallTile.coord[ 1 ] * this.map.data.tilesize ) - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
+            },
+            from: {
+                x: this.hero.position.x,
+                y: this.hero.position.y,
+            },
+            duration: cycleDur / 2,
+            complete: () => {
+                setTimeout( () => {
+                    this.interact.fall.tween.tween({
+                        to: finalDest,
+                        from: {
+                            x: this.hero.position.x,
+                            y: this.hero.position.y,
+                        },
+                        duration: cycleDur / 2,
+                        complete: () => {
+                            this.falling = false;
+                            this.hero.frameStopped = false;
+                            this.interact.fall = null;
+                        },
+                    });
+
+                }, cycleDur / 2 );
+            },
+        });
+        this.hero.cycle( Config.verbs.FALL, this.hero.dir );
+    }
+
+
     handleHeroTiles ( poi, dir, tiles ) {
         tiles.passive.forEach( ( tile ) => {
             // Stairs are hard, you have to take it slow...
@@ -746,15 +883,6 @@ class TopView extends GameBox {
             // Grass is thick, it will slow you down a bit...
             } else if ( tile.group === Config.tiles.GRASS ) {
                 this.hero.physics.maxv = this.hero.physics.controlmaxv / 1.5;
-
-            } else if ( tile.group === Config.tiles.HOLES ) {
-                // if ( tile.amount >= (this.hero.footbox.width * this.hero.footbox.height) ) {
-                //     this.falling = true;
-                //     setTimeout(() => {
-                //         this.falling = false;
-                //
-                //     }, 1000 );
-                // }
             }
         });
     }
