@@ -55,7 +55,12 @@
             "layer": "background",
             "coords": [],
             "offsetX": 128,
-            "offsetY": 448
+            "offsetY": 448,
+            "actions": [
+                {
+                    "verb": "fall"
+                }
+            ]
         },
         {
             "group": "stones",

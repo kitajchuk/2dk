@@ -3004,7 +3004,7 @@ var Tween = /*#__PURE__*/function (_Controller) {
       var tweenDiffY = opts.to.y - opts.from.y; // Default easing function...
 
       if (!_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].func(opts.ease)) {
-        opts.ease = Easing.swing;
+        opts.ease = Easing.linear;
       }
 
       this.stop();
@@ -3461,7 +3461,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       };
 
       if (collision.npc) {
-        this.handleHeroNPCAction(poi, this.hero.dir, collision.npc);
+        this.handleHeroNPCAction(poi, this.hero.dir, collision.npc); // Need better upfront handling here to reduce quirks...
       } else if (collision.tiles && collision.tiles.action.length && collision.tiles.action[0].action) {
         if (!this.interact.tile) {
           this.handleHeroTileAction(poi, this.hero.dir, collision.tiles.action[0]);
@@ -3585,10 +3585,6 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       var _this2 = this;
 
       return collision.tiles && collision.tiles.action.length && collision.tiles.action.find(function (tile) {
-        if (tile.fall) {
-          console.log(_Utils__WEBPACK_IMPORTED_MODULE_5__["default"].contains(tile.tilebox, _this2.hero.footbox));
-        }
-
         return tile.fall && _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].contains(tile.tilebox, _this2.hero.footbox);
       });
     }
@@ -3675,7 +3671,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         this.interact.push = 0;
       }
 
-      if (this.locked || this.falling || this.parkour || this.attacking) {
+      if (this.locked || this.falling || this.parkour || this.attacking || this.dropin) {
         return;
       } else if (this.jumping) {
         if (this.canHeroMoveWhileJumping(poi, dir, collision)) {
@@ -4121,6 +4117,8 @@ var TopView = /*#__PURE__*/function (_GameBox) {
                 _this7.falling = false;
                 _this7.hero.frameStopped = false;
                 _this7.interact.fall = null;
+
+                _this7.hero.face(_this7.hero.dir);
               }
             });
           }, cycleDur / 2);
@@ -5603,9 +5601,6 @@ function _defineProperties(target, props) {
 function _createClass(Constructor, protoProps, staticProps) {
   if (protoProps) _defineProperties(Constructor.prototype, protoProps);
   if (staticProps) _defineProperties(Constructor, staticProps);
-  Object.defineProperty(Constructor, "prototype", {
-    writable: false
-  });
   return Constructor;
 }
 
@@ -5681,9 +5676,6 @@ function _inherits(subClass, superClass) {
       configurable: true
     }
   });
-  Object.defineProperty(subClass, "prototype", {
-    writable: false
-  });
   if (superClass) (0,_setPrototypeOf_js__WEBPACK_IMPORTED_MODULE_0__["default"])(subClass, superClass);
 }
 
@@ -5699,15 +5691,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ _possibleConstructorReturn)
 /* harmony export */ });
-/* harmony import */ var _typeof_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./typeof.js */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
+/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/esm/typeof.js");
 /* harmony import */ var _assertThisInitialized_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./assertThisInitialized.js */ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js");
 
 
 function _possibleConstructorReturn(self, call) {
-  if (call && ((0,_typeof_js__WEBPACK_IMPORTED_MODULE_0__["default"])(call) === "object" || typeof call === "function")) {
+  if (call && ((0,_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__["default"])(call) === "object" || typeof call === "function")) {
     return call;
-  } else if (call !== void 0) {
-    throw new TypeError("Derived constructors may only return object or undefined");
   }
 
   return (0,_assertThisInitialized_js__WEBPACK_IMPORTED_MODULE_1__["default"])(self);
@@ -5749,11 +5739,17 @@ __webpack_require__.r(__webpack_exports__);
 function _typeof(obj) {
   "@babel/helpers - typeof";
 
-  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-  }, _typeof(obj);
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
 }
 
 /***/ })

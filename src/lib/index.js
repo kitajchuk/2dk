@@ -5,6 +5,7 @@ import Hero from "./sprites/Hero";
 import Sprite from "./sprites/Sprite";
 import Companion from "./sprites/Companion";
 import Config from "./Config";
+import Controller from "./Controller";
 import Dialogue from "./Dialogue";
 import GameAudio from "./GameAudio";
 import GameBox, { Camera } from "./GameBox";
@@ -12,6 +13,8 @@ import GamePad from "./GamePad";
 import Loader from "./Loader";
 import Map, { MapLayer, ActiveTiles } from "./Map";
 import Player from "./Player";
+import Spring from "./Spring";
+import Tween, { Easing } from "./Tween";
 import Utils from "./Utils";
 
 
@@ -29,6 +32,7 @@ const lib = {
 
     // ...rest
     Config,
+    Controller,
     Dialogue,
     GameAudio,
     GameBox, Camera,
@@ -36,6 +40,8 @@ const lib = {
     Loader,
     Map, MapLayer, ActiveTiles,
     Player,
+    Spring,
+    Tween, Easing,
     Utils,
 };
 

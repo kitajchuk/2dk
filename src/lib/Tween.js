@@ -167,7 +167,7 @@ class Tween extends Controller {
 
         // Default easing function...
         if ( !Utils.func( opts.ease ) ) {
-            opts.ease = Easing.swing;
+            opts.ease = Easing.linear;
         }
 
         this.stop();

@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v668";
+const CACHE_NAME = "v669";
 const CACHE_URLS = [
     "",
     "index.html",
@@ -110,7 +110,8 @@ const getScope = () => {
 };
 
 const getScopedUrls = () => {
-    return CACHE_URLS.map( url => `${getScope()}${url}` );
+    const scope = getScope();
+    return CACHE_URLS.map( url => `${scope}${url}` );
 };
 
 const deleteOldCaches = async () => {

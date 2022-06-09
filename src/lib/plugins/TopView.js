@@ -190,6 +190,7 @@ class TopView extends GameBox {
         if ( collision.npc ) {
             this.handleHeroNPCAction( poi, this.hero.dir, collision.npc );
 
+        // Need better upfront handling here to reduce quirks...
         } else if ( collision.tiles && collision.tiles.action.length && collision.tiles.action[ 0 ].action ) {
             if ( !this.interact.tile ) {
                 this.handleHeroTileAction( poi, this.hero.dir, collision.tiles.action[ 0 ] );
@@ -312,10 +313,6 @@ class TopView extends GameBox {
 
     canHeroTileFall ( poi, dir, collision ) {
         return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
-            if ( tile.fall ) {
-                console.log( Utils.contains( tile.tilebox, this.hero.footbox ) );
-            }
-
             return tile.fall && Utils.contains( tile.tilebox, this.hero.footbox );
         }) );
     }
@@ -416,7 +413,7 @@ class TopView extends GameBox {
             this.interact.push = 0;
         }
 
-        if ( this.locked || this.falling || this.parkour || this.attacking ) {
+        if ( this.locked || this.falling || this.parkour || this.attacking || this.dropin ) {
             return;
 
         } else if ( this.jumping ) {
@@ -864,6 +861,7 @@ class TopView extends GameBox {
                             this.falling = false;
                             this.hero.frameStopped = false;
                             this.interact.fall = null;
+                            this.hero.face( this.hero.dir );
                         },
                     });
 
