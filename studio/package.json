@@ -23,7 +23,7 @@
     "dev": "electron ."
   },
   "devDependencies": {
-    "electron": "^11.2.3"
+    "electron": "^13.6.6"
   },
   "dependencies": {
     "fs-extra": "^8.1.0",
