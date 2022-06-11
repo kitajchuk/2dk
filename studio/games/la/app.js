@@ -3059,7 +3059,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var Utils = {
   dev: function dev() {
-    return /^file:|^localhost/.test(window.location.href);
+    return /^file:|^http:\/\/localhost/.test(window.location.href);
   },
   log: function log() {
     if (Utils.dev()) {
@@ -3357,6 +3357,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
       if (this.interact.npc && this.interact.npc.sprite && this.interact.npc.spring) {
         this.handleAttackNCP(elapsed);
+      } // dropin effect for new map?
+
+
+      if (this.dropin && this.hero.position.z === 0) {
+        this.dropin = false;
       } // update gamebox (camera)
 
 
@@ -3427,13 +3432,17 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "pressD",
     value: function pressD(dir) {
+      if (this.dropin) {
+        return;
+      }
+
       var poi = this.hero.getNextPoiByDir(dir);
       this.handleHero(poi, dir);
     }
   }, {
     key: "releaseD",
     value: function releaseD() {
-      if (this.locked || this.jumping || this.falling || this.attacking) {
+      if (this.locked || this.jumping || this.falling || this.attacking || this.dropin) {
         return;
       }
 
@@ -3450,7 +3459,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "pressA",
     value: function pressA() {
-      if (this.locked || this.jumping || this.falling || this.attacking) {
+      if (this.locked || this.jumping || this.falling || this.attacking || this.dropin) {
         return;
       }
 
@@ -3461,12 +3470,10 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       };
 
       if (collision.npc) {
-        this.handleHeroNPCAction(poi, this.hero.dir, collision.npc); // Need better upfront handling here to reduce quirks...
-      } else if (collision.tiles && collision.tiles.action.length && collision.tiles.action[0].action) {
-        if (!this.interact.tile) {
-          this.handleHeroTileAction(poi, this.hero.dir, collision.tiles.action[0]);
-        } // Jump...
-
+        this.handleHeroNPCAction(poi, this.hero.dir, collision.npc);
+      } else if (collision.tiles && collision.tiles.action.length && collision.tiles.action[0].action && collision.tiles.action[0].instance.canInteract(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.LIFT) && !this.interact.tile) {
+        this.interact.tile = collision.tiles.action[0];
+        this.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.GRAB, this.hero.dir); // Jump...
       } else if (this.hero.verb !== _Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.LIFT && this.hero.verb !== _Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.GRAB) {
         this.handleHeroJump(poi, this.hero.dir);
       }
@@ -3474,7 +3481,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "holdA",
     value: function holdA() {
-      if (this.jumping || this.falling || this.attacking) {
+      if (this.jumping || this.falling || this.attacking || this.dropin) {
         return;
       }
 
@@ -3483,7 +3490,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "releaseA",
     value: function releaseA() {
-      if (this.jumping || this.falling || this.attacking) {
+      if (this.jumping || this.falling || this.attacking || this.dropin) {
         return;
       }
 
@@ -3493,7 +3500,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "releaseHoldA",
     value: function releaseHoldA() {
-      if (this.jumping || this.falling || this.attacking) {
+      if (this.jumping || this.falling || this.attacking || this.dropin) {
         return;
       }
 
@@ -3502,7 +3509,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "pressB",
     value: function pressB() {
-      if (this.attacking) {
+      if (this.attacking || this.dropin) {
         return;
       } // There will be extra blocking checks wrapped around this action
 
@@ -3514,7 +3521,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "holdB",
     value: function holdB() {
-      if (this.jumping || this.falling || this.attacking) {
+      if (this.jumping || this.falling || this.attacking || this.dropin) {
         return;
       }
 
@@ -3523,7 +3530,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "releaseB",
     value: function releaseB() {
-      if (this.jumping || this.falling) {
+      if (this.jumping || this.falling || this.dropin) {
         return;
       }
 
@@ -3536,7 +3543,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "releaseHoldB",
     value: function releaseHoldB() {
-      if (this.jumping || this.falling) {
+      if (this.jumping || this.falling || this.dropin) {
         return;
       }
 
@@ -3553,7 +3560,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "canHeroMoveWhileJumping",
     value: function canHeroMoveWhileJumping(poi, dir, collision) {
-      return !collision.map && !collision.npc && !(collision.tiles && collision.tiles.action.length && collision.tiles.action.find(function (tile) {
+      return !collision.map && !collision.npc && !collision.camera && !(collision.tiles && collision.tiles.action.length && collision.tiles.action.find(function (tile) {
         return tile.stop;
       }));
     }
@@ -3619,7 +3626,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
   }, {
     key: "handleReleaseA",
     value: function handleReleaseA() {
-      if (this.jumping || this.attacking) {
+      if (this.jumping || this.attacking || this.dropin) {
         return;
       }
 
@@ -3667,11 +3674,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         camera: this.checkCamera(poi, this.hero)
       };
 
-      if (this.locked || this.jumping || this.falling || this.parkour) {
+      if (this.locked || this.jumping || this.falling || this.parkour || this.dropin) {
         this.interact.push = 0;
       }
 
-      if (this.locked || this.falling || this.parkour || this.attacking || this.dropin) {
+      if (this.locked || this.falling || this.parkour || this.attacking) {
         return;
       } else if (this.jumping) {
         if (this.canHeroMoveWhileJumping(poi, dir, collision)) {
@@ -3757,7 +3764,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       var destTile;
       var dirs = ["left", "right", "up", "down"];
 
-      if (this.hero.dir === "left") {
+      if (dir === "left") {
         destTile = {
           x: tile.tilebox.x - this.map.data.tilesize * tile.instance.data.elevation,
           y: tile.tilebox.y
@@ -3768,7 +3775,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         };
       }
 
-      if (this.hero.dir === "right") {
+      if (dir === "right") {
         destTile = {
           x: tile.tilebox.x + this.map.data.tilesize * tile.instance.data.elevation,
           y: tile.tilebox.y
@@ -3779,7 +3786,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         };
       }
 
-      if (this.hero.dir === "up") {
+      if (dir === "up") {
         destTile = {
           x: tile.tilebox.x,
           y: tile.tilebox.y - this.map.data.tilesize * tile.instance.data.elevation
@@ -3790,7 +3797,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
         };
       }
 
-      if (this.hero.dir === "down") {
+      if (dir === "down") {
         destTile = {
           x: tile.tilebox.x,
           y: tile.tilebox.y + this.map.data.tilesize * tile.instance.data.elevation
@@ -4148,17 +4155,6 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       }
     }
   }, {
-    key: "handleHeroTileAction",
-    value: function handleHeroTileAction(poi, dir, tile) {
-      if (tile.instance.canInteract()) {
-        this.interact.tile = tile;
-
-        if (tile.instance.canInteract(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.LIFT)) {
-          this.hero.cycle(_Config__WEBPACK_IMPORTED_MODULE_6__["default"].verbs.GRAB, this.hero.dir);
-        }
-      }
-    }
-  }, {
     key: "handleHeroTileAttack",
     value: function handleHeroTileAttack(poi, dir, tile) {
       if (tile.instance.canAttack()) {
@@ -4407,7 +4403,6 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
 
         if (_this9.dropin) {
-          _this9.dropin = false;
           _this9.hero.position.z = -(_this9.camera.height / 2);
         } // Create a new Companion
 

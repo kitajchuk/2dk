@@ -4,7 +4,7 @@ import Config from "./Config";
 
 const Utils = {
     dev () {
-        return /^file:|^localhost/.test( window.location.href );
+        return /^file:|^http:\/\/localhost/.test( window.location.href );
     },
 
 
