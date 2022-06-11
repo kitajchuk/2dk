@@ -366,9 +366,11 @@ var Dialogue = /*#__PURE__*/function () {
           }
 
           this.teardown();
-        } // Prompt-based (a:confirm, b: decline)
+        }
+      } // Prompt-based (a:confirm, b: decline)
 
-      } else if (this.data.type === "prompt") {
+
+      if (this.data.type === "prompt") {
         // A-button OR B-button will advance as long as there is text...
         if (this.data.text.length) {
           var text = [this.data.text.shift()]; // No more text so show prompts...
@@ -381,7 +383,7 @@ var Dialogue = /*#__PURE__*/function () {
           this.timeout = setTimeout(function () {
             _this3.pressed = false;
           }, this.debounce); // A-button will confirm if there is no more text...
-        } else if (a && !this.data.text.length) {
+        } else if (a) {
           this.isResolve = true;
           this.data.type = "text";
           this.data.text = this.data.yes.text;
@@ -390,7 +392,7 @@ var Dialogue = /*#__PURE__*/function () {
 
             _this3.check(true, false);
           }, this.duration); // B-button will cancel if there is no more text...
-        } else if (b && !this.data.text.length) {
+        } else if (b) {
           this.isResolve = false;
           this.data.type = "text";
           this.data.text = this.data.no.text;
@@ -2051,8 +2053,6 @@ var Map = /*#__PURE__*/function () {
   }, {
     key: "render",
     value: function render(camera) {
-      var _this3 = this;
-
       this.clear();
       this.camera = camera;
       this.renderBox = this.getRenderbox(camera); // Separate background / foreground NPCs
@@ -2083,26 +2083,34 @@ var Map = /*#__PURE__*/function () {
       }); // Visual event debugging....
 
       if (this.gamebox.player.query.debug) {
-        this.data.events.forEach(function (event) {
-          _this3.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
-          _this3.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_4__["default"].colors.blue;
-
-          _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + event.coords[0] * _this3.data.tilesize, _this3.offset.y + event.coords[1] * _this3.data.tilesize, _this3.data.tilesize, _this3.data.tilesize);
-        });
-        this.data.spawn.forEach(function (spawn) {
-          _this3.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_4__["default"].colors.yellow;
-
-          _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + spawn.x, _this3.offset.y + spawn.y, _this3.gamebox.hero.width, _this3.gamebox.hero.height);
-        });
-        var visibleTiles = this.gamebox.getVisibleActiveTiles();
-        this.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_4__["default"].colors.pink;
-        visibleTiles.forEach(function (activeTiles) {
-          activeTiles.pushed.forEach(function (coord) {
-            _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + coord[0] * _this3.data.tilesize, _this3.offset.y + coord[1] * _this3.data.tilesize, _this3.data.tilesize, _this3.data.tilesize);
-          });
-        });
-        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
+        this.renderDebug();
       }
+    }
+  }, {
+    key: "renderDebug",
+    value: function renderDebug() {
+      var _this3 = this;
+
+      var visibleEvents = this.gamebox.getVisibleEvents();
+      visibleEvents.forEach(function (event) {
+        _this3.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+        _this3.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_4__["default"].colors.blue;
+
+        _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + event.coords[0] * _this3.data.tilesize, _this3.offset.y + event.coords[1] * _this3.data.tilesize, _this3.data.tilesize, _this3.data.tilesize);
+      });
+      this.data.spawn.forEach(function (spawn) {
+        _this3.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_4__["default"].colors.yellow;
+
+        _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + spawn.x, _this3.offset.y + spawn.y, _this3.gamebox.hero.width, _this3.gamebox.hero.height);
+      });
+      var visibleTiles = this.gamebox.getVisibleActiveTiles();
+      this.gamebox.layers.foreground.onCanvas.context.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_4__["default"].colors.pink;
+      visibleTiles.forEach(function (activeTiles) {
+        activeTiles.pushed.forEach(function (coord) {
+          _this3.gamebox.layers.foreground.onCanvas.context.fillRect(_this3.offset.x + coord[0] * _this3.data.tilesize, _this3.offset.y + coord[1] * _this3.data.tilesize, _this3.data.tilesize, _this3.data.tilesize);
+        });
+      });
+      this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
     }
   }, {
     key: "renderTextures",
@@ -2221,39 +2229,38 @@ var Map = /*#__PURE__*/function () {
         var tiles = layerTiles[i];
         var topCel = celsCopy[celsCopy.length - 1];
         var activeTiles = this.getActiveTiles(tiles.group);
+        var isTileAnimated = tiles.stepsX;
+        var isTilePushed = activeTiles.isPushed(celsCoords);
+        var isTileSpliced = activeTiles.isSpliced(celsCoords);
 
         if (activeTiles.pushed.length) {
           for (var j = activeTiles.pushed.length; j--;) {
             var coord = activeTiles.pushed[j]; // Correct tile coords
 
-            if (coord[0] === celsCoords[0] && coord[1] === celsCoords[1]) {
-              // (tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ])
-              var isTileAnimated = tiles.stepsX; // Make sure we don't dupe a tile match if it's NOT animated...
-
-              if (isTileAnimated) {
-                return activeTiles.getTile();
-              }
+            if (coord[0] === celsCoords[0] && coord[1] === celsCoords[1] && isTileAnimated) {
+              // Make sure we don't dupe a tile match if it's NOT animated...
+              return activeTiles.getTile();
             }
           }
         }
 
         if (tiles.offsetX === topCel[0] && tiles.offsetY === topCel[1]) {
-          // Check if tile is pushed...
-          var isTilePushed = activeTiles.isPushed(celsCoords);
-          var isTileSpliced = activeTiles.isSpliced(celsCoords); // Push the tile to the coords Array...
+          // Push the tile to the coords Array...
           // This lets us generate ActiveTile groups that will
           // find their coordinates in real-time using spritesheet background-position...
-
           if (!isTilePushed && !isTileSpliced) {
             // Really we should have a ActiveTiles.prototype.coords
             // Then this should find ActiveTiles instance and push there...
             activeTiles.push(celsCoords);
-            return true; // An ActiveTiles coord can be spliced during interaction.
-            // Example: Hero picks up an action tile and throws it.
-            // The original tile cel still exists in the textures data,
-            // but we can capture this condition and make sure we pop
-            // if off and no longer render it to the texture map.
-          } else if (isTileSpliced) {
+            return true;
+          } // An ActiveTiles coord can be spliced during interaction.
+          // Example: Hero picks up an action tile and throws it.
+          // The original tile cel still exists in the textures data,
+          // but we can capture this condition and make sure we pop
+          // if off and no longer render it to the texture map.
+
+
+          if (isTileSpliced) {
             celsCopy.pop();
             return celsCopy;
           }
@@ -2526,15 +2533,11 @@ var Player = /*#__PURE__*/function (_Controller) {
   }, {
     key: "onRotate",
     value: function onRotate() {
-      if (Math.abs(this.getOrientation()) === 90) {
-        if (this.ready) {
-          this.resume();
-        }
-      } else {
-        if (this.ready) {
-          this.pause();
-          this.stop();
-        }
+      if (Math.abs(this.getOrientation()) === 90 && this.ready) {
+        this.resume();
+      } else if (this.ready) {
+        this.pause();
+        this.stop();
       }
     }
   }, {
@@ -3403,22 +3406,18 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
       if (x >= 0 && x <= this.map.width - this.camera.width) {
         offset.x = -x;
+      } else if (x >= this.map.width - this.camera.width) {
+        offset.x = -(this.map.width - this.camera.width);
       } else {
-        if (x >= this.map.width - this.camera.width) {
-          offset.x = -(this.map.width - this.camera.width);
-        } else {
-          offset.x = 0;
-        }
+        offset.x = 0;
       }
 
       if (y >= 0 && y <= this.map.height - this.camera.height) {
         offset.y = -y;
+      } else if (y >= this.map.height - this.camera.height) {
+        offset.y = -(this.map.height - this.camera.height);
       } else {
-        if (y >= this.map.height - this.camera.height) {
-          offset.y = -(this.map.height - this.camera.height);
-        } else {
-          offset.y = 0;
-        }
+        offset.y = 0;
       }
 
       this.offset = offset;
@@ -4141,8 +4140,11 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       tiles.passive.forEach(function (tile) {
         // Stairs are hard, you have to take it slow...
         if (tile.group === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].tiles.STAIRS) {
-          _this8.hero.physics.maxv = _this8.hero.physics.controlmaxv / 2; // Grass is thick, it will slow you down a bit...
-        } else if (tile.group === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].tiles.GRASS) {
+          _this8.hero.physics.maxv = _this8.hero.physics.controlmaxv / 2;
+        } // Grass is thick, it will slow you down a bit...
+
+
+        if (tile.group === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].tiles.GRASS) {
           _this8.hero.physics.maxv = _this8.hero.physics.controlmaxv / 1.5;
         }
       });
@@ -4194,7 +4196,9 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       if (sprite.data.ai && !sprite.attacked) {
         if (sprite.data.ai === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.ROAM) {
           this.handleRoam(sprite);
-        } else if (sprite.data.ai === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.WANDER) {
+        }
+
+        if (sprite.data.ai === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.WANDER) {
           this.handleWander(sprite);
         }
       }
@@ -4210,13 +4214,19 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       if (sprite.throwing === "left") {
         throwX = sprite.position.x - dist;
         throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
-      } else if (sprite.throwing === "right") {
+      }
+
+      if (sprite.throwing === "right") {
         throwX = sprite.position.x + dist;
         throwY = sprite.hero.footbox.y - (sprite.height - this.hero.footbox.height);
-      } else if (sprite.throwing === "up") {
+      }
+
+      if (sprite.throwing === "up") {
         throwX = sprite.position.x;
         throwY = sprite.position.y - dist;
-      } else if (sprite.throwing === "down") {
+      }
+
+      if (sprite.throwing === "down") {
         throwX = sprite.position.x;
         throwY = this.hero.footbox.y + dist;
       }
@@ -4351,19 +4361,25 @@ var TopView = /*#__PURE__*/function (_GameBox) {
           y: 0,
           z: 0
         };
-      } else if (this.hero.dir === "up") {
+      }
+
+      if (this.hero.dir === "up") {
         return {
           x: this.hero.position.x,
           y: this.map.height - this.hero.height,
           z: 0
         };
-      } else if (this.hero.dir === "right") {
+      }
+
+      if (this.hero.dir === "right") {
         return {
           x: 0,
           y: this.hero.position.y,
           z: 0
         };
-      } else if (this.hero.dir === "left") {
+      }
+
+      if (this.hero.dir === "left") {
         return {
           x: this.map.width - this.hero.width,
           y: this.hero.position.y,
@@ -4517,12 +4533,14 @@ var Companion = /*#__PURE__*/function (_Sprite) {
 
       if (this.previousElapsed === null) {
         this.previousElapsed = elapsed;
-      } // Companion type?
+      } // Companion types?
 
 
       if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].npc.WALK) {
         this.blitWalk();
-      } else if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].npc.FLOAT) {
+      }
+
+      if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].npc.FLOAT) {
         this.blitFloat();
       } // Spring blit...
 
@@ -4547,12 +4565,10 @@ var Companion = /*#__PURE__*/function (_Sprite) {
       var distance = _Utils__WEBPACK_IMPORTED_MODULE_6__["default"].getDistance(this.position, this.spring.poi); // Hero is NOT idle, so moving
       // Hero IS idle but companion is within a threshold distance...
 
-      if (!this.hero.idle.x || !this.hero.idle.y || this.hero.idle.x && this.hero.idle.y && distance > this.map.data.tilesize / 2) {
+      if ((!this.hero.idle.x || !this.hero.idle.y || this.hero.idle.x && this.hero.idle.y && distance > this.map.data.tilesize / 2) && this.data.bounce && this.position.z === 0) {
         // Bounce condition is TRUE
         // Position Z is zero, so bounce a bit...
-        if (this.data.bounce && this.position.z === 0) {
-          this.physics.vz = -8;
-        }
+        this.physics.vz = -8;
       }
 
       if (Math.ceil(this.hero.position.x) > Math.floor(this.position.x)) {
@@ -4570,7 +4586,9 @@ var Companion = /*#__PURE__*/function (_Sprite) {
     value: function applyPosition() {
       if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].npc.WALK) {
         this.applyWalkPosition();
-      } else if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].npc.FLOAT) {
+      }
+
+      if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_7__["default"].npc.FLOAT) {
         this.applyFloatPosition();
       }
     }
@@ -4590,13 +4608,19 @@ var Companion = /*#__PURE__*/function (_Sprite) {
       if (this.hero.dir === "right" && heroCenter.x > selfCenter.x) {
         poi.x = heroCenter.x - this.width;
         poi.y = heroCenter.y;
-      } else if (this.hero.dir === "left" && heroCenter.x < selfCenter.x) {
+      }
+
+      if (this.hero.dir === "left" && heroCenter.x < selfCenter.x) {
         poi.x = heroCenter.x;
         poi.y = heroCenter.y;
-      } else if (this.hero.dir === "up" && heroCenter.y < selfCenter.y) {
+      }
+
+      if (this.hero.dir === "up" && heroCenter.y < selfCenter.y) {
         poi.x = heroCenter.x - this.width / 2;
         poi.y = heroCenter.y + this.height;
-      } else if (this.hero.dir === "down" && heroCenter.y > selfCenter.y) {
+      }
+
+      if (this.hero.dir === "down" && heroCenter.y > selfCenter.y) {
         poi.x = heroCenter.x - this.width / 2;
         poi.y = heroCenter.y;
       }
@@ -4613,13 +4637,19 @@ var Companion = /*#__PURE__*/function (_Sprite) {
       if (this.hero.dir === "right" && this.hero.position.x > this.position.x) {
         poi.x = this.hero.position.x - this.width / 2;
         poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
-      } else if (this.hero.dir === "left" && this.hero.position.x < this.position.x) {
+      }
+
+      if (this.hero.dir === "left" && this.hero.position.x < this.position.x) {
         poi.x = this.hero.position.x + this.hero.width - this.width / 2;
         poi.y = this.hero.footbox.y - (this.height - this.hero.footbox.height);
-      } else if (this.hero.dir === "up" && this.hero.position.y < this.position.y) {
+      }
+
+      if (this.hero.dir === "up" && this.hero.position.y < this.position.y) {
         poi.x = this.hero.position.x + this.hero.width / 2 - this.width / 2;
         poi.y = this.hero.position.y + this.hero.height - this.height / 2;
-      } else if (this.hero.dir === "down" && this.hero.position.y > this.position.y) {
+      }
+
+      if (this.hero.dir === "down" && this.hero.position.y > this.position.y) {
         poi.x = this.hero.position.x + this.hero.width / 2 - this.width / 2;
         poi.y = this.hero.position.y - this.height / 2;
       }
@@ -4718,7 +4748,7 @@ var FX = /*#__PURE__*/function (_Sprite) {
             this.map.killObj("fx", this);
           } else {
             this.previousElapsed = elapsed;
-            this.frame = this.data.stepsX - 1;
+            this.frame = this.data.stepsX - 1; // Resets the animation sequence, as in a loop...
 
             if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.FLOAT) {
               this.position.y = this.data.spawn.y;
@@ -5092,11 +5122,17 @@ var NPC = /*#__PURE__*/function (_Sprite) {
       if (collision.hero && this.data.ai === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].npc.ROAM) {
         if (this.dir === "left") {
           this.gamebox.hero.physics.vx = -1;
-        } else if (this.dir === "right") {
+        }
+
+        if (this.dir === "right") {
           this.gamebox.hero.physics.vx = 1;
-        } else if (this.dir === "up") {
+        }
+
+        if (this.dir === "up") {
           this.gamebox.hero.physics.vy = -1;
-        } else if (this.dir === "down") {
+        }
+
+        if (this.dir === "down") {
           this.gamebox.hero.physics.vy = 1;
         }
       } else if (isNotCollision) {
@@ -5248,6 +5284,26 @@ var Sprite = /*#__PURE__*/function () {
         height: this.height
       });
     }
+  }, {
+    key: "isHero",
+    value: function isHero() {
+      return this === this.gamebox.hero;
+    }
+  }, {
+    key: "isCompanion",
+    value: function isCompanion() {
+      return this === this.gamebox.companion;
+    }
+  }, {
+    key: "isLifted",
+    value: function isLifted() {
+      return _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].def(this.hero);
+    }
+  }, {
+    key: "isIdle",
+    value: function isIdle() {
+      return this.idle.x && this.idle.y;
+    }
     /*******************************************************************************
     * Rendering
     * Order is: blit, update, render { renderBefore, renderAfter }
@@ -5301,7 +5357,7 @@ var Sprite = /*#__PURE__*/function () {
       } // Move betweeb BG and FG relative to Hero
 
 
-      if (this !== this.gamebox.hero && this !== this.gamebox.companion) {
+      if (!this.isHero() && !this.isCompanion()) {
         // Assume that FLOAT should always render to the foreground
         if (this.data.type === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].npc.FLOAT) {
           this.layer = "foreground"; // Sprites that have a smaller hitbox than their actual size can flip layer
@@ -5369,13 +5425,10 @@ var Sprite = /*#__PURE__*/function () {
     value: function applyPosition() {
       // A lifted object
       // Need to NOT hardcode the 42 here...
-      if (this.hero) {
-        if (!this.throwing) {
-          this.position.x = this.hero.position.x + this.hero.width / 2 - this.width / 2;
-          this.position.y = this.hero.position.y - this.height + 42;
-        } // Basic collision for NPCs...
-
-      } else {
+      if (this.isLifted() && !this.throwing) {
+        this.position.x = this.hero.position.x + this.hero.width / 2 - this.width / 2;
+        this.position.y = this.hero.position.y - this.height + 42; // Basic collision for NPCs...
+      } else if (!this.isLifted()) {
         this.position = this.getNextPoi();
       }
     }
@@ -5419,7 +5472,7 @@ var Sprite = /*#__PURE__*/function () {
       }
 
       if (this.data.verbs[this.verb][this.dir].stepsX) {
-        if (this.verb === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT && this.idle.x && this.idle.y) {
+        if (this.verb === _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT && this.isIdle()) {
           _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].log("static lift...");
         } else {
           var diff = elapsed - this.previousElapsed;

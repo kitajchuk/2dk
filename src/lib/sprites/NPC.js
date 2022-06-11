@@ -107,14 +107,17 @@ class NPC extends Sprite {
         if ( collision.hero && this.data.ai === Config.npc.ROAM ) {
             if ( this.dir === "left" ) {
                 this.gamebox.hero.physics.vx = -1;
+            }
 
-            } else if ( this.dir === "right" ) {
+            if ( this.dir === "right" ) {
                 this.gamebox.hero.physics.vx = 1;
+            }
 
-            } else if ( this.dir === "up" ) {
+            if ( this.dir === "up" ) {
                 this.gamebox.hero.physics.vy = -1;
+            }
 
-            } else if ( this.dir === "down" ) {
+            if ( this.dir === "down" ) {
                 this.gamebox.hero.physics.vy = 1;
             }
 

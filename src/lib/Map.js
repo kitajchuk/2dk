@@ -339,43 +339,51 @@ class Map {
 
         // Visual event debugging....
         if ( this.gamebox.player.query.debug ) {
-            this.data.events.forEach( ( event ) => {
-                this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
-                this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.blue;
+            this.renderDebug();
+        }
+    }
+
+
+    renderDebug () {
+        const visibleEvents = this.gamebox.getVisibleEvents();
+
+        visibleEvents.forEach( ( event ) => {
+            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.blue;
+            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                this.offset.x + ( event.coords[ 0 ] * this.data.tilesize ),
+                this.offset.y + ( event.coords[ 1 ] * this.data.tilesize ),
+                this.data.tilesize,
+                this.data.tilesize
+            );
+        });
+
+        this.data.spawn.forEach( ( spawn ) => {
+            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.yellow;
+            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                this.offset.x + spawn.x,
+                this.offset.y + spawn.y,
+                this.gamebox.hero.width,
+                this.gamebox.hero.height
+            );
+        });
+
+        const visibleTiles = this.gamebox.getVisibleActiveTiles();
+
+        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.pink;
+
+        visibleTiles.forEach( ( activeTiles ) => {
+            activeTiles.pushed.forEach( ( coord ) => {
                 this.gamebox.layers.foreground.onCanvas.context.fillRect(
-                    this.offset.x + ( event.coords[ 0 ] * this.data.tilesize ),
-                    this.offset.y + ( event.coords[ 1 ] * this.data.tilesize ),
+                    this.offset.x + ( coord[ 0 ] * this.data.tilesize ),
+                    this.offset.y + ( coord[ 1 ] * this.data.tilesize ),
                     this.data.tilesize,
                     this.data.tilesize
                 );
             });
-            this.data.spawn.forEach( ( spawn ) => {
-                this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.yellow;
-                this.gamebox.layers.foreground.onCanvas.context.fillRect(
-                    this.offset.x + spawn.x,
-                    this.offset.y + spawn.y,
-                    this.gamebox.hero.width,
-                    this.gamebox.hero.height
-                );
-            });
+        });
 
-            const visibleTiles = this.gamebox.getVisibleActiveTiles();
-
-            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.pink;
-
-            visibleTiles.forEach( ( activeTiles ) => {
-                activeTiles.pushed.forEach( ( coord ) => {
-                    this.gamebox.layers.foreground.onCanvas.context.fillRect(
-                        this.offset.x + ( coord[ 0 ] * this.data.tilesize ),
-                        this.offset.y + ( coord[ 1 ] * this.data.tilesize ),
-                        this.data.tilesize,
-                        this.data.tilesize
-                    );
-                });
-            });
-
-            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
-        }
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
     }
 
 
@@ -513,29 +521,24 @@ class Map {
             const tiles = layerTiles[ i ];
             const topCel = celsCopy[ celsCopy.length - 1 ];
             const activeTiles = this.getActiveTiles( tiles.group );
+            const isTileAnimated = tiles.stepsX;
+            const isTilePushed = activeTiles.isPushed( celsCoords );
+            const isTileSpliced = activeTiles.isSpliced( celsCoords );
+
 
             if ( activeTiles.pushed.length ) {
                 for ( let j = activeTiles.pushed.length; j--; ) {
                     const coord = activeTiles.pushed[ j ];
 
                     // Correct tile coords
-                    if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] ) {
-                        // (tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ])
-                        const isTileAnimated = tiles.stepsX;
-
+                    if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] && isTileAnimated ) {
                         // Make sure we don't dupe a tile match if it's NOT animated...
-                        if ( isTileAnimated ) {
-                            return activeTiles.getTile();
-                        }
+                        return activeTiles.getTile();
                     }
                 }
             }
 
             if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
-                // Check if tile is pushed...
-                const isTilePushed = activeTiles.isPushed( celsCoords );
-                const isTileSpliced = activeTiles.isSpliced( celsCoords );
-
                 // Push the tile to the coords Array...
                 // This lets us generate ActiveTile groups that will
                 // find their coordinates in real-time using spritesheet background-position...
@@ -544,13 +547,14 @@ class Map {
                     // Then this should find ActiveTiles instance and push there...
                     activeTiles.push( celsCoords );
                     return true;
+                }
 
                 // An ActiveTiles coord can be spliced during interaction.
                 // Example: Hero picks up an action tile and throws it.
                 // The original tile cel still exists in the textures data,
                 // but we can capture this condition and make sure we pop
                 // if off and no longer render it to the texture map.
-                } else if ( isTileSpliced ) {
+                if ( isTileSpliced ) {
                     celsCopy.pop();
                     return celsCopy;
                 }

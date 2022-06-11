@@ -78,6 +78,26 @@ class Sprite {
     }
 
 
+    isHero () {
+        return this === this.gamebox.hero;
+    }
+
+
+    isCompanion () {
+        return this === this.gamebox.companion;
+    }
+
+
+    isLifted () {
+        return Utils.def( this.hero );
+    }
+
+
+    isIdle () {
+        return ( this.idle.x && this.idle.y );
+    }
+
+
 
 /*******************************************************************************
 * Rendering
@@ -129,7 +149,7 @@ class Sprite {
         }
 
         // Move betweeb BG and FG relative to Hero
-        if ( this !== this.gamebox.hero && this !== this.gamebox.companion ) {
+        if ( !this.isHero() && !this.isCompanion() ) {
             // Assume that FLOAT should always render to the foreground
             if ( this.data.type === Config.npc.FLOAT ) {
                 this.layer = "foreground";
@@ -220,14 +240,12 @@ class Sprite {
     applyPosition () {
         // A lifted object
         // Need to NOT hardcode the 42 here...
-        if ( this.hero ) {
-            if ( !this.throwing ) {
-                this.position.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
-                this.position.y = this.hero.position.y - this.height + 42;
-            }
+        if ( this.isLifted() && !this.throwing ) {
+            this.position.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
+            this.position.y = this.hero.position.y - this.height + 42;
 
         // Basic collision for NPCs...
-        } else {
+        } else if ( !this.isLifted() ) {
             this.position = this.getNextPoi();
         }
     }
@@ -272,7 +290,7 @@ class Sprite {
         }
 
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
-            if ( this.verb === Config.verbs.LIFT && ( this.idle.x && this.idle.y ) ) {
+            if ( this.verb === Config.verbs.LIFT && this.isIdle() ) {
                 Utils.log( "static lift..." );
 
             } else {

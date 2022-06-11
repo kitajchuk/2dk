@@ -205,16 +205,12 @@ class Player extends Controller {
 
 
     onRotate () {
-        if ( Math.abs( this.getOrientation() ) === 90 ) {
-            if ( this.ready ) {
-                this.resume();
-            }
+        if ( Math.abs( this.getOrientation() ) === 90 && this.ready ) {
+            this.resume();
 
-        } else {
-            if ( this.ready ) {
-                this.pause();
-                this.stop();
-            }
+        } else if ( this.ready ) {
+            this.pause();
+            this.stop();
         }
     }
 

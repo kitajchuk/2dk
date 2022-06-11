@@ -40,11 +40,12 @@ class Companion extends Sprite {
             this.previousElapsed = elapsed;
         }
 
-        // Companion type?
+        // Companion types?
         if ( this.data.type === Config.npc.WALK ) {
             this.blitWalk();
+        }
 
-        } else if ( this.data.type === Config.npc.FLOAT ) {
+        if ( this.data.type === Config.npc.FLOAT ) {
             this.blitFloat();
         }
 
@@ -72,12 +73,17 @@ class Companion extends Sprite {
 
         // Hero is NOT idle, so moving
         // Hero IS idle but companion is within a threshold distance...
-        if ( ( !this.hero.idle.x || !this.hero.idle.y ) || ( this.hero.idle.x && this.hero.idle.y && distance > ( this.map.data.tilesize / 2 ) ) ) {
+        if (
+            (
+                ( !this.hero.idle.x || !this.hero.idle.y ) ||
+                ( this.hero.idle.x && this.hero.idle.y && distance > ( this.map.data.tilesize / 2 ) )
+            ) &&
+            this.data.bounce &&
+            this.position.z === 0
+        ) {
             // Bounce condition is TRUE
             // Position Z is zero, so bounce a bit...
-            if ( this.data.bounce && this.position.z === 0 ) {
-                this.physics.vz = -8;
-            }
+            this.physics.vz = -8;
         }
 
         if ( Math.ceil( this.hero.position.x ) > Math.floor( this.position.x ) ) {
@@ -95,8 +101,9 @@ class Companion extends Sprite {
     applyPosition () {
         if ( this.data.type === Config.npc.WALK ) {
             this.applyWalkPosition();
+        }
 
-        } else if ( this.data.type === Config.npc.FLOAT ) {
+        if ( this.data.type === Config.npc.FLOAT ) {
             this.applyFloatPosition();
         }
     }
@@ -116,16 +123,19 @@ class Companion extends Sprite {
         if ( this.hero.dir === "right" && heroCenter.x > selfCenter.x ) {
             poi.x = heroCenter.x - this.width;
             poi.y = heroCenter.y;
+        }
 
-        } else if ( this.hero.dir === "left" && heroCenter.x < selfCenter.x ) {
+        if ( this.hero.dir === "left" && heroCenter.x < selfCenter.x ) {
             poi.x = heroCenter.x;
             poi.y = heroCenter.y;
+        }
 
-        } else if ( this.hero.dir === "up" && heroCenter.y < selfCenter.y ) {
+        if ( this.hero.dir === "up" && heroCenter.y < selfCenter.y ) {
             poi.x = heroCenter.x - ( this.width / 2 );
             poi.y = heroCenter.y + this.height;
+        }
 
-        } else if ( this.hero.dir === "down" && heroCenter.y > selfCenter.y ) {
+        if ( this.hero.dir === "down" && heroCenter.y > selfCenter.y ) {
             poi.x = heroCenter.x - ( this.width / 2 );
             poi.y = heroCenter.y;
         }
@@ -142,16 +152,19 @@ class Companion extends Sprite {
         if ( this.hero.dir === "right" && this.hero.position.x > this.position.x ) {
             poi.x = this.hero.position.x - ( this.width / 2 );
             poi.y = this.hero.footbox.y - ( this.height - this.hero.footbox.height );
+        }
 
-        } else if ( this.hero.dir === "left" && this.hero.position.x < this.position.x ) {
+        if ( this.hero.dir === "left" && this.hero.position.x < this.position.x ) {
             poi.x = this.hero.position.x + this.hero.width - ( this.width / 2 );
             poi.y = this.hero.footbox.y - ( this.height - this.hero.footbox.height );
+        }
 
-        } else if ( this.hero.dir === "up" && this.hero.position.y < this.position.y ) {
+        if ( this.hero.dir === "up" && this.hero.position.y < this.position.y ) {
             poi.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
             poi.y = this.hero.position.y + this.hero.height - ( this.height / 2 );
+        }
 
-        } else if ( this.hero.dir === "down" && this.hero.position.y > this.position.y ) {
+        if ( this.hero.dir === "down" && this.hero.position.y > this.position.y ) {
             poi.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
             poi.y = this.hero.position.y - ( this.height / 2 );
         }

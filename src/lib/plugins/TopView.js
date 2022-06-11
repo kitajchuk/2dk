@@ -126,25 +126,21 @@ class TopView extends GameBox {
         if ( x >= 0 && x <= ( this.map.width - this.camera.width ) ) {
             offset.x = -x;
 
-        } else {
-            if ( x >= ( this.map.width - this.camera.width ) ) {
-                offset.x = -( this.map.width - this.camera.width );
+        } else if ( x >= ( this.map.width - this.camera.width ) ) {
+            offset.x = -( this.map.width - this.camera.width );
 
-            } else {
-                offset.x = 0;
-            }
+        } else {
+            offset.x = 0;
         }
 
         if ( y >= 0 && y <= ( this.map.height - this.camera.height ) ) {
             offset.y = -y;
 
-        } else {
-            if ( y >= ( this.map.height - this.camera.height ) ) {
-                offset.y = -( this.map.height - this.camera.height );
+        } else if ( y >= ( this.map.height - this.camera.height ) ) {
+            offset.y = -( this.map.height - this.camera.height );
 
-            } else {
-                offset.y = 0;
-            }
+        } else {
+            offset.y = 0;
         }
 
         this.offset = offset;
@@ -349,8 +345,8 @@ class TopView extends GameBox {
             (
                 collision.tiles.passive[ 0 ].collides.width > ( collision.tiles.passive[ 0 ].tilebox.width / 2 ) ||
                 collision.tiles.passive[ 0 ].collides.height > ( collision.tiles.passive[ 0 ].tilebox.height / 2 )
-            )
-            && this.hero.verb !== Config.verbs.LIFT &&
+            ) &&
+            this.hero.verb !== Config.verbs.LIFT &&
             collision.tiles.passive[ 0 ].instance.canInteract( Config.verbs.JUMP ).dir === dir
         );
     }
@@ -612,7 +608,7 @@ class TopView extends GameBox {
     handleHeroPush ( poi, dir ) {
         this.interact.push++;
 
-        if ( ( this.hero.verb !== Config.verbs.LIFT ) && ( this.interact.push > this.map.data.tilesize ) ) {
+        if ( this.hero.verb !== Config.verbs.LIFT && this.interact.push > this.map.data.tilesize ) {
             this.hero.cycle( Config.verbs.PUSH, dir );
 
         } else if ( this.hero.verb !== Config.verbs.LIFT ) {
@@ -895,9 +891,10 @@ class TopView extends GameBox {
             // Stairs are hard, you have to take it slow...
             if ( tile.group === Config.tiles.STAIRS ) {
                 this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
+            }
 
             // Grass is thick, it will slow you down a bit...
-            } else if ( tile.group === Config.tiles.GRASS ) {
+            if ( tile.group === Config.tiles.GRASS ) {
                 this.hero.physics.maxv = this.hero.physics.controlmaxv / 1.5;
             }
         });
@@ -952,8 +949,9 @@ class TopView extends GameBox {
         if ( sprite.data.ai && !sprite.attacked ) {
             if ( sprite.data.ai === Config.npc.ROAM ) {
                 this.handleRoam( sprite );
+            }
 
-            } else if ( sprite.data.ai === Config.npc.WANDER ) {
+            if ( sprite.data.ai === Config.npc.WANDER ) {
                 this.handleWander( sprite );
             }
         }
@@ -970,16 +968,19 @@ class TopView extends GameBox {
         if ( sprite.throwing === "left" ) {
             throwX = sprite.position.x - dist;
             throwY = sprite.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
+        }
 
-        } else if ( sprite.throwing === "right" ) {
+        if ( sprite.throwing === "right" ) {
             throwX = sprite.position.x + dist;
             throwY = sprite.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
+        }
 
-        } else if ( sprite.throwing === "up" ) {
+        if ( sprite.throwing === "up" ) {
             throwX = sprite.position.x;
             throwY = sprite.position.y - dist;
+        }
 
-        }  else if ( sprite.throwing === "down" ) {
+        if ( sprite.throwing === "down" ) {
             throwX = sprite.position.x;
             throwY = this.hero.footbox.y + dist;
         }
@@ -1125,22 +1126,25 @@ class TopView extends GameBox {
                 y: 0,
                 z: 0,
             };
+        }
 
-        } else if ( this.hero.dir === "up" ) {
+        if ( this.hero.dir === "up" ) {
             return {
                 x: this.hero.position.x,
                 y: this.map.height - this.hero.height,
                 z: 0,
             };
+        }
 
-        } else if ( this.hero.dir === "right" ) {
+        if ( this.hero.dir === "right" ) {
             return {
                 x: 0,
                 y: this.hero.position.y,
                 z: 0,
             };
+        }
 
-        } else if ( this.hero.dir === "left" ) {
+        if ( this.hero.dir === "left" ) {
             return {
                 x: this.map.width - this.hero.width,
                 y: this.hero.position.y,

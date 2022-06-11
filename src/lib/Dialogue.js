@@ -110,9 +110,10 @@ class Dialogue {
 
                 this.teardown();
             }
+        }
 
         // Prompt-based (a:confirm, b: decline)
-        } else if ( this.data.type === "prompt" ) {
+        if ( this.data.type === "prompt" ) {
             // A-button OR B-button will advance as long as there is text...
             if ( this.data.text.length ) {
                 const text = [this.data.text.shift()];
@@ -132,7 +133,7 @@ class Dialogue {
                 }, this.debounce );
 
             // A-button will confirm if there is no more text...
-            } else if ( a && !this.data.text.length ) {
+            } else if ( a ) {
                 this.isResolve = true;
                 this.data.type = "text";
                 this.data.text = this.data.yes.text;
@@ -143,7 +144,7 @@ class Dialogue {
                 }, this.duration );
 
             // B-button will cancel if there is no more text...
-            } else if ( b && !this.data.text.length ) {
+            } else if ( b ) {
                 this.isResolve = false;
                 this.data.type = "text";
                 this.data.text = this.data.no.text;
