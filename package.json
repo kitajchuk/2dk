@@ -47,7 +47,6 @@
     "@babel/eslint-parser": "^7.17.0",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
-    "babel-jest": "^27.5.1",
     "babel-loader": "^8.2.3",
     "chokidar-cli": "^2.1.0",
     "concurrently": "^7.2.1",
