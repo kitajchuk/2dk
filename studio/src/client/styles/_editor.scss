@@ -376,10 +376,6 @@
     z-index: 1;
     pointer-events: none;
 }
-.editor__objects {
-    z-index: 2; // This is dynamic in the player engine (toggle bg/fg based on hero position)
-    pointer-events: none;
-}
 .editor__foreground {
     z-index: 3;
     pointer-events: none;
@@ -391,6 +387,10 @@
 }
 .editor__mapgrid {
     z-index: 4;
+}
+.editor__npc {
+    z-index: 4;
+    pointer-events: none;
 }
 
 

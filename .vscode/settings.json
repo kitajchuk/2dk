@@ -1,4 +1,8 @@
 {
-    "editor.tabSize": 4,
-    "editor.detectIndentation": false
+  "editor.tabSize": 4,
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": false,
+  "editor.formatOnType": false,
+  "editor.formatOnPaste": false,
+  "eslint.enable": false
 }

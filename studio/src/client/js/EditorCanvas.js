@@ -68,6 +68,7 @@ class EditorCanvas {
             foreground: null,
             collision: null,
             selection: null,
+            npc: null,
         };
         this.canvases = {
             mapgrid: document.getElementById( "editor-mapgrid-canvas" ),
@@ -355,8 +356,37 @@ class EditorCanvas {
             this.map.tilesize,
             this.map.tilesize
         );
-        // Draw npcs to canvas layer here...
         this.drawColliders();
+        this.drawNPCs();
+    }
+
+
+    drawNPCs () {
+        this.map.npcs.forEach( ( npc ) => {
+            const baseNpc = this.editor.data.game.npcs.find( ( gnpc ) => {
+                return npc.id === gnpc.id;
+            });
+
+            if ( baseNpc ) {
+                this.loader.loadImage( `./games/${this.editor.data.game.id}/${baseNpc.image}` ).then( ( img ) => {
+                    const baseState = baseNpc.states[ 0 ];
+                    const offsetX = baseNpc.verbs[ baseState.verb ][ baseState.dir ].offsetX;
+                    const offsetY = baseNpc.verbs[ baseState.verb ][ baseState.dir ].offsetY;
+
+                    this.contexts.npc.context.drawImage(
+                        img,
+                        Math.abs( offsetX ),
+                        Math.abs( offsetY ),
+                        baseNpc.width,
+                        baseNpc.height,
+                        npc.spawn.x,
+                        npc.spawn.y,
+                        baseNpc.width,
+                        baseNpc.height
+                    );
+                });
+            }
+        });
     }
 
 

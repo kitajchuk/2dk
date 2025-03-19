@@ -1,7 +1,6 @@
 const path = require ( "path" );
 const HtmlWebpackPlugin = require( "html-webpack-plugin" );
 const CopyWebpackPlugin = require( "copy-webpack-plugin" );
-const ESLintWebpackPlugin = require( "eslint-webpack-plugin" );
 const {
     babelRules,
     resolveConfig,
@@ -36,8 +35,7 @@ module.exports = {
                 minifyURLs: true,
             },
         }),
-        new CopyWebpackPlugin( copyPluginConfig ),
-        new ESLintWebpackPlugin(),
+        new CopyWebpackPlugin( copyPluginConfig )
     ],
     // output: {
     //     ...outputConfig,

@@ -22,7 +22,6 @@
   ],
   "main": "./src/lib/index.js",
   "scripts": {
-    "prepare": "husky install",
     "predev": "rm -rf dist && mkdir dist && cp -R studio/games dist && yarn build",
     "dev": "concurrently \"yarn serve:dev\" \"yarn watch:src\" \"yarn watch:studio\" \"yarn watch:games\"",
     "serve:dev": "webpack serve --config ./configs/webpack.config.dev.js",
@@ -32,117 +31,28 @@
     "build": "yarn build:site && yarn build:2dk && yarn build:app && yarn build:studio",
     "postbuild": "cp -R studio/games dist",
     "build:site": "webpack --config ./configs/webpack.config.prod.js",
-    "postbuild:site": "node-sass --output-style 'compressed' ./src/styles/2dk.scss ./dist/2dk.css",
+    "postbuild:site": "sass ./src/styles/2dk.scss ./dist/2dk.css",
     "build:2dk": "webpack --config ./configs/webpack.config.2dk.js",
-    "postbuild:2dk": "node-sass --output-style 'compressed' ./src/styles/2dk.scss ./studio/src/templates/2dk.css",
+    "postbuild:2dk": "sass ./src/styles/2dk.scss ./studio/src/templates/2dk.css",
     "build:app": "webpack --config ./configs/webpack.config.app.js",
-    "build:studio": "node-sass --output-style 'compressed' ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
-    "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src",
-    "lint:src": "eslint 'src/**/*.js' 'configs/**/*.js'",
-    "lint:studio": "eslint 'studio/src/client/**/*.js' 'studio/src/server/**/*.js'"
+    "build:studio": "sass ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
+    "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src"
   },
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.17.2",
-    "@babel/eslint-parser": "^7.17.0",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "babel-loader": "^8.2.3",
     "chokidar-cli": "^2.1.0",
     "concurrently": "^7.2.1",
     "copy-webpack-plugin": "^10.2.4",
-    "eslint": "^8.9.0",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsdoc": "^37.9.1",
-    "eslint-webpack-plugin": "^3.1.1",
     "html-webpack-plugin": "^5.5.0",
-    "husky": "^7.0.4",
     "jsdoc": "^3.6.10",
-    "lint-staged": "^12.3.4",
-    "node-sass": "^7.0.1",
+    "sass-embedded": "^1.86.0",
     "webpack": "^5.68.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.4"
-  },
-  "lint-staged": {
-    "src/**/*.js": "yarn lint:src",
-    "studio/src/client/**/*.js": "yarn lint:studio",
-    "studio/src/server/**/*.js": "yarn lint:studio"
-  },
-  "eslintConfig": {
-    "parser": "@babel/eslint-parser",
-    "parserOptions": {
-      "babelOptions": {
-        "ignore": [
-          "./studio"
-        ]
-      },
-      "ecmaFeatures": {}
-    },
-    "settings": {},
-    "env": {
-      "browser": true,
-      "es2021": true,
-      "jest": true,
-      "node": true
-    },
-    "plugins": [
-      "jsdoc"
-    ],
-    "extends": [
-      "eslint:recommended"
-    ],
-    "ignorePatterns": [
-      "vendor",
-      "node_modules"
-    ],
-    "rules": {
-      "quotes": [
-        "error",
-        "double"
-      ],
-      "space-in-parens": [
-        "error",
-        "always",
-        {
-          "exceptions": [
-            "{}"
-          ]
-        }
-      ],
-      "space-before-function-paren": [
-        "error",
-        "always"
-      ],
-      "arrow-parens": [
-        "error",
-        "always"
-      ],
-      "max-len": [
-        "error",
-        {
-          "code": 160
-        }
-      ],
-      "no-trailing-spaces": [
-        "error",
-        {
-          "ignoreComments": true
-        }
-      ],
-      "space-infix-ops": "error",
-      "space-unary-ops": "error",
-      "comma-dangle": [
-        "error",
-        {
-          "functions": "never",
-          "arrays": "always-multiline",
-          "objects": "always-multiline",
-          "imports": "always-multiline",
-          "exports": "always-multiline"
-        }
-      ]
-    }
   },
   "babel": {
     "presets": [
