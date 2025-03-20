@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
+        <!-- <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
         <title>2dk Studio</title>
         <link href="./public/css/studio.css" rel="stylesheet" />
     </head>
@@ -17,6 +17,7 @@
                     <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
                     <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
                     <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
+                    <div class="editor__canvas__layer editor__obj" id="editor-obj"></div>
                     <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
                     <div class="editor__canvas__layer editor__selection" id="editor-sel"></div>
                     <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
@@ -86,6 +87,16 @@
                             <i data-feather="eye-off"></i>
                         </span>
                     </div>
+                    <div class="editor__layer js-edit-layer" data-layer="obj">
+                        <span class="icon icon--nudge">
+                            <i data-feather="layers"></i>
+                        </span>
+                        <span>Object</span>
+                        <span class="editor__layer__hide icon js-hide-layer" data-layer="obj">
+                            <i data-feather="eye"></i>
+                            <i data-feather="eye-off"></i>
+                        </span>
+                    </div>
                     <div class="editor__layer js-edit-layer" data-layer="collision">
                         <span class="icon icon--nudge">
                             <i data-feather="layers"></i>
@@ -131,20 +142,52 @@
                             </div>
                         </div>
                     </div>
-                    <div class="editor__layer -merge-down">
-                        <div class="editor__layer__label">
-                            <span class="icon icon--nudge">
-                                <i data-feather="grid"></i>
-                            </span>
-                            <span>Tile Picker</span>
+                    <div id="editor-tile-picker" class="editor__picker">
+                        <div class="editor__layer -merge-down">
+                            <div class="editor__layer__label">
+                                <span class="icon icon--nudge">
+                                    <i data-feather="grid"></i>
+                                </span>
+                                <span>Tile Picker</span>
+                            </div>
+                        </div>
+                        <div class="editor__layer">
+                            <div id="editor-tileset-box" class="editor__picker__box">
+                                <div id="editor-tileset" class="editor__picker__overflow">
+                                    <img id="editor-tileset-image" />
+                                    <canvas class="canvas layer layer--tilepaint" id="editor-tilepaint-canvas"></canvas>
+                                    <canvas class="canvas layer layer--tilegrid" id="editor-tilegrid-canvas"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="editor__layer -tileset">
-                        <div id="editor-tileset-box">
-                            <div id="editor-tileset">
-                                <img id="editor-tileset-image" />
-                                <canvas class="canvas layer layer--tilepaint" id="editor-tilepaint-canvas"></canvas>
-                                <canvas class="canvas layer layer--tilegrid" id="editor-tilegrid-canvas"></canvas>
+                    <div id="editor-npc-picker" class="editor__picker is-hidden">
+                        <div class="editor__layer -merge-down">
+                            <div class="editor__layer__label">
+                                <span class="icon icon--nudge">
+                                    <i data-feather="grid"></i>
+                                </span>
+                                <span>NPC Picker</span>
+                            </div>
+                        </div>
+                        <div class="editor__layer">
+                            <div id="" class="editor__picker__box">
+                                <div id="editor-npc-picker-box" class="editor__picker__overflow editor__picker__sprite__grid"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="editor-obj-picker" class="editor__picker is-hidden">
+                        <div class="editor__layer -merge-down">
+                            <div class="editor__layer__label">
+                                <span class="icon icon--nudge">
+                                    <i data-feather="grid"></i>
+                                </span>
+                                <span>Object Picker</span>
+                            </div>
+                        </div>
+                        <div class="editor__layer">
+                            <div id="" class="editor__picker__box">
+                                <div id="editor-obj-picker-box" class="editor__picker__overflow editor__picker__sprite__grid"></div>
                             </div>
                         </div>
                     </div>

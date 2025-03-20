@@ -26,6 +26,7 @@ const Config = {
             FOREGROUND: "foreground",
             COLLISION: "collision",
             NPC: "npc",
+            OBJ: "obj",
         },
     },
     keys: {

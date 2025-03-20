@@ -44,12 +44,6 @@
 }
 #editor-preview,
 #editor-tileset {
-    position: relative;
-    height: 100%;
-    overflow: auto;
-    outline: 1px solid var( --grey-dark );
-    background-color: var( --charcoal2 );
-
     .layer {
         position: absolute;
         left: 50%;
@@ -75,10 +69,6 @@
 }
 #editor-preview {
     overflow: hidden;
-}
-#editor-tileset-box {
-    height: calc( 100vh - (47px * 5) - 32px - 32px - 161px - 16px - 16px - 50px );
-    width: 100%;
 }
 #editor-preview-box {
     height: calc( 128px + 47px );
@@ -332,7 +322,8 @@
     &.is-background,
     &.is-foreground,
     &.is-selection,
-    &.is-npc {
+    &.is-npc,
+    &.is-obj {
         #editor-mapgrid-canvas {
             display: block;
         }
@@ -604,4 +595,38 @@
 }
 .editor__delete-button {
     width: 100%;
+}
+
+
+/* Pickers */
+.editor__picker {
+    &.is-hidden {
+        display: none;
+    }
+}
+.editor__picker__box {
+    height: calc( 100vh - 50px - (47px * 5) - 32px - 208px - 32px - 16px - 16px );
+    width: 100%;
+}
+.editor__picker__overflow {
+    position: relative;
+    height: 100%;
+    overflow: auto;
+    outline: 1px solid var( --grey-dark );
+    background-color: var( --charcoal2 );
+}
+.editor__picker__sprite__grid {
+    gap: 24px 0;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
+
+    > div {
+        gap: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
 }

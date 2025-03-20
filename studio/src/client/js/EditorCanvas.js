@@ -54,6 +54,11 @@ class EditorCanvas {
             $canvasPane: window.hobo( "#editor-canvas-pane" ),
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
+            $tilePicker: window.hobo( "#editor-tile-picker" ),
+            $objPicker: window.hobo( "#editor-obj-picker" ),
+            $objPickerBox: window.hobo( "#editor-obj-picker-box" ),
+            $npcPicker: window.hobo( "#editor-npc-picker" ),
+            $npcPickerBox: window.hobo( "#editor-npc-picker-box" ),
         };
         this.layers = {
             background: document.getElementById( "editor-bg" ),
@@ -298,6 +303,8 @@ class EditorCanvas {
         this.loader.loadImage( `./games/${this.editor.data.game.id}/${this.map.image}` ).then( ( img ) => {
             this.addTileset( img );
             this.addCanvas();
+            this.addNPCLoadout();
+            this.addObjectLoadout();
         });
     }
 
@@ -503,6 +510,41 @@ class EditorCanvas {
     }
 
 
+    addNPCLoadout () {
+        this.editor.data.game.npcs.forEach( ( npc ) => {
+            const src = `./games/${this.editor.data.game.id}/${npc.image}`;
+            const state = npc.states[ 0 ];
+            const offsetX = Math.abs(npc.verbs[ state.verb ][ state.dir ].offsetX);
+            const offsetY = Math.abs(npc.verbs[ state.verb ][ state.dir ].offsetY);
+
+            this.loader.loadImage( src ).then( ( img ) => {
+                this.dom.$npcPickerBox[ 0 ].innerHTML += `
+                    <div>
+                        <div style="width: ${npc.width}px; height: ${npc.height}px; background-image: url(${src}); background-position: -${offsetX}px -${offsetY}px;"></div>
+                        <div>${npc.name}</div>
+                    </div>
+                `;
+            });
+        });
+    }
+
+
+    addObjectLoadout () {
+        this.editor.data.game.objects.forEach( ( obj ) => {
+            const src = `./games/${this.editor.data.game.id}/${obj.image}`;
+
+            this.loader.loadImage( src ).then(( img ) => {
+                this.dom.$objPickerBox[ 0 ].innerHTML += `
+                    <div>
+                        <div style="width: ${obj.width}px; height: ${obj.height}px; background-image: url(${src}); background-position: -${obj.offsetX}px -${obj.offsetY}px;"></div>
+                        <div>${obj.name}</div>
+                    </div>
+                `;
+            });
+        });
+    }
+
+
     addTileset ( img ) {
         const width = img.naturalWidth / this.tilescale;
         const height = img.naturalHeight / this.tilescale;
@@ -694,11 +736,28 @@ class EditorCanvas {
 
 
     setActiveLayer ( layer ) {
-        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc" );
-        this.dom.$canvasPane.removeClass( "is-selection" );
+        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc is-obj is-selection" );
 
         if ( layer ) {
             this.dom.$canvasPane.addClass( `is-${layer}` );
+
+            if ( layer === Config.EditorLayers.modes.OBJ ) {
+                this.dom.$objPicker.removeClass( "is-hidden" );
+                this.dom.$tilePicker.addClass( "is-hidden" );
+                this.dom.$npcPicker.addClass( "is-hidden" );
+                this.editor.actions.resetActions();
+                this.resetPreview();
+            } else if ( layer === Config.EditorLayers.modes.NPC ) {
+                this.dom.$npcPicker.removeClass( "is-hidden" );
+                this.dom.$objPicker.addClass( "is-hidden" );
+                this.dom.$tilePicker.addClass( "is-hidden" );
+                this.editor.actions.resetActions();
+                this.resetPreview();
+            } else {
+                this.dom.$tilePicker.removeClass( "is-hidden" );
+                this.dom.$objPicker.addClass( "is-hidden" );
+                this.dom.$npcPicker.addClass( "is-hidden" );
+            }
         }
 
         if ( this.canApplySelection() ) {
@@ -1090,6 +1149,10 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mousemove", ( e ) => {
+            if ( !this.map ) {
+                return;
+            }
+
             const coords = this.getMouseCoords( e, this.gridsize );
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
