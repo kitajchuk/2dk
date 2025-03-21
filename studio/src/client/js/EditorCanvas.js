@@ -1,6 +1,6 @@
 const { ipcRenderer } = require( "electron" );
 const Config = require( "./Config" );
-
+const { renderNPC, renderObject } = require( "./Render" );
 
 
 const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
@@ -36,8 +36,11 @@ class EditorCanvas {
         this.editor = editor;
         this.mode = null;
         this.map = null;
+        this.assets = {};
         this.tilesetCoords = [];
         this.selectionCoords = [];
+        this.currentNPC = null;
+        this.currentObject = null;
         this.isZoomable = false;
         this.isSpacebar = false;
         this.isEscape = false;
@@ -67,6 +70,7 @@ class EditorCanvas {
             selection: document.getElementById( "editor-sel" ),
             mapgrid: document.getElementById( "editor-mapgrid" ),
             npc: document.getElementById( "editor-npc" ),
+            obj: document.getElementById( "editor-obj" ),
         };
         this.contexts = {
             background: null,
@@ -74,6 +78,7 @@ class EditorCanvas {
             collision: null,
             selection: null,
             npc: null,
+            obj: null,
         };
         this.canvases = {
             mapgrid: document.getElementById( "editor-mapgrid-canvas" ),
@@ -92,6 +97,16 @@ class EditorCanvas {
         this.bindDocumentEvents();
         this.bindTilepaintEvents();
         this.hideCanvasCursor();
+    }
+
+
+    hide ( l ) {
+        window.hobo( this.layers[ l ] ).addClass( "is-hidden" );
+    }
+
+
+    show ( l ) {
+        window.hobo( this.layers[ l ] ).removeClass( "is-hidden" );
     }
 
 
@@ -157,20 +172,26 @@ class EditorCanvas {
             this.isMouseDownCanvas = false;
             this.isDraggableAlive = false;
             this.currentTileCoord = null;
+            this.currentNPC = null;
+            this.currentObject = null;
             this.tilesetCoords = [];
             this.selectionCoords = [];
             this.map = null;
             this.mode = null;
+            this.assets = {};
             this.contexts.background = null;
             this.contexts.foreground = null;
             this.contexts.collision = null;
             this.contexts.selection = null;
+            this.contexts.npc = null;
+            this.contexts.obj = null;
             this.dom.tileset.src = "";
             this.layers.background.innerHTML = "";
             this.layers.foreground.innerHTML = "";
             this.layers.collision.innerHTML = "";
             this.layers.selection.innerHTML = "";
             this.layers.npc.innerHTML = "";
+            this.layers.obj.innerHTML = "";
             this.dom.$canvasPane.removeClass( "is-loaded" );
         }
     }
@@ -183,19 +204,6 @@ class EditorCanvas {
         this.gridsize = Math.min( 32, this.map.tilesize );
         this.tilescale = this.map.tilesize / this.gridsize;
 
-        // Empty tileset tiles
-        this.tilesetCoords = [];
-
-        // Empty the selection coords
-        this.selectionCoords = [];
-
-        // Clean up last map in DOM, prolly already happened with this.reset()
-        this.layers.background.innerHTML = "";
-        this.layers.foreground.innerHTML = "";
-        this.layers.collision.innerHTML = "";
-        this.layers.selection.innerHTML = "";
-        this.layers.npc.innerHTML = "";
-
         // Create new map layers
         this.contexts.background = new window.lib2dk.MapLayer({
             id: "background",
@@ -204,13 +212,6 @@ class EditorCanvas {
             width: this.map.width,
             height: this.map.height,
         });
-        // this.contexts.backgroundActiveTiles = new window.lib2dk.MapLayer({
-        //     id: "background-active-tiles",
-        //     map: this.map,
-        //     cash: false,
-        //     width: this.map.width,
-        //     height: this.map.height
-        // });
         this.contexts.foreground = new window.lib2dk.MapLayer({
             id: "foreground",
             map: this.map,
@@ -239,11 +240,16 @@ class EditorCanvas {
             width: this.map.width,
             height: this.map.height,
         });
+        this.contexts.obj = new window.lib2dk.MapLayer({
+            id: "obj",
+            map: this.map,
+            cash: false,
+            width: this.map.width,
+            height: this.map.height,
+        });
 
         this.contexts.background.canvas.style.width = `${this.map.width}px`;
         this.contexts.background.canvas.style.height = `${this.map.height}px`;
-        // this.contexts.backgroundActiveTiles.canvas.style.width = `${this.map.width}px`;
-        // this.contexts.backgroundActiveTiles.canvas.style.height = `${this.map.height}px`;
         this.contexts.foreground.canvas.style.width = `${this.map.width}px`;
         this.contexts.foreground.canvas.style.height = `${this.map.height}px`;
         this.contexts.collision.canvas.style.width = `${this.map.width}px`;
@@ -252,33 +258,15 @@ class EditorCanvas {
         this.contexts.selection.canvas.style.height = `${this.map.height}px`;
         this.contexts.npc.canvas.style.width = `${this.map.width}px`;
         this.contexts.npc.canvas.style.height = `${this.map.height}px`;
+        this.contexts.obj.canvas.style.width = `${this.map.width}px`;
+        this.contexts.obj.canvas.style.height = `${this.map.height}px`;
 
         this.layers.background.appendChild( this.contexts.background.canvas );
-        // this.layers.background.appendChild( this.contexts.backgroundActiveTiles.canvas );
         this.layers.foreground.appendChild( this.contexts.foreground.canvas );
         this.layers.collision.appendChild( this.contexts.collision.canvas );
         this.layers.selection.appendChild( this.contexts.selection.canvas );
         this.layers.npc.appendChild( this.contexts.npc.canvas );
-
-        // this.map.tiles.forEach(( tiles ) => {
-        //     let coords = tiles.coords;
-
-        //     if ( !tiles.coords.length ) {
-        //         coords = this.getActiveTileCoords( tiles );
-        //     }
-
-        //     coords.forEach(( coord ) => {
-        //         renderTile(
-        //             this.contexts[ `${tiles.layer}ActiveTiles` ].context,
-        //             coord[ 0 ] * this.map.tilesize,
-        //             coord[ 1 ] * this.map.tilesize,
-        //             this.map.tilesize,
-        //             this.map.tilesize,
-        //             window.lib2dk.Config.colors.purple,
-        //             0.5
-        //         );
-        //     });
-        // });
+        this.layers.obj.appendChild( this.contexts.obj.canvas );
 
         this.canvases.mapgrid.width = this.map.width;
         this.canvases.mapgrid.height = this.map.height;
@@ -299,13 +287,39 @@ class EditorCanvas {
             applyBounds: true,
         });
 
-        // Load the tileset
-        this.loader.loadImage( `./games/${this.editor.data.game.id}/${this.map.image}` ).then( ( img ) => {
-            this.addTileset( img );
+        this.loadMapAssets().then(() => {
+            this.addTileset();
             this.addCanvas();
             this.addNPCLoadout();
             this.addObjectLoadout();
         });
+    }
+
+
+
+    loadMapAssets () {
+        const promises = [];
+
+        for ( const type in this.editor.data.assets ) {
+            if ( type === "sounds" ) {
+                continue;
+            }
+
+            this.editor.data.assets[ type ].files.forEach( ( asset ) => {
+                promises.push(
+                    new Promise( ( resolve ) => {
+                        const key = `assets/${type}/${asset}`;
+
+                        this.loader.loadImage( `./games/${this.editor.data.game.id}/${key}` ).then( ( img ) => {
+                            this.assets[ key ] = img;
+                            resolve({ img, type, asset });
+                        });
+                    })
+                );
+            });
+        }
+
+        return Promise.all( promises );
     }
 
 
@@ -365,35 +379,7 @@ class EditorCanvas {
         );
         this.drawColliders();
         this.drawNPCs();
-    }
-
-
-    drawNPCs () {
-        this.map.npcs.forEach( ( npc ) => {
-            const baseNpc = this.editor.data.game.npcs.find( ( gnpc ) => {
-                return npc.id === gnpc.id;
-            });
-
-            if ( baseNpc ) {
-                this.loader.loadImage( `./games/${this.editor.data.game.id}/${baseNpc.image}` ).then( ( img ) => {
-                    const baseState = baseNpc.states[ 0 ];
-                    const offsetX = baseNpc.verbs[ baseState.verb ][ baseState.dir ].offsetX;
-                    const offsetY = baseNpc.verbs[ baseState.verb ][ baseState.dir ].offsetY;
-
-                    this.contexts.npc.context.drawImage(
-                        img,
-                        Math.abs( offsetX ),
-                        Math.abs( offsetY ),
-                        baseNpc.width,
-                        baseNpc.height,
-                        npc.spawn.x,
-                        npc.spawn.y,
-                        baseNpc.width,
-                        baseNpc.height
-                    );
-                });
-            }
-        });
+        this.drawObjects();
     }
 
 
@@ -433,6 +419,56 @@ class EditorCanvas {
         coordMap.tiles.forEach( ( tile ) => {
             if ( tile.paintTile ) {
                 this.refreshTile( layer, coords, tile );
+            }
+        });
+    }
+
+
+    drawNPCs () {
+        this.map.npcs.forEach( ( npc ) => {
+            const baseNpc = this.editor.data.game.npcs.find( ( gnpc ) => {
+                return npc.id === gnpc.id;
+            });
+
+            if ( baseNpc ) {
+                const baseState = baseNpc.states[ 0 ];
+                const offsetX = baseNpc.verbs[ baseState.verb ][ baseState.dir ].offsetX;
+                const offsetY = baseNpc.verbs[ baseState.verb ][ baseState.dir ].offsetY;
+
+                this.contexts.npc.context.drawImage(
+                    this.assets[ baseNpc.image ],
+                    Math.abs( offsetX ),
+                    Math.abs( offsetY ),
+                    baseNpc.width,
+                    baseNpc.height,
+                    npc.spawn.x,
+                    npc.spawn.y,
+                    baseNpc.width,
+                    baseNpc.height
+                );
+            }
+        });
+    }
+
+
+    drawObjects () {
+        this.map.objects.forEach( ( obj ) => {
+            const baseObj = this.editor.data.game.objects.find( ( gobj ) => {
+                return obj.id === gobj.id;
+            });
+
+            if ( baseObj ) {
+                this.contexts.obj.context.drawImage(
+                    this.assets[ baseObj.image ],
+                    baseObj.offsetX,
+                    baseObj.offsetY,
+                    baseObj.width,
+                    baseObj.height,
+                    obj.spawn.x,
+                    obj.spawn.y,
+                    baseObj.width,
+                    baseObj.height
+                );
             }
         });
     }
@@ -493,16 +529,6 @@ class EditorCanvas {
     }
 
 
-    hide ( l ) {
-        window.hobo( this.layers[ l ] ).addClass( "is-hidden" );
-    }
-
-
-    show ( l ) {
-        window.hobo( this.layers[ l ] ).removeClass( "is-hidden" );
-    }
-
-
     setTileboxBounds () {
         const boxBounds = this.dom.tilebox.getBoundingClientRect();
 
@@ -511,41 +537,21 @@ class EditorCanvas {
 
 
     addNPCLoadout () {
-        this.editor.data.game.npcs.forEach( ( npc ) => {
-            const src = `./games/${this.editor.data.game.id}/${npc.image}`;
-            const state = npc.states[ 0 ];
-            const offsetX = Math.abs(npc.verbs[ state.verb ][ state.dir ].offsetX);
-            const offsetY = Math.abs(npc.verbs[ state.verb ][ state.dir ].offsetY);
-
-            this.loader.loadImage( src ).then( ( img ) => {
-                this.dom.$npcPickerBox[ 0 ].innerHTML += `
-                    <div>
-                        <div style="width: ${npc.width}px; height: ${npc.height}px; background-image: url(${src}); background-position: -${offsetX}px -${offsetY}px;"></div>
-                        <div>${npc.name}</div>
-                    </div>
-                `;
-            });
-        });
+        this.dom.$npcPickerBox[ 0 ].innerHTML = this.editor.data.game.npcs.map( ( npc ) => {
+            return renderNPC( npc, this.editor.data.game );
+        }).join( "" );
     }
 
 
     addObjectLoadout () {
-        this.editor.data.game.objects.forEach( ( obj ) => {
-            const src = `./games/${this.editor.data.game.id}/${obj.image}`;
-
-            this.loader.loadImage( src ).then(( img ) => {
-                this.dom.$objPickerBox[ 0 ].innerHTML += `
-                    <div>
-                        <div style="width: ${obj.width}px; height: ${obj.height}px; background-image: url(${src}); background-position: -${obj.offsetX}px -${obj.offsetY}px;"></div>
-                        <div>${obj.name}</div>
-                    </div>
-                `;
-            });
-        });
+        this.dom.$objPickerBox[ 0 ].innerHTML = this.editor.data.game.objects.map( ( obj ) => {
+            return renderObject( obj, this.editor.data.game );
+        }).join( "" );
     }
 
 
-    addTileset ( img ) {
+    addTileset () {
+        const img = this.assets[ this.map.image ];
         const width = img.naturalWidth / this.tilescale;
         const height = img.naturalHeight / this.tilescale;
 
@@ -746,17 +752,22 @@ class EditorCanvas {
                 this.dom.$tilePicker.addClass( "is-hidden" );
                 this.dom.$npcPicker.addClass( "is-hidden" );
                 this.editor.actions.resetActions();
-                this.resetPreview();
+                this.clearTileset();
             } else if ( layer === Config.EditorLayers.modes.NPC ) {
                 this.dom.$npcPicker.removeClass( "is-hidden" );
                 this.dom.$objPicker.addClass( "is-hidden" );
                 this.dom.$tilePicker.addClass( "is-hidden" );
                 this.editor.actions.resetActions();
-                this.resetPreview();
+                this.clearTileset();
             } else {
                 this.dom.$tilePicker.removeClass( "is-hidden" );
                 this.dom.$objPicker.addClass( "is-hidden" );
                 this.dom.$npcPicker.addClass( "is-hidden" );
+
+                // Clear NPC & Object previews (if they exist)
+                if ( !this.tilesetCoords.length ) {
+                    this.clearTileset();
+                }
             }
         }
 
@@ -828,6 +839,7 @@ class EditorCanvas {
 
         this.resetPreview();
         this.resetCursor();
+        this.resetCurrentNPCAndObject();
     }
 
 
@@ -922,6 +934,12 @@ class EditorCanvas {
     }
 
 
+    resetCurrentNPCAndObject () {
+        this.currentNPC = null;
+        this.currentObject = null;
+    }
+
+
     applyPreview () {
         const ctx = this.canvases.preview.getContext( "2d" );
         const coordMap = this.getCoordMap();
@@ -955,6 +973,75 @@ class EditorCanvas {
                 );
             }
         });
+    }
+
+
+    applyPreviewNPC () {
+        const npc = this.currentNPC;
+        const ctx = this.canvases.preview.getContext( "2d" );
+        const scale = this.map.tilesize / this.gridsize;
+        const width = npc.width;
+        const height = npc.height;
+        const state = npc.states[ 0 ];
+        const offsetX = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetX );
+        const offsetY = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetY );
+        
+        ctx.clearRect(
+            0,
+            0,
+            this.canvases.preview.width,
+            this.canvases.preview.width
+        );
+
+        this.canvases.preview.width = width;
+        this.canvases.preview.height = height;
+        this.canvases.preview.style.width = `${width / scale}px`;
+        this.canvases.preview.style.height = `${height / scale}px`;
+
+        ctx.drawImage(
+            this.assets[ npc.image ],
+            offsetX,
+            offsetY,
+            width,
+            height,
+            0,
+            0,
+            width,
+            height
+        );
+    }
+
+
+    applyPreviewObject () {
+        const obj = this.currentObject;
+        const ctx = this.canvases.preview.getContext( "2d" );
+        const scale = this.map.tilesize / this.gridsize;
+        const width = obj.width;
+        const height = obj.height;
+
+        ctx.clearRect(
+            0,
+            0,
+            this.canvases.preview.width,
+            this.canvases.preview.width
+        );
+
+        this.canvases.preview.width = width;
+        this.canvases.preview.height = height;
+        this.canvases.preview.style.width = `${width / scale}px`;
+        this.canvases.preview.style.height = `${height / scale}px`;
+        
+        ctx.drawImage(
+            this.assets[ obj.image ],
+            obj.offsetX,
+            obj.offsetY,
+            width,
+            height,
+            0,
+            0,
+            width,
+            height
+        );
     }
 
 
@@ -994,6 +1081,59 @@ class EditorCanvas {
     }
 
 
+    applyCursorNPC () {
+        const npc = this.currentNPC;
+        const ctx = this.canvases.cursor.getContext( "2d" );
+        const width = npc.width;
+        const height = npc.height;
+        const state = npc.states[ 0 ];
+        const offsetX = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetX );
+        const offsetY = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetY );
+
+        this.canvases.cursor.width = width;
+        this.canvases.cursor.height = height;
+        this.canvases.cursor.style.width = `${width}px`;
+        this.canvases.cursor.style.height = `${height}px`;
+
+        ctx.drawImage(
+            this.assets[ npc.image ],
+            offsetX,
+            offsetY,
+            width,
+            height,
+            0,
+            0,
+            width,
+            height
+        );
+    }
+
+
+    applyCursorObject () {
+        const obj = this.currentObject;
+        const ctx = this.canvases.cursor.getContext( "2d" );
+        const width = obj.width;
+        const height = obj.height;
+
+        this.canvases.cursor.width = width;
+        this.canvases.cursor.height = height;
+        this.canvases.cursor.style.width = `${width}px`;
+        this.canvases.cursor.style.height = `${height}px`;
+
+        ctx.drawImage(
+            this.assets[ obj.image ],
+            obj.offsetX,
+            obj.offsetY,
+            width,
+            height,
+            0,
+            0,
+            width,
+            height
+        );
+    }
+
+
     applyLayer ( layer, coords ) {
         if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
             this.brush( layer, coords );
@@ -1006,6 +1146,43 @@ class EditorCanvas {
         }
     }
 
+
+    applyNPC ( coords ) {
+        console.log( "applyNPC", coords );
+    }
+
+
+    applyObject ( coords ) {
+        const newObj = {
+            id: this.currentObject.id,
+            spawn: {
+                x: coords[ 0 ] * this.map.tilesize,
+                y: coords[ 1 ] * this.map.tilesize,
+            },
+        };
+
+        const existingObj = this.map.objects.find( ( obj ) => {
+            return obj.id === newObj.id && obj.spawn.x === newObj.spawn.x && obj.spawn.y === newObj.spawn.y;
+        });
+
+        if ( existingObj ) {
+            return;
+        }
+
+        this.map.objects.push( newObj );
+
+        this.contexts.obj.context.drawImage(
+            this.assets[ this.currentObject.image ],
+            this.currentObject.offsetX,
+            this.currentObject.offsetY,
+            this.currentObject.width,
+            this.currentObject.height,
+            newObj.spawn.x,
+            newObj.spawn.y,
+            this.currentObject.width,
+            this.currentObject.height
+        );
+    }
 
     getMouseCoords ( e, grid ) {
         return [
@@ -1071,6 +1248,34 @@ class EditorCanvas {
         $document.on( "mouseup", () => {
             this.isMouseDownCanvas = false;
             this.isMouseDownCollider = false;
+        });
+
+        $document.on( "click", ".js-npc-tile", ( e ) => {
+            const id = e.target.dataset.npc;
+
+            const npc = this.editor.data.game.npcs.find( ( npc ) => {
+                return npc.id === id;
+            });
+
+            this.currentNPC = npc;
+
+            this.resetPreview();
+            this.applyPreviewNPC();
+            this.applyCursorNPC();
+        }); 
+
+        $document.on( "click", ".js-obj-tile", ( e ) => {
+            const id = e.target.dataset.obj;
+
+            const obj = this.editor.data.game.objects.find( ( obj ) => {
+                return obj.id === id;
+            });
+
+            this.currentObject = obj;
+
+            this.resetPreview();
+            this.applyPreviewObject();
+            this.applyCursorObject();
         });
     }
 
@@ -1245,6 +1450,10 @@ class EditorCanvas {
                 } else {
                     if ( this.canApplyLayer() ) {
                         this.showCanvasCursor( coords );
+                    } else if ( this.canApplyNPC() ) {
+                        this.showCanvasCursor( coords );
+                    } else if ( this.canApplyObject() ) {
+                        this.showCanvasCursor( coords );
                     }
                 }
             }
@@ -1256,6 +1465,10 @@ class EditorCanvas {
 
                 if ( this.canApplyLayer() ) {
                     this.applyLayer( this.editor.layers.mode, coords );
+                } else if ( this.canApplyNPC() ) {
+                    this.applyNPC( coords );
+                } else if ( this.canApplyObject() ) {
+                    this.applyObject( coords );
                 }
             }
 
@@ -1364,6 +1577,20 @@ class EditorCanvas {
         ) || (
             this.editor.actions.mode === Config.EditorActions.modes.ERASE &&
             ( this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND )
+        );
+    }
+
+
+    canApplyNPC () {
+        return (
+            this.editor.layers.mode === Config.EditorLayers.modes.NPC
+        );
+    }
+
+
+    canApplyObject () {
+        return (
+            this.editor.layers.mode === Config.EditorLayers.modes.OBJ
         );
     }
 

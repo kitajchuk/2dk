@@ -292,7 +292,6 @@ class DB {
             const file = path.join( this.mapsPath, `${map.id}.json` );
 
             // map.id = Cache.slugify( data.name );
-            map.name = data.name;
             map.tilesize = Number( data.tilesize );
             map.tilewidth = Number( data.tilewidth );
             map.tileheight = Number( data.tileheight );
@@ -302,12 +301,21 @@ class DB {
             map.sound = data.sound ? `assets/sounds/${data.sound}` : map.sound;
             map.snapshot = `assets/snapshots/${map.id}.png`;
             map.thumbnail = `assets/snapshots/${map.id}-thumb.png`;
-            map.collision = data.collision;
-            map.textures = data.textures;
 
-            // Active Tiles
-            map.tiles = data.tiles || map.tiles;
-
+            [
+                "name",
+                "collision",
+                "textures",
+                "spawn",
+                "fx",
+                "tiles",
+                "events",
+                "npcs",
+                "objects"
+            ].forEach( ( key ) => {
+                map[ key ] = data[ key ] || map[ key ];
+            });
+            
             utils.writeJson( file, map, () => {
                 maps.splice( idx, 1, map );
 

@@ -5,6 +5,7 @@ const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Cache = require( "../../server/cache" );
 const { ipcRenderer } = require( "electron" );
+const { renderMap, renderGame } = require( "./Render" );
 
 
 
@@ -92,8 +93,6 @@ class Editor {
 
 
     loadGame ( game ) {
-        // console.log( game );
-
         // When a map is deleted the ipc renderer<->menu will cycle this again...
         if ( this.mode === Config.Editor.modes.SAVING ) {
             this.mode = null;
@@ -105,7 +104,7 @@ class Editor {
 
         this.data.game = game;
         this.data.map = null;
-
+        this.data.assets = {};
         // reset canvas in case we had a map loaded...
         this.canvas.reset();
 
@@ -134,6 +133,7 @@ class Editor {
         this.prefillMapFields( this.data.map );
 
         // Display the map canvas
+        this.canvas.reset();
         this.canvas.loadMap( this.data.map );
 
         // Set active map to menu
@@ -165,6 +165,10 @@ class Editor {
 
 
     loadAssets ( assets ) {
+        if ( !this.data.assets[ assets.type ] ) {
+            this.data.assets[ assets.type ] = assets;
+        }
+
         if ( this.selects[ assets.type ] ) {
             Utils.buildSelectMenu( this.selects[ assets.type ], assets.files );
         }
@@ -362,7 +366,31 @@ class Editor {
             snapshot.height
         );
 
-        this.snapshot = snapshot;
+        // Draw NPCs
+        snapshotCtx.drawImage(
+            this.canvas.contexts.npc.canvas,
+            0,
+            0,
+            snapshot.width,
+            snapshot.height,
+            0,
+            0,
+            snapshot.width,
+            snapshot.height
+        );
+
+        // Draw objects
+        snapshotCtx.drawImage(
+            this.canvas.contexts.obj.canvas,
+            0,
+            0,
+            snapshot.width,
+            snapshot.height,
+            0,
+            0,
+            snapshot.width,
+            snapshot.height
+        );
 
         uploadSnap.fileData = snapshot.toDataURL( "image/png" );
 
@@ -445,13 +473,7 @@ class Editor {
 
     _loadoutGames ( games ) {
         this.dom.loadout[ 0 ].innerHTML = games.map( ( game ) => {
-            return `<div class="js-game-tile" data-game="${game.id}">
-                <div>
-                    <img src="./games/${game.id}/${game.icon}" />
-                </div>
-                <div>${game.name}</div>
-            </div>`;
-
+            return renderGame( game );
         }).join( "" );
 
         this.dom.loadout.addClass( "is-loaded" );
@@ -460,13 +482,7 @@ class Editor {
 
     _loadoutMaps ( maps ) {
         this.dom.loadout[ 0 ].innerHTML = maps.map( ( map ) => {
-            return `<div class="js-map-tile" data-map="${map.id}">
-                <div>
-                    <img src="./games/${this.data.game.id}/${map.thumbnail || map.image}" />
-                </div>
-                <div>${map.name}</div>
-            </div>`;
-
+            return renderMap( map, this.data.game );
         }).join( "" );
 
         this.dom.loadout.addClass( "is-loaded" );

@@ -74,6 +74,7 @@
     height: calc( 128px + 47px );
     pointer-events: none;
     width: 100%;
+    background-color: var( --charcoal2 );
 }
 #editor-gamesettings,
 #editor-mapsettings {
@@ -312,6 +313,8 @@
         cursor: grabbing !important;
     }
 
+    &.is-npc,
+    &.is-obj,
     &.is-background,
     &.is-foreground,
     &.is-collision,
@@ -319,11 +322,11 @@
         cursor: var( --cursor );
     }
 
+    &.is-npc,
+    &.is-obj,
     &.is-background,
     &.is-foreground,
-    &.is-selection,
-    &.is-npc,
-    &.is-obj {
+    &.is-selection {
         #editor-mapgrid-canvas {
             display: block;
         }
@@ -379,7 +382,8 @@
 .editor__mapgrid {
     z-index: 4;
 }
-.editor__npc {
+.editor__npc,
+.editor__obj {
     z-index: 4;
     pointer-events: none;
 }
@@ -628,5 +632,9 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
+
+        > * {
+            pointer-events: none;
+        }
     }
 }
