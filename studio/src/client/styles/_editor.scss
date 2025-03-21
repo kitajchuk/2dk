@@ -317,9 +317,20 @@
     &.is-obj,
     &.is-background,
     &.is-foreground,
-    &.is-collision,
-    &.is-selection {
+    &.is-collision {
         cursor: var( --cursor );
+    }
+
+    &.is-select-tool {
+        cursor: default;
+    }
+
+    &.is-brush-tool {
+        cursor: var( --cursor );
+    }
+
+    &.is-erase-tool {
+        cursor: not-allowed;
     }
 
     &.is-npc,

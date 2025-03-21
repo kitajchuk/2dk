@@ -230,11 +230,11 @@
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Screen width</div>
-                            <input class="input editor__field js-addgame-field" type="text" placeholder="Screen width" name="width" />
+                            <input class="input editor__field js-addgame-field" type="number" placeholder="Screen width" name="width" />
                         </div>
                         <div>
                             <div class="editor__label">Screen height</div>
-                            <input class="input editor__field js-addgame-field" type="text" placeholder="Screen height" name="height" />
+                            <input class="input editor__field js-addgame-field" type="number" placeholder="Screen height" name="height" />
                         </div>
                     </div>
                     <div class="editor__setting editor__setting--multi">
@@ -269,11 +269,11 @@
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Screen width</div>
-                            <input class="input editor__field js-game-field" type="text" name="width" readonly disabled />
+                            <input class="input editor__field js-game-field" type="number" name="width" readonly disabled />
                         </div>
                         <div>
                             <div class="editor__label">Screen height</div>
-                            <input class="input editor__field js-game-field" type="text" name="height" readonly disabled />
+                            <input class="input editor__field js-game-field" type="number" name="height" readonly disabled />
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -320,16 +320,16 @@
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Tilesize</div>
-                        <input class="input editor__field js-addmap-field" type="text" placeholder="Tilesize" name="tilesize" />
+                        <input class="input editor__field js-addmap-field" type="number" placeholder="Tilesize" name="tilesize" />
                     </div>
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Tile width</div>
-                            <input class="input editor__field js-addmap-field" type="text" placeholder="Tile width" name="tilewidth" />
+                            <input class="input editor__field js-addmap-field" type="number" placeholder="Tile width" name="tilewidth" />
                         </div>
                         <div>
                             <div class="editor__label">Tile height</div>
-                            <input class="input editor__field js-addmap-field" type="text" placeholder="Tile height" name="tileheight" />
+                            <input class="input editor__field js-addmap-field" type="number" placeholder="Tile height" name="tileheight" />
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -364,7 +364,7 @@
                     <div class="editor__setting">
                         <div class="editor__label">
                             <span class="icon icon--nudge">
-                                <i data-feather="tv"></i>
+                                <i data-feather="map"></i>
                             </span>
                             <span>Map Settings</span>
                         </div>
@@ -375,16 +375,16 @@
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Tilesize</div>
-                        <input class="input editor__field js-map-field" type="text" name="tilesize" readonly disabled />
+                        <input class="input editor__field js-map-field" type="number" name="tilesize" readonly disabled />
                     </div>
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Tile width</div>
-                            <input class="input editor__field js-map-field" type="text" name="tilewidth" readonly disabled />
+                            <input class="input editor__field js-map-field" type="number" name="tilewidth" readonly disabled />
                         </div>
                         <div>
                             <div class="editor__label">Tile height</div>
-                            <input class="input editor__field js-map-field" type="text" name="tileheight" readonly disabled />
+                            <input class="input editor__field js-map-field" type="number" name="tileheight" readonly disabled />
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -477,18 +477,18 @@
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Steps (keyframes)</div>
-                            <input class="input editor__field js-activetile-field" type="text" placeholder="Steps" name="stepsX" />
+                            <input class="input editor__field js-activetile-field" type="number" placeholder="Steps" name="stepsX" />
                         </div>
                         <div>
                             <div class="editor__label">Duration (milliseconds)</div>
-                            <input class="input editor__field js-activetile-field" type="text" placeholder="Duration" name="dur" />
+                            <input class="input editor__field js-activetile-field" type="number" placeholder="Duration" name="dur" />
                         </div>
                     </div>
                     <!-- If the Action is jump we need an elevation -->
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Elevation (verb: jump)</div>
-                            <input class="input editor__field js-activetile-field" type="text" placeholder="Elevation" name="elevation" />
+                            <input class="input editor__field js-activetile-field" type="number" placeholder="Elevation" name="elevation" />
                         </div>
                         <div>
                             <div class="editor__label">Direction (elevation)</div>

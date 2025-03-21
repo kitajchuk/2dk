@@ -32,15 +32,20 @@ class EditorLayers {
     }
 
 
+    resetLayers () {
+        this.mode = null;
+        this.elements.removeClass( "is-active" );
+        this.editor.canvas.setActiveLayer( null );
+    }
+
+
     _handleEditLayer ( targ ) {
         const elem = targ.is( ".js-edit-layer" ) ? targ : targ.closest( ".js-edit-layer" );
         const layer = elem.data().layer.toUpperCase();
         const mode = Config.EditorLayers.modes[ layer ];
 
         if ( elem.is( ".is-active" ) ) {
-            this.mode = null;
-            this.elements.removeClass( "is-active" );
-            this.editor.canvas.setActiveLayer( null );
+            this.resetLayers();
 
         } else {
             this.elements.removeClass( "is-active" );

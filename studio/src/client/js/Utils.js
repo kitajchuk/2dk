@@ -132,6 +132,10 @@ const Utils = {
                     value = fields[ i ].value;
                 }
 
+            // Numbers
+            } else if ( fields[ i ].type === "number" ) {
+                value = parseInt( fields[ i ].value, 10 );
+
             // Inputs / Selects
             } else {
                 value = fields[ i ].value;

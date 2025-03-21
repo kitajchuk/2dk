@@ -340,57 +340,26 @@ class Editor {
         snapshot.style.width = `${this.canvas.contexts.background.canvas.width}px`;
         snapshot.style.height = `${this.canvas.contexts.background.canvas.height}px`;
 
-        // Draw background
-        snapshotCtx.drawImage(
-            this.canvas.contexts.background.canvas,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height
-        );
+        const layers = [
+            "background",       
+            "foreground",
+            "npc",
+            "obj",
+        ];
 
-        // Draw foreground
-        snapshotCtx.drawImage(
-            this.canvas.contexts.foreground.canvas,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height
-        );
-
-        // Draw NPCs
-        snapshotCtx.drawImage(
-            this.canvas.contexts.npc.canvas,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height
-        );
-
-        // Draw objects
-        snapshotCtx.drawImage(
-            this.canvas.contexts.obj.canvas,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height
-        );
+        layers.forEach(( layer ) => {
+            snapshotCtx.drawImage(
+                this.canvas.contexts[ layer ].canvas,
+                0,
+                0,
+                snapshot.width,
+                snapshot.height,
+                0,
+                0,
+                snapshot.width,
+                snapshot.height
+            );
+        });
 
         uploadSnap.fileData = snapshot.toDataURL( "image/png" );
 
