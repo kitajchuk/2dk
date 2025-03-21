@@ -791,6 +791,209 @@
                 "x": 2112,
                 "y": 256
             }
+        },
+        {
+            "id": "tree-blue",
+            "spawn": {
+                "x": 0,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-blue",
+            "spawn": {
+                "x": 128,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-blue",
+            "spawn": {
+                "x": 512,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-blue",
+            "spawn": {
+                "x": 640,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-blue",
+            "spawn": {
+                "x": 768,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-blue",
+            "spawn": {
+                "x": 896,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-blue",
+            "spawn": {
+                "x": 1024,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1216,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1344,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1472,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1600,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1728,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1856,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1984,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 2112,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 2240,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 2368,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 2496,
+                "y": -64
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1152,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1280,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1408,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1536,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1664,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1792,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 1920,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 2048,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 2176,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 2304,
+                "y": 0
+            }
+        },
+        {
+            "id": "tree-in-dirt",
+            "spawn": {
+                "x": 2432,
+                "y": 0
+            }
         }
     ],
     "events": [

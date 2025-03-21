@@ -7,7 +7,6 @@ const Config = {
     EditorActions: {
         modes: {
             BRUSH: "brush",
-            BUCKET: "bucket",
             ERASE: "erase",
             SELECT: "select",
             ZOOM: "zoom",
@@ -31,7 +30,6 @@ const Config = {
     },
     keys: {
         B: 66,
-        F: 70,
         E: 69,
         Z: 90,
         X: 88,

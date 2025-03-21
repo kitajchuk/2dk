@@ -374,6 +374,11 @@
     z-index: 3;
     pointer-events: none;
 }
+.editor__npc,
+.editor__obj {
+    z-index: 3;
+    pointer-events: none;
+}
 .editor__collision,
 .editor__selection {
     z-index: 4;
@@ -381,11 +386,6 @@
 }
 .editor__mapgrid {
     z-index: 4;
-}
-.editor__npc,
-.editor__obj {
-    z-index: 4;
-    pointer-events: none;
 }
 
 

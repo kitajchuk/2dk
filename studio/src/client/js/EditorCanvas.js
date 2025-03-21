@@ -37,6 +37,7 @@ class EditorCanvas {
         this.mode = null;
         this.map = null;
         this.assets = {};
+        this.canvasMouseCoords = null;
         this.tilesetCoords = [];
         this.selectionCoords = [];
         this.currentNPC = null;
@@ -172,6 +173,7 @@ class EditorCanvas {
             this.isMouseDownCanvas = false;
             this.isDraggableAlive = false;
             this.currentTileCoord = null;
+            this.canvasMouseCoords = null;
             this.currentNPC = null;
             this.currentObject = null;
             this.tilesetCoords = [];
@@ -785,20 +787,6 @@ class EditorCanvas {
     }
 
 
-    bucket ( layer ) {
-        for ( let y = this.map.textures[ layer ].length; y--; ) {
-            for ( let x = this.map.textures[ layer ][ y ].length; x--; ) {
-                // Reset the entire texture map
-                this.map.textures[ layer ][ y ][ x ] = 0;
-
-                // Apply only the selected tile
-                this.tilesetCoords = [this.tilesetCoords[ 0 ]];
-                this.brush( layer, [x, y] );
-            }
-        }
-    }
-
-
     trash ( layer, coords ) {
         this.tilesetCoords = [];
         this.map.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ] = 0;
@@ -1138,9 +1126,6 @@ class EditorCanvas {
         if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
             this.brush( layer, coords );
 
-        } else if ( this.editor.actions.mode === Config.EditorActions.modes.BUCKET ) {
-            this.bucket( layer, coords );
-
         } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             this.trash( layer, coords );
         }
@@ -1153,11 +1138,17 @@ class EditorCanvas {
 
 
     applyObject ( coords ) {
+        if ( this.editor.actions.mode !== Config.EditorActions.modes.BRUSH ) {
+            return;
+        }
+
+        const offsetCoords = this.getObjectOffsetCoords( coords );
+        
         const newObj = {
             id: this.currentObject.id,
             spawn: {
-                x: coords[ 0 ] * this.map.tilesize,
-                y: coords[ 1 ] * this.map.tilesize,
+                x: offsetCoords[ 0 ] * this.map.tilesize,
+                y: offsetCoords[ 1 ] * this.map.tilesize,
             },
         };
 
@@ -1196,6 +1187,63 @@ class EditorCanvas {
         return source.find( ( coord ) => {
             return ( coord[ 0 ] === ref[ 0 ] && coord[ 1 ] === ref[ 1 ] );
         });
+    }
+
+
+    getObjectOffsetCoords ( coords ) {
+        let x = coords[ 0 ];
+        let y = coords[ 1 ];
+
+        const midX = this.map.tilesize / 2;
+        const midY = this.map.tilesize / 2;
+        const mouseX = this.canvasMouseCoords.x;
+        const mouseY = this.canvasMouseCoords.y;
+
+        // Support for negative object placement at the top of the canvas
+        // Placing with overflow off the bottom of the canvas works by default
+        if ( x === 0 && mouseX < midX ) {
+            x = x - ( ( this.currentObject.width / 2 ) / this.map.tilesize );
+        }
+
+        if ( y === 0 && mouseY < midY ) {
+            y = y - ( ( this.currentObject.height / 2 ) / this.map.tilesize );
+        }
+
+        return [ x, y ];
+    }
+
+
+    showCanvasCursor ( coords ) {
+        let x = coords[ 0 ];
+        let y = coords[ 1 ];
+
+        if ( this.editor.layers.mode === Config.EditorLayers.modes.OBJ ) {
+            const offsetCoords = this.getObjectOffsetCoords( coords );
+
+            x = offsetCoords[ 0 ];
+            y = offsetCoords[ 1 ];
+        }
+
+        this.canvases.cursor.style.opacity = 0.5;
+        this.canvases.cursor.style.zIndex = 9999;
+        this.canvases.cursor.style.webkitTransform = `translate3d(
+                ${x * this.map.tilesize}px,
+                ${y * this.map.tilesize}px,
+                0
+            )
+        `;
+    }
+
+
+    hideCanvasCursor () {
+        this.canvases.cursor.style.opacity = 0;
+        this.canvases.cursor.style.zIndex = -1;
+        this.canvases.cursor.style.webkitTransform = `translate3d(
+                0,
+                0,
+                0
+            )
+        `;
     }
 
 
@@ -1409,6 +1457,10 @@ class EditorCanvas {
 
             if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCanvas = true;
+                this.canvasMouseCoords = {
+                    x: e.offsetX,
+                    y: e.offsetY
+                };
 
                 const coords = this.getMouseCoords( e, this.map.tilesize );
 
@@ -1428,6 +1480,11 @@ class EditorCanvas {
             if ( !this.map ) {
                 return;
             }
+
+            this.canvasMouseCoords = {
+                x: e.offsetX,
+                y: e.offsetY
+            };
 
             const coords = this.getMouseCoords( e, this.map.tilesize );
 
@@ -1461,6 +1518,11 @@ class EditorCanvas {
 
         $mapgrid.on( "mouseup", ( e ) => {
             if ( this.editor.canMapFunction() ) {
+                this.canvasMouseCoords = {
+                    x: e.offsetX,
+                    y: e.offsetY
+                };
+
                 const coords = this.getMouseCoords( e, this.map.tilesize );
 
                 if ( this.canApplyLayer() ) {
@@ -1477,6 +1539,7 @@ class EditorCanvas {
 
         $mapgrid.on( "mouseout", () => {
             this.dom.moveCoords.innerHTML = "( X, Y )";
+            this.canvasMouseCoords = null;
 
             this.hideCanvasCursor();
         });
@@ -1538,30 +1601,6 @@ class EditorCanvas {
     }
 
 
-    showCanvasCursor ( coords ) {
-        this.canvases.cursor.style.opacity = 0.5;
-        this.canvases.cursor.style.zIndex = 9999;
-        this.canvases.cursor.style.webkitTransform = `translate3d(
-                ${coords[ 0 ] * this.map.tilesize}px,
-                ${coords[ 1 ] * this.map.tilesize}px,
-                0
-            )
-        `;
-    }
-
-
-    hideCanvasCursor () {
-        this.canvases.cursor.style.opacity = 0;
-        this.canvases.cursor.style.zIndex = -1;
-        this.canvases.cursor.style.webkitTransform = `translate3d(
-                0,
-                0,
-                0
-            )
-        `;
-    }
-
-
     canApplySelection () {
         return (
             this.editor.actions.mode === Config.EditorActions.modes.SELECT &&
@@ -1583,14 +1622,14 @@ class EditorCanvas {
 
     canApplyNPC () {
         return (
-            this.editor.layers.mode === Config.EditorLayers.modes.NPC
+            this.currentNPC && this.editor.layers.mode === Config.EditorLayers.modes.NPC
         );
     }
 
 
     canApplyObject () {
         return (
-            this.editor.layers.mode === Config.EditorLayers.modes.OBJ
+            this.currentObject && this.editor.layers.mode === Config.EditorLayers.modes.OBJ
         );
     }
 
@@ -1598,8 +1637,7 @@ class EditorCanvas {
     canApplyCollider () {
         return (
             this.isMouseDownCollider &&
-            this.editor.layers.mode === Config.EditorLayers.modes.COLLISION &&
-            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
+            this.editor.layers.mode === Config.EditorLayers.modes.COLLISION
         );
     }
 
@@ -1607,8 +1645,7 @@ class EditorCanvas {
     canApplyTiles () {
         return (
             this.isMouseDownTiles &&
-            this.editor.actions.mode !== Config.EditorActions.modes.ERASE &&
-            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
+            this.editor.actions.mode !== Config.EditorActions.modes.ERASE
         );
     }
 
