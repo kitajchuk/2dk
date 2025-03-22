@@ -1,9 +1,7 @@
 const renderGame = ( game ) => {
     return `
         <div class="js-game-tile" data-game="${game.id}">
-            <div>
-                <img src="./games/${game.id}/${game.icon}" />
-            </div>
+            <img src="./games/${game.id}/${game.icon}" />
             <div>${game.name}</div>
         </div>
     `;
@@ -12,9 +10,7 @@ const renderGame = ( game ) => {
 const renderMap = ( map, game ) => {
     return `
         <div class="js-map-tile" data-map="${map.id}">
-            <div>
-                <img src="./games/${game.id}/${map.thumbnail || map.image}" />
-            </div>
+            <img src="./games/${game.id}/${map.thumbnail || map.image}" />
             <div>${map.name}</div>
         </div>
     `;

@@ -11,6 +11,7 @@ const { renderMap, renderGame } = require( "./Render" );
 
 class Editor {
     constructor () {
+        this.baseUrl = `${window.location.pathname}`;
         this.mode = null;
         this.data = {};
         this.layers = new EditorLayers( this );
@@ -18,6 +19,7 @@ class Editor {
         this.actions = new EditorActions( this );
         this.utils = Utils;
         this.dom = {
+            css: window.hobo( "#editor-css" ),
             root: window.hobo( "#editor" ),
             settings: window.hobo( ".js-settings" ),
             mapSettings: window.hobo( "#editor-mapsettings" ),
@@ -60,7 +62,8 @@ class Editor {
             activeTile: window.hobo( ".js-activetile-field" ),
         };
 
-        this.display();
+        this.load();
+        this.done();
         this.bindEvents();
         this.bindMenuEvents();
         this.bindeFileEvents();
@@ -68,11 +71,8 @@ class Editor {
     }
 
 
-    display () {
-        setTimeout( () => {
-            this.dom.root[ 0 ].className = "";
-
-        }, 1000 );
+    load () {
+        ipcRenderer.send( "renderer-loadgames" );
     }
 
 
@@ -87,11 +87,32 @@ class Editor {
 
 
     setTitle () {
+        const title = [ "2dk Studio" ];
+
         if ( this.data.map ) {
-            document.title = `Map: ${this.data.map.name} | Game: ${this.data.game.name} | 2dk Studio`;
-        } else if ( this.data.game ) {
-            document.title = `Game: ${this.data.game.name} | 2dk Studio`;
+            title.push( `Map: ${this.data.map.name}` );
         }
+        
+        if ( this.data.game ) {
+            title.push( `Game: ${this.data.game.name}` );
+        }
+
+        document.title = title.reverse().join( " | " );
+    }
+
+
+    updateUrl () {
+        const params = new URLSearchParams();
+
+        if ( this.data.game ) {
+            params.set( "game", this.data.game.id );
+        }
+
+        if ( this.data.map ) {
+            params.set( "map", this.data.map.id );
+        }
+
+        window.history.replaceState( {}, "", `${this.baseUrl}?${params.toString()}` );
     }
 
 
@@ -121,6 +142,7 @@ class Editor {
         this.dom.gameLoad[ 0 ].innerText = this.data.game.name;
 
         this.setTitle();
+        this.updateUrl();
     }
 
 
@@ -143,6 +165,7 @@ class Editor {
         this.dom.mapLoad[ 0 ].innerText = map.name;
 
         this.setTitle();
+        this.updateUrl();
     }
 
 
@@ -438,7 +461,9 @@ class Editor {
 
 
     bindMenuEvents () {
-        ipcRenderer.send( "renderer-loadgames" );
+        const initialParams = new URLSearchParams( window.location.search );
+        let initialQueryGame = initialParams.get( "game" );
+        let initialQueryMap = initialParams.get( "map" );
 
         // Tell ipcMain to reset dynamic submenus
         window.onbeforeunload = () => {
@@ -446,11 +471,25 @@ class Editor {
         };
 
         ipcRenderer.on( "menu-loadgames", ( e, games ) => {
-            this._loadoutGames( games );
+            if ( initialQueryGame ) {
+                ipcRenderer.send( "renderer-loadgame", {
+                    game: initialQueryGame,
+                });
+                initialQueryGame = null;
+            } else {
+                this._loadoutGames( games );
+            }
         });
 
         ipcRenderer.on( "menu-loadmaps", ( e, maps ) => {
-            this._loadoutMaps( maps );
+            if ( initialQueryMap ) {
+                ipcRenderer.send( "renderer-loadmap", {
+                    map: initialQueryMap,
+                });
+                initialQueryMap = null;
+            } else {
+                this._loadoutMaps( maps );
+            }
         });
 
         ipcRenderer.on( "menu-togglegrid", () => {
@@ -510,6 +549,10 @@ class Editor {
         ipcRenderer.on( "menu-reloadicon", ( e, game ) => {
             this.dom.iconImage[ 0 ].src = `./games/${game.id}/${game.icon}?buster=${Date.now()}`;
             this.dom.iconField[ 0 ].value = game.icon;
+        });
+
+        ipcRenderer.on( "watch-reloadcss", ( e ) => {
+            this.dom.css[ 0 ].href = `./public/css/studio.css?buster=${Date.now()}`;
         });
     }
 

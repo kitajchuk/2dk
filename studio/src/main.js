@@ -2,7 +2,7 @@
 const { app, BrowserWindow } = require( "electron" );
 const path = require( "path" );
 const menu = require( "./server/menu" );
-
+const watcher = require( "./watcher" );
 const isMac = (process.platform === "darwin");
 
 // Keep a global reference of the window object, if you don"t, the window will
@@ -39,6 +39,7 @@ const createWindow = () => {
 
     // Global active menus and DB client
     menu.init( mainWindow );
+    watcher.init( mainWindow );
 };
 
 // This method will be called when Electron has finished

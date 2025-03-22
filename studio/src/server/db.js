@@ -4,7 +4,7 @@ const sharp = require( "sharp" );
 const shell = require( "shelljs" );
 const { Lame } = require( "node-lame" );
 const utils = require( "./utils" );
-const Cache = require( "./Cache" );
+const Cache = require( "./cache" );
 
 
 
