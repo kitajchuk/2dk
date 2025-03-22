@@ -22,6 +22,7 @@ module.exports = {
     "tiles": [],
     "events": [],
     "npcs": [],
+    "objects": [],
     "collision": [],
     "textures": {
         "background": [],

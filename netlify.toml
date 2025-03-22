@@ -3,10 +3,10 @@
   publish = "dist"
 
 [context.production]
-  environment = { NODE_VERSION = "16.14.2" }
+  environment = { NODE_VERSION = "20.18.0" }
 
 [context.deploy-preview]
-  environment = { NODE_VERSION = "16.14.2" }
+  environment = { NODE_VERSION = "20.18.0" }
 
 [context.branch-deploy]
-  environment = { NODE_VERSION = "16.14.2" }
+  environment = { NODE_VERSION = "20.18.0" }

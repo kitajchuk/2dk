@@ -7,10 +7,8 @@ const Config = {
     EditorActions: {
         modes: {
             BRUSH: "brush",
-            BUCKET: "bucket",
             ERASE: "erase",
             SELECT: "select",
-            ZOOM: "zoom",
         },
     },
     EditorCanvas: {
@@ -26,11 +24,11 @@ const Config = {
             FOREGROUND: "foreground",
             COLLISION: "collision",
             NPC: "npc",
+            OBJ: "obj",
         },
     },
     keys: {
         B: 66,
-        F: 70,
         E: 69,
         Z: 90,
         X: 88,

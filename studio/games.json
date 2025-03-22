@@ -6,7 +6,18 @@
         "height": 576,
         "resolution": 1,
         "icon": "icon.png",
-        "save": 671,
+        "save": 672,
+        "release": 1,
+        "plugin": "topview"
+    },
+    {
+        "id": "la_copy",
+        "name": "LA Copy",
+        "width": 768,
+        "height": 576,
+        "resolution": 1,
+        "icon": "icon.png",
+        "save": 742,
         "release": 1,
         "plugin": "topview"
     }

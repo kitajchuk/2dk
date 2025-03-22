@@ -5,11 +5,13 @@ const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Cache = require( "../../server/cache" );
 const { ipcRenderer } = require( "electron" );
+const { renderMap, renderGame } = require( "./Render" );
 
 
 
 class Editor {
     constructor () {
+        this.baseUrl = `${window.location.pathname}`;
         this.mode = null;
         this.data = {};
         this.layers = new EditorLayers( this );
@@ -17,6 +19,7 @@ class Editor {
         this.actions = new EditorActions( this );
         this.utils = Utils;
         this.dom = {
+            css: window.hobo( "#editor-css" ),
             root: window.hobo( "#editor" ),
             settings: window.hobo( ".js-settings" ),
             mapSettings: window.hobo( "#editor-mapsettings" ),
@@ -59,7 +62,8 @@ class Editor {
             activeTile: window.hobo( ".js-activetile-field" ),
         };
 
-        this.display();
+        this.load();
+        this.done();
         this.bindEvents();
         this.bindMenuEvents();
         this.bindeFileEvents();
@@ -67,11 +71,8 @@ class Editor {
     }
 
 
-    display () {
-        setTimeout( () => {
-            this.dom.root[ 0 ].className = "";
-
-        }, 1000 );
+    load () {
+        ipcRenderer.send( "renderer-loadgames" );
     }
 
 
@@ -86,14 +87,36 @@ class Editor {
 
 
     setTitle () {
-        // Set document title
-        document.title = `${this.data.map ? this.data.map.name : this.data.game.name} | 2dk Studio`;
+        const title = [ "2dk Studio" ];
+
+        if ( this.data.map ) {
+            title.push( `Map: ${this.data.map.name}` );
+        }
+        
+        if ( this.data.game ) {
+            title.push( `Game: ${this.data.game.name}` );
+        }
+
+        document.title = title.reverse().join( " | " );
+    }
+
+
+    updateUrl () {
+        const params = new URLSearchParams();
+
+        if ( this.data.game ) {
+            params.set( "game", this.data.game.id );
+        }
+
+        if ( this.data.map ) {
+            params.set( "map", this.data.map.id );
+        }
+
+        window.history.replaceState( {}, "", `${this.baseUrl}?${params.toString()}` );
     }
 
 
     loadGame ( game ) {
-        // console.log( game );
-
         // When a map is deleted the ipc renderer<->menu will cycle this again...
         if ( this.mode === Config.Editor.modes.SAVING ) {
             this.mode = null;
@@ -105,7 +128,7 @@ class Editor {
 
         this.data.game = game;
         this.data.map = null;
-
+        this.data.assets = {};
         // reset canvas in case we had a map loaded...
         this.canvas.reset();
 
@@ -119,6 +142,7 @@ class Editor {
         this.dom.gameLoad[ 0 ].innerText = this.data.game.name;
 
         this.setTitle();
+        this.updateUrl();
     }
 
 
@@ -134,12 +158,14 @@ class Editor {
         this.prefillMapFields( this.data.map );
 
         // Display the map canvas
-        this.canvas.loadMap( this.data.map );
+        this.canvas.reset();
+        this.canvas.loadMap( this.data.map, this.data.game );
 
         // Set active map to menu
         this.dom.mapLoad[ 0 ].innerText = map.name;
 
         this.setTitle();
+        this.updateUrl();
     }
 
 
@@ -165,6 +191,10 @@ class Editor {
 
 
     loadAssets ( assets ) {
+        if ( !this.data.assets[ assets.type ] ) {
+            this.data.assets[ assets.type ] = assets;
+        }
+
         if ( this.selects[ assets.type ] ) {
             Utils.buildSelectMenu( this.selects[ assets.type ], assets.files );
         }
@@ -220,61 +250,6 @@ class Editor {
     blurSelectMenus () {
         this.selects.all.forEach( ( select ) => {
             select.blur();
-        });
-    }
-
-
-    cleanTiles ( arr ) {
-        const ret = [];
-
-        for ( let i = 0, len = arr.length; i < len; i++ ) {
-            let uniq = arr[ i ];
-
-            for ( let j = ret.length; j--; ) {
-                if ( ret[ j ][ 0 ] === arr[ i ][ 0 ] && ret[ j ][ 1 ] === arr[ i ][ 1 ] ) {
-                    uniq = null;
-                    return ret;
-                }
-            }
-
-            if ( uniq ) {
-                ret.push( uniq );
-            }
-        }
-
-        return ret;
-    }
-
-
-    updateMapLayer ( layer, coords, coordMap ) {
-        coordMap.tiles.forEach( ( tile ) => {
-            if ( tile.paintTile ) {
-                const cx = coords[ 0 ] + tile.drawCoord[ 0 ];
-                const cy = coords[ 1 ] + tile.drawCoord[ 1 ];
-                const px = this.data.map.tilesize * tile.tileCoord[ 0 ];
-                const py = this.data.map.tilesize * tile.tileCoord[ 1 ];
-
-                // Position has no tile: 0
-                if ( this.data.map.textures[ layer ][ cy ][ cx ] === 0 ) {
-                    this.data.map.textures[ layer ][ cy ][ cx ] = [
-                        [
-                            px,
-                            py,
-                        ],
-                    ];
-
-                // Position has tiles: Array[Array[x, y], Array[x, y]]
-                } else if ( Array.isArray( this.data.map.textures[ layer ][ cy ][ cx ] ) ) {
-                    this.data.map.textures[ layer ][ cy ][ cx ].push( [
-                        px,
-                        py,
-                    ] );
-                }
-
-                // Clean tiles on draw so we don't have to scan the entire texture
-                this.data.map.textures[ layer ][ cy ][ cx ] = this.cleanTiles( this.data.map.textures[ layer ][ cy ][ cx ] );
-                tile.renderTree = this.data.map.textures[ layer ][ cy ][ cx ];
-            }
         });
     }
 
@@ -336,33 +311,26 @@ class Editor {
         snapshot.style.width = `${this.canvas.contexts.background.canvas.width}px`;
         snapshot.style.height = `${this.canvas.contexts.background.canvas.height}px`;
 
-        // Draw background
-        snapshotCtx.drawImage(
-            this.canvas.contexts.background.canvas,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height
-        );
+        const layers = [
+            "background",       
+            "foreground",
+            "npc",
+            "obj",
+        ];
 
-        // Draw foreground
-        snapshotCtx.drawImage(
-            this.canvas.contexts.foreground.canvas,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height,
-            0,
-            0,
-            snapshot.width,
-            snapshot.height
-        );
-
-        this.snapshot = snapshot;
+        layers.forEach(( layer ) => {
+            snapshotCtx.drawImage(
+                this.canvas.contexts[ layer ].canvas,
+                0,
+                0,
+                snapshot.width,
+                snapshot.height,
+                0,
+                0,
+                snapshot.width,
+                snapshot.height
+            );
+        });
 
         uploadSnap.fileData = snapshot.toDataURL( "image/png" );
 
@@ -445,13 +413,7 @@ class Editor {
 
     _loadoutGames ( games ) {
         this.dom.loadout[ 0 ].innerHTML = games.map( ( game ) => {
-            return `<div class="js-game-tile" data-game="${game.id}">
-                <div>
-                    <img src="./games/${game.id}/${game.icon}" />
-                </div>
-                <div>${game.name}</div>
-            </div>`;
-
+            return renderGame( game );
         }).join( "" );
 
         this.dom.loadout.addClass( "is-loaded" );
@@ -460,13 +422,7 @@ class Editor {
 
     _loadoutMaps ( maps ) {
         this.dom.loadout[ 0 ].innerHTML = maps.map( ( map ) => {
-            return `<div class="js-map-tile" data-map="${map.id}">
-                <div>
-                    <img src="./games/${this.data.game.id}/${map.thumbnail || map.image}" />
-                </div>
-                <div>${map.name}</div>
-            </div>`;
-
+            return renderMap( map, this.data.game );
         }).join( "" );
 
         this.dom.loadout.addClass( "is-loaded" );
@@ -505,7 +461,9 @@ class Editor {
 
 
     bindMenuEvents () {
-        ipcRenderer.send( "renderer-loadgames" );
+        const initialParams = new URLSearchParams( window.location.search );
+        let initialQueryGame = initialParams.get( "game" );
+        let initialQueryMap = initialParams.get( "map" );
 
         // Tell ipcMain to reset dynamic submenus
         window.onbeforeunload = () => {
@@ -513,11 +471,25 @@ class Editor {
         };
 
         ipcRenderer.on( "menu-loadgames", ( e, games ) => {
-            this._loadoutGames( games );
+            if ( initialQueryGame ) {
+                ipcRenderer.send( "renderer-loadgame", {
+                    game: initialQueryGame,
+                });
+                initialQueryGame = null;
+            } else {
+                this._loadoutGames( games );
+            }
         });
 
         ipcRenderer.on( "menu-loadmaps", ( e, maps ) => {
-            this._loadoutMaps( maps );
+            if ( initialQueryMap ) {
+                ipcRenderer.send( "renderer-loadmap", {
+                    map: initialQueryMap,
+                });
+                initialQueryMap = null;
+            } else {
+                this._loadoutMaps( maps );
+            }
         });
 
         ipcRenderer.on( "menu-togglegrid", () => {
@@ -577,6 +549,10 @@ class Editor {
         ipcRenderer.on( "menu-reloadicon", ( e, game ) => {
             this.dom.iconImage[ 0 ].src = `./games/${game.id}/${game.icon}?buster=${Date.now()}`;
             this.dom.iconField[ 0 ].value = game.icon;
+        });
+
+        ipcRenderer.on( "watch-reloadcss", ( e ) => {
+            this.dom.css[ 0 ].href = `./public/css/studio.css?buster=${Date.now()}`;
         });
     }
 

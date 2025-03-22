@@ -3,10 +3,10 @@
     <head>
         <meta charset="utf-8">
         <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
+        <!-- <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
         <title>2dk Studio</title>
-        <link href="./public/css/studio.css" rel="stylesheet" />
+        <link href="./public/css/studio.css" rel="stylesheet" id="editor-css" />
     </head>
     <body>
         <div id="editor" class="is-not-loaded">
@@ -17,6 +17,7 @@
                     <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
                     <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
                     <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
+                    <div class="editor__canvas__layer editor__obj" id="editor-obj"></div>
                     <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
                     <div class="editor__canvas__layer editor__selection" id="editor-sel"></div>
                     <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
@@ -86,6 +87,16 @@
                             <i data-feather="eye-off"></i>
                         </span>
                     </div>
+                    <div class="editor__layer js-edit-layer" data-layer="obj">
+                        <span class="icon icon--nudge">
+                            <i data-feather="layers"></i>
+                        </span>
+                        <span>Object</span>
+                        <span class="editor__layer__hide icon js-hide-layer" data-layer="obj">
+                            <i data-feather="eye"></i>
+                            <i data-feather="eye-off"></i>
+                        </span>
+                    </div>
                     <div class="editor__layer js-edit-layer" data-layer="collision">
                         <span class="icon icon--nudge">
                             <i data-feather="layers"></i>
@@ -131,36 +142,65 @@
                             </div>
                         </div>
                     </div>
-                    <div class="editor__layer -merge-down">
-                        <div class="editor__layer__label">
-                            <span class="icon icon--nudge">
-                                <i data-feather="grid"></i>
-                            </span>
-                            <span>Tile Picker</span>
+                    <div id="editor-tile-picker" class="editor__picker">
+                        <div class="editor__layer -merge-down">
+                            <div class="editor__layer__label">
+                                <span class="icon icon--nudge">
+                                    <i data-feather="grid"></i>
+                                </span>
+                                <span>Tile Picker</span>
+                            </div>
+                        </div>
+                        <div class="editor__layer">
+                            <div id="editor-tileset-box" class="editor__picker__box">
+                                <div id="editor-tileset" class="editor__picker__overflow">
+                                    <img id="editor-tileset-image" />
+                                    <canvas class="canvas layer layer--tilepaint" id="editor-tilepaint-canvas"></canvas>
+                                    <canvas class="canvas layer layer--tilegrid" id="editor-tilegrid-canvas"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="editor__layer -tileset">
-                        <div id="editor-tileset-box">
-                            <div id="editor-tileset">
-                                <img id="editor-tileset-image" />
-                                <canvas class="canvas layer layer--tilepaint" id="editor-tilepaint-canvas"></canvas>
-                                <canvas class="canvas layer layer--tilegrid" id="editor-tilegrid-canvas"></canvas>
+                    <div id="editor-npc-picker" class="editor__picker is-hidden">
+                        <div class="editor__layer -merge-down">
+                            <div class="editor__layer__label">
+                                <span class="icon icon--nudge">
+                                    <i data-feather="grid"></i>
+                                </span>
+                                <span>NPC Picker</span>
+                            </div>
+                        </div>
+                        <div class="editor__layer">
+                            <div id="" class="editor__picker__box">
+                                <div id="editor-npc-picker-box" class="editor__picker__overflow editor__picker__sprite__grid"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="editor-obj-picker" class="editor__picker is-hidden">
+                        <div class="editor__layer -merge-down">
+                            <div class="editor__layer__label">
+                                <span class="icon icon--nudge">
+                                    <i data-feather="grid"></i>
+                                </span>
+                                <span>Object Picker</span>
+                            </div>
+                        </div>
+                        <div class="editor__layer">
+                            <div id="" class="editor__picker__box">
+                                <div id="editor-obj-picker-box" class="editor__picker__overflow editor__picker__sprite__grid"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="editor__sidebar__tools">
                     <div class="editor__toolbar editor__toolbar__tools">
-                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Draw Tiles Tool (B)">
+                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Draw Tiles (B)">
                             <i data-feather="edit-2"></i>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="bucket" data-key="70" title="Fill TIles Tool (F)">
-                            <i data-feather="edit"></i>
-                        </button>
-                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Cut Tiles Tool (E)">
+                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Cut Tiles (E)">
                             <i data-feather="trash"></i>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select Tiles Tool (X)">
+                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select Tiles (X)">
                             <i data-feather="mouse-pointer"></i>
                         </button>
                     </div>
@@ -190,11 +230,11 @@
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Screen width</div>
-                            <input class="input editor__field js-addgame-field" type="text" placeholder="Screen width" name="width" />
+                            <input class="input editor__field js-addgame-field" type="number" placeholder="Screen width" name="width" />
                         </div>
                         <div>
                             <div class="editor__label">Screen height</div>
-                            <input class="input editor__field js-addgame-field" type="text" placeholder="Screen height" name="height" />
+                            <input class="input editor__field js-addgame-field" type="number" placeholder="Screen height" name="height" />
                         </div>
                     </div>
                     <div class="editor__setting editor__setting--multi">
@@ -229,11 +269,11 @@
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Screen width</div>
-                            <input class="input editor__field js-game-field" type="text" name="width" readonly disabled />
+                            <input class="input editor__field js-game-field" type="number" name="width" readonly disabled />
                         </div>
                         <div>
                             <div class="editor__label">Screen height</div>
-                            <input class="input editor__field js-game-field" type="text" name="height" readonly disabled />
+                            <input class="input editor__field js-game-field" type="number" name="height" readonly disabled />
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -280,16 +320,16 @@
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Tilesize</div>
-                        <input class="input editor__field js-addmap-field" type="text" placeholder="Tilesize" name="tilesize" />
+                        <input class="input editor__field js-addmap-field" type="number" placeholder="Tilesize" name="tilesize" />
                     </div>
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Tile width</div>
-                            <input class="input editor__field js-addmap-field" type="text" placeholder="Tile width" name="tilewidth" />
+                            <input class="input editor__field js-addmap-field" type="number" placeholder="Tile width" name="tilewidth" />
                         </div>
                         <div>
                             <div class="editor__label">Tile height</div>
-                            <input class="input editor__field js-addmap-field" type="text" placeholder="Tile height" name="tileheight" />
+                            <input class="input editor__field js-addmap-field" type="number" placeholder="Tile height" name="tileheight" />
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -324,7 +364,7 @@
                     <div class="editor__setting">
                         <div class="editor__label">
                             <span class="icon icon--nudge">
-                                <i data-feather="tv"></i>
+                                <i data-feather="map"></i>
                             </span>
                             <span>Map Settings</span>
                         </div>
@@ -335,16 +375,16 @@
                     </div>
                     <div class="editor__setting">
                         <div class="editor__label">Tilesize</div>
-                        <input class="input editor__field js-map-field" type="text" name="tilesize" readonly disabled />
+                        <input class="input editor__field js-map-field" type="number" name="tilesize" readonly disabled />
                     </div>
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Tile width</div>
-                            <input class="input editor__field js-map-field" type="text" name="tilewidth" readonly disabled />
+                            <input class="input editor__field js-map-field" type="number" name="tilewidth" readonly disabled />
                         </div>
                         <div>
                             <div class="editor__label">Tile height</div>
-                            <input class="input editor__field js-map-field" type="text" name="tileheight" readonly disabled />
+                            <input class="input editor__field js-map-field" type="number" name="tileheight" readonly disabled />
                         </div>
                     </div>
                     <div class="editor__setting">
@@ -437,18 +477,18 @@
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Steps (keyframes)</div>
-                            <input class="input editor__field js-activetile-field" type="text" placeholder="Steps" name="stepsX" />
+                            <input class="input editor__field js-activetile-field" type="number" placeholder="Steps" name="stepsX" />
                         </div>
                         <div>
                             <div class="editor__label">Duration (milliseconds)</div>
-                            <input class="input editor__field js-activetile-field" type="text" placeholder="Duration" name="dur" />
+                            <input class="input editor__field js-activetile-field" type="number" placeholder="Duration" name="dur" />
                         </div>
                     </div>
                     <!-- If the Action is jump we need an elevation -->
                     <div class="editor__setting editor__setting--multi">
                         <div>
                             <div class="editor__label">Elevation (verb: jump)</div>
-                            <input class="input editor__field js-activetile-field" type="text" placeholder="Elevation" name="elevation" />
+                            <input class="input editor__field js-activetile-field" type="number" placeholder="Elevation" name="elevation" />
                         </div>
                         <div>
                             <div class="editor__label">Direction (elevation)</div>

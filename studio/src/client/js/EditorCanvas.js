@@ -1,6 +1,6 @@
 const { ipcRenderer } = require( "electron" );
 const Config = require( "./Config" );
-
+const { renderNPC, renderObject } = require( "./Render" );
 
 
 const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
@@ -36,9 +36,13 @@ class EditorCanvas {
         this.editor = editor;
         this.mode = null;
         this.map = null;
+        this.game = null;
+        this.assets = {};
+        this.canvasMouseCoords = null;
         this.tilesetCoords = [];
         this.selectionCoords = [];
-        this.isZoomable = false;
+        this.currentNPC = null;
+        this.currentObject = null;
         this.isSpacebar = false;
         this.isEscape = false;
         this.isMouseDownTiles = false;
@@ -54,6 +58,11 @@ class EditorCanvas {
             $canvasPane: window.hobo( "#editor-canvas-pane" ),
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
+            $tilePicker: window.hobo( "#editor-tile-picker" ),
+            $objPicker: window.hobo( "#editor-obj-picker" ),
+            $objPickerBox: window.hobo( "#editor-obj-picker-box" ),
+            $npcPicker: window.hobo( "#editor-npc-picker" ),
+            $npcPickerBox: window.hobo( "#editor-npc-picker-box" ),
         };
         this.layers = {
             background: document.getElementById( "editor-bg" ),
@@ -62,12 +71,15 @@ class EditorCanvas {
             selection: document.getElementById( "editor-sel" ),
             mapgrid: document.getElementById( "editor-mapgrid" ),
             npc: document.getElementById( "editor-npc" ),
+            obj: document.getElementById( "editor-obj" ),
         };
         this.contexts = {
             background: null,
             foreground: null,
             collision: null,
             selection: null,
+            npc: null,
+            obj: null,
         };
         this.canvases = {
             mapgrid: document.getElementById( "editor-mapgrid-canvas" ),
@@ -86,6 +98,16 @@ class EditorCanvas {
         this.bindDocumentEvents();
         this.bindTilepaintEvents();
         this.hideCanvasCursor();
+    }
+
+
+    hide ( l ) {
+        window.hobo( this.layers[ l ] ).addClass( "is-hidden" );
+    }
+
+
+    show ( l ) {
+        window.hobo( this.layers[ l ] ).removeClass( "is-hidden" );
     }
 
 
@@ -137,167 +159,124 @@ class EditorCanvas {
 
     reset () {
         if ( this.map ) {
-            this.clearCanvas( this.canvases.mapgrid );
-            this.clearCanvas( this.canvases.tilegrid );
-            this.clearCanvas( this.canvases.collider );
+            for ( const canvas in this.canvases ) {
+                this.clearCanvas( this.canvases[ canvas ] );
+            }
+
+            for ( const layer in this.contexts ) {
+                this.contexts[ layer ].destroy();
+                this.contexts[ layer ] = null;
+                this.layers[ layer ].innerHTML = "";
+            }
+
             this.clearTileset();
             this.resetPreview();
             this.resetCursor();
 
-            this.isZoomable = false;
             this.isSpacebar = false;
             this.isMouseDownTiles = false;
             this.isMouseMovedTiles = false;
             this.isMouseDownCanvas = false;
             this.isDraggableAlive = false;
             this.currentTileCoord = null;
+            this.canvasMouseCoords = null;
+            this.currentNPC = null;
+            this.currentObject = null;
             this.tilesetCoords = [];
             this.selectionCoords = [];
             this.map = null;
+            this.game = null;
+            this.assets = {};
             this.mode = null;
-            this.contexts.background = null;
-            this.contexts.foreground = null;
-            this.contexts.collision = null;
-            this.contexts.selection = null;
             this.dom.tileset.src = "";
-            this.layers.background.innerHTML = "";
-            this.layers.foreground.innerHTML = "";
-            this.layers.collision.innerHTML = "";
-            this.layers.selection.innerHTML = "";
-            this.layers.npc.innerHTML = "";
             this.dom.$canvasPane.removeClass( "is-loaded" );
         }
     }
 
 
-    loadMap ( map ) {
+    loadMap ( map, game ) {
         this.map = map;
+        this.game = window.lib2dk.Utils.copy( game );
 
         // Gridsize for tilepaint
         this.gridsize = Math.min( 32, this.map.tilesize );
         this.tilescale = this.map.tilesize / this.gridsize;
 
-        // Empty tileset tiles
-        this.tilesetCoords = [];
-
-        // Empty the selection coords
-        this.selectionCoords = [];
-
-        // Clean up last map in DOM, prolly already happened with this.reset()
-        this.layers.background.innerHTML = "";
-        this.layers.foreground.innerHTML = "";
-        this.layers.collision.innerHTML = "";
-        this.layers.selection.innerHTML = "";
-        this.layers.npc.innerHTML = "";
-
         // Create new map layers
-        this.contexts.background = new window.lib2dk.MapLayer({
-            id: "background",
-            map: this.map,
-            cash: false,
-            width: this.map.width,
-            height: this.map.height,
-        });
-        // this.contexts.backgroundActiveTiles = new window.lib2dk.MapLayer({
-        //     id: "background-active-tiles",
-        //     map: this.map,
-        //     cash: false,
-        //     width: this.map.width,
-        //     height: this.map.height
-        // });
-        this.contexts.foreground = new window.lib2dk.MapLayer({
-            id: "foreground",
-            map: this.map,
-            cash: false,
-            width: this.map.width,
-            height: this.map.height,
-        });
-        this.contexts.collision = new window.lib2dk.MapLayer({
-            id: "collision",
-            map: this.map,
-            cash: false,
-            width: this.map.width,
-            height: this.map.height,
-        });
-        this.contexts.selection = new window.lib2dk.MapLayer({
-            id: "selection",
-            map: this.map,
-            cash: false,
-            width: this.map.width,
-            height: this.map.height,
-        });
-        this.contexts.npc = new window.lib2dk.MapLayer({
-            id: "npc",
-            map: this.map,
-            cash: false,
-            width: this.map.width,
-            height: this.map.height,
+        for ( const layer in this.contexts ) {
+            this.contexts[ layer ] = new window.lib2dk.MapLayer({
+                id: layer,
+                map: this.map,
+                cash: false,
+                width: this.map.width,
+                height: this.map.height,
+            });
+
+            this.layers[ layer ].appendChild( this.contexts[ layer ].canvas );
+        }
+
+        ["mapgrid", "collider"].forEach(( layer ) => {
+            this.canvases[ layer ].width = this.map.width;
+            this.canvases[ layer ].height = this.map.height;
+            this.canvases[ layer ].style.width = `${this.map.width}px`;
+            this.canvases[ layer ].style.height = `${this.map.height}px`;
         });
 
-        this.contexts.background.canvas.style.width = `${this.map.width}px`;
-        this.contexts.background.canvas.style.height = `${this.map.height}px`;
-        // this.contexts.backgroundActiveTiles.canvas.style.width = `${this.map.width}px`;
-        // this.contexts.backgroundActiveTiles.canvas.style.height = `${this.map.height}px`;
-        this.contexts.foreground.canvas.style.width = `${this.map.width}px`;
-        this.contexts.foreground.canvas.style.height = `${this.map.height}px`;
-        this.contexts.collision.canvas.style.width = `${this.map.width}px`;
-        this.contexts.collision.canvas.style.height = `${this.map.height}px`;
-        this.contexts.selection.canvas.style.width = `${this.map.width}px`;
-        this.contexts.selection.canvas.style.height = `${this.map.height}px`;
-        this.contexts.npc.canvas.style.width = `${this.map.width}px`;
-        this.contexts.npc.canvas.style.height = `${this.map.height}px`;
+        this.canvases.preview.width = this.map.tilesize;
+        this.canvases.preview.height = this.map.tilesize;
+        this.canvases.preview.style.width = `${this.gridsize}px`;
+        this.canvases.preview.style.height = `${this.gridsize}px`;
 
-        this.layers.background.appendChild( this.contexts.background.canvas );
-        // this.layers.background.appendChild( this.contexts.backgroundActiveTiles.canvas );
-        this.layers.foreground.appendChild( this.contexts.foreground.canvas );
-        this.layers.collision.appendChild( this.contexts.collision.canvas );
-        this.layers.selection.appendChild( this.contexts.selection.canvas );
-        this.layers.npc.appendChild( this.contexts.npc.canvas );
-
-        // this.map.tiles.forEach(( tiles ) => {
-        //     let coords = tiles.coords;
-
-        //     if ( !tiles.coords.length ) {
-        //         coords = this.getActiveTileCoords( tiles );
-        //     }
-
-        //     coords.forEach(( coord ) => {
-        //         renderTile(
-        //             this.contexts[ `${tiles.layer}ActiveTiles` ].context,
-        //             coord[ 0 ] * this.map.tilesize,
-        //             coord[ 1 ] * this.map.tilesize,
-        //             this.map.tilesize,
-        //             this.map.tilesize,
-        //             window.lib2dk.Config.colors.purple,
-        //             0.5
-        //         );
-        //     });
-        // });
-
-        this.canvases.mapgrid.width = this.map.width;
-        this.canvases.mapgrid.height = this.map.height;
-        this.canvases.mapgrid.style.width = `${this.map.width}px`;
-        this.canvases.mapgrid.style.height = `${this.map.height}px`;
-
-        this.canvases.collider.width = this.map.width;
-        this.canvases.collider.height = this.map.height;
-        this.canvases.collider.style.width = `${this.map.width}px`;
-        this.canvases.collider.style.height = `${this.map.height}px`;
+        this.canvases.cursor.width = this.map.tilesize;
+        this.canvases.cursor.height = this.map.tilesize;
+        this.canvases.cursor.style.width = `${this.map.tilesize}px`;
+        this.canvases.cursor.style.height = `${this.map.tilesize}px`;
 
         this.dom.canvasPane.style.width = `${this.map.width}px`;
         this.dom.canvasPane.style.height = `${this.map.height}px`;
-
         this.dom.$canvasPane.addClass( "is-loaded" );
 
         this.draggable.update({
             applyBounds: true,
         });
 
-        // Load the tileset
-        this.loader.loadImage( `./games/${this.editor.data.game.id}/${this.map.image}` ).then( ( img ) => {
-            this.addTileset( img );
-            this.addCanvas();
+        this.loadMapAssets().then(() => {
+            this.srcTileset();
+            this.drawGrids();
+            this.drawTextures();
+            this.drawColliders();
+            this.drawNPCs();
+            this.drawObjects();
+            this.renderNPCLoadout();
+            this.renderObjectLoadout();
         });
+    }
+
+
+
+    loadMapAssets () {
+        const promises = [];
+
+        for ( const type in this.editor.data.assets ) {
+            if ( type === "sounds" ) {
+                continue;
+            }
+
+            this.editor.data.assets[ type ].files.forEach( ( asset ) => {
+                promises.push(
+                    new Promise( ( resolve ) => {
+                        const key = `assets/${type}/${asset}`;
+
+                        this.loader.loadImage( `./games/${this.game.id}/${key}` ).then( ( img ) => {
+                            this.assets[ key ] = img;
+                            resolve({ img, type, asset });
+                        });
+                    })
+                );
+            });
+        }
+
+        return Promise.all( promises );
     }
 
 
@@ -318,45 +297,6 @@ class EditorCanvas {
         }
 
         return coords;
-    }
-
-
-    addCanvas () {
-        this.clearCanvas( this.contexts.background.canvas );
-        this.clearCanvas( this.contexts.foreground.canvas );
-        this.clearCanvas( this.contexts.collision.canvas );
-        this.clearCanvas( this.contexts.selection.canvas );
-        this.clearCanvas( this.contexts.npc.canvas );
-        this.clearCanvas( this.canvases.mapgrid );
-
-        window.lib2dk.Utils.drawGridLines(
-            this.canvases.collider.getContext( "2d" ),
-            this.canvases.collider.width,
-            this.canvases.collider.height,
-            this.map.collider
-        );
-        window.lib2dk.Utils.drawGridLines(
-            this.canvases.mapgrid.getContext( "2d" ),
-            this.canvases.mapgrid.width,
-            this.canvases.mapgrid.height,
-            this.map.tilesize
-        );
-        window.lib2dk.Utils.drawMapTiles(
-            this.contexts.background.context,
-            this.dom.tileset,
-            this.map.textures.background,
-            this.map.tilesize,
-            this.map.tilesize
-        );
-        window.lib2dk.Utils.drawMapTiles(
-            this.contexts.foreground.context,
-            this.dom.tileset,
-            this.map.textures.foreground,
-            this.map.tilesize,
-            this.map.tilesize
-        );
-        // Draw npcs to canvas layer here...
-        this.drawColliders();
     }
 
 
@@ -396,6 +336,115 @@ class EditorCanvas {
         coordMap.tiles.forEach( ( tile ) => {
             if ( tile.paintTile ) {
                 this.refreshTile( layer, coords, tile );
+            }
+        });
+    }
+
+    srcTileset () {
+        const img = this.assets[ this.map.image ];
+        const width = img.naturalWidth / this.tilescale;
+        const height = img.naturalHeight / this.tilescale;
+
+        this.dom.tileset.src = img.src;
+        this.dom.tileset.style.width = `${width}px`;
+
+        ["tilegrid", "tilepaint",].forEach(( layer ) => {
+            this.canvases[ layer ].width = width;
+            this.canvases[ layer ].height = height;
+            this.canvases[ layer ].style.width = `${width}px`;
+            this.canvases[ layer ].style.height = `${height}px`;
+        });
+    }
+
+
+    drawGrids () {
+        window.lib2dk.Utils.drawGridLines(
+            this.canvases.collider.getContext( "2d" ),
+            this.canvases.collider.width,
+            this.canvases.collider.height,
+            this.map.collider
+        );
+
+        window.lib2dk.Utils.drawGridLines(
+            this.canvases.mapgrid.getContext( "2d" ),
+            this.canvases.mapgrid.width,
+            this.canvases.mapgrid.height,
+            this.map.tilesize
+        );
+
+        window.lib2dk.Utils.drawGridLines(
+            this.canvases.tilegrid.getContext( "2d" ),
+            this.canvases.tilegrid.width,
+            this.canvases.tilegrid.height,
+            this.gridsize
+        );
+    }
+
+
+    drawTextures () {
+        window.lib2dk.Utils.drawMapTiles(
+            this.contexts.background.context,
+            this.dom.tileset,
+            this.map.textures.background,
+            this.map.tilesize,
+            this.map.tilesize
+        );
+
+        window.lib2dk.Utils.drawMapTiles(
+            this.contexts.foreground.context,
+            this.dom.tileset,
+            this.map.textures.foreground,
+            this.map.tilesize,
+            this.map.tilesize
+        );
+    }
+
+
+    drawNPCs () {
+        this.map.npcs.forEach( ( npc ) => {
+            const baseNpc = this.game.npcs.find( ( gnpc ) => {
+                return npc.id === gnpc.id;
+            });
+
+            if ( baseNpc ) {
+                const baseState = baseNpc.states[ 0 ];
+                const offsetX = baseNpc.verbs[ baseState.verb ][ baseState.dir ].offsetX;
+                const offsetY = baseNpc.verbs[ baseState.verb ][ baseState.dir ].offsetY;
+
+                this.contexts.npc.context.drawImage(
+                    this.assets[ baseNpc.image ],
+                    Math.abs( offsetX ),
+                    Math.abs( offsetY ),
+                    baseNpc.width,
+                    baseNpc.height,
+                    npc.spawn.x,
+                    npc.spawn.y,
+                    baseNpc.width,
+                    baseNpc.height
+                );
+            }
+        });
+    }
+
+
+    drawObjects () {
+        this.map.objects.forEach( ( obj ) => {
+            const baseObj = this.game.objects.find( ( gobj ) => {
+                return obj.id === gobj.id;
+            });
+
+            if ( baseObj ) {
+                this.contexts.obj.context.drawImage(
+                    this.assets[ baseObj.image ],
+                    baseObj.offsetX,
+                    baseObj.offsetY,
+                    baseObj.width,
+                    baseObj.height,
+                    obj.spawn.x,
+                    obj.spawn.y,
+                    baseObj.width,
+                    baseObj.height
+                );
             }
         });
     }
@@ -456,16 +505,6 @@ class EditorCanvas {
     }
 
 
-    hide ( l ) {
-        window.hobo( this.layers[ l ] ).addClass( "is-hidden" );
-    }
-
-
-    show ( l ) {
-        window.hobo( this.layers[ l ] ).removeClass( "is-hidden" );
-    }
-
-
     setTileboxBounds () {
         const boxBounds = this.dom.tilebox.getBoundingClientRect();
 
@@ -473,42 +512,17 @@ class EditorCanvas {
     }
 
 
-    addTileset ( img ) {
-        const width = img.naturalWidth / this.tilescale;
-        const height = img.naturalHeight / this.tilescale;
+    renderNPCLoadout () {
+        this.dom.$npcPickerBox[ 0 ].innerHTML = this.game.npcs.map( ( npc ) => {
+            return renderNPC( npc, this.game );
+        }).join( "" );
+    }
 
-        this.dom.tileset.src = img.src;
-        this.dom.tileset.style.width = `${width}px`;
 
-        this.canvases.tilegrid.width = width;
-        this.canvases.tilegrid.height = height;
-        this.canvases.tilegrid.style.width = `${width}px`;
-        this.canvases.tilegrid.style.height = `${height}px`;
-
-        this.canvases.tilepaint.width = width;
-        this.canvases.tilepaint.height = height;
-        this.canvases.tilepaint.style.width = `${width}px`;
-        this.canvases.tilepaint.style.height = `${height}px`;
-
-        this.canvases.preview.width = this.map.tilesize;
-        this.canvases.preview.height = this.map.tilesize;
-        this.canvases.preview.style.width = `${this.gridsize}px`;
-        this.canvases.preview.style.height = `${this.gridsize}px`;
-
-        this.canvases.cursor.width = this.map.tilesize;
-        this.canvases.cursor.height = this.map.tilesize;
-        this.canvases.cursor.style.width = `${this.map.tilesize}px`;
-        this.canvases.cursor.style.height = `${this.map.tilesize}px`;
-
-        this.clearCanvas( this.canvases.tilepaint );
-        this.clearCanvas( this.canvases.tilegrid );
-
-        window.lib2dk.Utils.drawGridLines(
-            this.canvases.tilegrid.getContext( "2d" ),
-            this.canvases.tilegrid.width,
-            this.canvases.tilegrid.height,
-            this.gridsize
-        );
+    renderObjectLoadout () {
+        this.dom.$objPickerBox[ 0 ].innerHTML = this.game.objects.map( ( obj ) => {
+            return renderObject( obj, this.game );
+        }).join( "" );
     }
 
 
@@ -662,13 +676,43 @@ class EditorCanvas {
         }
     }
 
+    setActiveTool ( tool ) {
+        this.dom.$canvasPane.removeClass( "is-brush-tool is-erase-tool is-select-tool" );
+
+        if ( tool ) {
+            this.dom.$canvasPane.addClass( `is-${tool}-tool` );
+        }
+    }
+
 
     setActiveLayer ( layer ) {
-        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc" );
-        this.dom.$canvasPane.removeClass( "is-selection" );
+        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc is-obj is-selection" );
 
         if ( layer ) {
             this.dom.$canvasPane.addClass( `is-${layer}` );
+
+            if ( layer === Config.EditorLayers.modes.OBJ ) {
+                this.dom.$objPicker.removeClass( "is-hidden" );
+                this.dom.$tilePicker.addClass( "is-hidden" );
+                this.dom.$npcPicker.addClass( "is-hidden" );
+                this.editor.actions.resetActions();
+                this.clearTileset();
+            } else if ( layer === Config.EditorLayers.modes.NPC ) {
+                this.dom.$npcPicker.removeClass( "is-hidden" );
+                this.dom.$objPicker.addClass( "is-hidden" );
+                this.dom.$tilePicker.addClass( "is-hidden" );
+                this.editor.actions.resetActions();
+                this.clearTileset();
+            } else {
+                this.dom.$tilePicker.removeClass( "is-hidden" );
+                this.dom.$objPicker.addClass( "is-hidden" );
+                this.dom.$npcPicker.addClass( "is-hidden" );
+
+                // Clear NPC & Object previews (if they exist)
+                if ( !this.tilesetCoords.length ) {
+                    this.clearTileset();
+                }
+            }
         }
 
         if ( this.canApplySelection() ) {
@@ -680,22 +724,8 @@ class EditorCanvas {
     brush ( layer, coords ) {
         const coordMap = this.getCoordMap();
 
-        this.editor.updateMapLayer( layer, coords, coordMap );
+        this.updateMapLayer( layer, coords, coordMap );
         this.refreshTiles( layer, coords, coordMap );
-    }
-
-
-    bucket ( layer ) {
-        for ( let y = this.map.textures[ layer ].length; y--; ) {
-            for ( let x = this.map.textures[ layer ][ y ].length; x--; ) {
-                // Reset the entire texture map
-                this.map.textures[ layer ][ y ][ x ] = 0;
-
-                // Apply only the selected tile
-                this.tilesetCoords = [this.tilesetCoords[ 0 ]];
-                this.brush( layer, [x, y] );
-            }
-        }
     }
 
 
@@ -710,6 +740,61 @@ class EditorCanvas {
             this.map.tilesize,
             this.map.tilesize
         );
+    }
+
+
+    cleanTiles ( arr ) {
+        const ret = [];
+
+        for ( let i = 0, len = arr.length; i < len; i++ ) {
+            let uniq = arr[ i ];
+
+            for ( let j = ret.length; j--; ) {
+                if ( ret[ j ][ 0 ] === arr[ i ][ 0 ] && ret[ j ][ 1 ] === arr[ i ][ 1 ] ) {
+                    uniq = null;
+                    return ret;
+                }
+            }
+
+            if ( uniq ) {
+                ret.push( uniq );
+            }
+        }
+
+        return ret;
+    }
+
+
+    updateMapLayer ( layer, coords, coordMap ) {
+        coordMap.tiles.forEach( ( tile ) => {
+            if ( tile.paintTile ) {
+                const cx = coords[ 0 ] + tile.drawCoord[ 0 ];
+                const cy = coords[ 1 ] + tile.drawCoord[ 1 ];
+                const px = this.map.tilesize * tile.tileCoord[ 0 ];
+                const py = this.map.tilesize * tile.tileCoord[ 1 ];
+
+                // Position has no tile: 0
+                if ( this.map.textures[ layer ][ cy ][ cx ] === 0 ) {
+                    this.map.textures[ layer ][ cy ][ cx ] = [
+                        [
+                            px,
+                            py,
+                        ],
+                    ];
+
+                // Position has tiles: Array[Array[x, y], Array[x, y]]
+                } else if ( Array.isArray( this.map.textures[ layer ][ cy ][ cx ] ) ) {
+                    this.map.textures[ layer ][ cy ][ cx ].push( [
+                        px,
+                        py,
+                    ] );
+                }
+
+                // Clean tiles on draw so we don't have to scan the entire texture
+                this.map.textures[ layer ][ cy ][ cx ] = this.cleanTiles( this.map.textures[ layer ][ cy ][ cx ] );
+                tile.renderTree = this.map.textures[ layer ][ cy ][ cx ];
+            }
+        });
     }
 
 
@@ -739,6 +824,7 @@ class EditorCanvas {
 
         this.resetPreview();
         this.resetCursor();
+        this.resetCurrentNPCAndObject();
     }
 
 
@@ -802,12 +888,7 @@ class EditorCanvas {
     resetPreview () {
         const ctx = this.canvases.preview.getContext( "2d" );
 
-        ctx.clearRect(
-            0,
-            0,
-            this.canvases.preview.width,
-            this.canvases.preview.width
-        );
+        this.clearCanvas( this.canvases.preview );
 
         this.canvases.preview.width = this.map.tilesize;
         this.canvases.preview.height = this.map.tilesize;
@@ -819,17 +900,18 @@ class EditorCanvas {
     resetCursor () {
         const ctx = this.canvases.cursor.getContext( "2d" );
 
-        ctx.clearRect(
-            0,
-            0,
-            this.canvases.cursor.width,
-            this.canvases.cursor.width
-        );
+        this.clearCanvas( this.canvases.cursor );
 
         this.canvases.cursor.width = this.map.tilesize;
         this.canvases.cursor.height = this.map.tilesize;
         this.canvases.cursor.style.width = `${this.map.tilesize}px`;
         this.canvases.cursor.style.height = `${this.map.tilesize}px`;
+    }
+
+
+    resetCurrentNPCAndObject () {
+        this.currentNPC = null;
+        this.currentObject = null;
     }
 
 
@@ -839,12 +921,7 @@ class EditorCanvas {
         const width = coordMap.width * this.gridsize;
         const height = coordMap.height * this.gridsize;
 
-        ctx.clearRect(
-            0,
-            0,
-            this.canvases.preview.width,
-            this.canvases.preview.width
-        );
+        this.clearCanvas( this.canvases.preview );
 
         this.canvases.preview.width = width * this.tilescale;
         this.canvases.preview.height = height * this.tilescale;
@@ -869,18 +946,72 @@ class EditorCanvas {
     }
 
 
+    applyPreviewNPC () {
+        const npc = this.currentNPC;
+        const ctx = this.canvases.preview.getContext( "2d" );
+        const scale = this.map.tilesize / this.gridsize;
+        const width = npc.width;
+        const height = npc.height;
+        const state = npc.states[ 0 ];
+        const offsetX = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetX );
+        const offsetY = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetY );
+        
+        this.clearCanvas( this.canvases.preview );
+
+        this.canvases.preview.width = width;
+        this.canvases.preview.height = height;
+        this.canvases.preview.style.width = `${width / scale}px`;
+        this.canvases.preview.style.height = `${height / scale}px`;
+
+        ctx.drawImage(
+            this.assets[ npc.image ],
+            offsetX,
+            offsetY,
+            width,
+            height,
+            0,
+            0,
+            width,
+            height
+        );
+    }
+
+
+    applyPreviewObject () {
+        const obj = this.currentObject;
+        const ctx = this.canvases.preview.getContext( "2d" );
+        const scale = this.map.tilesize / this.gridsize;
+        const width = obj.width;
+        const height = obj.height;
+
+        this.clearCanvas( this.canvases.preview );
+
+        this.canvases.preview.width = width;
+        this.canvases.preview.height = height;
+        this.canvases.preview.style.width = `${width / scale}px`;
+        this.canvases.preview.style.height = `${height / scale}px`;
+        
+        ctx.drawImage(
+            this.assets[ obj.image ],
+            obj.offsetX,
+            obj.offsetY,
+            width,
+            height,
+            0,
+            0,
+            width,
+            height
+        );
+    }
+
+
     applyCursor () {
         const ctx = this.canvases.cursor.getContext( "2d" );
         const coordMap = this.getCoordMap();
         const width = coordMap.width * this.map.tilesize;
         const height = coordMap.height * this.map.tilesize;
 
-        ctx.clearRect(
-            0,
-            0,
-            this.canvases.cursor.width,
-            this.canvases.cursor.width
-        );
+        this.clearCanvas( this.canvases.cursor );
 
         this.canvases.cursor.width = width;
         this.canvases.cursor.height = height;
@@ -905,18 +1036,149 @@ class EditorCanvas {
     }
 
 
+    applyCursorNPC () {
+        const npc = this.currentNPC;
+        const ctx = this.canvases.cursor.getContext( "2d" );
+        const width = npc.width;
+        const height = npc.height;
+        const state = npc.states[ 0 ];
+        const offsetX = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetX );
+        const offsetY = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetY );
+
+        this.canvases.cursor.width = width;
+        this.canvases.cursor.height = height;
+        this.canvases.cursor.style.width = `${width}px`;
+        this.canvases.cursor.style.height = `${height}px`;
+
+        ctx.drawImage(
+            this.assets[ npc.image ],
+            offsetX,
+            offsetY,
+            width,
+            height,
+            0,
+            0,
+            width,
+            height
+        );
+    }
+
+
+    applyCursorObject () {
+        const obj = this.currentObject;
+        const ctx = this.canvases.cursor.getContext( "2d" );
+        const width = obj.width;
+        const height = obj.height;
+
+        this.canvases.cursor.width = width;
+        this.canvases.cursor.height = height;
+        this.canvases.cursor.style.width = `${width}px`;
+        this.canvases.cursor.style.height = `${height}px`;
+
+        ctx.drawImage(
+            this.assets[ obj.image ],
+            obj.offsetX,
+            obj.offsetY,
+            width,
+            height,
+            0,
+            0,
+            width,
+            height
+        );
+    }
+
+
     applyLayer ( layer, coords ) {
         if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
             this.brush( layer, coords );
-
-        } else if ( this.editor.actions.mode === Config.EditorActions.modes.BUCKET ) {
-            this.bucket( layer, coords );
 
         } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             this.trash( layer, coords );
         }
     }
 
+
+    applyNPC ( coords ) {
+        console.log( "applyNPC", coords );
+    }
+
+
+    // TODO: Abstract this to work with objects and npcs...
+    applyObject ( coords ) {
+        if ( this.currentObject && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
+            const offsetCoords = this.getCursorOffsetCoords( coords, this.currentObject );
+
+            const newObj = {
+                id: this.currentObject.id,
+                spawn: {
+                    x: offsetCoords[ 0 ] * this.map.tilesize,
+                    y: offsetCoords[ 1 ] * this.map.tilesize,
+                },
+            };
+
+            const existingObj = this.map.objects.find( ( obj ) => {
+                return obj.id === newObj.id && obj.spawn.x === newObj.spawn.x && obj.spawn.y === newObj.spawn.y;
+            });
+
+            if ( existingObj ) {
+                return;
+            }
+
+            this.map.objects.push( newObj );
+
+            this.contexts.obj.context.drawImage(
+                this.assets[ this.currentObject.image ],
+                this.currentObject.offsetX,
+                this.currentObject.offsetY,
+                this.currentObject.width,
+                this.currentObject.height,
+                newObj.spawn.x,
+                newObj.spawn.y,
+                this.currentObject.width,
+                this.currentObject.height
+            );
+        } else if ( !this.currentObject && this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+            const coordTile = {
+                x: coords[ 0 ] * this.map.tilesize,
+                y: coords[ 1 ] * this.map.tilesize,
+                width: this.map.tilesize,
+                height: this.map.tilesize,
+            };
+
+            const topmostObjects = this.map.objects.filter( ( obj ) => {
+                const baseObj = this.game.objects.find( ( gobj ) => {
+                    return obj.id === gobj.id;
+                });
+                
+                const objSprite = {
+                    x: obj.spawn.x,
+                    y: obj.spawn.y,
+                    width: baseObj.width,
+                    height: baseObj.height,
+                };
+
+                return window.lib2dk.Utils.collide( objSprite, coordTile );
+            });
+            
+            const topmostObject = topmostObjects.pop();
+
+            if ( topmostObject ) {
+                this.map.objects = this.map.objects.reduce( ( acc, obj ) => {
+                    if ( obj.spawn.x === topmostObject.spawn.x && obj.spawn.y === topmostObject.spawn.y ) {
+                        return acc;
+                    }
+
+                    acc.push( obj );
+
+                    return acc;
+                }, []);
+
+                this.contexts.obj.clear();
+                this.drawObjects();
+            }
+        }
+    }
 
     getMouseCoords ( e, grid ) {
         return [
@@ -930,6 +1192,63 @@ class EditorCanvas {
         return source.find( ( coord ) => {
             return ( coord[ 0 ] === ref[ 0 ] && coord[ 1 ] === ref[ 1 ] );
         });
+    }
+
+
+    getCursorOffsetCoords ( coords, obj ) {
+        let x = coords[ 0 ];
+        let y = coords[ 1 ];
+
+        const midX = this.map.tilesize / 2;
+        const midY = this.map.tilesize / 2;
+        const mouseX = this.canvasMouseCoords.x;
+        const mouseY = this.canvasMouseCoords.y;
+
+        // Support for negative object placement at the top of the canvas
+        // Placing with overflow off the bottom of the canvas works by default
+        if ( x === 0 && mouseX < midX ) {
+            x = x - ( ( obj.width / 2 ) / this.map.tilesize );
+        }
+
+        if ( y === 0 && mouseY < midY ) {
+            y = y - ( ( obj.height / 2 ) / this.map.tilesize );
+        }
+
+        return [ x, y ];
+    }
+
+
+    showCanvasCursor ( coords ) {
+        let x = coords[ 0 ];
+        let y = coords[ 1 ];
+
+        if ( this.currentObject && this.editor.layers.mode === Config.EditorLayers.modes.OBJ ) {
+            const offsetCoords = this.getCursorOffsetCoords( coords, this.currentObject );
+
+            x = offsetCoords[ 0 ];
+            y = offsetCoords[ 1 ];
+        }
+
+        this.canvases.cursor.style.opacity = 0.5;
+        this.canvases.cursor.style.zIndex = 9999;
+        this.canvases.cursor.style.webkitTransform = `translate3d(
+                ${x * this.map.tilesize}px,
+                ${y * this.map.tilesize}px,
+                0
+            )
+        `;
+    }
+
+
+    hideCanvasCursor () {
+        this.canvases.cursor.style.opacity = 0;
+        this.canvases.cursor.style.zIndex = -1;
+        this.canvases.cursor.style.webkitTransform = `translate3d(
+                0,
+                0,
+                0
+            )
+        `;
     }
 
 
@@ -982,6 +1301,34 @@ class EditorCanvas {
         $document.on( "mouseup", () => {
             this.isMouseDownCanvas = false;
             this.isMouseDownCollider = false;
+        });
+
+        $document.on( "click", ".js-npc-tile", ( e ) => {
+            const id = e.target.dataset.npc;
+
+            const npc = this.game.npcs.find( ( npc ) => {
+                return npc.id === id;
+            });
+
+            this.currentNPC = npc;
+
+            this.resetPreview();
+            this.applyPreviewNPC();
+            this.applyCursorNPC();
+        }); 
+
+        $document.on( "click", ".js-obj-tile", ( e ) => {
+            const id = e.target.dataset.obj;
+
+            const obj = this.game.objects.find( ( obj ) => {
+                return obj.id === id;
+            });
+
+            this.currentObject = obj;
+
+            this.resetPreview();
+            this.applyPreviewObject();
+            this.applyCursorObject();
         });
     }
 
@@ -1060,6 +1407,10 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mousemove", ( e ) => {
+            if ( !this.map ) {
+                return;
+            }
+
             const coords = this.getMouseCoords( e, this.gridsize );
 
             this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
@@ -1111,6 +1462,10 @@ class EditorCanvas {
 
             if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCanvas = true;
+                this.canvasMouseCoords = {
+                    x: e.offsetX,
+                    y: e.offsetY
+                };
 
                 const coords = this.getMouseCoords( e, this.map.tilesize );
 
@@ -1130,6 +1485,11 @@ class EditorCanvas {
             if ( !this.map ) {
                 return;
             }
+
+            this.canvasMouseCoords = {
+                x: e.offsetX,
+                y: e.offsetY
+            };
 
             const coords = this.getMouseCoords( e, this.map.tilesize );
 
@@ -1152,6 +1512,10 @@ class EditorCanvas {
                 } else {
                     if ( this.canApplyLayer() ) {
                         this.showCanvasCursor( coords );
+                    } else if ( this.canApplyNPC() ) {
+                        this.showCanvasCursor( coords );
+                    } else if ( this.canApplyObject() ) {
+                        this.showCanvasCursor( coords );
                     }
                 }
             }
@@ -1159,10 +1523,19 @@ class EditorCanvas {
 
         $mapgrid.on( "mouseup", ( e ) => {
             if ( this.editor.canMapFunction() ) {
+                this.canvasMouseCoords = {
+                    x: e.offsetX,
+                    y: e.offsetY
+                };
+
                 const coords = this.getMouseCoords( e, this.map.tilesize );
 
                 if ( this.canApplyLayer() ) {
                     this.applyLayer( this.editor.layers.mode, coords );
+                } else if ( this.canApplyNPC() ) {
+                    this.applyNPC( coords );
+                } else if ( this.canApplyObject() ) {
+                    this.applyObject( coords );
                 }
             }
 
@@ -1171,6 +1544,7 @@ class EditorCanvas {
 
         $mapgrid.on( "mouseout", () => {
             this.dom.moveCoords.innerHTML = "( X, Y )";
+            this.canvasMouseCoords = null;
 
             this.hideCanvasCursor();
         });
@@ -1232,30 +1606,6 @@ class EditorCanvas {
     }
 
 
-    showCanvasCursor ( coords ) {
-        this.canvases.cursor.style.opacity = 0.5;
-        this.canvases.cursor.style.zIndex = 9999;
-        this.canvases.cursor.style.webkitTransform = `translate3d(
-                ${coords[ 0 ] * this.map.tilesize}px,
-                ${coords[ 1 ] * this.map.tilesize}px,
-                0
-            )
-        `;
-    }
-
-
-    hideCanvasCursor () {
-        this.canvases.cursor.style.opacity = 0;
-        this.canvases.cursor.style.zIndex = -1;
-        this.canvases.cursor.style.webkitTransform = `translate3d(
-                0,
-                0,
-                0
-            )
-        `;
-    }
-
-
     canApplySelection () {
         return (
             this.editor.actions.mode === Config.EditorActions.modes.SELECT &&
@@ -1275,11 +1625,24 @@ class EditorCanvas {
     }
 
 
+    canApplyNPC () {
+        return (
+            this.editor.layers.mode === Config.EditorLayers.modes.NPC
+        );
+    }
+
+
+    canApplyObject () {
+        return (
+            this.editor.layers.mode === Config.EditorLayers.modes.OBJ
+        );
+    }
+
+
     canApplyCollider () {
         return (
             this.isMouseDownCollider &&
-            this.editor.layers.mode === Config.EditorLayers.modes.COLLISION &&
-            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
+            this.editor.layers.mode === Config.EditorLayers.modes.COLLISION
         );
     }
 
@@ -1287,8 +1650,7 @@ class EditorCanvas {
     canApplyTiles () {
         return (
             this.isMouseDownTiles &&
-            this.editor.actions.mode !== Config.EditorActions.modes.ERASE &&
-            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
+            this.editor.actions.mode !== Config.EditorActions.modes.ERASE
         );
     }
 
