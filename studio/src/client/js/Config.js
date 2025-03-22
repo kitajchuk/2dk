@@ -9,7 +9,6 @@ const Config = {
             BRUSH: "brush",
             ERASE: "erase",
             SELECT: "select",
-            ZOOM: "zoom",
         },
     },
     EditorCanvas: {

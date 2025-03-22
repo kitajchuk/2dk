@@ -87,8 +87,11 @@ class Editor {
 
 
     setTitle () {
-        // Set document title
-        document.title = `${this.data.map ? this.data.map.name : this.data.game.name} | 2dk Studio`;
+        if ( this.data.map ) {
+            document.title = `Map: ${this.data.map.name} | Game: ${this.data.game.name} | 2dk Studio`;
+        } else if ( this.data.game ) {
+            document.title = `Game: ${this.data.game.name} | 2dk Studio`;
+        }
     }
 
 
@@ -134,7 +137,7 @@ class Editor {
 
         // Display the map canvas
         this.canvas.reset();
-        this.canvas.loadMap( this.data.map );
+        this.canvas.loadMap( this.data.map, this.data.game );
 
         // Set active map to menu
         this.dom.mapLoad[ 0 ].innerText = map.name;
@@ -224,61 +227,6 @@ class Editor {
     blurSelectMenus () {
         this.selects.all.forEach( ( select ) => {
             select.blur();
-        });
-    }
-
-
-    cleanTiles ( arr ) {
-        const ret = [];
-
-        for ( let i = 0, len = arr.length; i < len; i++ ) {
-            let uniq = arr[ i ];
-
-            for ( let j = ret.length; j--; ) {
-                if ( ret[ j ][ 0 ] === arr[ i ][ 0 ] && ret[ j ][ 1 ] === arr[ i ][ 1 ] ) {
-                    uniq = null;
-                    return ret;
-                }
-            }
-
-            if ( uniq ) {
-                ret.push( uniq );
-            }
-        }
-
-        return ret;
-    }
-
-
-    updateMapLayer ( layer, coords, coordMap ) {
-        coordMap.tiles.forEach( ( tile ) => {
-            if ( tile.paintTile ) {
-                const cx = coords[ 0 ] + tile.drawCoord[ 0 ];
-                const cy = coords[ 1 ] + tile.drawCoord[ 1 ];
-                const px = this.data.map.tilesize * tile.tileCoord[ 0 ];
-                const py = this.data.map.tilesize * tile.tileCoord[ 1 ];
-
-                // Position has no tile: 0
-                if ( this.data.map.textures[ layer ][ cy ][ cx ] === 0 ) {
-                    this.data.map.textures[ layer ][ cy ][ cx ] = [
-                        [
-                            px,
-                            py,
-                        ],
-                    ];
-
-                // Position has tiles: Array[Array[x, y], Array[x, y]]
-                } else if ( Array.isArray( this.data.map.textures[ layer ][ cy ][ cx ] ) ) {
-                    this.data.map.textures[ layer ][ cy ][ cx ].push( [
-                        px,
-                        py,
-                    ] );
-                }
-
-                // Clean tiles on draw so we don't have to scan the entire texture
-                this.data.map.textures[ layer ][ cy ][ cx ] = this.cleanTiles( this.data.map.textures[ layer ][ cy ][ cx ] );
-                tile.renderTree = this.data.map.textures[ layer ][ cy ][ cx ];
-            }
         });
     }
 

@@ -36,13 +36,13 @@ class EditorCanvas {
         this.editor = editor;
         this.mode = null;
         this.map = null;
+        this.game = null;
         this.assets = {};
         this.canvasMouseCoords = null;
         this.tilesetCoords = [];
         this.selectionCoords = [];
         this.currentNPC = null;
         this.currentObject = null;
-        this.isZoomable = false;
         this.isSpacebar = false;
         this.isEscape = false;
         this.isMouseDownTiles = false;
@@ -173,7 +173,6 @@ class EditorCanvas {
             this.resetPreview();
             this.resetCursor();
 
-            this.isZoomable = false;
             this.isSpacebar = false;
             this.isMouseDownTiles = false;
             this.isMouseMovedTiles = false;
@@ -186,16 +185,18 @@ class EditorCanvas {
             this.tilesetCoords = [];
             this.selectionCoords = [];
             this.map = null;
-            this.mode = null;
+            this.game = null;
             this.assets = {};
+            this.mode = null;
             this.dom.tileset.src = "";
             this.dom.$canvasPane.removeClass( "is-loaded" );
         }
     }
 
 
-    loadMap ( map ) {
+    loadMap ( map, game ) {
         this.map = map;
+        this.game = window.lib2dk.Utils.copy( game );
 
         // Gridsize for tilepaint
         this.gridsize = Math.min( 32, this.map.tilesize );
@@ -266,7 +267,7 @@ class EditorCanvas {
                     new Promise( ( resolve ) => {
                         const key = `assets/${type}/${asset}`;
 
-                        this.loader.loadImage( `./games/${this.editor.data.game.id}/${key}` ).then( ( img ) => {
+                        this.loader.loadImage( `./games/${this.game.id}/${key}` ).then( ( img ) => {
                             this.assets[ key ] = img;
                             resolve({ img, type, asset });
                         });
@@ -401,7 +402,7 @@ class EditorCanvas {
 
     drawNPCs () {
         this.map.npcs.forEach( ( npc ) => {
-            const baseNpc = this.editor.data.game.npcs.find( ( gnpc ) => {
+            const baseNpc = this.game.npcs.find( ( gnpc ) => {
                 return npc.id === gnpc.id;
             });
 
@@ -428,7 +429,7 @@ class EditorCanvas {
 
     drawObjects () {
         this.map.objects.forEach( ( obj ) => {
-            const baseObj = this.editor.data.game.objects.find( ( gobj ) => {
+            const baseObj = this.game.objects.find( ( gobj ) => {
                 return obj.id === gobj.id;
             });
 
@@ -512,15 +513,15 @@ class EditorCanvas {
 
 
     renderNPCLoadout () {
-        this.dom.$npcPickerBox[ 0 ].innerHTML = this.editor.data.game.npcs.map( ( npc ) => {
-            return renderNPC( npc, this.editor.data.game );
+        this.dom.$npcPickerBox[ 0 ].innerHTML = this.game.npcs.map( ( npc ) => {
+            return renderNPC( npc, this.game );
         }).join( "" );
     }
 
 
     renderObjectLoadout () {
-        this.dom.$objPickerBox[ 0 ].innerHTML = this.editor.data.game.objects.map( ( obj ) => {
-            return renderObject( obj, this.editor.data.game );
+        this.dom.$objPickerBox[ 0 ].innerHTML = this.game.objects.map( ( obj ) => {
+            return renderObject( obj, this.game );
         }).join( "" );
     }
 
@@ -723,7 +724,7 @@ class EditorCanvas {
     brush ( layer, coords ) {
         const coordMap = this.getCoordMap();
 
-        this.editor.updateMapLayer( layer, coords, coordMap );
+        this.updateMapLayer( layer, coords, coordMap );
         this.refreshTiles( layer, coords, coordMap );
     }
 
@@ -739,6 +740,61 @@ class EditorCanvas {
             this.map.tilesize,
             this.map.tilesize
         );
+    }
+
+
+    cleanTiles ( arr ) {
+        const ret = [];
+
+        for ( let i = 0, len = arr.length; i < len; i++ ) {
+            let uniq = arr[ i ];
+
+            for ( let j = ret.length; j--; ) {
+                if ( ret[ j ][ 0 ] === arr[ i ][ 0 ] && ret[ j ][ 1 ] === arr[ i ][ 1 ] ) {
+                    uniq = null;
+                    return ret;
+                }
+            }
+
+            if ( uniq ) {
+                ret.push( uniq );
+            }
+        }
+
+        return ret;
+    }
+
+
+    updateMapLayer ( layer, coords, coordMap ) {
+        coordMap.tiles.forEach( ( tile ) => {
+            if ( tile.paintTile ) {
+                const cx = coords[ 0 ] + tile.drawCoord[ 0 ];
+                const cy = coords[ 1 ] + tile.drawCoord[ 1 ];
+                const px = this.map.tilesize * tile.tileCoord[ 0 ];
+                const py = this.map.tilesize * tile.tileCoord[ 1 ];
+
+                // Position has no tile: 0
+                if ( this.map.textures[ layer ][ cy ][ cx ] === 0 ) {
+                    this.map.textures[ layer ][ cy ][ cx ] = [
+                        [
+                            px,
+                            py,
+                        ],
+                    ];
+
+                // Position has tiles: Array[Array[x, y], Array[x, y]]
+                } else if ( Array.isArray( this.map.textures[ layer ][ cy ][ cx ] ) ) {
+                    this.map.textures[ layer ][ cy ][ cx ].push( [
+                        px,
+                        py,
+                    ] );
+                }
+
+                // Clean tiles on draw so we don't have to scan the entire texture
+                this.map.textures[ layer ][ cy ][ cx ] = this.cleanTiles( this.map.textures[ layer ][ cy ][ cx ] );
+                tile.renderTree = this.map.textures[ layer ][ cy ][ cx ];
+            }
+        });
     }
 
 
@@ -1048,9 +1104,10 @@ class EditorCanvas {
     }
 
 
+    // TODO: Abstract this to work with objects and npcs...
     applyObject ( coords ) {
         if ( this.currentObject && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
-            const offsetCoords = this.getObjectOffsetCoords( coords );
+            const offsetCoords = this.getCursorOffsetCoords( coords, this.currentObject );
 
             const newObj = {
                 id: this.currentObject.id,
@@ -1090,7 +1147,7 @@ class EditorCanvas {
             };
 
             const topmostObjects = this.map.objects.filter( ( obj ) => {
-                const baseObj = this.editor.data.game.objects.find( ( gobj ) => {
+                const baseObj = this.game.objects.find( ( gobj ) => {
                     return obj.id === gobj.id;
                 });
                 
@@ -1138,7 +1195,7 @@ class EditorCanvas {
     }
 
 
-    getObjectOffsetCoords ( coords ) {
+    getCursorOffsetCoords ( coords, obj ) {
         let x = coords[ 0 ];
         let y = coords[ 1 ];
 
@@ -1150,11 +1207,11 @@ class EditorCanvas {
         // Support for negative object placement at the top of the canvas
         // Placing with overflow off the bottom of the canvas works by default
         if ( x === 0 && mouseX < midX ) {
-            x = x - ( ( this.currentObject.width / 2 ) / this.map.tilesize );
+            x = x - ( ( obj.width / 2 ) / this.map.tilesize );
         }
 
         if ( y === 0 && mouseY < midY ) {
-            y = y - ( ( this.currentObject.height / 2 ) / this.map.tilesize );
+            y = y - ( ( obj.height / 2 ) / this.map.tilesize );
         }
 
         return [ x, y ];
@@ -1166,7 +1223,7 @@ class EditorCanvas {
         let y = coords[ 1 ];
 
         if ( this.currentObject && this.editor.layers.mode === Config.EditorLayers.modes.OBJ ) {
-            const offsetCoords = this.getObjectOffsetCoords( coords );
+            const offsetCoords = this.getCursorOffsetCoords( coords, this.currentObject );
 
             x = offsetCoords[ 0 ];
             y = offsetCoords[ 1 ];
@@ -1249,7 +1306,7 @@ class EditorCanvas {
         $document.on( "click", ".js-npc-tile", ( e ) => {
             const id = e.target.dataset.npc;
 
-            const npc = this.editor.data.game.npcs.find( ( npc ) => {
+            const npc = this.game.npcs.find( ( npc ) => {
                 return npc.id === id;
             });
 
@@ -1263,7 +1320,7 @@ class EditorCanvas {
         $document.on( "click", ".js-obj-tile", ( e ) => {
             const id = e.target.dataset.obj;
 
-            const obj = this.editor.data.game.objects.find( ( obj ) => {
+            const obj = this.game.objects.find( ( obj ) => {
                 return obj.id === id;
             });
 
