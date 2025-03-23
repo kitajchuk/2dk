@@ -750,6 +750,33 @@
                     }
                 }
             ]
+        },
+        {
+            "id": "moblin-camp",
+            "name": "Moblin Camp",
+            "width": 128,
+            "height": 128,
+            "image": "assets/tiles/tiles.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 128,
+                "height": 128
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 256,
+                        "offsetY": 2304
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down"
+                }
+            ]
         }
     ],
     "fx": [

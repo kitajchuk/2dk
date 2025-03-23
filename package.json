@@ -29,7 +29,7 @@
     "watch:studio": "chokidar \"studio/src/client/**/*.scss\" -c \"yarn build:studio\"",
     "watch:games": "chokidar \"studio/games/**/*.json\" -c \"cp -R studio/games dist\"",
     "build": "yarn build:site && yarn build:2dk && yarn build:app && yarn build:studio",
-    "postbuild": "cp -R studio/games dist",
+    "postbuild": "cp studio/src/templates/app.js studio/games/la && cp studio/src/templates/app.js studio/games/la_copy && cp -R studio/games dist",
     "build:site": "webpack --config ./configs/webpack.config.prod.js",
     "postbuild:site": "sass ./src/styles/2dk.scss ./dist/2dk.css",
     "build:2dk": "webpack --config ./configs/webpack.config.2dk.js",
