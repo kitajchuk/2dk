@@ -7,6 +7,29 @@ const duration = 1;
 
 
 const Utils = {
+    clearTile ( ctx, x, y, w, h ) {
+        ctx.clearRect(
+            x,
+            y,
+            w,
+            h
+        );
+    },
+
+
+    sortCoords ( cA, cB ) {
+        if ( cA[ 1 ] < cB[ 1 ] ) {
+            return -1;
+    
+        } else if ( cA[ 1 ] === cB[ 1 ] && cA[ 0 ] < cB[ 0 ] ) {
+            return -1;
+    
+        } else {
+            return 1;
+        }
+    },
+
+
     destroySound () {
         const sounds = mediabox.getAudios();
 

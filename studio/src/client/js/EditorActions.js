@@ -43,7 +43,6 @@ class EditorActions {
     resetActions () {
         this.mode = null;
         this.elements.removeClass( "is-active" );
-        this.editor.canvas.clearSelection();
         this.editor.canvas.setActiveTool( null );
     }
 
@@ -73,10 +72,6 @@ class EditorActions {
 
             if ( this.mode !== Config.EditorActions.modes.BRUSH ) {
                 this.editor.canvas.clearTileset();
-            }
-
-            if ( this.mode !== Config.EditorActions.modes.SELECT ) {
-                this.editor.canvas.clearSelection();
             }
         }
     }

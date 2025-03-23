@@ -1,38 +1,17 @@
 const { ipcRenderer } = require( "electron" );
 const Config = require( "./Config" );
 const {
+    clearTile,
+    sortCoords,
+} = require( "./Utils" );
+const {
     renderNPC,
+    renderTile,
     renderGrid,
     renderSpawn,
     renderEvent,
     renderObject,
 } = require( "./Render" );
-
-
-const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
-    ctx.globalAlpha = alpha || 0.75;
-    ctx.fillStyle = color || window.lib2dk.Config.colors.blue;
-    ctx.fillRect( x, y, w, h );
-};
-const clearTile = ( ctx, x, y, w, h ) => {
-    ctx.clearRect(
-        x,
-        y,
-        w,
-        h
-    );
-};
-const sortCoords = ( cA, cB ) => {
-    if ( cA[ 1 ] < cB[ 1 ] ) {
-        return -1;
-
-    } else if ( cA[ 1 ] === cB[ 1 ] && cA[ 0 ] < cB[ 0 ] ) {
-        return -1;
-
-    } else {
-        return 1;
-    }
-};
 
 
 
@@ -47,7 +26,6 @@ class EditorCanvas {
         this.assets = {};
         this.canvasMouseCoords = null;
         this.tilesetCoords = [];
-        this.selectionCoords = [];
         this.currentNPC = null;
         this.currentObject = null;
         this.isSpacebar = false;
@@ -75,7 +53,6 @@ class EditorCanvas {
             background: document.getElementById( "editor-bg" ),
             foreground: document.getElementById( "editor-fg" ),
             collision: document.getElementById( "editor-c" ),
-            selection: document.getElementById( "editor-sel" ),
             mapgrid: document.getElementById( "editor-mapgrid" ),
             npc: document.getElementById( "editor-npc" ),
             obj: document.getElementById( "editor-obj" ),
@@ -86,7 +63,6 @@ class EditorCanvas {
             background: null,
             foreground: null,
             collision: null,
-            selection: null,
             npc: null,
             obj: null,
         };
@@ -202,7 +178,6 @@ class EditorCanvas {
             this.currentNPC = null;
             this.currentObject = null;
             this.tilesetCoords = [];
-            this.selectionCoords = [];
             this.map = null;
             this.game = null;
             this.assets = {};
@@ -562,104 +537,23 @@ class EditorCanvas {
     }
 
 
-    applySelection ( coord ) {
-        renderTile(
-            this.contexts.selection.context,
-            coord[ 0 ] * this.map.tilesize,
-            coord[ 1 ] * this.map.tilesize,
-            this.map.tilesize,
-            this.map.tilesize,
-            window.lib2dk.Config.colors.blueDark,
-            0.5
-        );
-    }
-
-
-    clearSelection () {
-        this.selectionCoords.forEach( ( coord ) => {
-            clearTile(
-                this.contexts.selection.context,
-                coord[ 0 ] * this.map.tilesize,
-                coord[ 1 ] * this.map.tilesize,
-                this.map.tilesize,
-                this.map.tilesize
-            );
-        });
-        this.selectionCoords = [];
-        ipcRenderer.send( "renderer-selection", false );
-    }
-
-
-    clearSelectionCoord ( coord ) {
-        clearTile(
-            this.contexts.selection.context,
-            coord[ 0 ] * this.map.tilesize,
-            coord[ 1 ] * this.map.tilesize,
-            this.map.tilesize,
-            this.map.tilesize
-        );
-    }
-
-
-    validateSelection () {
-        let testCoord = this.selectionCoords[ 0 ];
-        let testTexture;
-        const validation = {
-            valid: true,
-            alert: "",
-        };
-        const validTexture = this.map.textures[ this.editor.layers.mode ][ testCoord[ 1 ] ][ testCoord[ 0 ] ];
-
-        // Need to allow layered textures to be converted
-        // This means we need to reverse the Array order to look at the "top" tile
-        // E.g. A shrub on top of a dirt hole -- lift the shrub and toss it
-        // if ( validTexture.length > 1 ) {
-            // validation.valid = false;
-            // validation.alert = "You can only convert single texture tiles to Active Tiles.";
-        // }
-
-        for ( let i = this.selectionCoords.length; i--; ) {
-            testCoord = this.selectionCoords[ i ];
-            testTexture = this.map.textures[ this.editor.layers.mode ][ testCoord[ 1 ] ][ testCoord[ 0 ] ];
-
-            const testX = validTexture[ validTexture.length - 1 ][ 0 ] === testTexture[ validTexture.length - 1 ][ 0 ];
-            const testY = validTexture[ validTexture.length - 1 ][ 1 ] === testTexture[ validTexture.length - 1 ][ 1 ];
-
-            if ( !testX || !testY ) {
-                validation.valid = false;
-                validation.alert = "Selected tiles must all be the same in order to convert to Active Tiles.";
-                return validation;
-            }
-        }
-
-        return validation;
-    }
-
-
-    selectMatchingTiles ( coord ) {
-        console.log( "selectMatchingTiles", coord );
-    }
-
-
     applyActiveTiles ( data ) {
-        // Offset X & Y are already known by selection tiles
-        const coord = this.selectionCoords[ 0 ];
-        const texture = this.map.textures[ this.editor.layers.mode ][ coord[ 1 ] ][ coord[ 0 ] ];
-
-        data.offsetX = texture[ texture.length - 1 ][ 0 ];
-        data.offsetY = texture[ texture.length - 1 ][ 1 ];
+        // Coord X & Y are a position on the tileset
+        // Could try using the currentTileCoord for now..
+        const coord = this.currentTileCoord;
+        data.offsetX = coord[ 0 ] * this.map.tilesize;
+        data.offsetY = coord[ 1 ] * this.map.tilesize;
 
         // Layer is determined by active layer in Sidebar
         data.layer = this.editor.layers.mode;
 
-        // Coords is the current canvas selectionCoords
         // Discover allows dynamic Active Tiles based on tileset position
         if ( data.discover ) {
             data.coords = [];
             delete data.discover;
 
         } else {
-            data.coords = this.selectionCoords;
+            // TODO: ...?
         }
 
         // Action is an internalized VERB object (dynamic)
@@ -694,7 +588,7 @@ class EditorCanvas {
             this.map.tiles.push( data );
             this.editor._saveMap();
             this.editor.clearMenu( this.editor.menus.activeTiles );
-            this.clearSelection();
+            // TODO: cleanup...
 
         } else {
             alert( `The tile group ${data.group} already exists!` );
@@ -711,7 +605,7 @@ class EditorCanvas {
 
 
     setActiveLayer ( layer ) {
-        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc is-obj is-selection is-spawn is-event" );
+        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc is-obj is-spawn is-event" );
 
         if ( layer ) {
             this.dom.$canvasPane.addClass( `is-${layer}` );
@@ -738,10 +632,6 @@ class EditorCanvas {
                     this.clearTileset();
                 }
             }
-        }
-
-        if ( this.canApplySelection() ) {
-            this.dom.$canvasPane.addClass( "is-selection" );
         }
     }
 
@@ -856,12 +746,6 @@ class EditorCanvas {
     pushCoords ( coords ) {
         this.tilesetCoords.push( coords );
         this.tilesetCoords = this.tilesetCoords.sort( sortCoords );
-    }
-
-
-    pushSelection ( coords ) {
-        this.selectionCoords.push( coords );
-        this.selectionCoords = this.selectionCoords.sort( sortCoords );
     }
 
 
@@ -1314,7 +1198,6 @@ class EditorCanvas {
 
             if ( this.isEscape ) {
                 this.clearTileset();
-                this.clearSelection();
             }
 
             if ( this.isSpacebar ) {
@@ -1514,17 +1397,7 @@ class EditorCanvas {
                     y: e.offsetY
                 };
 
-                const coords = this.getMouseCoords( e, this.map.tilesize );
-
-                if ( this.canApplySelection() ) {
-                    const foundCoord = this.getFoundCoords( this.selectionCoords, coords );
-
-                    if ( !foundCoord ) {
-                        this.applySelection( coords );
-                        this.pushSelection( coords );
-                        ipcRenderer.send( "renderer-selection", true );
-                    }
-                }
+                // const coords = this.getMouseCoords( e, this.map.tilesize );
             }
         });
 
@@ -1544,24 +1417,11 @@ class EditorCanvas {
 
             if ( this.editor.canMapFunction() ) {
                 if ( this.isMouseDownCanvas ) {
-                    if ( this.canApplySelection() ) {
-                        const foundCoord = this.getFoundCoords( this.selectionCoords, coords );
-
-                        if ( !foundCoord ) {
-                            this.applySelection( coords );
-                            this.pushSelection( coords );
-                            ipcRenderer.send( "renderer-selection", true );
-                        }
-
-                    } else if ( this.canApplyLayer() ) {
+                    if ( this.canApplyLayer() ) {
                         this.applyLayer( this.editor.layers.mode, coords );
                     }
                 } else {
-                    if ( this.canApplyLayer() ) {
-                        this.showCanvasCursor( coords );
-                    } else if ( this.canApplyNPC() ) {
-                        this.showCanvasCursor( coords );
-                    } else if ( this.canApplyObject() ) {
+                    if ( this.canApplyLayer() || this.canApplyNPC() || this.canApplyObject() ) {
                         this.showCanvasCursor( coords );
                     }
                 }
@@ -1599,15 +1459,7 @@ class EditorCanvas {
         $mapgrid.on( "contextmenu", ( e ) => {
             e.preventDefault();
 
-            this.isMouseDownCanvas = false;
-
-            const ctxCoords = this.getMouseCoords( e, this.map.tilesize );
-
-            this.contextCoords = this.getFoundCoords( this.selectionCoords, ctxCoords );
-
-            if ( this.canApplySelection() ) {
-                ipcRenderer.send( "renderer-contextmenu" );
-            }
+            // TODO: contextmenu...
         });
     }
 
@@ -1615,45 +1467,12 @@ class EditorCanvas {
     bindMenuEvents () {
         ipcRenderer.on( "menu-contextmenu", ( e, action ) => {
             this.isMouseDownCanvas = false;
-
-            // Clear the "selection"
-            if ( action === "deselect-tiles" ) {
-                this.clearSelection();
-
-            // Clear the "selected" tile
-            } else if ( action === "deselect-tile" ) {
-                this.clearSelectionCoord( this.contextCoords );
-                this.selectionCoords.splice( this.selectionCoords.indexOf( this.contextCoords ), 1 );
-
-            } else if ( action === "select-matching-tiles" ) {
-                // Find all matching tiles to "contextCoords"
-                // Push to selectionCoords[] and draw to canvas
-                this.selectMatchingTiles( this.contextCoords );
-
-            // Initiate Active Tiles menu
-            } else if ( action === "create-activetiles" ) {
-                const validation = this.validateSelection();
-
-                if ( validation.valid ) {
-                    this.editor._openMenu( "activetiles", "editor-activetiles-menu" );
-
-                } else {
-                    alert( validation.alert );
-                }
-
-            // One-time action to revert Active Tiles
-            // Use a confirm() popup indicating permanence of this action...
-            } else if ( action === "remove-activetiles" ) {
-                // Remove active tiles by selectionCoords[]
-                // Requires calling "this.editor._saveMap()"
-            }
-
             this.contextCoords = null;
         });
     }
 
 
-    canApplySelection () {
+    canApplySelect () {
         return (
             this.editor.actions.mode === Config.EditorActions.modes.SELECT &&
             ( this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND )

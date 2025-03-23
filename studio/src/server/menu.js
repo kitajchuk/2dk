@@ -131,11 +131,6 @@ const getMapsMenu = () => {
         submenu: [],
         enabled: activeGame ? true : false,
     };
-    const selectionLoadout = {
-        label: "Selection",
-        submenu: activeSelect ? getContextMenu() : [],
-        enabled: activeMap ? true : false,
-    };
 
     activeMaps.forEach( ( map ) => {
         mapsLoadout.submenu.push({
@@ -199,8 +194,6 @@ const getMapsMenu = () => {
                 },
                 enabled: activeMap ? true : false,
             },
-            { type: "separator" },
-            selectionLoadout,
         ],
     };
 };
@@ -276,36 +269,7 @@ const getHelpMenu = () => {
 };
 const getContextMenu = () => {
     return [
-        {
-            label: "Create Active Tiles",
-            click () {
-                mainWindow.webContents.send( "menu-contextmenu", "create-activetiles" );
-            },
-        },
-        {
-            label: "Remove Active Tiles",
-            click () {
-                mainWindow.webContents.send( "menu-contextmenu", "remove-activetiles" );
-            },
-        },
-        {
-            label: "Select Matching Tiles",
-            click () {
-                mainWindow.webContents.send( "menu-contextmenu", "select-matching-tiles" );
-            },
-        },
-        {
-            label: "Deselect Tiles",
-            click () {
-                mainWindow.webContents.send( "menu-contextmenu", "deselect-tiles" );
-            },
-        },
-        {
-            label: "Deselect Tile",
-            click () {
-                mainWindow.webContents.send( "menu-contextmenu", "deselect-tile" );
-            },
-        },
+        // TODO: context menu...
     ];
 };
 const setMenu = () => {
@@ -408,11 +372,6 @@ ipcMain.on( "renderer-contextmenu", () => {
     contextMenu.popup({
         window: mainWindow,
     });
-});
-
-ipcMain.on( "renderer-selection", ( event, state ) => {
-    activeSelect = state;
-    setMenu();
 });
 
 

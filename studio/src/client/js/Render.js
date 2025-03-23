@@ -1,3 +1,10 @@
+const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
+    ctx.globalAlpha = alpha || 0.75;
+    ctx.fillStyle = color || window.lib2dk.Config.colors.blue;
+    ctx.fillRect( x, y, w, h );
+};
+
+
 const renderGame = ( game ) => {
     return `
         <div class="js-game-tile" data-game="${game.id}">
@@ -117,6 +124,7 @@ const renderGrid = ( id, size ) => {
 module.exports = {
     renderMap,
     renderNPC,
+    renderTile,
     renderGame,
     renderGrid,
     renderSpawn,

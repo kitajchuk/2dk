@@ -332,8 +332,7 @@
     &.is-spawn,
     &.is-event,
     &.is-background,
-    &.is-foreground,
-    &.is-selection {
+    &.is-foreground {
         #editor-mapgrid-canvas {
             display: block;
         }
@@ -386,8 +385,7 @@
     z-index: 3;
     pointer-events: none;
 }
-.editor__collision,
-.editor__selection {
+.editor__collision {
     z-index: 4;
     pointer-events: none;
 }
