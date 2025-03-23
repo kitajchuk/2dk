@@ -5,7 +5,7 @@ const lager = require( "properjs-lager" );
 
 module.exports = {
     init ( mainWindow ) {
-        const styles = path.join( __dirname, "../../public/css" );
+        const styles = path.join( __dirname, "../public/css" );
         const watcher = chokidar.watch( styles );
         
         watcher.on( "change", ( path ) => {

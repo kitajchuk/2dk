@@ -68,13 +68,12 @@
     }
 }
 #editor-preview {
-    overflow: hidden;
-}
-#editor-preview-box {
     height: calc( 128px + 47px );
     pointer-events: none;
     width: 100%;
     background-color: var( --charcoal2 );
+    overflow: hidden;
+    position: relative;
 }
 #editor-gamesettings,
 #editor-mapsettings {
@@ -227,6 +226,8 @@
     position: relative;
     z-index: 3;
     padding-top: 50px;
+    display: flex;
+    flex-direction: column;
 }
 .editor__sidebar__tools {
     padding-top: 50px;
@@ -598,12 +599,19 @@
 
 /* Pickers */
 .editor__picker {
+    flex: 1;
+    overflow: hidden;
+    
+    > .editor__layer:last-child {
+        height: calc( 100% - 32px );
+    }
+
     &.is-hidden {
         display: none;
     }
 }
 .editor__picker__box {
-    height: calc( 100vh - 50px - (47px * 5) - 32px - 208px - 32px - 16px - 16px );
+    height: 100%;
     width: 100%;
 }
 .editor__picker__overflow {
