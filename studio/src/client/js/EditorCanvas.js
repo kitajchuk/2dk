@@ -1099,73 +1099,95 @@ class EditorCanvas {
     }
 
 
-    applyNPC ( coords ) {
-        console.log( "applyNPC", coords );
+    applyObject ( coords ) {
+        this._applyObjectOrNPC( coords, this.currentObject );
     }
 
 
-    // TODO: Abstract this to work with objects and npcs...
-    applyObject ( coords ) {
-        if ( this.currentObject && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
-            const offsetCoords = this.getCursorOffsetCoords( coords, this.currentObject );
+    applyNPC ( coords ) {
+        this._applyObjectOrNPC( coords, this.currentNPC );
+    }
 
-            const newObj = {
-                id: this.currentObject.id,
+    _applyObjectOrNPC ( coords, objectOrNPC ) {
+        const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
+
+        // Must reference map data by key to mutate it
+        let _mapDataKey = isNPC ? "npcs" : "objects";
+        let _gameData = isNPC ? this.game.npcs : this.game.objects;
+        let _context = isNPC ? this.contexts.npc : this.contexts.obj;
+        let _redraw = isNPC ? this.drawNPCs.bind( this ) : this.drawObjects.bind( this );
+
+        if ( objectOrNPC && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
+            const offsetCoords = this.getCursorOffsetCoords( coords, objectOrNPC );
+
+            const newObjectOrNPC = {
+                id: objectOrNPC.id,
                 spawn: {
                     x: offsetCoords[ 0 ] * this.map.tilesize,
                     y: offsetCoords[ 1 ] * this.map.tilesize,
                 },
             };
 
-            const existingObj = this.map.objects.find( ( obj ) => {
-                return obj.id === newObj.id && obj.spawn.x === newObj.spawn.x && obj.spawn.y === newObj.spawn.y;
+            const existingObjectOrNPC = this.map.objects.find( ( obj ) => {
+                return ( 
+                    obj.id === newObjectOrNPC.id && 
+                    obj.spawn.x === newObjectOrNPC.spawn.x && 
+                    obj.spawn.y === newObjectOrNPC.spawn.y
+                );
             });
 
-            if ( existingObj ) {
+            if ( existingObjectOrNPC ) {
                 return;
             }
 
-            this.map.objects.push( newObj );
+            this.map[ _mapDataKey ].push( newObjectOrNPC );
 
-            this.contexts.obj.context.drawImage(
-                this.assets[ this.currentObject.image ],
-                this.currentObject.offsetX,
-                this.currentObject.offsetY,
-                this.currentObject.width,
-                this.currentObject.height,
-                newObj.spawn.x,
-                newObj.spawn.y,
-                this.currentObject.width,
-                this.currentObject.height
+            let offsetX = objectOrNPC.offsetX;
+            let offsetY = objectOrNPC.offsetY;
+
+            if ( isNPC ) {
+                const state = objectOrNPC.states[ 0 ];
+                offsetX = Math.abs( objectOrNPC.verbs[ state.verb ][ state.dir ].offsetX );
+                offsetY = Math.abs( objectOrNPC.verbs[ state.verb ][ state.dir ].offsetY );
+            }
+
+            _context.context.drawImage(
+                this.assets[ objectOrNPC.image ],
+                offsetX,
+                offsetY,
+                objectOrNPC.width,
+                objectOrNPC.height,
+                newObjectOrNPC.spawn.x,
+                newObjectOrNPC.spawn.y,
+                objectOrNPC.width,
+                objectOrNPC.height
             );
-        } else if ( !this.currentObject && this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+        } else if ( !objectOrNPC && this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             const coordTile = {
-                x: coords[ 0 ] * this.map.tilesize,
-                y: coords[ 1 ] * this.map.tilesize,
-                width: this.map.tilesize,
-                height: this.map.tilesize,
+                x: this.canvasMouseCoords.x,
+                y: this.canvasMouseCoords.y,
+                width: 10,
+                height: 10,
             };
-
-            const topmostObjects = this.map.objects.filter( ( obj ) => {
-                const baseObj = this.game.objects.find( ( gobj ) => {
+            const topmostObjectOrNPCs = this.map[ _mapDataKey ].filter( ( obj ) => {
+                const baseObjectOrNPC = _gameData.find( ( gobj ) => {
                     return obj.id === gobj.id;
                 });
                 
-                const objSprite = {
+                const objectOrNPCSprite = {
                     x: obj.spawn.x,
                     y: obj.spawn.y,
-                    width: baseObj.width,
-                    height: baseObj.height,
+                    width: baseObjectOrNPC.width,
+                    height: baseObjectOrNPC.height,
                 };
 
-                return window.lib2dk.Utils.collide( objSprite, coordTile );
+                return window.lib2dk.Utils.collide( objectOrNPCSprite, coordTile );
             });
-            
-            const topmostObject = topmostObjects.pop();
+            const topmostObjectOrNPC = topmostObjectOrNPCs.pop();
 
-            if ( topmostObject ) {
-                this.map.objects = this.map.objects.reduce( ( acc, obj ) => {
-                    if ( obj.spawn.x === topmostObject.spawn.x && obj.spawn.y === topmostObject.spawn.y ) {
+            if ( topmostObjectOrNPC ) {
+                this.map[ _mapDataKey ] = this.map[ _mapDataKey ].reduce( ( acc, obj ) => {
+                    if ( obj.spawn.x === topmostObjectOrNPC.spawn.x && obj.spawn.y === topmostObjectOrNPC.spawn.y ) {
                         return acc;
                     }
 
@@ -1174,8 +1196,8 @@ class EditorCanvas {
                     return acc;
                 }, []);
 
-                this.contexts.obj.clear();
-                this.drawObjects();
+                _context.clear();
+                _redraw();
             }
         }
     }
