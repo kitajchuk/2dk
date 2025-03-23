@@ -100,11 +100,26 @@ const renderEvent = ( event, map ) => {
 };
 
 
+const renderGrid = ( id, size ) => {
+    return `
+        <style>
+            #${id} {
+                background-image: 
+                    linear-gradient( to right, var( --teal ) 1px, transparent 1px ),
+                    linear-gradient( to bottom, var( --teal ) 1px, transparent 1px );
+                background-size: ${size}px ${size}px;
+            }
+        </style>
+    `;
+};
+
+
 module.exports = {
     renderMap,
     renderNPC,
     renderGame,
-    renderObject,
+    renderGrid,
     renderSpawn,
     renderEvent,
+    renderObject,
 };

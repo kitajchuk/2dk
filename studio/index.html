@@ -23,8 +23,8 @@
                     <div class="editor__canvas__layer editor__obj" id="editor-obj"></div>
                     <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
                     <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
-                        <canvas class="canvas layer layer--grid" id="editor-mapgrid-canvas"></canvas>
-                        <canvas class="canvas layer layer--grid" id="editor-collider-canvas"></canvas>
+                        <div class="layer editor__cssgrid" id="editor-mapgrid-canvas"></div>
+                        <div class="layer editor__cssgrid" id="editor-collider-canvas"></div>
                     </div>
                 </div>
             </div>
@@ -176,7 +176,7 @@
                                 <div id="editor-tileset" class="editor__picker__overflow">
                                     <img id="editor-tileset-image" />
                                     <canvas class="canvas layer layer--tilepaint" id="editor-tilepaint-canvas"></canvas>
-                                    <canvas class="canvas layer layer--tilegrid" id="editor-tilegrid-canvas"></canvas>
+                                    <div class="editor__cssgrid layer" id="editor-tilegrid-canvas"></div>
                                 </div>
                             </div>
                         </div>

@@ -3167,19 +3167,6 @@ var Utils = {
       }
     }
   },
-  drawGridLines: function drawGridLines(ctx, w, h, g) {
-    ctx.globalAlpha = 1.0;
-
-    for (var y = 1; y < h; y++) {
-      ctx.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_0__["default"].colors.teal;
-      ctx.fillRect(0, y * g, g * w, 1);
-    }
-
-    for (var x = 1; x < w; x++) {
-      ctx.fillStyle = _Config__WEBPACK_IMPORTED_MODULE_0__["default"].colors.teal;
-      ctx.fillRect(x * g, 0, 1, g * h);
-    }
-  },
   getParams: function getParams(str) {
     var query = decodeURIComponent(str).match(/[#|?].*$/g);
     var ret = {};

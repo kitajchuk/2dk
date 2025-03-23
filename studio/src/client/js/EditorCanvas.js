@@ -1,6 +1,12 @@
 const { ipcRenderer } = require( "electron" );
 const Config = require( "./Config" );
-const { renderNPC, renderObject, renderSpawn, renderEvent } = require( "./Render" );
+const {
+    renderNPC,
+    renderGrid,
+    renderSpawn,
+    renderEvent,
+    renderObject,
+} = require( "./Render" );
 
 
 const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
@@ -85,12 +91,14 @@ class EditorCanvas {
             obj: null,
         };
         this.canvases = {
-            mapgrid: document.getElementById( "editor-mapgrid-canvas" ),
-            collider: document.getElementById( "editor-collider-canvas" ),
-            tilegrid: document.getElementById( "editor-tilegrid-canvas" ),
             tilepaint: document.getElementById( "editor-tilepaint-canvas" ),
             preview: document.getElementById( "editor-preview-canvas" ),
             cursor: document.getElementById( "editor-cursor-canvas" ),
+        };
+        this.cssgrids = {
+            mapgrid: document.getElementById( "editor-mapgrid-canvas" ),
+            collider: document.getElementById( "editor-collider-canvas" ),
+            tilegrid: document.getElementById( "editor-tilegrid-canvas" ),
         };
         this.draggable = this.getDraggable();
         this.draggable.disable();
@@ -172,6 +180,10 @@ class EditorCanvas {
                 this.layers[ layer ].innerHTML = "";
             }
 
+            for ( const grid in this.cssgrids ) {
+                this.cssgrids[ grid ].innerHTML = "";
+            }
+
             ["spawn", "event"].forEach(( layer ) => {
                 this.layers[ layer ].innerHTML = "";
             });
@@ -232,10 +244,8 @@ class EditorCanvas {
         });
 
         ["mapgrid", "collider"].forEach(( layer ) => {
-            this.canvases[ layer ].width = this.map.width;
-            this.canvases[ layer ].height = this.map.height;
-            this.canvases[ layer ].style.width = `${this.map.width}px`;
-            this.canvases[ layer ].style.height = `${this.map.height}px`;
+            this.cssgrids[ layer ].style.width = `${this.map.width}px`;
+            this.cssgrids[ layer ].style.height = `${this.map.height}px`;
         });
 
         this.canvases.preview.width = this.map.tilesize;
@@ -366,36 +376,20 @@ class EditorCanvas {
         this.dom.tileset.src = img.src;
         this.dom.tileset.style.width = `${width}px`;
 
-        ["tilegrid", "tilepaint",].forEach(( layer ) => {
-            this.canvases[ layer ].width = width;
-            this.canvases[ layer ].height = height;
-            this.canvases[ layer ].style.width = `${width}px`;
-            this.canvases[ layer ].style.height = `${height}px`;
-        });
+        this.canvases.tilepaint.width = width;
+        this.canvases.tilepaint.height = height;
+        this.canvases.tilepaint.style.width = `${width}px`;
+        this.canvases.tilepaint.style.height = `${height}px`;
+
+        this.cssgrids.tilegrid.style.width = `${width}px`;
+        this.cssgrids.tilegrid.style.height = `${height}px`;
     }
 
 
     drawGrids () {
-        window.lib2dk.Utils.drawGridLines(
-            this.canvases.collider.getContext( "2d" ),
-            this.canvases.collider.width,
-            this.canvases.collider.height,
-            this.map.collider
-        );
-
-        window.lib2dk.Utils.drawGridLines(
-            this.canvases.mapgrid.getContext( "2d" ),
-            this.canvases.mapgrid.width,
-            this.canvases.mapgrid.height,
-            this.map.tilesize
-        );
-
-        window.lib2dk.Utils.drawGridLines(
-            this.canvases.tilegrid.getContext( "2d" ),
-            this.canvases.tilegrid.width,
-            this.canvases.tilegrid.height,
-            this.gridsize
-        );
+        this.cssgrids.mapgrid.innerHTML = renderGrid( "editor-mapgrid-canvas", this.map.tilesize );
+        this.cssgrids.collider.innerHTML = renderGrid( "editor-collider-canvas", this.map.collider );
+        this.cssgrids.tilegrid.innerHTML = renderGrid( "editor-tilegrid-canvas", this.gridsize );
     }
 
 
@@ -1387,7 +1381,7 @@ class EditorCanvas {
 
 
     bindColliderEvents () {
-        const $collider = window.hobo( this.canvases.collider );
+        const $collider = window.hobo( this.cssgrids.collider );
 
         $collider.on( "mousedown", () => {
             if ( this.editor.canMapFunction() ) {
@@ -1503,7 +1497,7 @@ class EditorCanvas {
 
 
     bindMapgridEvents () {
-        const $mapgrid = window.hobo( this.canvases.mapgrid );
+        const $mapgrid = window.hobo( this.cssgrids.mapgrid );
 
         $mapgrid.on( "mousedown", ( e ) => {
             // Right click mouse button

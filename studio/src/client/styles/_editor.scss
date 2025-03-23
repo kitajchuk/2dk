@@ -152,6 +152,14 @@
 
 
 
+/* CSS Grids */
+.editor__cssgrid {
+    border-right: 1px solid var( --teal );
+    border-bottom: 1px solid var( --teal );
+}
+
+
+
 /* Top panel */
 .editor__panel {
     background-color: var( --black );
