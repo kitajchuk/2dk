@@ -59,10 +59,52 @@ const renderObject = ( obj, game ) => {
     `;
 };
 
+const renderSpawn = ( spawn, hero ) => {
+    const id = `spawn-x${spawn.x}-y${spawn.y}`;
+
+    return `
+        <div id="${id}" class="js-spawn-tile" data-spawn-x="${spawn.x}" data-spawn-y="${spawn.y}">
+            <style>
+                #${id} {
+                    top: ${spawn.y}px;
+                    left: ${spawn.x}px;
+                    width: ${hero.width}px;
+                    height: ${hero.height}px;
+                    position: absolute;
+                }
+            </style>
+            ${window.feather.icons[ "map-pin" ].toSvg()}
+        </div>
+    `;
+};
+
+const renderEvent = ( event, map ) => {
+    const x = event.coords[ 0 ] * map.tilesize;
+    const y = event.coords[ 1 ] * map.tilesize;
+    const id = `event-x${x}-y${y}`;
+
+    return `
+        <div id="${id}" class="js-event-tile" data-event-x="${x}" data-event-y="${y}">
+            <style>
+                #${id} {
+                    top: ${y}px;
+                    left: ${x}px;
+                    width: ${map.tilesize}px;
+                    height: ${map.tilesize}px;
+                    position: absolute;
+                }
+            </style>
+            ${window.feather.icons.clock.toSvg()}
+        </div>
+    `;
+};
+
 
 module.exports = {
     renderMap,
     renderNPC,
     renderGame,
     renderObject,
+    renderSpawn,
+    renderEvent,
 };

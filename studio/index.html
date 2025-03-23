@@ -17,9 +17,11 @@
                     <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
                     <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
                     <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
+                    <div class="editor__canvas__layer editor__selection" id="editor-sel"></div>
+                    <div class="editor__canvas__layer editor__event" id="editor-event"></div>
+                    <div class="editor__canvas__layer editor__spawn" id="editor-spawn"></div>
                     <div class="editor__canvas__layer editor__obj" id="editor-obj"></div>
                     <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
-                    <div class="editor__canvas__layer editor__selection" id="editor-sel"></div>
                     <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
                         <canvas class="canvas layer layer--grid" id="editor-mapgrid-canvas"></canvas>
                         <canvas class="canvas layer layer--grid" id="editor-collider-canvas"></canvas>
@@ -81,7 +83,7 @@
                         <span class="icon icon--nudge">
                             <i data-feather="layers"></i>
                         </span>
-                        <span>NPC</span>
+                        <span>NPCs</span>
                         <span class="editor__layer__hide icon js-hide-layer" data-layer="npc">
                             <i data-feather="eye"></i>
                             <i data-feather="eye-off"></i>
@@ -91,8 +93,28 @@
                         <span class="icon icon--nudge">
                             <i data-feather="layers"></i>
                         </span>
-                        <span>Object</span>
+                        <span>Objects</span>
                         <span class="editor__layer__hide icon js-hide-layer" data-layer="obj">
+                            <i data-feather="eye"></i>
+                            <i data-feather="eye-off"></i>
+                        </span>
+                    </div>
+                    <div class="editor__layer js-edit-layer" data-layer="event">
+                        <span class="icon icon--nudge">
+                            <i data-feather="layers"></i>
+                        </span>
+                        <span>Events</span>
+                        <span class="editor__layer__hide icon js-hide-layer" data-layer="event">
+                            <i data-feather="eye"></i>
+                            <i data-feather="eye-off"></i>
+                        </span>
+                    </div>
+                    <div class="editor__layer js-edit-layer" data-layer="spawn">
+                        <span class="icon icon--nudge">
+                            <i data-feather="layers"></i>
+                        </span>
+                        <span>Spawns</span>
+                        <span class="editor__layer__hide icon js-hide-layer" data-layer="spawn">
                             <i data-feather="eye"></i>
                             <i data-feather="eye-off"></i>
                         </span>

@@ -1,6 +1,6 @@
 const { ipcRenderer } = require( "electron" );
 const Config = require( "./Config" );
-const { renderNPC, renderObject } = require( "./Render" );
+const { renderNPC, renderObject, renderSpawn, renderEvent } = require( "./Render" );
 
 
 const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
@@ -37,6 +37,7 @@ class EditorCanvas {
         this.mode = null;
         this.map = null;
         this.game = null;
+        this.hero = null;
         this.assets = {};
         this.canvasMouseCoords = null;
         this.tilesetCoords = [];
@@ -72,6 +73,8 @@ class EditorCanvas {
             mapgrid: document.getElementById( "editor-mapgrid" ),
             npc: document.getElementById( "editor-npc" ),
             obj: document.getElementById( "editor-obj" ),
+            spawn: document.getElementById( "editor-spawn" ),
+            event: document.getElementById( "editor-event" ),
         };
         this.contexts = {
             background: null,
@@ -169,6 +172,10 @@ class EditorCanvas {
                 this.layers[ layer ].innerHTML = "";
             }
 
+            ["spawn", "event"].forEach(( layer ) => {
+                this.layers[ layer ].innerHTML = "";
+            });
+
             this.clearTileset();
             this.resetPreview();
             this.resetCursor();
@@ -187,6 +194,7 @@ class EditorCanvas {
             this.map = null;
             this.game = null;
             this.assets = {};
+            this.hero = null;
             this.mode = null;
             this.dom.tileset.src = "";
             this.dom.$canvasPane.removeClass( "is-loaded" );
@@ -197,6 +205,9 @@ class EditorCanvas {
     loadMap ( map, game ) {
         this.map = map;
         this.game = window.lib2dk.Utils.copy( game );
+
+        // TODO: This would break if no hero is defined
+        this.hero = this.game.heroes[ this.game.hero.sprite ];
 
         // Gridsize for tilepaint
         this.gridsize = Math.min( 32, this.map.tilesize );
@@ -214,6 +225,11 @@ class EditorCanvas {
 
             this.layers[ layer ].appendChild( this.contexts[ layer ].canvas );
         }
+
+        ["spawn", "event"].forEach(( layer ) => {
+            this.layers[ layer ].style.width = `${this.map.width}px`;
+            this.layers[ layer ].style.height = `${this.map.height}px`;
+        });
 
         ["mapgrid", "collider"].forEach(( layer ) => {
             this.canvases[ layer ].width = this.map.width;
@@ -247,6 +263,8 @@ class EditorCanvas {
             this.drawColliders();
             this.drawNPCs();
             this.drawObjects();
+            this.drawSpawns();
+            this.drawEvents();
             this.renderNPCLoadout();
             this.renderObjectLoadout();
         });
@@ -449,6 +467,19 @@ class EditorCanvas {
         });
     }
 
+
+    drawSpawns () {
+        this.layers.spawn.innerHTML = this.map.spawn.map( ( spawn ) => {
+            return renderSpawn( spawn, this.hero );
+        }).join( "" );
+    }
+
+
+    drawEvents () {
+        this.layers.event.innerHTML = this.map.events.map( ( event ) => {
+            return renderEvent( event, this.map );
+        }).join( "" );
+    }
 
     drawColliders () {
         this.map.collision.forEach( ( collider ) => {
@@ -686,7 +717,7 @@ class EditorCanvas {
 
 
     setActiveLayer ( layer ) {
-        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc is-obj is-selection" );
+        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc is-obj is-selection is-spawn is-event" );
 
         if ( layer ) {
             this.dom.$canvasPane.addClass( `is-${layer}` );

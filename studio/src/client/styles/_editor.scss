@@ -299,6 +299,8 @@
 
     &.is-npc,
     &.is-obj,
+    &.is-spawn,
+    &.is-event,
     &.is-background,
     &.is-foreground,
     &.is-collision {
@@ -319,6 +321,8 @@
 
     &.is-npc,
     &.is-obj,
+    &.is-spawn,
+    &.is-event,
     &.is-background,
     &.is-foreground,
     &.is-selection {
@@ -381,6 +385,37 @@
 }
 .editor__mapgrid {
     z-index: 4;
+}
+.editor__spawn,
+.editor__event {
+    z-index: 5;
+    pointer-events: none;
+
+    > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var( --white );
+        cursor: pointer;
+        pointer-events: auto;
+
+        .feather {
+            width: 24px;
+            height: 24px;
+        }
+    }
+}
+.editor__spawn {
+    > div {
+        border: 1px solid var( --green );
+        background-color: rgba( 16, 255, 89, 0.5 );
+    }
+}
+.editor__event {
+    > div {
+        border: 1px solid var( --blue );
+        background-color: rgba( 23, 149, 212, 0.5 );
+    }
 }
 
 

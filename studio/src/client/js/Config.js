@@ -25,6 +25,8 @@ const Config = {
             COLLISION: "collision",
             NPC: "npc",
             OBJ: "obj",
+            SPAWN: "spawn",
+            EVENT: "event",
         },
     },
     keys: {
