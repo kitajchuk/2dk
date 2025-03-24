@@ -9,224 +9,234 @@
         <link href="./public/css/studio.css" rel="stylesheet" id="editor-css" />
     </head>
     <body>
-        <div id="editor" class="is-not-loaded">
-            <!-- Canvas -->
-            <div class="editor__canvas">
-                <div class="editor__canvas__pane" id="editor-canvas-pane">
-                    <canvas id="editor-cursor-canvas"></canvas>
-                    <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
-                    <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
-                    <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
-                    <div class="editor__canvas__layer editor__event" id="editor-event"></div>
-                    <div class="editor__canvas__layer editor__spawn" id="editor-spawn"></div>
-                    <div class="editor__canvas__layer editor__obj" id="editor-obj"></div>
-                    <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
-                    <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
-                        <div class="layer editor__cssgrid" id="editor-mapgrid-canvas"></div>
-                        <div class="layer editor__cssgrid" id="editor-collider-canvas"></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Topbar -->
-            <div class="editor__panel">
-                <div class="editor__panel__game">
-                    <span class="icon icon--nudge" id="editor-demo-game" title="Run Game Demo">
-                        <i data-feather="tv"></i>
-                    </span>
-                    <div class="select icon--nudge" disabled>
-                        <div class="select__field" id="editor-game-load">Game</div>
-                    </div>
-                    <span class="icon js-settings" id="editor-gamesettings" data-type="game" title="Open Game Settings">
-                        <i data-feather="settings"></i>
-                    </span>
-                </div>
-                <div class="editor__panel__map">
-                    <span class="icon icon--nudge">
-                        <i data-feather="map"></i>
-                    </span>
-                    <div class="select icon--nudge" disabled>
-                        <div class="select__field" id="editor-map-load">Map</div>
-                    </div>
-                    <span class="icon js-settings" id="editor-mapsettings" data-type="map" title="Open Map Settings">
-                        <i data-feather="settings"></i>
-                    </span>
-                </div>
-                <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
-                    <span class="icon icon--nudge">
-                        <i data-feather="music"></i>
-                    </span>
-                    <div class="select icon--nudge">
-                        <select class="select__field js-map-field js-select js-select-sound" data-label="Sound Player">
-                            <option value="">Sound Player</option>
-                        </select>
-                        <span class="select__icon">
-                            <i data-feather="chevron-down"></i>
+        <div id="editor" class="editor is-not-loaded">
+            <div class="editor__layout">
+                <!-- Topbar -->
+                <div class="editor__panel">
+                    <div class="editor__panel__game">
+                        <span class="icon icon--nudge" id="editor-demo-game" title="Run Game Demo">
+                            <i data-feather="tv"></i>
+                        </span>
+                        <div class="select icon--nudge" disabled>
+                            <div class="select__field" id="editor-game-load">Game</div>
+                        </div>
+                        <span class="icon js-settings" id="editor-gamesettings" data-type="game" title="Open Game Settings">
+                            <i data-feather="settings"></i>
                         </span>
                     </div>
-                    <span class="icon js-sound-button" title="Play Sounds">
-                        <i data-feather="play-circle"></i>
-                        <i data-feather="pause-circle"></i>
-                    </span>
-                </div>
-                <div class="editor__panel__xy">
-                    <span class="icon icon--nudge">
-                        <i data-feather="map-pin"></i>
-                    </span>
-                    <span id="editor-move-coords">( X, Y )</span>
-                </div>
-            </div>
-            <!-- Sidebar -->
-            <div class="editor__sidebar">
-                <div class="editor__sidebar__layers">
-                    <div class="editor__layer js-edit-layer" data-layer="npc">
+                    <div class="editor__panel__map">
                         <span class="icon icon--nudge">
-                            <i data-feather="layers"></i>
+                            <i data-feather="map"></i>
                         </span>
-                        <span>NPCs</span>
-                        <span class="editor__layer__hide icon js-hide-layer" data-layer="npc">
-                            <i data-feather="eye"></i>
-                            <i data-feather="eye-off"></i>
+                        <div class="select icon--nudge" disabled>
+                            <div class="select__field" id="editor-map-load">Map</div>
+                        </div>
+                        <span class="icon js-settings" id="editor-mapsettings" data-type="map" title="Open Map Settings">
+                            <i data-feather="settings"></i>
                         </span>
                     </div>
-                    <div class="editor__layer js-edit-layer" data-layer="obj">
+                    <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
                         <span class="icon icon--nudge">
-                            <i data-feather="layers"></i>
+                            <i data-feather="music"></i>
                         </span>
-                        <span>Objects</span>
-                        <span class="editor__layer__hide icon js-hide-layer" data-layer="obj">
-                            <i data-feather="eye"></i>
-                            <i data-feather="eye-off"></i>
-                        </span>
-                    </div>
-                    <div class="editor__layer js-edit-layer" data-layer="event">
-                        <span class="icon icon--nudge">
-                            <i data-feather="layers"></i>
-                        </span>
-                        <span>Events</span>
-                        <span class="editor__layer__hide icon js-hide-layer" data-layer="event">
-                            <i data-feather="eye"></i>
-                            <i data-feather="eye-off"></i>
-                        </span>
-                    </div>
-                    <div class="editor__layer js-edit-layer" data-layer="spawn">
-                        <span class="icon icon--nudge">
-                            <i data-feather="layers"></i>
-                        </span>
-                        <span>Spawns</span>
-                        <span class="editor__layer__hide icon js-hide-layer" data-layer="spawn">
-                            <i data-feather="eye"></i>
-                            <i data-feather="eye-off"></i>
-                        </span>
-                    </div>
-                    <div class="editor__layer js-edit-layer" data-layer="collision">
-                        <span class="icon icon--nudge">
-                            <i data-feather="layers"></i>
-                        </span>
-                        <span>Collision</span>
-                        <span class="editor__layer__hide icon js-hide-layer" data-layer="collision">
-                            <i data-feather="eye"></i>
-                            <i data-feather="eye-off"></i>
-                        </span>
-                    </div>
-                    <div class="editor__layer js-edit-layer" data-layer="foreground">
-                        <span class="icon icon--nudge">
-                            <i data-feather="layers"></i>
-                        </span>
-                        <span>Foreground</span>
-                        <span class="editor__layer__hide icon js-hide-layer" data-layer="foreground">
-                            <i data-feather="eye"></i>
-                            <i data-feather="eye-off"></i>
-                        </span>
-                    </div>
-                    <div class="editor__layer js-edit-layer" data-layer="background">
-                        <span class="icon icon--nudge">
-                            <i data-feather="layers"></i>
-                        </span>
-                        <span>Background</span>
-                        <span class="editor__layer__hide icon js-hide-layer" data-layer="background">
-                            <i data-feather="eye"></i>
-                            <i data-feather="eye-off"></i>
-                        </span>
-                    </div>
-                    <div class="editor__layer -merge-down">
-                        <div class="editor__layer__label">
-                            <span class="icon icon--nudge">
-                                <i data-feather="image"></i>
+                        <div class="select icon--nudge">
+                            <select class="select__field js-map-field js-select js-select-sound" data-label="Sound Player">
+                                <option value="">Sound Player</option>
+                            </select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
                             </span>
-                            <span>Draw Preview</span>
+                        </div>
+                        <span class="icon js-sound-button" title="Play Sounds">
+                            <i data-feather="play-circle"></i>
+                            <i data-feather="pause-circle"></i>
+                        </span>
+                    </div>
+                    <div class="editor__panel__xy">
+                        <span class="icon icon--nudge">
+                            <i data-feather="map-pin"></i>
+                        </span>
+                        <span id="editor-move-coords">( X, Y )</span>
+                    </div>
+                </div>
+                <!-- Content -->
+                 <div class="editor__content">
+                    <!-- Canvas -->
+                    <div class="editor__canvas">
+                        <div class="editor__canvas__pane" id="editor-canvas-pane">
+                            <canvas id="editor-cursor-canvas"></canvas>
+                            <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
+                            <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
+                            <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
+                            <div class="editor__canvas__layer editor__event" id="editor-event"></div>
+                            <div class="editor__canvas__layer editor__spawn" id="editor-spawn"></div>
+                            <div class="editor__canvas__layer editor__obj" id="editor-obj"></div>
+                            <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
+                            <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
+                                <div class="layer editor__cssgrid" id="editor-mapgrid-canvas"></div>
+                                <div class="layer editor__cssgrid" id="editor-collider-canvas"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="editor__layer -preview">
-                        <div id="editor-preview">
-                            <canvas class="canvas layer layer--preview" id="editor-preview-canvas"></canvas>
+                    <!-- Loadouts -->
+                    <div class="editor__loadout" id="editor-loadout"></div>
+                 </div>
+                <!-- Sidebar -->
+                <div class="editor__sidebar">
+                    <div class="editor__sidebar__tools">
+                        <div class="editor__toolbar">
+                            <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Draw Tiles (B)">
+                                <i data-feather="edit-2"></i>
+                            </button>
+                            <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Cut Tiles (E)">
+                                <i data-feather="trash"></i>
+                            </button>
+                            <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select Tiles (X)">
+                                <i data-feather="mouse-pointer"></i>
+                            </button>
+                        </div>
+                        <div class="editor__toolbar editor__sidebar__drawers">
+                            <button class="editor__action">
+                                <i data-feather="activity"></i>
+                            </button>
                         </div>
                     </div>
-                    <div id="editor-tile-picker" class="editor__picker">
+                    <div class="editor__sidebar__layers">
+                        <div class="editor__layer js-edit-layer" data-layer="npc">
+                            <span class="icon icon--nudge">
+                                <i data-feather="layers"></i>
+                            </span>
+                            <span>NPCs</span>
+                            <span class="editor__layer__hide icon js-hide-layer" data-layer="npc">
+                                <i data-feather="eye"></i>
+                                <i data-feather="eye-off"></i>
+                            </span>
+                        </div>
+                        <div class="editor__layer js-edit-layer" data-layer="obj">
+                            <span class="icon icon--nudge">
+                                <i data-feather="layers"></i>
+                            </span>
+                            <span>Objects</span>
+                            <span class="editor__layer__hide icon js-hide-layer" data-layer="obj">
+                                <i data-feather="eye"></i>
+                                <i data-feather="eye-off"></i>
+                            </span>
+                        </div>
+                        <div class="editor__layer js-edit-layer" data-layer="event">
+                            <span class="icon icon--nudge">
+                                <i data-feather="layers"></i>
+                            </span>
+                            <span>Events</span>
+                            <span class="editor__layer__hide icon js-hide-layer" data-layer="event">
+                                <i data-feather="eye"></i>
+                                <i data-feather="eye-off"></i>
+                            </span>
+                        </div>
+                        <div class="editor__layer js-edit-layer" data-layer="spawn">
+                            <span class="icon icon--nudge">
+                                <i data-feather="layers"></i>
+                            </span>
+                            <span>Spawns</span>
+                            <span class="editor__layer__hide icon js-hide-layer" data-layer="spawn">
+                                <i data-feather="eye"></i>
+                                <i data-feather="eye-off"></i>
+                            </span>
+                        </div>
+                        <div class="editor__layer js-edit-layer" data-layer="collision">
+                            <span class="icon icon--nudge">
+                                <i data-feather="layers"></i>
+                            </span>
+                            <span>Collision</span>
+                            <span class="editor__layer__hide icon js-hide-layer" data-layer="collision">
+                                <i data-feather="eye"></i>
+                                <i data-feather="eye-off"></i>
+                            </span>
+                        </div>
+                        <div class="editor__layer js-edit-layer" data-layer="foreground">
+                            <span class="icon icon--nudge">
+                                <i data-feather="layers"></i>
+                            </span>
+                            <span>Foreground</span>
+                            <span class="editor__layer__hide icon js-hide-layer" data-layer="foreground">
+                                <i data-feather="eye"></i>
+                                <i data-feather="eye-off"></i>
+                            </span>
+                        </div>
+                        <div class="editor__layer js-edit-layer" data-layer="background">
+                            <span class="icon icon--nudge">
+                                <i data-feather="layers"></i>
+                            </span>
+                            <span>Background</span>
+                            <span class="editor__layer__hide icon js-hide-layer" data-layer="background">
+                                <i data-feather="eye"></i>
+                                <i data-feather="eye-off"></i>
+                            </span>
+                        </div>
                         <div class="editor__layer -merge-down">
                             <div class="editor__layer__label">
                                 <span class="icon icon--nudge">
-                                    <i data-feather="grid"></i>
+                                    <i data-feather="image"></i>
                                 </span>
-                                <span>Tile Picker</span>
+                                <span>Draw Preview</span>
                             </div>
                         </div>
-                        <div class="editor__layer">
-                            <div id="editor-tileset-box" class="editor__picker__box">
-                                <div id="editor-tileset" class="editor__picker__overflow">
-                                    <img id="editor-tileset-image" />
-                                    <canvas class="canvas layer layer--tilepaint" id="editor-tilepaint-canvas"></canvas>
-                                    <div class="editor__cssgrid layer" id="editor-tilegrid-canvas"></div>
+                        <div class="editor__layer -preview">
+                            <div id="editor-preview">
+                                <canvas class="canvas layer layer--preview" id="editor-preview-canvas"></canvas>
+                            </div>
+                        </div>
+                        <div id="editor-tile-picker" class="editor__picker">
+                            <div class="editor__layer -merge-down">
+                                <div class="editor__layer__label">
+                                    <span class="icon icon--nudge">
+                                        <i data-feather="grid"></i>
+                                    </span>
+                                    <span>Tile Picker</span>
+                                </div>
+                            </div>
+                            <div class="editor__layer">
+                                <div id="editor-tileset-box" class="editor__picker__box">
+                                    <div id="editor-tileset" class="editor__picker__overflow">
+                                        <img id="editor-tileset-image" />
+                                        <canvas class="canvas layer layer--tilepaint" id="editor-tilepaint-canvas"></canvas>
+                                        <div class="editor__cssgrid layer" id="editor-tilegrid-canvas"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="editor-npc-picker" class="editor__picker is-hidden">
+                            <div class="editor__layer -merge-down">
+                                <div class="editor__layer__label">
+                                    <span class="icon icon--nudge">
+                                        <i data-feather="grid"></i>
+                                    </span>
+                                    <span>NPC Picker</span>
+                                </div>
+                            </div>
+                            <div class="editor__layer">
+                                <div id="" class="editor__picker__box">
+                                    <div id="editor-npc-picker-box" class="editor__picker__overflow editor__picker__sprite__grid"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="editor-obj-picker" class="editor__picker is-hidden">
+                            <div class="editor__layer -merge-down">
+                                <div class="editor__layer__label">
+                                    <span class="icon icon--nudge">
+                                        <i data-feather="grid"></i>
+                                    </span>
+                                    <span>Object Picker</span>
+                                </div>
+                            </div>
+                            <div class="editor__layer">
+                                <div id="" class="editor__picker__box">
+                                    <div id="editor-obj-picker-box" class="editor__picker__overflow editor__picker__sprite__grid"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="editor-npc-picker" class="editor__picker is-hidden">
-                        <div class="editor__layer -merge-down">
-                            <div class="editor__layer__label">
-                                <span class="icon icon--nudge">
-                                    <i data-feather="grid"></i>
-                                </span>
-                                <span>NPC Picker</span>
-                            </div>
-                        </div>
-                        <div class="editor__layer">
-                            <div id="" class="editor__picker__box">
-                                <div id="editor-npc-picker-box" class="editor__picker__overflow editor__picker__sprite__grid"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="editor-obj-picker" class="editor__picker is-hidden">
-                        <div class="editor__layer -merge-down">
-                            <div class="editor__layer__label">
-                                <span class="icon icon--nudge">
-                                    <i data-feather="grid"></i>
-                                </span>
-                                <span>Object Picker</span>
-                            </div>
-                        </div>
-                        <div class="editor__layer">
-                            <div id="" class="editor__picker__box">
-                                <div id="editor-obj-picker-box" class="editor__picker__overflow editor__picker__sprite__grid"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="editor__sidebar__tools">
-                    <div class="editor__toolbar editor__toolbar__tools">
-                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Draw Tiles (B)">
-                            <i data-feather="edit-2"></i>
-                        </button>
-                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Cut Tiles (E)">
-                            <i data-feather="trash"></i>
-                        </button>
-                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select Tiles (X)">
-                            <i data-feather="mouse-pointer"></i>
-                        </button>
-                    </div>
                 </div>
             </div>
-            <!-- Loadouts -->
-            <div class="editor__loadout" id="editor-loadout"></div>
             <!-- Menus -->
             <div class="editor__menus">
                 <!-- New game -->

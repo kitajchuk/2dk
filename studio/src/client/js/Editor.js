@@ -80,7 +80,7 @@ class Editor {
         this.mode = null;
 
         setTimeout( () => {
-            this.dom.root[ 0 ].className = "";
+            this.dom.root.removeClass( "is-not-loaded" );
 
         }, 1000 );
     }
