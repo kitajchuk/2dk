@@ -80,7 +80,7 @@ class Editor {
         this.mode = null;
 
         setTimeout( () => {
-            this.dom.root.removeClass( "is-not-loaded" );
+            this.dom.root.removeClass( "is-not-loaded is-saving-map is-saving-game is-saving-file is-deleting-file" );
 
         }, 1000 );
     }
@@ -172,7 +172,7 @@ class Editor {
     postMap ( postData ) {
         postData.fileName = `${Cache.slugify( postData.name )}.json`;
         this.mode = Config.Editor.modes.SAVING;
-        this.dom.root[ 0 ].className = "is-saving-map";
+        this.dom.root.addClass( "is-saving-map" );
 
         ipcRenderer.send( "renderer-newmap", postData );
         this.closeMenus();
@@ -182,7 +182,7 @@ class Editor {
 
     postGame ( postData ) {
         this.mode = Config.Editor.modes.SAVING;
-        this.dom.root[ 0 ].className = "is-saving-game";
+        this.dom.root.addClass( "is-saving-game" );
 
         ipcRenderer.send( "renderer-newgame", postData );
         this.closeMenus();
@@ -345,7 +345,7 @@ class Editor {
         }
 
         this.mode = Config.Editor.modes.SAVING;
-        this.dom.root[ 0 ].className = "is-saving-map";
+        this.dom.root.addClass( "is-saving-map" );
         // this.cleanMap();
 
         // Save map JSON
@@ -629,7 +629,7 @@ class Editor {
 
             if ( confirm( `Sure you want to delete the file "${select[ 0 ].value}"? This may affect other data referencing this file.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
-                this.dom.root[ 0 ].className = "is-deleting-file";
+                this.dom.root.addClass( "is-deleting-file" );
 
                 ipcRenderer.send( "renderer-deletefile", postData );
                 this.closeMenus();
@@ -653,7 +653,7 @@ class Editor {
             };
 
             this.mode = Config.Editor.modes.SAVING;
-            this.dom.root[ 0 ].className = "is-saving-file";
+            this.dom.root.addClass( "is-saving-file" );
 
             this.readFile( fileInput ).then( ( response ) => {
                 postData.fileName = response.fileName;
@@ -775,7 +775,7 @@ class Editor {
 
             if ( confirm( `Sure you want to delete the map "${this.data.map.name}"? This may affect other data referencing this map.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
-                this.dom.root[ 0 ].className = "is-deleting-map";
+                this.dom.root.addClass( "is-deleting-map" );
                 this.closeMenus();
                 this.actions.resetActions();
                 ipcRenderer.send( "renderer-deletemap", this.data.map );
@@ -790,7 +790,7 @@ class Editor {
 
             if ( confirm( `Sure you want to delete the game "${this.data.game.name}"? This cannot be undone.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
-                this.dom.root[ 0 ].className = "is-deleting-game";
+                this.dom.root.addClass( "is-deleting-game" );
 
                 ipcRenderer.send( "renderer-deletegame", this.data.game );
                 window.location.reload(); // Clunky maybe but best simple solution for now :-P

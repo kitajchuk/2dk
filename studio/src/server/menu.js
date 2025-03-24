@@ -49,12 +49,14 @@ const loadGames = () => {
 const loadMap = () => {
     dBase.getMap( activeMap ).then( ( response ) => {
         mainWindow.webContents.send( "menu-loadmap", response.map );
+        setMenu();
     });
 }
 const loadGame = () => {
     dBase.open( activeGame.id ).then( () => {
         dBase.getGame().then( ( response ) => {
             mainWindow.webContents.send( "menu-loadgame", response.game );
+            setMenu();
         });
         loadAssets();
         loadMaps();
