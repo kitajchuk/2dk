@@ -9,6 +9,8 @@ const Config = {
             BRUSH: "brush",
             ERASE: "erase",
             SELECT: "select",
+            SPAWN: "spawn",
+            EVENT: "event",
         },
     },
     EditorCanvas: {

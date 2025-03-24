@@ -59,6 +59,28 @@
                         <span id="editor-move-coords">( X, Y )</span>
                     </div>
                 </div>
+                <!-- Toolbar-->
+                <div class="editor__toolbar">
+                    <div class="editor__toolbar__tools">
+                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Draw Tiles (B)">
+                            <i data-feather="edit-2"></i>
+                        </button>
+                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Erase Tiles (E)">
+                            <i data-feather="trash"></i>
+                        </button>
+                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select Tiles (X)">
+                            <i data-feather="mouse-pointer"></i>
+                        </button>
+                    </div>
+                    <div class="editor__toolbar__tools">
+                        <button class="editor__action js-edit-action" data-action="event" title="Add Map Event">
+                            <i data-feather="clock"></i>
+                        </button>
+                        <button class="editor__action js-edit-action" data-action="spawn" title="Add Spawn Point">
+                            <i data-feather="map-pin"></i>
+                        </button>
+                    </div>
+                </div>
                 <!-- Content -->
                  <div class="editor__content">
                     <!-- Canvas -->
@@ -79,28 +101,12 @@
                         </div>
                     </div>
                     <!-- Loadouts -->
-                    <div class="editor__loadout" id="editor-loadout"></div>
+                    <div class="editor__loadout" id="editor-loadout">
+                        <div class="editor__loadout__grid" id="editor-loadout-grid"></div>
+                    </div>
                  </div>
                 <!-- Sidebar -->
                 <div class="editor__sidebar">
-                    <div class="editor__sidebar__tools">
-                        <div class="editor__toolbar">
-                            <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Draw Tiles (B)">
-                                <i data-feather="edit-2"></i>
-                            </button>
-                            <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Cut Tiles (E)">
-                                <i data-feather="trash"></i>
-                            </button>
-                            <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select Tiles (X)">
-                                <i data-feather="mouse-pointer"></i>
-                            </button>
-                        </div>
-                        <div class="editor__toolbar editor__sidebar__drawers">
-                            <button class="editor__action">
-                                <i data-feather="activity"></i>
-                            </button>
-                        </div>
-                    </div>
                     <div class="editor__sidebar__layers">
                         <div class="editor__layer js-edit-layer" data-layer="npc">
                             <span class="icon icon--nudge">
@@ -118,26 +124,6 @@
                             </span>
                             <span>Objects</span>
                             <span class="editor__layer__hide icon js-hide-layer" data-layer="obj">
-                                <i data-feather="eye"></i>
-                                <i data-feather="eye-off"></i>
-                            </span>
-                        </div>
-                        <div class="editor__layer js-edit-layer" data-layer="event">
-                            <span class="icon icon--nudge">
-                                <i data-feather="layers"></i>
-                            </span>
-                            <span>Events</span>
-                            <span class="editor__layer__hide icon js-hide-layer" data-layer="event">
-                                <i data-feather="eye"></i>
-                                <i data-feather="eye-off"></i>
-                            </span>
-                        </div>
-                        <div class="editor__layer js-edit-layer" data-layer="spawn">
-                            <span class="icon icon--nudge">
-                                <i data-feather="layers"></i>
-                            </span>
-                            <span>Spawns</span>
-                            <span class="editor__layer__hide icon js-hide-layer" data-layer="spawn">
                                 <i data-feather="eye"></i>
                                 <i data-feather="eye-off"></i>
                             </span>
@@ -171,6 +157,37 @@
                                 <i data-feather="eye"></i>
                                 <i data-feather="eye-off"></i>
                             </span>
+                        </div>
+                        <div class="editor__layer -merge-down">
+                            <div class="editor__layer__label">
+                                <span class="icon icon--nudge">
+                                    <i data-feather="more-horizontal"></i>
+                                </span>
+                                <span>Meta Layers</span>
+                            </div>
+                        </div>
+                        <div class="editor__layer editor__metalayers">
+                            <div class="editor__checkbox">
+                                <label class="checkbox">
+                                    <input class="check js-map-metalayer" type="checkbox" name="event" checked />
+                                    <i data-feather="clock"></i>
+                                    <span class="label">Events</span>
+                                </label>
+                            </div>
+                            <div class="editor__checkbox">
+                                <label class="checkbox">
+                                    <input class="check js-map-metalayer" type="checkbox" name="spawn" checked />
+                                    <i data-feather="map-pin"></i>
+                                    <span class="label">Spawn Points</span>
+                                </label>
+                            </div>
+                            <div class="editor__checkbox">
+                                <label class="checkbox">
+                                    <input class="check" type="checkbox" name="tile" disabled />
+                                    <i data-feather="grid"></i>
+                                    <span class="label">Active Tiles</span>
+                                </label>
+                            </div>
                         </div>
                         <div class="editor__layer -merge-down">
                             <div class="editor__layer__label">

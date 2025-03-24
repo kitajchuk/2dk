@@ -5,36 +5,39 @@ const Config = require( "./Config" );
 class EditorActions {
     constructor ( editor ) {
         this.editor = editor;
-        this.elements = window.hobo( ".js-edit-action" );
+        this.$actions = window.hobo( ".js-edit-action" );
+        this.$document = window.hobo( document );
         this.keysDisabled = false;
         this.mode = null;
-        this.bind();
+        this.specialActions = [
+            Config.EditorActions.modes.EVENT,
+            Config.EditorActions.modes.SPAWN,
+        ];
+        
+        this._bind();
     }
 
 
-    bind () {
-        const $document = window.hobo( document );
-
-        $document.on( "keydown", ( e ) => {
-            // console.log( "keydown", e );
-
+    _bind () {
+        this.$document.on( "keydown", ( e ) => {
             if ( this.keysDisabled ) {
                 return;
             }
 
             if ( this.editor.canMapFunction() ) {
-                const test = window.hobo( `.js-edit-action[data-key="${e.keyCode}"]` );
+                const $test = window.hobo( `.js-edit-action[data-key="${e.keyCode}"]` );
 
-                if ( test.length ) {
-                    this._handleAction( test );
+                if ( $test.length ) {
+                    this._handleAction( $test );
                 }
 
             }
         });
 
-        $document.on( "click", ".js-edit-action", ( e ) => {
+        this.$actions.on( "click", ( e ) => {
             if ( this.editor.canMapFunction() ) {
-                this._handleAction( window.hobo( e.target ) );
+                const $target = window.hobo( e.target );
+                this._handleAction( $target );
             }
         });
     }
@@ -42,7 +45,7 @@ class EditorActions {
 
     resetActions () {
         this.mode = null;
-        this.elements.removeClass( "is-active" );
+        this.$actions.removeClass( "is-active" );
         this.editor.canvas.setActiveTool( null );
     }
 
@@ -57,19 +60,26 @@ class EditorActions {
     }
 
 
-    _handleAction ( targ ) {
-        const elem = targ.is( ".js-edit-action" ) ? targ : targ.closest( ".js-edit-action" );
-        const action = elem.data().action.toUpperCase();
+    _handleAction ( $target ) {
+        const $elem = $target.is( ".js-edit-action" ) ? $target : $target.closest( ".js-edit-action" );
+        const action = $elem.data().action.toUpperCase();
 
-        if ( elem.is( ".is-active" ) ) {
+        if ( $elem.is( ".is-active" ) ) {
             this.resetActions();
 
         } else {
-            this.elements.removeClass( "is-active" );
-            elem.addClass( "is-active" );
+            this.$actions.removeClass( "is-active" );
+            $elem.addClass( "is-active" );
             this.mode = Config.EditorActions.modes[ action ];
             this.editor.canvas.setActiveTool( this.mode );
 
+            if ( this.specialActions.includes( this.mode ) ) {
+                // TODO: something special...
+
+            } else {
+                // TODO: nothing?
+            }
+            
             if ( this.mode !== Config.EditorActions.modes.BRUSH ) {
                 this.editor.canvas.clearTileset();
             }

@@ -97,21 +97,14 @@ a {
         border: 1px solid var( --grey );
     }
 }
+.check {
+    margin: 0;
+}
 .checkbox {
+    gap: 6px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     font-size: var( --font-size-forms );
-
-    span,
-    input {
-        display: inline-block;
-        vertical-align: middle;
-    }
-
-    span {
-        margin-left: 5px;
-    }
 
     & + .checkbox {
         margin-left: 32px;

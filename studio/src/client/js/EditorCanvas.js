@@ -22,7 +22,7 @@ class EditorCanvas {
         this.mode = null;
         this.map = null;
         this.game = null;
-        this.hero = null;
+        this.spawn = null;
         this.assets = {};
         this.canvasMouseCoords = null;
         this.tilesetCoords = [];
@@ -40,9 +40,9 @@ class EditorCanvas {
         this.dom = {
             moveCoords: document.getElementById( "editor-move-coords" ),
             canvasPane: document.getElementById( "editor-canvas-pane" ),
-            $canvasPane: window.hobo( "#editor-canvas-pane" ),
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
+            $canvasPane: window.hobo( "#editor-canvas-pane" ),
             $tilePicker: window.hobo( "#editor-tile-picker" ),
             $objPicker: window.hobo( "#editor-obj-picker" ),
             $objPickerBox: window.hobo( "#editor-obj-picker-box" ),
@@ -89,19 +89,17 @@ class EditorCanvas {
 
 
     hide ( l ) {
-        window.hobo( this.layers[ l ] ).addClass( "is-hidden" );
+        this.layers[ l ].classList.add( "is-hidden" );
     }
 
 
     show ( l ) {
-        window.hobo( this.layers[ l ] ).removeClass( "is-hidden" );
+        this.layers[ l ].classList.remove( "is-hidden" );
     }
 
 
     toggleGrid () {
-        const $mapgrid = window.hobo( this.layers.mapgrid );
-
-        if ( $mapgrid.is( ".is-hidden" ) ) {
+        if ( this.layers.mapgrid.classList.contains( "is-hidden" ) ) {
             this.show( "mapgrid" );
 
         } else {
@@ -181,7 +179,7 @@ class EditorCanvas {
             this.map = null;
             this.game = null;
             this.assets = {};
-            this.hero = null;
+            this.spawn = null;
             this.mode = null;
             this.dom.tileset.src = "";
             this.dom.$canvasPane.removeClass( "is-loaded" );
@@ -193,8 +191,14 @@ class EditorCanvas {
         this.map = map;
         this.game = window.lib2dk.Utils.copy( game );
 
-        // TODO: This would break if no hero is defined
-        this.hero = this.game.heroes[ this.game.hero.sprite ];
+        const hero = this.game.heroes[ this.game.hero.sprite ];
+        this.spawn = hero ? {
+            width: hero.width,
+            height: hero.height
+        } : {
+            width: map.tilesize,
+            height: map.tilesize
+        };
 
         // Gridsize for tilepaint
         this.gridsize = Math.min( 32, this.map.tilesize );
@@ -280,26 +284,6 @@ class EditorCanvas {
         }
 
         return Promise.all( promises );
-    }
-
-
-    getActiveTileCoords ( tiles ) {
-        const coords = [];
-
-        for ( let y = this.map.textures[ tiles.layer ].length; y--; ) {
-            for ( let x = this.map.textures[ tiles.layer ][ y ].length; x--; ) {
-                if ( this.map.textures[ tiles.layer ][ y ][ x ] ) {
-                    const len = this.map.textures[ tiles.layer ][ y ][ x ].length;
-                    const topCel = this.map.textures[ tiles.layer ][ y ][ x ][ len - 1 ];
-
-                    if ( topCel[ 0 ] === tiles.offsetX && topCel[ 1 ] === tiles.offsetY ) {
-                        coords.push( [ x, y ] );
-                    }
-                }
-            }
-        }
-
-        return coords;
     }
 
 
@@ -439,7 +423,7 @@ class EditorCanvas {
 
     drawSpawns () {
         this.layers.spawn.innerHTML = this.map.spawn.map( ( spawn ) => {
-            return renderSpawn( spawn, this.hero );
+            return renderSpawn( spawn, this.spawn );
         }).join( "" );
     }
 
@@ -596,7 +580,7 @@ class EditorCanvas {
     }
 
     setActiveTool ( tool ) {
-        this.dom.$canvasPane.removeClass( "is-brush-tool is-erase-tool is-select-tool" );
+        this.dom.$canvasPane.removeClass( "is-brush-tool is-erase-tool is-select-tool is-spawn-tool is-event-tool" );
 
         if ( tool ) {
             this.dom.$canvasPane.addClass( `is-${tool}-tool` );
@@ -855,65 +839,6 @@ class EditorCanvas {
     }
 
 
-    applyPreviewNPC () {
-        const npc = this.currentNPC;
-        const ctx = this.canvases.preview.getContext( "2d" );
-        const scale = this.map.tilesize / this.gridsize;
-        const width = npc.width;
-        const height = npc.height;
-        const state = npc.states[ 0 ];
-        const offsetX = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetX );
-        const offsetY = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetY );
-        
-        this.clearCanvas( this.canvases.preview );
-
-        this.canvases.preview.width = width;
-        this.canvases.preview.height = height;
-        this.canvases.preview.style.width = `${width / scale}px`;
-        this.canvases.preview.style.height = `${height / scale}px`;
-
-        ctx.drawImage(
-            this.assets[ npc.image ],
-            offsetX,
-            offsetY,
-            width,
-            height,
-            0,
-            0,
-            width,
-            height
-        );
-    }
-
-
-    applyPreviewObject () {
-        const obj = this.currentObject;
-        const ctx = this.canvases.preview.getContext( "2d" );
-        const scale = this.map.tilesize / this.gridsize;
-        const width = obj.width;
-        const height = obj.height;
-
-        this.clearCanvas( this.canvases.preview );
-
-        this.canvases.preview.width = width;
-        this.canvases.preview.height = height;
-        this.canvases.preview.style.width = `${width / scale}px`;
-        this.canvases.preview.style.height = `${height / scale}px`;
-        
-        ctx.drawImage(
-            this.assets[ obj.image ],
-            obj.offsetX,
-            obj.offsetY,
-            width,
-            height,
-            0,
-            0,
-            width,
-            height
-        );
-    }
-
-
     applyCursor () {
         const ctx = this.canvases.cursor.getContext( "2d" );
         const coordMap = this.getCoordMap();
@@ -945,22 +870,40 @@ class EditorCanvas {
     }
 
 
-    applyCursorNPC () {
-        const npc = this.currentNPC;
-        const ctx = this.canvases.cursor.getContext( "2d" );
-        const width = npc.width;
-        const height = npc.height;
-        const state = npc.states[ 0 ];
-        const offsetX = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetX );
-        const offsetY = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetY );
+    applyPreviewNPC () {
+        this._applyPreviewObjectOrNPC( this.currentNPC );
+    }
 
-        this.canvases.cursor.width = width;
-        this.canvases.cursor.height = height;
-        this.canvases.cursor.style.width = `${width}px`;
-        this.canvases.cursor.style.height = `${height}px`;
 
+    applyPreviewObject () {
+        this._applyPreviewObjectOrNPC( this.currentObject );
+    }
+
+
+    _applyPreviewObjectOrNPC ( objOrNPC ) {
+        const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
+        const ctx = this.canvases.preview.getContext( "2d" );
+        const scale = this.map.tilesize / this.gridsize;
+        const width = objOrNPC.width;
+        const height = objOrNPC.height;
+
+        let offsetX = objOrNPC.offsetX;
+        let offsetY = objOrNPC.offsetY;
+
+        if ( isNPC ) {
+            const state = objOrNPC.states[ 0 ];
+            offsetX = Math.abs( objOrNPC.verbs[ state.verb ][ state.dir ].offsetX );
+            offsetY = Math.abs( objOrNPC.verbs[ state.verb ][ state.dir ].offsetY );
+        }
+
+        this.clearCanvas( this.canvases.preview );
+        this.canvases.preview.width = width;
+        this.canvases.preview.height = height;
+        this.canvases.preview.style.width = `${width / scale}px`;
+        this.canvases.preview.style.height = `${height / scale}px`;
+        
         ctx.drawImage(
-            this.assets[ npc.image ],
+            this.assets[ objOrNPC.image ],
             offsetX,
             offsetY,
             width,
@@ -973,11 +916,30 @@ class EditorCanvas {
     }
 
 
+    applyCursorNPC () {
+        this._applyCursorObjectOrNPC( this.currentNPC );
+    }
+
+
     applyCursorObject () {
-        const obj = this.currentObject;
+        this._applyCursorObjectOrNPC( this.currentObject );
+    }
+
+
+    _applyCursorObjectOrNPC ( objOrNPC ) {
+        const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
         const ctx = this.canvases.cursor.getContext( "2d" );
-        const width = obj.width;
-        const height = obj.height;
+        const width = objOrNPC.width;
+        const height = objOrNPC.height;
+
+        let offsetX = objOrNPC.offsetX;
+        let offsetY = objOrNPC.offsetY;
+
+        if ( isNPC ) {
+            const state = objOrNPC.states[ 0 ];
+            offsetX = Math.abs( objOrNPC.verbs[ state.verb ][ state.dir ].offsetX );
+            offsetY = Math.abs( objOrNPC.verbs[ state.verb ][ state.dir ].offsetY );
+        }
 
         this.canvases.cursor.width = width;
         this.canvases.cursor.height = height;
@@ -985,9 +947,9 @@ class EditorCanvas {
         this.canvases.cursor.style.height = `${height}px`;
 
         ctx.drawImage(
-            this.assets[ obj.image ],
-            obj.offsetX,
-            obj.offsetY,
+            this.assets[ objOrNPC.image ],
+            offsetX,
+            offsetY,
             width,
             height,
             0,
@@ -1016,6 +978,17 @@ class EditorCanvas {
     applyNPC ( coords ) {
         this._applyObjectOrNPC( coords, this.currentNPC );
     }
+
+
+    applySpawn ( coords ) { 
+        console.log( "applySpawn", coords );
+    }
+
+
+    applyEvent ( coords ) {
+        console.log( "applyEvent", coords );
+    }
+
 
     _applyObjectOrNPC ( coords, objectOrNPC ) {
         const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
@@ -1443,6 +1416,10 @@ class EditorCanvas {
                     this.applyNPC( coords );
                 } else if ( this.canApplyObject() ) {
                     this.applyObject( coords );
+                } else if ( this.canApplySpawn() ) {
+                    this.applySpawn( coords );
+                } else if ( this.canApplyEvent() ) {
+                    this.applyEvent( coords );
                 }
             }
 
@@ -1472,14 +1449,6 @@ class EditorCanvas {
     }
 
 
-    canApplySelect () {
-        return (
-            this.editor.actions.mode === Config.EditorActions.modes.SELECT &&
-            ( this.editor.layers.mode === Config.EditorLayers.modes.BACKGROUND || this.editor.layers.mode === Config.EditorLayers.modes.FOREGROUND )
-        );
-    }
-
-
     canApplyLayer () {
         return (
             this.tilesetCoords.length &&
@@ -1503,6 +1472,24 @@ class EditorCanvas {
             this.editor.layers.mode === Config.EditorLayers.modes.OBJ
         );
     }
+
+
+    canApplySpawn () {
+        return (
+            this.editor.actions.mode === Config.EditorActions.modes.SPAWN &&
+            this.editor.layers.meta[ Config.EditorLayers.modes.SPAWN ]
+        );
+    }
+
+
+    canApplyEvent () {
+        return (
+            this.editor.actions.mode === Config.EditorActions.modes.EVENT &&
+            this.editor.layers.meta[ Config.EditorLayers.modes.EVENT ]
+        );
+    }
+    
+    
 
 
     canApplyCollider () {

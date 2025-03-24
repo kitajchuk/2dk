@@ -5,71 +5,91 @@ const Config = require( "./Config" );
 class EditorLayers {
     constructor ( editor ) {
         this.editor = editor;
-        this.elements = window.hobo( ".js-edit-layer" );
+        this.$layers = window.hobo( ".js-edit-layer" );
+        this.$hideLayers = window.hobo( ".js-hide-layer" );
+        this.$metaLayers = window.hobo( ".js-map-metalayer" );
+        this.$document = window.hobo( document );
         this.mode = null;
-        this.bind();
+        this.meta = {
+            [ Config.EditorLayers.modes.SPAWN ]: true,
+            [ Config.EditorLayers.modes.EVENT ]: true,
+        };
+
+        this._bind();
     }
 
 
-    bind () {
-        const $document = window.hobo( document );
+    _bind () {
+        this.$layers.on( "click", ( e ) => {
+            const $target = window.hobo( e.target );
 
-        $document.on( "click", ".js-edit-layer", ( e ) => {
-            const targ = window.hobo( e.target );
-
-            if ( this.editor.canMapFunction() && !targ.is( ".js-hide-layer" ) ) {
-                this._handleEditLayer( targ );
+            if ( this.editor.canMapFunction() && !$target.is( ".js-hide-layer" ) ) {
+                this._handleEditLayer( $target );
             }
         });
 
-        $document.on( "click", ".js-hide-layer", ( e ) => {
+        this.$hideLayers.on( "click", ( e ) => {
             if ( this.editor.canMapFunction() ) {
-                const targ = window.hobo( e.target );
-
-                this._handleHideLayer( targ );
+                const $target = window.hobo( e.target );
+                this._handleHideLayer( $target );
             }
+        });
+
+        this.$metaLayers.on( "change", ( e ) => {
+            const $target = window.hobo( e.target );
+            const layer = $target.attr( "name" );
+            const checked = $target.is( ":checked" );
+
+            if ( checked ) {
+                this.meta[ layer ] = true;
+                this.editor.canvas.show( layer );
+            } else {
+                this.meta[ layer ] = false;
+                this.editor.canvas.hide( layer );
+            }
+
+            e.target.blur();
         });
     }
 
 
     resetLayers () {
         this.mode = null;
-        this.elements.removeClass( "is-active" );
+        this.$layers.removeClass( "is-active" );
         this.editor.canvas.setActiveLayer( null );
     }
 
 
-    _handleEditLayer ( targ ) {
-        const elem = targ.is( ".js-edit-layer" ) ? targ : targ.closest( ".js-edit-layer" );
-        const layer = elem.data().layer.toUpperCase();
-        const mode = Config.EditorLayers.modes[ layer ];
+    _handleEditLayer ( $target ) {
+        const $elem = $target.is( ".js-edit-layer" ) ? $target : $target.closest( ".js-edit-layer" );
+        const layer = $elem.data().layer.toUpperCase();
 
-        if ( elem.is( ".is-active" ) ) {
+        if ( $elem.is( ".is-active" ) ) {
             this.resetLayers();
 
         } else {
-            this.elements.removeClass( "is-active" );
-            elem.addClass( "is-active" );
-            this.mode = mode;
-            this.editor.canvas.setActiveLayer( mode );
-        }
+            this.mode = Config.EditorLayers.modes[ layer ];
+            this.$layers.removeClass( "is-active" );
+            $elem.addClass( "is-active" );
+            this.editor.canvas.setActiveLayer( this.mode );
 
-        if ( mode === Config.EditorLayers.modes.COLLISION ) {
-            this.editor.canvas.clearTileset();
+            if ( this.mode === Config.EditorLayers.modes.COLLISION ) {
+                this.editor.canvas.clearTileset();
+            }
         }
     }
 
 
-    _handleHideLayer ( targ ) {
-        const elem = targ.is( ".js-hide-layer" ) ? targ : targ.closest( ".js-hide-layer" );
-        const layer = elem.data().layer;
+    _handleHideLayer ( $target ) {
+        const $elem = $target.is( ".js-hide-layer" ) ? $target : $target.closest( ".js-hide-layer" );
+        const layer = $elem.data().layer;
 
-        if ( elem.is( ".is-active" ) ) {
-            elem.removeClass( "is-active" );
+        if ( $elem.is( ".is-active" ) ) {
+            $elem.removeClass( "is-active" );
             this.editor.canvas.show( layer );
 
         } else {
-            elem.addClass( "is-active" );
+            $elem.addClass( "is-active" );
             this.editor.canvas.hide( layer );
         }
     }

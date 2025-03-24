@@ -35,6 +35,7 @@ class Editor {
             deleteMap: window.hobo( "#editor-delmap" ),
             deleteGame: window.hobo( "#editor-delgame" ),
             loadout: window.hobo( "#editor-loadout" ),
+            loadoutGrid: window.hobo( "#editor-loadout-grid" ),
             mapLoad: window.hobo( "#editor-map-load" ),
             gameLoad: window.hobo( "#editor-game-load" ),
             iconImage: window.hobo( "#editor-game-icon-image" ),
@@ -412,7 +413,7 @@ class Editor {
 
 
     _loadoutGames ( games ) {
-        this.dom.loadout[ 0 ].innerHTML = games.map( ( game ) => {
+        this.dom.loadoutGrid[ 0 ].innerHTML = games.map( ( game ) => {
             return renderGame( game );
         }).join( "" );
 
@@ -421,7 +422,7 @@ class Editor {
 
 
     _loadoutMaps ( maps ) {
-        this.dom.loadout[ 0 ].innerHTML = maps.map( ( map ) => {
+        this.dom.loadoutGrid[ 0 ].innerHTML = maps.map( ( map ) => {
             return renderMap( map, this.data.game );
         }).join( "" );
 
@@ -430,7 +431,7 @@ class Editor {
 
 
     _loadoutClear () {
-        this.dom.loadout[ 0 ].innerHTML = "";
+        this.dom.loadoutGrid[ 0 ].innerHTML = "";
         this.dom.loadout.removeClass( "is-loaded" );
     }
 
