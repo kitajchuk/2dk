@@ -9,10 +9,6 @@ class EditorActions {
         this.$document = window.hobo( document );
         this.keysDisabled = false;
         this.mode = null;
-        this.specialActions = [
-            Config.EditorActions.modes.EVENT,
-            Config.EditorActions.modes.SPAWN,
-        ];
         
         this._bind();
     }
@@ -72,13 +68,6 @@ class EditorActions {
             $elem.addClass( "is-active" );
             this.mode = Config.EditorActions.modes[ action ];
             this.editor.canvas.setActiveTool( this.mode );
-
-            if ( this.specialActions.includes( this.mode ) ) {
-                // TODO: something special...
-
-            } else {
-                // TODO: nothing?
-            }
             
             if ( this.mode !== Config.EditorActions.modes.BRUSH ) {
                 this.editor.canvas.clearTileset();

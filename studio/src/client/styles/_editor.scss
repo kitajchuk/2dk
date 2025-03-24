@@ -187,6 +187,11 @@
 
 /* CSS Grids */
 .editor__cssgrid {
+    /* grid-size is set in EditorCanvas.js */
+    background-size: var( --grid-size ) var( --grid-size );
+    background-image: 
+        linear-gradient( to right, var( --teal ) 1px, transparent 1px ),
+        linear-gradient( to bottom, var( --teal ) 1px, transparent 1px );
     border-right: 1px solid var( --teal );
     border-bottom: 1px solid var( --teal );
 }

@@ -7,7 +7,6 @@ const {
 const {
     renderNPC,
     renderTile,
-    renderGrid,
     renderSpawn,
     renderEvent,
     renderObject,
@@ -155,7 +154,7 @@ class EditorCanvas {
             }
 
             for ( const grid in this.cssgrids ) {
-                this.cssgrids[ grid ].innerHTML = "";
+                this.cssgrids[ grid ].style.removeProperty( "--grid-size" );
             }
 
             ["spawn", "event"].forEach(( layer ) => {
@@ -346,9 +345,9 @@ class EditorCanvas {
 
 
     drawGrids () {
-        this.cssgrids.mapgrid.innerHTML = renderGrid( "editor-mapgrid-canvas", this.map.tilesize );
-        this.cssgrids.collider.innerHTML = renderGrid( "editor-collider-canvas", this.map.collider );
-        this.cssgrids.tilegrid.innerHTML = renderGrid( "editor-tilegrid-canvas", this.gridsize );
+        this.cssgrids.mapgrid.style.setProperty( "--grid-size", `${this.map.tilesize}px` );
+        this.cssgrids.collider.style.setProperty( "--grid-size", `${this.map.collider}px` );
+        this.cssgrids.tilegrid.style.setProperty( "--grid-size", `${this.gridsize}px` );
     }
 
 
