@@ -256,6 +256,22 @@ class Editor {
     }
 
 
+    toggleMenu ( id ) {
+        const $menu = window.hobo( `#${id}` );
+
+        if ( $menu.is( ".is-active" ) ) {
+            this.closeMenus();
+            this.clearMenu( $menu );
+
+        } else {
+            this.closeMenus();
+            this.menus.container.addClass( "is-active" );
+            $menu.addClass( "is-active" );
+            this.actions.disableKeys();
+        }
+    }
+
+
     closeMenus () {
         this.menus.all.removeClass( "is-active" );
         this.menus.container.removeClass( "is-active" );
@@ -263,15 +279,15 @@ class Editor {
     }
 
 
-    clearMenu ( menu ) {
-        const inputs = menu.find( ".editor__field, .select__field" );
-        const checks = menu.find( ".check" );
+    clearMenu ( $menu ) {
+        const $inputs = $menu.find( ".editor__field, .select__field" );
+        const $checks = $menu.find( ".check" );
 
-        inputs.forEach( ( input ) => {
+        $inputs.forEach( ( input ) => {
             input.value = "";
         });
 
-        checks.forEach( ( check ) => {
+        $checks.forEach( ( check ) => {
             check.checked = false;
         });
     }
@@ -383,18 +399,7 @@ class Editor {
             return false;
         }
 
-        const menu = window.hobo( `#${target}` );
-
-        if ( menu.is( ".is-active" ) ) {
-            this.closeMenus();
-            this.clearMenu( menu );
-
-        } else {
-            this.closeMenus();
-            this.menus.container.addClass( "is-active" );
-            menu.addClass( "is-active" );
-            this.actions.disableKeys();
-        }
+        this.toggleMenu( target );
     }
 
 
@@ -403,16 +408,7 @@ class Editor {
             return false;
         }
 
-        const menu = window.hobo( `#${target}` );
-
-        if ( menu.is( ".is-active" ) ) {
-            this.closeMenus();
-
-        } else {
-            this.closeMenus();
-            this.menus.container.addClass( "is-active" );
-            menu.addClass( "is-active" );
-        }
+        this.toggleMenu( target );
     }
 
 
@@ -422,23 +418,10 @@ class Editor {
         const elemData = elem.data();
 
         if ( elemData.type === "game" && this.canGameFunction() ) {
-            if ( this.menus.activeGame.is( ".is-active" ) ) {
-                this.closeMenus();
-
-            } else {
-                this.menus.activeGame.addClass( "is-active" );
-                this.menus.container.addClass( "is-active" );
-            }
-        }
-
-        if ( elemData.type === "map" && this.canMapFunction() ) {
-            if ( this.menus.activeMap.is( ".is-active" ) ) {
-                this.closeMenus();
-
-            } else {
-                this.menus.activeMap.addClass( "is-active" );
-                this.menus.container.addClass( "is-active" );
-            }
+            this.toggleMenu( "editor-active-game-menu" );
+            
+        } else if ( elemData.type === "map" && this.canMapFunction() ) {
+            this.toggleMenu( "editor-active-map-menu" );
         }
     }
 

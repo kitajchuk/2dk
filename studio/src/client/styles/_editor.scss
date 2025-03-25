@@ -58,6 +58,8 @@
         outline: 1px solid var( --teal );
         pointer-events: none;
     }
+}
+#editor-tileset {
     .layer--tilepaint {
         z-index: 4;
     }
@@ -72,6 +74,11 @@
     background-color: var( --charcoal2 );
     overflow: hidden;
     position: relative;
+
+    .layer {
+        width: 32px;
+        height: 32px;
+    }
 }
 #editor-gamesettings,
 #editor-mapsettings {
@@ -480,6 +487,13 @@
         border: 1px solid var( --blue );
         background-color: rgba( 23, 149, 212, 0.5 );
     }
+    &.is-hit {
+        border: 1px solid var( --red );
+        background-color: rgba( 243, 5, 65, 0.5 );
+    }
+    &.is-hidden {
+        opacity: 0 !important;
+    }
 }
 .editor__mapgrid {
     z-index: 5;
@@ -663,12 +677,13 @@
     background-color: var( --black );
     border: 1px solid var( --grey-dark );
     box-shadow: var( --box-shadow );
-    padding: 32px;
+    padding: 24px;
     position: fixed;
     left: 50%;
     top: 50%;
     transform: translate3d( -50%, -50%, 0 );
-    width: 480px;
+    width: 100%;
+    max-width: 480px;
     z-index: -1;
     pointer-events: none;
     display: none;
@@ -696,6 +711,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.editor__close-button {
+    position: absolute;
+    right: 16px;
+    top: 16px;
 }
 .editor__upload__field {
     width: 70%;

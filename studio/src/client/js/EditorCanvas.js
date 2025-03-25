@@ -981,8 +981,52 @@ class EditorCanvas {
     }
 
 
+    getHitSpawn () {
+        const cursorPoint = this.getCursorPoint();
+        return this.map.spawn.find( ( spawn ) => {
+            const spawnSprite = {
+                x: spawn.x,
+                y: spawn.y,
+                width: this.spawn.width,
+                height: this.spawn.height,
+            };
+
+            return window.lib2dk.Utils.collide( cursorPoint, spawnSprite );
+        });
+    }
+
+
+    getNewSpawn () {
+        return {
+            x: this.canvasMouseCoords.x,
+            y: this.canvasMouseCoords.y,
+            width: this.spawn.width ,
+            height: this.spawn.height,
+        };
+    }
+
+
+
     applySpawn ( coords ) { 
-        console.log( "applySpawn", coords );
+        const hitSpawn = this.getHitSpawn();
+        const newSpawn = this.getNewSpawn();
+
+        if ( hitSpawn ) {
+            this.map.spawn = this.map.spawn.reduce( ( acc, spawn ) => {
+                if ( spawn.x === hitSpawn.x && spawn.y === hitSpawn.y ) {
+                    return acc;
+                }
+
+                acc.push( spawn );
+
+                return acc;
+            }, []);
+
+        } else {
+            this.map.spawn.push( newSpawn );
+        }
+
+        this.drawSpawns();
     }
 
 
@@ -1046,12 +1090,7 @@ class EditorCanvas {
                 objectOrNPC.height
             );
         } else if ( !objectOrNPC && this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
-            const coordTile = {
-                x: this.canvasMouseCoords.x,
-                y: this.canvasMouseCoords.y,
-                width: 10,
-                height: 10,
-            };
+            const cursorPoint = this.getCursorPoint();
             const topmostObjectOrNPCs = this.map[ _mapDataKey ].filter( ( obj ) => {
                 const baseObjectOrNPC = _gameData.find( ( gobj ) => {
                     return obj.id === gobj.id;
@@ -1064,7 +1103,7 @@ class EditorCanvas {
                     height: baseObjectOrNPC.height,
                 };
 
-                return window.lib2dk.Utils.collide( objectOrNPCSprite, coordTile );
+                return window.lib2dk.Utils.collide( objectOrNPCSprite, cursorPoint );
             });
             const topmostObjectOrNPC = topmostObjectOrNPCs.pop();
 
@@ -1100,6 +1139,15 @@ class EditorCanvas {
         this.dom.moveCoords.innerHTML = "( X, Y )";
     }
 
+
+    getCursorPoint () {
+        return {
+            x: this.canvasMouseCoords.x,
+            y: this.canvasMouseCoords.y,
+            width: 1,
+            height: 1,
+        };
+    }
 
     getMouseCoords ( e, grid ) {
         return [
@@ -1178,13 +1226,28 @@ class EditorCanvas {
 
 
     showSpawnCursor ( coords ) {
+        const hitSpawn = this.getHitSpawn();
+        const newSpawn = this.getNewSpawn();
+
+        if ( hitSpawn ) {
+            const domSpawn = window.hobo( `#spawn-x${hitSpawn.x}-y${hitSpawn.y}` );
+            domSpawn.addClass( "is-hit" );
+            this.dom.cursor.classList.add( "is-hidden" );
+            this.dom.canvasPane.classList.add( "is-erase-tool" );
+
+        } else {
+            window.hobo( ".js-spawn-tile" ).removeClass( "is-hit" );
+            this.dom.cursor.classList.remove( "is-hidden" );
+            this.dom.canvasPane.classList.remove( "is-erase-tool" );
+        }
+
         this.dom.cursor.style.setProperty( "--z", 5 );
-        this.dom.cursor.style.setProperty( "--x", `${this.canvasMouseCoords.x}px` );
-        this.dom.cursor.style.setProperty( "--y", `${this.canvasMouseCoords.y}px` );
-        this.dom.cursor.style.setProperty( "--w", `${this.spawn.width}px` );
-        this.dom.cursor.style.setProperty( "--h", `${this.spawn.height}px` );
-        this.dom.cursor.classList.add( "editor__block", "is-spawn" );
+        this.dom.cursor.style.setProperty( "--x", `${newSpawn.x}px` );
+        this.dom.cursor.style.setProperty( "--y", `${newSpawn.y}px` );
+        this.dom.cursor.style.setProperty( "--w", `${newSpawn.width}px` );
+        this.dom.cursor.style.setProperty( "--h", `${newSpawn.height}px` );
         this.dom.cursor.innerHTML = window.feather.icons[ "map-pin" ].toSvg();
+        this.dom.cursor.classList.add( "editor__block", "is-spawn" );
     }
 
 
@@ -1195,7 +1258,7 @@ class EditorCanvas {
         this.dom.cursor.style.removeProperty( "--y" );
         this.dom.cursor.style.removeProperty( "--w" );
         this.dom.cursor.style.removeProperty( "--h" );
-        this.dom.cursor.classList.remove( "editor__block", "is-spawn", "is-event" );
+        this.dom.cursor.classList.remove( "editor__block", "is-spawn", "is-event", "is-hidden" );
         this.dom.cursor.innerHTML = "";
     }
 
