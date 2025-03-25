@@ -3,6 +3,7 @@ const Config = require( "../Config" );
 
 class EditorDraggable {
     constructor ( editorCanvas ) {
+        this.editor = editorCanvas.editor;
         this.editorCanvas = editorCanvas;
         this.canvasPane = editorCanvas.dom.canvasPane;
         this.bounds = this.canvasPane.parentNode;
@@ -19,7 +20,7 @@ class EditorDraggable {
     }
 
 
-    update () {
+    update ( map ) {
         this.draggable.update({
             applyBounds: true,
         });
@@ -67,7 +68,7 @@ class EditorDraggable {
         $document.on( "keydown", ( e ) => {
             this.isSpacebar = ( e.keyCode === Config.keys.SPACEBAR );
 
-            if ( this.editorCanvas.editor.mode !== Config.Editor.modes.SAVING && this.isSpacebar && this.editorCanvas.mode !== Config.EditorCanvas.modes.DRAG ) {
+            if ( this.editor.mode !== Config.Editor.modes.SAVING && this.isSpacebar && this.editorCanvas.mode !== Config.EditorCanvas.modes.DRAG ) {
                 e.preventDefault();
                 this.draggable.enable();
                 this.editorCanvas.mode = Config.EditorCanvas.modes.DRAG;
@@ -81,7 +82,7 @@ class EditorDraggable {
                 this.draggable.disable();
             }
 
-            if ( this.editorCanvas.editor.mode !== Config.Editor.modes.SAVING && this.editorCanvas.mode === Config.EditorCanvas.modes.DRAG ) {
+            if ( this.editor.mode !== Config.Editor.modes.SAVING && this.editorCanvas.mode === Config.EditorCanvas.modes.DRAG ) {
                 e.preventDefault();
                 this.editorCanvas.mode = null;
             }
