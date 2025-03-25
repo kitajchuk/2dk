@@ -41,6 +41,7 @@ class EditorCanvas {
             canvasPane: document.getElementById( "editor-canvas-pane" ),
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
+            cursor: document.getElementById( "editor-cursor-box" ),
             $canvasPane: window.hobo( "#editor-canvas-pane" ),
             $tilePicker: window.hobo( "#editor-tile-picker" ),
             $objPicker: window.hobo( "#editor-obj-picker" ),
@@ -722,6 +723,7 @@ class EditorCanvas {
 
         this.resetPreview();
         this.resetCursor();
+        this.hideCanvasCursor();
         this.resetCurrentNPCAndObject();
     }
 
@@ -1083,6 +1085,22 @@ class EditorCanvas {
         }
     }
 
+
+    setMoveCoords ( coords ) {
+        if ( this.canApplySpawn() ) {
+            this.dom.moveCoords.innerHTML = `( ${this.canvasMouseCoords.x}, ${this.canvasMouseCoords.y} )`;
+
+        } else {
+            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
+        }
+    }
+
+
+    clearMoveCoords () {
+        this.dom.moveCoords.innerHTML = "( X, Y )";
+    }
+
+
     getMouseCoords ( e, grid ) {
         return [
             Math.floor( e.offsetX / grid ),
@@ -1125,35 +1143,61 @@ class EditorCanvas {
         let x = coords[ 0 ];
         let y = coords[ 1 ];
 
-        if ( this.currentObject && this.editor.layers.mode === Config.EditorLayers.modes.OBJ ) {
-            const offsetCoords = this.getCursorOffsetCoords( coords, this.currentObject );
+        const objectOrNPC = this.currentObject || this.currentNPC;
+
+        if ( objectOrNPC && this.editor.layers.mode === Config.EditorLayers.modes.OBJ ) {
+            const offsetCoords = this.getCursorOffsetCoords( coords, objectOrNPC );
 
             x = offsetCoords[ 0 ];
             y = offsetCoords[ 1 ];
         }
 
-        this.canvases.cursor.style.opacity = 0.5;
-        this.canvases.cursor.style.zIndex = 9999;
-        this.canvases.cursor.style.webkitTransform = `translate3d(
-                ${x * this.map.tilesize}px,
-                ${y * this.map.tilesize}px,
-                0
-            )
-        `;
+        this.canvases.cursor.style.setProperty( "--z", 5 );
+        this.canvases.cursor.style.setProperty( "--x", `${x * this.map.tilesize}px` );
+        this.canvases.cursor.style.setProperty( "--y", `${y * this.map.tilesize}px` );
     }
 
 
     hideCanvasCursor () {
-        this.canvases.cursor.style.opacity = 0;
-        this.canvases.cursor.style.zIndex = -1;
-        this.canvases.cursor.style.webkitTransform = `translate3d(
-                0,
-                0,
-                0
-            )
-        `;
+        this.canvases.cursor.style.removeProperty( "--z" );
+        this.canvases.cursor.style.removeProperty( "--x" );
+        this.canvases.cursor.style.removeProperty( "--y" );
     }
 
+
+
+    showEventCursor ( coords ) {
+        this.dom.cursor.style.setProperty( "--z", 5 );
+        this.dom.cursor.style.setProperty( "--x", `${coords[ 0 ] * this.map.tilesize}px` );
+        this.dom.cursor.style.setProperty( "--y", `${coords[ 1 ] * this.map.tilesize}px` );
+        this.dom.cursor.style.setProperty( "--w", `${this.map.tilesize}px` );
+        this.dom.cursor.style.setProperty( "--h", `${this.map.tilesize}px` );
+        this.dom.cursor.classList.add( "editor__block", "is-event" );
+        this.dom.cursor.innerHTML = window.feather.icons.clock.toSvg();
+    }
+
+
+    showSpawnCursor ( coords ) {
+        this.dom.cursor.style.setProperty( "--z", 5 );
+        this.dom.cursor.style.setProperty( "--x", `${this.canvasMouseCoords.x}px` );
+        this.dom.cursor.style.setProperty( "--y", `${this.canvasMouseCoords.y}px` );
+        this.dom.cursor.style.setProperty( "--w", `${this.spawn.width}px` );
+        this.dom.cursor.style.setProperty( "--h", `${this.spawn.height}px` );
+        this.dom.cursor.classList.add( "editor__block", "is-spawn" );
+        this.dom.cursor.innerHTML = window.feather.icons[ "map-pin" ].toSvg();
+    }
+
+
+
+    hideBlockCursor () {
+        this.dom.cursor.style.removeProperty( "--z" );
+        this.dom.cursor.style.removeProperty( "--x" );
+        this.dom.cursor.style.removeProperty( "--y" );
+        this.dom.cursor.style.removeProperty( "--w" );
+        this.dom.cursor.style.removeProperty( "--h" );
+        this.dom.cursor.classList.remove( "editor__block", "is-spawn", "is-event" );
+        this.dom.cursor.innerHTML = "";
+    }
 
     bindDocumentEvents () {
         const $document = window.hobo( document );
@@ -1251,7 +1295,7 @@ class EditorCanvas {
 
             const coords = this.getMouseCoords( e, this.map.collider );
 
-            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
+            this.setMoveCoords( coords );
 
             if ( this.editor.canMapFunction() && this.isMouseDownCollider ) {
                 if ( this.canApplyCollider() ) {
@@ -1270,7 +1314,7 @@ class EditorCanvas {
         });
 
         $collider.on( "mouseout", () => {
-            this.dom.moveCoords.innerHTML = "( X, Y )";
+            this.clearMoveCoords();
         });
     }
 
@@ -1315,7 +1359,7 @@ class EditorCanvas {
 
             const coords = this.getMouseCoords( e, this.gridsize );
 
-            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
+            this.setMoveCoords( coords );
 
             if ( this.editor.canMapFunction() ) {
                 if ( this.canApplyTiles() ) {
@@ -1346,7 +1390,7 @@ class EditorCanvas {
         });
 
         $tilepaint.on( "mouseout", () => {
-            this.dom.moveCoords.innerHTML = "( X, Y )";
+            this.clearMoveCoords();
         });
     }
 
@@ -1385,7 +1429,7 @@ class EditorCanvas {
 
             const coords = this.getMouseCoords( e, this.map.tilesize );
 
-            this.dom.moveCoords.innerHTML = `( ${coords[ 0 ]}, ${coords[ 1 ]} )`;
+            this.setMoveCoords( coords );
 
             if ( this.editor.canMapFunction() ) {
                 if ( this.isMouseDownCanvas ) {
@@ -1395,6 +1439,10 @@ class EditorCanvas {
                 } else {
                     if ( this.canApplyLayer() || this.canApplyNPC() || this.canApplyObject() ) {
                         this.showCanvasCursor( coords );
+                    } else if ( this.canApplySpawn() ) {
+                        this.showSpawnCursor( coords );
+                    } else if ( this.canApplyEvent() ) {
+                        this.showEventCursor( coords );
                     }
                 }
             }
@@ -1426,10 +1474,11 @@ class EditorCanvas {
         });
 
         $mapgrid.on( "mouseout", () => {
-            this.dom.moveCoords.innerHTML = "( X, Y )";
+            this.clearMoveCoords();
             this.canvasMouseCoords = null;
 
             this.hideCanvasCursor();
+            this.hideBlockCursor();
         });
 
         $mapgrid.on( "contextmenu", ( e ) => {

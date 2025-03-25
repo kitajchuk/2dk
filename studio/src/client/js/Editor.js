@@ -52,6 +52,7 @@ class Editor {
         };
         this.menus = {
             all: window.hobo( ".js-menu" ),
+            container: window.hobo( "#editor-menus" ),
             activeMap: window.hobo( "#editor-active-map-menu" ),
             activeGame: window.hobo( "#editor-active-game-menu" ),
             activeTiles: window.hobo( "#editor-activetiles-menu" ),
@@ -257,6 +258,7 @@ class Editor {
 
     closeMenus () {
         this.menus.all.removeClass( "is-active" );
+        this.menus.container.removeClass( "is-active" );
         this.actions.enableKeys();
     }
 
@@ -389,6 +391,7 @@ class Editor {
 
         } else {
             this.closeMenus();
+            this.menus.container.addClass( "is-active" );
             menu.addClass( "is-active" );
             this.actions.disableKeys();
         }
@@ -407,7 +410,35 @@ class Editor {
 
         } else {
             this.closeMenus();
+            this.menus.container.addClass( "is-active" );
             menu.addClass( "is-active" );
+        }
+    }
+
+
+    _onSettingsClick ( e ) {
+        const targ = window.hobo( e.target );
+        const elem = targ.is( ".js-settings" ) ? targ : targ.closest( ".js-settings" );
+        const elemData = elem.data();
+
+        if ( elemData.type === "game" && this.canGameFunction() ) {
+            if ( this.menus.activeGame.is( ".is-active" ) ) {
+                this.closeMenus();
+
+            } else {
+                this.menus.activeGame.addClass( "is-active" );
+                this.menus.container.addClass( "is-active" );
+            }
+        }
+
+        if ( elemData.type === "map" && this.canMapFunction() ) {
+            if ( this.menus.activeMap.is( ".is-active" ) ) {
+                this.closeMenus();
+
+            } else {
+                this.menus.activeMap.addClass( "is-active" );
+                this.menus.container.addClass( "is-active" );
+            }
         }
     }
 
@@ -433,31 +464,6 @@ class Editor {
     _loadoutClear () {
         this.dom.loadoutGrid[ 0 ].innerHTML = "";
         this.dom.loadout.removeClass( "is-loaded" );
-    }
-
-
-    _onSettingsClick ( e ) {
-        const targ = window.hobo( e.target );
-        const elem = targ.is( ".js-settings" ) ? targ : targ.closest( ".js-settings" );
-        const elemData = elem.data();
-
-        if ( elemData.type === "game" && this.canGameFunction() ) {
-            if ( this.menus.activeGame.is( ".is-active" ) ) {
-                this.menus.activeGame.removeClass( "is-active" );
-
-            } else {
-                this.menus.activeGame.addClass( "is-active" );
-            }
-        }
-
-        if ( elemData.type === "map" && this.canMapFunction() ) {
-            if ( this.menus.activeMap.is( ".is-active" ) ) {
-                this.menus.activeMap.removeClass( "is-active" );
-
-            } else {
-                this.menus.activeMap.addClass( "is-active" );
-            }
-        }
     }
 
 

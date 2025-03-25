@@ -52,8 +52,6 @@
         transform: translateX( -50% );
     }
     .layer--preview {
-        width: 32px;
-        height: 32px;
         left: 50%;
         top: 50%;
         transform: translate3d( -50%, -50%, 0 );
@@ -95,10 +93,6 @@
         top: 0;
     }
 }
-#editor-cursor-canvas {
-    position: absolute;
-    pointer-events: none;
-}
 #editor-mapgrid-canvas,
 #editor-collider-canvas {
     display: none;
@@ -127,6 +121,29 @@
 }
 #editor-demo-game {
     pointer-events: auto;
+}
+
+
+
+/* Cursor */
+.editor__cursor {
+    --z: -1;
+    --x: 0;
+    --y: 0;
+    z-index: var( --z );
+    position: absolute;
+    pointer-events: none;
+    transform: translate3d( var( --x ), var( --y ), 0 );
+}
+#editor-cursor-canvas {
+    opacity: 0.5;
+}
+#editor-cursor-box {
+    --w: 0;
+    --h: 0;
+    opacity: 1;
+    width: var( --w );
+    height: var( --h );
 }
 
 
@@ -226,6 +243,7 @@
 .editor__panel__xy {
     justify-content: flex-start;
     border-right: 0;
+    margin-left: auto;
 }
 .editor__panel__sound {
     border-right: 1px solid var( --grey-dark );
@@ -437,39 +455,34 @@
     z-index: 4;
     pointer-events: none;
 }
-.editor__mapgrid {
-    z-index: 4;
-}
 .editor__spawn,
 .editor__event {
-    z-index: 5;
+    z-index: 4;
     pointer-events: none;
-
-    > div {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var( --white );
-        cursor: pointer;
-        pointer-events: auto;
-
-        .feather {
-            width: 24px;
-            height: 24px;
-        }
-    }
 }
-.editor__spawn {
-    > div {
+.editor__block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var( --white );
+    cursor: pointer;
+
+    .feather {
+        width: 24px;
+        height: 24px;
+    }
+
+    &.is-spawn {
         border: 1px solid var( --green );
         background-color: rgba( 16, 255, 89, 0.5 );
     }
-}
-.editor__event {
-    > div {
+    &.is-event {
         border: 1px solid var( --blue );
         background-color: rgba( 23, 149, 212, 0.5 );
     }
+}
+.editor__mapgrid {
+    z-index: 5;
 }
 
 
@@ -632,6 +645,20 @@
 
 
 /* Menus */
+.editor__menus {
+    background-color: rgba( 0, 0, 0, 0.25 );
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    display: none;
+
+    &.is-active {
+        display: block;
+    }
+}
 .editor__menu {
     background-color: var( --black );
     border: 1px solid var( --grey-dark );

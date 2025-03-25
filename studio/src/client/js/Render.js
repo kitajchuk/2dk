@@ -66,17 +66,17 @@ const renderObject = ( obj, game ) => {
     `;
 };
 
-const renderSpawn = ( spawn, hero ) => {
+const renderSpawn = ( spawn, rect ) => {
     const id = `spawn-x${spawn.x}-y${spawn.y}`;
 
     return `
-        <div id="${id}" class="js-spawn-tile" data-spawn-x="${spawn.x}" data-spawn-y="${spawn.y}">
+        <div id="${id}" class="editor__block is-spawn js-spawn-tile" data-spawn-x="${spawn.x}" data-spawn-y="${spawn.y}">
             <style>
                 #${id} {
                     top: ${spawn.y}px;
                     left: ${spawn.x}px;
-                    width: ${hero.width}px;
-                    height: ${hero.height}px;
+                    width: ${rect.width}px;
+                    height: ${rect.height}px;
                     position: absolute;
                 }
             </style>
@@ -91,7 +91,7 @@ const renderEvent = ( event, map ) => {
     const id = `event-x${x}-y${y}`;
 
     return `
-        <div id="${id}" class="js-event-tile" data-event-x="${x}" data-event-y="${y}">
+        <div id="${id}" class="editor__block is-event js-event-tile" data-event-x="${x}" data-event-y="${y}">
             <style>
                 #${id} {
                     top: ${y}px;

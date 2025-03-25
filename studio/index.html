@@ -86,7 +86,8 @@
                     <!-- Canvas -->
                     <div class="editor__canvas">
                         <div class="editor__canvas__pane" id="editor-canvas-pane">
-                            <canvas id="editor-cursor-canvas"></canvas>
+                            <canvas id="editor-cursor-canvas" class="editor__cursor"></canvas>
+                            <div id="editor-cursor-box" class="editor__cursor"></div>
                             <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
                             <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
                             <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
@@ -161,7 +162,7 @@
                         <div class="editor__layer -merge-down">
                             <div class="editor__layer__label">
                                 <span class="icon icon--nudge">
-                                    <i data-feather="more-horizontal"></i>
+                                    <i data-feather="layers"></i>
                                 </span>
                                 <span>Meta Layers</span>
                             </div>
@@ -255,7 +256,7 @@
                 </div>
             </div>
             <!-- Menus -->
-            <div class="editor__menus">
+            <div class="editor__menus" id="editor-menus">
                 <!-- New game -->
                 <div class="editor__menu js-menu" id="editor-addgame-menu">
                     <div class="editor__label">

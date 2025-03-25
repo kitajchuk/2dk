@@ -56,10 +56,10 @@ const loadGame = () => {
     dBase.open( activeGame.id ).then( () => {
         dBase.getGame().then( ( response ) => {
             mainWindow.webContents.send( "menu-loadgame", response.game );
+            loadAssets();
+            loadMaps();
             setMenu();
         });
-        loadAssets();
-        loadMaps();
     });
 };
 const resetAll = () => {
