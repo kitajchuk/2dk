@@ -1,11 +1,15 @@
-const EditorActions = require( "./EditorActions" );
-const EditorLayers = require( "./EditorLayers" );
-const EditorCanvas = require( "./EditorCanvas" );
+const { ipcRenderer } = require( "electron" );
+
+const {
+    renderMap, 
+    renderGame 
+} = require( "./Render" );
 const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Cache = require( "../../server/cache" );
-const { ipcRenderer } = require( "electron" );
-const { renderMap, renderGame } = require( "./Render" );
+const EditorLayers = require( "./EditorLayers" );
+const EditorActions = require( "./EditorActions" );
+const EditorCanvas = require( "./canvas/EditorCanvas" );
 
 
 
@@ -325,10 +329,10 @@ class Editor {
         const snapshot = document.createElement( "canvas" );
         const snapshotCtx = snapshot.getContext( "2d" );
 
-        snapshot.width = this.canvas.contexts.background.canvas.width;
-        snapshot.height = this.canvas.contexts.background.canvas.height;
-        snapshot.style.width = `${this.canvas.contexts.background.canvas.width}px`;
-        snapshot.style.height = `${this.canvas.contexts.background.canvas.height}px`;
+        snapshot.width = this.data.map.width;
+        snapshot.height = this.data.map.height;
+        snapshot.style.width = `${this.data.map.width}px`;
+        snapshot.style.height = `${this.data.map.height}px`;
 
         const layers = [
             "background",       
@@ -480,10 +484,6 @@ class Editor {
             } else {
                 this._loadoutMaps( maps );
             }
-        });
-
-        ipcRenderer.on( "menu-togglegrid", () => {
-            this.canvas.toggleGrid();
         });
 
         ipcRenderer.on( "menu-savemap", () => {

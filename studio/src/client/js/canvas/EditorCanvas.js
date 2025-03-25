@@ -1,16 +1,18 @@
 const { ipcRenderer } = require( "electron" );
-const Config = require( "./Config" );
+
 const {
     clearTile,
     sortCoords,
-} = require( "./Utils" );
+} = require( "../Utils" );
 const {
     renderNPC,
     renderTile,
     renderSpawn,
     renderEvent,
     renderObject,
-} = require( "./Render" );
+} = require( "../Render" );
+const Config = require( "../Config" );
+const EditorDraggable = require( "./EditorDraggable" );
 
 
 
@@ -27,13 +29,11 @@ class EditorCanvas {
         this.tilesetCoords = [];
         this.currentNPC = null;
         this.currentObject = null;
-        this.isSpacebar = false;
         this.isEscape = false;
         this.isMouseDownTiles = false;
         this.isMouseMovedTiles = false;
         this.isMouseDownCanvas = false;
         this.isMouseDownCollider = false;
-        this.isDraggableAlive = false;
         this.currentTileCoord = null;
         this.contextCoords = null;
         this.dom = {
@@ -76,15 +76,14 @@ class EditorCanvas {
             collider: document.getElementById( "editor-collider-canvas" ),
             tilegrid: document.getElementById( "editor-tilegrid-canvas" ),
         };
-        this.draggable = this.getDraggable();
-        this.draggable.disable();
+
+        this.draggable = new EditorDraggable( this );
 
         this.bindMenuEvents();
         this.bindMapgridEvents();
         this.bindColliderEvents();
         this.bindDocumentEvents();
         this.bindTilepaintEvents();
-        this.hideCanvasCursor();
     }
 
 
@@ -105,40 +104,6 @@ class EditorCanvas {
         } else {
             this.hide( "mapgrid" );
         }
-    }
-
-
-    getDraggable () {
-        return window.Draggable.create( this.dom.canvasPane,
-            {
-                type: "x,y",
-                bounds: this.dom.canvasPane.parentNode,
-                force3D: true,
-                throwProps: true,
-                dragResistance: 0.3,
-                edgeResistance: 0.5,
-                cursor: "grab",
-                activeCursor: "grabbing",
-                onDragStart: () => {
-                    this.isDraggableAlive = true;
-                },
-                onRelease: () => {
-                    this.dom.canvasPane.classList.remove( "is-dragging" );
-                },
-                onPress: () => {
-                    this.dom.canvasPane.classList.add( "is-dragging" );
-                },
-                onThrowComplete: () => {
-                    this.isMouseDownCanvas = false;
-                    this.isDraggableAlive = false;
-
-                    if ( !this.isSpacebar ) {
-                        this.draggable.disable();
-                    }
-                },
-            }
-
-        )[ 0 ];
     }
 
 
@@ -170,7 +135,6 @@ class EditorCanvas {
             this.isMouseDownTiles = false;
             this.isMouseMovedTiles = false;
             this.isMouseDownCanvas = false;
-            this.isDraggableAlive = false;
             this.currentTileCoord = null;
             this.canvasMouseCoords = null;
             this.currentNPC = null;
@@ -183,6 +147,8 @@ class EditorCanvas {
             this.mode = null;
             this.dom.tileset.src = "";
             this.dom.$canvasPane.removeClass( "is-loaded" );
+
+            this.draggable.reset();
         }
     }
 
@@ -241,9 +207,7 @@ class EditorCanvas {
         this.dom.canvasPane.style.height = `${this.map.height}px`;
         this.dom.$canvasPane.addClass( "is-loaded" );
 
-        this.draggable.update({
-            applyBounds: true,
-        });
+        this.draggable.update();
 
         this.loadMapAssets().then(() => {
             this.srcTileset();
@@ -1272,39 +1236,19 @@ class EditorCanvas {
                 return;
             }
 
-            this.isSpacebar = ( e.keyCode === Config.keys.SPACEBAR );
             this.isEscape = ( e.keyCode === Config.keys.ESCAPE );
 
             if ( this.isEscape ) {
                 this.clearTileset();
             }
 
-            if ( this.isSpacebar ) {
+            if ( this.draggable.isSpacebar ) {
                 this.editor.blurSelectMenus();
-            }
-
-            if ( this.editor.mode !== Config.Editor.modes.SAVING && ( this.isSpacebar && this.mode !== Config.EditorCanvas.modes.DRAG ) ) {
-                e.preventDefault();
-
-                this.draggable.enable();
-
-                this.mode = Config.EditorCanvas.modes.DRAG;
             }
         });
 
         $document.on( "keyup", ( e ) => {
-            this.isSpacebar = false;
             this.isEscape = false;
-
-            if ( !this.isSpacebar && !this.isDraggableAlive ) {
-                this.draggable.disable();
-            }
-
-            if ( this.editor.mode !== Config.Editor.modes.SAVING && this.mode === Config.EditorCanvas.modes.DRAG ) {
-                e.preventDefault();
-
-                this.mode = null;
-            }
         });
 
         $document.on( "mouseup", () => {
@@ -1553,6 +1497,10 @@ class EditorCanvas {
 
 
     bindMenuEvents () {
+        ipcRenderer.on( "menu-togglegrid", () => {
+            this.toggleGrid();
+        });
+
         ipcRenderer.on( "menu-contextmenu", ( e, action ) => {
             this.isMouseDownCanvas = false;
             this.contextCoords = null;
