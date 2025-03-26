@@ -5,6 +5,7 @@ class EditorCursor {
     constructor ( editorCanvas ) {
         this.editor = editorCanvas.editor;
         this.editorCanvas = editorCanvas;
+        
         this.cursors = {
             dom: document.getElementById( "editor-cursor-box" ), 
             canvas: document.getElementById( "editor-cursor-canvas" ),
@@ -56,13 +57,11 @@ class EditorCursor {
     }
 
 
-    showCanvasCursor ( coords ) {
+    showCanvasCursor ( coords, objectOrNPC ) {
         let x = coords[ 0 ];
         let y = coords[ 1 ];
 
-        const objectOrNPC = this.editorCanvas.currentObject || this.editorCanvas.currentNPC;
-
-        if ( objectOrNPC && this.editor.layers.mode === Config.EditorLayers.modes.OBJ ) {
+        if ( objectOrNPC ) {
             const offsetCoords = this.getCursorOffsetCoords( coords, objectOrNPC );
 
             x = offsetCoords[ 0 ];

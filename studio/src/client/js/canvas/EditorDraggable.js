@@ -5,25 +5,68 @@ class EditorDraggable {
     constructor ( editorCanvas ) {
         this.editor = editorCanvas.editor;
         this.editorCanvas = editorCanvas;
-        this.canvasPane = editorCanvas.dom.canvasPane;
-        this.bounds = this.canvasPane.parentNode;
+
         this.isSpacebar = false;
         this.isDraggableAlive = false;
+
+        this.canvasPane = document.getElementById( "editor-canvas-pane" );
+        this.canvasBounds = this.canvasPane.parentNode;
 
         this._bind();
         this._bindEvents();
     }
 
 
-    reset () {
-        this.isDraggableAlive = false;
-    }
-
-
     update ( map ) {
+        this.map = map;
+        this.canvasPane.style.width = `${this.map.width}px`;
+        this.canvasPane.style.height = `${this.map.height}px`;
+        this.canvasPane.classList.add( "is-loaded" );
         this.draggable.update({
             applyBounds: true,
         });
+    }
+
+
+    reset () {
+        this.isDraggableAlive = false;
+        this.canvasPane.classList.remove( "is-loaded" );
+    }
+
+
+    setLayer ( layer ) {
+        this.canvasPane.classList.add( `is-${layer}` );
+    }
+
+
+    resetLayer () {
+        const classes = [ 
+            "is-npc", 
+            "is-obj",
+            "is-spawn",
+            "is-event",
+            "is-collision",
+            "is-background",
+            "is-foreground",
+        ];
+        this.canvasPane.classList.remove( ...classes );
+    }
+
+
+    setTool ( tool ) {
+        this.canvasPane.classList.add( `is-${tool}-tool` );
+    }
+
+
+    resetTool () {
+        const classes = [
+            "is-brush-tool",
+            "is-erase-tool",
+            "is-spawn-tool",
+            "is-event-tool",
+            "is-select-tool",
+        ];
+        this.canvasPane.classList.remove( ...classes );
     }
 
 
@@ -31,7 +74,7 @@ class EditorDraggable {
         this.draggable = window.Draggable.create( this.canvasPane,
             {
                 type: "x,y",
-                bounds: this.bounds,
+                bounds: this.canvasBounds,
                 force3D: true,
                 throwProps: true,
                 dragResistance: 0.3,

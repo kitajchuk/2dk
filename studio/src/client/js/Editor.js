@@ -15,12 +15,13 @@ const EditorCanvas = require( "./canvas/EditorCanvas" );
 
 class Editor {
     constructor () {
-        this.baseUrl = `${window.location.pathname}`;
-        this.mode = null;
-        this.data = {};
         this.layers = new EditorLayers( this );
         this.canvas = new EditorCanvas( this );
         this.actions = new EditorActions( this );
+        
+        this.baseUrl = `${window.location.pathname}`;
+        this.mode = null;
+        this.data = {};
         this.utils = Utils;
         this.dom = {
             css: window.hobo( "#editor-css" ),

@@ -144,13 +144,9 @@
     pointer-events: none;
     transform: translate3d( var( --x ), var( --y ), 0 );
 }
-// #editor-cursor-canvas {
-//     opacity: 0.5;
-// }
 #editor-cursor-box {
     --w: 0;
     --h: 0;
-    // opacity: 1;
     width: var( --w );
     height: var( --h );
 }

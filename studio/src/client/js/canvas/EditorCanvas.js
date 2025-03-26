@@ -38,15 +38,13 @@ class EditorCanvas {
         this.contextCoords = null;
         this.dom = {
             moveCoords: document.getElementById( "editor-move-coords" ),
-            canvasPane: document.getElementById( "editor-canvas-pane" ),
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
-            $canvasPane: window.hobo( "#editor-canvas-pane" ),
-            $tilePicker: window.hobo( "#editor-tile-picker" ),
-            $objPicker: window.hobo( "#editor-obj-picker" ),
-            $objPickerBox: window.hobo( "#editor-obj-picker-box" ),
-            $npcPicker: window.hobo( "#editor-npc-picker" ),
-            $npcPickerBox: window.hobo( "#editor-npc-picker-box" ),
+        };
+        this.pickers = {
+            $all: window.hobo( ".js-picker" ),
+            objPickerBox: document.getElementById( "editor-obj-picker-box" ),
+            npcPickerBox: document.getElementById( "editor-npc-picker-box" ),
         };
         this.layers = {
             background: document.getElementById( "editor-bg" ),
@@ -144,7 +142,6 @@ class EditorCanvas {
             this.spawn = null;
             this.mode = null;
             this.dom.tileset.src = "";
-            this.dom.$canvasPane.removeClass( "is-loaded" );
 
             this.cursor.reset();
             this.draggable.reset();
@@ -196,10 +193,6 @@ class EditorCanvas {
         this.canvases.preview.height = this.map.tilesize;
         this.canvases.preview.style.width = `${this.gridsize}px`;
         this.canvases.preview.style.height = `${this.gridsize}px`;
-
-        this.dom.canvasPane.style.width = `${this.map.width}px`;
-        this.dom.canvasPane.style.height = `${this.map.height}px`;
-        this.dom.$canvasPane.addClass( "is-loaded" );
         
         this.cursor.update( map );
         this.draggable.update( map );
@@ -456,14 +449,14 @@ class EditorCanvas {
 
 
     renderNPCLoadout () {
-        this.dom.$npcPickerBox[ 0 ].innerHTML = this.game.npcs.map( ( npc ) => {
+        this.pickers.npcPickerBox.innerHTML = this.game.npcs.map( ( npc ) => {
             return renderNPC( npc, this.game );
         }).join( "" );
     }
 
 
     renderObjectLoadout () {
-        this.dom.$objPickerBox[ 0 ].innerHTML = this.game.objects.map( ( obj ) => {
+        this.pickers.objPickerBox.innerHTML = this.game.objects.map( ( obj ) => {
             return renderObject( obj, this.game );
         }).join( "" );
     }
@@ -539,10 +532,10 @@ class EditorCanvas {
     }
 
     setActiveTool ( tool ) {
-        this.dom.$canvasPane.removeClass( "is-brush-tool is-erase-tool is-select-tool is-spawn-tool is-event-tool" );
+        this.draggable.resetTool();
 
         if ( tool ) {
-            this.dom.$canvasPane.addClass( `is-${tool}-tool` );
+            this.draggable.setTool( tool );
         }
 
         if ( tool === Config.EditorActions.modes.SPAWN || tool === Config.EditorActions.modes.EVENT ) {
@@ -553,33 +546,29 @@ class EditorCanvas {
     }
 
 
+    togglePickers ( layer ) {
+        // background, foreground, collision all use the "tile" picker
+        const picker = ( layer === Config.EditorLayers.modes.OBJ || layer === Config.EditorLayers.modes.NPC ) ? layer : "tile";
+        const $picker = this.pickers.$all.filter( `#editor-${picker}-picker` );
+
+        this.pickers.$all.addClass( "is-hidden" );
+        $picker.removeClass( "is-hidden" );
+    }
+
+
     setActiveLayer ( layer ) {
-        this.dom.$canvasPane.removeClass( "is-background is-foreground is-collision is-npc is-obj is-spawn is-event" );
+        this.draggable.resetLayer()
 
         if ( layer ) {
-            this.dom.$canvasPane.addClass( `is-${layer}` );
+            this.draggable.setLayer( layer );
+            this.togglePickers( layer );
 
-            if ( layer === Config.EditorLayers.modes.OBJ ) {
-                this.dom.$objPicker.removeClass( "is-hidden" );
-                this.dom.$tilePicker.addClass( "is-hidden" );
-                this.dom.$npcPicker.addClass( "is-hidden" );
-                this.editor.actions.resetActions();
+            if ( layer === Config.EditorLayers.modes.OBJ || layer === Config.EditorLayers.modes.NPC ) {
                 this.clearTileset();
-            } else if ( layer === Config.EditorLayers.modes.NPC ) {
-                this.dom.$npcPicker.removeClass( "is-hidden" );
-                this.dom.$objPicker.addClass( "is-hidden" );
-                this.dom.$tilePicker.addClass( "is-hidden" );
-                this.editor.actions.resetActions();
-                this.clearTileset();
-            } else {
-                this.dom.$tilePicker.removeClass( "is-hidden" );
-                this.dom.$objPicker.addClass( "is-hidden" );
-                this.dom.$npcPicker.addClass( "is-hidden" );
 
-                // Clear NPC & Object previews (if they exist)
-                if ( !this.tilesetCoords.length ) {
-                    this.clearTileset();
-                }
+            // Clear NPC & Object previews (if they exist)
+            } else if ( !this.tilesetCoords.length ) {
+                this.clearTileset();
             }
 
             if ( this.editor.actions.mode === Config.EditorActions.modes.SPAWN || this.editor.actions.mode === Config.EditorActions.modes.EVENT ) {
@@ -1267,10 +1256,10 @@ class EditorCanvas {
                         this.cursor.showCanvasCursor( coords );
 
                     } else if ( this.currentNPC && this.canApplyNPC() ) {
-                        this.cursor.showCanvasCursor( coords );
+                        this.cursor.showCanvasCursor( coords, this.currentNPC );
 
                     } else if ( this.currentObject && this.canApplyObject() ) {
-                        this.cursor.showCanvasCursor( coords );
+                        this.cursor.showCanvasCursor( coords, this.currentObject );
 
                     } else if ( this.canApplySpawn() ) {
                         this.cursor.showSpawnCursor( coords );
@@ -1294,10 +1283,10 @@ class EditorCanvas {
                 if ( this.canApplyLayer() ) {
                     this.applyLayer( this.editor.layers.mode, coords );
 
-                } else if ( this.currentNPC && this.canApplyNPC() ) {
+                } else if ( this.canApplyNPC() ) {
                     this.applyNPC( coords );
 
-                } else if ( this.currentObject && this.canApplyObject() ) {
+                } else if ( this.canApplyObject() ) {
                     this.applyObject( coords );
 
                 } else if ( this.canApplySpawn() ) {
