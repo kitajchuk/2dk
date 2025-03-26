@@ -764,13 +764,17 @@
 .editor__picker__box {
     height: 100%;
     width: 100%;
+    outline: 1px solid var( --grey-dark );
+    background-color: var( --charcoal2 );
 }
 .editor__picker__overflow {
     position: relative;
     height: 100%;
     overflow: auto;
-    outline: 1px solid var( --grey-dark );
-    background-color: var( --charcoal2 );
+
+    &.is-padded {
+        padding: 16px 0;
+    }
 }
 .editor__picker__sprite__grid {
     gap: 24px 0;

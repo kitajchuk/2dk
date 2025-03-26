@@ -103,12 +103,12 @@ class EditorCursor {
             const domSpawn = window.hobo( `#spawn-x${hitSpawn.x}-y${hitSpawn.y}` );
             domSpawn.addClass( "is-hit" );
             this.cursors.dom.classList.add( "is-hidden" );
-            this.editorCanvas.dom.canvasPane.classList.add( "is-erase-tool" );
+            this.editorCanvas.draggable.canvasPane.classList.add( "is-erase-tool" );
 
         } else {
             window.hobo( ".js-spawn-tile" ).removeClass( "is-hit" );
             this.cursors.dom.classList.remove( "is-hidden" );
-            this.editorCanvas.dom.canvasPane.classList.remove( "is-erase-tool" );
+            this.editorCanvas.draggable.canvasPane.classList.remove( "is-erase-tool" );
         }
 
         this.cursors.dom.style.setProperty( "--z", 5 );
