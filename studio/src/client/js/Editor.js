@@ -119,7 +119,9 @@ class Editor {
             params.set( "map", this.data.map.id );
         }
 
-        window.history.replaceState( {}, "", `${this.baseUrl}?${params.toString()}` );
+        const query = params.toString();
+
+        window.history.replaceState( {}, "", `${this.baseUrl}${query ? `?${query}` : ""}` );
     }
 
 
@@ -744,19 +746,17 @@ class Editor {
                 return false;
             }
 
+            let baseUrl = `./games/${this.data.game.id}/index.html`;
+
             if ( this.canMapFunction() ) {
-                window.open(
-                    `./games/${this.data.game.id}/index.html?map=${this.data.map.id}.json`,
-                    "_blank",
-                    `width=${this.data.game.width},height=${this.data.game.height}`
-                );
-            } else {
-                window.open(
-                    `./games/${this.data.game.id}/index.html`,
-                    "_blank",
-                    `width=${this.data.game.width},height=${this.data.game.height}`
-                );
+                baseUrl += `?map=${this.data.map.id}.json`;
             }
+
+            window.open(
+                baseUrl,
+                "_blank",
+                `width=${this.data.game.width},height=${this.data.game.height}`
+            );
         });
 
         this.dom.deleteMap.on( "click", () => {
@@ -784,7 +784,9 @@ class Editor {
                 this.dom.root.addClass( "is-deleting-game" );
 
                 ipcRenderer.send( "renderer-deletegame", this.data.game );
-                window.location.reload(); // Clunky maybe but best simple solution for now :-P
+                this.data = {};
+                this.updateUrl();
+                window.location.reload();
             }
         });
     }
