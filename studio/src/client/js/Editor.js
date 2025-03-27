@@ -3,7 +3,7 @@ const { ipcRenderer } = require( "electron" );
 const {
     renderMap, 
     renderGame 
-} = require( "./Render" );
+} = require( "./render/Render" );
 const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Cache = require( "../../server/cache" );
@@ -23,40 +23,27 @@ class Editor {
         
         this.baseUrl = `${window.location.pathname}`;
         this.mode = null;
-        this.data = {};
+        this.data = {
+            game: null,
+            map: null,
+            maps: [],
+            assets: {},
+        };
         this.dom = {
             css: window.hobo( "#editor-css" ),
             root: window.hobo( "#editor" ),
             settings: window.hobo( ".js-settings" ),
             mapSettings: window.hobo( "#editor-mapsettings" ),
             gameSettings: window.hobo( "#editor-gamesettings" ),
-            closeSettings: window.hobo( ".js-close-settings" ),
-            cancelPost: window.hobo( ".js-post-cancel" ),
-            savePost: window.hobo( ".js-post-save" ),
-            updatePost: window.hobo( ".js-post-update" ),
-            uploadFiles: window.hobo( ".js-upload-file" ),
-            cancelUpload: window.hobo( ".js-upload-cancel" ),
-            deleteUpload: window.hobo( ".js-upload-delete" ),
-            saveUpload: window.hobo( ".js-upload-save" ),
-            deleteMap: window.hobo( "#editor-delmap" ),
-            deleteGame: window.hobo( "#editor-delgame" ),
             loadout: window.hobo( "#editor-loadout" ),
             loadoutGrid: window.hobo( "#editor-loadout-grid" ),
             mapLoad: window.hobo( "#editor-map-load" ),
             gameLoad: window.hobo( "#editor-game-load" ),
-            iconImage: window.hobo( "#editor-game-icon-image" ),
-            iconField: window.hobo( "#editor-game-icon" ),
             demoGame: window.hobo( "#editor-demo-game" ),
-        };
-        this.fields = {
-            map: window.hobo( ".js-map-field" ),
-            addMap: window.hobo( ".js-addmap-field" ),
-            addGame: window.hobo( ".js-addgame-field" ),
-            activeTile: window.hobo( ".js-activetile-field" ),
         };
 
         this.load();
-        this.done();
+        this.done( 2000 );
         this.bindEvents();
         this.bindMenuEvents();
         this.bindeFileEvents();
@@ -69,13 +56,13 @@ class Editor {
     }
 
 
-    done () {
+    done ( timeout = 1000 ) {
         this.mode = null;
 
         setTimeout( () => {
             this.dom.root.removeClass( "is-not-loaded is-saving-map is-saving-game is-saving-file is-deleting-file" );
 
-        }, 1000 );
+        }, timeout );
     }
 
 
@@ -121,17 +108,18 @@ class Editor {
             return;
         }
 
-        this.data.game = game;
-        this.data.map = null;
-        this.data.assets = {};
+        this.data = {
+            game,
+            map: null,
+            maps: [],
+            assets: {},
+        };
+
         // reset canvas in case we had a map loaded...
         this.canvas.reset();
 
         // Kill any MediaBox audio that is playing...
         Utils.destroySound();
-
-        // Prefill the game data fields
-        this.menus.prefillGameFields( this.data.game );
 
         // Set active game to menu
         this.dom.gameLoad[ 0 ].innerText = this.data.game.name;
@@ -148,9 +136,6 @@ class Editor {
 
         // Set active map
         this.data.map = map;
-
-        // Prefill the map data fields
-        this.menus.prefillMapFields( this.data.map );
 
         // Display the map canvas
         this.canvas.reset();
@@ -170,7 +155,7 @@ class Editor {
         this.dom.root.addClass( "is-saving-map" );
 
         ipcRenderer.send( "renderer-newmap", postData );
-        this.menus.closeMenus();
+        this.menus.removeMenus();
         this.done();
     }
 
@@ -180,22 +165,14 @@ class Editor {
         this.dom.root.addClass( "is-saving-game" );
 
         ipcRenderer.send( "renderer-newgame", postData );
-        this.menus.closeMenus();
+        this.menus.removeMenus();
         this.done();
     }
 
 
     loadAssets ( assets ) {
-        if ( !this.data.assets[ assets.type ] ) {
-            this.data.assets[ assets.type ] = assets;
-        }
-
+        this.data.assets[ assets.type ] = assets;
         this.menus.buildAssetSelectMenu( assets );
-    }
-
-
-    loadMapMenus () {
-        this.menus.buildConfigSelectMenus();
     }
 
 
@@ -291,46 +268,19 @@ class Editor {
 
         // Save map JSON
         const postData = this.data.map;
-        const mapData = Utils.parseFields( this.fields.map );
+
+        // TODO: parse map settings fields when we make them editable...
 
         Object.keys( mapData ).forEach( ( i ) => {
             postData[ i ] = mapData[ i ];
         });
 
         ipcRenderer.send( "renderer-savemap", postData );
-        this.menus.closeMenus();
+        this.menus.removeMenus();
         this.done();
 
         // Save snapshot images
         this._saveSnapshot();
-    }
-
-
-    _openMenu ( action, target ) {
-        let canFunction = this.canGameFunction();
-
-        // Capture circumstances
-        if ( action === "newgame" ) {
-            canFunction = true;
-
-        } else if ( action === "mapsettings" && !this.data.map ) {
-            canFunction = false;
-        }
-
-        if ( !canFunction ) {
-            return false;
-        }
-
-        this.menus.toggleMenu( target );
-    }
-
-
-    _openUpload ( type, target ) {
-        if ( !this.canGameFunction() ) {
-            return false;
-        }
-
-        this.menus.toggleMenu( target );
     }
 
 
@@ -340,10 +290,13 @@ class Editor {
         const elemData = elem.data();
 
         if ( elemData.type === "game" && this.canGameFunction() ) {
-            this.menus.toggleMenu( "editor-active-game-menu" );
+            this.menus.renderMenu( "editor-active-game-menu", this.data.game );
             
         } else if ( elemData.type === "map" && this.canMapFunction() ) {
-            this.menus.toggleMenu( "editor-active-map-menu" );
+            this.menus.renderMenu( "editor-active-map-menu", {
+                map: this.data.map,
+                assets: this.data.assets,
+            });
         }
     }
 
@@ -394,7 +347,7 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-loadmaps", ( e, maps ) => {
-            this.menus.buildMapSelectMenus( maps );
+            this.data.maps = maps;
             
             if ( initialQueryMap ) {
                 ipcRenderer.send( "renderer-loadmap", {
@@ -417,7 +370,7 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-newgame", () => {
-            this._openMenu( "newgame", "editor-addgame-menu" );
+            this.menus.renderMenu( "editor-addgame-menu" );
         });
 
         ipcRenderer.on( "menu-mapsettings", () => {
@@ -427,19 +380,28 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-newmap", () => {
-            this._openMenu( "newmap", "editor-addmap-menu" );
+            this.menus.renderMenu( "editor-addmap-menu", {
+                tiles: this.data.assets.tiles,
+                sounds: this.data.assets.sounds,
+            });
         });
 
         ipcRenderer.on( "menu-newtileset", () => {
-            this._openUpload( "tileset", "editor-addtiles-menu" );
+            this.menus.renderMenu( "editor-addtiles-menu", {
+                tiles: this.data.assets.tiles,
+            });
         });
 
         ipcRenderer.on( "menu-newsound", () => {
-            this._openUpload( "sound", "editor-addsound-menu" );
+            this.menus.renderMenu( "editor-addsound-menu", {
+                sounds: this.data.assets.sounds,
+            });
         });
 
         ipcRenderer.on( "menu-newsprite", () => {
-            this._openUpload( "sprite", "editor-addsprites-menu" );
+            this.menus.renderMenu( "editor-addsprites-menu", {
+                sprites: this.data.assets.sprites,
+            });
         });
 
         ipcRenderer.on( "menu-loadgame", ( e, game ) => {
@@ -448,7 +410,6 @@ class Editor {
 
         ipcRenderer.on( "menu-loadmap", ( e, map ) => {
             this.loadMap( map );
-            this.loadMapMenus();
             this._loadoutClear();
         });
 
@@ -457,8 +418,11 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-reloadicon", ( e, game ) => {
-            this.dom.iconImage[ 0 ].src = `./games/${game.id}/${game.icon}?buster=${Date.now()}`;
-            this.dom.iconField[ 0 ].value = game.icon;
+            const img = document.getElementById( "editor-game-icon-image" );
+            const icon = document.getElementById( "editor-game-icon" );
+
+            img.src = `./games/${game.id}/${game.icon}?buster=${Date.now()}`;
+            icon.value = game.icon;
         });
 
         ipcRenderer.on( "watch-reloadcss", ( e ) => {
@@ -497,7 +461,9 @@ class Editor {
 
 
     bindeFileEvents () {
-        this.dom.uploadFiles.on( "change", ( e ) => {
+        const $document = window.hobo( document );
+
+        $document.on( "change", ".js-upload-file", ( e ) => {
             const targ = window.hobo( e.target );
             const elem = targ.is( ".js-upload-file" ) ? targ : targ.closest( ".js-upload-file" );
             const data = elem.data();
@@ -511,7 +477,7 @@ class Editor {
             document.getElementById( data.target ).value = elem[ 0 ].value;
         });
 
-        this.dom.cancelUpload.on( "click", ( e ) => {
+        $document.on( "click", ".js-upload-cancel", ( e ) => {
             if ( !this.canGameFunction() ) {
                 return false;
             }
@@ -519,11 +485,10 @@ class Editor {
             const targ = window.hobo( e.target );
             const elem = targ.is( ".js-upload-cancel" ) ? targ : targ.closest( ".js-upload-cancel" );
 
-            this.menus.closeMenus();
-            this.menus.clearMenu( elem.closest( ".js-menu" ) );
+            this.menus.removeMenus();
         });
 
-        this.dom.deleteUpload.on( "click", ( e ) => {
+        $document.on( "click", ".js-upload-delete", ( e ) => {
             if ( !this.canGameFunction() ) {
                 return false;
             }
@@ -542,12 +507,12 @@ class Editor {
                 this.dom.root.addClass( "is-deleting-file" );
 
                 ipcRenderer.send( "renderer-deletefile", postData );
-                this.menus.closeMenus();
+                this.menus.removeMenus();
                 this.done();
             }
         });
 
-        this.dom.saveUpload.on( "click", ( e ) => {
+        $document.on( "click", ".js-upload-save", ( e ) => {
             if ( !this.canGameFunction() ) {
                 return false;
             }
@@ -570,7 +535,7 @@ class Editor {
                 postData.fileData = response.fileData;
                 ipcRenderer.send( "renderer-newfile", postData );
                 fileField[ 0 ].value = "";
-                this.menus.closeMenus();
+                this.menus.removeMenus();
                 this.done();
             });
         });
@@ -578,12 +543,45 @@ class Editor {
 
 
     bindEvents () {
+        const $document = window.hobo( document );
+
         this.dom.settings.on( "click", this._onSettingsClick.bind( this ) );
-        this.dom.closeSettings.on( "click", () => {
-            this.menus.closeMenus();
+
+        $document.on( "click", ".js-close-settings", () => {
+            this.menus.removeMenus();
         });
 
-        this.dom.cancelPost.on( "click", ( e ) => {
+        $document.on( "click", ".js-delete-map", () => {
+            if ( !this.canMapFunction() ) {
+                return false;
+            }
+
+            if ( confirm( `Sure you want to delete the map "${this.data.map.name}"? This may affect other data referencing this map.` ) ) {
+                this.mode = Config.Editor.modes.SAVING;
+                this.dom.root.addClass( "is-deleting-map" );
+                this.menus.removeMenus();
+                this.actions.resetActions();
+                ipcRenderer.send( "renderer-deletemap", this.data.map );
+            }
+        });
+
+        $document.on( "click", ".js-delete-game", () => {
+            if ( !this.canGameFunction() ) {
+                return false;
+            }
+
+            if ( confirm( `Sure you want to delete the game "${this.data.game.name}"? This cannot be undone.` ) ) {
+                this.mode = Config.Editor.modes.SAVING;
+                this.dom.root.addClass( "is-deleting-game" );
+
+                ipcRenderer.send( "renderer-deletegame", this.data.game );
+                this.data = {};
+                this.updateUrl();
+                window.location.reload();
+            }
+        });
+
+        $document.on( "click", ".js-post-cancel", ( e ) => {
             const targ = window.hobo( e.target );
             const elem = targ.is( ".js-post-cancel" ) ? targ : targ.closest( ".js-post-cancel" );
             const elemData = elem.data();
@@ -593,11 +591,10 @@ class Editor {
                 return false;
             }
 
-            this.menus.closeMenus();
-            this.menus.clearMenu( elem.closest( ".js-menu" ) );
+            this.menus.removeMenus();
         });
 
-        this.dom.savePost.on( "click", ( e ) => {
+        $document.on( "click", ".js-post-save", ( e ) => {
             const targ = window.hobo( e.target );
             const elem = targ.is( ".js-post-save" ) ? targ : targ.closest( ".js-post-save" );
             const elemData = elem.data();
@@ -607,10 +604,10 @@ class Editor {
                 return false;
             }
 
-            const postData = ( elemData.type === "game" ?
-                Utils.parseFields( this.fields.addGame ) :
+            const postData = elemData.type === "game"
+                ? Utils.parseFields( window.hobo( ".js-addgame-field" ) )
                 // "map" is the only post besides game...
-                Utils.parseFields( this.fields.addMap ) );
+                : Utils.parseFields( window.hobo( ".js-addmap-field" ) );
 
             if ( postData.name ) {
                 if ( elemData.type === "game" ) {
@@ -620,12 +617,10 @@ class Editor {
                 } else {
                     this.postMap( postData );
                 }
-
-                this.clearMenu( elem.closest( ".js-menu" ) );
             }
         });
 
-        this.dom.updatePost.on( "click", ( e ) => {
+        $document.on( "click", ".js-post-update", ( e ) => {
             const targ = window.hobo( e.target );
             const elem = targ.is( ".js-post-update" ) ? targ : targ.closest( ".js-post-update" );
             const elemData = elem.data();
@@ -635,8 +630,7 @@ class Editor {
             }
 
             if ( elemData.type === "activetiles" ) {
-                const activeTileData = Utils.parseFields( this.fields.activeTile );
-
+                const activeTileData = Utils.parseFields( window.hobo( ".js-activetile-field" ) );
                 this.canvas.applyActiveTiles( activeTileData );
             }
         });
@@ -657,37 +651,6 @@ class Editor {
                 "_blank",
                 `width=${this.data.game.width},height=${this.data.game.height}`
             );
-        });
-
-        this.dom.deleteMap.on( "click", () => {
-            if ( !this.canMapFunction() ) {
-                return false;
-            }
-
-            if ( confirm( `Sure you want to delete the map "${this.data.map.name}"? This may affect other data referencing this map.` ) ) {
-                this.mode = Config.Editor.modes.SAVING;
-                this.dom.root.addClass( "is-deleting-map" );
-                this.menus.closeMenus();
-                this.actions.resetActions();
-                ipcRenderer.send( "renderer-deletemap", this.data.map );
-            }
-        });
-
-
-        this.dom.deleteGame.on( "click", () => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
-
-            if ( confirm( `Sure you want to delete the game "${this.data.game.name}"? This cannot be undone.` ) ) {
-                this.mode = Config.Editor.modes.SAVING;
-                this.dom.root.addClass( "is-deleting-game" );
-
-                ipcRenderer.send( "renderer-deletegame", this.data.game );
-                this.data = {};
-                this.updateUrl();
-                window.location.reload();
-            }
         });
     }
 }

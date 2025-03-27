@@ -43,7 +43,7 @@ const Utils = {
 
 
     processSound ( sampler, gameId ) {
-        const select = sampler.find( ".js-select-sound" );
+        const select = sampler.find( ".js-select-sounds" );
         const sound = select[ 0 ].value;
         const soundId = cache.slugify( `${sound}${sampler.data().spot}` );
         const addMedia = ( snd, sId ) => {
@@ -102,6 +102,24 @@ const Utils = {
     },
 
 
+    getOptionData ( data ) {
+        let newData = structuredClone( data );
+
+        // Convert {object} to [array]
+        if ( !Array.isArray( newData ) ) {
+            const arr = [];
+
+            Object.keys( data ).forEach( ( i ) => {
+                arr.push( data[ i ] );
+            });
+
+            newData = arr;
+        }
+
+        return newData;
+    },
+
+
     buildSelectMenu ( dom, data ) {
         for ( let i = dom.length; i--; ) {
             let hasValue = false;
@@ -109,18 +127,9 @@ const Utils = {
 
             dom[ i ].innerHTML = `<option value="">${dom[ i ].dataset.label}</option>`;
 
-            // Convert {object} to [array]
-            if ( !Array.isArray( data ) ) {
-                const arr = [];
+            const newData = this.getOptionData( data );
 
-                Object.keys( data ).forEach( ( i ) => {
-                    arr.push( data[ i ] );
-                });
-
-                data = arr;
-            }
-
-            data.forEach( ( dt ) => {
+            newData.forEach( ( dt ) => {
                 const opt = document.createElement( "option" );
                 const label = ( typeof dt === "object" ) ? dt.name : String( dt );
                 const value = ( typeof dt === "object" ) ? dt.id : String( dt );

@@ -10,7 +10,8 @@ const {
     renderSpawn,
     renderEvent,
     renderObject,
-} = require( "../Render" );
+} = require( "../render/Render" );
+const Utils = require( "../Utils" );
 const Config = require( "../Config" );
 const EditorCursor = require( "./EditorCursor" );
 const EditorDraggable = require( "./EditorDraggable" );
@@ -40,6 +41,7 @@ class EditorCanvas {
             moveCoords: document.getElementById( "editor-move-coords" ),
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
+            activetiles: document.getElementById( "editor-activetiles-checkbox" ),
         };
         this.pickers = {
             $all: window.hobo( ".js-picker" ),
@@ -77,6 +79,7 @@ class EditorCanvas {
         this.draggable = new EditorDraggable( this );
 
         this.bindMenuEvents();
+        this.bindTempEvents();
         this.bindMapgridEvents();
         this.bindColliderEvents();
         this.bindDocumentEvents();
@@ -476,7 +479,8 @@ class EditorCanvas {
     applyActiveTiles ( data ) {
         // Coord X & Y are a position on the tileset
         // Could try using the currentTileCoord for now..
-        const coord = this.currentTileCoord;
+        // TODO: Implement this for REALs...
+        const coord = [ 0, 0 ];
         data.offsetX = coord[ 0 ] * this.map.tilesize;
         data.offsetY = coord[ 1 ] * this.map.tilesize;
 
@@ -521,10 +525,10 @@ class EditorCanvas {
         });
 
         if ( !tiles ) {
-            this.map.tiles.push( data );
-            this.editor._saveMap();
-            this.editor.clearMenu( this.editor.menus.activeTiles );
-            // TODO: cleanup...
+            // TODO: Implement this for REALs...
+            // this.map.tiles.push( data );
+            // this.editor._saveMap();
+            this.editor.menus.removeMenus();
 
         } else {
             alert( `The tile group ${data.group} already exists!` );
@@ -901,7 +905,14 @@ class EditorCanvas {
 
 
     applyEvent ( coords ) {
-        this.editor.menus.toggleMenu( "editor-mapevent-menu" );
+        this.editor.menus.renderMenu( "editor-mapevent-menu", {
+            maps: Utils.getOptionData( this.editor.data.maps ).filter( ( map ) => {
+                return map.id !== this.map.id;
+            }),
+            facing: Utils.getOptionData( window.lib2dk.Config.facing ),
+            events: Utils.getOptionData( window.lib2dk.Config.events ),
+            coords,
+        });
     }
 
 
@@ -1330,6 +1341,16 @@ class EditorCanvas {
         ipcRenderer.on( "menu-contextmenu", ( e, action ) => {
             this.isMouseDownCanvas = false;
             this.contextCoords = null;
+        });
+    }
+
+
+    bindTempEvents () {
+        this.dom.activetiles.addEventListener( "change", ( e ) => {
+            this.editor.menus.renderMenu( "editor-activetiles-menu", {
+                facing: Utils.getOptionData( window.lib2dk.Config.facing ),
+                actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
+            });
         });
     }
 
