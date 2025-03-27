@@ -901,7 +901,7 @@ class EditorCanvas {
 
 
     applyEvent ( coords ) {
-        console.log( "applyEvent", coords );
+        this.editor.toggleMenu( "editor-mapevent-menu" );
     }
 
 
@@ -1150,7 +1150,13 @@ class EditorCanvas {
                     this.pushCoords( coords );
 
                 } else {
-                    this.clearTile( foundCoord );
+                    clearTile(
+                        this.canvases.tilepaint.getContext( "2d" ),
+                        foundCoord[ 0 ] * this.gridsize,
+                        foundCoord[ 1 ] * this.gridsize,
+                        this.gridsize,
+                        this.gridsize
+                    );
                     this.tilesetCoords.splice( this.tilesetCoords.indexOf( foundCoord ), 1 );
                 }
 

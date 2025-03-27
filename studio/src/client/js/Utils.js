@@ -1,9 +1,10 @@
-const MediaBox = require( "properjs-mediabox" );
 const cache = require( "../../server/cache" );
+const MediaBox = require( "properjs-mediabox" );
+
+
 const mediabox = new MediaBox();
 const channel = "bgm";
 const duration = 1;
-
 
 
 const Utils = {
@@ -49,7 +50,7 @@ const Utils = {
             mediabox.addAudio({
                 id: sId,
                 src: [`./games/${gameId}/assets/sounds/${snd}`],
-                channel: "bgm",
+                channel,
                 onloaded () {
                     mediabox.crossFadeChannel( channel, sId, duration );
                 },

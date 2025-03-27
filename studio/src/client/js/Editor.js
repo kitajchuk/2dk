@@ -22,7 +22,6 @@ class Editor {
         this.baseUrl = `${window.location.pathname}`;
         this.mode = null;
         this.data = {};
-        this.utils = Utils;
         this.dom = {
             css: window.hobo( "#editor-css" ),
             root: window.hobo( "#editor" ),
@@ -54,6 +53,9 @@ class Editor {
             sounds: window.hobo( ".js-select-sound" ),
             sprites: window.hobo( ".js-select-sprites" ),
             actions: window.hobo( ".js-select-action" ),
+            facing: window.hobo( ".js-select-facing" ),
+            events: window.hobo( ".js-select-event-type" ),
+            maps: window.hobo( ".js-select-map" ),
         };
         this.menus = {
             all: window.hobo( ".js-menu" ),
@@ -61,6 +63,7 @@ class Editor {
             activeMap: window.hobo( "#editor-active-map-menu" ),
             activeGame: window.hobo( "#editor-active-game-menu" ),
             activeTiles: window.hobo( "#editor-activetiles-menu" ),
+            mapEvent: window.hobo( "#editor-mapevent-menu" ),
         };
         this.fields = {
             map: window.hobo( ".js-map-field" ),
@@ -212,6 +215,8 @@ class Editor {
 
     loadMapMenus () {
         Utils.buildSelectMenu( this.selects.actions, window.lib2dk.Config.verbs );
+        Utils.buildSelectMenu( this.selects.facing, window.lib2dk.Config.facing );
+        Utils.buildSelectMenu( this.selects.events, window.lib2dk.Config.events );
     }
 
 
@@ -479,6 +484,8 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-loadmaps", ( e, maps ) => {
+            Utils.buildSelectMenu( this.selects.maps, maps );
+            
             if ( initialQueryMap ) {
                 ipcRenderer.send( "renderer-loadmap", {
                     map: initialQueryMap,

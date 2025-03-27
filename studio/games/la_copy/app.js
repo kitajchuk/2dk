@@ -88,6 +88,12 @@ var Config = {
     FLOAT: "float",
     WANDER: "wander"
   },
+  facing: {
+    UP: "up",
+    DOWN: "down",
+    LEFT: "left",
+    RIGHT: "right"
+  },
   opposites: {
     y: "x",
     x: "y",

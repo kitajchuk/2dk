@@ -547,12 +547,8 @@
                         <div>
                             <div class="editor__label">Direction (elevation)</div>
                             <div class="select">
-                                <select class="select__field js-activetile-field js-select" name="direction" data-label="Direction">
+                                <select class="select__field js-activetile-field js-select js-select-facing" name="direction" data-label="Direction">
                                     <option value="">Direction</option>
-                                    <option value="up">up</option>
-                                    <option value="down">down</option>
-                                    <option value="left">left</option>
-                                    <option value="right">right</option>
                                 </select>
                                 <span class="select__icon">
                                     <i data-feather="chevron-down"></i>
@@ -712,6 +708,57 @@
                     </div>
                     <div class="editor__setting">
                         <button class="button button--red editor__button editor__delete-button js-upload-delete" data-type="sounds">Delete sound...</button>
+                    </div>
+                </div>
+                <!-- New map event -->
+                <div class="editor__menu js-menu" id="editor-mapevent-menu">
+                    <button class="button button--grey button--box editor__close-button js-post-cancel">
+                        <i data-feather="x"></i>
+                    </button>
+                    <div class="editor__label">
+                        <span class="icon icon--nudge">
+                            <i data-feather="clock"></i>
+                        </span>
+                        <span>Make a new map event</span>
+                    </div>
+                    <div class="txt">
+                        How map events work:<br />
+                        Map events are triggered by the player entering a specific tile on a map. 
+                        They can be used to trigger dialog, spawn npcs, or even start a cutscene.
+                    </div>
+                    <!-- coords and spawn are handled in the app code -->
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-select js-select-event-type" data-label="Event type">
+                                <option value="">Event type</option>
+                            </select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-select js-select-facing" data-label="Direction">
+                                <option value="">Direction</option>
+                            </select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <div class="select">
+                            <select class="select__field js-select js-select-map" data-label="Target Map">
+                                <option value="">Target Map</option>
+                            </select>
+                            <span class="select__icon">
+                                <i data-feather="chevron-down"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="editor__setting">
+                        <button class="button editor__button editor__upload-button js-post-save" data-type="mapevent">Create</button>
                     </div>
                 </div>
             </div>
