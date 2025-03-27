@@ -7,6 +7,7 @@ const {
 const Utils = require( "./Utils" );
 const Config = require( "./Config" );
 const Cache = require( "../../server/cache" );
+const EditorMenus = require( "./EditorMenus" );
 const EditorLayers = require( "./EditorLayers" );
 const EditorActions = require( "./EditorActions" );
 const EditorCanvas = require( "./canvas/EditorCanvas" );
@@ -15,6 +16,7 @@ const EditorCanvas = require( "./canvas/EditorCanvas" );
 
 class Editor {
     constructor () {
+        this.menus = new EditorMenus( this );
         this.layers = new EditorLayers( this );
         this.canvas = new EditorCanvas( this );
         this.actions = new EditorActions( this );
@@ -45,25 +47,6 @@ class Editor {
             iconImage: window.hobo( "#editor-game-icon-image" ),
             iconField: window.hobo( "#editor-game-icon" ),
             demoGame: window.hobo( "#editor-demo-game" ),
-        };
-        this.selects = {
-            all: window.hobo( ".js-select" ),
-            maps: window.hobo( ".js-select-map" ),
-            tiles: window.hobo( ".js-select-tiles" ),
-            sounds: window.hobo( ".js-select-sound" ),
-            sprites: window.hobo( ".js-select-sprites" ),
-            actions: window.hobo( ".js-select-action" ),
-            facing: window.hobo( ".js-select-facing" ),
-            events: window.hobo( ".js-select-event-type" ),
-            maps: window.hobo( ".js-select-map" ),
-        };
-        this.menus = {
-            all: window.hobo( ".js-menu" ),
-            container: window.hobo( "#editor-menus" ),
-            activeMap: window.hobo( "#editor-active-map-menu" ),
-            activeGame: window.hobo( "#editor-active-game-menu" ),
-            activeTiles: window.hobo( "#editor-activetiles-menu" ),
-            mapEvent: window.hobo( "#editor-mapevent-menu" ),
         };
         this.fields = {
             map: window.hobo( ".js-map-field" ),
@@ -148,7 +131,7 @@ class Editor {
         Utils.destroySound();
 
         // Prefill the game data fields
-        this.prefillGameFields( this.data.game );
+        this.menus.prefillGameFields( this.data.game );
 
         // Set active game to menu
         this.dom.gameLoad[ 0 ].innerText = this.data.game.name;
@@ -167,7 +150,7 @@ class Editor {
         this.data.map = map;
 
         // Prefill the map data fields
-        this.prefillMapFields( this.data.map );
+        this.menus.prefillMapFields( this.data.map );
 
         // Display the map canvas
         this.canvas.reset();
@@ -187,7 +170,7 @@ class Editor {
         this.dom.root.addClass( "is-saving-map" );
 
         ipcRenderer.send( "renderer-newmap", postData );
-        this.closeMenus();
+        this.menus.closeMenus();
         this.done();
     }
 
@@ -197,7 +180,7 @@ class Editor {
         this.dom.root.addClass( "is-saving-game" );
 
         ipcRenderer.send( "renderer-newgame", postData );
-        this.closeMenus();
+        this.menus.closeMenus();
         this.done();
     }
 
@@ -207,16 +190,12 @@ class Editor {
             this.data.assets[ assets.type ] = assets;
         }
 
-        if ( this.selects[ assets.type ] ) {
-            Utils.buildSelectMenu( this.selects[ assets.type ], assets.files );
-        }
+        this.menus.buildAssetSelectMenu( assets );
     }
 
 
     loadMapMenus () {
-        Utils.buildSelectMenu( this.selects.actions, window.lib2dk.Config.verbs );
-        Utils.buildSelectMenu( this.selects.facing, window.lib2dk.Config.facing );
-        Utils.buildSelectMenu( this.selects.events, window.lib2dk.Config.events );
+        this.menus.buildConfigSelectMenus();
     }
 
 
@@ -234,74 +213,6 @@ class Editor {
             this.mode !== Config.Editor.modes.SAVING &&
             this.canvas.mode !== Config.EditorCanvas.modes.DRAG
         );
-    }
-
-
-    prefillGameFields ( game ) {
-        this.menus.activeGame.find( ".js-game-field[name='name']" )[ 0 ].value = game.name;
-        this.menus.activeGame.find( ".js-game-field[name='width']" )[ 0 ].value = game.width;
-        this.menus.activeGame.find( ".js-game-field[name='height']" )[ 0 ].value = game.height;
-        this.menus.activeGame.find( ".js-game-field[name='save']" )[ 0 ].value = game.save;
-        this.menus.activeGame.find( ".js-game-field[name='release']" )[ 0 ].value = game.release;
-        this.dom.iconField[ 0 ].value = game.icon;
-        this.dom.iconImage[ 0 ].src = `./games/${game.id}/${game.icon}`;
-    }
-
-
-    prefillMapFields ( map ) {
-        this.menus.activeMap.find( ".js-map-field[name='name']" )[ 0 ].value = map.name;
-        this.menus.activeMap.find( ".js-map-field[name='tilesize']" )[ 0 ].value = map.tilesize;
-        this.menus.activeMap.find( ".js-map-field[name='tilewidth']" )[ 0 ].value = map.tilewidth;
-        this.menus.activeMap.find( ".js-map-field[name='tileheight']" )[ 0 ].value = map.tileheight;
-        this.menus.activeMap.find( ".js-map-field[name='image']" )[ 0 ].value = map.image.split( "/" ).pop();
-
-        if ( map.sound ) {
-            this.menus.activeMap.find( ".js-map-field[name='sound']" )[ 0 ].value = map.sound.split( "/" ).pop();
-        }
-    }
-
-
-    blurSelectMenus () {
-        this.selects.all.forEach( ( select ) => {
-            select.blur();
-        });
-    }
-
-
-    toggleMenu ( id ) {
-        const $menu = window.hobo( `#${id}` );
-
-        if ( $menu.is( ".is-active" ) ) {
-            this.closeMenus();
-            this.clearMenu( $menu );
-
-        } else {
-            this.closeMenus();
-            this.menus.container.addClass( "is-active" );
-            $menu.addClass( "is-active" );
-            this.actions.disableKeys();
-        }
-    }
-
-
-    closeMenus () {
-        this.menus.all.removeClass( "is-active" );
-        this.menus.container.removeClass( "is-active" );
-        this.actions.enableKeys();
-    }
-
-
-    clearMenu ( $menu ) {
-        const $inputs = $menu.find( ".editor__field, .select__field" );
-        const $checks = $menu.find( ".check" );
-
-        $inputs.forEach( ( input ) => {
-            input.value = "";
-        });
-
-        $checks.forEach( ( check ) => {
-            check.checked = false;
-        });
     }
 
 
@@ -377,7 +288,6 @@ class Editor {
 
         this.mode = Config.Editor.modes.SAVING;
         this.dom.root.addClass( "is-saving-map" );
-        // this.cleanMap();
 
         // Save map JSON
         const postData = this.data.map;
@@ -388,7 +298,7 @@ class Editor {
         });
 
         ipcRenderer.send( "renderer-savemap", postData );
-        this.closeMenus();
+        this.menus.closeMenus();
         this.done();
 
         // Save snapshot images
@@ -411,7 +321,7 @@ class Editor {
             return false;
         }
 
-        this.toggleMenu( target );
+        this.menus.toggleMenu( target );
     }
 
 
@@ -420,7 +330,7 @@ class Editor {
             return false;
         }
 
-        this.toggleMenu( target );
+        this.menus.toggleMenu( target );
     }
 
 
@@ -430,10 +340,10 @@ class Editor {
         const elemData = elem.data();
 
         if ( elemData.type === "game" && this.canGameFunction() ) {
-            this.toggleMenu( "editor-active-game-menu" );
+            this.menus.toggleMenu( "editor-active-game-menu" );
             
         } else if ( elemData.type === "map" && this.canMapFunction() ) {
-            this.toggleMenu( "editor-active-map-menu" );
+            this.menus.toggleMenu( "editor-active-map-menu" );
         }
     }
 
@@ -484,7 +394,7 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-loadmaps", ( e, maps ) => {
-            Utils.buildSelectMenu( this.selects.maps, maps );
+            this.menus.buildMapSelectMenus( maps );
             
             if ( initialQueryMap ) {
                 ipcRenderer.send( "renderer-loadmap", {
@@ -609,8 +519,8 @@ class Editor {
             const targ = window.hobo( e.target );
             const elem = targ.is( ".js-upload-cancel" ) ? targ : targ.closest( ".js-upload-cancel" );
 
-            this.closeMenus();
-            this.clearMenu( elem.closest( ".js-menu" ) );
+            this.menus.closeMenus();
+            this.menus.clearMenu( elem.closest( ".js-menu" ) );
         });
 
         this.dom.deleteUpload.on( "click", ( e ) => {
@@ -632,7 +542,7 @@ class Editor {
                 this.dom.root.addClass( "is-deleting-file" );
 
                 ipcRenderer.send( "renderer-deletefile", postData );
-                this.closeMenus();
+                this.menus.closeMenus();
                 this.done();
             }
         });
@@ -660,7 +570,7 @@ class Editor {
                 postData.fileData = response.fileData;
                 ipcRenderer.send( "renderer-newfile", postData );
                 fileField[ 0 ].value = "";
-                this.closeMenus();
+                this.menus.closeMenus();
                 this.done();
             });
         });
@@ -668,26 +578,9 @@ class Editor {
 
 
     bindEvents () {
-        this.selects.all.on( "change", () => {
-            this.blurSelectMenus();
-        });
-
-        this.selects.sounds.on( "change", ( e ) => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
-
-            const targ = window.hobo( e.target );
-            const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
-
-            if ( sampler.length && sampler.is( ".is-playing" ) ) {
-                Utils.processSound( sampler, this.data.game.id );
-            }
-        });
-
         this.dom.settings.on( "click", this._onSettingsClick.bind( this ) );
         this.dom.closeSettings.on( "click", () => {
-            this.closeMenus();
+            this.menus.closeMenus();
         });
 
         this.dom.cancelPost.on( "click", ( e ) => {
@@ -700,8 +593,8 @@ class Editor {
                 return false;
             }
 
-            this.closeMenus();
-            this.clearMenu( elem.closest( ".js-menu" ) );
+            this.menus.closeMenus();
+            this.menus.clearMenu( elem.closest( ".js-menu" ) );
         });
 
         this.dom.savePost.on( "click", ( e ) => {
@@ -774,7 +667,7 @@ class Editor {
             if ( confirm( `Sure you want to delete the map "${this.data.map.name}"? This may affect other data referencing this map.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
                 this.dom.root.addClass( "is-deleting-map" );
-                this.closeMenus();
+                this.menus.closeMenus();
                 this.actions.resetActions();
                 ipcRenderer.send( "renderer-deletemap", this.data.map );
             }

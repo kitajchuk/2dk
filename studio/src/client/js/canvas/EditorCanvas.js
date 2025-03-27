@@ -901,7 +901,7 @@ class EditorCanvas {
 
 
     applyEvent ( coords ) {
-        this.editor.toggleMenu( "editor-mapevent-menu" );
+        this.editor.menus.toggleMenu( "editor-mapevent-menu" );
     }
 
 
@@ -1051,7 +1051,7 @@ class EditorCanvas {
             }
 
             if ( this.draggable.isSpacebar ) {
-                this.editor.blurSelectMenus();
+                this.editor.menus.blurSelectMenus();
             }
         });
 
