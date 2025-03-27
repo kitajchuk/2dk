@@ -151,7 +151,7 @@ class EditorCanvas {
 
     loadMap ( map, game ) {
         this.map = map;
-        this.game = window.lib2dk.Utils.copy( game );
+        this.game = game;
 
         const hero = this.game.heroes[ this.game.hero.sprite ];
         this.spawn = hero ? {

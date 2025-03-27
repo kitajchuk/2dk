@@ -12,7 +12,7 @@ import Sprite from "./Sprite";
 class NPC extends Sprite {
     constructor ( data, map ) {
         super( data, map );
-        this.states = Utils.copy( this.data.states );
+        this.states = structuredClone( this.data.states );
         this.dialogue = null;
         this.controls = {};
         // Initial cooldown period upon spawn (don't immediately move)
@@ -23,7 +23,7 @@ class NPC extends Sprite {
         this.attacked = false;
 
         if ( this.data.stats ) {
-            this.stats = Utils.copy( this.data.stats );
+            this.stats = structuredClone( this.data.stats );
         }
 
         this.shift();

@@ -310,7 +310,7 @@ var Dialogue = /*#__PURE__*/function () {
         this.element.classList.remove("_2dk__dialogue--".concat(this.data.type));
       }
 
-      this.data = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].copy(data);
+      this.data = structuredClone(data);
       this.element.classList.add("_2dk__dialogue--".concat(this.data.type));
       this.element.classList.add("is-texting");
       this.write(this.data.text.shift());
@@ -329,7 +329,7 @@ var Dialogue = /*#__PURE__*/function () {
 
       this.active = true;
       return new Promise(function (resolve, reject) {
-        _this2.data = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].copy(data);
+        _this2.data = structuredClone(data);
         _this2.isResolve = true;
         _this2.resolve = resolve;
         _this2.reject = reject;
@@ -2181,7 +2181,7 @@ var Map = /*#__PURE__*/function () {
               var lookupX = renderBox.x + x;
 
               if (_this5.data.textures[id][lookupY][lookupX]) {
-                var celsCopy = _Utils__WEBPACK_IMPORTED_MODULE_2__["default"].copy(_this5.data.textures[id][lookupY][lookupX]);
+                var celsCopy = structuredClone(_this5.data.textures[id][lookupY][lookupX]);
 
                 var activeTile = _this5.getActiveTile(id, [lookupX, lookupY], celsCopy); // Render the textures
                 // Shift foreground behind hero render if coords determine so
@@ -3094,13 +3094,9 @@ var Utils = {
       console.error.apply(console, args);
     }
   },
-  copy: function copy(obj) {
-    // Deep copy for non-mutation of origin `obj`
-    return JSON.parse(JSON.stringify(obj));
-  },
   merge: function merge(base, pr, f) {
-    base = Utils.copy(base);
-    pr = Utils.copy(pr);
+    base = structuredClone(base);
+    pr = structuredClone(pr);
     Object.keys(pr).forEach(function (i) {
       if (!base[i] || f) {
         base[i] = pr[i];
@@ -4417,7 +4413,7 @@ var TopView = /*#__PURE__*/function (_GameBox) {
 
 
         if (_this9.companion) {
-          var newCompanionData = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].copy(_this9.hero.data.companion);
+          var newCompanionData = structuredClone(_this9.hero.data.companion);
           newCompanionData.spawn = {
             x: _this9.hero.position.x,
             y: _this9.hero.position.y
@@ -5025,7 +5021,7 @@ var NPC = /*#__PURE__*/function (_Sprite) {
     (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, NPC);
 
     _this = _super.call(this, data, map);
-    _this.states = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].copy(_this.data.states);
+    _this.states = structuredClone(_this.data.states);
     _this.dialogue = null;
     _this.controls = {}; // Initial cooldown period upon spawn (don't immediately move)
     // requestAnimationFrame runs 60fps so we use (60 * seconds)
@@ -5036,7 +5032,7 @@ var NPC = /*#__PURE__*/function (_Sprite) {
     _this.attacked = false;
 
     if (_this.data.stats) {
-      _this.stats = _Utils__WEBPACK_IMPORTED_MODULE_5__["default"].copy(_this.data.stats);
+      _this.stats = structuredClone(_this.data.stats);
     }
 
     _this.shift();

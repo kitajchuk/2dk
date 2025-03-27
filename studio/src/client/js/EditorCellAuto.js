@@ -95,11 +95,11 @@ class EditorCellAuto {
                 if ( this.tiles.join( "" ) === tiles.join( "" ) ) {
                     caf( this.rafId );
                     this.rafId = null;
-                    resolve( window.lib2dk.Utils.copy( this.textures ) );
+                    resolve( structuredClone( this.textures ) );
 
                 } else {
                     this.tiles = tiles;
-                    this.call( window.lib2dk.Utils.copy( this.textures ) );
+                    this.call( structuredClone( this.textures ) );
                 }
             };
 

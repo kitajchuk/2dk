@@ -1191,7 +1191,7 @@ class TopView extends GameBox {
 
             // Create a new Companion
             if ( this.companion ) {
-                const newCompanionData = Utils.copy( this.hero.data.companion );
+                const newCompanionData = structuredClone( this.hero.data.companion );
                 newCompanionData.spawn = {
                     x: this.hero.position.x,
                     y: this.hero.position.y,

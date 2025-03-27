@@ -48,7 +48,7 @@ class Dialogue {
             this.element.classList.remove( `_2dk__dialogue--${this.data.type}` );
         }
 
-        this.data = Utils.copy( data );
+        this.data = structuredClone( data );
         this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
         this.element.classList.add( "is-texting" );
         this.write( this.data.text.shift() );
@@ -67,7 +67,7 @@ class Dialogue {
         this.active = true;
 
         return new Promise( ( resolve, reject ) => {
-            this.data = Utils.copy( data );
+            this.data = structuredClone( data );
             this.isResolve = true;
             this.resolve = resolve;
             this.reject = reject;

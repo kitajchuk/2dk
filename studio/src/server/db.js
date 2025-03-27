@@ -98,7 +98,7 @@ class DB {
     // Use _getMergedMap internally for resolving the Promise
     // with merged map pin data back to client
     _getMergedMap ( id ) {
-        const map = utils.copyObj( this.cache.get( "maps" ).find( ( map ) => {
+        const map = structuredClone( this.cache.get( "maps" ).find( ( map ) => {
             return ( map.id === id );
         }) );
 
@@ -519,7 +519,7 @@ class DB {
     }
 
     static getModel ( model ) {
-        return utils.copyObj( models[ model ] );
+        return structuredClone( models[ model ] );
     }
 
     static getGames () {

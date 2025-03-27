@@ -32,15 +32,9 @@ const Utils = {
     },
 
 
-    copy ( obj ) {
-        // Deep copy for non-mutation of origin `obj`
-        return JSON.parse( JSON.stringify( obj ) );
-    },
-
-
     merge ( base, pr, f ) {
-        base = Utils.copy( base );
-        pr = Utils.copy( pr );
+        base = structuredClone( base );
+        pr = structuredClone( pr );
 
         Object.keys( pr ).forEach( ( i ) => {
             if ( !base[ i ] || f ) {

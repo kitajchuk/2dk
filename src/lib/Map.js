@@ -466,7 +466,7 @@ class Map {
                         const lookupX = renderBox.x + x;
 
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
-                            const celsCopy = Utils.copy( this.data.textures[ id ][ lookupY ][ lookupX ] );
+                            const celsCopy = structuredClone( this.data.textures[ id ][ lookupY ][ lookupX ] );
                             const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
 
                             // Render the textures

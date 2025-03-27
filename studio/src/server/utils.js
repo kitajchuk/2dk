@@ -170,13 +170,6 @@ const removeDir = ( dir, cb ) => {
 };
 
 
-
-const copyObj = ( obj ) => {
-    // Deep copy for non-mutation of origin `obj`
-    return JSON.parse( JSON.stringify( obj ) );
-};
-
-
 module.exports = {
     isFile,
     readDir,
@@ -188,5 +181,4 @@ module.exports = {
     removeFile,
     removeDir,
     copyFile,
-    copyObj,
 };
