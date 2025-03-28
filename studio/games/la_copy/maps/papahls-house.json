@@ -30,7 +30,8 @@
             "layer": "background",
             "coords": [],
             "offsetX": 448,
-            "offsetY": 192
+            "offsetY": 192,
+            "friction": 2
         },
         {
             "group": "torch",

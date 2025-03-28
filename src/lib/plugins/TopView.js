@@ -888,14 +888,9 @@ class TopView extends GameBox {
 
     handleHeroTiles ( poi, dir, tiles ) {
         tiles.passive.forEach( ( tile ) => {
-            // Stairs are hard, you have to take it slow...
-            if ( tile.group === Config.tiles.STAIRS ) {
-                this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
-            }
-
-            // Grass is thick, it will slow you down a bit...
-            if ( tile.group === Config.tiles.GRASS ) {
-                this.hero.physics.maxv = this.hero.physics.controlmaxv / 1.5;
+            // Friction is a divider, it will slow you down a bit...
+            if ( tile.instance.data.friction ) {
+                this.hero.physics.maxv = this.hero.physics.controlmaxv / tile.instance.data.friction;
             }
         });
     }

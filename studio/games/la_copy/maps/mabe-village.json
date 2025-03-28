@@ -64,19 +64,8 @@
             "layer": "background",
             "coords": [],
             "offsetX": 256,
-            "offsetY": 384
-        },
-        {
-            "group": "grass",
-            "layer": "background",
-            "coords": [],
-            "offsetX": 64,
-            "offsetY": 2176,
-            "actions": [
-                {
-                    "verb": "attack"
-                }
-            ]
+            "offsetY": 384,
+            "friction": 2
         },
         {
             "group": "water",
@@ -118,6 +107,18 @@
                 {
                     "verb": "lift"
                 },
+                {
+                    "verb": "attack"
+                }
+            ]
+        },
+        {
+            "group": "grass",
+            "layer": "background",
+            "offsetX": 64,
+            "offsetY": 2176,
+            "friction": 1.5,
+            "actions": [
                 {
                     "verb": "attack"
                 }

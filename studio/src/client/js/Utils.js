@@ -166,7 +166,7 @@ const Utils = {
 
             // Numbers
             } else if ( fields[ i ].type === "number" || fields[ i ].type === "range" ) {
-                value = parseInt( fields[ i ].value, 10 );
+                value = parseFloat( fields[ i ].value );
 
             // Inputs / Selects
             } else {

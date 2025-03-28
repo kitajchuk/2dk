@@ -16,7 +16,6 @@ const paths = {
 const models = {
     game: require( path.join( paths.models, "game" ) ),
     map: require( path.join( paths.models, "map" ) ),
-    tile: require( path.join( paths.models, "tile" ) ),
 };
 const templates = {
     "sw": utils.readFile( path.join( paths.templates, "sw.js" ) ),
@@ -249,8 +248,6 @@ class DB {
             map.width = map.tilewidth * map.tilesize;
             map.image = `assets/tiles/${data.image}`;
             map.sound = data.sound ? `assets/sounds/${data.sound}` : map.sound;
-            // map.snapshot = `assets/snapshots/${map.id}.png`;
-            // map.thumbnail = `assets/snapshots/${map.id}-thumb.png`;
 
             for ( let y = map.tileheight; y--; ) {
                 map.textures.background[ y ] = [];
@@ -291,14 +288,13 @@ class DB {
             const idx = maps.indexOf( map );
             const file = path.join( this.mapsPath, `${map.id}.json` );
 
-            // map.id = Cache.slugify( data.name );
             map.tilesize = Number( data.tilesize );
             map.tilewidth = Number( data.tilewidth );
             map.tileheight = Number( data.tileheight );
             map.height = map.tileheight * map.tilesize;
             map.width = map.tilewidth * map.tilesize;
-            map.image = `assets/tiles/${data.image}`;
-            map.sound = data.sound ? `assets/sounds/${data.sound}` : map.sound;
+            map.image = data.image || map.image;
+            map.sound = data.sound || map.sound;
             map.snapshot = `assets/snapshots/${map.id}.png`;
             map.thumbnail = `assets/snapshots/${map.id}-thumb.png`;
 

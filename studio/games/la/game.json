@@ -5,7 +5,7 @@
     "height": 576,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 672,
+    "save": 673,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -781,6 +781,7 @@
         "maps/mysterious-forest.json",
         "maps/marins-house.json",
         "maps/mabe-village.json",
-        "maps/bottom-of-the-well.json"
+        "maps/bottom-of-the-well.json",
+        "maps/toronbo-shores-west.json"
     ]
 }

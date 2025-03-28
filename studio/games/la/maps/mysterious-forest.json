@@ -44,6 +44,7 @@
             "coords": [],
             "offsetX": 64,
             "offsetY": 2176,
+            "friction": 1.5,
             "actions": [
                 {
                     "verb": "attack"

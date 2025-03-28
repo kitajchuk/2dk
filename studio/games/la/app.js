@@ -4123,14 +4123,9 @@ var TopView = /*#__PURE__*/function (_GameBox) {
       var _this8 = this;
 
       tiles.passive.forEach(function (tile) {
-        // Stairs are hard, you have to take it slow...
-        if (tile.group === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].tiles.STAIRS) {
-          _this8.hero.physics.maxv = _this8.hero.physics.controlmaxv / 2;
-        } // Grass is thick, it will slow you down a bit...
-
-
-        if (tile.group === _Config__WEBPACK_IMPORTED_MODULE_6__["default"].tiles.GRASS) {
-          _this8.hero.physics.maxv = _this8.hero.physics.controlmaxv / 1.5;
+        // Friction is a divider, it will slow you down a bit...
+        if (tile.instance.data.friction) {
+          _this8.hero.physics.maxv = _this8.hero.physics.controlmaxv / tile.instance.data.friction;
         }
       });
     }

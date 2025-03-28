@@ -114,6 +114,9 @@ class EditorCanvas {
         if ( this.map ) {
             for ( const canvas in this.canvases ) {
                 this.clearCanvas( this.canvases[ canvas ] );
+                this.canvases[ canvas ].removeAttribute( "style" );
+                this.canvases[ canvas ].removeAttribute( "width" );
+                this.canvases[ canvas ].removeAttribute( "height" );
             }
 
             for ( const layer in this.contexts ) {
@@ -123,11 +126,13 @@ class EditorCanvas {
             }
 
             for ( const grid in this.cssgrids ) {
-                this.cssgrids[ grid ].style.removeProperty( "--grid-size" );
+                // this.cssgrids[ grid ].style.removeProperty( "--grid-size" );
+                this.cssgrids[ grid ].removeAttribute( "style" );
             }
 
             ["spawn", "event", "tiles"].forEach(( layer ) => {
                 this.layers[ layer ].innerHTML = "";
+                this.layers[ layer ].removeAttribute( "style" );
             });
 
             this.clearTileset();
@@ -1145,10 +1150,11 @@ class EditorCanvas {
 
             const data = Utils.parseFields( document.querySelectorAll( ".js-activetile-field" ) );
             const newData = {
-                layer: data.layer,
                 group: data.group,
+                layer: data.layer,
             };
             const isJump = data.action === window.lib2dk.Config.verbs.JUMP;
+            const isAttack = data.action === window.lib2dk.Config.verbs.ATTACK;
 
             // Coord X & Y are a position on the tileset
             // Could try using the currentTileCoord for now..
@@ -1162,6 +1168,10 @@ class EditorCanvas {
 
             if ( data.dur ) {
                 newData.dur = data.dur;
+            }
+
+            if ( data.friction ) {
+                newData.friction = data.friction;
             }
 
             if ( data.action ) {
@@ -1181,29 +1191,17 @@ class EditorCanvas {
 
                 newData.actions.push( firstAction );
 
-                if ( data.attack && !isJump ) {
+                // Secondary action for attack
+                if ( data.attack && !isAttack && !isJump ) {
                     newData.actions.push({
                         verb: window.lib2dk.Config.verbs.ATTACK,
                     });
                 }
             }
 
-            console.log( newData );
-
-            // Check for this Active Tiles group
-            // const tiles = this.map.tiles.find( ( obj ) => {
-            //     return ( obj.group === data.group );
-            // });
-
-            // if ( !tiles ) {
-            //     // TODO: Implement this for REALs...
-            //     // this.map.tiles.push( data );
-            //     // this.editor._saveMap();
-            //     this.editor.menus.removeMenus();
-
-            // } else {
-            //     alert( `The tile group ${data.group} already exists!` );
-            // }
+            this.map.tiles.push( newData );
+            this.drawActiveTiles();
+            this.editor.menus.removeMenus();
         });
     }
 

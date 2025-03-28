@@ -600,6 +600,7 @@ class Editor {
             if ( confirm( `Sure you want to delete the map "${this.data.map.name}"? This may affect other data referencing this map.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
                 this.dom.root.classList.add( "is-deleting-map" );        
+                this.canvas.reset();
                 this.menus.removeMenus();
                 this.actions.resetActions();
                 ipcRenderer.send( "renderer-deletemap", this.data.map );
@@ -641,13 +642,6 @@ class Editor {
                 return;
             }
 
-            const elemData = target.dataset;
-            const canFunction = ( elemData.type === "game" ) || this.canGameFunction();
-
-            if ( !canFunction ) {
-                return false;
-            }
-
             this.menus.removeMenus();
         });
 
@@ -659,25 +653,17 @@ class Editor {
             }
 
             const elemData = target.dataset;
-            const canFunction = ( elemData.type === "game" ) || this.canGameFunction();
-
-            if ( !canFunction ) {
-                return false;
-            }
-
             const postData = elemData.type === "game"
-                ? Utils.parseFields( document.querySelector( ".js-addgame-field" ) )
+                ? Utils.parseFields( document.querySelectorAll( ".js-addgame-field" ) )
                 // "map" is the only post besides game...
-                : Utils.parseFields( document.querySelector( ".js-addmap-field" ) );
+                : Utils.parseFields( document.querySelectorAll( ".js-addmap-field" ) );
 
-            if ( postData.name ) {
-                if ( elemData.type === "game" ) {
-                    this.postGame( postData );
+            if ( elemData.type === "game" ) {
+                this.postGame( postData );
 
-                // "map" is the only post besides game...
-                } else {
-                    this.postMap( postData );
-                }
+            // "map" is the only post besides game...
+            } else {
+                this.postMap( postData );
             }
         });
 

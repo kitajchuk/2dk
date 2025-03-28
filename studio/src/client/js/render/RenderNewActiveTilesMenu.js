@@ -77,82 +77,87 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
             </div>
             <!-- Attack is an internalized VERB object -->
             <div class="editor__setting">
-                <div class="editor__label">Action</div>
-                <div class="editor__setting--multi">
-                    <div>
-                        <div class="select">
-                            <select class="select__field js-activetile-field js-select" name="action">
-                                <option value="">Action</option>
-                                ${actions.map( ( action ) => `
-                                    <option value="${action}">${action}</option>
-                                ` ).join( "" )}
-                            </select>
-                            <span class="select__icon">
-                                ${window.feather.icons[ "chevron-down" ].toSvg()}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="editor__checkbox">
-                        <label class="checkbox">
-                            <input class="check js-activetile-field" type="checkbox" name="attack" />
-                            <span class="label">Attack</span>
-                        </label>
-                    </div>
+                <div class="editor__label">Action (omit if tile is passive, e.g. grass)</div>
+                <div class="select">
+                    <select class="select__field js-activetile-field js-select" name="action">
+                        <option value="">Action</option>
+                        ${actions.map( ( action ) => `
+                            <option value="${action}">${action}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
                 </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-activetile-field" type="checkbox" name="attack" />
+                        <span class="label">Attack (for secondary "attack" action if another action is selected, e.g. something that can be lifted can also be attacked)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Friction (for passive tiles, e.g. grass or stairs to slow down movement)</div>
+                <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="2" step="0.5" list="friction-list" name="friction" />
+                <datalist id="friction-list">
+                    <option value="0">0</option>
+                    <option value="0.5">0.5</option>
+                    <option value="1">1</option>
+                    <option value="1.5">1.5</option>
+                    <option value="2">2</option>
+                </datalist>
             </div>
             <!-- Layer is determined by active layer in Sidebar -->
             <!-- Coords is the current canvas selectionCoords -->
             <!-- Offset X & Y will be picked from tileset UI -->
-            <div class="editor__setting editor__setting--multi">
-                <div>
-                    <div class="editor__label">Animation Steps</div>
-                    <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="5" step="1" list="steps-x-list" name="stepsX" />
-                    <datalist id="steps-x-list">
-                        <option value="0" label="0">0</option>
-                        <option value="1" label="1">1</option>
-                        <option value="2" label="2">2</option>
-                        <option value="3" label="3">3</option>
-                        <option value="4" label="4">4</option>
-                        <option value="5" label="5">5</option>
-                    </datalist>
-                </div>
-                <div>
-                    <div class="editor__label">Animation Duration</div>
-                    <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="2000" step="500" list="dur-list" name="dur" />
-                    <datalist id="dur-list">
-                        <option value="0" label="0">0</option>
-                        <option value="500" label="0.5s">500</option>
-                        <option value="1000" label="1s">1000</option>
-                        <option value="1500" label="1.5s">1500</option>
-                        <option value="2000" label="2s">2000</option>
-                    </datalist>
-                </div>
+            <div class="editor__setting">
+                <div class="editor__label">Animation Steps</div>
+                <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="5" step="1" list="steps-x-list" name="stepsX" />
+                <datalist id="steps-x-list">
+                    <option value="0" label="0">0</option>
+                    <option value="1" label="1">1</option>
+                    <option value="2" label="2">2</option>
+                    <option value="3" label="3">3</option>
+                    <option value="4" label="4">4</option>
+                    <option value="5" label="5">5</option>
+                </datalist>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Animation Duration</div>
+                <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="2000" step="500" list="dur-list" name="dur" />
+                <datalist id="dur-list">
+                    <option value="0" label="0">0</option>
+                    <option value="500" label="0.5s">500</option>
+                    <option value="1000" label="1s">1000</option>
+                    <option value="1500" label="1.5s">1500</option>
+                    <option value="2000" label="2s">2000</option>
+                </datalist>
             </div>
             <!-- If the Action is jump we need an elevation -->
-            <div class="editor__setting editor__setting--multi">
-                <div>
-                    <div class="editor__label">Elevation (for "jump" action)</div>
-                    <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="3" step="1" list="elevation-list" name="elevation" />
-                    <datalist id="elevation-list">
-                        <option value="0" label="0">0</option>
-                        <option value="1" label="1">1</option>
-                        <option value="2" label="2">2</option>
-                        <option value="3" label="3">3</option>
-                    </datalist>
-                </div>
-                <div>
-                    <div class="editor__label">Direction (for "jump" action)</div>
-                    <div class="select">
-                        <select class="select__field js-activetile-field js-select" name="direction">
-                            <option value="">Direction</option>
-                            ${facing.map( ( facing ) => `
-                                <option value="${facing}">${facing}</option>
-                            ` ).join( "" )}
-                        </select>
-                        <span class="select__icon">
-                            ${window.feather.icons[ "chevron-down" ].toSvg()}
-                        </span>
-                    </div>
+            <div class="editor__setting">
+                <div class="editor__label">Elevation (for "jump" action)</div>
+                <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="3" step="1" list="elevation-list" name="elevation" />
+                <datalist id="elevation-list">
+                    <option value="0" label="0">0</option>
+                    <option value="1" label="1">1</option>
+                    <option value="2" label="2">2</option>
+                    <option value="3" label="3">3</option>
+                </datalist>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Direction (for "jump" action)</div>
+                <div class="select">
+                    <select class="select__field js-activetile-field js-select" name="direction">
+                        <option value="">Direction</option>
+                        ${facing.map( ( facing ) => `
+                            <option value="${facing}">${facing}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
                 </div>
             </div>
             <div class="editor__setting">

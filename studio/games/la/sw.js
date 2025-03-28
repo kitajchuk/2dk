@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v672";
+const CACHE_NAME = "v673";
 const CACHE_URLS = [
     "",
     "index.html",
@@ -41,6 +41,7 @@ const CACHE_URLS = [
     "maps/marins-house.json",
     "maps/mabe-village.json",
     "maps/bottom-of-the-well.json",
+    "maps/toronbo-shores-west.json",
 ];
 
 
