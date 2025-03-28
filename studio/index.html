@@ -62,13 +62,13 @@
                 <!-- Toolbar-->
                 <div class="editor__toolbar">
                     <div class="editor__toolbar__tools">
-                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Draw Tiles (B)">
+                        <button class="editor__action js-edit-action" data-action="brush" data-key="66" title="Draw (B)">
                             <i data-feather="edit-2"></i>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Erase Tiles (E)">
+                        <button class="editor__action js-edit-action" data-action="erase" data-key="69" title="Erase (E)">
                             <i data-feather="trash"></i>
                         </button>
-                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select Tiles (X)">
+                        <button class="editor__action js-edit-action" data-action="select" data-key="88" title="Select (X)">
                             <i data-feather="mouse-pointer"></i>
                         </button>
                     </div>
@@ -78,6 +78,9 @@
                         </button>
                         <button class="editor__action js-edit-action" data-action="spawn" title="Add Spawn Point">
                             <i data-feather="map-pin"></i>
+                        </button>
+                        <button class="editor__action js-edit-action" data-action="tiles" title="Add Active Tiles">
+                            <i data-feather="activity"></i>
                         </button>
                     </div>
                 </div>
@@ -93,6 +96,7 @@
                             <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
                             <div class="editor__canvas__layer editor__event" id="editor-event"></div>
                             <div class="editor__canvas__layer editor__spawn" id="editor-spawn"></div>
+                            <div class="editor__canvas__layer editor__tiles" id="editor-tiles"></div>
                             <div class="editor__canvas__layer editor__obj" id="editor-obj"></div>
                             <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
                             <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
@@ -184,7 +188,7 @@
                             </div>
                             <div class="editor__checkbox">
                                 <label class="checkbox">
-                                    <input class="check" type="checkbox" name="tile" id="editor-activetiles-checkbox" />
+                                    <input class="check js-map-metalayer" type="checkbox" name="tile" checked disabled />
                                     <i data-feather="grid"></i>
                                     <span class="label">Active Tiles</span>
                                 </label>

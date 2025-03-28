@@ -1,7 +1,25 @@
-const renderNewActiveTilesMenu = ({ facing, actions }) => {
+const Config = require( "../Config" );
+
+
+const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }) => {
+    let tile = map.textures.background[ coords[ 1 ] ][ coords[ 0 ] ];
+    let layer = Config.EditorLayers.modes.BACKGROUND;
+
+    if ( Array.isArray( tile ) ) {
+        tile = tile[ tile.length - 1 ];
+
+    } else {
+        // Cannot make an empty tile an active tile...
+        alert( "Cannot make an empty tile an active tile..." );
+        return;
+    }
+
+    const offsetX = tile[ 0 ];
+    const offsetY = tile[ 1 ];
+
     return `
         <div class="editor__menu js-menu is-active" id="editor-activetiles-menu">
-            <button class="button button--grey button--box editor__close-button js-post-cancel" data-type="activetiles">
+            <button class="button button--grey button--box editor__close-button js-post-cancel">
                 ${window.feather.icons.x.toSvg()}
             </button>
             <div class="editor__setting">
@@ -15,23 +33,45 @@ const renderNewActiveTilesMenu = ({ facing, actions }) => {
                     How Active Tiles work:<br />
                     Active Tiles can be frame animated background or foreground tiles with their own timing function. 
                     They can also be interaction tiles that can be lifted, tossed, pushed and even attacked. 
-                    The Discover option is for dynamic Active Tiles in the game engine. 
-                    With this setting you can select just a single tile in the Editor, 
+                    You can select just a single tile in the Editor, 
                     apply your settings and all matching tiles on the map will become Active Tiles in the live game engine.
                 </div>
             </div>
             <!-- Discover allows dynamic Active Tiles based on tileset position -->
+            <input class="js-activetile-field" type="hidden" name="tile" value="${JSON.stringify( tile )}" />
             <div class="editor__setting">
-                <div class="editor__label">Group</div>
-                <div class="editor__setting--multi">
-                    <div>
-                        <input class="input editor__field js-activetile-field" type="text" placeholder="Group" name="group" />
+                <style>
+                    #editor-activetile-image {
+                        width: ${map.tilesize}px;
+                        height: ${map.tilesize}px;
+                        margin: 0 auto;
+                        background-image: url(./games/${game.id}/${map.image});
+                        background-position: -${offsetX}px -${offsetY}px;
+                    }
+                </style>
+                <div id="editor-activetile-image"></div>
+            </div>
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__label">Group</div>
+                    <div class="editor__setting">
+                        <div>
+                            <input class="input editor__field js-activetile-field" type="text" placeholder="Group" name="group" />
+                        </div>
                     </div>
-                    <div class="editor__checkbox">
-                        <label class="checkbox">
-                            <input class="check js-activetile-field" type="checkbox" name="discover" />
-                            <span class="label">Discover</span>
-                        </label>
+                </div>
+                <div>
+                    <div class="editor__label">Layer</div>
+                    <div class="select">
+                        <select class="select__field js-activetile-field js-select js-select-layer" name="layer">
+                            <option value="">Layer</option>
+                            ${layers.map( ( l ) => `
+                                <option value="${l}" ${l === layer ? "selected" : "disabled"}>${l}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -66,21 +106,42 @@ const renderNewActiveTilesMenu = ({ facing, actions }) => {
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">Steps (keyframes)</div>
-                    <input class="input editor__field js-activetile-field" type="number" placeholder="Steps" name="stepsX" />
+                    <input class="range editor__field js-activetile-field js-range" data-target="" value="0" type="range" min="0" max="5" step="1" list="steps-x-list" name="stepsX" />
+                    <datalist id="steps-x-list">
+                        <option value="0" label="0">0</option>
+                        <option value="1" label="1">1</option>
+                        <option value="2" label="2">2</option>
+                        <option value="3" label="3">3</option>
+                        <option value="4" label="4">4</option>
+                        <option value="5" label="5">5</option>
+                    </datalist>
                 </div>
                 <div>
                     <div class="editor__label">Duration (milliseconds)</div>
-                    <input class="input editor__field js-activetile-field" type="number" placeholder="Duration" name="dur" />
+                    <input class="range editor__field js-activetile-field js-range" data-target="" value="0" type="range" min="0" max="2000" step="500" list="dur-list" name="dur" />
+                    <datalist id="dur-list">
+                        <option value="0" label="0">0</option>
+                        <option value="500" label="500">500</option>
+                        <option value="1000" label="1000">1000</option>
+                        <option value="1500" label="1500">1500</option>
+                        <option value="2000" label="2000">2000</option>
+                    </datalist>
                 </div>
             </div>
             <!-- If the Action is jump we need an elevation -->
             <div class="editor__setting editor__setting--multi">
                 <div>
-                    <div class="editor__label">Elevation (verb: jump)</div>
-                    <input class="input editor__field js-activetile-field" type="number" placeholder="Elevation" name="elevation" />
+                    <div class="editor__label">Elevation (for "jump" action)</div>
+                    <input class="range editor__field js-activetile-field js-range" data-target="" value="0" type="range" min="0" max="3" step="1" list="elevation-list" name="elevation" />
+                    <datalist id="elevation-list">
+                        <option value="0" label="0">0</option>
+                        <option value="1" label="1">1</option>
+                        <option value="2" label="2">2</option>
+                        <option value="3" label="3">3</option>
+                    </datalist>
                 </div>
                 <div>
-                    <div class="editor__label">Direction (elevation)</div>
+                    <div class="editor__label">Direction (for "jump" action)</div>
                     <div class="select">
                         <select class="select__field js-activetile-field js-select js-select-facing" name="direction">
                             <option value="">Direction</option>
@@ -95,7 +156,7 @@ const renderNewActiveTilesMenu = ({ facing, actions }) => {
                 </div>
             </div>
             <div class="editor__setting">
-                <button class="button editor__button editor__upload-button js-post-update" data-type="activetiles">Create</button>
+                <button class="button editor__button editor__upload-button js-activetiles-post">Create</button>
             </div>
         </div>
     `;

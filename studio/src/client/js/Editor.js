@@ -582,14 +582,14 @@ class Editor {
         });
 
         $document.on( "click", ".js-post-cancel", ( e ) => {
-            const targ = window.hobo( e.target );
-            const elem = targ.is( ".js-post-cancel" ) ? targ : targ.closest( ".js-post-cancel" );
-            const elemData = elem.data();
-            const canFunction = ( elemData.type === "game" ) || this.canGameFunction();
+            // const targ = window.hobo( e.target );
+            // const elem = targ.is( ".js-post-cancel" ) ? targ : targ.closest( ".js-post-cancel" );
+            // const elemData = elem.data();
+            // const canFunction = ( elemData.type === "game" ) || this.canGameFunction();
 
-            if ( !canFunction ) {
-                return false;
-            }
+            // if ( !canFunction ) {
+            //     return false;
+            // }
 
             this.menus.removeMenus();
         });
@@ -617,21 +617,6 @@ class Editor {
                 } else {
                     this.postMap( postData );
                 }
-            }
-        });
-
-        $document.on( "click", ".js-post-update", ( e ) => {
-            const targ = window.hobo( e.target );
-            const elem = targ.is( ".js-post-update" ) ? targ : targ.closest( ".js-post-update" );
-            const elemData = elem.data();
-
-            if ( !this.canMapFunction() ) {
-                return false;
-            }
-
-            if ( elemData.type === "activetiles" ) {
-                const activeTileData = Utils.parseFields( window.hobo( ".js-activetile-field" ) );
-                this.canvas.applyActiveTiles( activeTileData );
             }
         });
 

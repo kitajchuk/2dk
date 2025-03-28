@@ -13,6 +13,7 @@ class EditorLayers {
         this.meta = {
             [ Config.EditorLayers.modes.SPAWN ]: true,
             [ Config.EditorLayers.modes.EVENT ]: true,
+            [ Config.EditorLayers.modes.TILES ]: true,
         };
 
         this._bind();

@@ -403,6 +403,7 @@
 
     &.is-spawn-tool,
     &.is-event-tool,
+    &.is-tiles-tool,
     &.is-brush-tool {
         cursor: var( --cursor );
     }
@@ -418,7 +419,8 @@
     &.is-background,
     &.is-foreground,
     &.is-spawn-tool,
-    &.is-event-tool {
+    &.is-event-tool,
+    &.is-tiles-tool {
         #editor-mapgrid-canvas {
             display: block;
         }
@@ -476,7 +478,8 @@
     pointer-events: none;
 }
 .editor__spawn,
-.editor__event {
+.editor__event,
+.editor__tiles {
     z-index: 4;
     pointer-events: none;
 }
@@ -499,6 +502,10 @@
     &.is-event {
         border: 1px solid var( --blue );
         background-color: rgba( 23, 149, 212, 0.5 );
+    }
+    &.is-tiles {
+        border: 1px solid var( --pink );
+        background-color: rgba( 244, 154, 193, 0.5 );
     }
     &.is-hit {
         border: 1px solid var( --red );
@@ -696,7 +703,7 @@
     top: 50%;
     transform: translate3d( -50%, -50%, 0 );
     width: 100%;
-    max-width: 480px;
+    max-width: 500px;
     z-index: -1;
     pointer-events: none;
     display: none;

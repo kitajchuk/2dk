@@ -95,6 +95,18 @@ class EditorCursor {
     }
 
 
+    showTilesCursor ( coords ) {
+        this.cursors.dom.style.setProperty( "--z", 5 );
+        this.cursors.dom.style.setProperty( "--o", 1 );
+        this.cursors.dom.style.setProperty( "--x", `${coords[ 0 ] * this.map.tilesize}px` );
+        this.cursors.dom.style.setProperty( "--y", `${coords[ 1 ] * this.map.tilesize}px` );
+        this.cursors.dom.style.setProperty( "--w", `${this.map.tilesize}px` );
+        this.cursors.dom.style.setProperty( "--h", `${this.map.tilesize}px` );
+        this.cursors.dom.classList.add( "editor__block", "is-tiles" );
+        this.cursors.dom.innerHTML = window.feather.icons.activity.toSvg();
+    }
+
+
     showSpawnCursor ( coords ) {
         const hitSpawn = this.editorCanvas.getHitSpawn();
         const newSpawn = this.editorCanvas.getNewSpawn();
@@ -130,7 +142,7 @@ class EditorCursor {
         this.cursors.dom.style.removeProperty( "--y" );
         this.cursors.dom.style.removeProperty( "--w" );
         this.cursors.dom.style.removeProperty( "--h" );
-        this.cursors.dom.classList.remove( "editor__block", "is-spawn", "is-event", "is-hidden" );
+        this.cursors.dom.classList.remove( "editor__block", "is-spawn", "is-event", "is-tiles", "is-hidden" );
         this.cursors.dom.innerHTML = "";
     }
 

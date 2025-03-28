@@ -11,6 +11,7 @@ const Config = {
             SELECT: "select",
             SPAWN: "spawn",
             EVENT: "event",
+            TILES: "tiles",
         },
     },
     EditorCanvas: {
@@ -29,6 +30,7 @@ const Config = {
             OBJ: "obj",
             SPAWN: "spawn",
             EVENT: "event",
+            TILES: "tiles",
         },
     },
     keys: {

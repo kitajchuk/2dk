@@ -11,15 +11,12 @@ import FX from "./sprites/FX";
 
 const stopVerbs = [
     Config.verbs.GRAB,
-    Config.verbs.MOVE,
     Config.verbs.LIFT,
-    Config.verbs.BOMB,
 ];
 const actionVerbs = [
     Config.verbs.LIFT,
     Config.verbs.PULL,
     Config.verbs.PUSH,
-    Config.verbs.BOMB,
     Config.verbs.FALL,
     Config.verbs.ATTACK,
 ];

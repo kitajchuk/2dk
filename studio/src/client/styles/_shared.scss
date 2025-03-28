@@ -24,6 +24,17 @@ a {
 
 
 
+datalist {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+}
+.range {
+    width: 100%;
+}
+
+
+
 .icon {
     font-size: var( --font-size-icons );
     cursor: pointer;

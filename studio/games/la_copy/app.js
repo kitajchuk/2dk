@@ -31,15 +31,11 @@ var Config = {
     PUSH: "push",
     PULL: "pull",
     GRAB: "grab",
-    MOVE: "move",
     LIFT: "lift",
-    OPEN: "open",
     WALK: "walk",
     FACE: "face",
-    SWIM: "swim",
     JUMP: "jump",
     FALL: "fall",
-    BOMB: "bomb",
     THROW: "throw",
     SMASH: "smash",
     ATTACK: "attack"
@@ -585,8 +581,8 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 
-var stopVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.GRAB, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.MOVE, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.BOMB];
-var actionVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.PULL, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.PUSH, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.BOMB, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.FALL, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.ATTACK]; // @see notes in ./Config.js as these are related to that line of thought...
+var stopVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.GRAB, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT];
+var actionVerbs = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.LIFT, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.PULL, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.PUSH, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.FALL, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].verbs.ATTACK]; // @see notes in ./Config.js as these are related to that line of thought...
 
 var footTiles = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.STAIRS, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.WATER, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.GRASS, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.HOLES];
 var cameraTiles = [_Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.STAIRS, _Config__WEBPACK_IMPORTED_MODULE_4__["default"].tiles.GRASS];

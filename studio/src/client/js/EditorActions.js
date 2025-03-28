@@ -5,10 +5,16 @@ const Config = require( "./Config" );
 class EditorActions {
     constructor ( editor ) {
         this.editor = editor;
+        this.mode = null;
+        this.keysDisabled = false;
+        this.specialTools = [
+            Config.EditorActions.modes.SPAWN,
+            Config.EditorActions.modes.EVENT,
+            Config.EditorActions.modes.TILES,
+        ];
+
         this.$actions = window.hobo( ".js-edit-action" );
         this.$document = window.hobo( document );
-        this.keysDisabled = false;
-        this.mode = null;
         
         this._bind();
     }

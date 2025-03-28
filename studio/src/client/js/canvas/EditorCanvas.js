@@ -41,7 +41,6 @@ class EditorCanvas {
             moveCoords: document.getElementById( "editor-move-coords" ),
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
-            activetiles: document.getElementById( "editor-activetiles-checkbox" ),
         };
         this.pickers = {
             $all: window.hobo( ".js-picker" ),
@@ -57,6 +56,7 @@ class EditorCanvas {
             obj: document.getElementById( "editor-obj" ),
             spawn: document.getElementById( "editor-spawn" ),
             event: document.getElementById( "editor-event" ),
+            tiles: document.getElementById( "editor-tiles" ),
         };
         this.contexts = {
             background: null,
@@ -79,11 +79,11 @@ class EditorCanvas {
         this.draggable = new EditorDraggable( this );
 
         this.bindMenuEvents();
-        this.bindTempEvents();
         this.bindMapgridEvents();
         this.bindColliderEvents();
         this.bindDocumentEvents();
         this.bindTilepaintEvents();
+        this.bindActiveTilesMenuPost();
     }
 
 
@@ -209,6 +209,7 @@ class EditorCanvas {
             this.drawObjects();
             this.drawSpawns();
             this.drawEvents();
+            this.drawActiveTiles();
             this.renderNPCLoadout();
             this.renderObjectLoadout();
         });
@@ -389,6 +390,14 @@ class EditorCanvas {
         }).join( "" );
     }
 
+
+    drawActiveTiles () {
+        this.layers.tiles.innerHTML = this.map.tiles.map( ( tile ) => {
+            return "";
+        }).join( "" );
+    }
+
+
     drawColliders () {
         this.map.collision.forEach( ( collider ) => {
             renderTile(
@@ -475,66 +484,6 @@ class EditorCanvas {
         );
     }
 
-
-    applyActiveTiles ( data ) {
-        // Coord X & Y are a position on the tileset
-        // Could try using the currentTileCoord for now..
-        // TODO: Implement this for REALs...
-        const coord = [ 0, 0 ];
-        data.offsetX = coord[ 0 ] * this.map.tilesize;
-        data.offsetY = coord[ 1 ] * this.map.tilesize;
-
-        // Layer is determined by active layer in Sidebar
-        data.layer = this.editor.layers.mode;
-
-        // Discover allows dynamic Active Tiles based on tileset position
-        if ( data.discover ) {
-            data.coords = [];
-            delete data.discover;
-
-        } else {
-            // TODO: ...?
-        }
-
-        // Action is an internalized VERB object (dynamic)
-        if ( data.action ) {
-            data.action = {
-                verb: data.action,
-            };
-        }
-
-        // Attack is an internalized VERB object (static)
-        if ( data.attack ) {
-            data.attack = {
-                verb: window.lib2dk.Config.verbs.ATTACK,
-            };
-        }
-
-        // Normalize integers
-        if ( data.dur ) {
-            data.dur = parseInt( data.dur, 10 );
-        }
-
-        if ( data.stepsX ) {
-            data.stepsX = parseInt( data.stepsX, 10 );
-        }
-
-        // Check for this Active Tiles group
-        const tiles = this.map.tiles.find( ( obj ) => {
-            return ( obj.group === data.group );
-        });
-
-        if ( !tiles ) {
-            // TODO: Implement this for REALs...
-            // this.map.tiles.push( data );
-            // this.editor._saveMap();
-            this.editor.menus.removeMenus();
-
-        } else {
-            alert( `The tile group ${data.group} already exists!` );
-        }
-    }
-
     setActiveTool ( tool ) {
         this.draggable.resetTool();
 
@@ -542,7 +491,7 @@ class EditorCanvas {
             this.draggable.setTool( tool );
         }
 
-        if ( tool === Config.EditorActions.modes.SPAWN || tool === Config.EditorActions.modes.EVENT ) {
+        if ( this.editor.actions.specialTools.includes( tool ) ) {
             this.clearTileset();
             this.cursor.reset();
             this.editor.layers.resetLayers();
@@ -575,7 +524,7 @@ class EditorCanvas {
                 this.clearTileset();
             }
 
-            if ( this.editor.actions.mode === Config.EditorActions.modes.SPAWN || this.editor.actions.mode === Config.EditorActions.modes.EVENT ) {
+            if ( this.editor.actions.specialTools.includes( this.editor.actions.mode ) ) {
                 this.editor.actions.resetActions();
             }
         }
@@ -916,6 +865,21 @@ class EditorCanvas {
     }
 
 
+    applyActiveTiles ( coords ) {
+        this.editor.menus.renderMenu( "editor-activetiles-menu", {
+            map: this.map,
+            game: this.game,
+            coords,
+            facing: Utils.getOptionData( window.lib2dk.Config.facing ),
+            actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
+            layers: [
+                Config.EditorLayers.modes.BACKGROUND,
+                Config.EditorLayers.modes.FOREGROUND,
+            ],
+        });
+    }
+
+
     _applyObjectOrNPC ( coords, objectOrNPC ) {
         const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
 
@@ -1041,6 +1005,73 @@ class EditorCanvas {
     getFoundCoords ( source, ref ) {
         return source.find( ( coord ) => {
             return ( coord[ 0 ] === ref[ 0 ] && coord[ 1 ] === ref[ 1 ] );
+        });
+    }
+
+
+    bindActiveTilesMenuPost () {
+        window.hobo( document ).on( "click", ".js-activetiles-post", ( e ) => {
+            const data = Utils.parseFields( window.hobo( ".js-activetile-field" ) );
+            const newData = {
+                layer: data.layer,
+                group: data.group,
+            };
+            const isJump = data.action === window.lib2dk.Config.verbs.JUMP;
+
+            // Coord X & Y are a position on the tileset
+            // Could try using the currentTileCoord for now..
+            const tile = JSON.parse( data.tile );
+            newData.offsetX = tile[ 0 ];
+            newData.offsetY = tile[ 1 ];
+
+            if ( data.stepsX ) {
+                newData.stepsX = data.stepsX;
+            }
+
+            if ( data.dur ) {
+                newData.dur = data.dur;
+            }
+
+            if ( data.action ) {
+                newData.actions = [];
+
+                const firstAction = {
+                    verb: data.action,
+                };
+
+                if ( data.elevation && isJump ) {
+                    newData.elevation = data.elevation;
+                    
+                    if ( data.direction ) {
+                        firstAction.dir = data.direction;
+                    }
+                }
+
+                newData.actions.push( firstAction );
+
+                if ( data.attack && !isJump ) {
+                    newData.actions.push({
+                        verb: window.lib2dk.Config.verbs.ATTACK,
+                    });
+                }
+            }
+
+            console.log( newData );
+
+            // Check for this Active Tiles group
+            // const tiles = this.map.tiles.find( ( obj ) => {
+            //     return ( obj.group === data.group );
+            // });
+
+            // if ( !tiles ) {
+            //     // TODO: Implement this for REALs...
+            //     // this.map.tiles.push( data );
+            //     // this.editor._saveMap();
+            //     this.editor.menus.removeMenus();
+
+            // } else {
+            //     alert( `The tile group ${data.group} already exists!` );
+            // }
         });
     }
 
@@ -1283,6 +1314,9 @@ class EditorCanvas {
 
                     } else if ( this.canApplyEvent() ) {
                         this.cursor.showEventCursor( coords );
+
+                    } else if ( this.canApplyActiveTiles() ) {
+                        this.cursor.showTilesCursor( coords );
                     }
                 }
             }
@@ -1311,6 +1345,9 @@ class EditorCanvas {
 
                 } else if ( this.canApplyEvent() ) {
                     this.applyEvent( coords );
+
+                } else if ( this.canApplyActiveTiles() ) {
+                    this.applyActiveTiles( coords );
                 }
             }
 
@@ -1341,16 +1378,6 @@ class EditorCanvas {
         ipcRenderer.on( "menu-contextmenu", ( e, action ) => {
             this.isMouseDownCanvas = false;
             this.contextCoords = null;
-        });
-    }
-
-
-    bindTempEvents () {
-        this.dom.activetiles.addEventListener( "change", ( e ) => {
-            this.editor.menus.renderMenu( "editor-activetiles-menu", {
-                facing: Utils.getOptionData( window.lib2dk.Config.facing ),
-                actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
-            });
         });
     }
 
@@ -1395,7 +1422,13 @@ class EditorCanvas {
         );
     }
     
-    
+
+    canApplyActiveTiles () {
+        return (
+            this.editor.actions.mode === Config.EditorActions.modes.TILES &&
+            this.editor.layers.meta[ Config.EditorLayers.modes.EVENT ]
+        );
+    }
 
 
     canApplyCollider () {

@@ -6,7 +6,5 @@ module.exports = {
     "offsetY": 0,
     "stepsX": 0,
     "dur": 2000,
-    "action": {},
-    "attack": {},
-    "discover": true
+    "action": {}
 };

@@ -45,6 +45,7 @@ class EditorDraggable {
             "is-obj",
             "is-spawn",
             "is-event",
+            "is-tiles",
             "is-collision",
             "is-background",
             "is-foreground",
@@ -64,6 +65,7 @@ class EditorDraggable {
             "is-erase-tool",
             "is-spawn-tool",
             "is-event-tool",
+            "is-tiles-tool",
             "is-select-tool",
         ];
         this.canvasPane.classList.remove( ...classes );

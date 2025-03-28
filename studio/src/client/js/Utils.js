@@ -160,7 +160,7 @@ const Utils = {
                 value = fields[ i ].checked;
 
             // Numbers
-            } else if ( fields[ i ].type === "number" ) {
+            } else if ( fields[ i ].type === "number" || fields[ i ].type === "range" ) {
                 value = parseInt( fields[ i ].value, 10 );
 
             // Inputs / Selects
