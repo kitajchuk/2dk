@@ -126,7 +126,7 @@ class EditorCanvas {
                 this.cssgrids[ grid ].style.removeProperty( "--grid-size" );
             }
 
-            ["spawn", "event"].forEach(( layer ) => {
+            ["spawn", "event", "tiles"].forEach(( layer ) => {
                 this.layers[ layer ].innerHTML = "";
             });
 
@@ -185,7 +185,7 @@ class EditorCanvas {
             this.layers[ layer ].appendChild( this.contexts[ layer ].canvas );
         }
 
-        ["spawn", "event"].forEach(( layer ) => {
+        ["spawn", "event", "tiles"].forEach(( layer ) => {
             this.layers[ layer ].style.width = `${this.map.width}px`;
             this.layers[ layer ].style.height = `${this.map.height}px`;
         });
@@ -406,19 +406,12 @@ class EditorCanvas {
 
             for ( let x = row.length; x--; ) {
                 const textureTile = row[ x ];
-
-                if ( Array.isArray( textureTile ) ) {
-                    const topTile = textureTile[ textureTile.length - 1 ];
-
-                    const tileMatch = this.map.tiles.find( ( tile ) => {
-                        return tile.offsetX === topTile[ 0 ] && tile.offsetY === topTile[ 1 ];
-                    });
-
-                    if ( tileMatch ) {
-                        activeTiles.push(
-                            renderActiveTile( [ x, y ], this.map )
-                        );
-                    }
+                const tileMatch = this.getTextureTileMatch( textureTile );
+                
+                if ( tileMatch ) {
+                    activeTiles.push(
+                        renderActiveTile( [ x, y ], this.map )
+                    );
                 }
             }
         }
@@ -841,14 +834,12 @@ class EditorCanvas {
     getHitSpawn () {
         const cursorPoint = this.getCursorPoint();
         return this.map.spawn.find( ( spawn ) => {
-            const spawnSprite = {
+            return window.lib2dk.Utils.collide( cursorPoint, {
                 x: spawn.x,
                 y: spawn.y,
                 width: this.spawn.width,
                 height: this.spawn.height,
-            };
-
-            return window.lib2dk.Utils.collide( cursorPoint, spawnSprite );
+            });
         });
     }
 
@@ -862,6 +853,46 @@ class EditorCanvas {
         };
     }
 
+
+    getHitEvent () {
+        const cursorPoint = this.getCursorPoint();
+        return this.map.events.find( ( event ) => {
+            return window.lib2dk.Utils.collide( cursorPoint, {
+                x: event.coords[ 0 ] * this.map.tilesize,
+                y: event.coords[ 1 ] * this.map.tilesize,
+                width: this.map.tilesize,
+                height: this.map.tilesize,
+            });
+        });
+    }
+
+
+    getTextureTileMatch ( textureTile ) {
+        if ( Array.isArray( textureTile ) ) {
+            const topTile = textureTile[ textureTile.length - 1 ];
+
+            const tileMatch = this.map.tiles.find( ( tile ) => {
+                return tile.offsetX === topTile[ 0 ] && tile.offsetY === topTile[ 1 ];
+            });
+
+            if ( tileMatch ) {
+                return tileMatch;
+            }
+        }
+    }
+
+
+    getHitTile ( coords ) {
+        // Enforcing background texture only for now
+        // This is also enforced in the active tiles create menu
+        const texture = this.map.textures.background;
+        const textureTile = texture[ coords[ 1 ] ][ coords[ 0 ] ];
+        const tileMatch = this.getTextureTileMatch( textureTile );
+
+        if ( tileMatch ) {
+            return { coords, tile: tileMatch };
+        }
+    }
 
 
     applySpawn ( coords ) { 
@@ -888,29 +919,69 @@ class EditorCanvas {
 
 
     applyEvent ( coords ) {
-        this.editor.menus.renderMenu( "editor-mapevent-menu", {
-            maps: Utils.getOptionData( this.editor.data.maps ).filter( ( map ) => {
-                return map.id !== this.map.id;
-            }),
-            facing: Utils.getOptionData( window.lib2dk.Config.facing ),
-            events: Utils.getOptionData( window.lib2dk.Config.events ),
-            coords,
-        });
+        const hitEvent = this.getHitEvent();
+
+        if ( hitEvent ) {
+            this.map.events = this.map.events.reduce( ( acc, event ) => {
+                if ( event.coords[ 0 ] === hitEvent.coords[ 0 ] && event.coords[ 1 ] === hitEvent.coords[ 1 ] ) {
+                    return acc;
+                }
+
+                acc.push( event );
+
+                return acc;
+            }, []);
+
+            this.drawEvents();
+
+        } else {
+            this.editor.menus.renderMenu( "editor-mapevent-menu", {
+                maps: Utils.getOptionData( this.editor.data.maps ).filter( ( map ) => {
+                    return map.id !== this.map.id;
+                }),
+                facing: Utils.getOptionData( window.lib2dk.Config.facing ),
+                events: Utils.getOptionData( window.lib2dk.Config.events ),
+                coords,
+            });
+        }
     }
 
 
     applyActiveTiles ( coords ) {
-        this.editor.menus.renderMenu( "editor-activetiles-menu", {
-            map: this.map,
-            game: this.game,
-            coords,
-            facing: Utils.getOptionData( window.lib2dk.Config.facing ),
-            actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
-            layers: [
-                Config.EditorLayers.modes.BACKGROUND,
-                Config.EditorLayers.modes.FOREGROUND,
-            ],
-        });
+        const hitTile = this.getHitTile( coords );
+
+        if ( hitTile ) {
+            // Enforcing background texture only for now
+            // This is also enforced in the active tiles create menu
+            const texture = this.map.textures.background;
+            const textureTile = texture[ coords[ 1 ] ][ coords[ 0 ] ];
+            const tileMatch = this.getTextureTileMatch( textureTile );
+            
+            this.map.tiles = this.map.tiles.reduce( ( acc, tile ) => {
+                if ( tile.offsetX === tileMatch.offsetX && tile.offsetY === tileMatch.offsetY ) {
+                    return acc;
+                }
+
+                acc.push( tile );
+
+                return acc;
+            }, []);
+
+            this.drawActiveTiles();
+
+        } else {
+            this.editor.menus.renderMenu( "editor-activetiles-menu", {
+                map: this.map,
+                game: this.game,
+                coords,
+                facing: Utils.getOptionData( window.lib2dk.Config.facing ),
+                actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
+                layers: [
+                    Config.EditorLayers.modes.BACKGROUND,
+                    Config.EditorLayers.modes.FOREGROUND,
+                ],
+            });
+        }
     }
 
 

@@ -90,12 +90,14 @@ const renderSpawn = ( spawn, rect ) => {
 };
 
 const renderEvent = ( event, map ) => {
-    const x = event.coords[ 0 ] * map.tilesize;
-    const y = event.coords[ 1 ] * map.tilesize;
-    const id = `event-x${x}-y${y}`;
+    const cx = event.coords[ 0 ];
+    const cy = event.coords[ 1 ];
+    const x = cx * map.tilesize;
+    const y = cy * map.tilesize;
+    const id = `event-x${cx}-y${cy}`;
 
     return `
-        <div id="${id}" class="editor__block is-event js-event-tile" data-event-x="${x}" data-event-y="${y}">
+        <div id="${id}" class="editor__block is-event js-event-tile" data-event-x="${cx}" data-event-y="${cy}">
             <style>
                 #${id} {
                     top: ${y}px;
@@ -112,12 +114,14 @@ const renderEvent = ( event, map ) => {
 
 
 const renderActiveTile = ( coords, map ) => {
-    const x = coords[ 0 ] * map.tilesize;
-    const y = coords[ 1 ] * map.tilesize;
-    const id = `tile-x${x}-y${y}`;
+    const cx = coords[ 0 ];
+    const cy = coords[ 1 ];
+    const x = cx * map.tilesize;
+    const y = cy * map.tilesize;
+    const id = `tile-x${cx}-y${cy}`;
 
     return `
-        <div id="${id}" class="editor__block is-tiles js-active-tile" data-tile-x="${x}" data-tile-y="${y}">
+        <div id="${id}" class="editor__block is-tiles js-active-tile" data-tile-x="${cx}" data-tile-y="${cy}">
             <style>
                 #${id} {
                     top: ${y}px;

@@ -83,7 +83,53 @@ class EditorCursor {
     }
 
 
+    removeHitEvent () {
+        document.querySelectorAll( ".js-event-tile.is-hit" ).forEach( ( tile ) => {
+            tile.classList.remove( "is-hit" );
+        });
+    }
+
+
+    removeHitSpawn () {
+        document.querySelectorAll( ".js-spawn-tile.is-hit" ).forEach( ( tile ) => {
+            tile.classList.remove( "is-hit" );
+        });
+    }
+
+
+    removeHitTile () {
+        document.querySelectorAll( ".js-active-tile.is-hit" ).forEach( ( tile ) => {
+            tile.classList.remove( "is-hit" );
+        });
+    }
+
+
+    enterEraseMode ( id ) {
+        const dom = document.getElementById( id );
+        dom.classList.add( "is-hit" );
+        this.cursors.dom.classList.add( "is-hidden" );
+        this.editorCanvas.draggable.canvasPane.classList.add( "is-erase-tool" );
+    }
+
+
+    exitEraseMode () {
+        this.cursors.dom.classList.remove( "is-hidden" );
+        this.editorCanvas.draggable.canvasPane.classList.remove( "is-erase-tool" );
+    }
+
+
     showEventCursor ( coords ) {
+        const hitEvent = this.editorCanvas.getHitEvent();
+
+        this.removeHitEvent();
+
+        if ( hitEvent ) {
+            this.enterEraseMode( `event-x${hitEvent.coords[ 0 ]}-y${hitEvent.coords[ 1 ]}` );
+
+        } else {
+            this.exitEraseMode();
+        }
+
         this.cursors.dom.style.setProperty( "--z", 5 );
         this.cursors.dom.style.setProperty( "--o", 1 );
         this.cursors.dom.style.setProperty( "--x", `${coords[ 0 ] * this.map.tilesize}px` );
@@ -96,6 +142,17 @@ class EditorCursor {
 
 
     showTilesCursor ( coords ) {
+        const hitTile = this.editorCanvas.getHitTile( coords );
+
+        this.removeHitTile();
+
+        if ( hitTile ) {
+            this.enterEraseMode( `tile-x${hitTile.coords[ 0 ]}-y${hitTile.coords[ 1 ]}` );
+
+        } else {
+            this.exitEraseMode();
+        }
+
         this.cursors.dom.style.setProperty( "--z", 5 );
         this.cursors.dom.style.setProperty( "--o", 1 );
         this.cursors.dom.style.setProperty( "--x", `${coords[ 0 ] * this.map.tilesize}px` );
@@ -111,18 +168,13 @@ class EditorCursor {
         const hitSpawn = this.editorCanvas.getHitSpawn();
         const newSpawn = this.editorCanvas.getNewSpawn();
 
+        this.removeHitSpawn();
+
         if ( hitSpawn ) {
-            const domSpawn = document.querySelector( `#spawn-x${hitSpawn.x}-y${hitSpawn.y}` );
-            domSpawn.classList.add( "is-hit" );
-            this.cursors.dom.classList.add( "is-hidden" );
-            this.editorCanvas.draggable.canvasPane.classList.add( "is-erase-tool" );
+            this.enterEraseMode( `spawn-x${hitSpawn.x}-y${hitSpawn.y}` );
 
         } else {
-            document.querySelectorAll( ".js-spawn-tile" ).forEach( ( tile ) => {
-                tile.classList.remove( "is-hit" );
-            });
-            this.cursors.dom.classList.remove( "is-hidden" );
-            this.editorCanvas.draggable.canvasPane.classList.remove( "is-erase-tool" );
+            this.exitEraseMode();
         }
 
         this.cursors.dom.style.setProperty( "--z", 5 );
