@@ -63,7 +63,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 <div>
                     <div class="editor__label">Layer</div>
                     <div class="select">
-                        <select class="select__field js-activetile-field js-select js-select-layer" name="layer">
+                        <select class="select__field js-activetile-field js-select" name="layer">
                             <option value="">Layer</option>
                             ${layers.map( ( l ) => `
                                 <option value="${l}" ${l === layer ? "selected" : "disabled"}>${l}</option>
@@ -81,7 +81,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 <div class="editor__setting--multi">
                     <div>
                         <div class="select">
-                            <select class="select__field js-activetile-field js-select js-select-action" name="action">
+                            <select class="select__field js-activetile-field js-select" name="action">
                                 <option value="">Action</option>
                                 ${actions.map( ( action ) => `
                                     <option value="${action}">${action}</option>
@@ -106,7 +106,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">Animation Steps</div>
-                    <input class="range editor__field js-activetile-field js-range" data-target="" value="0" type="range" min="0" max="5" step="1" list="steps-x-list" name="stepsX" />
+                    <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="5" step="1" list="steps-x-list" name="stepsX" />
                     <datalist id="steps-x-list">
                         <option value="0" label="0">0</option>
                         <option value="1" label="1">1</option>
@@ -118,7 +118,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 </div>
                 <div>
                     <div class="editor__label">Animation Duration</div>
-                    <input class="range editor__field js-activetile-field js-range" data-target="" value="0" type="range" min="0" max="2000" step="500" list="dur-list" name="dur" />
+                    <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="2000" step="500" list="dur-list" name="dur" />
                     <datalist id="dur-list">
                         <option value="0" label="0">0</option>
                         <option value="500" label="0.5s">500</option>
@@ -132,7 +132,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">Elevation (for "jump" action)</div>
-                    <input class="range editor__field js-activetile-field js-range" data-target="" value="0" type="range" min="0" max="3" step="1" list="elevation-list" name="elevation" />
+                    <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="3" step="1" list="elevation-list" name="elevation" />
                     <datalist id="elevation-list">
                         <option value="0" label="0">0</option>
                         <option value="1" label="1">1</option>
@@ -143,7 +143,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 <div>
                     <div class="editor__label">Direction (for "jump" action)</div>
                     <div class="select">
-                        <select class="select__field js-activetile-field js-select js-select-facing" name="direction">
+                        <select class="select__field js-activetile-field js-select" name="direction">
                             <option value="">Direction</option>
                             ${facing.map( ( facing ) => `
                                 <option value="${facing}">${facing}</option>

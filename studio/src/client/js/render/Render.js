@@ -111,6 +111,28 @@ const renderEvent = ( event, map ) => {
 };
 
 
+const renderActiveTile = ( coords, map ) => {
+    const x = coords[ 0 ] * map.tilesize;
+    const y = coords[ 1 ] * map.tilesize;
+    const id = `tile-x${x}-y${y}`;
+
+    return `
+        <div id="${id}" class="editor__block is-tiles js-active-tile" data-tile-x="${x}" data-tile-y="${y}">
+            <style>
+                #${id} {
+                    top: ${y}px;
+                    left: ${x}px;
+                    width: ${map.tilesize}px;
+                    height: ${map.tilesize}px;
+                    position: absolute;
+                }
+            </style>
+            ${window.feather.icons.activity.toSvg()}
+        </div>
+    `;
+};
+
+
 module.exports = {
     renderMap,
     renderNPC,
@@ -119,4 +141,5 @@ module.exports = {
     renderSpawn,
     renderEvent,
     renderObject,
+    renderActiveTile,
 };

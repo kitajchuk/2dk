@@ -94,9 +94,9 @@
                             <div class="editor__canvas__layer editor__background" id="editor-bg"></div>
                             <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
                             <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
-                            <div class="editor__canvas__layer editor__event" id="editor-event"></div>
-                            <div class="editor__canvas__layer editor__spawn" id="editor-spawn"></div>
-                            <div class="editor__canvas__layer editor__tiles" id="editor-tiles"></div>
+                            <div class="editor__canvas__layer editor__event is-hidden" id="editor-event"></div>
+                            <div class="editor__canvas__layer editor__spawn is-hidden" id="editor-spawn"></div>
+                            <div class="editor__canvas__layer editor__tiles is-hidden" id="editor-tiles"></div>
                             <div class="editor__canvas__layer editor__obj" id="editor-obj"></div>
                             <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
                             <div class="editor__canvas__layer editor__mapgrid" id="editor-mapgrid">
@@ -174,21 +174,21 @@
                         <div class="editor__layer editor__metalayers">
                             <div class="editor__checkbox">
                                 <label class="checkbox">
-                                    <input class="check js-map-metalayer" type="checkbox" name="event" checked />
+                                    <input class="check js-map-metalayer" type="checkbox" name="event" />
                                     <i data-feather="clock"></i>
                                     <span class="label">Events</span>
                                 </label>
                             </div>
                             <div class="editor__checkbox">
                                 <label class="checkbox">
-                                    <input class="check js-map-metalayer" type="checkbox" name="spawn" checked />
+                                    <input class="check js-map-metalayer" type="checkbox" name="spawn" />
                                     <i data-feather="map-pin"></i>
                                     <span class="label">Spawn Points</span>
                                 </label>
                             </div>
                             <div class="editor__checkbox">
                                 <label class="checkbox">
-                                    <input class="check js-map-metalayer" type="checkbox" name="tile" checked disabled />
+                                    <input class="check js-map-metalayer" type="checkbox" name="tiles" />
                                     <i data-feather="grid"></i>
                                     <span class="label">Active Tiles</span>
                                 </label>

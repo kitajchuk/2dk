@@ -7,9 +7,9 @@ class EditorLayers {
         this.editor = editor;
         this.mode = null;
         this.meta = {
-            [ Config.EditorLayers.modes.SPAWN ]: true,
-            [ Config.EditorLayers.modes.EVENT ]: true,
-            [ Config.EditorLayers.modes.TILES ]: true,
+            [ Config.EditorLayers.modes.SPAWN ]: false,
+            [ Config.EditorLayers.modes.EVENT ]: false,
+            [ Config.EditorLayers.modes.TILES ]: false,
         };
         this.layers = document.querySelectorAll( ".js-edit-layer" );
 

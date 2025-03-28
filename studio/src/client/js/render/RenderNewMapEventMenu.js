@@ -1,4 +1,4 @@
-const renderNewMapEventMenu = ({ maps, facing, events }) => {
+const renderNewMapEventMenu = ({ maps, coords, facing, events }) => {
     return `
         <div class="editor__menu js-menu is-active" id="editor-mapevent-menu">
             <button class="button button--grey button--box editor__close-button js-post-cancel">
@@ -16,9 +16,10 @@ const renderNewMapEventMenu = ({ maps, facing, events }) => {
                 They can be used to trigger dialog, spawn npcs, or even start a cutscene.
             </div>
             <!-- coords and spawn are handled in the app code -->
+            <input class="js-mapevent-field" type="hidden" name="coords" value="${JSON.stringify( coords )}" />
             <div class="editor__setting">
                 <div class="select">
-                    <select class="select__field js-select js-select-event-type">
+                    <select class="select__field js-select js-mapevent-field" name="type">
                         <option value="">Event type</option>
                         ${events.map( ( event ) => `
                             <option value="${event}">${event}</option>
@@ -31,7 +32,7 @@ const renderNewMapEventMenu = ({ maps, facing, events }) => {
             </div>
             <div class="editor__setting">
                 <div class="select">
-                    <select class="select__field js-select js-select-facing">
+                    <select class="select__field js-select js-mapevent-field" name="dir">
                         <option value="">Direction</option>
                         ${facing.map( ( facing ) => `
                             <option value="${facing}">${facing}</option>
@@ -44,7 +45,7 @@ const renderNewMapEventMenu = ({ maps, facing, events }) => {
             </div>
             <div class="editor__setting">
                 <div class="select">
-                    <select class="select__field js-select js-select-map">
+                    <select class="select__field js-select js-select-map js-mapevent-field" name="map">
                         <option value="">Target Map</option>
                         ${maps.map( ( map ) => `
                             <option value="${map.id}">${map.name}</option>
@@ -56,7 +57,7 @@ const renderNewMapEventMenu = ({ maps, facing, events }) => {
                 </div>
             </div>
             <div class="editor__setting">
-                <button class="button editor__button editor__upload-button js-post-save" data-type="mapevent">Create</button>
+                <button class="button editor__button editor__upload-button js-mapevent-post" data-type="mapevent">Create</button>
             </div>
         </div>
     `;

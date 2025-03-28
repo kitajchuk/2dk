@@ -10,6 +10,7 @@ const {
     renderSpawn,
     renderEvent,
     renderObject,
+    renderActiveTile,
 } = require( "../render/Render" );
 const Utils = require( "../Utils" );
 const Config = require( "../Config" );
@@ -83,6 +84,8 @@ class EditorCanvas {
         this.bindColliderEvents();
         this.bindDocumentEvents();
         this.bindTilepaintEvents();
+
+        this.bindMapEventMenuPost();
         this.bindActiveTilesMenuPost();
     }
 
@@ -392,9 +395,35 @@ class EditorCanvas {
 
 
     drawActiveTiles () {
-        this.layers.tiles.innerHTML = this.map.tiles.map( ( tile ) => {
-            return "";
-        }).join( "" );
+        // Enforcing background texture only for now
+        // This is also enforced in the active tiles create menu
+        const texture = this.map.textures.background;
+
+        const activeTiles = [];
+
+        for ( let y = texture.length; y--; ) {
+            const row = texture[ y ];
+
+            for ( let x = row.length; x--; ) {
+                const textureTile = row[ x ];
+
+                if ( Array.isArray( textureTile ) ) {
+                    const topTile = textureTile[ textureTile.length - 1 ];
+
+                    const tileMatch = this.map.tiles.find( ( tile ) => {
+                        return tile.offsetX === topTile[ 0 ] && tile.offsetY === topTile[ 1 ];
+                    });
+
+                    if ( tileMatch ) {
+                        activeTiles.push(
+                            renderActiveTile( [ x, y ], this.map )
+                        );
+                    }
+                }
+            }
+        }
+
+        this.layers.tiles.innerHTML = activeTiles.join( "" );
     }
 
 
@@ -1014,6 +1043,29 @@ class EditorCanvas {
     }
 
 
+    bindMapEventMenuPost () {
+        this.editor.menus.dom.container.addEventListener( "click", ( e ) => {
+            if ( !e.target.closest( ".js-mapevent-post" ) ) {
+                return;
+            }
+
+            const data = Utils.parseFields( document.querySelectorAll( ".js-mapevent-field" ) );
+            const coords = JSON.parse( data.coords );
+
+            const newData = {
+                coords,
+                type: data.type,
+                dir: data.dir,
+                map: `maps/${data.map}.json`,
+            };
+
+            // TODO: optional spawn point
+
+            console.log( newData );
+        });
+    }
+
+
     bindActiveTilesMenuPost () {
         this.editor.menus.dom.container.addEventListener( "click", ( e ) => {
             if ( !e.target.closest( ".js-activetiles-post" ) ) {
@@ -1433,7 +1485,7 @@ class EditorCanvas {
     canApplyActiveTiles () {
         return (
             this.editor.actions.mode === Config.EditorActions.modes.TILES &&
-            this.editor.layers.meta[ Config.EditorLayers.modes.EVENT ]
+            this.editor.layers.meta[ Config.EditorLayers.modes.TILES ]
         );
     }
 
