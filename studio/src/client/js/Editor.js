@@ -43,7 +43,7 @@ class Editor {
         };
 
         this.load();
-        this.done( 2000 );
+        this.done();
         this.bindEvents();
         this.bindMenuEvents();
         this.bindeFileEvents();

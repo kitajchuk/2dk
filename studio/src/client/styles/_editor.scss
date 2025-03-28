@@ -8,14 +8,14 @@
     height: 100%;
 
     &.is-not-loaded {
-        visibility: hidden;
         pointer-events: none;
     }
 
-    &.is-saving-map:after,
-    &.is-saving-game:after,
-    &.is-saving-file:after,
-    &.is-deleting-file:after {
+    &.is-not-loaded::after,
+    &.is-saving-map::after,
+    &.is-saving-game::after,
+    &.is-saving-file::after,
+    &.is-deleting-file::after {
         position: fixed;
         left: 0;
         top: 0;
@@ -28,17 +28,22 @@
         align-items: center;
         color: var( --white );
         font-size: var( --font-size-overlay );
+        pointer-events: auto;
     }
-    &.is-saving-map:after {
+    &.is-not-loaded::after {
+        content: "Loading 2dk Studio...";
+        background-color: var( --black );
+    }
+    &.is-saving-map::after {
         content: "Saving map...";
     }
-    &.is-saving-game:after {
+    &.is-saving-game::after {
         content: "Saving game...";
     }
-    &.is-saving-file:after {
+    &.is-saving-file::after {
         content: "Saving file...";
     }
-    &.is-deleting-file:after {
+    &.is-deleting-file::after {
         content: "Deleting file...";
     }
 }
