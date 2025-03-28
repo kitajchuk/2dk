@@ -13,11 +13,8 @@ const { renderNewActiveTilesMenu } = require( "./render/RenderNewActiveTilesMenu
 class EditorMenus {
     constructor ( editor ) {
         this.editor = editor;
-        this.menus = {
-            all: window.hobo( ".js-menu" ),
+        this.dom = {
             container: document.getElementById( "editor-menus" ),
-            activeTiles: window.hobo( "#editor-activetiles-menu" ),
-            mapEvent: window.hobo( "#editor-mapevent-menu" ),
         };
         this.renders = {
             "editor-active-map-menu": renderActiveMapMenu,
@@ -37,12 +34,12 @@ class EditorMenus {
 
     // Needed for Sound Player in topbar UI
     buildAssetSelectMenu ( assets ) {
-        Utils.buildSelectMenu( window.hobo( `.js-select-${assets.type}` ), assets.files );
+        Utils.buildSelectMenu( document.querySelectorAll( `.js-select-${assets.type}` ), assets.files );
     }
 
 
     blurSelectMenus () {
-        window.hobo( ".js-select" ).forEach( ( select ) => {
+        document.querySelectorAll( ".js-select" ).forEach( ( select ) => {
             select.blur();
         });
     }
@@ -57,34 +54,37 @@ class EditorMenus {
 
         } else {
             this.removeMenus();
-            this.menus.container.classList.add( "is-active" );
-            this.menus.container.innerHTML = _render( data );
+            this.dom.container.classList.add( "is-active" );
+            this.dom.container.innerHTML = _render( data );
             this.editor.actions.disableKeys();
         }
     }
 
 
     removeMenus () {
-        this.menus.container.innerHTML = "";
-        this.menus.container.classList.remove( "is-active" );
+        this.dom.container.innerHTML = "";
+        this.dom.container.classList.remove( "is-active" );
         this.editor.actions.enableKeys();
     }
 
 
     _bind () {
-        window.hobo( ".js-select" ).on( "change", () => {
+        document.addEventListener( "change", ( e ) => {
+            if ( !e.target.closest( ".js-select" ) ) {
+                return;
+            }
+
             this.blurSelectMenus();
         });
 
-        window.hobo( ".js-select-sounds" ).on( "change", ( e ) => {
+        document.addEventListener( "change", ( e ) => {
             if ( !this.editor.canGameFunction() ) {
                 return false;
             }
 
-            const targ = window.hobo( e.target );
-            const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
+            const sampler = e.target.closest( ".js-sound-sampler" );
 
-            if ( sampler.length && sampler.is( ".is-playing" ) ) {
+            if ( sampler && sampler.classList.contains( "is-playing" ) ) {
                 Utils.processSound( sampler, this.editor.data.game.id );
             }
         });

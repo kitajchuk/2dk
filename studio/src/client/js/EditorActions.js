@@ -12,43 +12,46 @@ class EditorActions {
             Config.EditorActions.modes.EVENT,
             Config.EditorActions.modes.TILES,
         ];
+        this.actions = document.querySelectorAll( ".js-edit-action" );
 
-        this.$actions = window.hobo( ".js-edit-action" );
-        this.$document = window.hobo( document );
-        
         this._bind();
     }
 
 
     _bind () {
-        this.$document.on( "keydown", ( e ) => {
-            if ( this.keysDisabled ) {
+        document.addEventListener( "keydown", ( e ) => {
+            const testTarget = document.querySelector( `.js-edit-action[data-key="${e.code}"]` );
+
+            if ( this.keysDisabled || !this.editor.canMapFunction() || !testTarget ) {
                 return;
             }
 
-            if ( this.editor.canMapFunction() ) {
-                const $test = window.hobo( `.js-edit-action[data-key="${e.keyCode}"]` );
-
-                if ( $test.length ) {
-                    this._handleAction( $test );
-                }
-
-            }
+            this._handleAction( testTarget );
         });
 
-        this.$actions.on( "click", ( e ) => {
-            if ( this.editor.canMapFunction() ) {
-                const $target = window.hobo( e.target );
-                this._handleAction( $target );
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-edit-action" );
+
+            if ( !target || !this.editor.canMapFunction() ) {
+                return;
             }
+
+            this._handleAction( target );
         });
     }
 
 
     resetActions () {
         this.mode = null;
-        this.$actions.removeClass( "is-active" );
+        this.removeClasses();
         this.editor.canvas.setActiveTool( null );
+    }
+
+
+    removeClasses () {
+        this.actions.forEach( ( action ) => {
+            action.classList.remove( "is-active" );
+        });
     }
 
 
@@ -62,16 +65,16 @@ class EditorActions {
     }
 
 
-    _handleAction ( $target ) {
-        const $elem = $target.is( ".js-edit-action" ) ? $target : $target.closest( ".js-edit-action" );
-        const action = $elem.data().action.toUpperCase();
+    _handleAction ( target ) {
+        const elem = target.closest( ".js-edit-action" );
+        const action = elem.dataset.action.toUpperCase();
 
-        if ( $elem.is( ".is-active" ) ) {
+        if ( elem.classList.contains( "is-active" ) ) {
             this.resetActions();
 
         } else {
-            this.$actions.removeClass( "is-active" );
-            $elem.addClass( "is-active" );
+            this.removeClasses();
+            elem.classList.add( "is-active" );
             this.mode = Config.EditorActions.modes[ action ];
             this.editor.canvas.setActiveTool( this.mode );
             

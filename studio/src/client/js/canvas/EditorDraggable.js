@@ -108,10 +108,8 @@ class EditorDraggable {
 
 
     _bindEvents () {
-        const $document = window.hobo( document );
-
-        $document.on( "keydown", ( e ) => {
-            this.isSpacebar = ( e.keyCode === Config.keys.SPACEBAR );
+        document.addEventListener( "keydown", ( e ) => {
+            this.isSpacebar = ( e.code === "Space" );
 
             if ( this.editor.mode !== Config.Editor.modes.SAVING && this.isSpacebar && this.editorCanvas.mode !== Config.EditorCanvas.modes.DRAG ) {
                 e.preventDefault();
@@ -120,7 +118,7 @@ class EditorDraggable {
             }
         });
 
-        $document.on( "keyup", ( e ) => {
+        document.addEventListener( "keyup", ( e ) => {
             this.isSpacebar = false;
 
             if ( !this.isDraggableAlive ) {

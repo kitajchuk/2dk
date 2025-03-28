@@ -43,7 +43,7 @@ class EditorCanvas {
             tilebox: document.getElementById( "editor-tileset-box" ),
         };
         this.pickers = {
-            $all: window.hobo( ".js-picker" ),
+            all: document.querySelectorAll( ".js-picker" ),
             objPickerBox: document.getElementById( "editor-obj-picker-box" ),
             npcPickerBox: document.getElementById( "editor-npc-picker-box" ),
         };
@@ -502,10 +502,15 @@ class EditorCanvas {
     togglePickers ( layer ) {
         // background, foreground, collision all use the "tile" picker
         const picker = ( layer === Config.EditorLayers.modes.OBJ || layer === Config.EditorLayers.modes.NPC ) ? layer : "tile";
-        const $picker = this.pickers.$all.filter( `#editor-${picker}-picker` );
+        const element = [ ...this.pickers.all ].find( ( element ) => {
+            return element.id === `editor-${picker}-picker`;
+        });
 
-        this.pickers.$all.addClass( "is-hidden" );
-        $picker.removeClass( "is-hidden" );
+        this.pickers.all.forEach( ( picker ) => {
+            picker.classList.add( "is-hidden" );
+        });
+
+        element.classList.remove( "is-hidden" );
     }
 
 
@@ -1010,8 +1015,12 @@ class EditorCanvas {
 
 
     bindActiveTilesMenuPost () {
-        window.hobo( document ).on( "click", ".js-activetiles-post", ( e ) => {
-            const data = Utils.parseFields( window.hobo( ".js-activetile-field" ) );
+        this.editor.menus.dom.container.addEventListener( "click", ( e ) => {
+            if ( !e.target.closest( ".js-activetiles-post" ) ) {
+                return;
+            }
+
+            const data = Utils.parseFields( document.querySelectorAll( ".js-activetile-field" ) );
             const newData = {
                 layer: data.layer,
                 group: data.group,
@@ -1077,16 +1086,14 @@ class EditorCanvas {
 
 
     bindDocumentEvents () {
-        const $document = window.hobo( document );
+        document.addEventListener( "keydown", ( e ) => {
+            const activeMenu = document.querySelector( ".js-menu.is-active" );
 
-        $document.on( "keydown", ( e ) => {
-            const activeMenu = window.hobo( ".js-menu.is-active" );
-
-            if ( activeMenu.length ) {
+            if ( activeMenu ) {
                 return;
             }
 
-            this.isEscape = ( e.keyCode === Config.keys.ESCAPE );
+            this.isEscape = ( e.code === "Escape" );
 
             if ( this.isEscape ) {
                 this.clearTileset();
@@ -1097,37 +1104,45 @@ class EditorCanvas {
             }
         });
 
-        $document.on( "keyup", ( e ) => {
+        document.addEventListener( "keyup", ( e ) => {
             this.isEscape = false;
         });
 
-        $document.on( "mouseup", () => {
+        document.addEventListener( "mouseup", () => {
             this.isMouseDownCanvas = false;
             this.isMouseDownCollider = false;
         });
 
-        $document.on( "click", ".js-npc-tile", ( e ) => {
-            const id = e.target.dataset.npc;
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-npc-tile" );
 
-            const npc = this.game.npcs.find( ( npc ) => {
+            if ( !target ) {
+                return;
+            }
+
+            const id = target.dataset.npc;
+
+            this.currentNPC = this.game.npcs.find( ( npc ) => {
                 return npc.id === id;
             });
-
-            this.currentNPC = npc;
 
             this.resetPreview();
             this.applyPreviewNPC();
             this.cursor.applyCursorNPC();
         }); 
 
-        $document.on( "click", ".js-obj-tile", ( e ) => {
-            const id = e.target.dataset.obj;
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-obj-tile" );
 
-            const obj = this.game.objects.find( ( obj ) => {
+            if ( !target ) {
+                return;
+            }
+
+            const id = target.dataset.obj;
+
+            this.currentObject = this.game.objects.find( ( obj ) => {
                 return obj.id === id;
             });
-
-            this.currentObject = obj;
 
             this.resetPreview();
             this.applyPreviewObject();
@@ -1137,15 +1152,13 @@ class EditorCanvas {
 
 
     bindColliderEvents () {
-        const $collider = window.hobo( this.cssgrids.collider );
-
-        $collider.on( "mousedown", () => {
+        this.cssgrids.collider.addEventListener( "mousedown", () => {
             if ( this.editor.canMapFunction() ) {
                 this.isMouseDownCollider = true;
             }
         });
 
-        $collider.on( "mousemove", ( e ) => {
+        this.cssgrids.collider.addEventListener( "mousemove", ( e ) => {
             if ( !this.map ) {
                 return;
             }
@@ -1166,20 +1179,18 @@ class EditorCanvas {
             }
         });
 
-        $collider.on( "mouseup", () => {
+        this.cssgrids.collider.addEventListener( "mouseup", () => {
             this.isMouseDownCollider = false;
         });
 
-        $collider.on( "mouseout", () => {
+        this.cssgrids.collider.addEventListener( "mouseout", () => {
             this.clearMoveCoords();
         });
     }
 
 
     bindTilepaintEvents () {
-        const $tilepaint = window.hobo( this.canvases.tilepaint );
-
-        $tilepaint.on( "mousedown", ( e ) => {
+        this.canvases.tilepaint.addEventListener( "mousedown", ( e ) => {
             if ( this.canBeginApplyTiles() ) {
                 this.isMouseDownTiles = true;
                 this.isMouseMovedTiles = false;
@@ -1215,7 +1226,7 @@ class EditorCanvas {
             }
         });
 
-        $tilepaint.on( "mousemove", ( e ) => {
+        this.canvases.tilepaint.addEventListener( "mousemove", ( e ) => {
             if ( !this.map ) {
                 return;
             }
@@ -1246,22 +1257,20 @@ class EditorCanvas {
             }
         });
 
-        $tilepaint.on( "mouseup", () => {
+        this.canvases.tilepaint.addEventListener( "mouseup", () => {
             this.currentTileCoord = null;
             this.isMouseDownTiles = false;
             this.isMouseMovedTiles = false;
         });
 
-        $tilepaint.on( "mouseout", () => {
+        this.canvases.tilepaint.addEventListener( "mouseout", () => {
             this.clearMoveCoords();
         });
     }
 
 
     bindMapgridEvents () {
-        const $mapgrid = window.hobo( this.cssgrids.mapgrid );
-
-        $mapgrid.on( "mousedown", ( e ) => {
+        this.cssgrids.mapgrid.addEventListener( "mousedown", ( e ) => {
             // Right click mouse button
             // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
             if ( e.button === 2 ) {
@@ -1275,12 +1284,10 @@ class EditorCanvas {
                     x: e.offsetX,
                     y: e.offsetY
                 };
-
-                // const coords = this.getMouseCoords( e, this.map.tilesize );
             }
         });
 
-        $mapgrid.on( "mousemove", ( e ) => {
+        this.cssgrids.mapgrid.addEventListener( "mousemove", ( e ) => {
             if ( !this.map ) {
                 return;
             }
@@ -1322,7 +1329,7 @@ class EditorCanvas {
             }
         });
 
-        $mapgrid.on( "mouseup", ( e ) => {
+        this.cssgrids.mapgrid.addEventListener( "mouseup", ( e ) => {
             if ( this.editor.canMapFunction() ) {
                 this.canvasMouseCoords = {
                     x: e.offsetX,
@@ -1354,7 +1361,7 @@ class EditorCanvas {
             this.isMouseDownCanvas = false;
         });
 
-        $mapgrid.on( "mouseout", () => {
+        this.cssgrids.mapgrid.addEventListener( "mouseout", () => {
             this.clearMoveCoords();
             this.canvasMouseCoords = null;
 
@@ -1362,7 +1369,7 @@ class EditorCanvas {
             this.cursor.hideBlockCursor();
         });
 
-        $mapgrid.on( "contextmenu", ( e ) => {
+        this.cssgrids.mapgrid.addEventListener( "contextmenu", ( e ) => {
             e.preventDefault();
 
             // TODO: contextmenu...

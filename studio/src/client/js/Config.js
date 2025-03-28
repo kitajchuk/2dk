@@ -33,15 +33,6 @@ const Config = {
             TILES: "tiles",
         },
     },
-    keys: {
-        B: 66,
-        E: 69,
-        Z: 90,
-        X: 88,
-        P: 80,
-        ESCAPE: 27,
-        SPACEBAR: 32,
-    },
 };
 
 

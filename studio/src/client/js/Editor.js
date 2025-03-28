@@ -270,10 +270,9 @@ class Editor {
         const postData = this.data.map;
 
         // TODO: parse map settings fields when we make them editable...
-
-        Object.keys( mapData ).forEach( ( i ) => {
-            postData[ i ] = mapData[ i ];
-        });
+        // Object.keys( mapData ).forEach( ( i ) => {
+        //     postData[ i ] = mapData[ i ];
+        // });
 
         ipcRenderer.send( "renderer-savemap", postData );
         this.menus.removeMenus();
@@ -432,28 +431,39 @@ class Editor {
 
 
     bindDocumentEvents () {
-        const $document = window.hobo( document );
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-game-tile" );
 
-        $document.on( "click", ".js-game-tile", ( e ) => {
+            if ( !target ) {
+                return;
+            }
+
             ipcRenderer.send( "renderer-loadgame", {
-                game: e.target.dataset.game,
+                game: target.dataset.game,
             });
         });
 
-        $document.on( "click", ".js-map-tile", ( e ) => {
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-map-tile" );
+
+            if ( !target ) {
+                return;
+            }
+
             ipcRenderer.send( "renderer-loadmap", {
-                map: e.target.dataset.map,
+                map: target.dataset.map,
             });
+
             this._loadoutClear();
         });
 
-        $document.on( "click", ".js-sound-button", ( e ) => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
+        document.addEventListener( "click", ( e ) => {
+            const button = e.target.closest( ".js-sound-button" );
+            const sampler = e.target.closest( ".js-sound-sampler" );
 
-            const targ = window.hobo( e.target );
-            const sampler = targ.is( ".js-sound-sampler" ) ? targ : targ.closest( ".js-sound-sampler" );
+            if ( !this.canGameFunction() || !button || !sampler ) {
+                return;
+            }
 
             Utils.processSound( sampler, this.data.game.id );
         });
