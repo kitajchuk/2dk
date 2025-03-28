@@ -27,6 +27,7 @@ class EditorMenus {
             "editor-addgame-menu": renderNewGameMenu,
             "editor-addmap-menu": renderNewMapMenu,
         };
+        this.isActive = false;
 
         this._bind();
     }
@@ -54,6 +55,7 @@ class EditorMenus {
 
         } else {
             this.removeMenus();
+            this.isActive = true;
             this.dom.container.classList.add( "is-active" );
             this.dom.container.innerHTML = _render( data );
             this.editor.actions.disableKeys();
@@ -62,6 +64,7 @@ class EditorMenus {
 
 
     removeMenus () {
+        this.isActive = false;
         this.dom.container.innerHTML = "";
         this.dom.container.classList.remove( "is-active" );
         this.editor.actions.enableKeys();

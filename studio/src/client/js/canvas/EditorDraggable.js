@@ -110,6 +110,10 @@ class EditorDraggable {
     _bindEvents () {
         document.addEventListener( "keydown", ( e ) => {
             this.isSpacebar = ( e.code === "Space" );
+            
+            if ( this.editor.menus.isActive ) {
+                return;
+            }
 
             if ( this.editor.mode !== Config.Editor.modes.SAVING && this.isSpacebar && this.editorCanvas.mode !== Config.EditorCanvas.modes.DRAG ) {
                 e.preventDefault();
@@ -120,6 +124,10 @@ class EditorDraggable {
 
         document.addEventListener( "keyup", ( e ) => {
             this.isSpacebar = false;
+
+            if ( this.editor.menus.isActive ) {
+                return;
+            }
 
             if ( !this.isDraggableAlive ) {
                 this.draggable.disable();

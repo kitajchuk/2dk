@@ -30,16 +30,16 @@ class Editor {
             assets: {},
         };
         this.dom = {
-            css: window.hobo( "#editor-css" ),
-            root: window.hobo( "#editor" ),
-            settings: window.hobo( ".js-settings" ),
-            mapSettings: window.hobo( "#editor-mapsettings" ),
-            gameSettings: window.hobo( "#editor-gamesettings" ),
-            loadout: window.hobo( "#editor-loadout" ),
-            loadoutGrid: window.hobo( "#editor-loadout-grid" ),
-            mapLoad: window.hobo( "#editor-map-load" ),
-            gameLoad: window.hobo( "#editor-game-load" ),
-            demoGame: window.hobo( "#editor-demo-game" ),
+            css: document.getElementById( "editor-css" ),
+            root: document.getElementById( "editor" ),
+            settings: document.querySelectorAll( ".js-settings" ),
+            mapSettings: document.getElementById( "editor-mapsettings" ),
+            gameSettings: document.getElementById( "editor-gamesettings" ),
+            loadout: document.getElementById( "editor-loadout" ),
+            loadoutGrid: document.getElementById( "editor-loadout-grid" ),
+            mapLoad: document.getElementById( "editor-map-load" ),
+            gameLoad: document.getElementById( "editor-game-load" ),
+            demoGame: document.getElementById( "editor-demo-game" ),
         };
 
         this.load();
@@ -60,7 +60,13 @@ class Editor {
         this.mode = null;
 
         setTimeout( () => {
-            this.dom.root.removeClass( "is-not-loaded is-saving-map is-saving-game is-saving-file is-deleting-file" );
+            this.dom.root.classList.remove(
+                "is-not-loaded",
+                "is-saving-map",
+                "is-saving-game",
+                "is-saving-file",
+                "is-deleting-file"
+            );
 
         }, timeout );
     }
@@ -122,7 +128,7 @@ class Editor {
         Utils.destroySound();
 
         // Set active game to menu
-        this.dom.gameLoad[ 0 ].innerText = this.data.game.name;
+        this.dom.gameLoad.innerText = this.data.game.name;
 
         this.setTitle();
         this.updateUrl();
@@ -142,7 +148,7 @@ class Editor {
         this.canvas.loadMap( this.data.map, this.data.game );
 
         // Set active map to menu
-        this.dom.mapLoad[ 0 ].innerText = map.name;
+        this.dom.mapLoad.innerText = map.name;
 
         this.setTitle();
         this.updateUrl();
@@ -152,7 +158,7 @@ class Editor {
     postMap ( postData ) {
         postData.fileName = `${Cache.slugify( postData.name )}.json`;
         this.mode = Config.Editor.modes.SAVING;
-        this.dom.root.addClass( "is-saving-map" );
+        this.dom.root.classList.add( "is-saving-map" );
 
         ipcRenderer.send( "renderer-newmap", postData );
         this.menus.removeMenus();
@@ -162,7 +168,7 @@ class Editor {
 
     postGame ( postData ) {
         this.mode = Config.Editor.modes.SAVING;
-        this.dom.root.addClass( "is-saving-game" );
+        this.dom.root.classList.add( "is-saving-game" );
 
         ipcRenderer.send( "renderer-newgame", postData );
         this.menus.removeMenus();
@@ -196,7 +202,7 @@ class Editor {
     readFile ( fileInput ) {
         return new Promise( ( resolve, reject ) => {
             const fileReader = new FileReader();
-            const fileData = fileInput[ 0 ].files[ 0 ];
+            const fileData = fileInput.files[ 0 ];
 
             if ( fileData ) {
                 fileReader.onload = ( fe ) => {
@@ -264,7 +270,7 @@ class Editor {
         }
 
         this.mode = Config.Editor.modes.SAVING;
-        this.dom.root.addClass( "is-saving-map" );
+        this.dom.root.classList.add( "is-saving-map" );
 
         // Save map JSON
         const postData = this.data.map;
@@ -283,10 +289,14 @@ class Editor {
     }
 
 
-    _onSettingsClick ( e ) {
-        const targ = window.hobo( e.target );
-        const elem = targ.is( ".js-settings" ) ? targ : targ.closest( ".js-settings" );
-        const elemData = elem.data();
+    _onSettingsClick ( target ) {
+        const settings = target.closest( ".js-settings" );
+
+        if ( !settings ) {
+            return;
+        }
+
+        const elemData = settings.dataset;
 
         if ( elemData.type === "game" && this.canGameFunction() ) {
             this.menus.renderMenu( "editor-active-game-menu", this.data.game );
@@ -301,26 +311,26 @@ class Editor {
 
 
     _loadoutGames ( games ) {
-        this.dom.loadoutGrid[ 0 ].innerHTML = games.map( ( game ) => {
+        this.dom.loadoutGrid.innerHTML = games.map( ( game ) => {
             return renderGame( game );
         }).join( "" );
 
-        this.dom.loadout.addClass( "is-loaded" );
+        this.dom.loadout.classList.add( "is-loaded" );
     }
 
 
     _loadoutMaps ( maps ) {
-        this.dom.loadoutGrid[ 0 ].innerHTML = maps.map( ( map ) => {
+        this.dom.loadoutGrid.innerHTML = maps.map( ( map ) => {
             return renderMap( map, this.data.game );
         }).join( "" );
 
-        this.dom.loadout.addClass( "is-loaded" );
+        this.dom.loadout.classList.add( "is-loaded" );
     }
 
 
     _loadoutClear () {
-        this.dom.loadoutGrid[ 0 ].innerHTML = "";
-        this.dom.loadout.removeClass( "is-loaded" );
+        this.dom.loadoutGrid.innerHTML = "";
+        this.dom.loadout.classList.remove( "is-loaded" );
     }
 
 
@@ -363,9 +373,7 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-gamesettings", () => {
-            this._onSettingsClick({
-                target: this.dom.gameSettings[ 0 ],
-            });
+            this._onSettingsClick( this.dom.gameSettings );
         });
 
         ipcRenderer.on( "menu-newgame", () => {
@@ -373,9 +381,7 @@ class Editor {
         });
 
         ipcRenderer.on( "menu-mapsettings", () => {
-            this._onSettingsClick({
-                target: this.dom.mapSettings[ 0 ],
-            });
+            this._onSettingsClick( this.dom.mapSettings );
         });
 
         ipcRenderer.on( "menu-newmap", () => {
@@ -425,7 +431,7 @@ class Editor {
         });
 
         ipcRenderer.on( "watch-reloadcss", ( e ) => {
-            this.dom.css[ 0 ].href = `./public/css/studio.css?buster=${Date.now()}`;
+            this.dom.css.href = `./public/css/studio.css?buster=${Date.now()}`;
         });
     }
 
@@ -471,50 +477,57 @@ class Editor {
 
 
     bindeFileEvents () {
-        const $document = window.hobo( document );
+        document.addEventListener( "change", ( e ) => {
+            const target = e.target.closest( ".js-upload-file" );
 
-        $document.on( "change", ".js-upload-file", ( e ) => {
-            const targ = window.hobo( e.target );
-            const elem = targ.is( ".js-upload-file" ) ? targ : targ.closest( ".js-upload-file" );
-            const data = elem.data();
+            if ( !target ) {
+                return;
+            }
 
-            if ( targ[ 0 ].name === "icon" ) {
-                this.readFile( targ ).then( ( response ) => {
+            if ( target.name === "icon" ) {
+                this.readFile( target ).then( ( response ) => {
                     ipcRenderer.send( "renderer-uploadicon", response );
                 });
             }
 
-            document.getElementById( data.target ).value = elem[ 0 ].value;
+            const dataTarget = document.getElementById( target.dataset.target );
+
+            if ( dataTarget ) {
+                dataTarget.value = target.value;
+            }
         });
 
-        $document.on( "click", ".js-upload-cancel", ( e ) => {
-            if ( !this.canGameFunction() ) {
-                return false;
-            }
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-upload-cancel" );
 
-            const targ = window.hobo( e.target );
-            const elem = targ.is( ".js-upload-cancel" ) ? targ : targ.closest( ".js-upload-cancel" );
+            if ( !this.canGameFunction() || !target ) {
+                return;
+            }
 
             this.menus.removeMenus();
         });
 
-        $document.on( "click", ".js-upload-delete", ( e ) => {
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-upload-delete" );
+
+            if ( !target ) {
+                return;
+            }
+
             if ( !this.canGameFunction() ) {
                 return false;
             }
 
-            const targ = window.hobo( e.target );
-            const button = targ.is( ".js-upload-delete" ) ? targ : targ.closest( ".js-upload-delete" );
-            const menu = button.closest( ".js-upload-menu" );
-            const select = menu.find( ".js-select-delete" );
+            const menu = target.closest( ".js-upload-menu" );
+            const select = menu.querySelector( ".js-select-delete" );
             const postData = {
-                type: button.data().type,
-                fileName: select[ 0 ].value,
+                type: target.dataset.type,
+                fileName: select.value,
             };
 
-            if ( confirm( `Sure you want to delete the file "${select[ 0 ].value}"? This may affect other data referencing this file.` ) ) {
+            if ( confirm( `Sure you want to delete the file "${select.value}"? This may affect other data referencing this file.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
-                this.dom.root.addClass( "is-deleting-file" );
+                this.dom.root.classList.add( "is-deleting-file" );
 
                 ipcRenderer.send( "renderer-deletefile", postData );
                 this.menus.removeMenus();
@@ -522,29 +535,33 @@ class Editor {
             }
         });
 
-        $document.on( "click", ".js-upload-save", ( e ) => {
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-upload-save" );
+
+            if ( !target ) {
+                return;
+            }   
+
             if ( !this.canGameFunction() ) {
                 return false;
             }
 
-            const targ = window.hobo( e.target );
-            const button = targ.is( ".js-upload-save" ) ? targ : targ.closest( ".js-upload-save" );
-            const menu = button.closest( ".js-upload-menu" );
-            const fileInput = menu.find( ".js-upload-file" );
-            const fileField = menu.find( ".js-upload-field" );
+            const menu = target.closest( ".js-upload-menu" );
+            const fileInput = menu.querySelector( ".js-upload-file" );
+            const fileField = menu.querySelector( ".js-upload-field" );
             const postData = {
                 id: this.data.game.id,
-                type: button.data().type,
+                type: target.dataset.type,
             };
 
             this.mode = Config.Editor.modes.SAVING;
-            this.dom.root.addClass( "is-saving-file" );
+            this.dom.root.classList.add( "is-saving-file" );
 
             this.readFile( fileInput ).then( ( response ) => {
                 postData.fileName = response.fileName;
                 postData.fileData = response.fileData;
                 ipcRenderer.send( "renderer-newfile", postData );
-                fileField[ 0 ].value = "";
+                fileField.value = "";
                 this.menus.removeMenus();
                 this.done();
             });
@@ -553,36 +570,62 @@ class Editor {
 
 
     bindEvents () {
-        const $document = window.hobo( document );
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-settings" );
 
-        this.dom.settings.on( "click", this._onSettingsClick.bind( this ) );
+            if ( !target ) {
+                return;
+            }
 
-        $document.on( "click", ".js-close-settings", () => {
+            this._onSettingsClick( e.target );
+        });
+
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-close-settings" );
+
+            if ( !target ) {
+                return;
+            }
+
             this.menus.removeMenus();
         });
 
-        $document.on( "click", ".js-delete-map", () => {
-            if ( !this.canMapFunction() ) {
-                return false;
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-delete-map" );
+
+            if ( !target || !this.canMapFunction() ) {
+                return;
             }
 
             if ( confirm( `Sure you want to delete the map "${this.data.map.name}"? This may affect other data referencing this map.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
-                this.dom.root.addClass( "is-deleting-map" );
+                this.dom.root.classList.add( "is-deleting-map" );        
                 this.menus.removeMenus();
                 this.actions.resetActions();
                 ipcRenderer.send( "renderer-deletemap", this.data.map );
             }
         });
 
-        $document.on( "click", ".js-delete-game", () => {
-            if ( !this.canGameFunction() ) {
-                return false;
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-delete-game" );
+
+            if ( !target || !this.canGameFunction() ) {
+                return;
             }
 
             if ( confirm( `Sure you want to delete the game "${this.data.game.name}"? This cannot be undone.` ) ) {
                 this.mode = Config.Editor.modes.SAVING;
-                this.dom.root.addClass( "is-deleting-game" );
+                this.dom.root.classList.add( "is-deleting-game" );
+
+                ipcRenderer.send( "renderer-deletegame", this.data.game );
+                this.data = {};
+                this.updateUrl();
+                window.location.reload();
+            }
+
+            if ( confirm( `Sure you want to delete the game "${this.data.game.name}"? This cannot be undone.` ) ) {
+                this.mode = Config.Editor.modes.SAVING;
+                this.dom.root.classList.add( "is-deleting-game" );
 
                 ipcRenderer.send( "renderer-deletegame", this.data.game );
                 this.data = {};
@@ -591,23 +634,31 @@ class Editor {
             }
         });
 
-        $document.on( "click", ".js-post-cancel", ( e ) => {
-            // const targ = window.hobo( e.target );
-            // const elem = targ.is( ".js-post-cancel" ) ? targ : targ.closest( ".js-post-cancel" );
-            // const elemData = elem.data();
-            // const canFunction = ( elemData.type === "game" ) || this.canGameFunction();
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-post-cancel" );
 
-            // if ( !canFunction ) {
-            //     return false;
-            // }
+            if ( !target ) {
+                return;
+            }
+
+            const elemData = target.dataset;
+            const canFunction = ( elemData.type === "game" ) || this.canGameFunction();
+
+            if ( !canFunction ) {
+                return false;
+            }
 
             this.menus.removeMenus();
         });
 
-        $document.on( "click", ".js-post-save", ( e ) => {
-            const targ = window.hobo( e.target );
-            const elem = targ.is( ".js-post-save" ) ? targ : targ.closest( ".js-post-save" );
-            const elemData = elem.data();
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-post-save" );
+
+            if ( !target ) {
+                return;
+            }
+
+            const elemData = target.dataset;
             const canFunction = ( elemData.type === "game" ) || this.canGameFunction();
 
             if ( !canFunction ) {
@@ -615,9 +666,9 @@ class Editor {
             }
 
             const postData = elemData.type === "game"
-                ? Utils.parseFields( window.hobo( ".js-addgame-field" ) )
+                ? Utils.parseFields( document.querySelector( ".js-addgame-field" ) )
                 // "map" is the only post besides game...
-                : Utils.parseFields( window.hobo( ".js-addmap-field" ) );
+                : Utils.parseFields( document.querySelector( ".js-addmap-field" ) );
 
             if ( postData.name ) {
                 if ( elemData.type === "game" ) {
@@ -630,7 +681,7 @@ class Editor {
             }
         });
 
-        this.dom.demoGame.on( "click", () => {
+        this.dom.demoGame.addEventListener( "click", () => {
             if ( !this.canGameFunction() ) {
                 return false;
             }
