@@ -68,15 +68,6 @@
             "friction": 2
         },
         {
-            "group": "water",
-            "layer": "background",
-            "coords": [],
-            "offsetX": 0,
-            "offsetY": 2112,
-            "stepsX": 4,
-            "dur": 1000
-        },
-        {
             "group": "flowers",
             "layer": "background",
             "coords": [],
@@ -123,6 +114,14 @@
                     "verb": "attack"
                 }
             ]
+        },
+        {
+            "group": "water",
+            "layer": "background",
+            "offsetX": 0,
+            "offsetY": 2112,
+            "stepsX": 4,
+            "dur": 1000
         }
     ],
     "npcs": [

@@ -944,6 +944,7 @@ class EditorCanvas {
                 maps: Utils.getOptionData( this.editor.data.maps ).filter( ( map ) => {
                     return map.id !== this.map.id;
                 }),
+                game: this.game,     
                 facing: Utils.getOptionData( window.lib2dk.Config.facing ),
                 events: Utils.getOptionData( window.lib2dk.Config.events ),
                 coords,
@@ -1138,6 +1139,20 @@ class EditorCanvas {
             // TODO: optional spawn point
 
             console.log( newData );
+        });
+
+        this.editor.menus.dom.container.addEventListener( "change", ( e ) => {
+            if ( !e.target.closest( "#editor-mapevent-map" ) ) {
+                return;
+            }
+
+            const map = this.editor.data.maps.find( ( map ) => {
+                return map.id === e.target.value;
+            });
+
+            document.getElementById( "editor-mapevent-thumbnail" ).src = `./games/${this.game.id}/${map.thumbnail}`;
+
+            // TODO: Render spawn point radio inputs
         });
     }
 

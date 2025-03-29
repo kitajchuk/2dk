@@ -1,4 +1,4 @@
-const renderNewMapEventMenu = ({ maps, coords, facing, events }) => {
+const renderNewMapEventMenu = ({ maps, game, coords, facing, events }) => {
     return `
         <div class="editor__menu js-menu is-active" id="editor-mapevent-menu">
             <button class="button button--grey button--box editor__close-button js-post-cancel">
@@ -45,7 +45,7 @@ const renderNewMapEventMenu = ({ maps, coords, facing, events }) => {
             </div>
             <div class="editor__setting">
                 <div class="select">
-                    <select class="select__field js-select js-select-map js-mapevent-field" name="map">
+                    <select class="select__field js-select js-select-map js-mapevent-field" name="map" id="editor-mapevent-map">
                         <option value="">Target Map</option>
                         ${maps.map( ( map ) => `
                             <option value="${map.id}">${map.name}</option>
@@ -55,6 +55,9 @@ const renderNewMapEventMenu = ({ maps, coords, facing, events }) => {
                         ${window.feather.icons[ "chevron-down" ].toSvg()}
                     </span>
                 </div>
+            </div>
+            <div class="editor__setting">
+                <img src="" width="100%" id="editor-mapevent-thumbnail" />
             </div>
             <div class="editor__setting">
                 <button class="button editor__button editor__upload-button js-mapevent-post" data-type="mapevent">Create</button>
