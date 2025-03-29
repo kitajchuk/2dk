@@ -31,11 +31,11 @@
     "build": "yarn build:site && yarn build:2dk && yarn build:app && yarn build:studio",
     "postbuild": "cp studio/src/templates/app.js studio/games/la && cp studio/src/templates/app.js studio/games/la_copy && cp -R studio/games dist",
     "build:site": "webpack --config ./configs/webpack.config.prod.js",
-    "postbuild:site": "sass ./src/styles/2dk.scss ./dist/2dk.css",
+    "postbuild:site": "sass --no-source-map --style=compressed ./src/styles/2dk.scss ./dist/2dk.css",
     "build:2dk": "webpack --config ./configs/webpack.config.2dk.js",
-    "postbuild:2dk": "sass ./src/styles/2dk.scss ./studio/src/templates/2dk.css",
+    "postbuild:2dk": "sass --no-source-map --style=compressed ./src/styles/2dk.scss ./studio/src/templates/2dk.css",
     "build:app": "webpack --config ./configs/webpack.config.app.js",
-    "build:studio": "sass ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
+    "build:studio": "sass --no-source-map --style=compressed ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
     "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src"
   },
   "dependencies": {},
@@ -50,9 +50,9 @@
     "html-webpack-plugin": "^5.5.0",
     "jsdoc": "^3.6.10",
     "sass-embedded": "^1.86.0",
-    "webpack": "^5.68.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.7.4"
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.1"
   },
   "babel": {
     "presets": [

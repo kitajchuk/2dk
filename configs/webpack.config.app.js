@@ -5,7 +5,7 @@ const {
 } = require( "./webpack.config.base" );
 
 module.exports = {
-    mode: "development",
+    mode: "production",
     devtool: false,
     entry: {
         app: path.resolve( process.cwd(), "src/app.js" ),

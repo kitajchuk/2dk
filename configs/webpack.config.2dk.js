@@ -5,7 +5,7 @@ const {
 } = require( "./webpack.config.base" );
 
 module.exports = {
-    mode: "development",
+    mode: "production",
     devtool: false,
     entry: {
         "2dk": path.resolve( process.cwd(), "src/lib/index.js" ),
