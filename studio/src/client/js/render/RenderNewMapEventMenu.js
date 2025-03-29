@@ -56,9 +56,7 @@ const renderNewMapEventMenu = ({ maps, game, coords, facing, events }) => {
                     </span>
                 </div>
             </div>
-            <div class="editor__setting">
-                <img src="" width="100%" id="editor-mapevent-thumbnail" />
-            </div>
+            <div class="editor__setting" id="editor-mapevent-spawn-field"></div>
             <div class="editor__setting">
                 <button class="button editor__button editor__upload-button js-mapevent-post" data-type="mapevent">Create</button>
             </div>

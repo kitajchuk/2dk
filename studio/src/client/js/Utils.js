@@ -164,6 +164,12 @@ const Utils = {
             if ( fields[ i ].type === "checkbox" ) {
                 value = fields[ i ].checked;
 
+            // Radios
+            } else if ( fields[ i ].type === "radio" ) {
+                if ( fields[ i ].checked ) {
+                    value = fields[ i ].value;
+                }
+
             // Numbers
             } else if ( fields[ i ].type === "number" || fields[ i ].type === "range" ) {
                 value = parseFloat( fields[ i ].value );

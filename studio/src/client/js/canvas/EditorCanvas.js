@@ -1132,27 +1132,60 @@ class EditorCanvas {
             const newData = {
                 coords,
                 type: data.type,
-                dir: data.dir,
                 map: `maps/${data.map}.json`,
+                dir: data.dir,
             };
 
-            // TODO: optional spawn point
+            if ( data.spawn && data.type === window.lib2dk.Config.events.DOOR ) {
+                newData.spawn = parseInt( data.spawn, 10 );
+            }
 
-            console.log( newData );
+            this.map.events.push( newData );
+            this.drawEvents();
+            this.editor.menus.removeMenus();
         });
 
+        // When the selected map changes, update the spawn field
+        // This places a radio input over the map thumbnail in each
+        // spawn location for the selected map making it easier to
+        // select the correct spawn point for the event.
         this.editor.menus.dom.container.addEventListener( "change", ( e ) => {
             if ( !e.target.closest( "#editor-mapevent-map" ) ) {
                 return;
             }
 
-            const map = this.editor.data.maps.find( ( map ) => {
+            const selectedMap = this.editor.data.maps.find( ( map ) => {
                 return map.id === e.target.value;
             });
 
-            document.getElementById( "editor-mapevent-thumbnail" ).src = `./games/${this.game.id}/${map.thumbnail}`;
+            const spawnField = document.getElementById( "editor-mapevent-spawn-field" );
+            const thumbnail = document.createElement( "img" );
+            const fragment = document.createDocumentFragment();
 
-            // TODO: Render spawn point radio inputs
+            spawnField.innerHTML = "";
+            thumbnail.src = `./games/${this.game.id}/${selectedMap.thumbnail}`;
+            spawnField.appendChild( thumbnail );
+
+            const renderWidth = thumbnail.clientWidth;
+            const renderScale = renderWidth / selectedMap.width;
+
+            selectedMap.spawn.forEach( ( spawn, index ) => {
+                const div = document.createElement( "div" );
+                div.style.top = `${spawn.y * renderScale}px`;
+                div.style.left = `${spawn.x * renderScale}px`;
+                div.style.width = `${this.spawn.width * renderScale}px`;
+                div.style.height = `${this.spawn.height * renderScale}px`;
+
+                const input = document.createElement( "input" );
+                input.type = "radio";
+                input.name = "spawn";
+                input.value = index;
+                input.className = "radio js-mapevent-field";
+                div.appendChild( input );
+                fragment.appendChild( div );
+            });
+
+            spawnField.appendChild( fragment );
         });
     }
 

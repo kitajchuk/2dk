@@ -136,7 +136,6 @@ const renderActiveTile = ( coords, map ) => {
     `;
 };
 
-
 module.exports = {
     renderMap,
     renderNPC,

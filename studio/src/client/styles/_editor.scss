@@ -136,6 +136,31 @@
 }
 
 
+/* Map Event Spawn Field */
+#editor-mapevent-spawn-field {
+    position: relative;
+
+    > img {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+    }
+
+    > div {
+        position: absolute;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .radio {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+
 
 /* Cursor */
 .editor__cursor {
