@@ -10,6 +10,7 @@ module.exports = {
     "plugin": "topview",
     "hero": {},
     "heroes": [],
+    "npcs": [],
     "objects": [],
     "fx": [],
     "bundle": []

@@ -67,8 +67,6 @@ const Config = {
         MAPEVENT: "mapevent",
     },
     npc: {
-        TILE: "tile",
-        WALK: "walk",
         ROAM: "roam",
         FLOAT: "float",
         WANDER: "wander",

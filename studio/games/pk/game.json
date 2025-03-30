@@ -1,0 +1,91 @@
+{
+    "id": "pk",
+    "name": "PK",
+    "width": 480,
+    "height": 320,
+    "resolution": 1,
+    "icon": "icon.png",
+    "save": 14,
+    "release": 1,
+    "plugin": "topview",
+    "hero": {
+        "sprite": 0,
+        "spawn": 0,
+        "map": "maps/pallet-town.json",
+        "sounds": {}
+    },
+    "heroes": [
+        {
+            "id": "ash",
+            "name": "Ash",
+            "width": 32,
+            "height": 40,
+            "image": "assets/sprites/ash-hero.png",
+            "hitbox": {
+                "x": 0,
+                "y": 22,
+                "width": 32,
+                "height": 32
+            },
+            "stats": {
+                "power": 1,
+                "health": 3,
+                "stamina": 3,
+                "strength": 1
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": 0
+                    },
+                    "up": {
+                        "offsetX": -32,
+                        "offsetY": 0
+                    },
+                    "left": {
+                        "offsetX": -64,
+                        "offsetY": 0
+                    },
+                    "right": {
+                        "offsetX": -96,
+                        "offsetY": 0
+                    }
+                },
+                "walk": {
+                    "dur": 250,
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": -40,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 0,
+                        "offsetY": -80,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -120,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 0,
+                        "offsetY": -160,
+                        "stepsX": 2
+                    }
+                }
+            }
+        }
+    ],
+    "npcs": [],
+    "objects": [],
+    "fx": [],
+    "bundle": [
+        "assets/tiles/pk-tiles.png",
+        "assets/tiles/pk-indoor.png",
+        "assets/sprites/npc.png",
+        "assets/sprites/ash-hero.png",
+        "maps/pallet-town.json"
+    ]
+}

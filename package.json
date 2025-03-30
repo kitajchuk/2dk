@@ -22,21 +22,26 @@
   ],
   "main": "./src/lib/index.js",
   "scripts": {
-    "predev": "rm -rf dist && mkdir dist && cp -R studio/games dist && yarn build",
+    "predev": "rm -rf dist && mkdir dist && yarn copy:games && yarn build",
     "dev": "concurrently \"yarn serve:dev\" \"yarn watch:src\" \"yarn watch:studio\" \"yarn watch:games\"",
     "serve:dev": "webpack serve --config ./configs/webpack.config.dev.js",
-    "watch:src": "chokidar \"src/**/*\" -c \"yarn build:2dk && yarn build:app && cp -R studio/src/templates/2dk.css dist/games/la && cp -R studio/src/templates/app.js dist/games/la\"",
+    "watch:src": "chokidar \"src/**/*\" -c \"yarn build:2dk && yarn build:app && yarn copy\"",
     "watch:studio": "chokidar \"studio/src/client/**/*.scss\" -c \"yarn build:studio\"",
-    "watch:games": "chokidar \"studio/games/**/*.json\" -c \"cp -R studio/games dist\"",
+    "watch:games": "chokidar \"studio/games/**/*.json\" -c \"yarn copy:games\"",
     "build": "yarn build:site && yarn build:2dk && yarn build:app && yarn build:studio",
-    "postbuild": "cp studio/src/templates/app.js studio/games/la && cp studio/src/templates/app.js studio/games/la_copy && cp -R studio/games dist && node games.js",
+    "postbuild": "yarn copy && node games.js",
     "build:site": "webpack --config ./configs/webpack.config.prod.js",
     "postbuild:site": "sass --no-source-map --style=compressed ./src/styles/2dk.scss ./dist/2dk.css",
     "build:2dk": "webpack --config ./configs/webpack.config.2dk.js",
     "postbuild:2dk": "sass --no-source-map --style=compressed ./src/styles/2dk.scss ./studio/src/templates/2dk.css",
     "build:app": "webpack --config ./configs/webpack.config.app.js",
     "build:studio": "sass --no-source-map --style=compressed ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
-    "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src"
+    "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src",
+    "copy": "yarn copy:la && yarn copy:la_copy && yarn copy:pk && yarn copy:games",
+    "copy:la": "cp studio/src/templates/2dk.css studio/games/la && cp studio/src/templates/app.js studio/games/la",
+    "copy:la_copy": "cp studio/src/templates/2dk.css studio/games/la_copy && cp studio/src/templates/app.js studio/games/la_copy",
+    "copy:pk": "cp studio/src/templates/2dk.css studio/games/pk && cp studio/src/templates/app.js studio/games/pk",
+    "copy:games": "cp -R studio/games dist"
   },
   "dependencies": {
     "shelljs": "^0.9.2"

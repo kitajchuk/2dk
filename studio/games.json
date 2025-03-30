@@ -20,5 +20,16 @@
         "save": 783,
         "release": 1,
         "plugin": "topview"
+    },
+    {
+        "id": "pk",
+        "name": "PK",
+        "width": 480,
+        "height": 320,
+        "resolution": 1,
+        "icon": "icon.png",
+        "save": 14,
+        "release": 1,
+        "plugin": "topview"
     }
 ]

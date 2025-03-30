@@ -499,6 +499,10 @@ class TopView extends GameBox {
 
 
     handleHeroJump () {
+        if ( !this.hero.data.verbs[ Config.verbs.JUMP ] ) {
+            return;
+        }
+
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -16;
@@ -688,6 +692,10 @@ class TopView extends GameBox {
 
 
     handleHeroAttack () {
+        if ( !this.hero.data.verbs[ Config.verbs.ATTACK ] ) {
+            return;
+        }
+
         this.attacking = true;
         this.hero.resetElapsed = true;
         this.hero.cycle( Config.verbs.ATTACK, this.hero.dir );

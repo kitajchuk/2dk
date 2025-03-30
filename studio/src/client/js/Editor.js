@@ -344,6 +344,10 @@ class Editor {
             ipcRenderer.send( "renderer-unload" );
         };
 
+        ipcRenderer.on( "menu-gamelibrary", () => {
+            console.log( "menu-gamelibrary" );
+        });
+
         ipcRenderer.on( "menu-loadgames", ( e, games ) => {
             if ( initialQueryGame ) {
                 ipcRenderer.send( "renderer-loadgame", {

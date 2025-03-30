@@ -19,26 +19,18 @@ class EditorLayers {
 
     _bind () {
         document.addEventListener( "click", ( e ) => {
-            const target = e.target.closest( ".js-edit-layer" );
+            const hide = e.target.closest( ".js-hide-layer" );
 
-            if ( !target ) {
+            if ( hide && this.editor.canMapFunction() ) {
+                this._handleHideLayer( hide );
                 return;
             }
 
-            if ( this.editor.canMapFunction() && !target.closest( ".js-hide-layer" ) ) {
-                this._handleEditLayer( target );
-            }
-        });
+            const layer = e.target.closest( ".js-edit-layer" );
 
-        document.addEventListener( "click", ( e ) => {
-            const target = e.target.closest( ".js-hide-layer" );
-
-            if ( !target ) {
+            if ( layer && this.editor.canMapFunction() ) {
+                this._handleEditLayer( layer );
                 return;
-            }
-
-            if ( this.editor.canMapFunction() ) {
-                this._handleHideLayer( target );
             }
         });
 

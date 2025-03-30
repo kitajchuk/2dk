@@ -12,7 +12,6 @@ let activeGames = [];
 let activeMaps = [];
 let activeGame = null;
 let activeMap = null;
-let activeSelect = false;
 
 // Global database client
 let dBase;
@@ -99,6 +98,13 @@ const getGamesMenu = () => {
                 label: "Game Settings",
                 click () {
                     mainWindow.webContents.send( "menu-gamesettings", null );
+                },
+                enabled: activeGame ? true : false,
+            },
+            {
+                label: "Game Library",
+                click () {
+                    mainWindow.webContents.send( "menu-gamelibrary", null );
                 },
                 enabled: activeGame ? true : false,
             },
