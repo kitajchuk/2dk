@@ -5,7 +5,7 @@
     "height": 320,
     "resolution": 1,
     "icon": "icon.png",
-    "save": 14,
+    "save": 35,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -23,9 +23,9 @@
             "image": "assets/sprites/ash-hero.png",
             "hitbox": {
                 "x": 0,
-                "y": 22,
+                "y": 16,
                 "width": 32,
-                "height": 32
+                "height": 24
             },
             "stats": {
                 "power": 1,

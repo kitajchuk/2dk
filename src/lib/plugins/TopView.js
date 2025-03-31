@@ -613,6 +613,10 @@ class TopView extends GameBox {
         this.interact.push++;
 
         if ( this.hero.verb !== Config.verbs.LIFT && this.interact.push > this.map.data.tilesize ) {
+            if ( !this.hero.data.verbs[ Config.verbs.PUSH ] ) {
+                return;
+            }
+
             this.hero.cycle( Config.verbs.PUSH, dir );
 
         } else if ( this.hero.verb !== Config.verbs.LIFT ) {
