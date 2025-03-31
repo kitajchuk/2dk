@@ -37,6 +37,27 @@ const renderActiveGameMenu = ( game ) => {
                 </div>
             </div>
             <div class="editor__setting">
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-addgame-field" type="checkbox" name="diagonaldpad"${game.diagonaldpad ? " checked" : ""} readonly disabled />
+                        <span class="label">Diagonal D-Pad (${game.diagonaldpad ? "enabled" : "disabled"})</span>
+                    </label>
+                </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Resolution (${game.maxresolution}x)</div>
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-addgame-field" value="2" type="radio" name="maxresolution" checked="${game.maxresolution === 2}" readonly disabled />
+                        <span class="label">2x</span>
+                    </label>
+                    <label class="checkbox">
+                        <input class="check js-addgame-field" value="1" type="radio" name="maxresolution" checked="${game.maxresolution === 1}" readonly disabled />
+                        <span class="label">1x</span>
+                    </label>
+                </div>
+            </div>
+            <div class="editor__setting">
                 <div class="editor__label">Webapp icon (square PNG format, at lease 1024x1024 pixels)</div>
                 <div class="editor__upload">
                     <button class="button editor__upload__button editor__button">

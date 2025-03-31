@@ -47,7 +47,7 @@ class Player extends Controller {
         }
 
         if ( this.query.resolution ) {
-            this.resolution = Number( this.query.resolution );
+            this.resolution = this.getResolution( Number( this.query.resolution ) );
         }
 
         if ( this.query.spawn ) {
@@ -61,7 +61,7 @@ class Player extends Controller {
         this.loader.loadJson( "game.json" ).then( ( data ) => {
             this.data = data;
             this.heroData = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
-            this.resolution = ( this.device ? 2 : this.data.resolution );
+            this.resolution = this.getResolution( this.device ? 2 : this.data.resolution );
             this.debug();
             this.width = this.data.width / this.resolution;
             this.height = this.data.height / this.resolution;
@@ -97,6 +97,11 @@ class Player extends Controller {
                 this.bind();
             });
         });
+    }
+
+
+    getResolution ( res ) {
+        return res > this.data.maxresolution ? this.data.maxresolution : res;
     }
 
 

@@ -179,7 +179,7 @@ const Utils = {
                 value = fields[ i ].value;
             }
 
-            if ( value ) {
+            if ( value !== null ) {
                 data[ fields[ i ].name ] = value;
             }
         }

@@ -30,6 +30,27 @@ const renderNewGameMenu = () => {
                 </div>
             </div>
             <div class="editor__setting">
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-addgame-field" type="checkbox" name="diagonaldpad" checked />
+                        <span class="label">Diagonal D-Pad (for diagonal movement)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Resolution</div>
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-addgame-field" value="2" type="radio" name="maxresolution" checked />
+                        <span class="label">2x</span>
+                    </label>
+                    <label class="checkbox">
+                        <input class="check js-addgame-field" value="1" type="radio" name="maxresolution" />
+                        <span class="label">1x</span>
+                    </label>
+                </div>
+            </div>
+            <div class="editor__setting">
                 <button class="button editor__button editor__upload-button js-post-save" data-type="game">Create</button>
             </div>
         </div>

@@ -4,6 +4,8 @@
     "width": 480,
     "height": 320,
     "resolution": 1,
+    "maxresolution": 1,
+    "diagonaldpad": false,
     "icon": "icon.png",
     "save": 35,
     "release": 1,
@@ -21,6 +23,7 @@
             "width": 32,
             "height": 40,
             "image": "assets/sprites/ash-hero.png",
+            "controlmaxv": 2,
             "hitbox": {
                 "x": 0,
                 "y": 16,
@@ -32,6 +35,10 @@
                 "health": 3,
                 "stamina": 3,
                 "strength": 1
+            },
+            "shadow": {
+                "offsetX": -128,
+                "offsetY": 0
             },
             "verbs": {
                 "face": {
@@ -53,7 +60,7 @@
                     }
                 },
                 "walk": {
-                    "dur": 250,
+                    "dur": 350,
                     "down": {
                         "offsetX": 0,
                         "offsetY": -40,

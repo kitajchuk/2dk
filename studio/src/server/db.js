@@ -535,6 +535,8 @@ class DB {
             width: data.width,
             height: data.height,
             resolution: data.resolution,
+            maxresolution: data.maxresolution,
+            diagonaldpad: data.diagonaldpad,
             icon: data.icon,
             save: data.save,
             release: data.release,
@@ -603,6 +605,10 @@ class DB {
                 gameModel.width = Number( data.width ) || gameModel.width;
                 gameModel.height = Number( data.height ) || gameModel.height;
                 gameModel.resolution = Number( data.resolution ) || gameModel.resolution;
+                gameModel.maxresolution = Number( data.maxresolution ) || gameModel.maxresolution;
+                gameModel.diagonaldpad = data.diagonaldpad === false ? data.diagonaldpad : gameModel.diagonaldpad;
+                gameModel.release = Number( data.release ) || gameModel.release;
+                gameModel.plugin = data.plugin || gameModel.plugin;
                 gameModel.icon = "icon.png";
 
                 games.push( DB.getGameSlice( gameModel ) );
