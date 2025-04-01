@@ -200,13 +200,16 @@ class TopView extends GameBox {
             collision.tiles.action.length &&
             collision.tiles.action[ 0 ].action &&
             collision.tiles.action[ 0 ].instance.canInteract( Config.verbs.LIFT ) &&
+            // @check: hero-verb-check
+            this.hero.can( Config.verbs.LIFT ) &&
+            this.hero.can( Config.verbs.GRAB ) &&
             !this.interact.tile
         ) {
             this.interact.tile = collision.tiles.action[ 0 ];
             this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
 
         // Jump...
-        } else if ( this.hero.verb !== Config.verbs.LIFT && this.hero.verb !== Config.verbs.GRAB ) {
+        } else if ( !this.hero.is( Config.verbs.LIFT ) && !this.hero.is( Config.verbs.GRAB ) ) {
             this.handleHeroJump( poi, this.hero.dir );
         }
     }
@@ -247,7 +250,7 @@ class TopView extends GameBox {
         }
 
         // There will be extra blocking checks wrapped around this action
-        if ( !this.jumping && this.hero.verb !== Config.verbs.LIFT ) {
+        if ( !this.jumping && !this.hero.is( Config.verbs.LIFT ) ) {
             this.handleHeroAttack();
         }
     }
@@ -304,7 +307,7 @@ class TopView extends GameBox {
 
 
     canHeroResetMaxV () {
-        return ( this.hero.physics.maxv !== this.hero.physics.controlmaxv && this.hero.verb !== Config.verbs.LIFT );
+        return ( this.hero.physics.maxv !== this.hero.physics.controlmaxv && !this.hero.is( Config.verbs.LIFT ) );
     }
 
 
@@ -346,7 +349,7 @@ class TopView extends GameBox {
                 collision.tiles.passive[ 0 ].collides.width > ( collision.tiles.passive[ 0 ].tilebox.width / 2 ) ||
                 collision.tiles.passive[ 0 ].collides.height > ( collision.tiles.passive[ 0 ].tilebox.height / 2 )
             ) &&
-            this.hero.verb !== Config.verbs.LIFT &&
+            !this.hero.is( Config.verbs.LIFT ) &&
             collision.tiles.passive[ 0 ].instance.canInteract( Config.verbs.JUMP ).dir === dir
         );
     }
@@ -375,11 +378,11 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( this.hero.verb === Config.verbs.GRAB ) {
+        if ( this.hero.is( Config.verbs.GRAB ) ) {
             this.hero.face( this.hero.dir );
         }
 
-        if ( this.hero.verb === Config.verbs.LIFT ) {
+        if ( this.hero.is( Config.verbs.LIFT ) ) {
             if ( this.interact.tile.throw ) {
                 this.handleHeroThrow();
 
@@ -464,7 +467,7 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( this.hero.verb === Config.verbs.GRAB ) {
+        if ( this.hero.is( Config.verbs.GRAB ) ) {
             if ( this.canHeroLift( poi, dir, collision ) ) {
                 this.handleHeroLift( poi, dir );
             }
@@ -499,7 +502,8 @@ class TopView extends GameBox {
 
 
     handleHeroJump () {
-        if ( !this.hero.data.verbs[ Config.verbs.JUMP ] ) {
+        // @check: hero-verb-check
+        if ( !this.hero.can( Config.verbs.JUMP ) ) {
             return;
         }
 
@@ -612,14 +616,15 @@ class TopView extends GameBox {
     handleHeroPush ( poi, dir ) {
         this.interact.push++;
 
-        if ( this.hero.verb !== Config.verbs.LIFT && this.interact.push > this.map.data.tilesize ) {
-            if ( !this.hero.data.verbs[ Config.verbs.PUSH ] ) {
+        if ( !this.hero.is( Config.verbs.LIFT ) && this.interact.push > this.map.data.tilesize ) {
+            // @check: hero-verb-check
+            if ( !this.hero.can( Config.verbs.PUSH ) ) {
                 return;
             }
 
             this.hero.cycle( Config.verbs.PUSH, dir );
 
-        } else if ( this.hero.verb !== Config.verbs.LIFT ) {
+        } else if ( !this.hero.is( Config.verbs.LIFT ) ) {
             this.hero.cycle( Config.verbs.WALK, dir );
         }
     }
@@ -696,7 +701,8 @@ class TopView extends GameBox {
 
 
     handleHeroAttack () {
-        if ( !this.hero.data.verbs[ Config.verbs.ATTACK ] ) {
+        // @check: hero-verb-check
+        if ( !this.hero.can( Config.verbs.ATTACK ) ) {
             return;
         }
 
@@ -1116,7 +1122,8 @@ class TopView extends GameBox {
                 sprite.physics.vz = -6;
             }
 
-            if ( sprite.data.verbs[ Config.verbs.WALK ] ) {
+            // @check: hero-verb-check
+            if ( sprite.can( Config.verbs.WALK ) ) {
                 sprite.verb = Config.verbs.WALK;
             }
         }

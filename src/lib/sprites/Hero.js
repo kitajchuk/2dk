@@ -35,7 +35,7 @@ class Hero extends Sprite {
 
 
     renderAfter () {
-        if ( this.verb === Config.verbs.ATTACK && this.data.weapon && this.data.weapon[ this.dir ].length ) {
+        if ( this.is( Config.verbs.ATTACK ) && this.data.weapon && this.data.weapon[ this.dir ].length ) {
             this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
                 Math.abs( this.data.weapon[ this.dir ][ this.frame ].offsetX ),
@@ -135,7 +135,7 @@ class Hero extends Sprite {
 
     applyCycle () {
         // Lifting and carrying an object trumps all
-        if ( this.verb === Config.verbs.LIFT ) {
+        if ( this.is( Config.verbs.LIFT ) ) {
             this.cycle( Config.verbs.LIFT, this.dir );
 
         // Jumping needs to be captured...

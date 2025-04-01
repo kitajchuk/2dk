@@ -1,13 +1,13 @@
 {
     "id": "pk",
     "name": "PK",
-    "width": 480,
-    "height": 320,
+    "width": 528,
+    "height": 352,
     "resolution": 1,
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 36,
+    "save": 37,
     "release": 1,
     "plugin": "topview",
     "hero": {

@@ -1,8 +1,8 @@
 {
     "id": "la",
     "name": "LA",
-    "width": 768,
-    "height": 576,
+    "width": 1056,
+    "height": 704,
     "resolution": 1,
     "maxresolution": 2,
     "diagonaldpad": true,

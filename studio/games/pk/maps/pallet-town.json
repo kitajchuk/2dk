@@ -13,14 +13,26 @@
     "sound": "",
     "spawn": [
         {
-            "x": 401,
-            "y": 247,
+            "x": 193,
+            "y": 495,
             "width": 32,
             "height": 40
         }
     ],
     "fx": [],
-    "tiles": [],
+    "tiles": [
+        {
+            "group": "red-flowers",
+            "layer": "background",
+            "offsetX": 32,
+            "offsetY": 0,
+            "actions": [
+                {
+                    "verb": "lift"
+                }
+            ]
+        }
+    ],
     "events": [],
     "npcs": [],
     "objects": [],
