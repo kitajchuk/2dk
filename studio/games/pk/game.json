@@ -14,7 +14,8 @@
         "sprite": 0,
         "spawn": 0,
         "map": "maps/pallet-town.json",
-        "sounds": {}
+        "sounds": {},
+        "companion": null
     },
     "heroes": [
         {
