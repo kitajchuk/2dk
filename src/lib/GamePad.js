@@ -7,6 +7,19 @@ import Controller from "./Controller";
 const inputStream = [];
 const touchInterval = 8;
 const touchRepeated = 50;
+const touchDiagonals = [
+    Config.keys.UPLEFT,
+    Config.keys.UPRIGHT,
+    Config.keys.DOWNLEFT,
+    Config.keys.DOWNRIGHT,
+];
+const touchDpad = [
+    Config.keys.UP,
+    Config.keys.DOWN,
+    Config.keys.LEFT,
+    Config.keys.RIGHT,
+];
+
 const touchControls = {
     a: {
         key: Config.keys.A,
@@ -159,12 +172,31 @@ class GamePad extends Controller {
         this.btns.className = "_2dk__gamepad__btns";
         this.element.appendChild( this.dpad );
         this.element.appendChild( this.btns );
+        this.diagonaldpad = this.player.data.diagonaldpad;
+        this.availableControls = Object.keys( touchControls );
+        this.functionalControls = Object.keys( touchControls ).reduce( ( acc, btn ) => {
+            if ( !this.diagonaldpad && touchDiagonals.includes( touchControls[ btn ].key ) ) {
+                return acc;
+            }
 
-        Object.keys( touchControls ).forEach( ( btn ) => {
+            acc.push( btn );
+
+            return acc;
+        }, []);
+
+        this.availableControls.forEach( ( btn ) => {
+            const isFunctional = this.functionalControls.some( ( functional ) => {
+                return functional === btn;
+            });
+
             touchControls[ btn ].btn = btn.split( "-" );
             touchControls[ btn ].elem = document.createElement( "div" );
             touchControls[ btn ].elem.className = `_2dk__gamepad__${btn}`;
             touchControls[ btn ].elem.dataset.key = touchControls[ btn ].key;
+            
+            if ( !isFunctional ) {
+                touchControls[ btn ].elem.dataset.off = "true";
+            }
 
             if ( touchControls[ btn ].text ) {
                 touchControls[ btn ].elem.innerHTML = `<span>${touchControls[ btn ].text}</span>`;
@@ -186,10 +218,32 @@ class GamePad extends Controller {
     }
 
 
+    canReceiveInput ( key ) {
+        const dpadCheck = this.diagonaldpad ? true : !inputStream.some( ( input ) => {
+            return touchDpad.includes( input );
+        });
+        const keyCheck = !inputStream.includes( key );
+
+        return dpadCheck && keyCheck;
+    }
+
+
+    pushInput ( key ) {
+        inputStream.push( key );
+    }
+
+
+    removeInput ( key ) {
+        if ( inputStream.includes( key ) ) {
+            inputStream.splice( inputStream.indexOf( key ), 1 );
+        }
+    }
+
+
     checkDpad () {
         const ctrls = [];
 
-        Object.keys( touchControls ).forEach( ( btn ) => {
+        this.functionalControls.forEach( ( btn ) => {
             if ( touchControls[ btn ].touched && touchControls[ btn ].dpad ) {
                 ctrls.push( touchControls[ btn ] );
             }
@@ -210,7 +264,7 @@ class GamePad extends Controller {
     getControl ( key ) {
         let ret = null;
 
-        Object.keys( touchControls ).forEach( ( btn ) => {
+        this.availableControls.forEach( ( btn ) => {
             if ( touchControls[ btn ].key === key ) {
                 ret = touchControls[ btn ];
             }
@@ -223,7 +277,7 @@ class GamePad extends Controller {
     getGamepad ( val ) {
         let ret = null;
 
-        Object.keys( touchControls ).forEach( ( btn ) => {
+        this.availableControls.forEach( ( btn ) => {
             if ( touchControls[ btn ].gamepad && touchControls[ btn ].gamepad.indexOf( val ) !== -1 ) {
                 ret = touchControls[ btn ];
             }
@@ -236,7 +290,7 @@ class GamePad extends Controller {
     getAxes ( xy, val ) {
         let ret = null;
 
-        Object.keys( touchControls ).forEach( ( btn ) => {
+        this.availableControls.forEach( ( btn ) => {
             if ( touchControls[ btn ].axes && touchControls[ btn ].axes[ xy ] === val ) {
                 ret = touchControls[ btn ];
             }
@@ -293,7 +347,7 @@ class GamePad extends Controller {
                 }
             }
 
-            Object.keys( touchControls ).forEach( ( btn ) => {
+            this.functionalControls.forEach( ( btn ) => {
                 if ( touchControls[ btn ].touched ) {
                     const touched = this.getTouched( e.touches, touchControls[ btn ] );
 
@@ -316,7 +370,7 @@ class GamePad extends Controller {
             this.cancelTouches();
 
         } else {
-            Object.keys( touchControls ).forEach( ( btn ) => {
+            this.availableControls.forEach( ( btn ) => {
                 if ( touchControls[ btn ].touched ) {
                     const touched = this.getTouched( e.touches, touchControls[ btn ] );
 
@@ -332,8 +386,8 @@ class GamePad extends Controller {
 
 
     onKeyDown ( e ) {
-        if ( inputStream.indexOf( e.keyCode ) === -1 ) {
-            inputStream.push( e.keyCode );
+        if ( this.canReceiveInput( e.keyCode ) ) {
+            this.pushInput( e.keyCode );
 
             const control = this.getControl( e.keyCode );
 
@@ -345,8 +399,8 @@ class GamePad extends Controller {
 
 
     onKeyUp ( e ) {
-        if ( inputStream.indexOf( e.keyCode ) !== -1 ) {
-            inputStream.splice( inputStream.indexOf( e.keyCode ), 1 );
+        if ( !this.canReceiveInput( e.keyCode ) ) {
+            this.removeInput( e.keyCode );
 
             const control = this.getControl( e.keyCode );
 
@@ -363,34 +417,34 @@ class GamePad extends Controller {
             y: this.getAxes( 1, gamepad.axes[ 1 ] ),
         };
 
-        if ( controls.x && inputStream.indexOf( controls.x.key ) === -1 ) {
-            inputStream.push( controls.x.key );
+        if ( controls.x && this.canReceiveInput( controls.x.key ) ) {
+            this.pushInput( controls.x.key );
             this.startTouch( controls.x );
 
         } else if ( !controls.x ) {
-            if ( inputStream.indexOf( Config.keys.LEFT ) !== -1 ) {
-                inputStream.splice( inputStream.indexOf( Config.keys.LEFT ), 1 );
+            if ( !this.canReceiveInput( Config.keys.LEFT ) ) {
+                this.removeInput( Config.keys.LEFT );
                 this.cancelTouch( touchControls.left );
             }
 
-            if ( inputStream.indexOf( Config.keys.RIGHT ) !== -1 ) {
-                inputStream.splice( inputStream.indexOf( Config.keys.RIGHT ), 1 );
+            if ( !this.canReceiveInput( Config.keys.RIGHT ) ) {
+                this.removeInput( Config.keys.RIGHT );
                 this.cancelTouch( touchControls.right );
             }
         }
 
-        if ( controls.y && inputStream.indexOf( controls.y.key ) === -1 ) {
-            inputStream.push( controls.y.key );
+        if ( controls.y && this.canReceiveInput( controls.y.key ) ) {
+            this.pushInput( controls.y.key );
             this.startTouch( controls.y );
 
         } else if ( !controls.y ) {
-            if ( inputStream.indexOf( Config.keys.UP ) !== -1 ) {
-                inputStream.splice( inputStream.indexOf( Config.keys.UP ), 1 );
+            if ( !this.canReceiveInput( Config.keys.UP ) ) {
+                this.removeInput( Config.keys.UP );
                 this.cancelTouch( touchControls.up );
             }
 
-            if ( inputStream.indexOf( Config.keys.DOWN ) !== -1 ) {
-                inputStream.splice( inputStream.indexOf( Config.keys.DOWN ), 1 );
+            if ( !this.canReceiveInput( Config.keys.DOWN ) ) {
+                this.removeInput( Config.keys.DOWN );
                 this.cancelTouch( touchControls.down );
             }
         }
@@ -401,12 +455,12 @@ class GamePad extends Controller {
         for ( let i = gamepad.buttons.length; i--; ) {
             const control = this.getGamepad( i );
 
-            if ( control && inputStream.indexOf( control.key ) === -1 && gamepad.buttons[ i ].pressed ) {
-                inputStream.push( control.key );
+            if ( control && this.canReceiveInput( control.key ) && gamepad.buttons[ i ].pressed ) {
+                this.pushInput( control.key );
                 this.startTouch( control );
 
-            } else if ( control && inputStream.indexOf( control.key ) !== -1 && !gamepad.buttons[ i ].pressed ) {
-                inputStream.splice( inputStream.indexOf( control.key ), 1 );
+            } else if ( control && !this.canReceiveInput( control.key ) && !gamepad.buttons[ i ].pressed ) {
+                this.removeInput( control.key );
                 this.cancelTouch( control );
             }
         }
@@ -437,14 +491,14 @@ class GamePad extends Controller {
 
 
     clearTouches () {
-        Object.keys( touchControls ).forEach( ( btn ) => {
+        this.availableControls.forEach( ( btn ) => {
             touchControls[ btn ].elem.classList.remove( "is-active" );
         });
     }
 
 
     cancelTouches () {
-        Object.keys( touchControls ).forEach( ( btn ) => {
+        this.availableControls.forEach( ( btn ) => {
             if ( touchControls[ btn ].touched ) {
                 this.cancelTouch( touchControls[ btn ] );
             }

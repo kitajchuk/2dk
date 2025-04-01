@@ -50,6 +50,11 @@
     div {
         border-radius: 10px;
         position: relative;
+
+        &[data-off="true"] {
+            visibility: hidden;
+            pointer-events: none;
+        }
     }
 }
 ._2dk__gamepad__up,
@@ -152,11 +157,4 @@
     left: 50%;
     transform: translate3d( -50%, 0, 0 );
     margin-left: 49px;
-}
-._2dk__gamepad__home {
-    width: 82px;
-    height: 32px;
-    border-radius: 0px 0px 10px 10px;
-    top: 0;
-    left: 20px;
 }
