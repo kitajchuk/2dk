@@ -19,6 +19,12 @@ class Hero extends Sprite {
     }
 
 
+    resetMaxV () {
+        this.physics.maxv = this.physics.maxvstatic;
+        this.physics.controlmaxv = this.physics.controlmaxvstatic;
+    }
+
+
 /*******************************************************************************
 * Rendering
 * Order is: blit, update, render
@@ -145,6 +151,10 @@ class Hero extends Sprite {
         // Attack needs to be captured...
         } else if ( this.gamebox.attacking ) {
             this.cycle( Config.verbs.ATTACK, this.dir );
+
+        // Running comes next...
+        } else if ( this.gamebox.running ) {
+            this.cycle( Config.verbs.RUN, this.dir );
 
         // Idle comes next...LIFT has it's own idle face...
         } else if ( this.idle.x && this.idle.y ) {

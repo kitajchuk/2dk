@@ -3,11 +3,12 @@
     "name": "PK",
     "width": 528,
     "height": 352,
+    "bButton": "run",
     "resolution": 1,
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 37,
+    "save": 38,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -27,9 +28,9 @@
             "controlmaxv": 2,
             "hitbox": {
                 "x": 0,
-                "y": 16,
+                "y": 26,
                 "width": 32,
-                "height": 24
+                "height": 14
             },
             "stats": {
                 "power": 1,
@@ -62,6 +63,52 @@
                 },
                 "walk": {
                     "dur": 350,
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": -40,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 0,
+                        "offsetY": -80,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 0,
+                        "offsetY": -120,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 0,
+                        "offsetY": -160,
+                        "stepsX": 2
+                    }
+                },
+                "run": {
+                    "dur": 250,
+                    "down": {
+                        "offsetX": 64,
+                        "offsetY": -40,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 64,
+                        "offsetY": -80,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 64,
+                        "offsetY": -120,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 64,
+                        "offsetY": -160,
+                        "stepsX": 2
+                    }
+                },
+                "jump": {
+                    "dur": 300,
                     "down": {
                         "offsetX": 0,
                         "offsetY": -40,

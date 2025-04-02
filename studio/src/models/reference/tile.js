@@ -7,6 +7,9 @@ module.exports = {
     stepsX: 0,
     friction: 1,
     elevation: 0,
+    mask: false,
+    // FX reference (game.json)
+    fx: null,
     actions: [
         {
             verb: "",

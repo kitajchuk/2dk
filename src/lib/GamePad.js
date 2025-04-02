@@ -218,10 +218,12 @@ class GamePad extends Controller {
     }
 
 
+    // TODO: Fix this input stream handling for non-diagonal D-Pad as it is not fluid when switching directions (e.g. abrupt stop in between direction changes)
+    // NOTE: This only appears to be an issue with keyboard input, not gamepad input or touch input
     canReceiveInput ( key ) {
-        const dpadCheck = this.diagonaldpad ? true : !inputStream.some( ( input ) => {
-            return touchDpad.includes( input );
-        });
+        const isDpad = touchDpad.includes( key );
+        const hasDpad = inputStream.some( ( input ) => touchDpad.includes( input ) );
+        const dpadCheck = this.diagonaldpad || !isDpad ? true : !hasDpad;
         const keyCheck = !inputStream.includes( key );
 
         return dpadCheck && keyCheck;

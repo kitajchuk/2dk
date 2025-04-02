@@ -604,6 +604,7 @@ class DB {
                 gameModel.name = data.name;
                 gameModel.width = Number( data.width ) || gameModel.width;
                 gameModel.height = Number( data.height ) || gameModel.height;
+                gameModel.bButton = data.bButton || gameModel.bButton;
                 gameModel.resolution = Number( data.resolution ) || gameModel.resolution;
                 gameModel.maxresolution = Number( data.maxresolution ) || gameModel.maxresolution;
                 gameModel.diagonaldpad = data.diagonaldpad === false ? data.diagonaldpad : gameModel.diagonaldpad;

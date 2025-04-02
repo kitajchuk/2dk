@@ -3,6 +3,7 @@
     "name": "LA",
     "width": 1056,
     "height": 704,
+    "bButton": "attack",
     "resolution": 1,
     "maxresolution": 2,
     "diagonaldpad": true,

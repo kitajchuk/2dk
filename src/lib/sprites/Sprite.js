@@ -23,6 +23,7 @@ class Sprite {
         this.speed = 1;
         this.frame = 0;
         this.opacity = ( data.opacity || 1.0 );
+        this.mask = false;
         this.position = {
             x: ( this.data.spawn && this.data.spawn.x || 0 ),
             y: ( this.data.spawn && this.data.spawn.y || 0 ),
@@ -34,6 +35,8 @@ class Sprite {
             vz: ( this.data.vz || 0 ),
             maxv: ( this.data.maxv || 4 ),
             controlmaxv: ( this.data.controlmaxv || 4 ),
+            maxvstatic: ( this.data.maxv || 4 ),
+            controlmaxvstatic: ( this.data.controlmaxv || 4 ),
         };
         // Hero offset is based on camera.
         // NPCs offset snaps to position.
@@ -175,7 +178,7 @@ class Sprite {
             }
         }
 
-        if ( this.data.shadow && !this.is( Config.verbs.FALL ) ) {
+        if ( this.data.shadow && !this.is( Config.verbs.FALL ) && !this.mask ) {
             this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
                 Math.abs( this.data.shadow.offsetX ),
@@ -193,16 +196,18 @@ class Sprite {
             this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
         }
 
+        const height = this.mask ? this.height / 1.25 : this.height;
+
         this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
             this.image,
             this.spritecel[ 0 ],
             this.spritecel[ 1 ],
             this.data.width,
-            this.data.height,
+            height,
             this.offset.x,
             this.offset.y + this.position.z,
             this.width,
-            this.height
+            height
         );
 
         this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;

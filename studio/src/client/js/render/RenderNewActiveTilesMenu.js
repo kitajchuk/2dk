@@ -75,6 +75,14 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                     </div>
                 </div>
             </div>
+            <div class="editor__setting">
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-activetile-field" type="checkbox" name="mask" />
+                        <span class="label">Mask (Can mask the hero sprite)</span>
+                    </label>
+                </div>
+            </div>
             <!-- Attack is an internalized VERB object -->
             <div class="editor__setting">
                 <div class="editor__label">Action (omit if tile is passive, e.g. grass)</div>

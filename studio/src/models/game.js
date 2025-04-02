@@ -3,6 +3,7 @@ module.exports = {
     name: "",
     width: 768,
     height: 576,
+    bButton: "attack",
     resolution: 1,
     maxresolution: 2,
     diagonaldpad: true,

@@ -22,15 +22,12 @@
     "fx": [],
     "tiles": [
         {
-            "group": "red-flowers",
+            "group": "grass",
             "layer": "background",
-            "offsetX": 32,
+            "offsetX": 96,
             "offsetY": 0,
-            "actions": [
-                {
-                    "verb": "lift"
-                }
-            ]
+            "friction": 1.5,
+            "mask": true
         }
     ],
     "events": [],
