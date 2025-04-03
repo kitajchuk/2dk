@@ -1,5 +1,5 @@
-const fs = require( "fs" );
-const shell = require( "shelljs" );
+import fs from "fs";
+import shell from "shelljs";
 
 // Source games data copied to `dist`
 const shellCmd = "find ./dist/games -type f";
@@ -15,6 +15,5 @@ const files = shell
 files.forEach((file) => {
   const json = JSON.parse(fs.readFileSync(file));
   const minified = JSON.stringify(json);
-  console.log(`Minified game JSON: ${file}`);
   fs.writeFileSync(file, minified);
 });

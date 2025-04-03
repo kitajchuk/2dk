@@ -4,9 +4,7 @@
   "private": true,
   "description": "For the love of 2D. A JavaScript SDK.",
   "repository": "https://github.com/kitajchuk/2dk",
-  "engines": {
-    "node": ">=14"
-  },
+  "type": "module",
   "author": {
     "name": "Brandon Lee Kitajchuk",
     "email": "bk@kitajchuk.com",
@@ -24,17 +22,18 @@
   "scripts": {
     "predev": "rm -rf dist && mkdir dist && yarn copy:games && yarn build",
     "dev": "concurrently \"yarn serve:dev\" \"yarn watch:src\" \"yarn watch:studio\" \"yarn watch:games\"",
-    "serve:dev": "webpack serve --config ./configs/webpack.config.dev.js",
+    "serve:dev": "esbuild --servedir=dist",
     "watch:src": "chokidar \"src/**/*\" -c \"yarn build:2dk && yarn build:app && yarn copy\"",
     "watch:studio": "chokidar \"studio/src/client/**/*.scss\" -c \"yarn build:studio\"",
     "watch:games": "chokidar \"studio/games/**/*.json\" -c \"yarn copy:games\"",
-    "build": "yarn build:site && yarn build:2dk && yarn build:app && yarn build:studio",
+    "prebuild": "rm -rf dist && mkdir dist",
+    "build": "yarn build:dist && yarn build:2dk && yarn build:app && yarn build:studio",
     "postbuild": "yarn copy && node games.js",
-    "build:site": "webpack --config ./configs/webpack.config.prod.js",
-    "postbuild:site": "sass --no-source-map --style=compressed ./src/styles/2dk.scss ./dist/2dk.css",
-    "build:2dk": "webpack --config ./configs/webpack.config.2dk.js",
+    "build:dist": "cp -R ./public/* ./dist/",
+    "postbuild:dist": "sass --no-source-map --style=compressed ./src/styles/2dk.scss ./dist/2dk.css",
+    "build:2dk": "esbuild ./src/lib/index.js --bundle --minify --target=esnext --outfile=./studio/public/js/2dk.js",
     "postbuild:2dk": "sass --no-source-map --style=compressed ./src/styles/2dk.scss ./studio/src/templates/2dk.css",
-    "build:app": "webpack --config ./configs/webpack.config.app.js",
+    "build:app": "esbuild ./src/app.js --bundle --minify --target=esnext --outfile=./studio/src/templates/app.js",
     "build:studio": "sass --no-source-map --style=compressed ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
     "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src",
     "copy": "yarn copy:la && yarn copy:la_copy && yarn copy:pk && yarn copy:games",
@@ -43,30 +42,12 @@
     "copy:pk": "cp studio/src/templates/2dk.css studio/games/pk && cp studio/src/templates/app.js studio/games/pk",
     "copy:games": "cp -R studio/games dist"
   },
-  "dependencies": {
-    "shelljs": "^0.9.2"
-  },
   "devDependencies": {
-    "@babel/core": "^7.17.2",
-    "@babel/plugin-transform-runtime": "^7.17.0",
-    "@babel/preset-env": "^7.16.11",
-    "babel-loader": "^8.2.3",
     "chokidar-cli": "^2.1.0",
     "concurrently": "^7.2.1",
-    "copy-webpack-plugin": "^10.2.4",
-    "html-webpack-plugin": "^5.5.0",
+    "esbuild": "^0.25.2",
     "jsdoc": "^3.6.10",
     "sass-embedded": "^1.86.0",
-    "webpack": "^5.98.0",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.1"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ],
-    "plugins": [
-      "@babel/plugin-transform-runtime"
-    ]
+    "shelljs": "^0.9.2"
   }
 }

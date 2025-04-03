@@ -70,11 +70,12 @@ class App {
 }
 
 
-
-// App Instace
-window.app2dk = new App();
+const app = new App();
 
 
 
-// App Export
-export default window.app;
+window.app2dk = app;
+
+
+
+export default app;

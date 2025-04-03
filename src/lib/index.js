@@ -47,9 +47,7 @@ const lib = {
 
 
 
-if ( Utils.def( window ) ) {
-    window.lib2dk = lib;
-}
+window.lib2dk = lib;
 
 
 
