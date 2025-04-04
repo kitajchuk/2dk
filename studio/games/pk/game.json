@@ -108,26 +108,22 @@
                     }
                 },
                 "jump": {
-                    "dur": 300,
+                    "dur": 250,
                     "down": {
-                        "offsetX": 0,
-                        "offsetY": -40,
-                        "stepsX": 2
+                        "offsetX": -128,
+                        "offsetY": -40
                     },
                     "up": {
-                        "offsetX": 0,
-                        "offsetY": -80,
-                        "stepsX": 2
+                        "offsetX": -128,
+                        "offsetY": -80
                     },
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": -120,
-                        "stepsX": 2
+                        "offsetX": -128,
+                        "offsetY": -120
                     },
                     "right": {
-                        "offsetX": 0,
-                        "offsetY": -160,
-                        "stepsX": 2
+                        "offsetX": -128,
+                        "offsetY": -160
                     }
                 }
             }

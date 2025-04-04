@@ -388,10 +388,10 @@ class GamePad extends Controller {
 
 
     onKeyDown ( e ) {
-        if ( this.canReceiveInput( e.keyCode ) ) {
-            this.pushInput( e.keyCode );
+        if ( this.canReceiveInput( e.code ) ) {
+            this.pushInput( e.code );
 
-            const control = this.getControl( e.keyCode );
+            const control = this.getControl( e.code );
 
             if ( control ) {
                 this.startTouch( control );
@@ -401,10 +401,10 @@ class GamePad extends Controller {
 
 
     onKeyUp ( e ) {
-        if ( !this.canReceiveInput( e.keyCode ) ) {
-            this.removeInput( e.keyCode );
+        if ( !this.canReceiveInput( e.code ) ) {
+            this.removeInput( e.code );
 
-            const control = this.getControl( e.keyCode );
+            const control = this.getControl( e.code );
 
             if ( control ) {
                 this.cancelTouch( control );
