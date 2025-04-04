@@ -47,10 +47,11 @@ const Config = {
         RIGHT: "ArrowRight",
         START: "Enter",
         SELECT: "Space",
-        UPLEFT: "ArrowUp,ArrowLeft",
-        UPRIGHT: "ArrowUp,ArrowRight",
-        DOWNLEFT: "ArrowDown,ArrowLeft",
-        DOWNRIGHT: "ArrowDown,ArrowRight",
+        // Diagonal D-pad (non-standard, not used with keyboard events directly)
+        UPLEFT: "ArrowUpLeft",
+        UPRIGHT: "ArrowUpRight",
+        DOWNLEFT: "ArrowDownLeft",
+        DOWNRIGHT: "ArrowDownRight",
     },
     plugins: {
         TOPVIEW: "topview",

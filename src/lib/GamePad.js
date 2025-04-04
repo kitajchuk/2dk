@@ -91,6 +91,7 @@ const touchControls = {
         axes: [-1, 0],
     },
     neutral: {
+        // D-pad center (non-interactive)
         elem: null,
         dpad: [],
     },
@@ -175,6 +176,10 @@ class GamePad extends Controller {
         this.diagonaldpad = this.player.data.diagonaldpad;
         this.availableControls = Object.keys( touchControls );
         this.functionalControls = Object.keys( touchControls ).reduce( ( acc, btn ) => {
+            if ( btn === "neutral" ) {
+                return acc;
+            }
+
             if ( !this.diagonaldpad && touchDiagonals.includes( touchControls[ btn ].key ) ) {
                 return acc;
             }
@@ -192,7 +197,10 @@ class GamePad extends Controller {
             touchControls[ btn ].btn = btn.split( "-" );
             touchControls[ btn ].elem = document.createElement( "div" );
             touchControls[ btn ].elem.className = `_2dk__gamepad__${btn}`;
-            touchControls[ btn ].elem.dataset.key = touchControls[ btn ].key;
+            
+            if ( touchControls[ btn ].key ) {
+                touchControls[ btn ].elem.dataset.key = touchControls[ btn ].key;
+            }
             
             if ( !isFunctional ) {
                 touchControls[ btn ].elem.dataset.off = "true";
@@ -305,9 +313,8 @@ class GamePad extends Controller {
     getTouched ( touches, control ) {
         for ( let i = 0; i < touches.length; i++ ) {
             const touched = document.elementFromPoint( touches[ i ].pageX, touches[ i ].pageY );
-            const key = Number( touched.dataset.key );
 
-            if ( key === control.key ) {
+            if ( touched.dataset.key === control.key ) {
                 return control;
             }
         }
@@ -321,10 +328,9 @@ class GamePad extends Controller {
 
         for ( let i = 0; i < e.touches.length; i++ ) {
             const touched = document.elementFromPoint( e.touches[ i ].pageX, e.touches[ i ].pageY );
-            const key = Number( touched.dataset.key );
 
-            if ( key ) {
-                const control = this.getControl( key );
+            if ( touched.dataset.key ) {
+                const control = this.getControl( touched.dataset.key );
 
                 this.startTouch( control );
             }
@@ -339,10 +345,9 @@ class GamePad extends Controller {
 
         for ( let i = 0; i < e.touches.length; i++ ) {
             const touched = document.elementFromPoint( e.touches[ i ].pageX, e.touches[ i ].pageY );
-            const key = Number( touched.dataset.key );
 
-            if ( key ) {
-                const control = this.getControl( key );
+            if ( touched.dataset.key ) {
+                const control = this.getControl( touched.dataset.key );
 
                 if ( control ) {
                     this.startTouch( control );
