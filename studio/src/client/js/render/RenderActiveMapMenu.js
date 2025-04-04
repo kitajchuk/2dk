@@ -1,8 +1,12 @@
+const { html } = require( "./Render" );
+
+
+
 const renderActiveMapMenu = ( { map, assets } ) => {
     const tileFile = map.image.split( "/" ).pop();
     const soundFile = map.sound.split( "/" ).pop();
 
-    return `
+    return html`
         <div class="editor__menu js-menu is-active" id="editor-active-map-menu">
             <button class="button button--grey button--box editor__close-button js-close-settings">
                 ${window.feather.icons.x.toSvg()}

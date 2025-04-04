@@ -1,5 +1,9 @@
+const { html } = require( "./Render" );
+
+
+
 const renderSpritesheetMenu = ({ sprites }) => {
-    return `
+    return html`
         <div class="editor__menu js-menu js-upload-menu is-active" id="editor-addsprites-menu">
             <button class="button button--grey button--box editor__close-button js-upload-cancel" data-type="sprites">
                 ${window.feather.icons.x.toSvg()}

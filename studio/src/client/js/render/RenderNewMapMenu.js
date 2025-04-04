@@ -1,5 +1,9 @@
+const { html } = require( "./Render" );
+
+
+
 const renderNewMapMenu = ({ tiles, sounds }) => {
-    return `
+    return html`
         <div class="editor__menu js-menu is-active" id="editor-addmap-menu">
             <button class="button button--grey button--box editor__close-button js-post-cancel" data-type="map">
                 ${window.feather.icons.x.toSvg()}

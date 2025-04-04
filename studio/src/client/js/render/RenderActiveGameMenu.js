@@ -1,5 +1,9 @@
+const { html } = require( "./Render" );
+
+
+
 const renderActiveGameMenu = ( game ) => {
-    return `
+    return html`
         <div class="editor__menu js-menu is-active" id="editor-active-game-menu">
             <button class="button button--grey button--box editor__close-button js-close-settings">
                 ${window.feather.icons.x.toSvg()}

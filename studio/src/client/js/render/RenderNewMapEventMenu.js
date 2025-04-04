@@ -1,5 +1,9 @@
+const { html } = require( "./Render" );
+
+
+
 const renderNewMapEventMenu = ({ maps, game, coords, facing, events }) => {
-    return `
+    return html`
         <div class="editor__menu js-menu is-active" id="editor-mapevent-menu">
             <button class="button button--grey button--box editor__close-button js-post-cancel">
                 ${window.feather.icons.x.toSvg()}

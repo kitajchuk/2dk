@@ -1,3 +1,7 @@
+const html = String.raw;
+
+
+
 const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
     ctx.globalAlpha = alpha || 0.75;
     ctx.fillStyle = color || window.lib2dk.Config.colors.blue;
@@ -6,7 +10,7 @@ const renderTile = ( ctx, x, y, w, h, color, alpha ) => {
 
 
 const renderGame = ( game ) => {
-    return `
+    return html`
         <div class="js-game-tile" data-game="${game.id}">
             <div>
                 <img src="./games/${game.id}/${game.icon}" />
@@ -17,7 +21,7 @@ const renderGame = ( game ) => {
 };
 
 const renderMap = ( map, game ) => {
-    return `
+    return html`
         <div class="js-map-tile" data-map="${map.id}">
             <div>
                 <img src="./games/${game.id}/${map.thumbnail || map.image}" />
@@ -34,7 +38,7 @@ const renderNPC = ( npc, game ) => {
     const offsetX = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetX );
     const offsetY = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetY );
 
-    return `
+    return html`
         <div class="js-npc-tile" data-npc="${npc.id}">
             <style>
                 #${id} {
@@ -54,7 +58,7 @@ const renderObject = ( obj, game ) => {
     const id = `obj-${obj.id}`;
     const src = `./games/${game.id}/${obj.image}`;
 
-    return `
+    return html`
         <div class="js-obj-tile" data-obj="${obj.id}">
             <style>
                 #${id} {
@@ -73,7 +77,7 @@ const renderObject = ( obj, game ) => {
 const renderSpawn = ( spawn, rect ) => {
     const id = `spawn-x${spawn.x}-y${spawn.y}`;
 
-    return `
+    return html`
         <div id="${id}" class="editor__block is-spawn js-spawn-tile" data-spawn-x="${spawn.x}" data-spawn-y="${spawn.y}">
             <style>
                 #${id} {
@@ -96,7 +100,7 @@ const renderEvent = ( event, map ) => {
     const y = cy * map.tilesize;
     const id = `event-x${cx}-y${cy}`;
 
-    return `
+    return html`
         <div id="${id}" class="editor__block is-event js-event-tile" data-event-x="${cx}" data-event-y="${cy}">
             <style>
                 #${id} {
@@ -120,7 +124,7 @@ const renderActiveTile = ( coords, map ) => {
     const y = cy * map.tilesize;
     const id = `tile-x${cx}-y${cy}`;
 
-    return `
+    return html`
         <div id="${id}" class="editor__block is-tiles js-active-tile" data-tile-x="${cx}" data-tile-y="${cy}">
             <style>
                 #${id} {
@@ -137,6 +141,7 @@ const renderActiveTile = ( coords, map ) => {
 };
 
 module.exports = {
+    html,
     renderMap,
     renderNPC,
     renderTile,
