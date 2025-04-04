@@ -34,7 +34,7 @@
         "maxresolution": 1,
         "diagonaldpad": false,
         "icon": "icon.png",
-        "save": 38,
+        "save": 43,
         "release": 1,
         "plugin": "topview"
     }

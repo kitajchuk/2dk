@@ -107,4 +107,13 @@ const Config = {
 
 
 
+export const DIRS = [
+    Config.facing.UP,
+    Config.facing.DOWN,
+    Config.facing.LEFT,
+    Config.facing.RIGHT,
+];
+
+
+
 export default Config;

@@ -1,5 +1,5 @@
 import Utils from "../Utils";
-import Config from "../Config";
+import Config, { DIRS } from "../Config";
 import Loader from "../Loader";
 import GameBox from "../GameBox";
 import Map from "../Map";
@@ -442,6 +442,9 @@ class TopView extends GameBox {
         this.falling = false;
         this.attacking = false;
         this.running = false;
+
+        // Reset speed
+        this.hero.resetMaxV();
     }
 
 
@@ -462,6 +465,7 @@ class TopView extends GameBox {
             return;
 
         } else if ( this.jumping ) {
+            // Remove mask when jumping (will be reapplied if landing on a tile again)
             this.hero.mask = false;
 
             if ( this.canHeroMoveWhileJumping( poi, dir, collision ) ) {
@@ -521,12 +525,15 @@ class TopView extends GameBox {
                 return;
             }
 
+            // Handle any other tiles
             this.handleHeroTiles( poi, dir, collision.tiles );
 
+        // Reset speed when not on a tile
         } else if ( this.canHeroResetMaxV( poi, dir, collision ) ) {
             this.hero.resetMaxV();
         }
 
+        // Remove mask when not on a tile (duh)
         if ( !collision.tiles || !collision.tiles.passive.length ) {
             this.hero.mask = false;
         }
@@ -556,7 +563,6 @@ class TopView extends GameBox {
     handleHeroTileJump ( poi, dir, tile ) {
         let destPos;
         let destTile;
-        const dirs = ["left", "right", "up", "down"];
 
         if ( dir === "left" ) {
             destTile = {
@@ -606,7 +612,7 @@ class TopView extends GameBox {
             return ( evt.coords[ 0 ] * this.map.data.tilesize === destTile.x && evt.coords[ 1 ] * this.map.data.tilesize === destTile.y );
         });
 
-        dirs.forEach( ( d ) => {
+        DIRS.forEach( ( d ) => {
             this.player.controls[ d ] = false;
         });
 
@@ -752,8 +758,8 @@ class TopView extends GameBox {
 
         this.running = true;
         this.hero.cycle( Config.verbs.RUN, this.hero.dir );
-        this.hero.physics.maxv = this.hero.physics.controlmaxv * 1.75;
-        this.hero.physics.controlmaxv = this.hero.physics.controlmaxv * 1.75;
+        this.hero.physics.maxv = this.hero.physics.controlmaxvstatic * 1.75;
+        this.hero.physics.controlmaxv = this.hero.physics.controlmaxvstatic * 1.75;
     }
 
     handleHeroAttack () {
@@ -1100,8 +1106,6 @@ class TopView extends GameBox {
 
 
     handleRoam ( sprite ) {
-        const dirs = ["left", "right", "up", "down"];
-
         if ( !sprite.counter ) {
             sprite.counter = Utils.random( 64, 192 );
             sprite.dir = dirs[ Utils.random( 0, dirs.length ) ];
@@ -1110,7 +1114,7 @@ class TopView extends GameBox {
             sprite.counter--;
         }
 
-        dirs.forEach( ( dir ) => {
+        DIRS.forEach( ( dir ) => {
             if ( dir === sprite.dir ) {
                 sprite.controls[ dir ] = 1;
 

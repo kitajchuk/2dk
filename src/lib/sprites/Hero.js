@@ -20,8 +20,16 @@ class Hero extends Sprite {
 
 
     resetMaxV () {
-        this.physics.maxv = this.physics.maxvstatic;
-        this.physics.controlmaxv = this.physics.controlmaxvstatic;
+        // Resume running speed...
+        if ( this.gamebox.running ) {
+            this.physics.maxv = this.physics.controlmaxvstatic * 1.75;
+            this.physics.controlmaxv = this.physics.controlmaxvstatic * 1.75;
+
+        // Resume normal speed...
+        } else {
+            this.physics.maxv = this.physics.maxvstatic;
+            this.physics.controlmaxv = this.physics.controlmaxvstatic;
+        }
     }
 
 
