@@ -1,7 +1,26 @@
 const fs = require( "fs" );
+const fsp = require( "fs" ).promises;
 
 
 
+/******************************************************************************
+ * ASYNC (Promise)
+*******************************************************************************/
+const readDir = async ( dir ) => {
+    const files = await fsp.readdir( dir );
+    return files.filter( ( file ) => !/^\./.test( file ) );
+};
+
+const readJson = async ( file ) => {
+    const data = await fsp.readFile( file, "utf8" );
+    return JSON.parse( String( data ) );
+};
+
+
+
+/******************************************************************************
+ * SYNC / CALLBACK
+*******************************************************************************/
 const isFile = ( file, cb ) => {
     let ret = null;
 
@@ -12,36 +31,6 @@ const isFile = ( file, cb ) => {
 
     } else {
         ret = fs.existsSync( file );
-    }
-
-    return ret;
-};
-
-
-
-const readDir = ( dir, cb ) => {
-    let ret = null;
-
-    if ( cb ) {
-        fs.readdir( dir, ( err, files ) => {
-            if ( !err ) {
-                const reals = [];
-
-                for ( let i = files.length; i--; ) {
-                    if ( !/^\./.test( files[ i ] ) ) {
-                        reals.push( files[ i ] );
-                    }
-                }
-
-                cb( reals );
-
-            } else {
-                cb( [] );
-            }
-        });
-
-    } else {
-        ret = fs.readdirSync( dir );
     }
 
     return ret;
@@ -80,23 +69,6 @@ const readFile = ( file, cb ) => {
 
     } else {
         ret = String( fs.readFileSync( file ) );
-    }
-
-    return ret;
-};
-
-
-
-const readJson = ( file, cb ) => {
-    let ret = null;
-
-    if ( cb ) {
-        readFile( file, ( data ) => {
-            cb( JSON.parse( String( data ) ) );
-        });
-
-    } else {
-        ret = JSON.parse( readFile( file ) );
     }
 
     return ret;

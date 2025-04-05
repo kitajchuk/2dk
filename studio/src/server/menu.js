@@ -32,29 +32,29 @@ const loadAssets = () => {
     });
 };
 const loadMaps = () => {
-    dBase.getMaps().then( ( response ) => {
-        activeMaps = response.maps;
+    dBase.getMaps().then( ( maps ) => {
+        activeMaps = maps;
         mainWindow.webContents.send( "menu-loadmaps", activeMaps );
         setMenu();
     });
 };
 const loadGames = () => {
-    DB.getGames().then( ( response ) => {
-        activeGames = response.games;
+    DB.getGames().then( ( games ) => {
+        activeGames = games;
         mainWindow.webContents.send( "menu-loadgames", activeGames );
         setMenu();
     });
 };
 const loadMap = () => {
-    dBase.getMap( activeMap ).then( ( response ) => {
-        mainWindow.webContents.send( "menu-loadmap", response.map );
+    dBase.getMap( activeMap ).then( ( map ) => {
+        mainWindow.webContents.send( "menu-loadmap", map );
         setMenu();
     });
 }
 const loadGame = () => {
     dBase.open( activeGame.id ).then( () => {
-        dBase.getGame().then( ( response ) => {
-            mainWindow.webContents.send( "menu-loadgame", response.game );
+        dBase.getGame().then( ( game ) => {
+            mainWindow.webContents.send( "menu-loadgame", game );
             loadAssets();
             loadMaps();
             setMenu();
@@ -337,8 +337,8 @@ ipcMain.on( "renderer-newmap", ( event, data ) => {
 });
 
 ipcMain.on( "renderer-deletegame", ( event, data ) => {
-    DB.deleteGame( data ).then( ( response ) => {
-        activeGames = response.games;
+    DB.deleteGame( data ).then( ( games ) => {
+        activeGames = games;
         setMenu();
     });
 });

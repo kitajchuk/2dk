@@ -8,7 +8,7 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 43,
+    "save": 48,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -133,10 +133,10 @@
     "objects": [],
     "fx": [],
     "bundle": [
-        "assets/tiles/pk-tiles.png",
         "assets/tiles/pk-indoor.png",
-        "assets/sprites/npc.png",
+        "assets/tiles/pk-tiles.png",
         "assets/sprites/ash-hero.png",
+        "assets/sprites/npc.png",
         "maps/pallet-town.json"
     ]
 }

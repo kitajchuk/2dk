@@ -36,59 +36,57 @@ class DB {
     /******************************************************************************
      * OPEN DB
     *******************************************************************************/
-    open ( id ) {
-        return new Promise( ( resolve ) => {
-            this.gameId = id;
-            this.gameRoot = path.join( process.cwd(), "games", this.gameId );
-            this.gamePath = path.join( this.gameRoot, "game.json" );
-            this.mapsPath = path.join( this.gameRoot, "maps" );
-            this.files = {
-                tiles: path.join( this.gameRoot, "assets", "tiles" ),
-                sprites: path.join( this.gameRoot, "assets", "sprites" ),
-                sounds: path.join( this.gameRoot, "assets", "sounds" ),
-                snapshots: path.join( this.gameRoot, "assets", "snapshots" ),
-            };
-            this.cache = new Cache();
+    async open ( id ) {
+        this.gameId = id;
+        this.gameRoot = path.join( process.cwd(), "games", this.gameId );
+        this.gamePath = path.join( this.gameRoot, "game.json" );
+        this.mapsPath = path.join( this.gameRoot, "maps" );
+        this.files = {
+            tiles: path.join( this.gameRoot, "assets", "tiles" ),
+            sprites: path.join( this.gameRoot, "assets", "sprites" ),
+            sounds: path.join( this.gameRoot, "assets", "sounds" ),
+            snapshots: path.join( this.gameRoot, "assets", "snapshots" ),
+        };
+        this.cache = new Cache();
 
-            this.logInfo( "opened" );
+        this.logInfo( "opened" );
 
-            utils.readDir( this.files.tiles, ( files ) => {
-                this.cache.set( "tiles", files );
-                this.logInfo( "loaded tiles" );
-            });
+        const loadMaps = async () => {
+            const mapsJSON = await utils.readDir( this.mapsPath );
+            const maps = await Promise.all(mapsJSON.map( async ( file ) => {
+                return await utils.readJson( path.join( this.mapsPath, file ) );
+            }));
+            this.cache.set( "maps", maps );
+            this.logInfo( "loaded maps" );
+        };
 
-            utils.readDir( this.files.sprites, ( files ) => {
-                this.cache.set( "sprites", files );
-                this.logInfo( "loaded sprites" );
-            });
-
-            utils.readDir( this.files.snapshots, ( files ) => {
-                this.cache.set( "snapshots", files );
-                this.logInfo( "loaded snapshots" );
-            });
-
-            utils.readDir( this.files.sounds, ( files ) => {
-                this.cache.set( "sounds", files );
-                this.logInfo( "loaded sounds" );
-            });
-
-            utils.readDir( this.mapsPath, ( files ) => {
-                const maps = [];
-
-                files.forEach( ( file ) => {
-                    maps.push( utils.readJson( path.join( this.mapsPath, file ) ) );
-                });
-
-                this.cache.set( "maps", maps );
-                this.logInfo( "loaded maps" );
-            });
-
-            utils.readJson( this.gamePath, ( data ) => {
-                this.cache.set( "game", data );
+        await Promise.all([
+            loadMaps(),
+            utils.readJson( this.gamePath ).then( ( game ) => {
+                this.cache.set( "game", game );
                 this.logInfo( "loaded game" );
-                resolve();
-            });
-        });
+            }),
+            utils.readDir( this.files.tiles ).then( ( tiles ) => {
+                this.cache.set( "tiles", tiles );
+                this.logInfo( "loaded tiles" );
+            }),
+            utils.readDir( this.files.sprites ).then( ( sprites ) => {
+                this.cache.set( "sprites", sprites );
+                this.logInfo( "loaded sprites" );
+            }),
+            utils.readDir( this.files.snapshots ).then( ( snapshots ) => {
+                this.cache.set( "snapshots", snapshots );
+                this.logInfo( "loaded snapshots" );
+            }),
+            utils.readDir( this.files.sounds ).then( ( sounds ) => {
+                this.cache.set( "sounds", sounds );
+                this.logInfo( "loaded sounds" );
+            }),
+        ]);
+
+        this.logInfo( "ready" );
+
+        return Promise.resolve();
     }
 
     /******************************************************************************
@@ -114,55 +112,38 @@ class DB {
     /******************************************************************************
      * GET public events
     *******************************************************************************/
-    getGame () {
-        return new Promise( ( resolve ) => {
-            resolve({
-                game: this.cache.get( "game" ),
-            });
+    async getGame () {
+        return this.cache.get( "game" );
+    }
+
+    async getMaps () {
+        return this.cache.get( "maps" ).map( ( map ) => {
+            return this._getMergedMap( map.id );
         });
     }
 
-    getMaps () {
-        return new Promise( ( resolve ) => {
-            const maps = this.cache.get( "maps" ).map( ( map ) => {
-                return this._getMergedMap( map.id );
-            });
-
-            resolve({
-                maps,
-            });
-        });
+    async getMap ( data ) {
+        return this._getMergedMap( data.id );
     }
 
-    getMap ( data ) {
-        return new Promise( ( resolve ) => {
-            resolve({
-                map: this._getMergedMap( data.id ),
-            });
-        });
-    }
+    async getFiles ( type ) {
+        const files = this.cache.get( type );
 
-    getFiles ( type ) {
-        return new Promise( ( resolve ) => {
-            const files = this.cache.get( type );
+        if ( files ) {
+            return {
+                type,
+                files,
+            };
 
-            if ( files ) {
-                resolve({
-                    type,
-                    files,
-                });
+        } else {
+            const theFiles = await utils.readDir( this.files[ type ] );
+            this.cache.set( type, theFiles );
 
-            } else {
-                utils.readDir( this.files[ type ], ( theFiles ) => {
-                    this.cache.set( type, theFiles );
-
-                    resolve({
-                        type,
-                        files: theFiles,
-                    });
-                });
-            }
-        });
+            return {
+                type,
+                files: theFiles,
+            };
+        }
     }
 
     /******************************************************************************
@@ -185,7 +166,7 @@ class DB {
                         .resize( 512 )
                         .toFile( thumbFile )
                         .then( () => {
-                            this.logInfo( "write file ${thumbFile.split( "/" ).pop()}" );
+                            this.logInfo( `write file ${thumbFile.split( "/" ).pop()}` );
                         });
 
                 } else {
@@ -200,10 +181,10 @@ class DB {
 
             utils.isFile( file, ( exists ) => {
                 if ( exists ) {
-                    this.logInfo( "overwrite file ${name}" );
+                    this.logInfo( `overwrite file ${name}` );
 
                 } else {
-                    this.logInfo( "create new file ${name}" );
+                    this.logInfo( `create new file ${name}` );
                     files.push( name );
                 }
 
@@ -267,7 +248,7 @@ class DB {
             }
 
             utils.writeJson( mapjson, map, () => {
-                this.logInfo( "create map ${map.id}" );
+                this.logInfo( `create map ${map.id}` );
 
                 const maps = this.cache.get( "maps" );
 
@@ -324,7 +305,7 @@ class DB {
 
                 this.cache.set( "maps", maps );
 
-                this.logInfo( "update map ${map.id}" );
+                this.logInfo( `update map ${map.id}` );
 
                 this.updateWorker();
 
@@ -399,11 +380,11 @@ class DB {
             const idx = maps.indexOf( map );
 
             utils.removeFile( snapshot, () => {
-                this.logInfo( "deleted map snapshot ${map.id}" );
+                this.logInfo( `deleted map snapshot ${map.id}` );
             });
 
             utils.removeFile( thumbnail, () => {
-                this.logInfo( "deleted map thumbnail ${map.id}" );
+                this.logInfo( `deleted map thumbnail ${map.id}` );
             });
 
             utils.removeFile( file, () => {
@@ -411,7 +392,7 @@ class DB {
 
                 this.cache.set( "maps", maps );
 
-                this.logInfo( "deleted map ${map.id}" );
+                this.logInfo( `deleted map ${map.id}` );
 
                 this.updateWorker();
 
@@ -434,7 +415,7 @@ class DB {
 
                 this.cache.set( data.type, files );
 
-                this.logInfo( "deleted ${data.type} file ${data.fileName}" );
+                this.logInfo( `deleted ${data.type} file ${data.fileName}` );
 
                 this.updateWorker();
 
@@ -525,14 +506,8 @@ class DB {
         return structuredClone( models[ model ] );
     }
 
-    static getGames () {
-        return new Promise( ( resolve ) => {
-            utils.readJson( paths.games, ( json ) => {
-                resolve({
-                    games: json,
-                });
-            });
-        });
+    static async getGames () {
+        return await utils.readJson( paths.games );
     }
 
     static getGameSlice ( data ) {
@@ -589,22 +564,21 @@ class DB {
         DB.updateCommon( data, gameDir );
 
         // Update games.json root
-        DB.getGames().then( ( json ) => {
-            json.games.forEach( ( gm, i ) => {
+        DB.getGames().then( ( games ) => {
+            games.forEach( ( gm, i ) => {
                 if ( gm.id === data.id ) {
-                    json.games[ i ] = DB.getGameSlice( data );
+                    games[ i ] = DB.getGameSlice( data );
                 }
             });
 
-            utils.writeJson( paths.games, json.games );
+            utils.writeJson( paths.games, games );
         });
     }
 
 
     static addGame ( data ) {
         return new Promise( ( resolve ) => {
-            DB.getGames().then( ( json ) => {
-                const games = json.games;
+            DB.getGames().then( ( games ) => {
                 const gameModel = DB.getModel( "game" );
 
                 gameModel.id = Cache.slugify( data.name );
@@ -655,19 +629,19 @@ class DB {
 
     static deleteGame ( data ) {
         return new Promise( ( resolve ) => {
-            DB.getGames().then( ( json ) => {
+            DB.getGames().then( ( games ) => {
                 const gamePath = path.join( process.cwd(), "games", data.id );
-                const game = json.games.find( ( gm ) => {
+                const game = games.find( ( gm ) => {
                     return ( gm.id === data.id );
                 });
 
-                json.games.splice( json.games.indexOf( game ), 1 );
+                games.splice( games.indexOf( game ), 1 );
 
-                utils.writeJson( paths.games, json.games );
+                utils.writeJson( paths.games, games );
                 utils.removeDir( gamePath, () => {
                     lager.info( `DB-static: deleted game ${game.id}` );
 
-                    resolve( json );
+                    resolve( games );
                 });
             });
         });
