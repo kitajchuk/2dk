@@ -27,6 +27,13 @@ const templates = {
 
 class DB {
     /******************************************************************************
+     * LOGS
+    *******************************************************************************/
+    logInfo ( ...args ) {
+        lager.info( `DB-${this.gameId}:`, ...args );
+    }
+
+    /******************************************************************************
      * OPEN DB
     *******************************************************************************/
     open ( id ) {
@@ -43,26 +50,26 @@ class DB {
             };
             this.cache = new Cache();
 
-            lager.info( `DB-${this.gameId}: opened` );
+            this.logInfo( "opened" );
 
             utils.readDir( this.files.tiles, ( files ) => {
                 this.cache.set( "tiles", files );
-                lager.info( `DB-${this.gameId}: loaded tiles` );
+                this.logInfo( "loaded tiles" );
             });
 
             utils.readDir( this.files.sprites, ( files ) => {
                 this.cache.set( "sprites", files );
-                lager.info( `DB-${this.gameId}: loaded sprites` );
+                this.logInfo( "loaded sprites" );
             });
 
             utils.readDir( this.files.snapshots, ( files ) => {
                 this.cache.set( "snapshots", files );
-                lager.info( `DB-${this.gameId}: loaded snapshots` );
+                this.logInfo( "loaded snapshots" );
             });
 
             utils.readDir( this.files.sounds, ( files ) => {
                 this.cache.set( "sounds", files );
-                lager.info( `DB-${this.gameId}: loaded sounds` );
+                this.logInfo( "loaded sounds" );
             });
 
             utils.readDir( this.mapsPath, ( files ) => {
@@ -73,12 +80,12 @@ class DB {
                 });
 
                 this.cache.set( "maps", maps );
-                lager.info( `DB-${this.gameId}: loaded maps` );
+                this.logInfo( "loaded maps" );
             });
 
             utils.readJson( this.gamePath, ( data ) => {
                 this.cache.set( "game", data );
-                lager.info( `DB-${this.gameId}: loaded game` );
+                this.logInfo( "loaded game" );
                 resolve();
             });
         });
@@ -178,7 +185,7 @@ class DB {
                         .resize( 512 )
                         .toFile( thumbFile )
                         .then( () => {
-                            lager.info( `DB-${this.gameId}: write file ${thumbFile.split( "/" ).pop()}` );
+                            this.logInfo( "write file ${thumbFile.split( "/" ).pop()}" );
                         });
 
                 } else {
@@ -193,10 +200,10 @@ class DB {
 
             utils.isFile( file, ( exists ) => {
                 if ( exists ) {
-                    lager.info( `DB-${this.gameId}: overwrite file ${name}` );
+                    this.logInfo( "overwrite file ${name}" );
 
                 } else {
-                    lager.info( `DB-${this.gameId}: create new file ${name}` );
+                    this.logInfo( "create new file ${name}" );
                     files.push( name );
                 }
 
@@ -204,7 +211,7 @@ class DB {
 
                 // If we have access to `lame` we can create a compressed audio file...
                 if ( shell.which( "lame" ) && ext === "mp3" ) {
-                    lager.info( `DB-${this.gameId}: compressing audio file with lame` );
+                    this.logInfo( "compressing audio file with lame" );
 
                     const encoder = new Lame({
                         output: file,
@@ -216,7 +223,7 @@ class DB {
                         .encode()
                         .then( () => {
                             // Encoding finished
-                            lager.info( `DB-${this.gameId}: compressed audio file with lame` );
+                            this.logInfo( "compressed audio file with lame" );
                             onDone();
                         })
                         .catch( ( error ) => {
@@ -260,7 +267,7 @@ class DB {
             }
 
             utils.writeJson( mapjson, map, () => {
-                lager.info( `DB-${this.gameId}: create map ${map.id}` );
+                this.logInfo( "create map ${map.id}" );
 
                 const maps = this.cache.get( "maps" );
 
@@ -317,7 +324,7 @@ class DB {
 
                 this.cache.set( "maps", maps );
 
-                lager.info( `DB-${this.gameId}: update map ${map.id}` );
+                this.logInfo( "update map ${map.id}" );
 
                 this.updateWorker();
 
@@ -335,42 +342,42 @@ class DB {
             const game = this.cache.get( "game" );
             const file = path.join( process.cwd(), "games", game.id, "icon.png" );
 
-            lager.info( `DB-${this.gameId}: update game icon` );
+            this.logInfo( "update game icon" );
 
             // Create webapp icons...
             sharp( buffer )
                 .resize( 1024 )
                 .toFile( file.replace( "icon.png", "icon1024.png" ) )
                 .then( () => {
-                    lager.info( `DB-${this.gameId}: wrote game icon icon1024.png` );
+                    this.logInfo( "wrote game icon icon1024.png" );
                 });
 
             sharp( buffer )
                 .resize( 512 )
                 .toFile( file.replace( "icon.png", "icon512.png" ) )
                 .then( () => {
-                    lager.info( `DB-${this.gameId}: wrote game icon icon512.png` );
+                    this.logInfo( "wrote game icon icon512.png" );
                 });
 
             sharp( buffer )
                 .resize( 384 )
                 .toFile( file.replace( "icon.png", "icon384.png" ) )
                 .then( () => {
-                    lager.info( `DB-${this.gameId}: wrote game icon icon384.png` );
+                    this.logInfo( "wrote game icon icon384.png" );
                 });
 
             sharp( buffer )
                 .resize( 192 )
                 .toFile( file.replace( "icon.png", "icon192.png" ) )
                 .then( () => {
-                    lager.info( `DB-${this.gameId}: wrote game icon icon192.png` );
+                    this.logInfo( "wrote game icon icon192.png" );
                 });
 
             sharp( buffer )
                 .resize( 64 )
                 .toFile( file.replace( "icon.png", "favicon.ico" ) )
                 .then( () => {
-                    lager.info( `DB-${this.gameId}: wrote game icon favicon.ico` );
+                    this.logInfo( "wrote game icon favicon.ico" );
                 });
 
             utils.writeFile( file, buffer, () => {
@@ -392,11 +399,11 @@ class DB {
             const idx = maps.indexOf( map );
 
             utils.removeFile( snapshot, () => {
-                lager.info( `DB-${this.gameId}: deleted map snapshot ${map.id}` );
+                this.logInfo( "deleted map snapshot ${map.id}" );
             });
 
             utils.removeFile( thumbnail, () => {
-                lager.info( `DB-${this.gameId}: deleted map thumbnail ${map.id}` );
+                this.logInfo( "deleted map thumbnail ${map.id}" );
             });
 
             utils.removeFile( file, () => {
@@ -404,7 +411,7 @@ class DB {
 
                 this.cache.set( "maps", maps );
 
-                lager.info( `DB-${this.gameId}: deleted map ${map.id}` );
+                this.logInfo( "deleted map ${map.id}" );
 
                 this.updateWorker();
 
@@ -427,7 +434,7 @@ class DB {
 
                 this.cache.set( data.type, files );
 
-                lager.info( `DB-${this.gameId}: deleted ${data.type} file ${data.fileName}` );
+                this.logInfo( "deleted ${data.type} file ${data.fileName}" );
 
                 this.updateWorker();
 
@@ -490,7 +497,7 @@ class DB {
         });
 
         utils.writeFile( file, swJS, () => {
-            lager.info( `DB-${this.gameId}: service worker updated` );
+            this.logInfo( "service worker updated" );
 
             DB.updateGame( game );
         });

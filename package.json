@@ -35,7 +35,6 @@
     "postbuild:2dk": "sass --no-source-map --style=compressed ./src/styles/2dk.scss ./studio/src/templates/2dk.css",
     "build:app": "esbuild ./src/app.js --bundle --minify --target=esnext --outfile=./studio/src/templates/app.js",
     "build:studio": "sass --no-source-map --style=compressed ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
-    "docs": "jsdoc --readme 'README.md' --destination 'dist/docs' --recurse src",
     "copy": "yarn copy:la && yarn copy:la_copy && yarn copy:pk && yarn copy:games",
     "copy:la": "cp studio/src/templates/2dk.css studio/games/la && cp studio/src/templates/app.js studio/games/la",
     "copy:la_copy": "cp studio/src/templates/2dk.css studio/games/la_copy && cp studio/src/templates/app.js studio/games/la_copy",
@@ -43,10 +42,9 @@
     "copy:games": "cp -R studio/games dist"
   },
   "devDependencies": {
-    "chokidar-cli": "^2.1.0",
-    "concurrently": "^7.2.1",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.1.2",
     "esbuild": "^0.25.2",
-    "jsdoc": "^3.6.10",
     "sass-embedded": "^1.86.0",
     "shelljs": "^0.9.2"
   }

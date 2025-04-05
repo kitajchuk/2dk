@@ -1,5 +1,4 @@
 const fs = require( "fs" );
-const fse = require( "fs-extra" );
 
 
 
@@ -143,14 +142,14 @@ const removeFile = ( file, cb ) => {
 
 const copyFile = ( file, dest, cb ) => {
     if ( cb ) {
-        fse.copy( file, dest, ( err ) => {
+        fs.copyFile( file, dest, ( err ) => {
             if ( !err ) {
                 cb();
             }
         });
 
     } else {
-        fse.copySync( file, dest );
+        fs.copyFileSync( file, dest );
     }
 };
 
@@ -158,14 +157,14 @@ const copyFile = ( file, dest, cb ) => {
 
 const removeDir = ( dir, cb ) => {
     if ( cb ) {
-        fse.remove( dir, ( err ) => {
+        fs.rm( dir, { recursive: true, force: true }, ( err ) => {
             if ( !err ) {
                 cb();
             }
         });
 
     } else {
-        fse.removeSync( dir );
+        fs.rmSync( dir, { recursive: true, force: true } );
     }
 };
 
