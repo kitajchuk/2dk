@@ -1024,19 +1024,6 @@ class TopView extends GameBox {
         } else {
             sprite.idle.y = true;
         }
-
-        // Handle sprite AI logics...
-        // Hero sprite will NEVER have AI data...
-        // Sprite movement is hindered when attacked...
-        if ( sprite.data.ai && !sprite.attacked ) {
-            if ( sprite.data.ai === Config.npc.ROAM ) {
-                this.handleRoam( sprite );
-            }
-
-            if ( sprite.data.ai === Config.npc.WANDER ) {
-                this.handleWander( sprite );
-            }
-        }
     }
 
 
@@ -1102,98 +1089,6 @@ class TopView extends GameBox {
         this.player.gameaudio.hitSound( Config.verbs.SMASH );
         this.map.killObj( "npcs", this.interact.tile.sprite );
         this.interact.tile = null;
-    }
-
-
-    handleRoam ( sprite ) {
-        if ( !sprite.counter ) {
-            sprite.counter = Utils.random( 64, 192 );
-            sprite.dir = dirs[ Utils.random( 0, dirs.length ) ];
-
-        } else {
-            sprite.counter--;
-        }
-
-        DIRS.forEach( ( dir ) => {
-            if ( dir === sprite.dir ) {
-                sprite.controls[ dir ] = 1;
-
-            } else {
-                sprite.controls[ dir ] = 0;
-            }
-        });
-    }
-
-
-    handleWander ( sprite ) {
-        if ( sprite.cooldown ) {
-            return sprite.cooldown--;
-        }
-
-        if ( !sprite.counter ) {
-            sprite.counter = Utils.random( 100, 200 );
-            sprite.stepsX = Utils.random( 4, 60 );
-            sprite.stepsY = Utils.random( 4, 60 );
-
-            if ( sprite.collided ) {
-                sprite.collided = false;
-                sprite.dirX = Config.opposites[ sprite.dirX ];
-                sprite.dirY = Config.opposites[ sprite.dirY ];
-
-
-            } else {
-                sprite.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
-                sprite.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
-            }
-
-        } else {
-            sprite.counter--;
-        }
-
-        if ( sprite.stepsX ) {
-            sprite.stepsX--;
-
-            sprite.controls[ sprite.dirX ] = 1;
-            sprite.controls[ Config.opposites[ sprite.dirX ] ] = 0;
-
-            if ( sprite.data.verbs[ sprite.verb ][ sprite.dirX ] ) {
-                sprite.dir = sprite.dirX;
-            }
-
-        } else {
-            sprite.controls.left = 0;
-            sprite.controls.right = 0;
-        }
-
-        if ( sprite.stepsY ) {
-            sprite.stepsY--;
-
-            sprite.controls[ sprite.dirY ] = 1;
-            sprite.controls[ Config.opposites[ sprite.dirY ] ] = 0;
-
-            if ( sprite.data.verbs[ sprite.verb ][ sprite.dirY ] ) {
-                sprite.dir = sprite.dirY;
-            }
-
-        } else {
-            sprite.controls.up = 0;
-            sprite.controls.down = 0;
-        }
-
-        if ( !sprite.stepsX && !sprite.stepsY ) {
-            sprite.verb = Config.verbs.FACE;
-            sprite.controls = {};
-
-        } else {
-            if ( sprite.data.bounce && sprite.position.z === 0 ) {
-                sprite.physics.vz = -6;
-            }
-
-            // @check: hero-verb-check
-            if ( sprite.can( Config.verbs.WALK ) ) {
-                sprite.verb = Config.verbs.WALK;
-            }
-        }
     }
 
 

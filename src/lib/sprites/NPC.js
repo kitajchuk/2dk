@@ -1,5 +1,5 @@
 import Utils from "../Utils";
-import Config from "../Config";
+import Config, { DIRS } from "../Config";
 import Sprite from "./Sprite";
 
 
@@ -14,13 +14,17 @@ class NPC extends Sprite {
         super( data, map );
         this.states = structuredClone( this.data.states );
         this.dialogue = null;
+        this.attacked = false;
+        
+        // AI things...
         this.controls = {};
         // Initial cooldown period upon spawn (don't immediately move)
         // requestAnimationFrame runs 60fps so we use (60 * seconds)
         this.counter = this.data.ai ? ( 60 * 1 ) : 0;
-        this.cooldown = 0;
-        this.collided = false;
-        this.attacked = false;
+        this.dirX = null;
+        this.dirY = null;
+        this.stepsX = 0;
+        this.stepsY = 0;
 
         if ( this.data.stats ) {
             this.stats = structuredClone( this.data.stats );
@@ -67,6 +71,7 @@ class NPC extends Sprite {
         }
 
         this.gamebox.handleControls( this.controls, this );
+        this.handleAI();
         this.updateStack();
     }
 
@@ -88,40 +93,25 @@ class NPC extends Sprite {
             collision.hero ||
             this.gamebox.canHeroTileStop( poi, null, collision )
         );
-        const isNotCollision = (
-            !collision.map &&
-            !collision.npc &&
-            !collision.hero &&
-            !this.gamebox.canHeroTileStop( poi, null, collision )
-        );
-
-        // Reset the sprite counter if NPC has collisions...
-        if ( isCollision && !this.collided && this.data.ai === Config.npc.WANDER ) {
-            this.collided = true;
-            this.cooldown = ( 60 * 4 );
-            this.counter = 0;
-            this.controls = {};
-        }
 
         // Roaming NPCs can push the hero back...
         if ( collision.hero && this.data.ai === Config.npc.ROAM ) {
-            if ( this.dir === "left" ) {
-                this.gamebox.hero.physics.vx = -1;
+            switch ( this.dir ) {
+                case "left":
+                    this.gamebox.hero.physics.vx = -1;
+                    break;
+                case "right": 
+                    this.gamebox.hero.physics.vx = 1;
+                    break;
+                case "up":
+                    this.gamebox.hero.physics.vy = -1;
+                    break;
+                case "down":
+                    this.gamebox.hero.physics.vy = 1;
+                    break;
             }
 
-            if ( this.dir === "right" ) {
-                this.gamebox.hero.physics.vx = 1;
-            }
-
-            if ( this.dir === "up" ) {
-                this.gamebox.hero.physics.vy = -1;
-            }
-
-            if ( this.dir === "down" ) {
-                this.gamebox.hero.physics.vy = 1;
-            }
-
-        } else if ( isNotCollision ) {
+        } else if ( !isCollision ) {
             this.position = poi;
         }
     }
@@ -135,6 +125,99 @@ class NPC extends Sprite {
         this.dialogue = null;
         this.dir = this.state.dir;
         this.verb = this.state.verb;
+    }
+
+
+    handleAI () {
+        if ( this.data.ai && !this.attacked ) {
+            switch ( this.data.ai ) {
+                case Config.npc.ROAM:
+                    this.handleRoam();
+                    break;
+                case Config.npc.WANDER:
+                    this.handleWander();
+                    break;
+            }
+        }
+    }
+
+
+    handleRoam () {
+        if ( !this.counter ) {
+            this.counter = Utils.random( 64, 192 );
+            this.dir = DIRS[ Utils.random( 0, DIRS.length ) ];
+
+        } else {
+            this.counter--;
+        }
+
+        DIRS.forEach( ( dir ) => {
+            if ( dir === this.dir ) {
+                this.controls[ dir ] = 1;
+
+            } else {
+                this.controls[ dir ] = 0;
+            }
+        });
+    }
+
+
+    handleWander () {
+        if ( !this.counter ) {
+            this.counter = Utils.random( 100, 200 );
+            this.stepsX = Utils.random( 4, 60 );
+            this.stepsY = Utils.random( 4, 60 );
+            this.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
+            this.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
+
+        } else {
+            this.counter--;
+        }
+
+        if ( this.stepsX ) {
+            this.stepsX--;
+
+            this.controls[ this.dirX ] = 1;
+            this.controls[ Config.opposites[ this.dirX ] ] = 0;
+
+            if ( this.data.verbs[ this.verb ][ this.dirX ] ) {
+                this.dir = this.dirX;
+            }
+
+        } else {
+            this.controls.left = 0;
+            this.controls.right = 0;
+        }
+
+        if ( this.stepsY ) {
+            this.stepsY--;
+
+            this.controls[ this.dirY ] = 1;
+            this.controls[ Config.opposites[ this.dirY ] ] = 0;
+
+            if ( this.data.verbs[ this.verb ][ this.dirY ] ) {
+                this.dir = this.dirY;
+            }
+
+        } else {
+            this.controls.up = 0;
+            this.controls.down = 0;
+        }
+
+        if ( !this.stepsX && !this.stepsY ) {
+            this.verb = Config.verbs.FACE;
+            this.controls = {};
+
+        } else {
+            if ( this.data.bounce && this.position.z === 0 ) {
+                this.physics.vz = -6;
+            }
+
+            // @check: hero-verb-check
+            if ( this.can( Config.verbs.WALK ) ) {
+                this.verb = Config.verbs.WALK;
+            }
+        }
     }
 
 

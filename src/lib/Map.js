@@ -338,9 +338,9 @@ class Map {
         });
 
         // Visual event debugging....
-        if ( this.gamebox.player.query.debug ) {
-            this.renderDebug();
-        }
+        // if ( this.gamebox.player.query.debug ) {
+        //     this.renderDebug();
+        // }
     }
 
 

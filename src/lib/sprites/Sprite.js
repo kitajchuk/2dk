@@ -215,6 +215,51 @@ class Sprite {
         if ( Utils.func( this.renderAfter ) ) {
             this.renderAfter();
         }
+
+        if ( this.gamebox.player.query.debug ) {
+            this.renderDebug();
+        }
+    }
+
+
+    renderDebug () {
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.25;
+        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.white;
+        this.gamebox.layers.foreground.onCanvas.context.fillRect(
+            this.offset.x,
+            this.offset.y,
+            this.width,
+            this.height
+        );
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.red;
+        this.gamebox.layers.foreground.onCanvas.context.fillRect(
+            this.offset.x + ( this.data.hitbox.x / this.scale ),
+            this.offset.y + ( this.data.hitbox.y / this.scale ),
+            this.hitbox.width,
+            this.hitbox.height
+        );
+        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.green;
+        this.gamebox.layers.foreground.onCanvas.context.fillRect(
+            this.offset.x + ( this.data.hitbox.x / this.scale ),
+            this.offset.y + ( this.data.hitbox.y / this.scale ) + ( this.hitbox.height / 2 ),
+            this.footbox.width,
+            this.footbox.height
+        );
+
+        if ( this.gamebox.attacking ) {
+            const weaponbox = this.getWeaponbox( "offset" );
+
+            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.teal;
+            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                weaponbox.x,
+                weaponbox.y,
+                weaponbox.width,
+                weaponbox.height
+            );
+        }
+
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
     }
 
 
