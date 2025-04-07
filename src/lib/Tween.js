@@ -187,14 +187,15 @@ class Tween extends Controller {
             if ( this.sprite ) {
                 this.sprite.position.x = tweenObj.x;
                 this.sprite.position.y = tweenObj.y;
+                this.sprite.applyOffset();
 
             } else if ( Utils.func( opts.update ) ) {
                 opts.update( tweenObj );
             }
 
-            if ( diff > opts.duration ) {
-                opts.complete( tweenObj );
+            if ( diff >= opts.duration ) {
                 this.stop();
+                opts.complete( tweenObj );
             }
         });
     }

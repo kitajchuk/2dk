@@ -423,6 +423,13 @@ class TopView extends GameBox {
     }
 
 
+    handleResetHeroDirs () {
+        DIRS.forEach( ( dir ) => {
+            this.player.controls[ dir ] = false;
+        });
+    }
+
+
     handleCriticalReset () {
         // Timer used for jumping / parkour
         if ( this.keyTimer ) {
@@ -431,7 +438,8 @@ class TopView extends GameBox {
         }
 
         // Applied for parkour
-        this.player.controls[ this.hero.dir ] = false;
+        // this.player.controls[ this.hero.dir ] = false;
+        this.handleResetHeroDirs();
 
         // To kill any animated sprite cycling (jump etc...)
         this.hero.face( this.hero.dir );
@@ -449,6 +457,15 @@ class TopView extends GameBox {
 
 
     handleHero ( poi, dir ) {
+        // if ( this.locked || this.jumping || this.falling || this.parkour || this.dropin ) {
+        //     this.interact.push = 0;
+        // }
+
+        if ( this.locked || this.jumping || this.falling || this.parkour || this.dropin || this.attacking ) {
+            this.interact.push = 0;
+            return;
+        }
+
         const collision = {
             map: this.checkMap( poi, this.hero ),
             npc: this.checkNPC( poi, this.hero ),
@@ -456,15 +473,8 @@ class TopView extends GameBox {
             event: this.checkEvents( poi, this.hero ),
             camera: this.checkCamera( poi, this.hero ),
         };
-
-        if ( this.locked || this.jumping || this.falling || this.parkour || this.dropin ) {
-            this.interact.push = 0;
-        }
-
-        if ( this.locked || this.falling || this.parkour || this.attacking ) {
-            return;
-
-        } else if ( this.jumping ) {
+        
+        if ( this.jumping ) {
             // Remove mask when jumping (will be reapplied if landing on a tile again)
             this.hero.mask = false;
 
@@ -561,6 +571,8 @@ class TopView extends GameBox {
 
 
     handleHeroTileJump ( poi, dir, tile ) {
+        this.handleResetHeroDirs();
+
         let destPos;
         let destTile;
 
@@ -610,10 +622,6 @@ class TopView extends GameBox {
 
         const destEvent = this.getVisibleEvents().find( ( evt ) => {
             return ( evt.coords[ 0 ] * this.map.data.tilesize === destTile.x && evt.coords[ 1 ] * this.map.data.tilesize === destTile.y );
-        });
-
-        DIRS.forEach( ( d ) => {
-            this.player.controls[ d ] = false;
         });
 
         this.jumping = true;
@@ -881,66 +889,46 @@ class TopView extends GameBox {
 
 
     handleHeroFall ( poi, dir, tiles ) {
-        let resetTile;
-        let finalDest;
+        this.handleResetHeroDirs();
+
         const cycleDur = this.hero.getDur( Config.verbs.FALL );
         const fallTile = tiles.action.find( ( tile ) => {
             return tile.fall;
         });
+        const fallCoords = fallTile.coord;
+        const surroundingTiles = Utils.getSurroundingTileCoords( fallCoords );
 
-        if ( this.hero.dir === "left" ) {
-            resetTile = {
-                x: ( fallTile.coord[ 0 ] + 1 ) * this.map.data.tilesize,
-                y: fallTile.coord[ 1 ] * this.map.data.tilesize,
-            };
-            finalDest = {
-                x: resetTile.x,
-                y: resetTile.y - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
-            };
-        }
+        // Find the first surrounding tile that is not in THIS tile's group
+        const resetTile = surroundingTiles.find( ( tile ) => {
+            return !fallTile.instance.pushed.find( ( pushed ) => {
+                return pushed[ 0 ] === tile.x && pushed[ 1 ] === tile.y;
+            });
+        });
 
-        if ( this.hero.dir === "right" ) {
-            resetTile = {
-                x: ( fallTile.coord[ 0 ] - 1 ) * this.map.data.tilesize,
-                y: fallTile.coord[ 1 ] * this.map.data.tilesize,
-            };
-            finalDest = {
-                x: resetTile.x - ( this.hero.width - this.map.data.tilesize ),
-                y: resetTile.y - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
-            };
-        }
+        // Center the hero's hitbox on the reset tile when the fall animation is complete
+        const finalOffsetX = ( ( this.hero.width - this.map.data.tilesize ) / 2 );
+        const finalOffsetY = ( this.hero.height - this.map.data.tilesize );
+        const finalResetPosition = {
+            x: ( resetTile.x * this.map.data.tilesize ) - finalOffsetX,
+            y: ( resetTile.y * this.map.data.tilesize ) - finalOffsetY,
+        };
 
-        if ( this.hero.dir === "up" ) {
-            resetTile = {
-                x: fallTile.coord[ 0 ] * this.map.data.tilesize,
-                y: ( fallTile.coord[ 1 ] + 1 ) * this.map.data.tilesize,
-            };
-            finalDest = {
-                x: resetTile.x - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
-                y: resetTile.y,
-            };
-        }
-
-        if ( this.hero.dir === "down" ) {
-            resetTile = {
-                x: fallTile.coord[ 0 ] * this.map.data.tilesize,
-                y: ( fallTile.coord[ 1 ] - 1 ) * this.map.data.tilesize,
-            };
-            finalDest = {
-                x: resetTile.x - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
-                y: resetTile.y - ( this.hero.height - this.map.data.tilesize ),
-            };
-        }
+        // Center the hero's sprite on the fall tile as the animation's final destination
+        const coordX = fallCoords[ 0 ] * this.map.data.tilesize;
+        const coordY = fallCoords[ 1 ] * this.map.data.tilesize;
+        const fallOffsetY = ( ( this.hero.height - this.map.data.tilesize ) / 2 );
+        const fallOffsetX = ( ( this.hero.width - this.map.data.tilesize ) / 2 );
+        const fallToPosition = {
+            x: coordX - fallOffsetX,
+            y: coordY - fallOffsetY,
+        };
 
         this.falling = true;
         this.interact.fall = {};
         this.interact.fall.tween = new Tween();
         this.interact.fall.tween.bind( this.hero );
         this.interact.fall.tween.tween({
-            to: {
-                x: ( fallTile.coord[ 0 ] * this.map.data.tilesize ) - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
-                y: ( fallTile.coord[ 1 ] * this.map.data.tilesize ) - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
-            },
+            to: fallToPosition,
             from: {
                 x: this.hero.position.x,
                 y: this.hero.position.y,
@@ -949,11 +937,8 @@ class TopView extends GameBox {
             complete: () => {
                 setTimeout( () => {
                     this.interact.fall.tween.tween({
-                        to: finalDest,
-                        from: {
-                            x: this.hero.position.x,
-                            y: this.hero.position.y,
-                        },
+                        to: finalResetPosition,
+                        from: fallToPosition,
                         duration: cycleDur / 2,
                         complete: () => {
                             this.falling = false;

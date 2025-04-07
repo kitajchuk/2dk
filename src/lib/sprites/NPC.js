@@ -153,10 +153,10 @@ class NPC extends Sprite {
 
         DIRS.forEach( ( dir ) => {
             if ( dir === this.dir ) {
-                this.controls[ dir ] = 1;
+                this.controls[ dir ] = true;
 
             } else {
-                this.controls[ dir ] = 0;
+                this.controls[ dir ] = false;
             }
         });
     }
@@ -177,31 +177,31 @@ class NPC extends Sprite {
         if ( this.stepsX ) {
             this.stepsX--;
 
-            this.controls[ this.dirX ] = 1;
-            this.controls[ Config.opposites[ this.dirX ] ] = 0;
+            this.controls[ this.dirX ] = true;
+            this.controls[ Config.opposites[ this.dirX ] ] = false;
 
             if ( this.data.verbs[ this.verb ][ this.dirX ] ) {
                 this.dir = this.dirX;
             }
 
         } else {
-            this.controls.left = 0;
-            this.controls.right = 0;
+            this.controls.left = false;
+            this.controls.right = false;
         }
 
         if ( this.stepsY ) {
             this.stepsY--;
 
-            this.controls[ this.dirY ] = 1;
-            this.controls[ Config.opposites[ this.dirY ] ] = 0;
+            this.controls[ this.dirY ] = true;
+            this.controls[ Config.opposites[ this.dirY ] ] = false;
 
             if ( this.data.verbs[ this.verb ][ this.dirY ] ) {
                 this.dir = this.dirY;
             }
 
         } else {
-            this.controls.up = 0;
-            this.controls.down = 0;
+            this.controls.up = false;
+            this.controls.down = false;
         }
 
         if ( !this.stepsX && !this.stepsY ) {

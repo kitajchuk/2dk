@@ -187,6 +187,64 @@ const Utils = {
     },
 
 
+    /*
+     * Get the surrounding tiles of a tile at coords
+     * 
+     * -------------
+     * |   |   |   |
+     * -------------
+     * |   | x |   |
+     * -------------
+     * |   |   |   |
+     * -------------
+     * 
+     */
+    getSurroundingTileCoords ( coords ) {
+        return [
+            // Top left
+            {
+                x: (coords[0] - 1),
+                y: (coords[1] - 1)
+            },
+            // Top
+            {
+                x: coords[0],
+                y: (coords[1] - 1)
+            },
+            // Top right
+            {
+                x: (coords[0] + 1),
+                y: (coords[1] - 1)
+            },
+            // Left
+            {
+                x: (coords[0] - 1),
+                y: coords[1]
+            },
+            // Right
+            {
+                x: (coords[0] + 1),
+                y: coords[1]
+            },
+            // Bottom left
+            {
+                x: (coords[0] - 1),
+                y: (coords[1] + 1)
+            },
+            // Bottom
+            {
+                x: coords[0],
+                y: (coords[1] + 1)
+            },
+            // Bottom right
+            {
+                x: (coords[0] + 1),
+                y: (coords[1] + 1)
+            }
+        ];
+    },
+
+
     // From Akihabara helpers:
 
 
