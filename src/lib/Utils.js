@@ -200,48 +200,40 @@ const Utils = {
      * 
      */
     getSurroundingTileCoords ( coords ) {
-        return [
-            // Top left
-            {
+        return {
+            topLeft: {
                 x: (coords[0] - 1),
                 y: (coords[1] - 1)
             },
-            // Top
-            {
+            top: {
                 x: coords[0],
                 y: (coords[1] - 1)
             },
-            // Top right
-            {
+            topRight: {
                 x: (coords[0] + 1),
                 y: (coords[1] - 1)
             },
-            // Left
-            {
+            left: {
                 x: (coords[0] - 1),
                 y: coords[1]
             },
-            // Right
-            {
+            right: {
                 x: (coords[0] + 1),
                 y: coords[1]
             },
-            // Bottom left
-            {
+            bottomLeft: {
                 x: (coords[0] - 1),
                 y: (coords[1] + 1)
             },
-            // Bottom
-            {
+            bottom: {
                 x: coords[0],
                 y: (coords[1] + 1)
             },
-            // Bottom right
-            {
+            bottomRight: {
                 x: (coords[0] + 1),
                 y: (coords[1] + 1)
             }
-        ];
+        };
     },
 
 

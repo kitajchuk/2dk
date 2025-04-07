@@ -457,12 +457,11 @@ class TopView extends GameBox {
 
 
     handleHero ( poi, dir ) {
-        // if ( this.locked || this.jumping || this.falling || this.parkour || this.dropin ) {
-        //     this.interact.push = 0;
-        // }
-
-        if ( this.locked || this.jumping || this.falling || this.parkour || this.dropin || this.attacking ) {
+        if ( this.locked || this.jumping || this.falling || this.parkour || this.dropin ) {
             this.interact.push = 0;
+        }
+
+        if ( this.locked || this.falling || this.parkour || this.attacking ) {
             return;
         }
 
@@ -473,7 +472,7 @@ class TopView extends GameBox {
             event: this.checkEvents( poi, this.hero ),
             camera: this.checkCamera( poi, this.hero ),
         };
-        
+
         if ( this.jumping ) {
             // Remove mask when jumping (will be reapplied if landing on a tile again)
             this.hero.mask = false;
@@ -898,12 +897,23 @@ class TopView extends GameBox {
         const fallCoords = fallTile.coord;
         const surroundingTiles = Utils.getSurroundingTileCoords( fallCoords );
 
-        // Find the first surrounding tile that is not in THIS tile's group
-        const resetTile = surroundingTiles.find( ( tile ) => {
-            return !fallTile.instance.pushed.find( ( pushed ) => {
-                return pushed[ 0 ] === tile.x && pushed[ 1 ] === tile.y;
-            });
-        });
+        // Reset to the tile that the hero came from
+        let resetTile;
+
+        switch ( dir ) {
+            case "up":
+                resetTile = surroundingTiles.bottom;
+                break;
+            case "down":
+                resetTile = surroundingTiles.top;
+                break;
+            case "left":
+                resetTile = surroundingTiles.right;
+                break;
+            case "right":
+                resetTile = surroundingTiles.left;
+                break;
+        }
 
         // Center the hero's hitbox on the reset tile when the fall animation is complete
         const finalOffsetX = ( ( this.hero.width - this.map.data.tilesize ) / 2 );
