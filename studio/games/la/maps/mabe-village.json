@@ -359,6 +359,33 @@
             "type": "boundary",
             "map": "maps/mysterious-forest.json",
             "dir": "up"
+        },
+        {
+            "coords": [
+                4,
+                31
+            ],
+            "type": "boundary",
+            "map": "maps/toronbo-shores-west.json",
+            "dir": "down"
+        },
+        {
+            "coords": [
+                5,
+                31
+            ],
+            "type": "boundary",
+            "map": "maps/toronbo-shores-west.json",
+            "dir": "down"
+        },
+        {
+            "coords": [
+                6,
+                31
+            ],
+            "type": "boundary",
+            "map": "maps/toronbo-shores-west.json",
+            "dir": "down"
         }
     ],
     "collision": [
