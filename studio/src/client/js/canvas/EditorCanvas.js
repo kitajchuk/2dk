@@ -1001,13 +1001,26 @@ class EditorCanvas {
         let _redraw = isNPC ? this.drawNPCs.bind( this ) : this.drawObjects.bind( this );
 
         if ( objectOrNPC && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
-            const offsetCoords = this.cursor.getCursorOffsetCoords( coords, objectOrNPC );
+            let spawnX;
+            let spawnY;
+
+            // NPCs don't need to be locked to the tile grid
+            if ( isNPC ) {
+                spawnX = this.canvasMouseCoords.x;
+                spawnY = this.canvasMouseCoords.y;
+
+            // Objects will be locked to the tile grid
+            } else {
+                const offsetCoords = this.cursor.getCursorOffsetCoords( coords, objectOrNPC );
+                spawnX = offsetCoords[ 0 ] * this.map.tilesize;
+                spawnY = offsetCoords[ 1 ] * this.map.tilesize;
+            }
 
             const newObjectOrNPC = {
                 id: objectOrNPC.id,
                 spawn: {
-                    x: offsetCoords[ 0 ] * this.map.tilesize,
-                    y: offsetCoords[ 1 ] * this.map.tilesize,
+                    x: spawnX,
+                    y: spawnY,
                 },
             };
 

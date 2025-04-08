@@ -58,20 +58,30 @@ class EditorCursor {
 
 
     showCanvasCursor ( coords, objectOrNPC ) {
-        let x = coords[ 0 ];
-        let y = coords[ 1 ];
+        // Default to the tile grid
+        let x = coords[ 0 ] * this.map.tilesize;
+        let y = coords[ 1 ] * this.map.tilesize;
 
         if ( objectOrNPC ) {
-            const offsetCoords = this.getCursorOffsetCoords( coords, objectOrNPC );
+            const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
+            
+            // NPCs don't need to be locked to the tile grid
+            if ( isNPC ) {
+                x = this.editorCanvas.canvasMouseCoords.x;
+                y = this.editorCanvas.canvasMouseCoords.y;
 
-            x = offsetCoords[ 0 ];
-            y = offsetCoords[ 1 ];
+            // Objects will be locked to the tile grid
+            } else {
+                const offsetCoords = this.getCursorOffsetCoords( coords, objectOrNPC );
+                x = offsetCoords[ 0 ] * this.map.tilesize;
+                y = offsetCoords[ 1 ] * this.map.tilesize;
+            }
         }
 
         this.cursors.canvas.style.setProperty( "--z", 5 );
         this.cursors.canvas.style.setProperty( "--o", 0.5 );
-        this.cursors.canvas.style.setProperty( "--x", `${x * this.map.tilesize}px` );
-        this.cursors.canvas.style.setProperty( "--y", `${y * this.map.tilesize}px` );
+        this.cursors.canvas.style.setProperty( "--x", `${x}px` );
+        this.cursors.canvas.style.setProperty( "--y", `${y}px` );
     }
 
 
