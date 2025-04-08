@@ -186,6 +186,12 @@ const Utils = {
 
         return data;
     },
+
+
+    parseDialogueText ( text ) {
+        const lines = text.split( "\n" );
+        return lines.map( ( line ) => line.trim() ).filter( ( line ) => line.length > 0 );
+    },
 };
 
 

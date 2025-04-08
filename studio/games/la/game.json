@@ -8,7 +8,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 758,
+    "save": 761,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -594,7 +594,11 @@
             "states": [
                 {
                     "verb": "face",
-                    "dir": "left"
+                    "dir": "left",
+                    "action": {
+                        "verb": "talk",
+                        "dir": "right"
+                    }
                 }
             ]
         },
@@ -701,8 +705,7 @@
                     "dir": "down",
                     "action": {
                         "verb": "read",
-                        "dir": "up",
-                        "counter": 1
+                        "dir": "up"
                     }
                 }
             ]

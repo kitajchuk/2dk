@@ -1,23 +1,26 @@
-._2dk__gamebox {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-}
-._2dk__layer {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-
-    &[data-layer="background"],
-    &[data-layer="heroground"] {
-        z-index: 1;
+@layer maps {
+    ._2dk__gamebox {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
     }
-
-    &[data-layer="foreground"] {
-        z-index: 3;
+    ._2dk__layer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    
+        &[data-layer="background"],
+        &[data-layer="heroground"] {
+            z-index: 1;
+        }
+    
+        &[data-layer="foreground"] {
+            z-index: 3;
+        }
     }
+    
 }

@@ -142,6 +142,34 @@
                 "x": 768,
                 "y": 1088
             }
+        },
+        {
+            "id": "dog",
+            "spawn": {
+                "x": 865,
+                "y": 412
+            },
+            "payload": {
+                "dialogue": {
+                    "type": "prompt",
+                    "text": [
+                        "Hi, I'm a dog.",
+                        "Want to play?"
+                    ],
+                    "yes": {
+                        "label": "Sure",
+                        "text": [
+                            "Great, let's go to the beach!"
+                        ]
+                    },
+                    "no": {
+                        "label": "Na",
+                        "text": [
+                            "Suit yourself..."
+                        ]
+                    }
+                }
+            }
         }
     ],
     "objects": [],

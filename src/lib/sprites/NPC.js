@@ -231,19 +231,23 @@ class NPC extends Sprite {
 
 
     doInteract () {
+        // Handle dialogue payload
         if ( this.data.payload ) {
             this.payload();
         }
 
+        // Handle sound
         if ( this.state.action.sound ) {
             this.gamebox.player.gameaudio.hitSound( this.state.action.sound );
         }
 
+        // Handle verb (allows unique sprite cycle to be set during the interaction)
         if ( this.state.action.verb && this.data.verbs[ this.state.action.verb ] ) {
             this.verb = this.state.action.verb;
             this.dir = this.state.dir;
         }
 
+        // Handle shifting states
         if ( this.state.action.shift ) {
             this.shift();
         }

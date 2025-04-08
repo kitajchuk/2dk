@@ -4,13 +4,13 @@ module.exports = {
     coords: [],
     offsetX: 0,
     offsetY: 0,
-    stepsX: 0,
-    friction: 1,
-    elevation: 0,
-    mask: false,
+    stepsX: undefined || 0,
+    friction: undefined || 1,
+    elevation: undefined || 0,
+    mask: undefined || true,
     // FX reference (game.json)
-    fx: null,
-    actions: [
+    fx: undefined || {},
+    actions: undefined || [
         {
             verb: "",
             dir: ""

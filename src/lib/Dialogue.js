@@ -1,4 +1,3 @@
-import Utils from "./Utils";
 import Config from "./Config";
 
 
@@ -91,69 +90,80 @@ class Dialogue {
 
         this.pressed = true;
 
-        // Plain text...
-        if ( this.data.type === "text" ) {
-            if ( this.data.text.length ) {
-                this.write( this.data.text.shift() );
-                this.timeout = setTimeout( () => {
-                    this.pressed = false;
+        switch ( this.data.type ) {
+            // Plain text...
+            case Config.dialogue.types.TEXT:
+                this.handleText();
+                break;
+            // Prompt-based (a:confirm, b: decline)
+            case Config.dialogue.types.PROMPT:
+                this.handlePrompt( a, b );
+                break;
+        }
+    }
 
-                }, this.debounce );
+
+    handleText () {
+        if ( this.data.text.length ) {
+            this.write( this.data.text.shift() );
+            this.timeout = setTimeout( () => {
+                this.pressed = false;
+
+            }, this.debounce );
+
+        } else {
+            if ( this.isResolve ) {
+                this.resolve();
 
             } else {
-                if ( this.isResolve ) {
-                    this.resolve();
-
-                } else {
-                    this.reject();
-                }
-
-                this.teardown();
+                this.reject();
             }
+
+            this.teardown();
         }
+    }
 
-        // Prompt-based (a:confirm, b: decline)
-        if ( this.data.type === "prompt" ) {
-            // A-button OR B-button will advance as long as there is text...
-            if ( this.data.text.length ) {
-                const text = [this.data.text.shift()];
 
-                // No more text so show prompts...
-                if ( !this.data.text.length ) {
-                    text.push( `
-                        <span style="color: ${Config.colors.teal};">A: ${this.data.yes.label}</span>, 
-                        <span style="color: ${Config.colors.blue};">B: ${this.data.no.label}</span>`
-                    );
-                }
+    handlePrompt ( a, b ) {
+        // A-button OR B-button will advance as long as there is text...
+        if ( this.data.text.length ) {
+            const text = [this.data.text.shift()];
 
-                this.write( text.join( "<br />" ) );
-                this.timeout = setTimeout( () => {
-                    this.pressed = false;
-
-                }, this.debounce );
-
-            // A-button will confirm if there is no more text...
-            } else if ( a ) {
-                this.isResolve = true;
-                this.data.type = "text";
-                this.data.text = this.data.yes.text;
-                this.timeout = setTimeout( () => {
-                    this.pressed = false;
-                    this.check( true, false );
-
-                }, this.duration );
-
-            // B-button will cancel if there is no more text...
-            } else if ( b ) {
-                this.isResolve = false;
-                this.data.type = "text";
-                this.data.text = this.data.no.text;
-                this.timeout = setTimeout( () => {
-                    this.pressed = false;
-                    this.check( false, true );
-
-                }, this.duration );
+            // No more text so show prompts...
+            if ( !this.data.text.length ) {
+                text.push( `
+                    <span style="color: ${Config.colors.teal};">A: ${this.data.yes.label}</span>, 
+                    <span style="color: ${Config.colors.blue};">B: ${this.data.no.label}</span>`
+                );
             }
+
+            this.write( text.join( "<br />" ) );
+            this.timeout = setTimeout( () => {
+                this.pressed = false;
+
+            }, this.debounce );
+
+        // A-button will confirm if there is no more text...
+        } else if ( a ) {
+            this.isResolve = true;
+            this.data.type = Config.dialogue.types.TEXT;
+            this.data.text = this.data.yes.text;
+            this.timeout = setTimeout( () => {
+                this.pressed = false;
+                this.check( true, false );
+
+            }, this.duration );
+
+        // B-button will cancel if there is no more text...
+        } else if ( b ) {
+            this.isResolve = false;
+            this.data.type = Config.dialogue.types.TEXT;
+            this.data.text = this.data.no.text;
+            this.timeout = setTimeout( () => {
+                this.pressed = false;
+                this.check( false, true );
+
+            }, this.duration );
         }
     }
 

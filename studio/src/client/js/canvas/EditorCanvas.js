@@ -85,6 +85,7 @@ class EditorCanvas {
         this.bindDocumentEvents();
         this.bindTilepaintEvents();
 
+        this.bindNPCMenuPost();
         this.bindMapEventMenuPost();
         this.bindActiveTilesMenuPost();
     }
@@ -826,16 +827,6 @@ class EditorCanvas {
     }
 
 
-    applyObject ( coords ) {
-        this._applyObjectOrNPC( coords, this.currentObject );
-    }
-
-
-    applyNPC ( coords ) {
-        this._applyObjectOrNPC( coords, this.currentNPC );
-    }
-
-
     getHitSpawn () {
         const cursorPoint = this.getCursorPoint();
         return this.map.spawn.find( ( spawn ) => {
@@ -991,7 +982,28 @@ class EditorCanvas {
     }
 
 
-    _applyObjectOrNPC ( coords, objectOrNPC ) {
+    applyObject ( coords ) {
+        this._applyObjectOrNPC( coords, this.currentObject );
+    }
+
+
+    applyNPC ( coords ) {
+        if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+            this._applyObjectOrNPC( coords, this.currentNPC );
+
+        // When creating an NPC we want to provide a few more options before
+        // calling the _applyObjectOrNPC method and passing extraData.
+        } else {
+            this.editor.menus.renderMenu( "editor-npc-menu", {
+                ais: Utils.getOptionData( window.lib2dk.Config.npc ),
+                coords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
+                dialogue: Utils.getOptionData( window.lib2dk.Config.dialogue.types ),
+            });
+        }
+    }
+
+
+    _applyObjectOrNPC ( coords, objectOrNPC, extraData = {} ) {
         const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
 
         // Must reference map data by key to mutate it
@@ -1006,8 +1018,9 @@ class EditorCanvas {
 
             // NPCs don't need to be locked to the tile grid
             if ( isNPC ) {
-                spawnX = this.canvasMouseCoords.x;
-                spawnY = this.canvasMouseCoords.y;
+                // In the case of NPCs we passed the canvasMouseCoords through the menu
+                spawnX = coords[ 0 ];
+                spawnY = coords[ 1 ];
 
             // Objects will be locked to the tile grid
             } else {
@@ -1022,6 +1035,8 @@ class EditorCanvas {
                     x: spawnX,
                     y: spawnY,
                 },
+                // Extra data should be for NPCs only right now
+                ...extraData,
             };
 
             const existingObjectOrNPC = this.map.objects.find( ( obj ) => {
@@ -1129,6 +1144,51 @@ class EditorCanvas {
     getFoundCoords ( source, ref ) {
         return source.find( ( coord ) => {
             return ( coord[ 0 ] === ref[ 0 ] && coord[ 1 ] === ref[ 1 ] );
+        });
+    }
+
+
+    bindNPCMenuPost () {
+        this.editor.menus.dom.container.addEventListener( "click", ( e ) => {
+            if ( !e.target.closest( ".js-npc-post" ) ) {
+                return;
+            }
+
+            const data = Utils.parseFields( document.querySelectorAll( ".js-npc-field" ) );
+            const coords = JSON.parse( data.coords );
+            const extraData = {};
+
+            if ( data.ai ) {
+                extraData.ai = data.ai;
+            }
+
+            if ( data.dialogue ) {
+                extraData.payload = {
+                    dialogue: {
+                        type: data.dialogue,
+                        text: Utils.parseDialogueText( data.text ),
+                    },
+                };
+
+                if ( data.dialogue === window.lib2dk.Config.dialogue.types.PROMPT ) {
+                    if ( data.yeslabel && data.yes ) {
+                        extraData.payload.dialogue.yes = {
+                            label: data.yeslabel,
+                            text: Utils.parseDialogueText( data.yes ),
+                        };
+                    }
+
+                    if ( data.nolabel && data.no ) {
+                        extraData.payload.dialogue.no = {
+                            label: data.nolabel,
+                            text: Utils.parseDialogueText( data.no ),
+                        };
+                    }
+                }
+            }
+
+            this._applyObjectOrNPC( coords, this.currentNPC, extraData );
+            this.editor.menus.removeMenus();
         });
     }
 

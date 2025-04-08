@@ -5,6 +5,20 @@ const npcReference = {
     spawn: {
         x: 0,
         y: 0
+    },
+    payload: undefined || {
+        dialogue: {
+            type: "",
+            text: [],
+            yes: undefined || {
+                label: "",
+                text: []
+            },
+            no: undefined || {
+                label: "",
+                text: []
+            }
+        }
     }
 };
 
@@ -28,13 +42,14 @@ module.exports = {
     width: 0,
     height: 0,
     image: "",
-    verb: "",
-    scale: 1,
-    vx: 0,
-    vy: 0,
-    vz: 0,
-    maxv: 4,
-    controlmaxv: 4,
+    dir: undefined || "",
+    verb: undefined || "",
+    scale: undefined || 1,
+    vx: undefined || 0,
+    vy: undefined || 0,
+    vz: undefined || 0,
+    maxv: undefined || 4,
+    controlmaxv: undefined || 4,
     hitbox: {
         x: 0,
         y: 0,
@@ -63,7 +78,13 @@ module.exports = {
     states: [
         {
             verb: "",
-            dir: ""
+            dir: "",
+            action: undefined || {
+                verb: "",
+                dir: "",
+                shift: undefined || 1,
+                sound: undefined || ""
+            }
         }
     ]
 };

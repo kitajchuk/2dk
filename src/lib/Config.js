@@ -87,6 +87,16 @@ const Config = {
         left: "right",
         right: "left",
     },
+    dialogue: {
+        types: {
+            TEXT: "text",
+            PROMPT: "prompt",
+        },
+        verbs: {
+            TALK: "talk",
+            READ: "read",
+        },
+    },
     colors: {
         red: getStyleVar( "--red" ),
         grey: getStyleVar( "--grey" ),

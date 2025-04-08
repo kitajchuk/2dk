@@ -6,5 +6,5 @@ module.exports = {
     type: "",
     map: "",
     dir: "",
-    spawn: 0
+    spawn: undefined || 0
 };

@@ -17,7 +17,10 @@ module.exports = {
         spawn: 0,
         map: "",
         sounds: {},
-        companion: null
+        companion: null || {
+            id: "",
+            type: ""
+        }
     },
     // Hero library
     heroes: [],

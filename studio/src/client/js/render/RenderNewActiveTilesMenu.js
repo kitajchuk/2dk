@@ -19,6 +19,18 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
     const offsetX = tile[ 0 ];
     const offsetY = tile[ 1 ];
 
+    // Exclude verbs that are not valid for Active Tiles
+    const tileActions = actions.filter( ( action ) => {
+        return (
+            action !== window.lib2dk.Config.verbs.RUN &&
+            action !== window.lib2dk.Config.verbs.WALK &&
+            action !== window.lib2dk.Config.verbs.FACE &&
+            action !== window.lib2dk.Config.verbs.JUMP &&
+            action !== window.lib2dk.Config.verbs.THROW &&
+            action !== window.lib2dk.Config.verbs.SMASH
+        );
+    });
+
     return html`
         <div class="editor__menu js-menu is-active" id="editor-activetiles-menu">
             <button class="button button--grey button--box editor__close-button js-post-cancel">
@@ -91,7 +103,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 <div class="select">
                     <select class="select__field js-activetile-field js-select" name="action">
                         <option value="">Action</option>
-                        ${actions.map( ( action ) => `
+                        ${tileActions.map( ( action ) => `
                             <option value="${action}">${action}</option>
                         ` ).join( "" )}
                     </select>

@@ -1,5 +1,6 @@
 const Utils = require( "./Utils" );
 const { renderSoundMenu } = require( "./render/RenderSoundMenu" );
+const { renderNewNPCMenu } = require( "./render/RenderNewNPCMenu" );
 const { renderNewMapMenu } = require( "./render/RenderNewMapMenu" );
 const { renderNewGameMenu } = require( "./render/RenderNewGameMenu" );
 const { renderTilesetMenu } = require( "./render/RenderTilesetMenu" );
@@ -8,7 +9,6 @@ const { renderActiveGameMenu } = require( "./render/RenderActiveGameMenu" );
 const { renderNewMapEventMenu } = require( "./render/RenderNewMapEventMenu" );
 const { renderSpritesheetMenu } = require( "./render/RenderSpritesheetMenu" );
 const { renderNewActiveTilesMenu } = require( "./render/RenderNewActiveTilesMenu" );
-
 
 class EditorMenus {
     constructor ( editor ) {
@@ -26,6 +26,7 @@ class EditorMenus {
             "editor-addsound-menu": renderSoundMenu,
             "editor-addgame-menu": renderNewGameMenu,
             "editor-addmap-menu": renderNewMapMenu,
+            "editor-npc-menu": renderNewNPCMenu,
         };
         this.isActive = false;
 

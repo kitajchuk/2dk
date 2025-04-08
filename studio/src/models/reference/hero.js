@@ -15,6 +15,7 @@ const verbFrame = {
 
 const verbType = {
     dur: 0,
+    stop: undefined || true,
     down: {},
     up: {},
     left: {},
@@ -27,12 +28,12 @@ module.exports = {
     width: 0,
     height: 0,
     image: "",
-    scale: 1,
-    vx: 0,
-    vy: 0,
-    vz: 0,
-    maxv: 4,
-    controlmaxv: 4,
+    scale: undefined || 1,
+    vx: undefined || 0,
+    vy: undefined || 0,
+    vz: undefined || 0,
+    maxv: undefined || 4,
+    controlmaxv: undefined || 4,
     hitbox: {
         x: 0,
         y: 0,
@@ -45,11 +46,11 @@ module.exports = {
         stamina: 3,
         strength: 1
     },
-    shadow: {
+    shadow: undefined || {
         offsetX: 0,
         offsetY: 0
     },
-    weapon: {
+    weapon: undefined || {
         down: [],
         up: [],
         left: [],

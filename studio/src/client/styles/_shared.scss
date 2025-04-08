@@ -74,6 +74,9 @@ datalist {
         outline: none;
     }
 }
+.textarea {
+    min-height: 96px;
+}
 .select {
     position: relative;
     font-family: "panicsans";
