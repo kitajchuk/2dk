@@ -6,5 +6,6 @@ module.exports = {
     type: "",
     map: "",
     dir: "",
+    verb: undefined || "",
     spawn: undefined || 0
 };
