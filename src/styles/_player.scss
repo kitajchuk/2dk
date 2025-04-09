@@ -29,22 +29,30 @@
         z-index: 10;
         transform: translate3d( -50%, 0, 0 );
         transition: opacity 240ms ease;
-    
-        [data-resolution="1"] & {
-            font-size: 18px;
-            padding: 36px 72px;
 
-            p, span {
-                font-size: 18px;
-            }
+        [data-resolution="1"] & {
+            padding: 36px 72px;
         }
     
         [data-resolution="2"] & {
-            font-size: 12px;
             padding: 24px 48px;
+        }
 
-            p, span {
+        &__text {
+            [data-resolution="1"] & {
+                font-size: 18px;
+            }
+        
+            [data-resolution="2"] & {
                 font-size: 12px;
+            }
+
+            &.a {
+                color: var( --teal );
+            }
+
+            &.b {
+                color: var( --blue );
             }
         }
     

@@ -25,7 +25,7 @@ class Dialogue {
 
 
     write ( text ) {
-        this.element.innerHTML = `<p>${text}</p>`;
+        this.element.innerHTML = `<div class="_2dk__dialogue__text">${text}</div>`;
     }
 
 
@@ -43,12 +43,7 @@ class Dialogue {
             clearTimeout( this.timeout );
         }
 
-        if ( this.data ) {
-            this.element.classList.remove( `_2dk__dialogue--${this.data.type}` );
-        }
-
         this.data = structuredClone( data );
-        this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
         this.element.classList.add( "is-texting" );
         this.write( this.data.text.shift() );
         this.timeout = setTimeout( () => {
@@ -70,7 +65,6 @@ class Dialogue {
             this.isResolve = true;
             this.resolve = resolve;
             this.reject = reject;
-            this.element.classList.add( `_2dk__dialogue--${this.data.type}` );
             this.element.classList.add( "is-texting" );
             this.write( this.data.text.shift() );
             this.timeout = setTimeout( () => {
@@ -127,17 +121,18 @@ class Dialogue {
     handlePrompt ( a, b ) {
         // A-button OR B-button will advance as long as there is text...
         if ( this.data.text.length ) {
-            const text = [this.data.text.shift()];
+            const text = [
+                `<div class="_2dk__dialogue__text">${this.data.text.shift()}</div>`
+            ];
 
             // No more text so show prompts...
             if ( !this.data.text.length ) {
-                text.push( `
-                    <span style="color: ${Config.colors.teal};">A: ${this.data.yes.label}</span>, 
-                    <span style="color: ${Config.colors.blue};">B: ${this.data.no.label}</span>`
-                );
+                text.push( `<span class="_2dk__dialogue__text a">A: ${this.data.yes.label}</span>`);
+                text.push( `<span class="_2dk__dialogue__text">,&nbsp;</span>`);
+                text.push( `<span class="_2dk__dialogue__text b">B: ${this.data.no.label}</span>`);
             }
 
-            this.write( text.join( "<br />" ) );
+            this.write( text.join( "" ) );
             this.timeout = setTimeout( () => {
                 this.pressed = false;
 
@@ -169,7 +164,6 @@ class Dialogue {
 
 
     teardown () {
-        this.element.classList.remove( `_2dk__dialogue--${this.data.type}` );
         this.element.classList.remove( "is-texting" );
         this.data = null;
         this.ready = false;

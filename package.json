@@ -21,8 +21,9 @@
   "main": "./src/lib/index.js",
   "scripts": {
     "predev": "rm -rf dist && mkdir dist && yarn copy:games && yarn build",
-    "dev": "concurrently \"yarn serve:dev\" \"yarn watch:src\" \"yarn watch:studio\" \"yarn watch:games\"",
+    "dev": "concurrently \"yarn serve:dev\" \"yarn watch\"",
     "serve:dev": "esbuild --servedir=dist",
+    "watch": "concurrently \"yarn watch:src\" \"yarn watch:studio\" \"yarn watch:games\"",
     "watch:src": "chokidar \"src/**/*\" -c \"yarn build:2dk && yarn build:app && yarn copy\"",
     "watch:studio": "chokidar \"studio/src/client/**/*.scss\" -c \"yarn build:studio\"",
     "watch:games": "chokidar \"studio/games/**/*.json\" -c \"yarn copy:games\"",
