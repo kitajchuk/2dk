@@ -56,7 +56,7 @@ class Player extends Controller {
     }
 
 
-    load () {
+    async load () {
         this.loader = new Loader();
         this.loader.loadJson( "game.json" ).then( ( data ) => {
             this.data = data;
@@ -95,6 +95,7 @@ class Player extends Controller {
                 }
 
                 this.bind();
+                Promise.resolve();
             });
         });
     }
@@ -145,8 +146,12 @@ class Player extends Controller {
         this.splashLoad = document.createElement( "div" );
         this.splashLoad.className = "_2dk__splash__load";
         this.splashLoad.innerHTML = this.getSplash( "Loading game bundle..." );
+        this.splashUpdate = document.createElement( "div" );
+        this.splashUpdate.className = "_2dk__splash__update";
+        this.splashUpdate.innerHTML = "<div>Update Available</div>";
         this.splash.appendChild( this.splashInfo );
         this.splash.appendChild( this.splashLoad );
+        this.splash.appendChild( this.splashUpdate );
         this.element.appendChild( this.splash );
         this.element.appendChild( this.screen );
         document.body.appendChild( this.element );

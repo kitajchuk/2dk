@@ -141,3 +141,11 @@ self.addEventListener( "fetch", ( event ) => {
         })
     );
 });
+
+// Handle service worker updates
+// https://whatwebcando.today/articles/handling-service-worker-updates/
+self.addEventListener( "message", ( event ) => {
+    if ( event.data === "SKIP_WAITING" ) {
+        self.skipWaiting();
+    }
+});
