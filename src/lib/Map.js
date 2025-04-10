@@ -469,14 +469,15 @@ class Map {
                             const celsCopy = structuredClone( this.data.textures[ id ][ lookupY ][ lookupX ] );
                             const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
 
-                            // Render the textures
+                            // Render the textures (the FG / BG shift can be problematic)
                             // Shift foreground behind hero render if coords determine so
-                            if ( id === "foreground" && ( lookupY * this.data.tilesize ) < this.gamebox.hero.position.y ) {
-                                ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
+                            // if ( id === "foreground" && ( lookupY * this.data.tilesize ) < this.gamebox.hero.position.y ) {
+                            //     ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
 
-                            } else {
-                                ret[ id ][ y ][ x ] = celsCopy;
-                            }
+                            // } else {
+                            //     ret[ id ][ y ][ x ] = celsCopy;
+                            // }
+                            ret[ id ][ y ][ x ] = celsCopy;
 
                             // Push any ActiveTiles to the cel stack
                             if ( activeTile ) {

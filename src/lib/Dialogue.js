@@ -122,14 +122,14 @@ class Dialogue {
         // A-button OR B-button will advance as long as there is text...
         if ( this.data.text.length ) {
             const text = [
-                `<div class="_2dk__dialogue__text">${this.data.text.shift()}</div>`
+                `<div>${this.data.text.shift()}</div>`
             ];
 
             // No more text so show prompts...
             if ( !this.data.text.length ) {
-                text.push( `<span class="_2dk__dialogue__text a">A: ${this.data.yes.label}</span>`);
-                text.push( `<span class="_2dk__dialogue__text">,&nbsp;</span>`);
-                text.push( `<span class="_2dk__dialogue__text b">B: ${this.data.no.label}</span>`);
+                text.push( `<span class="a">A: ${this.data.yes.label}</span>`);
+                text.push( `<span>,&nbsp;</span>`);
+                text.push( `<span class="b">B: ${this.data.no.label}</span>`);
             }
 
             this.write( text.join( "" ) );

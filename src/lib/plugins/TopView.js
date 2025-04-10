@@ -474,9 +474,6 @@ class TopView extends GameBox {
         };
 
         if ( this.jumping ) {
-            // Remove mask when jumping (will be reapplied if landing on a tile again)
-            this.hero.mask = false;
-
             if ( this.canHeroMoveWhileJumping( poi, dir, collision ) ) {
                 this.applyHero( poi, dir );
             }
@@ -557,6 +554,9 @@ class TopView extends GameBox {
             return;
         }
 
+        // Remove mask when jumping (will be reapplied if landing on a tile again)
+        this.hero.mask = false;
+        this.hero.resetMaxV();
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
         this.hero.physics.vz = -( this.map.data.tilesize / 4 );

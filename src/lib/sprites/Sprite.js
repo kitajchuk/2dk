@@ -161,7 +161,7 @@ class Sprite {
             this.renderBefore();
         }
 
-        // Move betweeb BG and FG relative to Hero
+        // Move between BG and FG relative to Hero
         if ( !this.isHero() && !this.isCompanion() ) {
             // Assume that FLOAT should always render to the foreground
             if ( this.data.type === Config.npc.FLOAT ) {
