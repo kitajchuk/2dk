@@ -1283,6 +1283,10 @@ class EditorCanvas {
             newData.offsetX = tile[ 0 ];
             newData.offsetY = tile[ 1 ];
 
+            if ( data.mask ) {
+                newData.mask = true;
+            }
+
             if ( data.stepsX ) {
                 newData.stepsX = data.stepsX;
             }
@@ -1302,12 +1306,8 @@ class EditorCanvas {
                     verb: data.action,
                 };
 
-                if ( data.elevation && isJump ) {
-                    newData.elevation = data.elevation;
-                    
-                    if ( data.direction ) {
-                        firstAction.dir = data.direction;
-                    }
+                if ( isJump && data.direction ) {
+                    firstAction.dir = data.direction;
                 }
 
                 newData.actions.push( firstAction );

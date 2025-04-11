@@ -48,10 +48,8 @@
         {
             "group": "ledge",
             "layer": "background",
-            "coords": [],
             "offsetX": 448,
             "offsetY": 1792,
-            "elevation": 2,
             "actions": [
                 {
                     "verb": "jump",
@@ -62,7 +60,6 @@
         {
             "group": "stairs",
             "layer": "background",
-            "coords": [],
             "offsetX": 256,
             "offsetY": 384,
             "friction": 2
@@ -70,7 +67,6 @@
         {
             "group": "grass",
             "layer": "background",
-            "coords": [],
             "offsetX": 64,
             "offsetY": 2176,
             "friction": 1.5,
@@ -83,7 +79,6 @@
         {
             "group": "water",
             "layer": "background",
-            "coords": [],
             "offsetX": 0,
             "offsetY": 2112,
             "stepsX": 4,
@@ -92,7 +87,6 @@
         {
             "group": "flowers",
             "layer": "background",
-            "coords": [],
             "offsetX": 192,
             "offsetY": 2176,
             "stepsX": 4,
@@ -101,7 +95,6 @@
         {
             "group": "stones",
             "layer": "background",
-            "coords": [],
             "offsetX": 192,
             "offsetY": 640,
             "actions": [
@@ -113,7 +106,6 @@
         {
             "group": "shrubs",
             "layer": "background",
-            "coords": [],
             "offsetX": 0,
             "offsetY": 512,
             "actions": [

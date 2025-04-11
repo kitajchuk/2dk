@@ -28,7 +28,6 @@
         {
             "group": "stairs",
             "layer": "background",
-            "coords": [],
             "offsetX": 448,
             "offsetY": 192,
             "friction": 2
@@ -36,7 +35,6 @@
         {
             "group": "torch",
             "layer": "background",
-            "coords": [],
             "offsetX": 192,
             "offsetY": 64,
             "stepsX": 4,
@@ -45,7 +43,6 @@
         {
             "group": "pots",
             "layer": "background",
-            "coords": [],
             "offsetX": 320,
             "offsetY": 192,
             "actions": [

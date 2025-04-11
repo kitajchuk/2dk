@@ -88,8 +88,7 @@
                     "verb": "jump",
                     "dir": "down"
                 }
-            ],
-            "elevation": 2
+            ]
         },
         {
             "group": "stairs",

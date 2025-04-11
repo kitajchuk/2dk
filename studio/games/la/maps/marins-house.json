@@ -23,7 +23,6 @@
         {
             "group": "pots",
             "layer": "background",
-            "coords": [],
             "offsetX": 320,
             "offsetY": 192,
             "actions": [

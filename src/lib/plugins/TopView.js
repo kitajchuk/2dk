@@ -2,7 +2,7 @@ import Utils from "../Utils";
 import Config, { DIRS } from "../Config";
 import Loader from "../Loader";
 import GameBox from "../GameBox";
-import Map from "../Map";
+import Map from "../maps/Map";
 import Spring from "../Spring";
 import Tween from "../Tween";
 import Sprite from "../sprites/Sprite";
@@ -572,55 +572,84 @@ class TopView extends GameBox {
     handleHeroTileJump ( poi, dir, tile ) {
         this.handleResetHeroDirs();
 
+        // Get the axis and increment
+        const axis = dir === "left" || dir === "right" ? 0 : 1;
+        const increment = dir === "left" || dir === "up" ? -1 : 1;
+
+        // Get the next tile
+        // What we're doing here is finding the next tile in the direction of the jump as a reference
+        // Then we're looping through proceeding tiles until we find one that doesn't match the reference tile
+        // This allows us to find the destination tile to land on which assumes all tiles in between are the same
+        // E.g. this example implies the direction of the jump is "down"
+        // [ jump tile ] <- tile that triggers the jump
+        // [ wall tile ] <- reference tile (first tile after the trigger tile in the direction of the jump)
+        // [ wall tile ] <- proceeding tile (matching the reference tile)
+        // [ wall tile ] <- proceeding tile (matching the reference tile)
+        // [ land tile ] <- destination tile (first tile that doesn't match the reference tile)
+        const textures = this.map.data.textures[ tile.instance.data.layer ];
+        const nextCoord = [ ...tile.coord ];
+        nextCoord[ axis ] += increment;
+        const textureTile = textures[ nextCoord[ 1 ] ][ nextCoord[ 0 ] ];
+        const tileRef = textureTile[ textureTile.length - 1 ];
+
+        // Get the elevation
+        // This is the number of proceeding tiles that match the reference tile plus the reference tile itself
+        // E.g. in the example above, the elevation is 3
+        let nextTile = tileRef;
+        let elevation = 1;
+
+        while ( nextTile[ 0 ] === tileRef[ 0 ] && nextTile[ 1 ] === tileRef[ 1 ] ) {
+            nextCoord[ axis ] += increment;
+            const nextTextureTile = textures[ nextCoord[ 1 ] ][ nextCoord[ 0 ] ];
+            nextTile = nextTextureTile[ nextTextureTile.length - 1 ];
+            elevation++;
+        }
+
+        // Get the destination tile
+        // We can dynamically the variable axis to get the correct tile based on increment and elevation
         let destPos;
-        let destTile;
+        const destTile = [
+            tile.tilebox.x,
+            tile.tilebox.y,
+        ];
+        destTile[ axis ] = destTile[ axis ] + ( increment * ( this.map.data.tilesize * elevation ) );
 
-        if ( dir === "left" ) {
-            destTile = {
-                x: tile.tilebox.x - ( this.map.data.tilesize * tile.instance.data.elevation ),
-                y: tile.tilebox.y,
-            };
-            destPos = {
-                x: destTile.x,
-                y: destTile.y - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
-            };
-        }
+        // Get the destination position
+        switch ( dir ) {
+            case "left":
+                destPos = {
+                    x: destTile[ 0 ],
+                    y: destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
+                };
+                break;
 
-        if ( dir === "right" ) {
-            destTile = {
-                x: tile.tilebox.x + ( this.map.data.tilesize * tile.instance.data.elevation ),
-                y: tile.tilebox.y,
-            };
-            destPos = {
-                x: destTile.x - ( this.hero.width - this.map.data.tilesize ),
-                y: destTile.y - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
-            };
-        }
+            case "right":
+                destPos = {
+                    x: destTile[ 0 ] - ( this.hero.width - this.map.data.tilesize ),
+                    y: destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
+                };
+                break;
 
-        if ( dir === "up" ) {
-            destTile = {
-                x: tile.tilebox.x,
-                y: tile.tilebox.y - ( this.map.data.tilesize * tile.instance.data.elevation ),
-            };
-            destPos = {
-                x: destTile.x - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
-                y: destTile.y,
-            };
-        }
+            case "up":
+                destPos = {
+                    x: destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
+                    y: destTile[ 1 ],
+                };
+                break;
 
-        if ( dir === "down" ) {
-            destTile = {
-                x: tile.tilebox.x,
-                y: tile.tilebox.y + ( this.map.data.tilesize * tile.instance.data.elevation ),
-            };
-            destPos = {
-                x: destTile.x - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
-                y: destTile.y - ( this.hero.height - this.map.data.tilesize ),
-            };
+            case "down":
+                destPos = {
+                    x: destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
+                    y: destTile[ 1 ] - ( this.hero.height - this.map.data.tilesize ),
+                };
+                break;
         }
 
         const destEvent = this.getVisibleEvents().find( ( evt ) => {
-            return ( evt.coords[ 0 ] * this.map.data.tilesize === destTile.x && evt.coords[ 1 ] * this.map.data.tilesize === destTile.y );
+            return (
+                evt.coords[ 0 ] * this.map.data.tilesize === destTile[ 0 ] &&
+                evt.coords[ 1 ] * this.map.data.tilesize === destTile[ 1 ]
+            );
         });
 
         this.jumping = true;

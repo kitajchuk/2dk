@@ -25,7 +25,6 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
             action !== window.lib2dk.Config.verbs.RUN &&
             action !== window.lib2dk.Config.verbs.WALK &&
             action !== window.lib2dk.Config.verbs.FACE &&
-            action !== window.lib2dk.Config.verbs.JUMP &&
             action !== window.lib2dk.Config.verbs.THROW &&
             action !== window.lib2dk.Config.verbs.SMASH
         );
@@ -155,17 +154,6 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                     <option value="1000" label="1s">1000</option>
                     <option value="1500" label="1.5s">1500</option>
                     <option value="2000" label="2s">2000</option>
-                </datalist>
-            </div>
-            <!-- If the Action is jump we need an elevation -->
-            <div class="editor__setting">
-                <div class="editor__label">Elevation (for "jump" action)</div>
-                <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="3" step="1" list="elevation-list" name="elevation" />
-                <datalist id="elevation-list">
-                    <option value="0" label="0">0</option>
-                    <option value="1" label="1">1</option>
-                    <option value="2" label="2">2</option>
-                    <option value="3" label="3">3</option>
                 </datalist>
             </div>
             <div class="editor__setting">
