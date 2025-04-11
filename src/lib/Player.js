@@ -70,16 +70,15 @@ class Player extends Controller {
 
             let counter = 0;
 
-            // MARK: mobile-audio-enabled
+            // MARK: mobile-audio-disabled
             // Audio is still experimental for mobile so disabling for now...
-            // const resources = data.bundle.filter( ( url ) => {
-            //     const type = url.split( "/" ).pop().split( "." ).pop();
+            const resources = data.bundle.filter( ( url ) => {
+                const type = url.split( "/" ).pop().split( "." ).pop();
 
-            //     return ( this.device ? ( type !== "mp3" ) : true );
-            // }):
-
+                return ( this.device ? ( type !== "mp3" ) : true );
+            })
             // Map bundle resource URLs to a Loader promise types for initialization...
-            const resources = data.bundle.map( ( url ) => {
+            .map( ( url ) => {
                 return this.loader.load( url ).then( () => {
                     counter++;
 

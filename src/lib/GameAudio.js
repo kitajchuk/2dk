@@ -7,10 +7,10 @@ class GameAudio {
 
 
     build () {
-        // MARK: mobile-audio-enabled
-        // if ( this.player.device ) {
-        //     return;
-        // }
+        // MARK: mobile-audio-disabled
+        if ( this.player.device ) {
+            return;
+        }
 
         this.channels = {
             bgm: {
@@ -31,10 +31,10 @@ class GameAudio {
 
 
     addSound ( data ) {
-        // MARK: mobile-audio-enabled
-        // if ( this.player.device ) {
-        //     return;
-        // }
+        // MARK: mobile-audio-disabled
+        if ( this.player.device ) {
+            return;
+        }
 
         if ( !this.sounds[ data.id ] ) {
             this.sounds[ data.id ] = data;
