@@ -3,7 +3,8 @@ import Config from "./Config";
 
 
 class Dialogue {
-    constructor () {
+    constructor ( gamebox ) {
+        this.gamebox = gamebox;
         this.data = null;
         this.ready = false;
         this.pressed = false;

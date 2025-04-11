@@ -50,12 +50,19 @@ class NPC extends Sprite {
         if ( this.data.payload.dialogue && !this.dialogue ) {
             this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
             this.dialogue.then( () => {
-                this.handleDialogue();
+                this.resetDialogue();
 
             }).catch( () => {
-                this.handleDialogue();
+                this.resetDialogue();
             });
         }
+    }
+
+
+    resetDialogue () {
+        this.dialogue = null;
+        this.dir = this.state.dir;
+        this.verb = this.state.verb;
     }
 
 
@@ -121,13 +128,6 @@ class NPC extends Sprite {
 /*******************************************************************************
 * Handlers
 *******************************************************************************/
-    handleDialogue () {
-        this.dialogue = null;
-        this.dir = this.state.dir;
-        this.verb = this.state.verb;
-    }
-
-
     handleAI () {
         if ( this.data.ai && !this.attacked ) {
             switch ( this.data.ai ) {

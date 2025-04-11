@@ -98,7 +98,7 @@ class GameBox {
         }
 
         // Dialogues
-        this.dialogue = new Dialogue();
+        this.dialogue = new Dialogue( this );
 
         this.build();
         this.initMap();

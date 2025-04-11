@@ -1,5 +1,4 @@
 import Player from "./lib/Player";
-import Config from "./lib/Config";
 import Utils from "./lib/Utils";
 
 
@@ -18,18 +17,8 @@ class App {
             this.player = new Player();
             this.player.load().then(() => {
                 this.register();
-                this.bind();
             });
         };
-    }
-
-    bind () {
-        this.player.on( Config.broadcast.MAPEVENT, ( event ) => {
-            Utils.log(
-                Config.broadcast.MAPEVENT,
-                event
-            );
-        });
     }
 
     // Handle service worker update

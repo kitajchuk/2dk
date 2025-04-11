@@ -188,7 +188,7 @@ class TopView extends GameBox {
 
 
     pressA () {
-        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin ) {
+        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active ) {
             return;
         }
 
@@ -251,7 +251,7 @@ class TopView extends GameBox {
 
 
     pressB () {
-        if ( this.attacking || this.dropin ) {
+        if ( this.attacking || this.dropin || this.dialogue.active ) {
             return;
         }
 
