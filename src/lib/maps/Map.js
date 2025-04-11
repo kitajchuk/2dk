@@ -171,54 +171,6 @@ class Map {
         this.fx.forEach( ( fx ) => {
             fx.render();
         });
-
-        // Visual event debugging....
-        // if ( this.gamebox.player.query.debug ) {
-        //     this.renderDebug();
-        // }
-    }
-
-
-    renderDebug () {
-        const visibleEvents = this.gamebox.getVisibleEvents();
-
-        visibleEvents.forEach( ( event ) => {
-            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
-            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.blue;
-            this.gamebox.layers.foreground.onCanvas.context.fillRect(
-                this.offset.x + ( event.coords[ 0 ] * this.data.tilesize ),
-                this.offset.y + ( event.coords[ 1 ] * this.data.tilesize ),
-                this.data.tilesize,
-                this.data.tilesize
-            );
-        });
-
-        this.data.spawn.forEach( ( spawn ) => {
-            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.yellow;
-            this.gamebox.layers.foreground.onCanvas.context.fillRect(
-                this.offset.x + spawn.x,
-                this.offset.y + spawn.y,
-                this.gamebox.hero.width,
-                this.gamebox.hero.height
-            );
-        });
-
-        const visibleTiles = this.gamebox.getVisibleActiveTiles();
-
-        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.pink;
-
-        visibleTiles.forEach( ( activeTiles ) => {
-            activeTiles.pushed.forEach( ( coord ) => {
-                this.gamebox.layers.foreground.onCanvas.context.fillRect(
-                    this.offset.x + ( coord[ 0 ] * this.data.tilesize ),
-                    this.offset.y + ( coord[ 1 ] * this.data.tilesize ),
-                    this.data.tilesize,
-                    this.data.tilesize
-                );
-            });
-        });
-
-        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
     }
 
 
@@ -304,6 +256,7 @@ class Map {
                             const celsCopy = structuredClone( this.data.textures[ id ][ lookupY ][ lookupX ] );
                             const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
 
+                            // MARK: map-foreground-shift-disabled
                             // Render the textures (the FG / BG shift can be problematic)
                             // Shift foreground behind hero render if coords determine so
                             // if ( id === "foreground" && ( lookupY * this.data.tilesize ) < this.gamebox.hero.position.y ) {
