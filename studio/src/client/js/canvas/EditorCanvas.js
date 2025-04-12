@@ -1310,6 +1310,10 @@ class EditorCanvas {
                     firstAction.dir = data.direction;
                 }
 
+                if ( isJump && data.elevation ) {
+                    newData.elevation = data.elevation;
+                }
+
                 newData.actions.push( firstAction );
 
                 // Secondary action for attack

@@ -8,7 +8,7 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 53,
+    "save": 90,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -160,6 +160,37 @@
                     }
                 }
             ]
+        },
+        {
+            "id": "sign-2",
+            "name": "Sign 2",
+            "width": 32,
+            "height": 32,
+            "image": "assets/tiles/pk-tiles.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 32,
+                "height": 32
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 128,
+                        "offsetY": 0
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "read",
+                        "dir": "up"
+                    }
+                }
+            ]
         }
     ],
     "objects": [],
@@ -169,6 +200,7 @@
         "assets/tiles/pk-tiles.png",
         "assets/sprites/ash-hero.png",
         "assets/sprites/npc.png",
-        "maps/pallet-town.json"
+        "maps/pallet-town.json",
+        "maps/route-1.json"
     ]
 }

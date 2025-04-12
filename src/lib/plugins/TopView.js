@@ -368,16 +368,39 @@ class TopView extends GameBox {
 
 
     canHeroTileJump ( poi, dir, collision ) {
+        const hasPassiveTiles = collision.tiles && collision.tiles.passive.length;
+
+        if ( this.hero.is( Config.verbs.LIFT ) ) {
+            return false;
+        }
+
+        if ( !hasPassiveTiles ) {
+            return false;
+        }
+
+        const jumpTiles = collision.tiles.passive.filter( ( tile ) => {
+            return tile.jump;
+        });
+
+        if ( !jumpTiles.length ) {
+            return false;
+        }
+
+        const firstJumpTile = jumpTiles[ 0 ];
+
+        if ( jumpTiles.length > 1 ) {
+            // TODO: Check amount of tile collision maybe also...?
+            return jumpTiles.every( ( tile ) => {
+                return tile.instance.canInteract( Config.verbs.JUMP ).dir === dir;
+            });
+        }
+
         return (
-            collision.tiles &&
-            collision.tiles.passive.length &&
-            collision.tiles.passive[ 0 ].jump &&
             (
-                collision.tiles.passive[ 0 ].collides.width > ( collision.tiles.passive[ 0 ].tilebox.width / 2 ) ||
-                collision.tiles.passive[ 0 ].collides.height > ( collision.tiles.passive[ 0 ].tilebox.height / 2 )
+                firstJumpTile.collides.width > ( firstJumpTile.tilebox.width / 2 ) ||
+                firstJumpTile.collides.height > ( firstJumpTile.tilebox.height / 2 )
             ) &&
-            !this.hero.is( Config.verbs.LIFT ) &&
-            collision.tiles.passive[ 0 ].instance.canInteract( Config.verbs.JUMP ).dir === dir
+            firstJumpTile.instance.canInteract( Config.verbs.JUMP ).dir === dir
         );
     }
 
@@ -596,13 +619,16 @@ class TopView extends GameBox {
         // This is the number of proceeding tiles that match the reference tile plus the reference tile itself
         // E.g. in the example above, the elevation is 3
         let nextTile = tileRef;
-        let elevation = 1;
+        let elevation = tile.instance.data.elevation || 1;
 
-        while ( nextTile[ 0 ] === tileRef[ 0 ] && nextTile[ 1 ] === tileRef[ 1 ] ) {
-            nextCoord[ axis ] += increment;
-            const nextTextureTile = textures[ nextCoord[ 1 ] ][ nextCoord[ 0 ] ];
-            nextTile = nextTextureTile[ nextTextureTile.length - 1 ];
-            elevation++;
+        // Optionally if elevation is set in the tile data we will just use that instead of calculating it!
+        if ( !tile.instance.data.elevation ) {
+            while ( nextTile[ 0 ] === tileRef[ 0 ] && nextTile[ 1 ] === tileRef[ 1 ] ) {
+                nextCoord[ axis ] += increment;
+                const nextTextureTile = textures[ nextCoord[ 1 ] ][ nextCoord[ 0 ] ];
+                nextTile = nextTextureTile[ nextTextureTile.length - 1 ];
+                elevation++;
+            }
         }
 
         // Get the destination tile
@@ -619,27 +645,27 @@ class TopView extends GameBox {
             case "left":
                 destPos = {
                     x: destTile[ 0 ],
-                    y: destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
+                    y: this.hero.position.y,
                 };
                 break;
 
             case "right":
                 destPos = {
                     x: destTile[ 0 ] - ( this.hero.width - this.map.data.tilesize ),
-                    y: destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ),
+                    y: this.hero.position.y,
                 };
                 break;
 
             case "up":
                 destPos = {
-                    x: destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
+                    x: this.hero.position.x,
                     y: destTile[ 1 ],
                 };
                 break;
 
             case "down":
                 destPos = {
-                    x: destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ),
+                    x: this.hero.position.x,
                     y: destTile[ 1 ] - ( this.hero.height - this.map.data.tilesize ),
                 };
                 break;
