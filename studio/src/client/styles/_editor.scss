@@ -260,11 +260,7 @@
     align-items: center;
     justify-content: flex-start;
 }
-.editor__panel__xy,
-.editor__panel__map,
-.editor__panel__res,
-.editor__panel__game,
-.editor__panel__sound {
+.editor__panel__item {
     display: flex;
     height: 50px;
     justify-content: center;

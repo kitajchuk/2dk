@@ -171,6 +171,29 @@ class Map {
         this.fx.forEach( ( fx ) => {
             fx.render();
         });
+
+        // Visual event debugging....
+        if ( this.gamebox.player.query.debug ) {
+            this.renderDebug();
+        }
+    }
+
+
+    renderDebug () {
+        const visibleColliders = this.gamebox.getVisibleColliders();
+
+        visibleColliders.forEach( ( collider ) => {
+            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.red;
+            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                this.offset.x + ( collider[ 0 ] * this.data.collider ),
+                this.offset.y + ( collider[ 1 ] * this.data.collider ),
+                this.data.collider,
+                this.data.collider
+            );
+        });
+
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
     }
 
 
@@ -255,23 +278,22 @@ class Map {
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
                             const celsCopy = structuredClone( this.data.textures[ id ][ lookupY ][ lookupX ] );
                             const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
+                            const isShiftableForeground = this.checkShiftableForeground( id, lookupY, lookupX );
+                            
+                            // Shift foreground behind hero render if textures and hero position determine so
+                            if ( isShiftableForeground ) {
+                                ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
 
-                            // MARK: map-foreground-shift-disabled
-                            // Render the textures (the FG / BG shift can be problematic)
-                            // Shift foreground behind hero render if coords determine so
-                            // if ( id === "foreground" && ( lookupY * this.data.tilesize ) < this.gamebox.hero.position.y ) {
-                            //     ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
-
-                            // } else {
-                            //     ret[ id ][ y ][ x ] = celsCopy;
-                            // }
-                            ret[ id ][ y ][ x ] = celsCopy;
-
+                            } else {
+                                ret[ id ][ y ][ x ] = celsCopy;
+                            }
+                            
                             // Push any ActiveTiles to the cel stack
                             if ( activeTile ) {
                                 ret[ id ][ y ][ x ].push( activeTile );
                             }
-
+                            
+                        // Empty textures are represented as 0 in the texture matrix (data)
                         } else {
                             ret[ id ][ y ][ x ] = 0;
                         }
@@ -285,6 +307,39 @@ class Map {
         });
 
         return ret;
+    }
+
+
+    checkShiftableForeground ( layer, lookupY, lookupX ) {
+        if ( layer !== "foreground" ) {
+            return false;
+        }
+
+        // Foreground is unique in that it can be shifted behind the hero.
+        // However, it's not good enough to just check the current foreground tile.
+        // If the next tile down also contains foreground texture data we need to check
+        // whether it can also be shifted. If not we can assume that the foreground tiles are
+        // "connected" and we should not shift them behind the hero otherwise we'd produce
+        // a rendering glitch.
+        // E.g. hero renders behind one foreground tile and in front of the tile below it
+        // even though visually the hero should be behind both tiles.
+
+        const isShiftable = ( lookupY * this.data.tilesize ) < this.gamebox.hero.position.y;
+
+        if ( isShiftable ) {
+            const nextLookupY = lookupY + 1;
+
+            if ( this.data.textures[ layer ][ nextLookupY ][ lookupX ] ) {
+                const isNextShiftable = ( nextLookupY * this.data.tilesize ) < this.gamebox.hero.position.y;
+
+                return isNextShiftable;
+
+            } else {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
 

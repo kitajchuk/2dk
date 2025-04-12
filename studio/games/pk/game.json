@@ -8,7 +8,7 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 50,
+    "save": 53,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -129,7 +129,39 @@
             }
         }
     ],
-    "npcs": [],
+    "npcs": [
+        {
+            "id": "sign",
+            "name": "Sign",
+            "width": 32,
+            "height": 32,
+            "image": "assets/tiles/pk-tiles.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 32,
+                "height": 32
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 64,
+                        "offsetY": 0
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "read",
+                        "dir": "up"
+                    }
+                }
+            ]
+        }
+    ],
     "objects": [],
     "fx": [],
     "bundle": [

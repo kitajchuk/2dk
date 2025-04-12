@@ -13,7 +13,7 @@
             <div class="editor__layout">
                 <!-- Topbar -->
                 <div class="editor__panel">
-                    <div class="editor__panel__game">
+                    <div class="editor__panel__item editor__panel__game">
                         <span class="icon icon--nudge" id="editor-demo-game" title="Run Game Demo">
                             <i data-feather="tv"></i>
                         </span>
@@ -24,7 +24,7 @@
                             <i data-feather="settings"></i>
                         </span>
                     </div>
-                    <div class="editor__panel__map">
+                    <div class="editor__panel__item editor__panel__map">
                         <span class="icon icon--nudge">
                             <i data-feather="map"></i>
                         </span>
@@ -35,7 +35,7 @@
                             <i data-feather="settings"></i>
                         </span>
                     </div>
-                    <div class="editor__panel__sound js-sound-sampler" data-spot="sampler">
+                    <div class="editor__panel__item editor__panel__sound js-sound-sampler" data-spot="sampler">
                         <span class="icon icon--nudge">
                             <i data-feather="music"></i>
                         </span>
@@ -52,7 +52,15 @@
                             <i data-feather="pause-circle"></i>
                         </span>
                     </div>
-                    <div class="editor__panel__xy">
+                    <div class="editor__panel__item editor__panel__debug">
+                        <div class="editor__checkbox">
+                            <label class="checkbox">
+                                <input class="check" type="checkbox" name="debug" id="editor-debug" />
+                                <span class="label">Debug</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="editor__panel__item editor__panel__xy">
                         <span class="icon icon--nudge">
                             <i data-feather="map-pin"></i>
                         </span>

@@ -32,6 +32,7 @@ class Editor {
         this.dom = {
             css: document.getElementById( "editor-css" ),
             root: document.getElementById( "editor" ),
+            debug: document.getElementById( "editor-debug" ),
             settings: document.querySelectorAll( ".js-settings" ),
             mapSettings: document.getElementById( "editor-mapsettings" ),
             gameSettings: document.getElementById( "editor-gamesettings" ),
@@ -676,14 +677,22 @@ class Editor {
                 return false;
             }
 
-            let baseUrl = `./games/${this.data.game.id}/index.html`;
+            const debug = this.dom.debug.checked;
+            const baseUrl = `./games/${this.data.game.id}/index.html`;
+            const params = new URLSearchParams();
 
             if ( this.canMapFunction() ) {
-                baseUrl += `?map=${this.data.map.id}.json`;
+                params.set( "map", `${this.data.map.id}.json` );
             }
 
+            if ( debug ) {
+                params.set( "debug", "true" );
+            }
+
+            const query = params.toString();
+
             window.open(
-                baseUrl,
+                `${baseUrl}${query ? `?${query}` : ""}`,
                 "_blank",
                 `width=${this.data.game.width},height=${this.data.game.height}`
             );
