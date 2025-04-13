@@ -8,7 +8,7 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 90,
+    "save": 91,
     "release": 1,
     "plugin": "topview",
     "hero": {

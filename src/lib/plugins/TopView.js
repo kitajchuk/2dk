@@ -370,17 +370,11 @@ class TopView extends GameBox {
     canHeroTileJump ( poi, dir, collision ) {
         const hasPassiveTiles = collision.tiles && collision.tiles.passive.length;
 
-        if ( this.hero.is( Config.verbs.LIFT ) ) {
+        if ( this.hero.is( Config.verbs.LIFT ) || !hasPassiveTiles ) {
             return false;
         }
 
-        if ( !hasPassiveTiles ) {
-            return false;
-        }
-
-        const jumpTiles = collision.tiles.passive.filter( ( tile ) => {
-            return tile.jump;
-        });
+        const jumpTiles = collision.tiles.passive.filter( ( tile ) => tile.jump );
 
         if ( !jumpTiles.length ) {
             return false;
@@ -389,7 +383,6 @@ class TopView extends GameBox {
         const firstJumpTile = jumpTiles[ 0 ];
 
         if ( jumpTiles.length > 1 ) {
-            // TODO: Check amount of tile collision maybe also...?
             return jumpTiles.every( ( tile ) => {
                 return tile.instance.canInteract( Config.verbs.JUMP ).dir === dir;
             });
@@ -541,7 +534,7 @@ class TopView extends GameBox {
         if ( collision.tiles ) {
             // Tile will allow leaping from it's edge, like a ledge...
             if ( this.canHeroTileJump( poi, dir, collision ) ) {
-                this.handleHeroTileJump(  poi, dir, collision.tiles.passive[ 0 ] );
+                this.handleHeroTileJump( poi, dir, collision.tiles.passive.filter( ( tile ) => tile.jump ) );
 
             // Tile is behaves like a WALL, or Object you cannot walk on
             } else if ( this.canHeroTileStop( poi, dir, collision ) ) {
@@ -592,12 +585,13 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroTileJump ( poi, dir, tile ) {
+    handleHeroTileJump ( poi, dir, jumpTiles ) {
         this.handleResetHeroDirs();
 
         // Get the axis and increment
         const axis = dir === "left" || dir === "right" ? 0 : 1;
         const increment = dir === "left" || dir === "up" ? -1 : 1;
+        const tile = jumpTiles[ 0 ];
 
         // Get the next tile
         // What we're doing here is finding the next tile in the direction of the jump as a reference
@@ -640,43 +634,45 @@ class TopView extends GameBox {
         ];
         destTile[ axis ] = destTile[ axis ] + ( increment * ( this.map.data.tilesize * elevation ) );
 
-        // Get the destination position
-        switch ( dir ) {
-            case "left":
-                destPos = {
-                    x: destTile[ 0 ],
-                    y: this.hero.position.y,
-                };
-                break;
-
-            case "right":
-                destPos = {
-                    x: destTile[ 0 ] - ( this.hero.width - this.map.data.tilesize ),
-                    y: this.hero.position.y,
-                };
-                break;
-
-            case "up":
-                destPos = {
-                    x: this.hero.position.x,
-                    y: destTile[ 1 ],
-                };
-                break;
-
-            case "down":
-                destPos = {
-                    x: this.hero.position.x,
-                    y: destTile[ 1 ] - ( this.hero.height - this.map.data.tilesize ),
-                };
-                break;
-        }
-
+        // Get the destination event
         const destEvent = this.getVisibleEvents().find( ( evt ) => {
             return (
                 evt.coords[ 0 ] * this.map.data.tilesize === destTile[ 0 ] &&
                 evt.coords[ 1 ] * this.map.data.tilesize === destTile[ 1 ]
             );
         });
+        const isEventDoor = destEvent && destEvent.type === Config.events.DOOR;
+
+        // Get the destination position
+        switch ( dir ) {
+            case "left":
+                destPos = {
+                    x: destTile[ 0 ],
+                    y: isEventDoor ? destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ) :this.hero.position.y,
+                };
+                break;
+
+            case "right":
+                destPos = {
+                    x: destTile[ 0 ] - ( this.hero.width - this.map.data.tilesize ),
+                    y: isEventDoor ? destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ) : this.hero.position.y,
+                };
+                break;
+
+            case "up":
+                destPos = {
+                    x: isEventDoor ? destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ) :this.hero.position.x,
+                    y: destTile[ 1 ],
+                };
+                break;
+
+            case "down":
+                destPos = {
+                    x: isEventDoor ? destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ) :this.hero.position.x,
+                    y: destTile[ 1 ] - ( this.hero.height - this.map.data.tilesize ),
+                };
+                break;
+        }
 
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, dir );
@@ -693,22 +689,42 @@ class TopView extends GameBox {
             },
             duration: this.hero.getDur( Config.verbs.JUMP ),
             complete: () => {
-                if ( destEvent ) {
-                    this.hero.cycle( Config.verbs.FALL, dir );
-                    setTimeout( () => {
-                        this.dropin = true;
-                        this.hero.frameStopped = false;
-                        this.handleCriticalReset();
-                        this.handleHeroEventDoor( poi, dir, destEvent );
+                if ( isEventDoor ) {
+                    if ( destEvent.verb && this.hero.can( destEvent.verb ) ) {
+                        this.hero.cycle( destEvent.verb, dir );
+
+                        setTimeout( () => {
+                            this.dropin = true;
+                            this.hero.frameStopped = false;
+                            this.jumping = false;
+                            this.parkour = null;
+                            this.handleCriticalReset();
+                            this.handleHeroEventDoor( poi, dir, destEvent );
+
+                        }, this.hero.getDur( destEvent.verb ) );
+
+                    } else {
                         this.jumping = false;
                         this.parkour = null;
-
-                    }, this.hero.getDur( Config.verbs.FALL ) );
+                        this.handleCriticalReset();
+                        this.handleHeroEventDoor( poi, dir, destEvent );
+                    }
 
                 } else {
                     this.jumping = false;
                     this.parkour = null;
                     this.hero.face( dir );
+
+                    // Resume directional control if still active
+                    const dpad = this.player.gamepad.checkDpad();
+
+                    if ( dpad.length ) {
+                        dpad.forEach( ( ctrl ) => {
+                            ctrl.dpad.forEach( ( dir ) => {
+                                this.player.controls[ dir ] = true;
+                            });
+                        });
+                    }
                 }
             },
         });
