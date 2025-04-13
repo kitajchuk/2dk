@@ -2,7 +2,7 @@ const { html } = require( "./Render" );
 
 
 
-const renderNewNPCMenu = ({ coords, ais, dialogue }) => {
+const renderNewNPCMenu = ({ coords, mouseCoords, ais, dialogue }) => {
     return html`
         <div class="editor__menu js-menu is-active" id="editor-npc-menu">
             <button class="button button--grey button--box editor__close-button js-post-cancel">
@@ -21,6 +21,7 @@ const renderNewNPCMenu = ({ coords, ais, dialogue }) => {
             </div>
             <!-- coords and spawn are handled in the app code -->
             <input class="js-npc-field" type="hidden" name="coords" value="${JSON.stringify( coords )}" />
+            <input class="js-npc-field" type="hidden" name="mouseCoords" value="${JSON.stringify( mouseCoords )}" />
             <div class="editor__setting">
                 <div class="select">
                     <select class="select__field js-select js-npc-field" name="ai">

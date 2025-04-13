@@ -42,6 +42,7 @@ class EditorCanvas {
             moveCoords: document.getElementById( "editor-move-coords" ),
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
+            snapNPCToGrid: document.getElementById( "editor-npc-snap" ),
         };
         this.pickers = {
             all: document.querySelectorAll( ".js-picker" ),
@@ -996,8 +997,9 @@ class EditorCanvas {
         } else {
             this.editor.menus.renderMenu( "editor-npc-menu", {
                 ais: Utils.getOptionData( window.lib2dk.Config.npc ),
-                coords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
+                coords,
                 dialogue: Utils.getOptionData( window.lib2dk.Config.dialogue.types ),
+                mouseCoords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
             });
         }
     }
@@ -1156,6 +1158,7 @@ class EditorCanvas {
 
             const data = Utils.parseFields( document.querySelectorAll( ".js-npc-field" ) );
             const coords = JSON.parse( data.coords );
+            const mouseCoords = JSON.parse( data.mouseCoords );
             const extraData = {};
 
             if ( data.ai ) {
@@ -1187,7 +1190,12 @@ class EditorCanvas {
                 }
             }
 
-            this._applyObjectOrNPC( coords, this.currentNPC, extraData );
+            const renderCoords = this.dom.snapNPCToGrid.checked ? [
+                coords[ 0 ] * this.map.tilesize,
+                coords[ 1 ] * this.map.tilesize,
+            ] : mouseCoords;
+
+            this._applyObjectOrNPC( renderCoords, this.currentNPC, extraData );
             this.editor.menus.removeMenus();
         });
     }

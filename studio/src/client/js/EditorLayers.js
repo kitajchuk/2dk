@@ -26,6 +26,12 @@ class EditorLayers {
                 return;
             }
 
+            const checkbox = e.target.closest( ".checkbox" );
+
+            if ( checkbox ) {
+                return;
+            }
+
             const layer = e.target.closest( ".js-edit-layer" );
 
             if ( layer && this.editor.canMapFunction() ) {

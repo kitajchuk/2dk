@@ -66,7 +66,7 @@ class EditorCursor {
             const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
             
             // NPCs don't need to be locked to the tile grid
-            if ( isNPC ) {
+            if ( isNPC && !this.editorCanvas.dom.snapNPCToGrid.checked ) {
                 x = this.editorCanvas.canvasMouseCoords.x;
                 y = this.editorCanvas.canvasMouseCoords.y;
 

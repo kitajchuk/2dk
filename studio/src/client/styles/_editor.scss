@@ -597,6 +597,7 @@
     color: var( --grey );
     border-bottom: 1px solid var( --grey-dark );
     width: 100%;
+    gap: 16px;
     display: flex;
     align-items: center;
 
@@ -623,6 +624,11 @@
     &.is-active:hover {
         background-color: var( --charcoal );
         color: var( --blue );
+    }
+
+    &.is-active .checkbox,
+    &.is-active:hover .checkbox {
+        color: var( --grey );
     }
 }
 .editor__layer__hide {
@@ -654,13 +660,15 @@
     position: relative;
     display: flex;
     align-items: center;
+    gap: 16px;
 }
 .editor__layer__content {
     margin-top: 10px;
 }
-.editor__metalayers {
-    gap: 16px;
+.editor__preview {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 

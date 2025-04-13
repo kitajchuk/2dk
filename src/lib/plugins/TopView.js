@@ -250,6 +250,30 @@ class TopView extends GameBox {
     }
 
 
+    // Common releaseA handler
+    handleReleaseA () {
+        if ( this.jumping || this.attacking || this.dropin || this.running ) {
+            return;
+        }
+
+        if ( this.hero.is( Config.verbs.GRAB ) ) {
+            this.hero.face( this.hero.dir );
+        }
+
+        if ( this.hero.is( Config.verbs.LIFT ) ) {
+            if ( this.interact.tile.throw ) {
+                this.handleHeroThrow();
+
+            } else {
+                this.interact.tile.throw = true;
+            }
+
+        } else {
+            this.interact.tile = null;
+        }
+    }
+
+
     pressB () {
         if ( this.attacking || this.dropin || this.dialogue.active ) {
             return;
@@ -416,29 +440,6 @@ class TopView extends GameBox {
 /*******************************************************************************
 * Hero Handlers...
 *******************************************************************************/
-    handleReleaseA () {
-        if ( this.jumping || this.attacking || this.dropin || this.running ) {
-            return;
-        }
-
-        if ( this.hero.is( Config.verbs.GRAB ) ) {
-            this.hero.face( this.hero.dir );
-        }
-
-        if ( this.hero.is( Config.verbs.LIFT ) ) {
-            if ( this.interact.tile.throw ) {
-                this.handleHeroThrow();
-
-            } else {
-                this.interact.tile.throw = true;
-            }
-
-        } else {
-            this.interact.tile = null;
-        }
-    }
-
-
     handleResetHeroDirs () {
         DIRS.forEach( ( dir ) => {
             this.player.controls[ dir ] = false;

@@ -8,13 +8,13 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 91,
+    "save": 98,
     "release": 1,
     "plugin": "topview",
     "hero": {
         "sprite": 0,
         "spawn": 0,
-        "map": "maps/pallet-town.json",
+        "map": "maps/pallet-town-and-route-1.json",
         "sounds": {},
         "companion": null
     },
@@ -200,7 +200,6 @@
         "assets/tiles/pk-tiles.png",
         "assets/sprites/ash-hero.png",
         "assets/sprites/npc.png",
-        "maps/pallet-town.json",
-        "maps/route-1.json"
+        "maps/pallet-town-and-route-1.json"
     ]
 }
