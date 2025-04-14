@@ -26,7 +26,6 @@ class Player extends Controller {
             up: false,
             down: false,
         };
-        this.query = Utils.getParams( window.location.search );
         this.previousElapsed = null;
         this.detect();
     }
@@ -41,17 +40,23 @@ class Player extends Controller {
 
     // Debugging and feature flagging...
     debug () {
-        if ( this.query.map ) {
-            this.heroData.map = `maps/${this.query.map}`;
+        this.query = new URLSearchParams( window.location.search );
+
+        const map = this.query.get( "map" );
+        const spawn = this.query.get( "spawn" );
+        const resolution = this.query.get( "resolution" );
+
+        if ( map ) {
+            this.heroData.map = `maps/${map}`;
             this.heroData.spawn = 0; // Can be overriden with below query string
         }
 
-        if ( this.query.resolution ) {
-            this.resolution = this.getResolution( Number( this.query.resolution ) );
+        if ( resolution ) {
+            this.resolution = this.getResolution( Number( resolution ) );
         }
 
-        if ( this.query.spawn ) {
-            this.heroData.spawn = Number( this.query.spawn );
+        if ( spawn ) {
+            this.heroData.spawn = Number( spawn );
         }
     }
 
@@ -123,11 +128,6 @@ class Player extends Controller {
         });
 
         return baseData ? Utils.merge( baseData, data, force ) : data;
-    }
-
-
-    getOrientation () {
-        return ( ( "orientation" in window ) ? window.orientation : window.screen.orientation.angle );
     }
 
 
@@ -216,7 +216,7 @@ class Player extends Controller {
 
 
     onRotate () {
-        if ( Math.abs( this.getOrientation() ) === 90 && this.ready ) {
+        if ( window.screen.orientation.type.includes( "landscape" ) && this.ready ) {
             this.resume();
 
         } else if ( this.ready ) {

@@ -157,36 +157,6 @@ const Utils = {
     },
 
 
-    getParams ( str ) {
-        let query = decodeURIComponent( str ).match( /[#|?].*$/g );
-        const ret = {};
-
-        if ( query ) {
-            query = query[ 0 ].replace( /^\?|^#|^\/|\/$|\[|\]/g, "" );
-            query = query.split( "&" );
-
-            for ( let i = query.length; i--; ) {
-                const pair = query[ i ].split( "=" );
-                const key = pair[ 0 ];
-                const val = pair[ 1 ];
-
-                if ( ret[ key ] ) {
-                    if ( !Array.isArray( ret[ key ] ) ) {
-                        ret[ key ] = [ ret[ key ] ];
-                    }
-
-                    ret[ key ].push( val );
-
-                } else {
-                    ret[ key ] = val;
-                }
-            }
-        }
-
-        return ret;
-    },
-
-
     /*
      * Get the surrounding tiles of a tile at coords
      * 
