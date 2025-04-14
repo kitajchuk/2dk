@@ -13,8 +13,8 @@
     "sound": "",
     "spawn": [
         {
-            "x": 193,
-            "y": 495,
+            "x": 194,
+            "y": 1528,
             "width": 32,
             "height": 40
         }
@@ -69,7 +69,88 @@
             ]
         }
     ],
-    "events": [],
+    "events": [
+        {
+            "coords": [
+                6,
+                29
+            ],
+            "type": "dialogue",
+            "dir": "up",
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Route 1"
+                    ]
+                }
+            }
+        },
+        {
+            "coords": [
+                7,
+                29
+            ],
+            "type": "dialogue",
+            "dir": "up",
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Route 1"
+                    ]
+                }
+            }
+        },
+        {
+            "coords": [
+                8,
+                29
+            ],
+            "type": "dialogue",
+            "dir": "up",
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Route 1"
+                    ]
+                }
+            }
+        },
+        {
+            "coords": [
+                12,
+                41
+            ],
+            "type": "dialogue",
+            "dir": "down",
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Pallet Town"
+                    ]
+                }
+            }
+        },
+        {
+            "coords": [
+                13,
+                41
+            ],
+            "type": "dialogue",
+            "dir": "down",
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Pallet Town"
+                    ]
+                }
+            }
+        }
+    ],
     "npcs": [
         {
             "id": "sign",

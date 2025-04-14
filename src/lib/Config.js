@@ -59,6 +59,7 @@ const Config = {
     events: {
         DOOR: "door",
         WARP: "warp",
+        DIALOGUE: "dialogue",
         BOUNDARY: "boundary",
         CUTSCENE: "cutscene",
     },

@@ -48,9 +48,13 @@ const renderNewMapEventMenu = ({ maps, game, coords, facing, events }) => {
                 </div>
             </div>
             <div class="editor__setting">
+                <div class="editor__label">Dialogue text (required for dialogue type)</div>
+                <textarea class="editor__field input textarea js-mapevent-field" name="dialogue"></textarea>
+            </div>
+            <div class="editor__setting">
                 <div class="select">
                     <select class="select__field js-select js-select-map js-mapevent-field" name="map" id="editor-mapevent-map">
-                        <option value="">Target Map</option>
+                        <option value="">Target Map (required for door or boundary types)</option>
                         ${maps.map( ( map ) => `
                             <option value="${map.id}">${map.name}</option>
                         ` ).join( "" )}

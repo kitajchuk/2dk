@@ -372,6 +372,11 @@ class TopView extends GameBox {
     }
 
 
+    canHeroEventDialogue ( poi, dir, collision ) {
+        return ( collision.event.type === Config.events.DIALOGUE && collision.event.payload );
+    }
+
+
     canHeroTileStop ( poi, dir, collision ) {
         return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
             return tile.stop;
@@ -506,6 +511,10 @@ class TopView extends GameBox {
             } else if ( this.canHeroEventDoor( poi, dir, collision ) ) {
                 this.handleHeroEventDoor( poi, dir, collision.event );
                 return;
+
+            } else if ( this.canHeroEventDialogue( poi, dir, collision ) ) {
+                this.handleHeroEventDialogue( poi, dir, collision.event );
+                // No return as this is a passive event
             }
         }
 
@@ -763,6 +772,14 @@ class TopView extends GameBox {
     handleHeroEventBoundary ( poi, dir, event ) {
         this.changeMap( event );
         this.player.stop();
+    }
+
+
+    handleHeroEventDialogue ( poi, dir, event ) {
+        // TODO: Add dialogue modes so this can be "auto" or "play" (user has to press A/B to advance)
+        this.dialogue.auto({
+            text: event.payload.dialogue.text,
+        });
     }
 
 

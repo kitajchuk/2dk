@@ -1213,9 +1213,21 @@ class EditorCanvas {
             const newData = {
                 coords,
                 type: data.type,
-                map: `maps/${data.map}.json`,
                 dir: data.dir,
             };
+
+            if ( data.type === window.lib2dk.Config.events.DIALOGUE ) {
+                newData.payload = {
+                    dialogue: {
+                        type: window.lib2dk.Config.dialogue.types.TEXT,
+                        text: Utils.parseDialogueText( data.dialogue ),
+                    },
+                };
+            }
+
+            if ( data.map ) {
+                newData.map = `maps/${data.map}.json`;
+            }
 
             if ( data.spawn && data.type === window.lib2dk.Config.events.DOOR ) {
                 newData.spawn = parseInt( data.spawn, 10 );
