@@ -13,24 +13,10 @@
     "sound": "assets/sounds/bgm-mabe-village.mp3",
     "spawn": [
         {
-            "x": 1585,
-            "y": 1296,
-            "dir": "down"
-        },
-        {
-            "x": 1585,
-            "y": 275,
-            "dir": "down"
-        },
-        {
-            "x": 1712,
-            "y": 275,
-            "dir": "down"
-        },
-        {
-            "x": 305,
-            "y": 1385,
-            "dir": "down"
+            "x": 1874,
+            "y": 853,
+            "width": 92,
+            "height": 92
         }
     ],
     "fx": [
@@ -1609,56 +1595,6 @@
     "events": [
         {
             "coords": [
-                25,
-                4
-            ],
-            "type": "door",
-            "map": "maps/papahls-house.json",
-            "dir": "up",
-            "spawn": 0
-        },
-        {
-            "coords": [
-                27,
-                4
-            ],
-            "type": "door",
-            "map": "maps/papahls-house.json",
-            "dir": "up",
-            "spawn": 1
-        },
-        {
-            "coords": [
-                25,
-                20
-            ],
-            "type": "door",
-            "map": "maps/marins-house.json",
-            "dir": "up",
-            "spawn": 0
-        },
-        {
-            "coords": [
-                5,
-                21
-            ],
-            "type": "door",
-            "map": "maps/bottom-of-the-well.json",
-            "dir": "down",
-            "verb": "fall",
-            "spawn": 0
-        },
-        {
-            "coords": [
-                39,
-                10
-            ],
-            "type": "boundary",
-            "map": "maps/ukuku-prairie-west.json",
-            "dir": "right"
-        },
-        {
-            "coords": [
                 39,
                 2
             ],
@@ -1674,42 +1610,6 @@
             "type": "boundary",
             "map": "maps/ukuku-prairie-west.json",
             "dir": "right"
-        },
-        {
-            "coords": [
-                4,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
-                5,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
-                6,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
-                7,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
         }
     ],
     "collision": [
