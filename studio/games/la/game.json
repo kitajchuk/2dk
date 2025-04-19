@@ -3,12 +3,21 @@
     "name": "LA",
     "width": 1056,
     "height": 704,
+    "tilesize": 64,
+    "worldmapsize": {
+        "tilewidth": 40,
+        "tileheight": 32
+    },
+    "indoormapsize": {
+        "tilewidth": 20,
+        "tileheight": 16
+    },
     "bButton": "attack",
     "resolution": 1,
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 774,
+    "save": 775,
     "release": 1,
     "plugin": "topview",
     "hero": {

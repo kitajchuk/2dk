@@ -229,6 +229,7 @@ class DB {
 
             map.id = Cache.slugify( data.name );
             map.name = data.name;
+            map.type = data.type;
             map.tilesize = Number( data.tilesize );
             map.tilewidth = Number( data.tilewidth );
             map.tileheight = Number( data.tileheight );
@@ -580,22 +581,32 @@ class DB {
         return new Promise( ( resolve ) => {
             DB.getGames().then( ( games ) => {
                 const gameModel = DB.getModel( "game" );
+                const newGame = {};
 
-                gameModel.id = Cache.slugify( data.name );
-                gameModel.name = data.name;
-                gameModel.width = Number( data.width ) || gameModel.width;
-                gameModel.height = Number( data.height ) || gameModel.height;
-                gameModel.bButton = data.bButton || gameModel.bButton;
-                gameModel.resolution = Number( data.resolution ) || gameModel.resolution;
-                gameModel.maxresolution = Number( data.maxresolution ) || gameModel.maxresolution;
-                gameModel.diagonaldpad = data.diagonaldpad === false ? data.diagonaldpad : gameModel.diagonaldpad;
-                gameModel.release = Number( data.release ) || gameModel.release;
-                gameModel.plugin = data.plugin || gameModel.plugin;
-                gameModel.icon = "icon.png";
+                newGame.id = Cache.slugify( data.name );
+                newGame.name = data.name;
+                newGame.width = Number( data.width ) || gameModel.width;
+                newGame.height = Number( data.height ) || gameModel.height;
+                newGame.tilesize = Number( data.tilesize ) || gameModel.tilesize;
+                newGame.worldmapsize = {
+                    tilewidth: Number( data.worldtilewidth ) || gameModel.worldmapsize.tilewidth,
+                    tileheight: Number( data.worldtileheight ) || gameModel.worldmapsize.tileheight,
+                };
+                newGame.indoormapsize = {
+                    tilewidth: Number( data.indoortilewidth ) || gameModel.indoormapsize.tilewidth,
+                    tileheight: Number( data.indoortileheight ) || gameModel.indoormapsize.tileheight,
+                };
+                newGame.bButton = data.bButton || gameModel.bButton;
+                newGame.resolution = Number( data.resolution ) || gameModel.resolution;
+                newGame.maxresolution = Number( data.maxresolution ) || gameModel.maxresolution;
+                newGame.diagonaldpad = data.diagonaldpad === false ? data.diagonaldpad : gameModel.diagonaldpad;
+                newGame.release = Number( data.release ) || gameModel.release;
+                newGame.plugin = data.plugin || gameModel.plugin;
+                newGame.icon = "icon.png";
 
-                games.push( DB.getGameSlice( gameModel ) );
+                games.push( DB.getGameSlice( newGame ) );
 
-                const gameDir = path.join( process.cwd(), "games", gameModel.id );
+                const gameDir = path.join( process.cwd(), "games", newGame.id );
                 const mapsDir = path.join( gameDir, "maps" );
                 const fontsDir = path.join( gameDir, "fonts" );
                 const assetsDir = path.join( gameDir, "assets" );
@@ -610,14 +621,14 @@ class DB {
                 utils.makeDir( path.join( assetsDir, "snapshots" ) );
                 utils.copyFile( path.join( paths.templates, "icon.png" ), path.join( gameDir, "icon.png" ) );
 
-                DB.updateCommon( gameModel, gameDir );
+                DB.updateCommon( newGame, gameDir );
 
                 utils.writeJson( paths.games, games, () => {
-                    utils.writeJson( path.join( gameDir, "game.json" ), gameModel, () => {
-                        lager.info( `DB-static: created game ${gameModel.id}` );
+                    utils.writeJson( path.join( gameDir, "game.json" ), newGame, () => {
+                        lager.info( `DB-static: created game ${newGame.id}` );
 
                         resolve({
-                            game: gameModel,
+                            game: newGame,
                             games,
                         });
                     });

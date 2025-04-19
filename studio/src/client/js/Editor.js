@@ -158,6 +158,16 @@ class Editor {
 
     postMap ( postData ) {
         postData.fileName = `${Cache.slugify( postData.name )}.json`;
+
+        // We now get this from the game data...
+        postData.tilesize = Number( this.data.game.tilesize );
+        postData.tilewidth = postData.type === window.lib2dk.Config.map.types.WORLD
+            ? Number( this.data.game.worldmapsize.tilewidth )
+            : Number( this.data.game.indoormapsize.tilewidth );
+        postData.tileheight = postData.type === window.lib2dk.Config.map.types.WORLD
+            ? Number( this.data.game.worldmapsize.tileheight )
+            : Number( this.data.game.indoormapsize.tileheight );
+
         this.mode = Config.Editor.modes.SAVING;
         this.dom.root.classList.add( "is-saving-map" );
 
@@ -305,6 +315,7 @@ class Editor {
         } else if ( elemData.type === "map" && this.canMapFunction() ) {
             this.menus.renderMenu( "editor-active-map-menu", {
                 map: this.data.map,
+                types: Utils.getOptionData( window.lib2dk.Config.map.types ),
                 assets: this.data.assets,
             });
         }
@@ -391,6 +402,7 @@ class Editor {
 
         ipcRenderer.on( "menu-newmap", () => {
             this.menus.renderMenu( "editor-addmap-menu", {
+                types: Utils.getOptionData( window.lib2dk.Config.map.types ),
                 tiles: this.data.assets.tiles,
                 sounds: this.data.assets.sounds,
             });

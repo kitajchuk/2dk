@@ -30,6 +30,12 @@ const Config = {
         SMASH: "smash",
         ATTACK: "attack",
     },
+    map: {
+        types: {
+            WORLD: "world",
+            INDOOR: "indoor",
+        },
+    },
     tiles: {
         HOLES: "holes",
         GRASS: "grass",

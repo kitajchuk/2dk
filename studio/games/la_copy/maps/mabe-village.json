@@ -1,6 +1,7 @@
 {
     "id": "mabe-village",
     "name": "Mabe Village",
+    "type": "world",
     "tilesize": 64,
     "width": 2560,
     "height": 2048,

@@ -2,7 +2,7 @@ const { html } = require( "./Render" );
 
 
 
-const renderNewMapMenu = ({ tiles, sounds }) => {
+const renderNewMapMenu = ({ types, tiles, sounds }) => {
     return html`
         <div class="editor__menu js-menu is-active" id="editor-addmap-menu">
             <button class="button button--grey button--box editor__close-button js-post-cancel" data-type="map">
@@ -26,17 +26,17 @@ const renderNewMapMenu = ({ tiles, sounds }) => {
                 <input class="input editor__field js-addmap-field" type="text" placeholder="Map Name" name="name" />
             </div>
             <div class="editor__setting">
-                <div class="editor__label">Tilesize</div>
-                <input class="input editor__field js-addmap-field" type="number" placeholder="Tilesize" name="tilesize" />
-            </div>
-            <div class="editor__setting editor__setting--multi">
-                <div>
-                    <div class="editor__label">Tile width</div>
-                    <input class="input editor__field js-addmap-field" type="number" placeholder="Tile width" name="tilewidth" />
-                </div>
-                <div>
-                    <div class="editor__label">Tile height</div>
-                    <input class="input editor__field js-addmap-field" type="number" placeholder="Tile height" name="tileheight" />
+                <div class="editor__label">Map type</div>
+                <div class="select">
+                    <select class="select__field js-addmap-field js-select js-select-types" name="type">
+                        <option value="">Map type</option>
+                        ${types.map( ( type ) => `
+                            <option value="${type}">${type}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
                 </div>
             </div>
             <div class="editor__setting">

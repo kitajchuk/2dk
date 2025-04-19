@@ -1,6 +1,7 @@
 {
     "id": "marins-house",
     "name": "Marins House",
+    "type": "indoor",
     "tilesize": 64,
     "width": 1280,
     "height": 1024,

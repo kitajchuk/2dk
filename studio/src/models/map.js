@@ -1,6 +1,7 @@
 module.exports = {
     id: "",
     name: "",
+    type: "",
     tilesize: 64,
     width: 2560,
     height: 2048,

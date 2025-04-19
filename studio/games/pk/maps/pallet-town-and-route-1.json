@@ -1,6 +1,7 @@
 {
     "id": "pallet-town-and-route-1",
     "name": "Pallet Town & Route 1",
+    "type": "world",
     "tilesize": 32,
     "width": 768,
     "height": 2048,

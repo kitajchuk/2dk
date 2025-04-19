@@ -3,12 +3,21 @@
     "name": "PK",
     "width": 528,
     "height": 352,
+    "tilesize": 32,
+    "worldmapsize": {
+        "tilewidth": 24,
+        "tileheight": 64
+    },
+    "indoormapsize": {
+        "tilewidth": 20,
+        "tileheight": 16
+    },
     "bButton": "run",
     "resolution": 1,
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 102,
+    "save": 107,
     "release": 1,
     "plugin": "topview",
     "hero": {

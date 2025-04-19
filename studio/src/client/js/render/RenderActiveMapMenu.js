@@ -2,7 +2,7 @@ const { html } = require( "./Render" );
 
 
 
-const renderActiveMapMenu = ( { map, assets } ) => {
+const renderActiveMapMenu = ( { map, types, assets } ) => {
     const tileFile = map.image.split( "/" ).pop();
     const soundFile = map.sound.split( "/" ).pop();
 
@@ -22,6 +22,20 @@ const renderActiveMapMenu = ( { map, assets } ) => {
             <div class="editor__setting">
                 <div class="editor__label">Map name</div>
                 <input value="${map.name}" class="input editor__field" type="text" name="name" readonly disabled />
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Map type</div>
+                <div class="select">
+                    <select class="select__field js-select js-select-types" name="type" disabled>
+                        <option value="">Map type</option>
+                        ${types.map( ( type ) => `
+                            <option value="${type}" ${map.type === type ? "selected" : ""}>${type}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
+                </div>
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Tilesize</div>

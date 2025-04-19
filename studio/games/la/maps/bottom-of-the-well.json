@@ -1,6 +1,7 @@
 {
     "id": "bottom-of-the-well",
     "name": "Bottom of the Well",
+    "type": "indoor",
     "tilesize": 64,
     "width": 1280,
     "height": 1024,

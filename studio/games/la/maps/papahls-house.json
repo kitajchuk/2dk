@@ -1,6 +1,7 @@
 {
     "id": "papahls-house",
     "name": "Papahls House",
+    "type": "indoor",
     "tilesize": 64,
     "width": 1280,
     "height": 1024,

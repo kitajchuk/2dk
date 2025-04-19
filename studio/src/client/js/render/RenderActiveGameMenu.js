@@ -17,6 +17,22 @@ const renderActiveGameMenu = ( game ) => {
                 </div>
             </div>
             <div class="editor__setting">
+                <img src="./games/${game.id}/${game.icon}?buster=${Date.now()}" id="editor-game-icon-image" name="icon_image" />
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Webapp icon (square PNG format, at least 1024x1024 pixels)</div>
+                <div class="editor__upload">
+                    <button class="button editor__upload__button editor__button">
+                        <span class="icon icon--nudge">
+                            ${window.feather.icons[ "upload-cloud" ].toSvg()}
+                        </span>
+                        <span>PNG</span>
+                    </button>
+                    <input value="${game.icon}" class="input editor__upload__field editor__field js-upload-field" type="text" placeholder="Choose a file" name="icon_copy" id="editor-game-icon" />
+                    <input class="editor__upload__mask js-upload-file" type="file" name="icon" data-target="editor-game-icon" />
+                </div>
+            </div>
+            <div class="editor__setting">
                 <div class="editor__label">Game name</div>
                 <input class="input editor__field" type="text" name="name" value="${game.name}" readonly disabled />
             </div>
@@ -38,6 +54,30 @@ const renderActiveGameMenu = ( game ) => {
                 <div>
                     <div class="editor__label">Screen height</div>
                     <input class="input editor__field" type="number" name="height" value="${game.height}" readonly disabled />
+                </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Tilesize</div>
+                <input class="input editor__field" type="number" name="tilesize" value="${game.tilesize}" readonly disabled />
+            </div>
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__label">World Map Tile width</div>
+                    <input class="input editor__field" type="number" name="worldtilewidth" value="${game.worldmapsize.tilewidth}" readonly disabled />
+                </div>
+                <div>
+                    <div class="editor__label">World Map Tile height</div>
+                    <input class="input editor__field" type="number" name="worldtileheight" value="${game.worldmapsize.tileheight}" readonly disabled />
+                </div>
+            </div>
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__label">Indoor Map Tile width</div>
+                    <input class="input editor__field" type="number" name="indoorwidth" value="${game.indoormapsize.tilewidth}" readonly disabled />
+                </div>
+                <div>
+                    <div class="editor__label">Indoor Map Tile height</div>
+                    <input class="input editor__field" type="number" name="indoorheight" value="${game.indoormapsize.tileheight}" readonly disabled />
                 </div>
             </div>
             <div class="editor__setting">
@@ -73,22 +113,6 @@ const renderActiveGameMenu = ( game ) => {
                         <span class="label">1x</span>
                     </label>
                 </div>
-            </div>
-            <div class="editor__setting">
-                <div class="editor__label">Webapp icon (square PNG format, at lease 1024x1024 pixels)</div>
-                <div class="editor__upload">
-                    <button class="button editor__upload__button editor__button">
-                        <span class="icon icon--nudge">
-                            ${window.feather.icons[ "upload-cloud" ].toSvg()}
-                        </span>
-                        <span>PNG</span>
-                    </button>
-                    <input value="${game.icon}" class="input editor__upload__field editor__field js-upload-field" type="text" placeholder="Choose a file" name="icon_copy" id="editor-game-icon" />
-                    <input class="editor__upload__mask js-upload-file" type="file" name="icon" data-target="editor-game-icon" />
-                </div>
-            </div>
-            <div class="editor__setting">
-                <img src="./games/${game.id}/${game.icon}?buster=${Date.now()}" id="editor-game-icon-image" name="icon_image" />
             </div>
             <div class="editor__setting">
                 <button class="button button--red editor__button editor__delete-button js-delete-game">Delete game</button>

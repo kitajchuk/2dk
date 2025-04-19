@@ -3,6 +3,15 @@ module.exports = {
     name: "",
     width: 768,
     height: 576,
+    tilesize: 64,
+    worldmapsize: {
+        tilewidth: 40,
+        tileheight: 32,
+    },
+    indoormapsize: {
+        tilewidth: 20,
+        tileheight: 16,
+    },
     bButton: "attack",
     resolution: 1,
     maxresolution: 2,

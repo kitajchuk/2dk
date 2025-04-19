@@ -1,6 +1,7 @@
 {
     "id": "toronbo-shores-west",
     "name": "Toronbo Shores West",
+    "type": "world",
     "tilesize": 64,
     "width": 2560,
     "height": 2048,

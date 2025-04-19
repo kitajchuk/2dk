@@ -34,6 +34,30 @@ const renderNewGameMenu = () => {
                 </div>
             </div>
             <div class="editor__setting">
+                <div class="editor__label">Tilesize</div>
+                <input class="input editor__field js-addgame-field" type="number" placeholder="Tilesize" name="tilesize" />
+            </div>
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__label">World Map Tile width</div>
+                    <input class="input editor__field js-addgame-field" type="number" placeholder="World Map Tile width" name="worldtilewidth" />
+                </div>
+                <div>
+                    <div class="editor__label">World Map Tile height</div>
+                    <input class="input editor__field js-addgame-field" type="number" placeholder="World Map Tile height" name="worldtileheight" />
+                </div>
+            </div>
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__label">Indoor Map Tile width</div>
+                    <input class="input editor__field js-addgame-field" type="number" placeholder="Indoor Map Tile width" name="indoortilewidth" />
+                </div>
+                <div>
+                    <div class="editor__label">Indoor Map Tile height</div>
+                    <input class="input editor__field js-addgame-field" type="number" placeholder="Indoor Map Tile height" name="indoortileheight" />
+                </div>
+            </div>
+            <div class="editor__setting">
                 <div class="editor__checkbox">
                     <label class="checkbox">
                         <input class="check js-addgame-field" type="checkbox" name="diagonaldpad" checked />
