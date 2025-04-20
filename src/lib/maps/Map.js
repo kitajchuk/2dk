@@ -173,7 +173,7 @@ class Map {
         });
 
         // Visual event debugging....
-        if ( this.gamebox.player.query.debug ) {
+        if ( this.gamebox.player.query.get( "debug" ) ) {
             this.renderDebug();
         }
     }

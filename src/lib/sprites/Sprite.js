@@ -216,7 +216,7 @@ class Sprite {
             this.renderAfter();
         }
 
-        if ( this.gamebox.player.query.debug ) {
+        if ( this.gamebox.player.query.get( "debug" ) ) {
             this.renderDebug();
         }
     }
