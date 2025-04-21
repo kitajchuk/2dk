@@ -1,0 +1,43 @@
+{
+    "id": "map-1-1",
+    "name": "Map (1,1)",
+    "type": "world",
+    "events": [
+        {
+            "coords": [
+                0,
+                7
+            ],
+            "type": "boundary",
+            "dir": "left",
+            "map": "maps/map-0-1.json"
+        },
+        {
+            "coords": [
+                15,
+                7
+            ],
+            "type": "boundary",
+            "dir": "right",
+            "map": "maps/map-2-1.json"
+        },
+        {
+            "coords": [
+                7,
+                15
+            ],
+            "type": "boundary",
+            "dir": "down",
+            "map": "maps/map-1-2.json"
+        },
+        {
+            "coords": [
+                7,
+                0
+            ],
+            "type": "boundary",
+            "dir": "up",
+            "map": "maps/map-1-0.json"
+        }
+    ]
+}

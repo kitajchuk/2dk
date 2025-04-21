@@ -1,0 +1,16 @@
+{
+    "id": "map-1-0",
+    "name": "Map (1,0)",
+    "type": "world",
+    "events": [
+        {
+            "coords": [
+                15,
+                7
+            ],
+            "type": "boundary",
+            "dir": "right",
+            "map": "maps/map-2-0.json"
+        }
+    ]
+}

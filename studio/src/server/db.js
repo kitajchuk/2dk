@@ -3,7 +3,7 @@ const lager = require( "properjs-lager" );
 const sharp = require( "sharp" );
 const shell = require( "shelljs" );
 const { Lame } = require( "node-lame" );
-const utils = require( "./utils" );
+const utils = require( "../lib/utils" );
 const Cache = require( "./cache" );
 
 

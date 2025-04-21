@@ -1,0 +1,25 @@
+{
+    "id": "map-4-0",
+    "name": "Map (4,0)",
+    "type": "world",
+    "events": [
+        {
+            "coords": [
+                0,
+                7
+            ],
+            "type": "boundary",
+            "dir": "left",
+            "map": "maps/map-3-0.json"
+        },
+        {
+            "coords": [
+                7,
+                15
+            ],
+            "type": "boundary",
+            "dir": "down",
+            "map": "maps/map-4-1.json"
+        }
+    ]
+}
