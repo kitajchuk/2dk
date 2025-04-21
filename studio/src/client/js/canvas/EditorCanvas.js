@@ -573,6 +573,20 @@ class EditorCanvas {
     }
 
 
+    bucket ( layer ) {
+        for ( let y = this.map.textures[ layer ].length; y--; ) {
+            for ( let x = this.map.textures[ layer ][ y ].length; x--; ) {
+                // Reset the entire texture map
+                this.map.textures[ layer ][ y ][ x ] = 0;
+
+                // Apply only the selected tile
+                this.tilesetCoords = [this.tilesetCoords[ 0 ]];
+                this.brush( layer, [x, y] );
+            }
+        }
+    }
+
+
     trash ( layer, coords ) {
         this.tilesetCoords = [];
         this.map.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ] = 0;
@@ -821,6 +835,9 @@ class EditorCanvas {
     applyLayer ( layer, coords ) {
         if ( this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
             this.brush( layer, coords );
+
+        } else if ( this.editor.actions.mode === Config.EditorActions.modes.BUCKET ) {
+            this.bucket( layer, coords );
 
         } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             this.trash( layer, coords );
@@ -1707,7 +1724,8 @@ class EditorCanvas {
     canApplyCollider () {
         return (
             this.isMouseDownCollider &&
-            this.editor.layers.mode === Config.EditorLayers.modes.COLLISION
+            this.editor.layers.mode === Config.EditorLayers.modes.COLLISION &&
+            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
         );
     }
 
@@ -1715,7 +1733,8 @@ class EditorCanvas {
     canApplyTiles () {
         return (
             this.isMouseDownTiles &&
-            this.editor.actions.mode !== Config.EditorActions.modes.ERASE
+            this.editor.actions.mode !== Config.EditorActions.modes.ERASE &&
+            this.editor.actions.mode !== Config.EditorActions.modes.BUCKET
         );
     }
 

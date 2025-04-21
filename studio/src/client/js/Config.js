@@ -8,6 +8,7 @@ const Config = {
         modes: {
             BRUSH: "brush",
             ERASE: "erase",
+            BUCKET: "bucket",
             SELECT: "select",
             SPAWN: "spawn",
             EVENT: "event",

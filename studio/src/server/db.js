@@ -581,7 +581,9 @@ class DB {
         return new Promise( ( resolve ) => {
             DB.getGames().then( ( games ) => {
                 const gameModel = DB.getModel( "game" );
-                const newGame = {};
+                const newGame = {
+                    ...gameModel,
+                };
 
                 newGame.id = Cache.slugify( data.name );
                 newGame.name = data.name;

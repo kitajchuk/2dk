@@ -112,6 +112,8 @@ class Editor {
         }
 
         if ( this.data.game && this.data.game.id === game.id ) {
+            this.data.map = null;
+            this.updateUrl();
             return;
         }
 
@@ -706,7 +708,7 @@ class Editor {
             window.open(
                 `${baseUrl}${query ? `?${query}` : ""}`,
                 "_blank",
-                `width=${this.data.game.width},height=${this.data.game.height}`
+                `width=${this.data.game.width + this.data.game.tilesize * 2},height=${this.data.game.height + this.data.game.tilesize * 2}`
             );
         });
     }
