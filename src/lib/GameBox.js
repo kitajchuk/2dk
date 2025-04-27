@@ -250,8 +250,18 @@ Can all be handled in plugin GameBox
     getVisibleColliders () {
         const colliders = [];
 
+        // renderBox isn't defined until the map begins rendering
+        // use it when it is available so that NPCs don't get collision
+        // locked when they are partially off-screen
+        const cameraBox = this.map.renderBox ? {
+            x: this.camera.x - this.map.data.tilesize,
+            y: this.camera.y - this.map.data.tilesize,
+            width: this.map.renderBox.width,
+            height: this.map.renderBox.height,
+        } : this.camera;
+
         for ( let i = this.map.data.collision.length; i--; ) {
-            const collides = Utils.collide( this.camera, {
+            const collides = Utils.collide( cameraBox, {
                 width: this.map.data.collider,
                 height: this.map.data.collider,
                 x: this.map.data.collision[ i ][ 0 ] * this.map.data.collider,

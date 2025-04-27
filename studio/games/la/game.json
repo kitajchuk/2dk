@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 776,
+    "save": 777,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -376,10 +376,10 @@
             "maxv": 1,
             "controlmaxv": 1,
             "hitbox": {
-                "x": 2,
-                "y": 2,
-                "width": 64,
-                "height": 64
+                "x": 0,
+                "y": 0,
+                "width": 68,
+                "height": 68
             },
             "stats": {
                 "power": 1,
@@ -532,10 +532,10 @@
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 2,
-                "y": 2,
-                "width": 64,
-                "height": 64
+                "x": 0,
+                "y": 0,
+                "width": 68,
+                "height": 68
             },
             "verbs": {
                 "face": {
@@ -580,10 +580,10 @@
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 2,
-                "y": 2,
-                "width": 64,
-                "height": 64
+                "x": 0,
+                "y": 0,
+                "width": 68,
+                "height": 68
             },
             "verbs": {
                 "face": {

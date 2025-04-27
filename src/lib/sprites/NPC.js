@@ -20,7 +20,7 @@ class NPC extends Sprite {
         this.controls = {};
         // Initial cooldown period upon spawn (don't immediately move)
         // requestAnimationFrame runs 60fps so we use (60 * seconds)
-        this.counter = this.data.ai ? ( 60 * 1 ) : 0;
+        this.counter = this.data.ai ? 60 : 0;
         this.dirX = null;
         this.dirY = null;
         this.stepsX = 0;
@@ -51,7 +51,7 @@ class NPC extends Sprite {
             this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
             this.dialogue.then( () => {
                 this.resetDialogue();
-
+                this.handleAI();
             }).catch( () => {
                 this.resetDialogue();
             });
@@ -117,10 +117,20 @@ class NPC extends Sprite {
                     this.gamebox.hero.physics.vy = 1;
                     break;
             }
-
-        } else if ( !isCollision ) {
-            this.position = poi;
+            return;
         }
+
+        if ( isCollision ) {
+            // Let wandering NPCs cool down before moving again
+            // While roaming NPCs can immediately move again
+            if ( this.data.ai === Config.npc.ROAM ) {
+                this.counter = 0;
+            }
+            this.handleAI();
+            return;
+        }
+
+        this.position = poi;
     }
 
 
@@ -144,9 +154,19 @@ class NPC extends Sprite {
 
     handleRoam () {
         if ( !this.counter ) {
-            this.counter = Utils.random( 64, 192 );
-            this.dir = DIRS[ Utils.random( 0, DIRS.length ) ];
+            this.counter = Utils.random( 60, 120 );
 
+            const lastDir = this.dir;
+            const newDir = DIRS[ Utils.random( 0, DIRS.length ) ];
+
+            // Always pick a new direction
+            if ( lastDir === newDir ) {
+                this.counter = 0;
+                this.handleRoam();
+                return;
+            }
+
+            this.dir = newDir;
         } else {
             this.counter--;
         }
@@ -164,11 +184,22 @@ class NPC extends Sprite {
 
     handleWander () {
         if ( !this.counter ) {
-            this.counter = Utils.random( 100, 200 );
-            this.stepsX = Utils.random( 4, 60 );
-            this.stepsY = Utils.random( 4, 60 );
-            this.dirX = ["left", "right"][ Utils.random( 0, 2 ) ];
-            this.dirY = ["down", "up"][ Utils.random( 0, 2 ) ];
+            const lastDirX = this.dirX;
+            const lastDirY = this.dirY;
+            const newDirX = ["left", "right"][ Utils.random( 0, 2 ) ];
+            const newDirY = ["down", "up"][ Utils.random( 0, 2 ) ];
+
+            // Always pick a new direction
+            if ( lastDirX === newDirX && lastDirY === newDirY ) {
+                this.handleWander();
+                return;
+            }
+
+            this.counter = Utils.random( 60, 120 );
+            this.stepsX = Utils.random( 30, 60 );
+            this.stepsY = Utils.random( 30, 60 );
+            this.dirX = newDirX;
+            this.dirY = newDirY;
 
         } else {
             this.counter--;
