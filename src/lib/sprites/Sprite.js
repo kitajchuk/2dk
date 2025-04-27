@@ -110,6 +110,10 @@ class Sprite {
         return ( this.idle.x && this.idle.y );
     }
 
+    isJumping () {
+        return this.position.z < 0;
+    }
+
 
 
 /*******************************************************************************

@@ -222,11 +222,12 @@ class TopView extends GameBox {
 
 
     holdA () {
+        Utils.log( "A Hold" );
+
         if ( this.jumping || this.falling || this.attacking || this.dropin ) {
             return;
         }
 
-        Utils.log( "A Hold" );
     }
 
 
@@ -242,6 +243,8 @@ class TopView extends GameBox {
 
 
     releaseHoldA () {
+        Utils.log( "A Hold Release" );
+
         if ( this.jumping || this.falling || this.attacking || this.dropin ) {
             return;
         }
@@ -294,6 +297,8 @@ class TopView extends GameBox {
 
 
     holdB () {
+        Utils.log( "B Hold" );
+
         if ( this.jumping || this.falling || this.attacking || this.dropin ) {
             return;
         }
@@ -301,8 +306,6 @@ class TopView extends GameBox {
         if ( this.player.data.bButton === Config.verbs.RUN ) {
             this.handleHeroRun();
         }
-
-        Utils.log( "B Hold" );
     }
 
 
@@ -325,6 +328,8 @@ class TopView extends GameBox {
 
 
     releaseHoldB () {
+        Utils.log( "B Hold Release" );
+
         if ( this.jumping || this.falling || this.dropin ) {
             return;
         }
@@ -338,7 +343,6 @@ class TopView extends GameBox {
             this.attacking = false;
         }
 
-        Utils.log( "B Hold Release" );
     }
 
 
@@ -1055,6 +1059,10 @@ class TopView extends GameBox {
 
 
     handleHeroTiles ( poi, dir, tiles ) {
+        if ( this.jumping || this.hero.isJumping() ) {
+            return;
+        }
+
         tiles.passive.forEach( ( tile ) => {
             // Friction is a divider, it will slow you down a bit...
             if ( tile.instance.data.friction ) {

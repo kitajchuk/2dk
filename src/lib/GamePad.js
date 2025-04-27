@@ -5,6 +5,7 @@ import Controller from "./Controller";
 
 
 const inputStream = [];
+// Note: It takes 400ms to begin registering a button "hold" vs "press" (interval * repeated)
 const touchInterval = 8;
 const touchRepeated = 50;
 const touchDiagonals = [
