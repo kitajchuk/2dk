@@ -17,7 +17,7 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 110,
+    "save": 111,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -203,7 +203,20 @@
         }
     ],
     "objects": [],
-    "fx": [],
+    "fx": [
+        {
+            "id": "grass",
+            "name": "Grass",
+            "width": 32,
+            "height": 32,
+            "layer": "foreground",
+            "image": "assets/tiles/pk-tiles.png",
+            "offsetX": 0,
+            "offsetY": 1376,
+            "stepsX": 4,
+            "dur": 500
+        }
+    ],
     "bundle": [
         "assets/tiles/pk-indoor.png",
         "assets/tiles/pk-tiles.png",

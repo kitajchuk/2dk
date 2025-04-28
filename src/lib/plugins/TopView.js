@@ -1100,8 +1100,10 @@ class TopView extends GameBox {
             }
         });
 
-        // Mask is a boolean, it will mask the hero sprite...
+        // Mask is a reference to an FX, it will render above the hero sprite...
         const maskTile = tiles.passive.find( ( tile ) => tile.instance.data.mask );
+
+        // TODO: Look at all tile coords that the hero footbox is colliding with and only mask if they are all mask tiles
 
         if ( maskTile ) {
             const maskData = this.player.data.fx.find( ( fx ) => fx.id === maskTile.instance.data.mask );
