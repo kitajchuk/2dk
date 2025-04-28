@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 784,
+    "save": 785,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -801,20 +801,13 @@
             "offsetX": 0,
             "offsetY": 0,
             "stepsX": 5,
-            "dur": 500,
-            "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 64,
-                "height": 64
-            }
+            "dur": 500
         }
     ],
     "bundle": [
         "assets/tiles/inside.png",
         "assets/tiles/tiles.png",
         "assets/sprites/fx.png",
-        "assets/sprites/hero_alttp.png",
         "assets/sprites/hero_la.png",
         "assets/sprites/npcs.png",
         "assets/sounds/bgm-cave.mp3",

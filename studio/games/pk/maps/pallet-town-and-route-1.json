@@ -27,8 +27,7 @@
             "layer": "background",
             "offsetX": 96,
             "offsetY": 0,
-            "friction": 1.5,
-            "mask": true
+            "friction": 1.5
         },
         {
             "group": "ledge-middle",

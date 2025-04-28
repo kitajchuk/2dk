@@ -10,11 +10,17 @@ import Config from "../Config";
 class FX extends Sprite {
     constructor ( data, map ) {
         super( data, map );
+
+        this.paused = false;
     }
 
 
     blit ( elapsed ) {
         if ( !this.visible() ) {
+            return;
+        }
+
+        if ( this.paused ) {
             return;
         }
 

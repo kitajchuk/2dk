@@ -8,7 +8,7 @@
         "maxresolution": 2,
         "diagonaldpad": true,
         "icon": "icon.png",
-        "save": 778,
+        "save": 780,
         "release": 1,
         "plugin": "topview"
     },
@@ -21,7 +21,7 @@
         "maxresolution": 2,
         "diagonaldpad": true,
         "icon": "icon.png",
-        "save": 784,
+        "save": 785,
         "release": 1,
         "plugin": "topview"
     },
@@ -34,7 +34,7 @@
         "maxresolution": 1,
         "diagonaldpad": false,
         "icon": "icon.png",
-        "save": 109,
+        "save": 110,
         "release": 1,
         "plugin": "topview"
     }

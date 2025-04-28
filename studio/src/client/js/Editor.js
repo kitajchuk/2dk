@@ -708,7 +708,8 @@ class Editor {
             window.open(
                 `${baseUrl}${query ? `?${query}` : ""}`,
                 "_blank",
-                `width=${this.data.game.width + this.data.game.tilesize * 2},height=${this.data.game.height + this.data.game.tilesize * 2}`
+                // 28px is the height of the topbar for the browser window
+                `width=${this.data.game.width},height=${this.data.game.height + 28}`
             );
         });
     }

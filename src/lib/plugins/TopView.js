@@ -7,6 +7,7 @@ import Spring from "../Spring";
 import Tween from "../Tween";
 import Sprite from "../sprites/Sprite";
 import Companion from "../sprites/Companion";
+import FX from "../sprites/FX";
 
 
 
@@ -33,6 +34,8 @@ class TopView extends GameBox {
             //     tween?
             // }
             fall: null,
+            // new FX
+            mask: null,
             push: 0,
         };
         // parkour: {
@@ -58,6 +61,10 @@ class TopView extends GameBox {
 
         // blit hero
         this.hero.blit( elapsed );
+
+        if ( this.interact.mask ) {
+            this.interact.mask.blit( elapsed );
+        }
 
         // blit companion
         if ( this.companion ) {
@@ -88,6 +95,10 @@ class TopView extends GameBox {
         // update hero
         this.hero.update();
 
+        if ( this.interact.mask ) {
+            this.interact.mask.update();
+        }
+
         // update companion
         if ( this.companion ) {
             this.companion.update();
@@ -103,6 +114,10 @@ class TopView extends GameBox {
 
         // render hero
         this.hero.render();
+
+        if ( this.interact.mask ) {
+            this.interact.mask.render();
+        }
 
         // render companion infront of hero?
         if ( this.companion && ( this.companion.data.type !== Config.npc.FLOAT && this.companion.hitbox.y > this.hero.hitbox.y ) ) {
@@ -446,6 +461,22 @@ class TopView extends GameBox {
     }
 
 
+    applyHeroMask () {
+        if ( this.interact.mask ) {
+            const maskX = this.hero.position.x + ( ( this.hero.width - this.interact.mask.width ) / 2 );
+            const maskY = this.hero.position.y + ( ( this.hero.height - this.interact.mask.height ) );
+            this.interact.mask.position.x = maskX;
+            this.interact.mask.position.y = maskY;
+
+            if ( this.hero.isIdle() ) {
+                this.interact.mask.paused = true;
+            } else {
+                this.interact.mask.paused = false;
+            }
+        }
+    }
+
+
 /*******************************************************************************
 * Hero Handlers...
 *******************************************************************************/
@@ -571,10 +602,15 @@ class TopView extends GameBox {
 
         // Remove mask when not on a tile (duh)
         if ( !collision.tiles || !collision.tiles.passive.length ) {
-            this.hero.mask = false;
+            this.interact.mask = null;
         }
 
         this.applyHero( poi, dir );
+
+        // Position mask after hero position has been applied
+        if ( this.interact.mask ) {
+            this.applyHeroMask();
+        }
     }
 
 
@@ -585,7 +621,7 @@ class TopView extends GameBox {
         }
 
         // Remove mask when jumping (will be reapplied if landing on a tile again)
-        this.hero.mask = false;
+        this.interact.mask = null;
         this.hero.resetMaxV();
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
@@ -1065,7 +1101,21 @@ class TopView extends GameBox {
         });
 
         // Mask is a boolean, it will mask the hero sprite...
-        this.hero.mask = tiles.passive.some( ( tile ) => tile.instance.data.mask );
+        const maskTile = tiles.passive.find( ( tile ) => tile.instance.data.mask );
+
+        if ( maskTile ) {
+            const maskData = this.player.data.fx.find( ( fx ) => fx.id === maskTile.instance.data.mask );
+            
+            if ( maskData && !this.interact.mask ) {
+                this.interact.mask = new FX({
+                    ...maskData,
+                    spawn: {
+                        x: this.hero.position.x,
+                        y: this.hero.position.y,
+                    },
+                }, this.map );
+            }
+        }
     }
 
 

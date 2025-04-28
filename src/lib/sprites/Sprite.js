@@ -23,7 +23,6 @@ class Sprite {
         this.speed = 1;
         this.frame = 0;
         this.opacity = ( data.opacity || 1.0 );
-        this.mask = false;
         this.position = {
             x: ( this.data.spawn && this.data.spawn.x || 0 ),
             y: ( this.data.spawn && this.data.spawn.y || 0 ),
@@ -47,6 +46,13 @@ class Sprite {
         this.idle = {
             x: true,
             y: true,
+        };
+        // Things like FX don't need to have a hitbox so we can just have a fallback
+        this.data.hitbox = this.data.hitbox || {
+            x: 0,
+            y: 0,
+            width: this.data.width,
+            height: this.data.height,
         };
         this.hitbox = {
             x: this.position.x + ( this.data.hitbox.x / this.scale ),
@@ -182,7 +188,7 @@ class Sprite {
             }
         }
 
-        if ( this.data.shadow && !this.is( Config.verbs.FALL ) && !this.mask ) {
+        if ( this.data.shadow && !this.is( Config.verbs.FALL ) ) {
             this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
                 Math.abs( this.data.shadow.offsetX ),
@@ -200,21 +206,17 @@ class Sprite {
             this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
         }
 
-        const height = this.mask ? this.height / 1.25 : this.height;
-
         this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
             this.image,
             this.spritecel[ 0 ],
             this.spritecel[ 1 ],
             this.data.width,
-            height,
+            this.height,
             this.offset.x,
             this.offset.y + this.position.z,
             this.width,
-            height
+            this.height
         );
-
-        this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
 
         if ( Utils.func( this.renderAfter ) ) {
             this.renderAfter();
