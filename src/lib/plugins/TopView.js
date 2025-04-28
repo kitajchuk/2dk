@@ -862,20 +862,32 @@ class TopView extends GameBox {
         this.hero.physics.controlmaxv = this.hero.physics.controlmaxvstatic * 1.75;
     }
 
+
+    // Initializes the attach verb as an "action"
     handleHeroAttack () {
         if ( this.attacking ) {
             return;
         }
-
+        
         // @check: hero-verb-check
         if ( !this.hero.can( Config.verbs.ATTACK ) ) {
             return;
         }
-
+        
         this.attacking = true;
         this.hero.resetElapsed = true;
         this.hero.cycle( Config.verbs.ATTACK, this.hero.dir );
+        this.player.gameaudio.hitSound( Config.verbs.ATTACK );
 
+        setTimeout( () => {
+            this.hero.face( this.hero.dir );
+            
+        }, this.hero.getDur( Config.verbs.ATTACK ) );
+    }
+    
+    
+    // Needs to be called for every frame of attack animation
+    handleHeroAttackFrame () {
         const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
         const weaponBox = this.hero.getWeaponbox();
         const collision = {
@@ -883,48 +895,37 @@ class TopView extends GameBox {
             tiles: this.checkTiles( poi, weaponBox ),
         };
 
-        if ( collision.npc && collision.npc.data.ai ) {
-            const poi = {};
+        if ( collision.npc && collision.npc.data.ai && !this.interact.npc ) {
+            const destPos = {};
 
-            if ( this.hero.dir === "left" || this.hero.dir === "right" ) {
-                if ( this.hero.position.y < collision.npc.position.y ) {
-                    poi.y = collision.npc.position.y - ( collision.npc.position.y - this.hero.position.y );
+            // TODO: Determine if the hero is properly facing the NPC in order to allow for the attack to be successful
 
-                } else {
-                    poi.y = this.hero.position.y - ( this.hero.position.y - collision.npc.position.y );
-                }
+            // Get center points of NPC and weaponBox
+            const npcCenter = {
+                x: collision.npc.position.x + (collision.npc.width / 2),
+                y: collision.npc.position.y + (collision.npc.height / 2)
+            };
+            const heroCenter = {
+                x: this.hero.hitbox.x + (this.hero.hitbox.width / 2),
+                y: this.hero.hitbox.y + (this.hero.hitbox.height / 2)
+            };
 
-            // up or down
-            } else {
-                if ( this.hero.position.x < collision.npc.position.x ) {
-                    poi.x = collision.npc.position.x - ( collision.npc.position.x - this.hero.position.x );
+            // Calculate angle between centers
+            const angle = Math.atan2(
+                npcCenter.y - heroCenter.y,
+                npcCenter.x - heroCenter.x
+            );
 
-                } else {
-                    poi.x = this.hero.position.x - ( this.hero.position.x - collision.npc.position.x );
-                }
-            }
-
-            if ( this.hero.dir === "left" ) {
-                poi.x = collision.npc.position.x - this.map.data.tilesize;
-            }
-
-            if ( this.hero.dir === "right" ) {
-                poi.x = collision.npc.position.x + this.map.data.tilesize;
-            }
-
-            if ( this.hero.dir === "up" ) {
-                poi.y = collision.npc.position.y - this.map.data.tilesize;
-            }
-
-            if ( this.hero.dir === "down" ) {
-                poi.y = collision.npc.position.y + this.map.data.tilesize;
-            }
+            // Calculate destination point 2 tiles away in angle direction
+            const distance = this.map.data.tilesize;
+            destPos.x = npcCenter.x + (Math.cos(angle) * distance);
+            destPos.y = npcCenter.y + (Math.sin(angle) * distance);
 
             this.interact.npc = {};
             this.interact.npc.sprite = collision.npc;
             this.interact.npc.sprite.attacked = true;
             this.interact.npc.spring = new Spring( this.player, collision.npc.position.x, collision.npc.position.y, 120, 3.5 );
-            this.interact.npc.spring.poi = poi;
+            this.interact.npc.spring.poi = destPos;
             // Don't bind so we can manage collision better
             // this.interact.npc.spring.bind( collision.npc );
         }
@@ -936,13 +937,6 @@ class TopView extends GameBox {
                 }
             });
         }
-
-        this.player.gameaudio.hitSound( Config.verbs.ATTACK );
-
-        setTimeout( () => {
-            this.hero.face( this.hero.dir );
-
-        }, this.hero.getDur( Config.verbs.ATTACK ) );
     }
 
 

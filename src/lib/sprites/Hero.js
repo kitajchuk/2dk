@@ -33,6 +33,11 @@ class Hero extends Sprite {
     }
 
 
+    hasWeapon () {
+        return this.data.weapon && this.data.weapon[ this.dir ] && this.data.weapon[ this.dir ].length;
+    }
+
+
 /*******************************************************************************
 * Rendering
 * Order is: blit, update, render
@@ -49,7 +54,7 @@ class Hero extends Sprite {
 
 
     renderAfter () {
-        if ( this.is( Config.verbs.ATTACK ) && this.data.weapon && this.data.weapon[ this.dir ].length ) {
+        if ( this.is( Config.verbs.ATTACK ) && this.hasWeapon() ) {
             this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
                 Math.abs( this.data.weapon[ this.dir ][ this.frame ].offsetX ),
@@ -61,6 +66,33 @@ class Hero extends Sprite {
                 this.data.weapon[ this.dir ][ this.frame ].width / this.scale,
                 this.data.weapon[ this.dir ][ this.frame ].height / this.scale
             );
+            
+            // Don't handle attack collision on the "windup" frame
+            // Can always provide more control over which frames are checked
+            if ( this.frame > 0 ) {
+                this.gamebox.handleHeroAttackFrame();
+            }
+        }
+
+        if ( this.gamebox.player.query.get( "debug" ) ) {
+            this.renderAfterDebug();
+        }
+    }
+
+    
+    renderAfterDebug () {
+        if ( this.gamebox.attacking && this.hasWeapon() ) {
+            const weaponbox = this.getWeaponbox( "offset" );
+
+            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.teal;
+            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                weaponbox.x,
+                weaponbox.y,
+                weaponbox.width,
+                weaponbox.height
+            );
+            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
         }
     }
 
@@ -138,52 +170,11 @@ class Hero extends Sprite {
 *******************************************************************************/
     // Use "offset" to draw weaponbox debug box
     getWeaponbox ( prop = "position" ) {
-        const lowX = this.data.weapon[ this.dir ].reduce( ( accX, record ) => {
-            const absX = Math.abs( this[ prop ].x + record.positionX );
-
-            if ( absX < accX ) {
-                return absX;
-            }
-
-            return accX;
-
-        }, 999999 );
-        const lowY = this.data.weapon[ this.dir ].reduce( ( accY, record ) => {
-            const absY = Math.abs( this[ prop ].y + record.positionY );
-
-            if ( absY < accY ) {
-                return absY;
-            }
-
-            return accY;
-
-        }, 999999 );
-        const hiX = this.data.weapon[ this.dir ].reduce( ( accX, record ) => {
-            const absX = Math.abs( this[ prop ].x + record.positionX + record.width );
-
-            if ( absX > accX ) {
-                return absX;
-            }
-
-            return accX;
-
-        }, 0 );
-        const hiY = this.data.weapon[ this.dir ].reduce( ( accY, record ) => {
-            const absY = Math.abs( this[ prop ].y + record.positionY + record.height );
-
-            if ( absY > accY ) {
-                return absY;
-            }
-
-            return accY;
-
-        }, 0 );
-
         return {
-            x: lowX,
-            y: lowY,
-            width: hiX - lowX,
-            height: hiY - lowY,
+            x: this[ prop ].x + this.data.weapon[ this.dir ][ this.frame ].positionX,
+            y: this[ prop ].y + this.data.weapon[ this.dir ][ this.frame ].positionY,
+            width: this.data.weapon[ this.dir ][ this.frame ].width,
+            height: this.data.weapon[ this.dir ][ this.frame ].height
         };
     }
 }

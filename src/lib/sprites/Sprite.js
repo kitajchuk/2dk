@@ -251,18 +251,6 @@ class Sprite {
             this.footbox.height
         );
 
-        if ( this.gamebox.attacking ) {
-            const weaponbox = this.getWeaponbox( "offset" );
-
-            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.teal;
-            this.gamebox.layers.foreground.onCanvas.context.fillRect(
-                weaponbox.x,
-                weaponbox.y,
-                weaponbox.width,
-                weaponbox.height
-            );
-        }
-
         this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
     }
 
