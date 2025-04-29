@@ -828,7 +828,7 @@ class TopView extends GameBox {
             this.player.gameaudio.addSound({
                 id: this.currentMusic,
                 src: event.sound,
-                channel: "sfx",
+                channel: "bgm",
             });
 
             this.player.gameaudio.playSound( this.currentMusic );
@@ -1106,19 +1106,29 @@ class TopView extends GameBox {
             return;
         }
 
-        tiles.passive.forEach( ( tile ) => {
-            // Friction is a divider, it will slow you down a bit...
-            if ( tile.instance.data.friction ) {
+        // Friction is a divider, it will slow you down a bit...
+        const frictionTiles = tiles.passive.filter( ( tile ) => tile.instance.data.friction );
+        const frictionAmount = Math.ceil( frictionTiles.reduce( ( total, tile ) => {
+            return total + tile.amount;
+        }, 0 ) );
+
+        if ( frictionTiles.length && frictionAmount >= 100 ) {
+            frictionTiles.forEach( ( tile ) => {
                 this.hero.physics.maxv = this.hero.physics.controlmaxv / tile.instance.data.friction;
-            }
-        });
+            });
+
+        } else {
+            this.hero.resetMaxV();
+        }
 
         // Mask is a reference to an FX, it will render above the hero sprite...
-        const maskTile = tiles.passive.find( ( tile ) => tile.instance.data.mask );
+        const maskTiles = tiles.passive.filter( ( tile ) => tile.instance.data.mask );
+        const maskTile = maskTiles.find( ( tile ) => tile.instance.data.mask );
+        const maskAmount = Math.ceil( maskTiles.reduce( ( total, tile ) => {
+            return total + tile.amount;
+        }, 0 ) );
 
-        // TODO: Look at all tile coords that the hero footbox is colliding with and only mask if they are all mask tiles
-
-        if ( maskTile ) {
+        if ( maskTile && maskAmount >= 100 ) {
             const maskData = this.player.data.fx.find( ( fx ) => fx.id === maskTile.instance.data.mask );
             
             if ( maskData && !this.interact.mask ) {
@@ -1131,7 +1141,7 @@ class TopView extends GameBox {
                 }, this.map );
             }
 
-        } else if ( !maskTile && this.interact.mask ) {
+        } else if ( ( !maskTile || maskAmount < 100 ) && this.interact.mask ) {
             this.interact.mask = null;
         }
     }

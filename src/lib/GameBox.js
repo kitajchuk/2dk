@@ -475,7 +475,8 @@ Can all be handled in plugin GameBox
                 const collides = Utils.collide( lookbox, tilebox );
 
                 if ( collides ) {
-                    const amount = ( collides.width * collides.height ) / ( this.map.data.tilesize * this.map.data.tilesize ) * 100;
+                    // The amount is the percentage of the lookbox that is colliding with the tilebox
+                    const amount = ( collides.width * collides.height ) / ( lookbox.width * lookbox.height ) * 100;
                     const match = {
                         jump: ( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ? true : false ),
                         fall: ( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ? true : false ),
