@@ -70,8 +70,9 @@ I've found the [Mozilla Gaming](https://developer.mozilla.org/en-US/docs/Games) 
 I've been trying to keep track of where I've found resources online. Stuff like sprites, tiles and audio.
 
 #### Assets
-* Sounds for Link's Awakening DX from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/link-s-awakening-dx)
-* Sprites and Tiles from [The Sprites Resource](https://www.spriters-resource.com/game_boy_gbc/thelegendofzeldalinksawakeningdx)
+* Sounds for LA from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/link-s-awakening-dx)
+* Sounds for PK from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/pokemon-firered-and-leafgreen-remastered-soundtrack-gba-gamerip-2004)
+* Sprites & Tiles from [The Sprites Resource](https://www.spriters-resource.com/game_boy_gbc/thelegendofzeldalinksawakeningdx)
 
 #### Inspiration
 * I'm an OG fan of [kesiev's](https://github.com/kesiev) original [Akihabara](https://www.kesiev.com/akihabara) work

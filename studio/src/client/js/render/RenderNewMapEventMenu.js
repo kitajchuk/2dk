@@ -2,7 +2,7 @@ const { html } = require( "./Render" );
 
 
 
-const renderNewMapEventMenu = ({ maps, game, coords, facing, events }) => {
+const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events }) => {
     return html`
         <div class="editor__menu js-menu is-active" id="editor-mapevent-menu">
             <button class="button button--grey button--box editor__close-button js-post-cancel">
@@ -40,6 +40,19 @@ const renderNewMapEventMenu = ({ maps, game, coords, facing, events }) => {
                         <option value="">Direction</option>
                         ${facing.map( ( facing ) => `
                             <option value="${facing}">${facing}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
+                </div>
+            </div>
+            <div class="editor__setting">
+                <div class="select">
+                    <select class="select__field js-select js-mapevent-field" name="sound">
+                        <option value="">Sound (optional if type is dialogue)</option>
+                        ${sounds.files.map( ( sound ) => `
+                            <option value="${sound}">${sound}</option>
                         ` ).join( "" )}
                     </select>
                     <span class="select__icon">

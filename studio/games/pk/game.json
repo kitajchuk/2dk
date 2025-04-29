@@ -17,7 +17,7 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 112,
+    "save": 115,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -222,6 +222,8 @@
         "assets/tiles/pk-tiles.png",
         "assets/sprites/ash-hero.png",
         "assets/sprites/npc.png",
+        "assets/sounds/bgm-pallet-town.mp3",
+        "assets/sounds/bgm-route-1-2-underground-path.mp3",
         "maps/pallet-town-and-route-1.json"
     ]
 }

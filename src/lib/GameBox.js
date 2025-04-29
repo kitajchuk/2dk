@@ -100,6 +100,9 @@ class GameBox {
         // Dialogues
         this.dialogue = new Dialogue( this );
 
+        // Sounds
+        this.currentMusic = null;
+
         this.build();
         this.initMap();
     }
@@ -129,10 +132,10 @@ class GameBox {
     pause ( paused ) {
         if ( paused ) {
             this.hero.face( this.hero.dir );
-            this.player.gameaudio.stopSound( this.map.data.id );
+            this.player.gameaudio.stopSound( this.currentMusic );
 
         } else {
-            this.player.gameaudio.playSound( this.map.data.id );
+            this.player.gameaudio.playSound( this.currentMusic );
         }
     }
 
@@ -160,6 +163,7 @@ class GameBox {
             src: this.map.data.sound,
             channel: "bgm",
         });
+        this.currentMusic = this.map.data.id;
         this.dialogue.auto({
             text: [this.map.data.name],
         });

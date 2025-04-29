@@ -8,6 +8,7 @@ module.exports = {
     dir: "",
     verb: undefined || "",
     spawn: undefined || 0,
+    sound: undefined || "",
     payload: undefined || {
         dialogue: {
             // Only text type is supported for dialogue event boundaries

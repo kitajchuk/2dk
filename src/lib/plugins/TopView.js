@@ -820,6 +820,19 @@ class TopView extends GameBox {
         this.dialogue.auto({
             text: event.payload.dialogue.text,
         });
+
+        if ( event.sound ) {
+            this.player.gameaudio.stopSound( this.currentMusic );
+            this.currentMusic = event.sound.split( "/" ).pop().split( "." )[ 0 ];
+
+            this.player.gameaudio.addSound({
+                id: this.currentMusic,
+                src: event.sound,
+                channel: "sfx",
+            });
+
+            this.player.gameaudio.playSound( this.currentMusic );
+        }
     }
 
 
@@ -1296,6 +1309,7 @@ class TopView extends GameBox {
 
             // Initialize the new Map
             // Applies new hero offset!
+            // Plays the new map's music
             this.initMap();
 
             // Handle the `dropin` effect

@@ -11,7 +11,7 @@
     "image": "assets/tiles/pk-tiles.png",
     "snapshot": "assets/snapshots/pallet-town-and-route-1.png",
     "thumbnail": "assets/snapshots/pallet-town-and-route-1-thumb.png",
-    "sound": "",
+    "sound": "assets/sounds/bgm-pallet-town.mp3",
     "spawn": [
         {
             "x": 194,
@@ -86,6 +86,7 @@
             ],
             "type": "dialogue",
             "dir": "up",
+            "sound": "assets/sounds/bgm-route-1-2-underground-path.mp3",
             "payload": {
                 "dialogue": {
                     "type": "text",
@@ -102,6 +103,7 @@
             ],
             "type": "dialogue",
             "dir": "up",
+            "sound": "assets/sounds/bgm-route-1-2-underground-path.mp3",
             "payload": {
                 "dialogue": {
                     "type": "text",
@@ -118,6 +120,7 @@
             ],
             "type": "dialogue",
             "dir": "up",
+            "sound": "assets/sounds/bgm-route-1-2-underground-path.mp3",
             "payload": {
                 "dialogue": {
                     "type": "text",
@@ -134,6 +137,7 @@
             ],
             "type": "dialogue",
             "dir": "down",
+            "sound": "assets/sounds/bgm-pallet-town.mp3",
             "payload": {
                 "dialogue": {
                     "type": "text",
@@ -150,6 +154,7 @@
             ],
             "type": "dialogue",
             "dir": "down",
+            "sound": "assets/sounds/bgm-pallet-town.mp3",
             "payload": {
                 "dialogue": {
                     "type": "text",

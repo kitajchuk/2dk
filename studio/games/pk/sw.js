@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v112";
+const CACHE_NAME = "v115";
 const CACHE_URLS = [
     "",
     "index.html",
@@ -17,6 +17,8 @@ const CACHE_URLS = [
     "assets/tiles/pk-tiles.png",
     "assets/sprites/ash-hero.png",
     "assets/sprites/npc.png",
+    "assets/sounds/bgm-pallet-town.mp3",
+    "assets/sounds/bgm-route-1-2-underground-path.mp3",
     "maps/pallet-town-and-route-1.json",
 ];
 

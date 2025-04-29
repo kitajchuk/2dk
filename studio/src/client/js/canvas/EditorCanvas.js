@@ -956,6 +956,7 @@ class EditorCanvas {
                 game: this.game,     
                 facing: Utils.getOptionData( window.lib2dk.Config.facing ),
                 events: Utils.getOptionData( window.lib2dk.Config.events ),
+                sounds: this.editor.data.assets.sounds,
                 coords,
             });
         }
@@ -1248,6 +1249,10 @@ class EditorCanvas {
 
             if ( data.spawn && data.type === window.lib2dk.Config.events.DOOR ) {
                 newData.spawn = parseInt( data.spawn, 10 );
+            }
+
+            if ( data.sound ) {
+                newData.sound = `assets/sounds/${data.sound}`;
             }
 
             this.map.events.push( newData );
