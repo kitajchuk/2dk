@@ -468,7 +468,7 @@ class TopView extends GameBox {
             this.interact.mask.position.x = maskX;
             this.interact.mask.position.y = maskY;
 
-            if ( this.hero.isIdle() ) {
+            if ( this.hero.isIdle() && this.interact.mask.frame === this.interact.mask.data.stepsX - 1 ) {
                 this.interact.mask.paused = true;
             } else {
                 this.interact.mask.paused = false;
