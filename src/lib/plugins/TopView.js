@@ -1130,6 +1130,9 @@ class TopView extends GameBox {
                     },
                 }, this.map );
             }
+
+        } else if ( !maskTile && this.interact.mask ) {
+            this.interact.mask = null;
         }
     }
 
