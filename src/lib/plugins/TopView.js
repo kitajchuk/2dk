@@ -1107,21 +1107,14 @@ class TopView extends GameBox {
         }
 
         // Friction is a divider, it will slow you down a bit...
-        const frictionTiles = tiles.passive.filter( ( tile ) => tile.instance.data.friction );
-        const frictionAmount = Math.ceil( frictionTiles.reduce( ( total, tile ) => {
-            return total + tile.amount;
-        }, 0 ) );
-
-        if ( frictionTiles.length && frictionAmount >= 100 ) {
-            frictionTiles.forEach( ( tile ) => {
-                this.hero.physics.maxv = this.hero.physics.controlmaxv / tile.instance.data.friction;
-            });
-
-        } else {
-            this.hero.resetMaxV();
-        }
+        this.handleFrictionTiles( tiles );
 
         // Mask is a reference to an FX, it will render above the hero sprite...
+        this.handleMaskTiles( tiles );
+    }
+
+
+    handleMaskTiles ( tiles ) {
         const maskTiles = tiles.passive.filter( ( tile ) => tile.instance.data.mask );
         const maskTile = maskTiles.find( ( tile ) => tile.instance.data.mask );
         const maskAmount = Math.ceil( maskTiles.reduce( ( total, tile ) => {
@@ -1143,6 +1136,23 @@ class TopView extends GameBox {
 
         } else if ( ( !maskTile || maskAmount < 100 ) && this.interact.mask ) {
             this.interact.mask = null;
+        }
+    }
+
+
+    handleFrictionTiles ( tiles ) {
+        const frictionTiles = tiles.passive.filter( ( tile ) => tile.instance.data.friction );
+        const frictionAmount = Math.ceil( frictionTiles.reduce( ( total, tile ) => {
+            return total + tile.amount;
+        }, 0 ) );
+
+        if ( frictionTiles.length && frictionAmount >= 100 ) {
+            frictionTiles.forEach( ( tile ) => {
+                this.hero.physics.maxv = this.hero.physics.controlmaxv / tile.instance.data.friction;
+            });
+
+        } else if ( this.canHeroResetMaxV() ) {
+            this.hero.resetMaxV();
         }
     }
 
