@@ -17,7 +17,6 @@ class NPC extends Sprite {
         this.attacked = false;
         
         // AI things...
-        this.controls = {};
         // Initial cooldown period upon spawn (don't immediately move)
         // requestAnimationFrame runs 60fps so we use (60 * seconds)
         this.counter = this.data.ai ? 60 : 0;
@@ -77,7 +76,7 @@ class NPC extends Sprite {
             return;
         }
 
-        this.gamebox.handleControls( this.controls, this );
+        this.handleControls();
         this.handleAI();
         this.updateStack();
     }
@@ -98,7 +97,7 @@ class NPC extends Sprite {
             collision.map ||
             collision.npc ||
             collision.hero ||
-            this.gamebox.canHeroTileStop( poi, null, collision )
+            this.canTileStop( poi, null, collision )
         );
 
         // Roaming NPCs can push the hero back...

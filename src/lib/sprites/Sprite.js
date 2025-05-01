@@ -71,6 +71,13 @@ class Sprite {
         this.previousElapsed = null;
         this.resetElapsed = false;
         this.frameStopped = false;
+        // Used for things like NPCs or Heros that need controls
+        this.controls = {
+            left: false,
+            right: false,
+            up: false,
+            down: false,
+        };
     }
 
 
@@ -118,6 +125,36 @@ class Sprite {
 
     isJumping () {
         return this.position.z < 0;
+    }
+
+
+/*******************************************************************************
+* Controls
+*******************************************************************************/
+    handleControls () {
+        if ( this.controls.left ) {
+            this.physics.vx = Utils.limit( this.physics.vx - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.idle.x = false;
+
+        } else if ( this.controls.right ) {
+            this.physics.vx = Utils.limit( this.physics.vx + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.idle.x = false;
+
+        } else {
+            this.idle.x = true;
+        }
+
+        if ( this.controls.up ) {
+            this.physics.vy = Utils.limit( this.physics.vy - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.idle.y = false;
+
+        } else if ( this.controls.down ) {
+            this.physics.vy = Utils.limit( this.physics.vy + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.idle.y = false;
+
+        } else {
+            this.idle.y = true;
+        }
     }
 
 
@@ -458,6 +495,23 @@ class Sprite {
             width: this.footbox.width,
             height: this.footbox.height,
         };
+    }
+
+
+/*******************************************************************************
+* Checks
+*******************************************************************************/
+    canTileStop ( poi, dir, collision ) {
+        return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
+            return tile.stop;
+        }) );
+    }
+
+
+    canTileFall ( poi, dir, collision ) {
+        return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
+            return tile.fall && Utils.contains( tile.tilebox, this.footbox );
+        }) );
     }
 }
 

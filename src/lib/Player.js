@@ -1,10 +1,10 @@
 import Utils from "./Utils";
 import Config from "./Config";
 import GamePad from "./GamePad";
-import TopView from "./plugins/TopView";
 import GameAudio from "./GameAudio";
 import Loader from "./Loader";
 import Controller from "./Controller";
+import TopView from "./plugins/TopView";
 
 
 

@@ -155,21 +155,6 @@ class GameBox {
     }
 
 
-    initMap () {
-        this.update( this.hero.position );
-        this.hero.applyOffset();
-        this.player.gameaudio.addSound({
-            id: this.map.data.id,
-            src: this.map.data.sound,
-            channel: "bgm",
-        });
-        this.currentMusic = this.map.data.id;
-        this.dialogue.auto({
-            text: [this.map.data.name],
-        });
-    }
-
-
 /*******************************************************************************
 * Rendering
 Can all be handled in plugin GameBox
@@ -516,6 +501,81 @@ Can all be handled in plugin GameBox
         }
 
         return false;
+    }
+
+
+/*******************************************************************************
+* Map Switching
+*******************************************************************************/
+    initMap () {
+        this.update( this.hero.position );
+        this.hero.applyOffset();
+        this.player.gameaudio.addSound({
+            id: this.map.data.id,
+            src: this.map.data.sound,
+            channel: "bgm",
+        });
+        this.currentMusic = this.map.data.id;
+        this.dialogue.auto({
+            text: [this.map.data.name],
+        });
+    }
+
+
+    changeMap ( event ) {
+        // Pause the Player so no game buttons dispatch
+        this.player.pause();
+
+        // Fade out...
+        this.player.element.classList.add( "is-fader" );
+
+        // Emit map change event
+        this.player.emit( Config.broadcast.MAPEVENT, event );
+
+        setTimeout( () => {
+            // New Map data
+            const newMapData = Loader.cash( event.map );
+            const newHeroPos = this.hero.getPositionForNewMap();
+
+            // Set a spawn index...
+            this.hero.position.x = ( Utils.def( event.spawn ) ? newMapData.spawn[ event.spawn ].x : newHeroPos.x );
+            this.hero.position.y = ( Utils.def( event.spawn ) ? newMapData.spawn[ event.spawn ].y : newHeroPos.y );
+
+            // Destroy old Map
+            this.map.destroy();
+
+            // Create new Map
+            this.map = new Map( newMapData, this );
+            this.hero.map = this.map;
+
+            // Initialize the new Map
+            // Applies new hero offset!
+            // Plays the new map's music
+            this.initMap();
+
+            // Handle the `dropin` effect
+            if ( this.dropin ) {
+                this.hero.position.z = -( this.camera.height / 2 );
+            }
+
+            // Create a new Companion
+            if ( this.companion ) {
+                const newCompanionData = structuredClone( this.hero.data.companion );
+                newCompanionData.spawn = {
+                    x: this.hero.position.x,
+                    y: this.hero.position.y,
+                };
+                this.companion.destroy();
+                this.companion = new Companion( newCompanionData, this.hero );
+            }
+
+            // Fade in...
+            this.player.element.classList.remove( "is-fader" );
+
+            // Resume game blit cycle...
+            this.player.resume();
+
+        }, 1000 );
     }
 }
 

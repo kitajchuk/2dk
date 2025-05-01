@@ -11,6 +11,8 @@ class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
         this.layer = "heroground";
+        // Hero controls are defined by the Player
+        this.controls = this.gamebox.player.controls;
     }
 
 
@@ -44,7 +46,7 @@ class Hero extends Sprite {
 *******************************************************************************/
     update () {
         // Handle player controls
-        this.gamebox.handleControls( this.gamebox.player.controls, this );
+        this.handleControls();
 
         // The physics stack...
         this.handleVelocity();
@@ -176,6 +178,112 @@ class Hero extends Sprite {
             width: this.data.weapon[ this.dir ][ this.frame ].width,
             height: this.data.weapon[ this.dir ][ this.frame ].height
         };
+    }
+
+
+    getPositionForNewMap () {
+        if ( this.dir === "down" ) {
+            return {
+                x: this.position.x,
+                y: 0,
+                z: 0,
+            };
+        }
+
+        if ( this.dir === "up" ) {
+            return {
+                x: this.position.x,
+                y: this.map.height - this.height,
+                z: 0,
+            };
+        }
+
+        if ( this.dir === "right" ) {
+            return {
+                x: 0,
+                y: this.position.y,
+                z: 0,
+            };
+        }
+
+        if ( this.dir === "left" ) {
+            return {
+                x: this.map.width - this.width,
+                y: this.position.y,
+                z: 0,
+            };
+        }
+    }
+
+
+/*******************************************************************************
+* Checks
+*******************************************************************************/
+    canMoveWhileJumping ( poi, dir, collision ) {
+        return (
+            !collision.map &&
+            !collision.npc &&
+            !collision.camera &&
+            !( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
+                return tile.stop;
+            }) )
+        );
+    }
+
+
+    canResetMaxV () {
+        return ( this.physics.maxv !== this.physics.controlmaxv && !this.is( Config.verbs.LIFT ) );
+    }
+
+
+    canEventDoor ( poi, dir, collision ) {
+        return ( collision.event.type === Config.events.DOOR );
+    }
+
+
+    canEventBoundary ( poi, dir, collision ) {
+        return ( collision.event.type === Config.events.BOUNDARY && collision.camera );
+    }
+
+
+    canEventDialogue ( poi, dir, collision ) {
+        return ( collision.event.type === Config.events.DIALOGUE && collision.event.payload );
+    }
+
+
+    canLift ( poi, dir ) {
+        return ( dir === Config.opposites[ this.dir ] );
+    }
+
+
+    canTileJump ( poi, dir, collision ) {
+        const hasPassiveTiles = collision.tiles && collision.tiles.passive.length;
+
+        if ( this.is( Config.verbs.LIFT ) || !hasPassiveTiles ) {
+            return false;
+        }
+
+        const jumpTiles = collision.tiles.passive.filter( ( tile ) => tile.jump );
+
+        if ( !jumpTiles.length ) {
+            return false;
+        }
+
+        const firstJumpTile = jumpTiles[ 0 ];
+
+        if ( jumpTiles.length > 1 ) {
+            return jumpTiles.every( ( tile ) => {
+                return tile.instance.canInteract( Config.verbs.JUMP ).dir === dir;
+            });
+        }
+
+        return (
+            (
+                firstJumpTile.collides.width > ( firstJumpTile.tilebox.width / 2 ) ||
+                firstJumpTile.collides.height > ( firstJumpTile.tilebox.height / 2 )
+            ) &&
+            firstJumpTile.instance.canInteract( Config.verbs.JUMP ).dir === dir
+        );
     }
 }
 
