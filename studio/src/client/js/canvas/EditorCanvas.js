@@ -1006,19 +1006,47 @@ class EditorCanvas {
     }
 
 
+    renderNPCMenu ( coords, extraData ) {
+        this.editor.menus.renderMenu( "editor-npc-menu", {
+            ais: Utils.getOptionData( window.lib2dk.Config.npc ),
+            coords,
+            actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
+            dialogue: Utils.getOptionData( window.lib2dk.Config.dialogue.types ),
+            mouseCoords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
+            ...extraData,
+        });
+    }
+
+
     applyNPC ( coords ) {
         if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             this._applyObjectOrNPC( coords, this.currentNPC );
 
+        } else if ( this.editor.actions.mode === Config.EditorActions.modes.SELECT ) {
+            this._editNPC( coords );    
+
         // When creating an NPC we want to provide a few more options before
         // calling the _applyObjectOrNPC method and passing extraData.
-        } else {
-            this.editor.menus.renderMenu( "editor-npc-menu", {
-                ais: Utils.getOptionData( window.lib2dk.Config.npc ),
-                coords,
-                dialogue: Utils.getOptionData( window.lib2dk.Config.dialogue.types ),
-                mouseCoords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
+        } else if ( this.currentNPC && this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
+            this.renderNPCMenu( coords );
+        }
+    }
+
+
+    _editNPC ( coords ) {
+        const targetNPC = this.map.npcs.find( ( mapNPC ) => {
+            const baseNPC = this.game.npcs.find( ( libNPC ) => libNPC.id === mapNPC.id );
+
+            return window.lib2dk.Utils.collide( this.getCursorPoint(), {
+                x: mapNPC.spawn.x,
+                y: mapNPC.spawn.y,
+                width: baseNPC.width,
+                height: baseNPC.height,
             });
+        });
+
+        if ( targetNPC ) {
+            this.renderNPCMenu( coords, { npcToEdit: targetNPC } );
         }
     }
 
@@ -1183,6 +1211,18 @@ class EditorCanvas {
                 extraData.ai = data.ai;
             }
 
+            if ( data.action1 || data.action2 ) {
+                extraData.actions = [];
+
+                if ( data.action1 ) {
+                    extraData.actions.push( data.action1 );
+                }
+
+                if ( data.action2 ) {
+                    extraData.actions.push( data.action2 );
+                }
+            }
+
             if ( data.dialogue ) {
                 extraData.payload = {
                     dialogue: {
@@ -1208,12 +1248,34 @@ class EditorCanvas {
                 }
             }
 
-            const renderCoords = this.dom.snapNPCToGrid.checked ? [
-                coords[ 0 ] * this.map.tilesize,
-                coords[ 1 ] * this.map.tilesize,
-            ] : mouseCoords;
+            if ( this.editor.actions.mode === Config.EditorActions.modes.SELECT ) {
+                this.map.npcs = this.map.npcs.reduce( ( acc, npc ) => {
+                    if ( 
+                        npc.spawn.x === mouseCoords[ 0 ] && 
+                        npc.spawn.y === mouseCoords[ 1 ]
+                    ) {
+                        acc.push({
+                            id: npc.id,
+                            spawn: npc.spawn,
+                            ...extraData,
+                        });
 
-            this._applyObjectOrNPC( renderCoords, this.currentNPC, extraData );
+                    } else {
+                        acc.push( npc );
+                    }
+
+                    return acc;
+                }, []);
+
+            } else {
+                const renderCoords = this.dom.snapNPCToGrid.checked ? [
+                    coords[ 0 ] * this.map.tilesize,
+                    coords[ 1 ] * this.map.tilesize,
+                ] : mouseCoords;
+    
+                this._applyObjectOrNPC( renderCoords, this.currentNPC, extraData );
+            }
+
             this.editor.menus.removeMenus();
         });
     }

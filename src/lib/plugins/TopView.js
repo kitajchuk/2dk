@@ -944,6 +944,7 @@ class TopView extends GameBox {
             tiles: this.checkTiles( poi, weaponBox ),
         };
 
+        // TODO: Check if the NPC has the "attack" action rather than just checking that it has an "ai"
         if ( collision.npc && collision.npc.data.ai && !this.interact.npc ) {
             const destPos = {};
 

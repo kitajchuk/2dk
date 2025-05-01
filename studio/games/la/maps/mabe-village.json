@@ -190,6 +190,10 @@
                 "x": 1600,
                 "y": 704
             },
+            "actions": [
+                "push",
+                "pull"
+            ],
             "payload": {
                 "dialogue": {
                     "type": "text",

@@ -19,7 +19,9 @@ const npcReference = {
                 text: []
             }
         }
-    }
+    },
+    // As in VERB
+    actions: undefined || []
 };
 
 const verbFrame = {
