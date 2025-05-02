@@ -111,12 +111,27 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                     </span>
                 </div>
             </div>
-            <div class="editor__setting">
-                <div class="editor__checkbox">
-                    <label class="checkbox">
-                        <input class="check js-activetile-field" type="checkbox" name="attack" />
-                        <span class="label">Attack (for secondary "attack" action if another action is selected, e.g. something that can be lifted can also be attacked)</span>
-                    </label>
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__checkbox">
+                        <label class="checkbox">
+                            <input class="check js-activetile-field" type="checkbox" name="attack" />
+                            <span class="label">Attack (for secondary "attack" action)</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <div class="select">
+                        <select class="select__field js-activetile-field js-select" name="fx">
+                            <option value="">FX (for attack action)</option>
+                            ${game.fx.map( ( fx ) => `
+                                <option value="${fx.id}">${fx.name}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="editor__setting">

@@ -66,20 +66,6 @@
             ]
         },
         {
-            "group": "shrub",
-            "layer": "background",
-            "offsetX": 0,
-            "offsetY": 512,
-            "actions": [
-                {
-                    "verb": "lift"
-                },
-                {
-                    "verb": "attack"
-                }
-            ]
-        },
-        {
             "group": "ledge",
             "layer": "background",
             "offsetX": 448,
@@ -97,6 +83,21 @@
             "offsetX": 256,
             "offsetY": 384,
             "friction": 2
+        },
+        {
+            "group": "shrubs",
+            "layer": "background",
+            "offsetX": 0,
+            "offsetY": 512,
+            "actions": [
+                {
+                    "verb": "lift"
+                },
+                {
+                    "verb": "attack",
+                    "fx": "leaves"
+                }
+            ]
         }
     ],
     "events": [

@@ -1422,9 +1422,15 @@ class EditorCanvas {
 
                 // Secondary action for attack
                 if ( data.attack && !isAttack && !isJump ) {
-                    newData.actions.push({
+                    const secondAction = {
                         verb: window.lib2dk.Config.verbs.ATTACK,
-                    });
+                    };
+
+                    if ( data.fx ) {
+                        secondAction.fx = data.fx;
+                    }
+
+                    newData.actions.push( secondAction );
                 }
             }
 
