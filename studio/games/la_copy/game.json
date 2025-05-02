@@ -414,75 +414,6 @@
     ],
     "npcs": [
         {
-            "id": "octorok",
-            "name": "Octorok",
-            "width": 68,
-            "height": 68,
-            "image": "assets/sprites/npcs.png",
-            "verb": "walk",
-            "maxv": 1,
-            "controlmaxv": 1,
-            "hitbox": {
-                "x": 2,
-                "y": 2,
-                "width": 64,
-                "height": 64
-            },
-            "stats": {
-                "power": 1,
-                "health": 1
-            },
-            "verbs": {
-                "face": {
-                    "left": {
-                        "offsetX": 0,
-                        "offsetY": -274
-                    },
-                    "down": {
-                        "offsetX": -138,
-                        "offsetY": -274
-                    },
-                    "up": {
-                        "offsetX": -274,
-                        "offsetY": -274
-                    },
-                    "right": {
-                        "offsetX": -410,
-                        "offsetY": -274
-                    }
-                },
-                "walk": {
-                    "dur": 500,
-                    "left": {
-                        "offsetX": 0,
-                        "offsetY": -274,
-                        "stepsX": 2
-                    },
-                    "down": {
-                        "offsetX": -138,
-                        "offsetY": -274,
-                        "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": -274,
-                        "offsetY": -274,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": -410,
-                        "offsetY": -274,
-                        "stepsX": 2
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "walk",
-                    "dir": "down"
-                }
-            ]
-        },
-        {
             "id": "ghost",
             "name": "Ghost",
             "width": 68,
@@ -686,50 +617,6 @@
             ]
         },
         {
-            "id": "chest",
-            "name": "Chest",
-            "width": 64,
-            "height": 64,
-            "image": "assets/tiles/tiles.png",
-            "verb": "closed",
-            "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 64,
-                "height": 64
-            },
-            "verbs": {
-                "closed": {
-                    "down": {
-                        "offsetX": 704,
-                        "offsetY": 768
-                    }
-                },
-                "open": {
-                    "down": {
-                        "offsetX": 704,
-                        "offsetY": 832
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "closed",
-                    "dir": "down",
-                    "action": {
-                        "verb": "open",
-                        "dir": "up",
-                        "shift": 1,
-                        "sound": "chest"
-                    }
-                },
-                {
-                    "verb": "open",
-                    "dir": "down"
-                }
-            ]
-        },
-        {
             "id": "bird-statue",
             "name": "Bird Statue",
             "width": 64,
@@ -759,33 +646,6 @@
                         "verb": "read",
                         "dir": "up"
                     }
-                }
-            ]
-        },
-        {
-            "id": "moblin-camp",
-            "name": "Moblin Camp",
-            "width": 128,
-            "height": 128,
-            "image": "assets/tiles/tiles.png",
-            "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 128,
-                "height": 128
-            },
-            "verbs": {
-                "face": {
-                    "down": {
-                        "offsetX": 256,
-                        "offsetY": 2304
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "face",
-                    "dir": "down"
                 }
             ]
         }

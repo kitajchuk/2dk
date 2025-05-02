@@ -1,4 +1,5 @@
 import Config from "../Config";
+import FX from "../sprites/FX";
 
 
 
@@ -69,16 +70,19 @@ class ActiveTiles {
     }
 
 
-    attack ( coords ) {
+    attack ( coords, action ) {
         this.splice( coords );
-        this.map.gamebox.smokeObject({
+
+        const obj = {
             position: {
                 x: coords[ 0 ] * this.map.data.tilesize,
                 y: coords[ 1 ] * this.map.data.tilesize,
             },
             width: this.map.data.tilesize,
             height: this.map.data.tilesize,
-        });
+        };
+        
+        this.map.gamebox.smokeObject( obj, action?.fx );
     }
 
 

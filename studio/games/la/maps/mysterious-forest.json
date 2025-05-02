@@ -82,6 +82,7 @@
                     "verb": "lift"
                 },
                 {
+                    "fx": "leaves",
                     "verb": "attack"
                 }
             ]

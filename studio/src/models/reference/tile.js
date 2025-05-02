@@ -11,7 +11,8 @@ module.exports = {
     actions: undefined || [
         {
             verb: "",
-            dir: ""
+            dir: undefined || "",
+            fx: undefined || ""
         }
     ]
 };

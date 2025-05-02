@@ -1077,8 +1077,10 @@ class TopView extends GameBox {
 
 
     handleHeroTileAttack ( poi, dir, tile ) {
-        if ( tile.instance.canAttack() ) {
-            tile.instance.attack( tile.coord );
+        const attackAction = tile.instance.canAttack();
+
+        if ( attackAction ) {
+            tile.instance.attack( tile.coord, attackAction );
         }
     }
 
@@ -1144,7 +1146,8 @@ class TopView extends GameBox {
 
 
     handleThrew () {
-        this.smokeObject( this.interact.tile.sprite );
+        const attackAction = this.interact.tile.instance.canAttack();
+        this.smokeObject( this.interact.tile.sprite, attackAction?.fx );
         this.player.gameaudio.hitSound( Config.verbs.SMASH );
         this.map.killObj( "npcs", this.interact.tile.sprite );
         this.interact.tile = null;

@@ -182,14 +182,15 @@ Can all be handled in plugin GameBox
 /*******************************************************************************
 * FX utilities
 *******************************************************************************/
-    smokeObject ( obj ) {
+    smokeObject ( obj, fx = "smoke" ) {
+        const origin = {
+            x: obj.position.x + ( obj.width / 2 ) - ( this.map.data.tilesize / 2 ),
+            y: obj.position.y + ( obj.height / 2 ) - ( this.map.data.tilesize / 2 ),
+        };
         const data = this.player.getMergedData({
-            id: "smoke",
+            id: fx,
             kill: true,
-            spawn: {
-                x: obj.position.x + ( obj.width / 2 ) - ( this.map.data.tilesize / 2 ),
-                y: obj.position.y + ( obj.height / 2 ) - ( this.map.data.tilesize / 2 ),
-            },
+            spawn: origin,
         }, "fx" );
 
         this.map.addFX( new FX( data, this.map ) );

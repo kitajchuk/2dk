@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 788,
+    "save": 790,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -724,7 +724,7 @@
             "name": "Moblin Camp",
             "width": 128,
             "height": 128,
-            "image": "assets/tiles/tiles.png",
+            "image": "assets/sprites/npcs.png",
             "hitbox": {
                 "x": 0,
                 "y": 0,
@@ -734,8 +734,8 @@
             "verbs": {
                 "face": {
                     "down": {
-                        "offsetX": 256,
-                        "offsetY": 2304
+                        "offsetX": 4,
+                        "offsetY": 344
                     }
                 }
             },
@@ -772,6 +772,18 @@
             "offsetY": 64,
             "stepsX": 2,
             "dur": 250
+        },
+        {
+            "id": "leaves",
+            "name": "Leaves",
+            "width": 64,
+            "height": 64,
+            "layer": "foreground",
+            "image": "assets/sprites/fx.png",
+            "offsetX": 0,
+            "offsetY": 128,
+            "stepsX": 2,
+            "dur": 500
         }
     ],
     "bundle": [
