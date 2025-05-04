@@ -1,6 +1,6 @@
 {
-    "short_name": "PK: 117",
-    "name": "PK: 117",
+    "short_name": "PK",
+    "name": "PK",
     "icons": [
       {
         "src": "favicon.ico",
@@ -32,5 +32,5 @@
     "start_url": ".",
     "display": "standalone",
     "theme_color": "#000000",
-    "background_color": "#ffffff"
+    "background_color": "#000000"
   }
