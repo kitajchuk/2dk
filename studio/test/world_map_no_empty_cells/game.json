@@ -1,0 +1,7 @@
+{
+    "id": "world_map_no_empty_cells",
+    "name": "World Map No Empty Cells",
+    "hero": {
+        "map": "maps/map-2-1.json"
+    }
+}
