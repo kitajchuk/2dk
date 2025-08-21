@@ -32,7 +32,7 @@ To develop clone this repo and then:
 yarn
 
 # Run local dev server for static frontend
-# Runs watch scripts for all resources for an easy dev experience at localhost:5050
+# Runs watch scripts for all resources for an easy dev experience at localhost:8000
 yarn dev
 ```
 

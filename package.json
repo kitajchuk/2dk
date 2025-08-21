@@ -20,13 +20,13 @@
   ],
   "main": "./src/lib/index.js",
   "scripts": {
-    "predev": "rm -rf dist && mkdir dist && yarn copy:games && yarn build",
+    "predev": "rm -rf dist && mkdir dist && mkdir dist/games && yarn copy:games && yarn build",
     "dev": "concurrently \"yarn serve:dev\" \"yarn watch\"",
     "serve:dev": "esbuild --servedir=dist",
     "watch": "concurrently \"yarn watch:src\" \"yarn watch:studio\" \"yarn watch:games\"",
     "watch:src": "chokidar \"src/**/*\" -c \"yarn build:2dk && yarn build:app && yarn copy\"",
     "watch:studio": "chokidar \"studio/src/client/**/*.scss\" -c \"yarn build:studio\"",
-    "watch:games": "chokidar \"studio/games/**/*.json\" -c \"yarn copy:games\"",
+    "watch:games": "chokidar \"studio/games/**/*\" -c \"yarn copy:games\"",
     "prebuild": "rm -rf dist && mkdir dist",
     "build": "yarn build:dist && yarn build:2dk && yarn build:app && yarn build:studio",
     "postbuild": "yarn copy && node games.js",
@@ -36,11 +36,12 @@
     "postbuild:2dk": "sass --no-source-map --style=compressed ./src/styles/2dk.scss ./studio/src/templates/2dk.css",
     "build:app": "esbuild ./src/app.js --bundle --minify --target=esnext --outfile=./studio/src/templates/app.js",
     "build:studio": "sass --no-source-map --style=compressed ./studio/src/client/styles/studio.scss ./studio/public/css/studio.css",
-    "copy": "yarn copy:la && yarn copy:la_copy && yarn copy:pk && yarn copy:games",
-    "copy:la": "cp studio/src/templates/2dk.css studio/games/la && cp studio/src/templates/app.js studio/games/la",
-    "copy:la_copy": "cp studio/src/templates/2dk.css studio/games/la_copy && cp studio/src/templates/app.js studio/games/la_copy",
-    "copy:pk": "cp studio/src/templates/2dk.css studio/games/pk && cp studio/src/templates/app.js studio/games/pk",
-    "copy:games": "cp -R studio/games dist"
+    "copy": "yarn copy:la && yarn copy:la_copy && yarn copy:la_cellauto && yarn copy:pk && yarn copy:games",
+    "copy:la": "cp ./studio/src/templates/2dk.css ./studio/games/la && cp ./studio/src/templates/app.js ./studio/games/la",
+    "copy:la_copy": "cp ./studio/src/templates/2dk.css ./studio/games/la_copy && cp ./studio/src/templates/app.js ./studio/games/la_copy",
+    "copy:la_cellauto": "cp ./studio/src/templates/2dk.css ./studio/games/la_cellauto && cp ./studio/src/templates/app.js ./studio/games/la_cellauto",
+    "copy:pk": "cp ./studio/src/templates/2dk.css ./studio/games/pk && cp ./studio/src/templates/app.js ./studio/games/pk",
+    "copy:games": "cp -R ./studio/games/ ./dist/games/"
   },
   "devDependencies": {
     "chokidar-cli": "^3.0.0",

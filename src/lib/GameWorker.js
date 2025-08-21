@@ -26,7 +26,7 @@ class GameWorker {
 
     register () {
         if ( Utils.dev() ) {
-            Utils.log( "[2dk] Skip service worker for studio dev demo!" );
+            Utils.log( "Skip service worker for studio dev demo!" );
             return;
         }
 
@@ -37,7 +37,7 @@ class GameWorker {
                 // ensure the case when the updatefound event was missed is also handled
                 // by re-invoking the prompt when there's a waiting Service Worker
                 if ( registration.waiting ) {
-                    Utils.log( "[2dk] Service worker installed." );
+                    Utils.log( "Service worker installed." );
                     this.update( registration );
                 }
 
@@ -52,7 +52,7 @@ class GameWorker {
                                     this.update( registration );
                                 } else {
                                     // otherwise it's the first install, nothing to do
-                                    Utils.log( "[2dk] Service worker initialized for the first time" );
+                                    Utils.log( "Service worker initialized for the first time" );
                                 }
                             }
                         })
@@ -70,10 +70,10 @@ class GameWorker {
                 });
 
             }).catch( ( error ) => {
-                Utils.error( `[2dk] Service worker failed with ${error}` );
+                Utils.error( `Service worker failed with ${error}` );
             });
         } else {
-            Utils.log( "[2dk] Service workers not available!" );
+            Utils.log( "Service workers not available!" );
         }
     }
 
@@ -82,7 +82,7 @@ class GameWorker {
         navigator.serviceWorker.getRegistrations().then( ( registrations ) => {
             registrations.forEach( ( registration ) => {
                 registration.unregister().then( ( bool ) => {
-                    Utils.log( "[2dk] Unregistered Service Worker", bool );
+                    Utils.log( "Unregistered Service Worker", bool );
                 });
             });
         });

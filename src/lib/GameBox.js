@@ -7,6 +7,7 @@ import MapLayer from "./maps/MapLayer";
 import Hero from "./sprites/Hero";
 import Companion from "./sprites/Companion";
 import FX from "./sprites/FX";
+import CellAutoMap from "./maps/CellAutoMap";
 
 
 
@@ -68,43 +69,62 @@ class GameBox {
             foreground: null,
         };
 
-        const initMapData = Loader.cash( this.player.heroData.map );
-        const initHeroData = this.player.heroData;
+        let initMapData = Loader.cash( this.player.heroData.map );
+        let initHeroData = this.player.heroData;
 
-        // Map
-        this.map = new Map( initMapData, this );
+        const _init = () => {
+            // Map
+            this.map = new Map( initMapData, this );
 
-        // Hero
-        initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
-        this.hero = new Hero( initHeroData, this.map );
+            // Hero
+            initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
+            this.hero = new Hero( initHeroData, this.map );
 
-        Object.keys( initHeroData.sounds ).forEach( ( id ) => {
-            this.player.gameaudio.addSound({
-                id,
-                src: initHeroData.sounds[ id ],
-                channel: "sfx",
+            Object.keys( initHeroData.sounds ).forEach( ( id ) => {
+                this.player.gameaudio.addSound({
+                    id,
+                    src: initHeroData.sounds[ id ],
+                    channel: "sfx",
+                });
             });
-        });
 
-        // Companion?
-        if ( initHeroData.companion ) {
-            initHeroData.companion = this.player.getMergedData( initHeroData.companion, "npcs" );
-            initHeroData.companion.spawn = {
-                x: this.hero.position.x,
-                y: this.hero.position.y,
-            };
+            // Companion?
+            if ( initHeroData.companion ) {
+                initHeroData.companion = this.player.getMergedData( initHeroData.companion, "npcs" );
+                initHeroData.companion.spawn = {
+                    x: this.hero.position.x,
+                    y: this.hero.position.y,
+                };
 
-            this.companion = new Companion( initHeroData.companion, this.hero );
+                this.companion = new Companion( initHeroData.companion, this.hero );
+            }
+
+            // Dialogues
+            this.dialogue = new Dialogue( this );
+
+            // Sounds
+            this.currentMusic = null;
+
+            this.build();
+            this.initMap();
+        };
+
+        // Cellular automata map
+        if ( initMapData.cellauto ) {
+            this.cellauto = new CellAutoMap();
+            this.cellauto.initialize( initMapData );
+            this.cellauto.generate( ( { textures } ) => {
+                initMapData.textures.background = textures;
+            }).then( ( { textures, spawn } ) => {
+                initMapData.textures.background = textures;
+                initMapData.spawn = [ spawn ];
+                Utils.log( "Cellauto map ready!" );
+                _init();
+            });
+            // Standard map
+        } else {
+            _init();
         }
-
-        // Dialogues
-        this.dialogue = new Dialogue( this );
-
-        // Sounds
-        this.currentMusic = null;
-
-        this.build();
-        this.initMap();
     }
 
 
@@ -332,12 +352,20 @@ Can all be handled in plugin GameBox
     checkCamera ( poi, sprite ) {
         let ret = false;
 
-        if ( poi.x <= this.camera.x || poi.x >= ( this.camera.x + this.camera.width - sprite.width ) ) {
-            ret = true;
+        if ( poi.x <= this.camera.x ) {
+            ret = "left";
         }
 
-        if ( poi.y <= this.camera.y || poi.y >= ( this.camera.y + this.camera.height - sprite.height ) ) {
-            ret = true;
+        if ( poi.x >= ( this.camera.x + this.camera.width - sprite.width ) ) {
+            ret = "right";
+        }
+
+        if ( poi.y <= this.camera.y ) {
+            ret = "up";
+        }
+
+        if ( poi.y >= ( this.camera.y + this.camera.height - sprite.height ) ) {
+            ret = "down";
         }
 
         return ret;
@@ -523,15 +551,44 @@ Can all be handled in plugin GameBox
     }
 
 
+    afterChangeMap ( newMapData ) {
+        // Destroy old Map
+        this.map.destroy();
+
+        // Create new Map
+        this.map = new Map( newMapData, this );
+        this.hero.map = this.map;
+
+        // Initialize the new Map
+        // Applies new hero offset!
+        // Plays the new map's music
+        this.initMap();
+
+        // Create a new Companion
+        if ( this.companion ) {
+            const newCompanionData = structuredClone( this.hero.data.companion );
+            newCompanionData.spawn = {
+                x: this.hero.position.x,
+                y: this.hero.position.y,
+            };
+            this.companion.destroy();
+            this.companion = new Companion( newCompanionData, this.hero );
+        }
+
+        // Fade in...
+        this.player.fadeIn();
+
+        // Resume game blit cycle...
+        this.player.resume();
+    }
+
+
     changeMap ( event ) {
         // Pause the Player so no game buttons dispatch
         this.player.pause();
 
         // Fade out...
-        this.player.element.classList.add( "is-fader" );
-
-        // Emit map change event
-        this.player.emit( Config.broadcast.MAPEVENT, event );
+        this.player.fadeOut();
 
         setTimeout( () => {
             // New Map data
@@ -542,39 +599,39 @@ Can all be handled in plugin GameBox
             this.hero.position.x = ( Utils.def( event.spawn ) ? newMapData.spawn[ event.spawn ].x : newHeroPos.x );
             this.hero.position.y = ( Utils.def( event.spawn ) ? newMapData.spawn[ event.spawn ].y : newHeroPos.y );
 
-            // Destroy old Map
-            this.map.destroy();
+            this.afterChangeMap( newMapData );
 
-            // Create new Map
-            this.map = new Map( newMapData, this );
-            this.hero.map = this.map;
+        }, 1000 );
+    }
 
-            // Initialize the new Map
-            // Applies new hero offset!
-            // Plays the new map's music
-            this.initMap();
 
-            // Handle the `dropin` effect
-            if ( this.dropin ) {
-                this.hero.position.z = -( this.camera.height / 2 );
-            }
+    changeCellautoMap ( poi, dir, collision ) {
+        // Pause the Player so no game buttons dispatch
+        this.player.pause();
 
-            // Create a new Companion
-            if ( this.companion ) {
-                const newCompanionData = structuredClone( this.hero.data.companion );
-                newCompanionData.spawn = {
-                    x: this.hero.position.x,
-                    y: this.hero.position.y,
-                };
-                this.companion.destroy();
-                this.companion = new Companion( newCompanionData, this.hero );
-            }
+        // Fade out...
+        this.player.fadeOut();
 
-            // Fade in...
-            this.player.element.classList.remove( "is-fader" );
+        setTimeout( () => {
+            // New Map data (keep reusing the same map for cellauto)
+            const newMapData = Loader.cash( this.hero.data.map );
 
-            // Resume game blit cycle...
-            this.player.resume();
+            // Set a new position...
+            this.hero.position = this.hero.getPositionForNewMap();
+
+            // TODO: Fix the new map spawn area so hero doesn't spawn into collision
+
+            this.cellauto.initialize( newMapData );
+            this.cellauto.generate( ( { textures } ) => {
+                newMapData.textures.background = textures;
+            }).then( ( { textures, spawn } ) => {
+                newMapData.textures.background = textures;
+                newMapData.spawn = [ spawn ];
+                this.hero.dir = dir;
+                this.hero.position.x = spawn.x;
+                this.hero.position.y = spawn.y;
+                this.afterChangeMap( newMapData );
+            });
 
         }, 1000 );
     }
