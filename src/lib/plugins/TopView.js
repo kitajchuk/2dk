@@ -477,6 +477,11 @@ class TopView extends GameBox {
 
         if ( collision.camera ) {
             this.handleHeroCamera( poi, dir );
+
+            if ( this.map.data.cellauto ) {
+                this.handleHeroEdgeBoundary( poi, dir, collision );
+            }
+
             return;
         }
 
@@ -716,15 +721,26 @@ class TopView extends GameBox {
 
 
     handleHeroEventDoor ( poi, dir, event ) {
-        this.changeMap( event );
         this.player.stop();
+        this.changeMap( event );
     }
 
 
     handleHeroEventBoundary ( poi, dir, event ) {
-        this.changeMap( event );
         this.player.stop();
+        this.changeMap( event );
     }
+
+
+    handleHeroEdgeBoundary ( poi, dir, collision ) {
+        if ( collision.camera !== dir ) {
+            return;
+        }
+
+        this.player.stop();
+        this.changeCellautoMap( poi, dir, collision );
+    }
+
 
 
     handleHeroEventDialogue ( poi, dir, event ) {

@@ -18,6 +18,8 @@ import Player from "./Player";
 import Spring from "./Spring";
 import Tween, { Easing } from "./Tween";
 import Utils from "./Utils";
+import CellAuto from "./vendor/CellAuto";
+import CellAutoMap from "./maps/CellAutoMap";
 
 
 
@@ -41,10 +43,15 @@ const lib = {
     GamePad,
     Loader,
     Map, MapLayer, ActiveTiles,
+    CellAutoMap,
     Player,
     Spring,
     Tween, Easing,
     Utils,
+
+    // vendor
+    CellAuto,
+
 };
 
 

@@ -382,7 +382,7 @@ class Sprite {
 
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
             if ( this.is( Config.verbs.LIFT ) && this.isIdle() ) {
-                Utils.log( "static lift..." );
+                Utils.log( "Static lift..." );
 
             } else {
                 const diff = ( elapsed - this.previousElapsed );

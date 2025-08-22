@@ -238,6 +238,9 @@ class DB {
             map.image = `assets/tiles/${data.image}`;
             map.sound = data.sound ? `assets/sounds/${data.sound}` : map.sound;
 
+            // Null by default and cellauto data must be saved on update in the studio editor
+            map.cellauto = null;
+
             for ( let y = map.tileheight; y--; ) {
                 map.textures.background[ y ] = [];
                 map.textures.foreground[ y ] = [];
@@ -287,17 +290,26 @@ class DB {
             map.snapshot = `assets/snapshots/${map.id}.png`;
             map.thumbnail = `assets/snapshots/${map.id}-thumb.png`;
 
-            [
+            // This is the only place we save cellauto data from the studio editor
+            map.cellauto = data.cellauto || null;
+
+            const keys = [
                 "name",
                 "collision",
-                "textures",
                 "spawn",
                 "fx",
                 "tiles",
                 "events",
                 "npcs",
                 "objects"
-            ].forEach( ( key ) => {
+            ];
+
+            // Cellauto maps don't have saved textures
+            if ( !data.cellauto ) {
+                keys.push( "textures" );
+            }
+            
+            keys.forEach( ( key ) => {
                 map[ key ] = data[ key ] || map[ key ];
             });
             

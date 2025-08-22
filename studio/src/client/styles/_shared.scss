@@ -155,10 +155,11 @@ button {
     align-items: center;
     justify-content: center;
 }
-.button--slim {
+.button--pill {
     padding: 7px 14px 8px;
     background-color: var( --charcoal );
     border: 1px solid var( --blue );
+    border-radius: 100px;
     color: var( --blue );
 }
 .button.button--green {

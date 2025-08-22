@@ -43,6 +43,7 @@ class EditorCanvas {
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
             snapNPCToGrid: document.getElementById( "editor-npc-snap" ),
+            cellauto: document.getElementById( "editor-cellauto" ),
         };
         this.pickers = {
             all: document.querySelectorAll( ".js-picker" ),
@@ -79,17 +80,46 @@ class EditorCanvas {
 
         this.cursor = new EditorCursor( this );
         this.draggable = new EditorDraggable( this );
+        this.cellauto = new window.lib2dk.CellAutoMap();
 
         this.bindMenuEvents();
         this.bindMapgridEvents();
         this.bindColliderEvents();
         this.bindDocumentEvents();
         this.bindTilepaintEvents();
+        this.bindCellautoEvents();
 
         this.bindNPCMenuPost();
         this.bindMapEventMenuPost();
         this.bindActiveTilesMenuPost();
     }
+
+
+    // TODO: Move this function when it is finished...
+    bindCellautoEvents () {
+        this.dom.cellauto.addEventListener( "click", () => {
+            if ( !this.map.cellauto ) {
+                alert( "No cellauto data found" );
+                return;
+            }
+
+            const map = structuredClone( this.map );
+            const game = structuredClone( this.game );
+
+            this.reset();
+            this.loadMap( map, game );
+
+            this.cellauto.initialize( map );
+            this.cellauto.generate(( { textures } ) => {
+                this.map.textures.background = textures;
+                this.drawTextures();
+            }).then( ( { textures } ) => {
+                this.map.textures.background = textures;
+                this.drawTextures();
+            });
+        });
+    }
+
 
 
     hide ( l ) {

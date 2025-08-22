@@ -21,7 +21,20 @@
         "maxresolution": 2,
         "diagonaldpad": true,
         "icon": "icon.png",
-        "save": 785,
+        "save": 787,
+        "release": 1,
+        "plugin": "topview"
+    },
+    {
+        "id": "la_cellauto",
+        "name": "LA Cellauto",
+        "width": 1056,
+        "height": 704,
+        "resolution": 1,
+        "maxresolution": 2,
+        "diagonaldpad": true,
+        "icon": "icon.png",
+        "save": 788,
         "release": 1,
         "plugin": "topview"
     },

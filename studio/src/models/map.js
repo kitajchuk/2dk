@@ -19,6 +19,15 @@ module.exports = {
             dir: "down"
         }
     ],
+    cellauto: {
+        algo: "maze",
+        walls: {
+            // Texture reference
+        },
+        textures: [
+            // Texture reference
+        ],
+    },
     // FX reference (game.json)
     fx: [],
     tiles: [],
@@ -31,5 +40,5 @@ module.exports = {
     textures: {
         background: [],
         foreground: []
-    }
+    },
 };

@@ -17,12 +17,12 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 785,
+    "save": 787,
     "release": 1,
     "plugin": "topview",
     "hero": {
         "sprite": 0,
-        "spawn": 3,
+        "spawn": 0,
         "map": "maps/mabe-village.json",
         "sounds": {
             "lift": "assets/sounds/sfx-pick-up.mp3",
@@ -662,6 +662,30 @@
             "offsetY": 0,
             "stepsX": 5,
             "dur": 500
+        },
+        {
+            "id": "grass",
+            "name": "Grass",
+            "width": 64,
+            "height": 64,
+            "layer": "foreground",
+            "image": "assets/sprites/fx.png",
+            "offsetX": 0,
+            "offsetY": 64,
+            "stepsX": 2,
+            "dur": 250
+        },
+        {
+            "id": "leaves",
+            "name": "Leaves",
+            "width": 64,
+            "height": 64,
+            "layer": "foreground",
+            "image": "assets/sprites/fx.png",
+            "offsetX": 0,
+            "offsetY": 128,
+            "stepsX": 4,
+            "dur": 750
         }
     ],
     "bundle": [

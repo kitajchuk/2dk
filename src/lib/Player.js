@@ -159,6 +159,16 @@ class Player extends Controller {
     }
 
 
+    fadeOut () {
+        this.element.classList.add( "is-fader" );
+    }
+
+
+    fadeIn () {
+        this.element.classList.remove( "is-fader" );
+    }
+
+
     bind () {
         // Standard 4 point d-pad (action)
         this.gamepad.on( "left-press", this.onDpadPress.bind( this ) );

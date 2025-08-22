@@ -1,7 +1,3 @@
-import Config from "./Config";
-
-
-
 const Utils = {
     dev () {
         return /^file:|^http:\/\/(localhost|127\.0\.0\.1)/.test( window.location.href );
@@ -10,7 +6,7 @@ const Utils = {
 
     log ( ...args ) {
         if ( Utils.dev() ) {
-            console.log.apply( console, args );
+            console.log.apply( console, ["[2dk]", ...args] );
         }
     },
 
