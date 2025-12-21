@@ -50,5 +50,18 @@
         "save": 117,
         "release": 1,
         "plugin": "topview"
+    },
+    {
+        "id": "the_missing_link",
+        "name": "The Missing Link",
+        "width": 1056,
+        "height": 704,
+        "resolution": 1,
+        "maxresolution": 2,
+        "diagonaldpad": true,
+        "icon": "icon.png",
+        "save": 82,
+        "release": 1,
+        "plugin": "topview"
     }
 ]

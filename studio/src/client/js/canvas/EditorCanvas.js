@@ -1418,7 +1418,7 @@ class EditorCanvas {
             newData.offsetY = tile[ 1 ];
 
             if ( data.mask ) {
-                newData.mask = true;
+                newData.mask = data.mask;
             }
 
             if ( data.stepsX ) {
