@@ -210,12 +210,15 @@ class Sprite {
 
         // Move between BG and FG relative to Hero
         if ( !this.isHero() && !this.isCompanion() ) {
+            const isHeroColliding = Utils.collide( this.gamebox.hero.hitbox, this.hitbox );
+            const hasPartialHitbox = ( this.hitbox.width * this.hitbox.height ) !== ( this.width * this.height );
+
             // Assume that FLOAT should always render to the foreground
             if ( this.data.type === Config.npc.FLOAT ) {
                 this.layer = "foreground";
 
             // Sprites that have a smaller hitbox than their actual size can flip layer
-            } else if ( ( this.hitbox.width * this.hitbox.height ) !== ( this.width * this.height ) ) {
+            } else if ( hasPartialHitbox && isHeroColliding ) {
                 if ( this.hitbox.y > this.gamebox.hero.hitbox.y ) {
                     this.layer = "foreground";
 

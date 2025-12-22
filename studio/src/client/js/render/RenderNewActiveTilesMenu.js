@@ -89,11 +89,17 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 </div>
             </div>
             <div class="editor__setting">
-                <div class="editor__checkbox">
-                    <label class="checkbox">
-                        <input class="check js-activetile-field" type="checkbox" name="mask" />
-                        <span class="label">Mask (Can mask the hero sprite)</span>
-                    </label>
+                <div class="editor__label">Mask (Can mask the hero sprite)</div>
+                <div class="select">
+                    <select class="select__field js-activetile-field js-select" name="mask">
+                        <option value="">FX (for sprite masking)</option>
+                        ${game.fx.map( ( fx ) => `
+                            <option value="${fx.id}">${fx.name}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
                 </div>
             </div>
             <!-- Attack is an internalized VERB object -->
