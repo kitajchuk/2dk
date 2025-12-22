@@ -146,6 +146,7 @@ class NPC extends Sprite {
                 case Config.npc.WANDER:
                     this.handleWander();
                     break;
+                // TODO: Handle FLOAT NPCs with slower movement but similar to wander
             }
         }
     }
