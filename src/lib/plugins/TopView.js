@@ -740,11 +740,23 @@ class TopView extends GameBox {
             this.interact.npc = {};
             this.interact.npc.sprite = collision.npc;
             this.interact.npc.tween = new Tween( this );
-            this.interact.npc.tween.bind( collision.npc );
             this.interact.npc.tween.tween({
                 to: destPos,
                 from: collision.npc.position,
                 duration: 1000,
+                update: ( tweenPoi ) => {
+                    const tweenCollision = {
+                        map: this.checkMap( tweenPoi, collision.npc ),
+                        camera: this.checkCamera( tweenPoi, collision.npc ),
+                    };
+                    const isCollision = tweenCollision.map || tweenCollision.camera;
+
+                    if ( !isCollision ) {
+                        collision.npc.position.x = tweenPoi.x;
+                        collision.npc.position.y = tweenPoi.y;
+                        collision.npc.applyOffset();
+                    }
+                },
                 complete: () => {
                     this.interact.npc = null;
                     this.interact.push = 0;

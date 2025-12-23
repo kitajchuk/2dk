@@ -184,18 +184,13 @@ class Tween extends Controller {
                 x: tweenToX,
                 y: tweenToY,
             };
-            const tweenCollision = {
-                map: this.gamebox.checkMap( tweenPoi, this.sprite ),
-                camera: this.gamebox.checkCamera( tweenPoi, this.sprite ),
-            };
-            const isCollision = tweenCollision.map || tweenCollision.camera;
 
-            if ( this.sprite && !isCollision ) {
+            if ( this.sprite ) {
                 this.sprite.position.x = tweenPoi.x;
                 this.sprite.position.y = tweenPoi.y;
                 this.sprite.applyOffset();
 
-            } else if ( Utils.func( opts.update ) && !isCollision ) {
+            } else if ( Utils.func( opts.update ) ) {
                 opts.update( tweenPoi );
             }
 
