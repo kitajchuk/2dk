@@ -17,6 +17,7 @@ class TopView extends GameBox {
             // npc: {
             //     sprite?
             //     spring?
+            //     tween?
             // }
             npc: null,
             // tile: {
@@ -359,6 +360,19 @@ class TopView extends GameBox {
 
 
 /*******************************************************************************
+* Interaction checks...
+*******************************************************************************/
+    isPushing () {
+        return this.interact.push > this.map.data.tilesize;
+    }
+
+
+    isPushingNPC () {
+        return this.interact.push > this.map.data.tilesize * 2;
+    }
+
+
+/*******************************************************************************
 * Hero apply methods...
 *******************************************************************************/
     applyHero ( poi, dir ) {
@@ -466,7 +480,7 @@ class TopView extends GameBox {
         }
 
         if ( collision.npc ) {
-            this.handleHeroPush( poi, dir );
+            this.handleHeroPushNPC( poi, dir, collision );
             return;
         }
 
@@ -646,7 +660,7 @@ class TopView extends GameBox {
         this.hero.physics.vz = -( this.map.data.tilesize / 2.6667 );
         this.player.gameaudio.hitSound( "parkour" );
         this.parkour = {};
-        this.parkour.tween = new Tween();
+        this.parkour.tween = new Tween( this );
         this.parkour.tween.bind( this.hero );
         this.parkour.tween.tween({
             to: destPos,
@@ -698,10 +712,53 @@ class TopView extends GameBox {
     }
 
 
+    handleHeroPushNPC ( poi, dir, collision ) {
+        this.handleHeroPush( poi, dir );
+
+        if ( this.isPushingNPC() ) {
+            this.locked = true;
+
+            this.hero.face( dir );
+
+            const destPos = {};
+            const distance = this.map.data.tilesize;
+
+            if ( dir === "left" ) {
+                destPos.x = collision.npc.position.x - distance;
+                destPos.y = collision.npc.position.y;
+            } else if ( dir === "right" ) {
+                destPos.x = collision.npc.position.x + distance;
+                destPos.y = collision.npc.position.y;
+            } else if ( dir === "up" ) {
+                destPos.x = collision.npc.position.x;
+                destPos.y = collision.npc.position.y - distance;
+            } else if ( dir === "down" ) {
+                destPos.x = collision.npc.position.x;
+                destPos.y = collision.npc.position.y + distance;
+            }
+
+            this.interact.npc = {};
+            this.interact.npc.sprite = collision.npc;
+            this.interact.npc.tween = new Tween( this );
+            this.interact.npc.tween.bind( collision.npc );
+            this.interact.npc.tween.tween({
+                to: destPos,
+                from: collision.npc.position,
+                duration: 1000,
+                complete: () => {
+                    this.interact.npc = null;
+                    this.interact.push = 0;
+                    this.locked = false;
+                },
+            });
+        }
+    }
+
+
     handleHeroPush ( poi, dir ) {
         this.interact.push++;
 
-        if ( !this.hero.is( Config.verbs.LIFT ) && this.interact.push > this.map.data.tilesize ) {
+        if ( !this.hero.is( Config.verbs.LIFT ) && this.isPushing() ) {
             // @check: hero-verb-check
             if ( !this.hero.can( Config.verbs.PUSH ) ) {
                 return;
@@ -999,7 +1056,7 @@ class TopView extends GameBox {
 
         this.falling = true;
         this.interact.fall = {};
-        this.interact.fall.tween = new Tween();
+        this.interact.fall.tween = new Tween( this );
         this.interact.fall.tween.bind( this.hero );
         this.interact.fall.tween.tween({
             to: fallToPosition,

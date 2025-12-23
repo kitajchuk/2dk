@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 113,
+    "save": 130,
     "release": 1,
     "plugin": "topview",
     "hero": {
@@ -884,6 +884,7 @@
         "assets/sounds/sfx-smash.mp3",
         "assets/sounds/sfx-sword.mp3",
         "assets/sounds/sfx-throw.mp3",
+        "maps/beneath-the-grave.json",
         "maps/home-base.json",
         "maps/links-house.json"
     ]

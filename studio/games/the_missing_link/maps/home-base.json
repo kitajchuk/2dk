@@ -18,6 +18,12 @@
             "y": 1323,
             "width": 92,
             "height": 92
+        },
+        {
+            "x": 2291,
+            "y": 1206,
+            "width": 92,
+            "height": 92
         }
     ],
     "cellauto": null,
@@ -69,6 +75,17 @@
                     "verb": "attack"
                 }
             ]
+        },
+        {
+            "group": "stones",
+            "layer": "background",
+            "offsetX": 192,
+            "offsetY": 640,
+            "actions": [
+                {
+                    "verb": "lift"
+                }
+            ]
         }
     ],
     "events": [
@@ -80,6 +97,15 @@
             "type": "door",
             "dir": "up",
             "map": "maps/links-house.json",
+            "spawn": 0
+        },
+        {
+            "coords": [
+                36,
+                18
+            ],
+            "type": "door",
+            "map": "maps/beneath-the-grave.json",
             "spawn": 0
         }
     ],
@@ -119,21 +145,6 @@
                     "type": "text",
                     "text": [
                         "Links House"
-                    ]
-                }
-            }
-        },
-        {
-            "id": "grave",
-            "spawn": {
-                "x": 2272,
-                "y": 1152
-            },
-            "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "Here lay Master Shinji. May he rest in peace..."
                     ]
                 }
             }
@@ -189,6 +200,25 @@
             "actions": [
                 "attack"
             ]
+        },
+        {
+            "id": "grave",
+            "spawn": {
+                "x": 2304,
+                "y": 1152
+            },
+            "actions": [
+                "push",
+                "pull"
+            ],
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Here lay Master Shinji. May he rest in peace..."
+                    ]
+                }
+            }
         }
     ],
     "objects": [],
@@ -10111,8 +10141,8 @@
                 ],
                 [
                     [
-                        448,
-                        704
+                        192,
+                        448
                     ]
                 ],
                 [
@@ -10122,7 +10152,7 @@
                     ],
                     [
                         0,
-                        704
+                        768
                     ]
                 ],
                 [

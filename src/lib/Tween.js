@@ -148,9 +148,10 @@ const Easing = {
 
 
 class Tween extends Controller {
-    constructor () {
+    constructor ( gamebox ) {
         super();
 
+        this.gamebox = gamebox;
         this.sprite = null;
     }
 
@@ -179,23 +180,28 @@ class Tween extends Controller {
             const diff = elapsed - startTime;
             const tweenToX = ( tweenDiffX * opts.ease( diff / opts.duration ) ) + opts.from.x;
             const tweenToY = ( tweenDiffY * opts.ease( diff / opts.duration ) ) + opts.from.y;
-            const tweenObj = {
+            const tweenPoi = {
                 x: tweenToX,
                 y: tweenToY,
             };
+            const tweenCollision = {
+                map: this.gamebox.checkMap( tweenPoi, this.sprite ),
+                camera: this.gamebox.checkCamera( tweenPoi, this.sprite ),
+            };
+            const isCollision = tweenCollision.map || tweenCollision.camera;
 
-            if ( this.sprite ) {
-                this.sprite.position.x = tweenObj.x;
-                this.sprite.position.y = tweenObj.y;
+            if ( this.sprite && !isCollision ) {
+                this.sprite.position.x = tweenPoi.x;
+                this.sprite.position.y = tweenPoi.y;
                 this.sprite.applyOffset();
 
-            } else if ( Utils.func( opts.update ) ) {
-                opts.update( tweenObj );
+            } else if ( Utils.func( opts.update ) && !isCollision ) {
+                opts.update( tweenPoi );
             }
 
             if ( diff >= opts.duration ) {
                 this.stop();
-                opts.complete( tweenObj );
+                opts.complete( tweenPoi );
             }
         });
     }

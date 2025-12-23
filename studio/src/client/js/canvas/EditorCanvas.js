@@ -1323,8 +1323,11 @@ class EditorCanvas {
             const newData = {
                 coords,
                 type: data.type,
-                dir: data.dir,
             };
+
+            if ( data.dir ) {
+                newData.dir = data.dir;
+            }
 
             if ( data.type === window.lib2dk.Config.events.DIALOGUE ) {
                 newData.payload = {
