@@ -86,6 +86,34 @@ class NPC extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
+        if ( this.data.ai === Config.npc.FLOAT ) {
+            this.applyFloatPosition();
+
+        } else {
+            this.applyNormalPosition();
+        }
+    }
+
+
+    applyFloatPosition () {
+        const poi = this.getNextPoi();
+        const wouldLeaveTextures = this.gamebox.checkTextures( poi, this );
+            
+        if ( wouldLeaveTextures ) {
+            this.position.z = -this.map.data.tilesize;
+            this.handleAI();
+            return;
+        }
+
+        this.position = {
+            x: poi.x,
+            y: poi.y,
+            z: -this.map.data.tilesize,
+        };
+    }
+
+
+    applyNormalPosition () {
         const poi = this.getNextPoi();
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
@@ -125,6 +153,7 @@ class NPC extends Sprite {
             if ( this.data.ai === Config.npc.ROAM ) {
                 this.counter = 0;
             }
+            
             this.handleAI();
             return;
         }
@@ -143,10 +172,10 @@ class NPC extends Sprite {
                 case Config.npc.ROAM:
                     this.handleRoam();
                     break;
+                case Config.npc.FLOAT:
                 case Config.npc.WANDER:
                     this.handleWander();
                     break;
-                // TODO: Handle FLOAT NPCs with slower movement but similar to wander
             }
         }
     }

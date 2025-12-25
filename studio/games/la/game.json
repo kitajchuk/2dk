@@ -527,7 +527,7 @@
             "width": 68,
             "height": 68,
             "image": "assets/sprites/npcs.png",
-            "bounce": 1,
+            "bounce": true,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
@@ -575,7 +575,7 @@
             "width": 68,
             "height": 68,
             "image": "assets/sprites/npcs.png",
-            "bounce": 1,
+            "bounce": true,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
@@ -676,7 +676,7 @@
                     "action": {
                         "verb": "open",
                         "dir": "up",
-                        "shift": 1,
+                        "shift": true,
                         "sound": "chest"
                     }
                 },

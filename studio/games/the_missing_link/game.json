@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 178,
+    "save": 181,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -486,6 +486,7 @@
             "width": 68,
             "height": 68,
             "image": "assets/sprites/npcs.png",
+            "maxv": 1,
             "opacity": 0.75,
             "dir": "left",
             "layer": "foreground",
@@ -572,7 +573,7 @@
             "width": 68,
             "height": 68,
             "image": "assets/sprites/npcs.png",
-            "bounce": 1,
+            "bounce": true,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
@@ -620,7 +621,7 @@
             "width": 68,
             "height": 68,
             "image": "assets/sprites/npcs.png",
-            "bounce": 1,
+            "bounce": true,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
@@ -721,7 +722,7 @@
                     "action": {
                         "verb": "open",
                         "dir": "up",
-                        "shift": 1,
+                        "shift": true,
                         "sound": "chest"
                     }
                 },

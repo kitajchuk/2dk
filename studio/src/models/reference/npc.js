@@ -57,6 +57,8 @@ module.exports = {
     vz: undefined || 0,
     maxv: undefined || 4,
     controlmaxv: undefined || 4,
+    opacity: undefined || 1.0,
+    bounce: undefined || true,
     hitbox: {
         x: 0,
         y: 0,
@@ -89,7 +91,7 @@ module.exports = {
             action: undefined || {
                 verb: "",
                 dir: "",
-                shift: undefined || 1,
+                shift: undefined || true,
                 sound: undefined || ""
             }
         }

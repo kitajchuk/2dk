@@ -407,6 +407,36 @@ Can all be handled in plugin GameBox
     }
 
 
+    checkTextures ( poi, sprite ) {
+        const textures = this.map.data.textures.background;
+
+        for ( let y = textures.length; y--; ) {
+            for ( let x = textures[ y ].length; x--; ) {
+                const texture = textures[ y ][ x ];
+                const tilebox = {
+                    width: this.map.data.tilesize,
+                    height: this.map.data.tilesize,
+                    x: x * this.map.data.tilesize,
+                    y: y * this.map.data.tilesize,
+                };
+                const hitbox = {
+                    width: sprite.width,
+                    height: sprite.height,
+                    x: poi.x,
+                    y: poi.y + sprite.position.z,
+                }
+                const collides = Utils.collide( tilebox, hitbox );
+
+                if ( texture === 0 && collides ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
     checkEvents ( poi, sprite ) {
         const events = this.getVisibleEvents();
 

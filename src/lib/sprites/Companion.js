@@ -41,12 +41,13 @@ class Companion extends Sprite {
         }
 
         // Companion types?
-        if ( this.data.type === Config.npc.WALK ) {
-            this.blitWalk();
-        }
-
-        if ( this.data.type === Config.npc.FLOAT ) {
-            this.blitFloat();
+        switch ( this.data.type ) {
+            case Config.npc.WALK:
+                this.blitWalk();
+                break;
+            case Config.npc.FLOAT:
+                this.blitFloat();
+                break;
         }
 
         // Spring blit...
