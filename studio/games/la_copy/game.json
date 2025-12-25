@@ -20,20 +20,20 @@
     "save": 787,
     "release": 1,
     "plugin": "topview",
+    "sounds": {
+        "lift": "assets/sounds/sfx-pick-up.mp3",
+        "jump": "assets/sounds/sfx-jump.mp3",
+        "throw": "assets/sounds/sfx-throw.mp3",
+        "smash": "assets/sounds/sfx-smash.mp3",
+        "chest": "assets/sounds/sfx-chest-unlock.mp3",
+        "attack": "assets/sounds/sfx-sword.mp3",
+        "bounce": "assets/sounds/sfx-bounce.mp3",
+        "parkour": "assets/sounds/sfx-dropping.mp3"
+    },
     "hero": {
         "sprite": 0,
         "spawn": 0,
         "map": "maps/mabe-village.json",
-        "sounds": {
-            "lift": "assets/sounds/sfx-pick-up.mp3",
-            "jump": "assets/sounds/sfx-jump.mp3",
-            "throw": "assets/sounds/sfx-throw.mp3",
-            "smash": "assets/sounds/sfx-smash.mp3",
-            "chest": "assets/sounds/sfx-chest-unlock.mp3",
-            "attack": "assets/sounds/sfx-sword.mp3",
-            "bounce": "assets/sounds/sfx-bounce.mp3",
-            "parkour": "assets/sounds/sfx-dropping.mp3"
-        },
         "companion": {
             "id": "dog",
             "type": "walk"

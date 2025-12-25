@@ -80,10 +80,11 @@ class GameBox {
             initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
             this.hero = new Hero( initHeroData, this.map );
 
-            Object.keys( initHeroData.sounds ).forEach( ( id ) => {
+            // Sounds
+            Object.keys( this.player.data.sounds ).forEach( ( id ) => {
                 this.player.gameaudio.addSound({
                     id,
-                    src: initHeroData.sounds[ id ],
+                    src: this.player.data.sounds[ id ],
                     channel: "sfx",
                 });
             });

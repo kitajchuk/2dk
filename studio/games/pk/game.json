@@ -24,7 +24,6 @@
         "sprite": 0,
         "spawn": 0,
         "map": "maps/pallet-town-and-route-1.json",
-        "sounds": {},
         "companion": null
     },
     "heroes": [

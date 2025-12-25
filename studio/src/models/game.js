@@ -20,12 +20,12 @@ module.exports = {
     save: 1,
     release: 1.0,
     plugin: "topview",
+    sounds: {},
     // Hero reference
     hero: {
         sprite: 0,
         spawn: 0,
         map: "",
-        sounds: {},
         companion: null || {
             id: "",
             type: ""
