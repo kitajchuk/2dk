@@ -8,11 +8,13 @@ module.exports = {
     elevation: undefined || 1,
     // FX reference (game.json)
     mask: undefined || "",
+    // Action reference (action.js)
     actions: undefined || [
         {
             verb: "",
             dir: undefined || "",
-            fx: undefined || ""
+            fx: undefined || "",
+            sound: undefined || ""
         }
     ]
 };

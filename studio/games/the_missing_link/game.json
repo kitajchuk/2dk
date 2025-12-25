@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 174,
+    "save": 178,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -28,7 +28,9 @@
         "chest": "assets/sounds/sfx-chest-unlock.mp3",
         "attack": "assets/sounds/sfx-sword.mp3",
         "bounce": "assets/sounds/sfx-bounce.mp3",
-        "parkour": "assets/sounds/sfx-dropping.mp3"
+        "parkour": "assets/sounds/sfx-dropping.mp3",
+        "itemGet": "assets/sounds/sfx-item-get.mp3",
+        "moveObject": "assets/sounds/sfx-move-object.mp3"
     },
     "hero": {
         "sprite": 0,
@@ -817,6 +819,10 @@
                         "verb": "read",
                         "dir": "up"
                     }
+                },
+                {
+                    "verb": "face",
+                    "dir": "down"
                 }
             ]
         }
@@ -879,7 +885,9 @@
         "assets/sounds/sfx-bounce.mp3",
         "assets/sounds/sfx-chest-unlock.mp3",
         "assets/sounds/sfx-dropping.mp3",
+        "assets/sounds/sfx-item-get.mp3",
         "assets/sounds/sfx-jump.mp3",
+        "assets/sounds/sfx-move-object.mp3",
         "assets/sounds/sfx-pick-up.mp3",
         "assets/sounds/sfx-smash.mp3",
         "assets/sounds/sfx-sword.mp3",

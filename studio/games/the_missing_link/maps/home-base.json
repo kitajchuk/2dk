@@ -170,10 +170,10 @@
                 "x": 2304,
                 "y": 1152
             },
-            "actions": [
-                "push",
-                "pull"
-            ],
+            "action": {
+                "verb": "push",
+                "sound": "moveObject"
+            },
             "payload": {
                 "dialogue": {
                     "type": "text",

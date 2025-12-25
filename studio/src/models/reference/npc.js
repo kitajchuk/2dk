@@ -20,8 +20,13 @@ const npcReference = {
             }
         }
     },
-    // As in VERB
-    actions: undefined || []
+    // Action reference (action.js)
+    action: undefined || {
+        verb: "",
+        dir: undefined || "",
+        fx: undefined || "",
+        sound: undefined || ""
+    }
 };
 
 const verbFrame = {

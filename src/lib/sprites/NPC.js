@@ -261,6 +261,11 @@ class NPC extends Sprite {
     }
 
 
+    canDoAction ( verb ) {
+        return ( this.data.action && this.data.action.verb && verb === this.data.action.verb );
+    }
+
+
     doInteract () {
         // Handle dialogue payload
         if ( this.data.payload ) {

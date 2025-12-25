@@ -1039,6 +1039,7 @@ class EditorCanvas {
     renderNPCMenu ( coords, extraData ) {
         this.editor.menus.renderMenu( "editor-npc-menu", {
             ais: Utils.getOptionData( window.lib2dk.Config.npc ),
+            game: this.game,
             coords,
             actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
             dialogue: Utils.getOptionData( window.lib2dk.Config.dialogue.types ),
@@ -1241,16 +1242,11 @@ class EditorCanvas {
                 extraData.ai = data.ai;
             }
 
-            if ( data.action1 || data.action2 ) {
-                extraData.actions = [];
-
-                if ( data.action1 ) {
-                    extraData.actions.push( data.action1 );
-                }
-
-                if ( data.action2 ) {
-                    extraData.actions.push( data.action2 );
-                }
+            if ( data.action ) {
+                extraData.action = {
+                    verb: data.action,
+                    sound: data.sound,
+                };
             }
 
             if ( data.dialogue ) {

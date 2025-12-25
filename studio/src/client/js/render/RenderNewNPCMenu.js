@@ -2,13 +2,11 @@ const { html } = require( "./Render" );
 
 
 
-const renderNewNPCMenu = ({ coords, mouseCoords, ais, dialogue, actions, npcToEdit }) => {
+const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, dialogue, actions, npcToEdit }) => {
     const mouseCoordsToUse = npcToEdit ? [ npcToEdit.spawn.x, npcToEdit.spawn.y ] : mouseCoords;
     const hasExistingDialogue = npcToEdit && npcToEdit.payload && npcToEdit.payload.dialogue;
     const existingAI = npcToEdit ? npcToEdit.ai : "";
-    const existingActions = npcToEdit && npcToEdit.actions ? npcToEdit.actions : [];
-    const existingAction1 = npcToEdit ? existingActions[ 0 ] : "";
-    const existingAction2 = npcToEdit ? existingActions[ 1 ] : "";
+    const existingAction = npcToEdit && npcToEdit.action ? npcToEdit.action : {};
     const existingDialogueType = hasExistingDialogue ? npcToEdit.payload.dialogue.type : "";
     const existingText = hasExistingDialogue ? npcToEdit.payload.dialogue.text : "";
     const existingYes = hasExistingDialogue && npcToEdit.payload.dialogue.yes ? npcToEdit.payload.dialogue.yes : {};
@@ -63,10 +61,10 @@ const renderNewNPCMenu = ({ coords, mouseCoords, ais, dialogue, actions, npcToEd
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="select">
-                        <select class="select__field js-npc-field js-select" name="action1">
-                            <option value="">Action 1 (optional)</option>
+                        <select class="select__field js-npc-field js-select" name="action">
+                            <option value="">Action (optional)</option>
                             ${npcActions.map( ( action ) => `
-                                <option value="${action}" ${existingAction1 === action ? "selected" : ""}>${action}</option>
+                                <option value="${action}" ${existingAction.verb === action ? "selected" : ""}>${action}</option>
                             ` ).join( "" )}
                         </select>
                         <span class="select__icon">
@@ -76,10 +74,10 @@ const renderNewNPCMenu = ({ coords, mouseCoords, ais, dialogue, actions, npcToEd
                 </div>
                 <div>
                     <div class="select">
-                        <select class="select__field js-npc-field js-select" name="action2">
-                            <option value="">Action 2 (optional)</option>
-                            ${npcActions.map( ( action ) => `
-                                <option value="${action}" ${existingAction2 === action ? "selected" : ""}>${action}</option>
+                        <select class="select__field js-select js-npc-field" name="sound">
+                            <option value="">Sound (optional for action)</option>
+                            ${Object.keys( game.sounds ).map( ( sound ) => `
+                                <option value="${sound}" ${existingAction.sound === sound ? "selected" : ""}>${sound}</option>
                             ` ).join( "" )}
                         </select>
                         <span class="select__icon">

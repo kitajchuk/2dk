@@ -480,7 +480,12 @@ class TopView extends GameBox {
         }
 
         if ( collision.npc ) {
-            this.handleHeroPushNPC( poi, dir, collision );
+            this.handleHeroPush( poi, dir );
+
+            if ( collision.npc.canDoAction( Config.verbs.PUSH ) ) {
+                this.handleHeroPushNPC( poi, dir, collision );
+            }
+            
             return;
         }
 
@@ -713,7 +718,10 @@ class TopView extends GameBox {
 
 
     handleHeroPushNPC ( poi, dir, collision ) {
-        this.handleHeroPush( poi, dir );
+        // @check: hero-verb-check
+        if ( !collision.npc.canDoAction( Config.verbs.PUSH ) ) {
+            return;
+        }
 
         if ( this.isPushingNPC() ) {
             this.locked = true;
@@ -735,6 +743,10 @@ class TopView extends GameBox {
             } else if ( dir === "down" ) {
                 destPos.x = collision.npc.position.x;
                 destPos.y = collision.npc.position.y + distance;
+            }
+
+            if ( collision.npc.data.action.sound ) {
+                this.player.gameaudio.hitSound( collision.npc.data.action.sound );
             }
 
             this.interact.npc = {};
