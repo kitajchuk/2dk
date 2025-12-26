@@ -238,8 +238,7 @@ class DB {
             map.image = `assets/tiles/${data.image}`;
             map.sound = data.sound ? `assets/sounds/${data.sound}` : map.sound;
 
-            // Null by default and cellauto data must be saved on update in the studio editor
-            map.cellauto = null;
+            // map.cellauto is omitted by default and it must be saved on update in the studio editor
 
             for ( let y = map.tileheight; y--; ) {
                 map.textures.background[ y ] = [];
@@ -291,7 +290,9 @@ class DB {
             map.thumbnail = `assets/snapshots/${map.id}-thumb.png`;
 
             // This is the only place we save cellauto data from the studio editor
-            map.cellauto = data.cellauto || null;
+            if ( data.cellauto ) {
+                map.cellauto = data.cellauto;
+            }
 
             const keys = [
                 "name",

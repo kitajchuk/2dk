@@ -19,13 +19,13 @@ module.exports = {
             dir: "down"
         }
     ],
-    cellauto: {
+    cellauto: undefined || {
         algo: "maze",
         walls: {
-            // Texture reference
+            // Texture reference (texture.js)
         },
         textures: [
-            // Texture reference
+            // Texture reference (texture.js)
         ],
     },
     // FX reference (game.json)

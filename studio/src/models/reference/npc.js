@@ -88,6 +88,7 @@ module.exports = {
         {
             verb: "",
             dir: "",
+            // Action reference (action.js)
             action: undefined || {
                 verb: "",
                 dir: "",
