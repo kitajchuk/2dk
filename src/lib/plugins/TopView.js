@@ -614,11 +614,21 @@ class TopView extends GameBox {
         // Get the destination tile
         // We can dynamically the variable axis to get the correct tile based on increment and elevation
         let destPos;
-        const destTile = [
-            tile.tilebox.x,
-            tile.tilebox.y,
-        ];
-        destTile[ axis ] = destTile[ axis ] + ( increment * ( this.map.data.tilesize * elevation ) );
+        let destTile;
+        
+        // When moving horizontally, the destination tile is simply the next tile in the direction of the jump
+        if ( dir === "left" || dir === "right" ) {
+            destTile = [
+                tile.tilebox.x + ( increment * ( this.map.data.tilesize ) ),
+                tile.tilebox.y,
+            ];
+
+        } else {
+            destTile = [
+                tile.tilebox.x,
+                tile.tilebox.y + ( increment * ( this.map.data.tilesize * elevation ) ),
+            ];
+        }
 
         // Get the destination event
         const destEvent = this.getVisibleEvents().find( ( evt ) => {
@@ -633,28 +643,28 @@ class TopView extends GameBox {
         switch ( dir ) {
             case "left":
                 destPos = {
-                    x: destTile[ 0 ],
-                    y: isEventDoor ? destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ) :this.hero.position.y,
+                    x: destTile[ 0 ] - ( this.hero.width - this.map.data.tilesize ),
+                    y: isEventDoor ? destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ) : this.hero.position.y,
                 };
                 break;
 
             case "right":
                 destPos = {
-                    x: destTile[ 0 ] - ( this.hero.width - this.map.data.tilesize ),
+                    x: destTile[ 0 ],
                     y: isEventDoor ? destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ) : this.hero.position.y,
                 };
                 break;
 
             case "up":
                 destPos = {
-                    x: isEventDoor ? destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ) :this.hero.position.x,
+                    x: isEventDoor ? destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ) : this.hero.position.x,
                     y: destTile[ 1 ],
                 };
                 break;
 
             case "down":
                 destPos = {
-                    x: isEventDoor ? destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ) :this.hero.position.x,
+                    x: isEventDoor ? destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ) : this.hero.position.x,
                     y: destTile[ 1 ] - ( this.hero.height - this.map.data.tilesize ),
                 };
                 break;
