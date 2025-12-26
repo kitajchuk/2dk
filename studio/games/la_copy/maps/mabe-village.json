@@ -1593,26 +1593,7 @@
             }
         }
     ],
-    "events": [
-        {
-            "coords": [
-                39,
-                2
-            ],
-            "type": "boundary",
-            "map": "maps/ukuku-prairie-west.json",
-            "dir": "right"
-        },
-        {
-            "coords": [
-                39,
-                3
-            ],
-            "type": "boundary",
-            "map": "maps/ukuku-prairie-west.json",
-            "dir": "right"
-        }
-    ],
+    "events": [],
     "collision": [
         [
             135,
