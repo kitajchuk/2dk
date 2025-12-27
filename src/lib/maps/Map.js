@@ -2,6 +2,7 @@ import Utils from "../Utils";
 import Loader from "../Loader";
 import Config from "../Config";
 import NPC from "../sprites/NPC";
+import Door from "../sprites/Door";
 import FX from "../sprites/FX";
 import MapLayer from "./MapLayer";
 import ActiveTiles from "./ActiveTiles";
@@ -30,6 +31,7 @@ class Map {
         this.activeTiles = [];
         this.fx = [];
         this.npcs = [];
+        this.doors = [];
         this.offset = {
             x: 0,
             y: 0,
@@ -54,6 +56,11 @@ class Map {
         });
         this.npcs = null;
 
+        this.doors.forEach( ( door ) => {
+            door.destroy();
+        });
+        this.doors = null;
+
         this.fx.forEach( ( fx ) => {
             fx.destroy();
         });
@@ -74,8 +81,17 @@ class Map {
             this.fx.push( new FX( this.gamebox.player.getMergedData( data, "fx", true ), this ) );
         });
 
+        // Doors
+        this.data.npcs.filter( ( npc ) => {
+            return npc.ai && npc.ai === Config.npc.DOOR;
+        }).forEach( ( data ) => {
+            this.doors.push( new Door( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
+        });
+
         // NPCs
-        this.data.npcs.forEach( ( data ) => {
+        this.data.npcs.filter( ( npc ) => {
+            return !npc.ai || npc.ai !== Config.npc.DOOR;
+        }).forEach( ( data ) => {
             this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
         });
 
@@ -116,6 +132,10 @@ class Map {
             npc.blit( elapsed );
         });
 
+        this.doors.forEach( ( door ) => {
+            door.blit( elapsed );
+        });
+
         this.fx.forEach( ( fx ) => {
             fx.blit( elapsed );
         });
@@ -127,6 +147,10 @@ class Map {
 
         this.npcs.forEach( ( npc ) => {
             npc.update();
+        });
+
+        this.doors.forEach( ( door ) => {
+            door.update();
         });
 
         this.fx.forEach( ( fx ) => {
@@ -155,6 +179,11 @@ class Map {
         // Draw NPCs to background
         npcsBg.forEach( ( npc ) => {
             npc.render();
+        });
+
+        // Draw doors to background
+        this.doors.forEach( ( door ) => {
+            door.render();
         });
 
         // Draw foreground textures
@@ -417,7 +446,7 @@ class Map {
     }
 
 
-    killObj ( type, obj ) {
+    killObject ( type, obj ) {
         this[ type ].splice( this[ type ].indexOf( obj ), 1 );
         obj.destroy();
         obj = null;

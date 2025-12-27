@@ -54,7 +54,7 @@ class FX extends Sprite {
 
             if ( diff >= this.data.dur ) {
                 if ( this.data.kill ) {
-                    this.map.killObj( "fx", this );
+                    this.map.killObject( "fx", this );
 
                 } else {
                     this.previousElapsed = elapsed;

@@ -208,10 +208,14 @@ class TopView extends GameBox {
         const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
         const collision = {
             npc: this.checkNPC( poi, this.hero ),
+            door: this.checkDoor( poi, this.hero ),
             tiles: this.checkTiles( poi, this.hero ),
         };
 
-        if ( collision.npc ) {
+        if ( collision.door ) {
+            this.handleHeroDoorAction( poi, this.hero.dir, collision.door );
+
+        } else if ( collision.npc ) {
             this.handleHeroNPCAction( poi, this.hero.dir, collision.npc );
 
         } else if (
@@ -451,6 +455,7 @@ class TopView extends GameBox {
         const collision = {
             map: this.checkMap( poi, this.hero ),
             npc: this.checkNPC( poi, this.hero ),
+            door: this.checkDoor( poi, this.hero ),
             tiles: this.checkTiles( poi, this.hero ),
             event: this.checkEvents( poi, this.hero ),
             camera: this.checkCamera( poi, this.hero ),
@@ -477,6 +482,11 @@ class TopView extends GameBox {
                 this.handleHeroEventDialogue( poi, dir, collision.event );
                 // No return as this is a passive event
             }
+        }
+
+        if ( collision.door ) {
+            this.handleHeroPush( poi, dir );
+            return;
         }
 
         if ( collision.npc ) {
@@ -1017,7 +1027,7 @@ class TopView extends GameBox {
                 if ( this.interact.npc.sprite.stats.health <= 0 ) {
                     this.smokeObject( this.interact.npc.sprite );
                     this.player.gameaudio.hitSound( Config.verbs.SMASH );
-                    this.map.killObj( "npcs", this.interact.npc.sprite );
+                    this.map.killObject( "npcs", this.interact.npc.sprite );
                 }
             }
 
@@ -1175,6 +1185,13 @@ class TopView extends GameBox {
     }
 
 
+    handleHeroDoorAction ( poi, dir, door ) {
+        if ( door.canDoAction( Config.verbs.OPEN ) ) {
+            door.doAction( Config.verbs.OPEN );
+        }
+    }
+
+
     handleHeroNPCAction ( poi, dir, npc ) {
         if ( npc.canInteract( dir ) ) {
             npc.doInteract( dir );
@@ -1255,7 +1272,7 @@ class TopView extends GameBox {
         const attackAction = this.interact.tile.instance.canAttack();
         this.smokeObject( this.interact.tile.sprite, attackAction?.fx );
         this.player.gameaudio.hitSound( Config.verbs.SMASH );
-        this.map.killObj( "npcs", this.interact.tile.sprite );
+        this.map.killObject( "npcs", this.interact.tile.sprite );
         this.interact.tile = null;
     }
 }
