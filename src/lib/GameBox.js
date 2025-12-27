@@ -132,6 +132,9 @@ class GameBox {
     clear () {
         Object.keys( this.layers ).forEach( ( id ) => {
             this.layers[ id ].onCanvas.clear();
+
+            // Reset global alpha at the beginning of each frame
+            this.layers[ id ].onCanvas.context.globalAlpha = 1.0;
         });
     }
 

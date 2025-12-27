@@ -20,6 +20,7 @@ module.exports = {
     offsetY: 0,
     stepsX: 0,
     dur: 0,
+    opacity: undefined || 1.0,
     hitbox: {
         x: 0,
         y: 0,
