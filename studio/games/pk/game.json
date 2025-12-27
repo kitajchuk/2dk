@@ -26,6 +26,7 @@
         "map": "maps/pallet-town-and-route-1.json",
         "companion": null
     },
+    "sounds": {},
     "heroes": [
         {
             "id": "ash",
