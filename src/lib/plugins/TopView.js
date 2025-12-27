@@ -962,8 +962,7 @@ class TopView extends GameBox {
             tiles: this.checkTiles( poi, weaponBox ),
         };
 
-        // TODO: Check if the NPC has the "attack" action rather than just checking that it has an "ai"
-        if ( collision.npc && collision.npc.data.ai && !this.interact.npc ) {
+        if ( collision.npc && collision.npc.canDoAction( Config.verbs.ATTACK ) && !this.interact.npc ) {
             const destPos = {};
 
             // TODO: Determine if the hero is properly facing the NPC in order to allow for the attack to be successful

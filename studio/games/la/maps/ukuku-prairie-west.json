@@ -138,10 +138,14 @@
     "npcs": [
         {
             "id": "octorok",
-            "ai": "roam",
             "spawn": {
                 "x": 512,
                 "y": 896
+            },
+            "ai": "roam",
+            "action": {
+                "verb": "attack",
+                "sound": ""
             }
         },
         {
