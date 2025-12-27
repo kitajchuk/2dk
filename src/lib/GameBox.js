@@ -311,19 +311,20 @@ Can all be handled in plugin GameBox
     }
 
 
-    getVisibleNPCs () {
+    // "npcs" or "doors"
+    getVisibleNPCs ( type = "npcs" ) {
         const npcs = [];
 
-        for ( let i = this.map.npcs.length; i--; ) {
+        for ( let i = this.map[ type ].length; i--; ) {
             const collides = Utils.collide( this.camera, {
-                x: this.map.npcs[ i ].position.x,
-                y: this.map.npcs[ i ].position.y,
-                width: this.map.npcs[ i ].width,
-                height: this.map.npcs[ i ].height,
+                x: this.map[ type ][ i ].position.x,
+                y: this.map[ type ][ i ].position.y,
+                width: this.map[ type ][ i ].width,
+                height: this.map[ type ][ i ].height,
             });
 
             if ( collides ) {
-                npcs.push( this.map.npcs[ i ] );
+                npcs.push( this.map[ type ][ i ] );
             }
         }
 
@@ -476,8 +477,8 @@ Can all be handled in plugin GameBox
     }
 
 
-    checkNPC ( poi, sprite ) {
-        const npcs = this.getVisibleNPCs();
+    checkNPC ( poi, sprite, type = "npcs" ) {
+        const npcs = this.getVisibleNPCs( type );
 
         // Ad-hoc "sprite" object with { x, y, width, height }
         let lookbox = sprite;
@@ -488,12 +489,22 @@ Can all be handled in plugin GameBox
 
         for ( let i = npcs.length; i--; ) {
             // A thrown object Sprite will have a hero prop
-            if ( !npcs[ i ].hero && npcs[ i ] !== sprite && Utils.collide( lookbox, npcs[ i ].hitbox ) ) {
+            if ( 
+                !npcs[ i ].hero && 
+                npcs[ i ] !== sprite && 
+                Utils.collide( lookbox, npcs[ i ].hitbox ) &&
+                !( type === "doors" && npcs[ i ].open )
+            ) {
                 return npcs[ i ];
             }
         }
 
         return false;
+    }
+
+
+    checkDoor ( poi, sprite ) {
+        return this.checkNPC( poi, sprite, "doors" );
     }
 
 

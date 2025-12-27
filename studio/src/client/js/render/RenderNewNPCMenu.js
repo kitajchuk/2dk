@@ -58,13 +58,26 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, dialogue, actions, n
                     </span>
                 </div>
             </div>
+            <div class="editor__setting">
+                <div class="select">
+                    <select class="select__field js-npc-field js-select" name="action">
+                        <option value="">Action (optional)</option>
+                        ${npcActions.map( ( action ) => `
+                            <option value="${action}" ${existingAction.verb === action ? "selected" : ""}>${action}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
+                </div>
+            </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="select">
-                        <select class="select__field js-npc-field js-select" name="action">
-                            <option value="">Action (optional)</option>
-                            ${npcActions.map( ( action ) => `
-                                <option value="${action}" ${existingAction.verb === action ? "selected" : ""}>${action}</option>
+                        <select class="select__field js-npc-field js-select" name="fx">
+                            <option value="">FX (optional for action)</option>
+                            ${game.fx.map( ( fx ) => `
+                                <option value="${fx.id}" ${existingAction.fx === fx.id ? "selected" : ""}>${fx.name}</option>
                             ` ).join( "" )}
                         </select>
                         <span class="select__icon">

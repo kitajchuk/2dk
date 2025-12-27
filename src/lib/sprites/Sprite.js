@@ -251,7 +251,7 @@ class Sprite {
             this.spritecel[ 0 ],
             this.spritecel[ 1 ],
             this.data.width,
-            this.height,
+            this.data.height,
             this.offset.x,
             this.offset.y + this.position.z,
             this.width,

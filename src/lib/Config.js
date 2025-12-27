@@ -29,6 +29,7 @@ const Config = {
         THROW: "throw",
         SMASH: "smash",
         ATTACK: "attack",
+        OPEN: "open",
     },
     map: {
         types: {
@@ -79,6 +80,7 @@ const Config = {
         ROAM: "roam",
         FLOAT: "float",
         WANDER: "wander",
+        DOOR: "door",
     },
     facing: {
         UP: "up",
