@@ -316,12 +316,7 @@ Can all be handled in plugin GameBox
         const npcs = [];
 
         for ( let i = this.map[ type ].length; i--; ) {
-            const collides = Utils.collide( this.camera, {
-                x: this.map[ type ][ i ].position.x,
-                y: this.map[ type ][ i ].position.y,
-                width: this.map[ type ][ i ].width,
-                height: this.map[ type ][ i ].height,
-            });
+            const collides = Utils.collide( this.camera, this.map[ type ][ i ].getFullbox() );
 
             if ( collides ) {
                 npcs.push( this.map[ type ][ i ] );
@@ -423,13 +418,7 @@ Can all be handled in plugin GameBox
                     x: x * this.map.data.tilesize,
                     y: y * this.map.data.tilesize,
                 };
-                const hitbox = {
-                    width: sprite.width,
-                    height: sprite.height,
-                    x: poi.x,
-                    y: poi.y + sprite.position.z,
-                }
-                const collides = Utils.collide( tilebox, hitbox );
+                const collides = Utils.collide( tilebox, sprite.getFullbox() );
 
                 if ( texture === 0 && collides ) {
                     return true;
@@ -453,14 +442,9 @@ Can all be handled in plugin GameBox
             };
             const hasDir = events[ i ].dir;
             const isBoundary = events[ i ].type === Config.events.BOUNDARY;
-            const lookbox = ( isBoundary ? {
-                ...sprite.position,
-                width: sprite.width,
-                height: sprite.height,
-
-            } : sprite.hitbox );
+            const lookbox = ( isBoundary ? sprite.getFullbox() : sprite.hitbox );
             const collides = Utils.collide( lookbox, tile );
-            const amount = ( collides.width * collides.height ) / ( tile.width * tile.height ) * 100
+            const amount = ( collides.width * collides.height ) / ( tile.width * tile.height ) * 100;
             const isDir = hasDir ? ( sprite.dir === hasDir ) : true;
             const isThresh = isBoundary ? ( amount >= 50 ) : ( amount >= 20 );
 
@@ -481,7 +465,7 @@ Can all be handled in plugin GameBox
         const npcs = this.getVisibleNPCs( type );
 
         // Ad-hoc "sprite" object with { x, y, width, height }
-        let lookbox = sprite;
+        let lookbox = sprite.getFullbox();
 
         if ( Utils.func( sprite.getHitbox ) ) {
             lookbox = sprite.getHitbox( poi );
@@ -517,12 +501,7 @@ Can all be handled in plugin GameBox
         const activeTiles = this.getVisibleActiveTiles();
 
         activeTiles.forEach( ( instance ) => {
-            // Ad-hoc "sprite" object with { x, y, width, height }
-            let lookbox = sprite;
-
-            if ( Utils.func( sprite.getFootbox ) && Utils.func( sprite.getHitbox ) ) {
-                lookbox = ( footTiles.indexOf( instance.data.group ) !== -1 ) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
-            }
+            const lookbox = ( footTiles.indexOf( instance.data.group ) !== -1 ) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
 
             instance.pushed.forEach( ( coord ) => {
                 const tilebox = {
