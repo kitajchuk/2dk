@@ -15,7 +15,6 @@ class Player extends Controller {
         this.ready = false;
         this.paused = true;
         this.stopped = false;
-        this.Loader = Loader;
         this.controls = {
             a: false,
             aHold: false,

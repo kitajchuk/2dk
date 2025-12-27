@@ -92,8 +92,9 @@ module.exports = {
             action: undefined || {
                 verb: "",
                 dir: "",
+                fx: undefined || "",
+                sound: undefined || "",
                 shift: undefined || true,
-                sound: undefined || ""
             }
         }
     ]

@@ -603,11 +603,7 @@
             "states": [
                 {
                     "verb": "face",
-                    "dir": "left",
-                    "action": {
-                        "verb": "talk",
-                        "dir": "right"
-                    }
+                    "dir": "left"
                 }
             ]
         },

@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 186,
+    "save": 188,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -649,11 +649,7 @@
             "states": [
                 {
                     "verb": "face",
-                    "dir": "left",
-                    "action": {
-                        "verb": "talk",
-                        "dir": "right"
-                    }
+                    "dir": "left"
                 }
             ]
         },
@@ -820,10 +816,6 @@
                         "verb": "read",
                         "dir": "up"
                     }
-                },
-                {
-                    "verb": "face",
-                    "dir": "down"
                 }
             ]
         }
