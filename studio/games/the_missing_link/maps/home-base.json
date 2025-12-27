@@ -223,6 +223,12 @@
             "spawn": {
                 "x": 1374,
                 "y": 414
+            },
+            "ai": "door",
+            "action": {
+                "verb": "open",
+                "fx": "smoke-rough",
+                "sound": "smash"
             }
         }
     ],

@@ -1245,8 +1245,15 @@ class EditorCanvas {
             if ( data.action ) {
                 extraData.action = {
                     verb: data.action,
-                    sound: data.sound,
                 };
+
+                if ( data.fx ) {
+                    extraData.action.fx = data.fx;
+                }
+
+                if ( data.sound ) {
+                    extraData.action.sound = data.sound;
+                }
             }
 
             if ( data.dialogue ) {
