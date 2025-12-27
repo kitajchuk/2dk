@@ -22,16 +22,6 @@ class Door extends Sprite {
     destroy () {}
 
 
-    visible () {
-        return Utils.collide( this.gamebox.camera, {
-            x: this.position.x,
-            y: this.position.y,
-            width: this.width,
-            height: this.height,
-        });
-    }
-
-
 /*******************************************************************************
 * Rendering
 * Order is: blit, update, render

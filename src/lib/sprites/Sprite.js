@@ -95,12 +95,7 @@ class Sprite {
 
 
     visible () {
-        return Utils.collide( this.gamebox.camera, {
-            x: this.position.x,
-            y: this.position.y,
-            width: this.width,
-            height: this.height,
-        });
+        return Utils.collide( this.gamebox.camera, this.getFullbox() );
     }
 
 
@@ -210,7 +205,7 @@ class Sprite {
 
         // Move between BG and FG relative to Hero
         if ( !this.isHero() && !this.isCompanion() ) {
-            const isHeroColliding = Utils.collide( this.gamebox.hero.hitbox, this.hitbox );
+            const isHeroColliding = Utils.collide( this.getFullbox(), this.gamebox.hero.getFullbox() );
             const hasPartialHitbox = ( this.hitbox.width * this.hitbox.height ) !== ( this.width * this.height );
 
             // Assume that FLOAT should always render to the foreground
@@ -497,6 +492,16 @@ class Sprite {
             y: poi.y + ( ( this.data.hitbox.y / this.scale ) + ( this.hitbox.height / 2 ) ),
             width: this.footbox.width,
             height: this.footbox.height,
+        };
+    }
+
+
+    getFullbox () {
+        return {
+            x: this.position.x,
+            y: this.position.y,
+            width: this.width,
+            height: this.height,
         };
     }
 
