@@ -373,14 +373,7 @@ Can all be handled in plugin GameBox
 
 
     checkHero ( poi, sprite ) {
-        let ret = false;
-        const collides = Utils.collide( sprite.getHitbox( poi ), this.hero.hitbox );
-
-        if ( collides ) {
-            ret = collides;
-        }
-
-        return ret;
+        return Utils.collide( sprite.getHitbox( poi ), this.hero.hitbox );
     }
 
 
@@ -476,11 +469,12 @@ Can all be handled in plugin GameBox
         const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
 
         for ( let i = npcs.length; i--; ) {
-            // A thrown object Sprite will have a hero prop
             if ( 
+                // A thrown object Sprite will have a hero prop
                 !npcs[ i ].hero && 
                 npcs[ i ] !== sprite && 
                 Utils.collide( lookbox, npcs[ i ].hitbox ) &&
+                // Check if the NPC is open (e.g. a door)
                 !( type === "doors" && npcs[ i ].open )
             ) {
                 return npcs[ i ];
