@@ -472,11 +472,8 @@ Can all be handled in plugin GameBox
         const npcs = this.getVisibleNPCs( type );
 
         // Ad-hoc "sprite" object with { x, y, width, height }
-        let lookbox = sprite.getFullbox();
-
-        if ( Utils.func( sprite.getHitbox ) ) {
-            lookbox = sprite.getHitbox( poi );
-        }
+        // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
+        const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
 
         for ( let i = npcs.length; i--; ) {
             // A thrown object Sprite will have a hero prop
@@ -508,7 +505,11 @@ Can all be handled in plugin GameBox
         const activeTiles = this.getVisibleActiveTiles();
 
         activeTiles.forEach( ( instance ) => {
-            const lookbox = ( footTiles.indexOf( instance.data.group ) !== -1 ) ? sprite.getFootbox( poi ) : sprite.getHitbox( poi );
+            // Ad-hoc "sprite" object with { x, y, width, height }
+            // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
+            const isInstance = ( Utils.func( sprite.getFootbox ) && Utils.func( sprite.getHitbox ) );
+            const isFootTile = footTiles.indexOf( instance.data.group ) !== -1;
+            const lookbox = isInstance ? isFootTile ? sprite.getFootbox( poi ) : sprite.getHitbox( poi ) : sprite;
 
             instance.pushed.forEach( ( coord ) => {
                 const tilebox = {
