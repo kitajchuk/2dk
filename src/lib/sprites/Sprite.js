@@ -78,6 +78,9 @@ class Sprite {
             up: false,
             down: false,
         };
+        // Used for things like NPCs, enemies, Hero etx...
+        this.hitTimer = 0;
+        this.stillTimer = 0;
     }
 
 
@@ -91,6 +94,19 @@ class Sprite {
 
     is ( verb ) {
         return this.verb === verb;
+    }
+
+
+    hit ( power = 1, timer = 50 ) {
+        this.counter = 0;
+        this.hitTimer = timer;
+        this.stillTimer = timer;
+        this.resetPhysics();
+        this.face( this.dir );
+
+        if ( this.stats ) {
+            this.stats.health -= power;
+        }
     }
 
 
@@ -127,6 +143,10 @@ class Sprite {
 * Controls
 *******************************************************************************/
     handleControls () {
+        if ( this.stillTimer ) {
+            return;
+        }
+
         if ( this.controls.left ) {
             this.physics.vx = Utils.limit( this.physics.vx - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
             this.idle.x = false;
@@ -167,6 +187,18 @@ class Sprite {
 
         if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
+        }
+
+        if ( this.hitTimer > 0 ) {
+            this.hitTimer--;
+        }
+
+        if ( this.stillTimer > 0 ) {
+            this.stillTimer--;
+        }
+
+        if ( this.hitTimer === 0 ) {
+            this.handleHealthCheck();
         }
 
         // Set frame and sprite rendering cel
@@ -221,6 +253,14 @@ class Sprite {
 
         if ( this.opacity ) {
             this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
+        }
+
+        if ( this.hitTimer ) {
+            if ( this.hitTimer % 5 === 0 ) {
+                this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 0.25;
+            } else {
+                this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
+            }
         }
 
         this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
@@ -302,6 +342,19 @@ class Sprite {
 
     handleGravity () {
         this.physics.vz++;
+    }
+
+
+    handleHealthCheck () {
+        if ( !this.stats ) {
+            return;
+        }
+
+        if ( this.stats.health <= 0 ) {
+            this.gamebox.smokeObject( this, this.data.action.fx );
+            this.gamebox.player.gameaudio.hitSound( this.data.action.sound || Config.verbs.SMASH );
+            this.map.killObject( "npcs", this );
+        }
     }
 
 
@@ -440,6 +493,13 @@ class Sprite {
 
     getNextZ () {
         return this.position.z + Utils.limit( this.physics.vz, -this.physics.maxv, this.physics.maxv );
+    }
+
+
+    resetPhysics () {
+        this.physics.vx = 0;
+        this.physics.vy = 0;
+        this.physics.vz = 0;
     }
 
 

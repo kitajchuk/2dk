@@ -383,7 +383,7 @@
             },
             "stats": {
                 "power": 1,
-                "health": 100
+                "health": 1
             },
             "verbs": {
                 "face": {

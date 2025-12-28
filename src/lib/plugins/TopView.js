@@ -14,12 +14,6 @@ class TopView extends GameBox {
 
         // Interactions
         this.interact = {
-            // npc: {
-            //     sprite?
-            //     spring?
-            //     tween?
-            // }
-            npc: null,
             // tile: {
             //     group?,
             //     coord?,
@@ -75,11 +69,6 @@ class TopView extends GameBox {
         // blit interaction tile sprite?
         if ( this.interact.tile && this.interact.tile.sprite && this.interact.tile.spring ) {
             this.handleThrowing( elapsed );
-        }
-
-        // blit interaction npc sprite?
-        if ( this.interact.npc && this.interact.npc.sprite && this.interact.npc.spring ) {
-            this.handleAttackNCP( elapsed );
         }
 
         // dropin effect for new map?
@@ -769,10 +758,7 @@ class TopView extends GameBox {
                 this.player.gameaudio.hitSound( collision.npc.data.action.sound );
             }
 
-            this.interact.npc = {};
-            this.interact.npc.sprite = collision.npc;
-            this.interact.npc.tween = new Tween( this );
-            this.interact.npc.tween.tween({
+            new Tween( this ).tween({
                 to: destPos,
                 from: collision.npc.position,
                 duration: 1000,
@@ -790,7 +776,6 @@ class TopView extends GameBox {
                     }
                 },
                 complete: () => {
-                    this.interact.npc = null;
                     this.interact.push = 0;
                     this.locked = false;
                 },
@@ -972,39 +957,8 @@ class TopView extends GameBox {
             tiles: this.checkTiles( poi, weaponBox ),
         };
 
-        if ( collision.npc && collision.npc.canDoAction( Config.verbs.ATTACK ) && !this.interact.npc ) {
-            const destPos = {};
-
-            // TODO: Determine if the hero is properly facing the NPC in order to allow for the attack to be successful
-
-            // Get center points of NPC and weaponBox
-            const npcCenter = {
-                x: collision.npc.position.x + (collision.npc.width / 2),
-                y: collision.npc.position.y + (collision.npc.height / 2)
-            };
-            const heroCenter = {
-                x: this.hero.hitbox.x + (this.hero.hitbox.width / 2),
-                y: this.hero.hitbox.y + (this.hero.hitbox.height / 2)
-            };
-
-            // Calculate angle between centers
-            const angle = Math.atan2(
-                npcCenter.y - heroCenter.y,
-                npcCenter.x - heroCenter.x
-            );
-
-            // Calculate destination point 2 tiles away in angle direction
-            const distance = this.map.data.tilesize;
-            destPos.x = npcCenter.x + (Math.cos(angle) * distance);
-            destPos.y = npcCenter.y + (Math.sin(angle) * distance);
-
-            this.interact.npc = {};
-            this.interact.npc.sprite = collision.npc;
-            this.interact.npc.sprite.attacked = true;
-            this.interact.npc.spring = new Spring( this.player, collision.npc.position.x, collision.npc.position.y, 120, 3.5 );
-            this.interact.npc.spring.poi = destPos;
-            // Don't bind so we can manage collision better
-            // this.interact.npc.spring.bind( collision.npc );
+        if ( collision.npc && !collision.npc.hitTimer && collision.npc.canDoAction( Config.verbs.ATTACK ) ) {
+            collision.npc.hit( this.hero.data.stats.power );
         }
 
         if ( collision.tiles && collision.tiles.attack.length ) {
@@ -1013,40 +967,6 @@ class TopView extends GameBox {
                     this.handleHeroTileAttack( poi, this.hero.dir, tile );
                 }
             });
-        }
-    }
-
-
-    handleAttackNCP ( elapsed ) {
-        if ( this.interact.npc.spring.isResting ) {
-            this.interact.npc.sprite.attacked = false;
-
-            if ( this.interact.npc.sprite.stats ) {
-                this.interact.npc.sprite.stats.health -= this.hero.data.stats.power;
-
-                if ( this.interact.npc.sprite.stats.health <= 0 ) {
-                    this.smokeObject( this.interact.npc.sprite, this.interact.npc.sprite.data.action.fx );
-                    this.player.gameaudio.hitSound( this.interact.npc.sprite.data.action.sound || Config.verbs.SMASH );
-                    this.map.killObject( "npcs", this.interact.npc.sprite );
-                }
-            }
-
-            this.interact.npc = null;
-
-        } else {
-            this.interact.npc.spring.blit( elapsed );
-
-            const collision = {
-                map: this.checkMap( this.interact.npc.spring.position, this.interact.npc.sprite ),
-                npc: this.checkNPC( this.interact.npc.spring.position, this.interact.npc.sprite ),
-                tiles: this.checkTiles( this.interact.npc.spring.position, this.interact.npc.sprite ),
-                camera: this.checkCamera( this.interact.npc.spring.position, this.interact.npc.sprite ),
-            };
-
-            if ( !collision.map && !collision.npc && !collision.camera && !this.hero.canTileStop( this.interact.npc.sprite.position, null, collision ) ) {
-                this.interact.npc.sprite.position.x = this.interact.npc.spring.position.x;
-                this.interact.npc.sprite.position.y = this.interact.npc.spring.position.y;
-            }
         }
     }
 

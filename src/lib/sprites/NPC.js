@@ -14,7 +14,6 @@ class NPC extends Sprite {
         super( data, map );
         this.states = structuredClone( this.data.states );
         this.dialogue = null;
-        this.attacked = false;
         
         // AI things...
         // Initial cooldown period upon spawn (don't immediately move)
@@ -167,7 +166,11 @@ class NPC extends Sprite {
 * Handlers
 *******************************************************************************/
     handleAI () {
-        if ( this.data.ai && !this.attacked ) {
+        if ( this.stillTimer ) {
+            return;
+        }
+
+        if ( this.data.ai ) {
             switch ( this.data.ai ) {
                 case Config.npc.ROAM:
                     this.handleRoam();
@@ -196,6 +199,11 @@ class NPC extends Sprite {
             }
 
             this.dir = newDir;
+
+            // @check: hero-verb-check
+            if ( this.can( Config.verbs.WALK ) ) {
+                this.verb = Config.verbs.WALK;
+            }
         } else {
             this.counter--;
         }
