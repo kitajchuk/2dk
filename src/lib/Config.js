@@ -30,6 +30,7 @@ const Config = {
         SMASH: "smash",
         ATTACK: "attack",
         OPEN: "open",
+        CLOSE: "close",
     },
     map: {
         types: {

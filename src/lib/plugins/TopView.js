@@ -1025,8 +1025,8 @@ class TopView extends GameBox {
                 this.interact.npc.sprite.stats.health -= this.hero.data.stats.power;
 
                 if ( this.interact.npc.sprite.stats.health <= 0 ) {
-                    this.smokeObject( this.interact.npc.sprite );
-                    this.player.gameaudio.hitSound( Config.verbs.SMASH );
+                    this.smokeObject( this.interact.npc.sprite, this.interact.npc.sprite.data.action.fx );
+                    this.player.gameaudio.hitSound( this.interact.npc.sprite.data.action.sound || Config.verbs.SMASH );
                     this.map.killObject( "npcs", this.interact.npc.sprite );
                 }
             }
@@ -1186,8 +1186,10 @@ class TopView extends GameBox {
 
 
     handleHeroDoorAction ( poi, dir, door ) {
-        if ( door.canDoAction( Config.verbs.OPEN ) ) {
-            door.doAction( Config.verbs.OPEN );
+        const verb = door.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
+        
+        if ( door.canDoAction( verb ) ) {
+            door.doAction( verb );
         }
     }
 
