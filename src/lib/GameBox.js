@@ -433,6 +433,8 @@ Can all be handled in plugin GameBox
     checkEvents ( poi, sprite ) {
         const events = this.getVisibleEvents();
 
+        let amount = 0;
+
         for ( let i = events.length; i--; ) {
             const tile = {
                 width: this.map.data.tilesize,
@@ -444,16 +446,21 @@ Can all be handled in plugin GameBox
             const isBoundary = events[ i ].type === Config.events.BOUNDARY;
             const lookbox = ( isBoundary ? sprite.getFullbox() : sprite.hitbox );
             const collides = Utils.collide( lookbox, tile );
-            const amount = ( collides.width * collides.height ) / ( tile.width * tile.height ) * 100;
-            const isDir = hasDir ? ( sprite.dir === hasDir ) : true;
-            const isThresh = isBoundary ? ( amount >= 50 ) : ( amount >= 20 );
 
-            // An event without a "dir" can be triggered from any direction
-            if ( collides && isThresh && isDir ) {
-                return Object.assign( events[ i ], {
-                    collides,
-                    amount,
-                });
+            if ( collides ) {
+                // Cumulative amount of the event tile(s) that can be colliding with the sprite
+                amount += ( collides.width * collides.height ) / ( tile.width * tile.height ) * 100;
+
+                const isDir = hasDir ? ( sprite.dir === hasDir ) : true;
+                const isThresh = isBoundary ? ( amount >= 50 ) : ( amount >= 20 );
+
+                // An event without a "dir" can be triggered from any direction
+                if ( isThresh && isDir ) {
+                    return Object.assign( events[ i ], {
+                        collides,
+                        amount,
+                    });
+                }
             }
         }
 
