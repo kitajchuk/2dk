@@ -263,8 +263,8 @@ class EditorCursor {
 
         if ( isNPC ) {
             const state = objOrNPC.states[ 0 ];
-            offsetX = Math.abs( objOrNPC.verbs[ state.verb ][ state.dir ].offsetX );
-            offsetY = Math.abs( objOrNPC.verbs[ state.verb ][ state.dir ].offsetY );
+            offsetX = objOrNPC.verbs[ state.verb ][ state.dir ].offsetX;
+            offsetY = objOrNPC.verbs[ state.verb ][ state.dir ].offsetY;
         }
 
         this.cursors.canvas.width = width;

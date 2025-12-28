@@ -35,8 +35,8 @@ const renderNPC = ( npc, game ) => {
     const id = `npc-${npc.id}`;
     const src = `./games/${game.id}/${npc.image}`;
     const state = npc.states[ 0 ];
-    const offsetX = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetX );
-    const offsetY = Math.abs( npc.verbs[ state.verb ][ state.dir ].offsetY );
+    const offsetX = npc.verbs[ state.verb ][ state.dir ].offsetX;
+    const offsetY = npc.verbs[ state.verb ][ state.dir ].offsetY;
 
     return html`
         <div class="js-npc-tile" data-npc="${npc.id}">

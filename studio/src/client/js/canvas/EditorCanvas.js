@@ -380,8 +380,8 @@ class EditorCanvas {
 
                 this.contexts.npc.context.drawImage(
                     this.assets[ baseNpc.image ],
-                    Math.abs( offsetX ),
-                    Math.abs( offsetY ),
+                    offsetX,
+                    offsetY,
                     baseNpc.width,
                     baseNpc.height,
                     npc.spawn.x,
@@ -838,8 +838,8 @@ class EditorCanvas {
 
         if ( isNPC ) {
             const state = objOrNPC.states[ 0 ];
-            offsetX = Math.abs( objOrNPC.verbs[ state.verb ][ state.dir ].offsetX );
-            offsetY = Math.abs( objOrNPC.verbs[ state.verb ][ state.dir ].offsetY );
+            offsetX = objOrNPC.verbs[ state.verb ][ state.dir ].offsetX;
+            offsetY = objOrNPC.verbs[ state.verb ][ state.dir ].offsetY;
         }
 
         this.clearCanvas( this.canvases.preview );
@@ -1137,8 +1137,8 @@ class EditorCanvas {
 
             if ( isNPC ) {
                 const state = objectOrNPC.states[ 0 ];
-                offsetX = Math.abs( objectOrNPC.verbs[ state.verb ][ state.dir ].offsetX );
-                offsetY = Math.abs( objectOrNPC.verbs[ state.verb ][ state.dir ].offsetY );
+                offsetX = objectOrNPC.verbs[ state.verb ][ state.dir ].offsetX;
+                offsetY = objectOrNPC.verbs[ state.verb ][ state.dir ].offsetY;
             }
 
             _context.context.drawImage(

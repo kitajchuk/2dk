@@ -38,8 +38,8 @@ class FX extends Sprite {
 
     getCel () {
         return [
-            Math.abs( this.data.offsetX ) + ( this.data.width * this.frame ),
-            Math.abs( this.data.offsetY ),
+            this.data.offsetX + ( this.data.width * this.frame ),
+            this.data.offsetY,
         ];
     }
 

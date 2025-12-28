@@ -59,8 +59,8 @@ class Hero extends Sprite {
         if ( this.is( Config.verbs.ATTACK ) && this.hasWeapon() ) {
             this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
-                Math.abs( this.data.weapon[ this.dir ][ this.frame ].offsetX ),
-                Math.abs( this.data.weapon[ this.dir ][ this.frame ].offsetY ),
+                this.data.weapon[ this.dir ][ this.frame ].offsetX,
+                this.data.weapon[ this.dir ][ this.frame ].offsetY,
                 this.data.weapon[ this.dir ][ this.frame ].width,
                 this.data.weapon[ this.dir ][ this.frame ].height,
                 this.offset.x + this.data.weapon[ this.dir ][ this.frame ].positionX,

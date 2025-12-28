@@ -208,8 +208,8 @@ class Sprite {
         if ( this.data.shadow && !this.is( Config.verbs.FALL ) ) {
             this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
-                Math.abs( this.data.shadow.offsetX ),
-                Math.abs( this.data.shadow.offsetY ),
+                this.data.shadow.offsetX,
+                this.data.shadow.offsetY,
                 this.data.width,
                 this.data.height,
                 this.offset.x,
@@ -417,8 +417,8 @@ class Sprite {
 *******************************************************************************/
     getCel () {
         return [
-            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetX ) + ( this.data.width * this.frame ),
-            Math.abs( this.data.verbs[ this.verb ][ this.dir ].offsetY ),
+            this.data.verbs[ this.verb ][ this.dir ].offsetX + ( this.data.width * this.frame ),
+            this.data.verbs[ this.verb ][ this.dir ].offsetY,
         ];
     }
 
