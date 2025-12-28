@@ -8,6 +8,7 @@ import Hero from "./sprites/Hero";
 import Companion from "./sprites/Companion";
 import FX from "./sprites/FX";
 import CellAutoMap from "./maps/CellAutoMap";
+import GameQuest from "./GameQuest";
 
 
 
@@ -68,6 +69,7 @@ class GameBox {
             heroground: null,
             foreground: null,
         };
+        this.quest = new GameQuest( this );
 
         let initMapData = Loader.cash( this.player.heroData.map );
         let initHeroData = this.player.heroData;

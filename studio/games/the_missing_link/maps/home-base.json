@@ -228,7 +228,36 @@
             "action": {
                 "verb": "open",
                 "fx": "smoke-rough",
-                "sound": "smash"
+                "sound": "smash",
+                "quest": {
+                    "set": {
+                        "key": "moblin-camp-opened",
+                        "value": 1
+                    },
+                    "check": {
+                        "key": "octorok-killed",
+                        "value": 1
+                    }
+                }
+            }
+        },
+        {
+            "id": "octorok",
+            "spawn": {
+                "x": 1056,
+                "y": 417
+            },
+            "ai": "roam",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke-rough",
+                "sound": "smash",
+                "quest": {
+                    "set": {
+                        "key": "octorok-killed",
+                        "value": 1
+                    }
+                }
             }
         }
     ],

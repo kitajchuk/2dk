@@ -7,7 +7,7 @@ const npcReference = {
         y: 0
     },
     payload: undefined || {
-        dialogue: {
+        dialogue: undefined || {
             type: "",
             text: [],
             yes: undefined || {
@@ -18,14 +18,34 @@ const npcReference = {
                 label: "",
                 text: []
             }
-        }
+        },
+        quest: undefined || {
+            set: undefined || {
+                key: "",
+                value: "",
+            },
+            check: undefined || {
+                key: "",
+                value: "",
+            },
+        },
     },
     // Action reference (action.js)
     action: undefined || {
         verb: "",
         dir: undefined || "",
         fx: undefined || "",
-        sound: undefined || ""
+        sound: undefined || "",
+        quest: undefined || {
+            set: undefined || {
+                key: "",
+                value: 1,
+            },
+            check: undefined || {
+                key: "",
+                value: 1,
+            },
+        },
     }
 };
 
