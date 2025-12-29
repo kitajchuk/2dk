@@ -91,7 +91,7 @@ class Map {
 
         // NPCs
         this.data.npcs.filter( ( npc ) => {
-            return !npc.type;
+            return !npc.type || npc.type !== Config.npc.types.DOOR;
         }).forEach( ( data ) => {
             this.npcs.push( new NPC( this.player.getMergedData( data, "npcs" ), this ) );
         });

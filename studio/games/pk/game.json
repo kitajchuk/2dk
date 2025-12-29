@@ -43,8 +43,7 @@
             },
             "stats": {
                 "power": 1,
-                "health": 3,
-                "strength": 1
+                "health": 3
             },
             "shadow": {
                 "offsetX": 128,

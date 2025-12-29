@@ -156,7 +156,7 @@ class TopView extends GameBox {
 * GamePad Inputs
 *******************************************************************************/
     pressD ( dir ) {
-        if ( this.dropin ) {
+        if ( this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -167,7 +167,7 @@ class TopView extends GameBox {
 
 
     releaseD () {
-        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin ) {
+        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -190,7 +190,7 @@ class TopView extends GameBox {
 
 
     pressA () {
-        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active ) {
+        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -230,7 +230,7 @@ class TopView extends GameBox {
     holdA () {
         Utils.log( "A Hold" );
 
-        if ( this.jumping || this.falling || this.attacking || this.dropin ) {
+        if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -238,7 +238,7 @@ class TopView extends GameBox {
 
 
     releaseA () {
-        if ( this.jumping || this.falling || this.attacking || this.dropin ) {
+        if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -251,7 +251,7 @@ class TopView extends GameBox {
     releaseHoldA () {
         Utils.log( "A Hold Release" );
 
-        if ( this.jumping || this.falling || this.attacking || this.dropin ) {
+        if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -261,7 +261,7 @@ class TopView extends GameBox {
 
     // Common releaseA handler
     handleReleaseA () {
-        if ( this.jumping || this.attacking || this.dropin || this.running ) {
+        if ( this.jumping || this.attacking || this.dropin || this.running || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -284,7 +284,7 @@ class TopView extends GameBox {
 
 
     pressB () {
-        if ( this.attacking || this.dropin || this.dialogue.active ) {
+        if ( this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -305,7 +305,7 @@ class TopView extends GameBox {
     holdB () {
         Utils.log( "B Hold" );
 
-        if ( this.jumping || this.falling || this.attacking || this.dropin ) {
+        if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -316,7 +316,7 @@ class TopView extends GameBox {
 
 
     releaseB () {
-        if ( this.jumping || this.falling || this.dropin ) {
+        if ( this.jumping || this.falling || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -336,7 +336,7 @@ class TopView extends GameBox {
     releaseHoldB () {
         Utils.log( "B Hold Release" );
 
-        if ( this.jumping || this.falling || this.dropin ) {
+        if ( this.jumping || this.falling || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -433,6 +433,10 @@ class TopView extends GameBox {
 
 
     handleHero ( poi, dir ) {
+        if ( this.hero.isHitOrStill() ) {
+            return;
+        }
+
         if ( this.locked || this.jumping || this.falling || this.parkour || this.dropin ) {
             this.interact.push = 0;
         }
@@ -479,6 +483,12 @@ class TopView extends GameBox {
         }
 
         if ( collision.npc ) {
+            if ( collision.npc.data.type === Config.npc.types.ENEMY && !collision.npc.isHitOrStill() ) {
+                this.hero.hit( collision.npc.stats.power );
+                this.hero.physics.vz = -6;
+                return;
+            }
+
             this.handleHeroPush( poi, dir );
 
             if ( collision.npc.canDoAction( Config.verbs.PUSH ) ) {

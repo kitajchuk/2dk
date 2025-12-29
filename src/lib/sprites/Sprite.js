@@ -86,7 +86,6 @@ class Sprite {
         this.stats = this.data.stats ? structuredClone( this.data.stats ) : {
             power: 1,
             health: 1,
-            strength: 1,
         };
     }
 
@@ -125,6 +124,11 @@ class Sprite {
         if ( this.stats ) {
             this.stats.health -= power;
         }
+    }
+
+
+    isHitOrStill () {
+        return this.hitTimer > 0 || this.stillTimer > 0;
     }
 
 
@@ -376,7 +380,7 @@ class Sprite {
 
 
     handleQuestUpdate () {
-        if ( !this.data.action.quest || !this.data.action.quest.set ) {
+        if ( !this.data.action?.quest?.set ) {
             return;
         }
 

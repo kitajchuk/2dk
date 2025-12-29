@@ -126,23 +126,24 @@ class NPC extends Sprite {
         );
 
         // Roaming NPCs can push the hero back...
-        if ( collision.hero && this.data.ai === Config.npc.ai.ROAM ) {
-            switch ( this.dir ) {
-                case "left":
-                    this.gamebox.hero.physics.vx = -1;
-                    break;
-                case "right": 
-                    this.gamebox.hero.physics.vx = 1;
-                    break;
-                case "up":
-                    this.gamebox.hero.physics.vy = -1;
-                    break;
-                case "down":
-                    this.gamebox.hero.physics.vy = 1;
-                    break;
-            }
-            return;
-        }
+        // TODO: Bring this back when we handle enemies and shield properly...
+        // if ( collision.hero && this.data.ai === Config.npc.ai.ROAM ) {
+        //     switch ( this.dir ) {
+        //         case "left":
+        //             this.gamebox.hero.physics.vx = -1;
+        //             break;
+        //         case "right": 
+        //             this.gamebox.hero.physics.vx = 1;
+        //             break;
+        //         case "up":
+        //             this.gamebox.hero.physics.vy = -1;
+        //             break;
+        //         case "down":
+        //             this.gamebox.hero.physics.vy = 1;
+        //             break;
+        //     }
+        //     return;
+        // }
 
         if ( isCollision ) {
             // Let wandering NPCs cool down before moving again

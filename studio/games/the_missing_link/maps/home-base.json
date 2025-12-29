@@ -256,6 +256,7 @@
                 "y": 417
             },
             "ai": "roam",
+            "type": "enemy",
             "action": {
                 "verb": "attack",
                 "fx": "smoke-rough",
@@ -275,6 +276,7 @@
                 "y": 671
             },
             "ai": "roam",
+            "type": "enemy",
             "action": {
                 "verb": "attack",
                 "fx": "smoke-rough",
@@ -294,6 +296,7 @@
                 "y": 610
             },
             "ai": "roam",
+            "type": "enemy",
             "action": {
                 "verb": "attack",
                 "fx": "smoke-rough",

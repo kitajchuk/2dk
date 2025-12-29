@@ -86,6 +86,7 @@ const Config = {
         types: {
             DOOR: "door",
             SWITCH: "switch",
+            ENEMY: "enemy",
         },
     },
     facing: {

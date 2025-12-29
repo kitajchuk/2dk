@@ -1243,6 +1243,10 @@ class EditorCanvas {
                 extraData.ai = data.ai;
             }
 
+            if ( data.type ) {
+                extraData.type = data.type;
+            }
+
             if ( data.action ) {
                 extraData.action = {
                     verb: data.action,

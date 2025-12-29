@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 202,
+    "save": 204,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -52,8 +52,7 @@
             },
             "stats": {
                 "power": 1,
-                "health": 3,
-                "strength": 1
+                "health": 3
             },
             "shadow": {
                 "offsetX": 368,
