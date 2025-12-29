@@ -20,6 +20,7 @@ class Map {
     constructor ( data, gamebox ) {
         this.data = data;
         this.gamebox = gamebox;
+        this.player = this.gamebox.player;
         this.camera = this.gamebox.camera;
         this.width = this.data.width;
         this.height = this.data.height;
@@ -78,21 +79,21 @@ class Map {
 
         // FX
         this.data.fx.forEach( ( data ) => {
-            this.fx.push( new FX( this.gamebox.player.getMergedData( data, "fx", true ), this ) );
+            this.fx.push( new FX( this.player.getMergedData( data, "fx", true ), this ) );
         });
 
         // Doors
         this.data.npcs.filter( ( npc ) => {
             return npc.ai && npc.ai === Config.npc.DOOR;
         }).forEach( ( data ) => {
-            this.doors.push( new Door( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
+            this.doors.push( new Door( this.player.getMergedData( data, "npcs" ), this ) );
         });
 
         // NPCs
         this.data.npcs.filter( ( npc ) => {
             return !npc.ai || npc.ai !== Config.npc.DOOR;
         }).forEach( ( data ) => {
-            this.npcs.push( new NPC( this.gamebox.player.getMergedData( data, "npcs" ), this ) );
+            this.npcs.push( new NPC( this.player.getMergedData( data, "npcs" ), this ) );
         });
 
         // Tiles
@@ -202,7 +203,7 @@ class Map {
         });
 
         // Visual event debugging....
-        if ( this.gamebox.player.query.get( "debug" ) ) {
+        if ( this.player.query.get( "debug" ) ) {
             this.renderDebug();
         }
     }

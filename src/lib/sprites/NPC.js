@@ -24,10 +24,6 @@ class NPC extends Sprite {
         this.stepsX = 0;
         this.stepsY = 0;
 
-        if ( this.data.stats ) {
-            this.stats = structuredClone( this.data.stats );
-        }
-
         this.shift();
     }
 
@@ -311,7 +307,7 @@ class NPC extends Sprite {
 
         // Handle sound
         if ( this.state.action.sound ) {
-            this.gamebox.player.gameaudio.hitSound( this.state.action.sound );
+            this.player.gameaudio.hitSound( this.state.action.sound );
         }
 
         // Handle verb (allows unique sprite cycle to be set during the interaction)

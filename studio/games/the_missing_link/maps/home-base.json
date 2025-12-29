@@ -236,7 +236,7 @@
                     },
                     "check": {
                         "key": "octorok-killed",
-                        "value": 1
+                        "value": 3
                     }
                 }
             }
@@ -246,6 +246,44 @@
             "spawn": {
                 "x": 1056,
                 "y": 417
+            },
+            "ai": "roam",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke-rough",
+                "sound": "smash",
+                "quest": {
+                    "set": {
+                        "key": "octorok-killed",
+                        "value": 1
+                    }
+                }
+            }
+        },
+        {
+            "id": "octorok",
+            "spawn": {
+                "x": 1308,
+                "y": 671
+            },
+            "ai": "roam",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke-rough",
+                "sound": "smash",
+                "quest": {
+                    "set": {
+                        "key": "octorok-killed",
+                        "value": 1
+                    }
+                }
+            }
+        },
+        {
+            "id": "octorok",
+            "spawn": {
+                "x": 1052,
+                "y": 610
             },
             "ai": "roam",
             "action": {

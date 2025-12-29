@@ -12,7 +12,7 @@ class Hero extends Sprite {
         super( data, map );
         this.layer = "heroground";
         // Hero controls are defined by the Player
-        this.controls = this.gamebox.player.controls;
+        this.controls = this.player.controls;
     }
 
 
@@ -72,11 +72,11 @@ class Hero extends Sprite {
             // Don't handle attack collision on the "windup" frame
             // Can always provide more control over which frames are checked
             if ( this.frame > 0 ) {
-                this.gamebox.handleHeroAttackFrame();
+                this.handleAttackFrame();
             }
         }
 
-        if ( this.gamebox.player.query.get( "debug" ) ) {
+        if ( this.player.query.get( "debug" ) ) {
             this.renderAfterDebug();
         }
     }
@@ -95,6 +95,36 @@ class Hero extends Sprite {
                 weaponbox.height
             );
             this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
+        }
+    }
+
+
+/*******************************************************************************
+* Handlers
+*******************************************************************************/
+    // Needs to be called for every frame of attack animation
+    handleAttackFrame () {
+        const poi = this.getNextPoiByDir( this.dir, 1 );
+        const weaponBox = this.getWeaponbox();
+        const collision = {
+            npc: this.gamebox.checkNPC( poi, weaponBox ),
+            tiles: this.gamebox.checkTiles( poi, weaponBox ),
+        };
+
+        if ( collision.npc && !collision.npc.hitTimer && collision.npc.canDoAction( Config.verbs.ATTACK ) ) {
+            collision.npc.hit( this.stats.power );
+        }
+
+        if ( collision.tiles && collision.tiles.attack.length ) {
+            collision.tiles.attack.forEach( ( tile ) => {
+                if ( tile.attack ) {
+                    const attackAction = tile.instance.canAttack();
+
+                    if ( attackAction ) {
+                        tile.instance.attack( tile.coord, attackAction );
+                    }
+                }
+            });
         }
     }
 

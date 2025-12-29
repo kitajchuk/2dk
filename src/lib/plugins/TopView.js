@@ -201,7 +201,7 @@ class TopView extends GameBox {
             tiles: this.checkTiles( poi, this.hero ),
         };
 
-        if ( collision.door ) {
+        if ( collision.door && !( collision.door.data.action && collision.door.data.action.quest ) ) {
             this.handleHeroDoorAction( poi, this.hero.dir, collision.door );
 
         } else if ( collision.npc ) {
@@ -946,29 +946,6 @@ class TopView extends GameBox {
             
         }, this.hero.getDur( Config.verbs.ATTACK ) );
     }
-    
-    
-    // Needs to be called for every frame of attack animation
-    handleHeroAttackFrame () {
-        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
-        const weaponBox = this.hero.getWeaponbox();
-        const collision = {
-            npc: this.checkNPC( poi, weaponBox ),
-            tiles: this.checkTiles( poi, weaponBox ),
-        };
-
-        if ( collision.npc && !collision.npc.hitTimer && collision.npc.canDoAction( Config.verbs.ATTACK ) ) {
-            collision.npc.hit( this.hero.data.stats.power );
-        }
-
-        if ( collision.tiles && collision.tiles.attack.length ) {
-            collision.tiles.attack.forEach( ( tile ) => {
-                if ( tile.attack ) {
-                    this.handleHeroTileAttack( poi, this.hero.dir, tile );
-                }
-            });
-        }
-    }
 
 
     handleHeroFall ( poi, dir, tiles ) {
@@ -1117,15 +1094,6 @@ class TopView extends GameBox {
     handleHeroNPCAction ( poi, dir, npc ) {
         if ( npc.canInteract( dir ) ) {
             npc.doInteract( dir );
-        }
-    }
-
-
-    handleHeroTileAttack ( poi, dir, tile ) {
-        const attackAction = tile.instance.canAttack();
-
-        if ( attackAction ) {
-            tile.instance.attack( tile.coord, attackAction );
         }
     }
 

@@ -14,6 +14,8 @@ class Sprite {
         this.data = data;
         this.map = map;
         this.gamebox = this.map.gamebox;
+        this.player = this.gamebox.player;
+        this.gamequest = this.gamebox.gamequest;
         this.scale = ( this.data.scale || 1 );
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
@@ -81,6 +83,11 @@ class Sprite {
         // Used for things like NPCs, enemies, Hero etx...
         this.hitTimer = 0;
         this.stillTimer = 0;
+        this.stats = this.data.stats ? structuredClone( this.data.stats ) : {
+            power: 1,
+            health: 1,
+            strength: 1,
+        };
     }
 
 
@@ -94,6 +101,17 @@ class Sprite {
 
     is ( verb ) {
         return this.verb === verb;
+    }
+
+
+    cycle ( verb, dir ) {
+        this.dir = dir;
+        this.verb = verb;
+    }
+
+
+    face ( dir ) {
+        this.cycle( Config.verbs.FACE, dir );
     }
 
 
@@ -134,8 +152,22 @@ class Sprite {
         return ( this.idle.x && this.idle.y );
     }
 
+
     isJumping () {
         return this.position.z < 0;
+    }
+
+
+    isQuestComplete ( quest ) {
+        if ( this.data.action && this.data.action.quest && this.data.action.quest.check ) {
+            const { key, value } = this.data.action.quest.check;
+
+            if ( key === quest ) {
+                return this.gamequest.checkQuest( key, value );
+            }
+        }
+
+        return 0;
     }
 
 
@@ -173,7 +205,6 @@ class Sprite {
     }
 
 
-
 /*******************************************************************************
 * Rendering
 * Order is: blit, update, render { renderBefore, renderAfter }
@@ -191,14 +222,14 @@ class Sprite {
 
         if ( this.hitTimer > 0 ) {
             this.hitTimer--;
+
+            if ( this.hitTimer === 0 ) {
+                this.handleHealthCheck();
+            }
         }
 
         if ( this.stillTimer > 0 ) {
             this.stillTimer--;
-        }
-
-        if ( this.hitTimer === 0 ) {
-            this.handleHealthCheck();
         }
 
         // Set frame and sprite rendering cel
@@ -251,17 +282,7 @@ class Sprite {
             );
         }
 
-        if ( this.opacity ) {
-            this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
-        }
-
-        if ( this.hitTimer ) {
-            if ( this.hitTimer % 5 === 0 ) {
-                this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 0.25;
-            } else {
-                this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
-            }
-        }
+        this.applyOpacity();
 
         this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
             this.image,
@@ -275,11 +296,13 @@ class Sprite {
             this.height
         );
 
+        this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
+
         if ( Utils.func( this.renderAfter ) ) {
             this.renderAfter();
         }
 
-        if ( this.gamebox.player.query.get( "debug" ) ) {
+        if ( this.player.query.get( "debug" ) ) {
             this.renderDebug();
         }
     }
@@ -314,18 +337,6 @@ class Sprite {
     }
 
 
-    cycle ( verb, dir ) {
-        this.dir = dir;
-        this.verb = verb;
-    }
-
-
-    face ( dir ) {
-        this.cycle( Config.verbs.FACE, dir );
-    }
-
-
-
 /*******************************************************************************
 * Handlers
 *******************************************************************************/
@@ -352,15 +363,44 @@ class Sprite {
 
         if ( this.stats.health <= 0 ) {
             this.gamebox.smokeObject( this, this.data.action.fx );
-            this.gamebox.player.gameaudio.hitSound( this.data.action.sound || Config.verbs.SMASH );
+            this.player.gameaudio.hitSound( this.data.action.sound || Config.verbs.SMASH );
             this.map.killObject( "npcs", this );
+            this.handleQuestUpdate();
         }
     }
+
+
+    handleQuestUpdate () {
+        if ( this.data.action.quest ) {
+            if ( this.data.action.quest.set ) {
+                const { key, value } = this.data.action.quest.set;
+                this.gamequest.hitQuest( key, value );
+                this.gamebox.checkQuests( key );
+            }
+        }
+    }
+
+
+    // Can be handled in the subclass...
+    handleQuestCheck () {}
 
 
 /*******************************************************************************
 * Applications
 *******************************************************************************/
+    applyOpacity () {
+        if ( this.opacity ) {
+            this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
+        }
+
+        if ( this.hitTimer > 0 ) {
+            if ( this.hitTimer % 5 === 0 ) {
+                this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 0.25;
+            }
+        }
+    }
+
+
     applyRenderLayer () {
         // Move between BG and FG relative to Hero
         if ( !this.isHero() && !this.isCompanion() ) {
