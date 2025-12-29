@@ -213,7 +213,7 @@
                         "NW — Imperial City",
                         "W  — Great Lake",
                         "E  — Shinji House",
-                        "NE — Old Forest"
+                        "NE — Old Forest"
                     ]
                 }
             }
@@ -224,7 +224,7 @@
                 "x": 1374,
                 "y": 414
             },
-            "ai": "door",
+            "type": "door",
             "action": {
                 "verb": "open",
                 "fx": "smoke-rough",
@@ -238,6 +238,14 @@
                         "key": "octorok-killed",
                         "value": 3
                     }
+                }
+            },
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Defeat the enemies to destroy the Moblin camp."
+                    ]
                 }
             }
         },

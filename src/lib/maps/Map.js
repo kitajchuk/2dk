@@ -84,14 +84,14 @@ class Map {
 
         // Doors
         this.data.npcs.filter( ( npc ) => {
-            return npc.ai && npc.ai === Config.npc.DOOR;
+            return npc.type === Config.npc.types.DOOR;
         }).forEach( ( data ) => {
             this.doors.push( new Door( this.player.getMergedData( data, "npcs" ), this ) );
         });
 
         // NPCs
         this.data.npcs.filter( ( npc ) => {
-            return !npc.ai || npc.ai !== Config.npc.DOOR;
+            return !npc.type;
         }).forEach( ( data ) => {
             this.npcs.push( new NPC( this.player.getMergedData( data, "npcs" ), this ) );
         });
@@ -168,10 +168,10 @@ class Map {
 
         // Separate background / foreground NPCs
         const npcsBg = this.npcs.filter( ( npc ) => {
-            return npc.data.type !== Config.npc.FLOAT && npc.layer === "background";
+            return npc.data.type !== Config.npc.ai.FLOAT && npc.layer === "background";
         });
         const npcsFg = this.npcs.filter( ( npc ) => {
-            return npc.data.type === Config.npc.FLOAT || npc.layer === "foreground";
+            return npc.data.type === Config.npc.ai.FLOAT || npc.layer === "foreground";
         });
 
         // Draw background textures

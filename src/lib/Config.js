@@ -77,11 +77,16 @@ const Config = {
         MAPEVENT: "mapevent",
     },
     npc: {
-        WALK: "walk",
-        ROAM: "roam",
-        FLOAT: "float",
-        WANDER: "wander",
-        DOOR: "door",
+        ai: {
+            WALK: "walk",
+            ROAM: "roam",
+            FLOAT: "float",
+            WANDER: "wander",
+        },
+        types: {
+            DOOR: "door",
+            SWITCH: "switch",
+        },
     },
     facing: {
         UP: "up",

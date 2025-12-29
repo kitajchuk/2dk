@@ -81,7 +81,7 @@ class NPC extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
-        if ( this.data.ai === Config.npc.FLOAT ) {
+        if ( this.data.ai === Config.npc.ai.FLOAT ) {
             this.applyFloatPosition();
 
         } else {
@@ -115,16 +115,18 @@ class NPC extends Sprite {
             npc: this.gamebox.checkNPC( poi, this ),
             hero: this.gamebox.checkHero( poi, this ),
             tiles: this.gamebox.checkTiles( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
         };
         const isCollision = (
             collision.map ||
             collision.npc ||
             collision.hero ||
+            collision.doors ||
             this.canTileStop( poi, null, collision )
         );
 
         // Roaming NPCs can push the hero back...
-        if ( collision.hero && this.data.ai === Config.npc.ROAM ) {
+        if ( collision.hero && this.data.ai === Config.npc.ai.ROAM ) {
             switch ( this.dir ) {
                 case "left":
                     this.gamebox.hero.physics.vx = -1;
@@ -145,7 +147,7 @@ class NPC extends Sprite {
         if ( isCollision ) {
             // Let wandering NPCs cool down before moving again
             // While roaming NPCs can immediately move again
-            if ( this.data.ai === Config.npc.ROAM ) {
+            if ( this.data.ai === Config.npc.ai.ROAM ) {
                 this.counter = 0;
             }
             
@@ -182,11 +184,11 @@ class NPC extends Sprite {
 
         if ( this.data.ai ) {
             switch ( this.data.ai ) {
-                case Config.npc.ROAM:
+                case Config.npc.ai.ROAM:
                     this.handleRoam();
                     break;
-                case Config.npc.FLOAT:
-                case Config.npc.WANDER:
+                case Config.npc.ai.FLOAT:
+                case Config.npc.ai.WANDER:
                     this.handleWander();
                     break;
             }
@@ -304,7 +306,7 @@ class NPC extends Sprite {
 * Interactions
 *******************************************************************************/
     canInteract ( dir ) {
-        return ( this.state.action && this.state.action.dir && dir === this.state.action.dir );
+        return ( this.state.action && ( !this.state.action.dir || dir === this.state.action.dir ) );
     }
 
 

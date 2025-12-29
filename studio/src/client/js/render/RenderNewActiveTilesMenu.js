@@ -94,7 +94,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                     <select class="select__field js-activetile-field js-select" name="mask">
                         <option value="">FX (for sprite masking)</option>
                         ${game.fx.map( ( fx ) => `
-                            <option value="${fx.id}">${fx.name}</option>
+                            <option value="${fx.id}">${fx.id}</option>
                         ` ).join( "" )}
                     </select>
                     <span class="select__icon">

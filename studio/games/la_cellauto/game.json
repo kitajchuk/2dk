@@ -364,53 +364,7 @@
             }
         }
     ],
-    "objects": [
-        {
-            "id": "tree-in-dirt",
-            "name": "Tree in Dirt",
-            "width": 128,
-            "height": 128,
-            "image": "assets/tiles/tiles.png",
-            "offsetX": 0,
-            "offsetY": 1024
-        },
-        {
-            "id": "tree-in-grass",
-            "name": "Tree in Grass",
-            "width": 128,
-            "height": 128,
-            "image": "assets/tiles/tiles.png",
-            "offsetX": 128,
-            "offsetY": 1024
-        },
-        {
-            "id": "tree-blue",
-            "name": "Blue Tree",
-            "width": 128,
-            "height": 128,
-            "image": "assets/tiles/tiles.png",
-            "offsetX": 384,
-            "offsetY": 1024
-        },
-        {
-            "id": "shrub",
-            "name": "Shrub",
-            "width": 64,
-            "height": 64,
-            "image": "assets/tiles/tiles.png",
-            "offsetX": 0,
-            "offsetY": 512
-        },
-        {
-            "id": "stone",
-            "name": "Stone",
-            "width": 64,
-            "height": 64,
-            "image": "assets/tiles/tiles.png",
-            "offsetX": 192,
-            "offsetY": 640
-        }
-    ],
+    "objects": [],
     "npcs": [
         {
             "id": "ghost",

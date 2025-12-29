@@ -12,7 +12,7 @@ import Sprite from "./Sprite";
 class Companion extends Sprite {
     constructor ( data, hero ) {
         super( data, hero.map );
-        this.layer = ( this.data.type === Config.npc.FLOAT ? "foreground" : "heroground" );
+        this.layer = ( this.data.type === Config.npc.ai.FLOAT ? "foreground" : "heroground" );
         this.hero = hero;
         this.spring = new Spring( this.player, this.position.x, this.position.y, 10 );
         this.spring.bind( this );
@@ -42,10 +42,10 @@ class Companion extends Sprite {
 
         // Companion types?
         switch ( this.data.type ) {
-            case Config.npc.WALK:
+            case Config.npc.ai.WALK:
                 this.blitWalk();
                 break;
-            case Config.npc.FLOAT:
+            case Config.npc.ai.FLOAT:
                 this.blitFloat();
                 break;
         }
@@ -100,11 +100,11 @@ class Companion extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
-        if ( this.data.type === Config.npc.WALK ) {
+        if ( this.data.type === Config.npc.ai.WALK ) {
             this.applyWalkPosition();
         }
 
-        if ( this.data.type === Config.npc.FLOAT ) {
+        if ( this.data.type === Config.npc.ai.FLOAT ) {
             this.applyFloatPosition();
         }
     }

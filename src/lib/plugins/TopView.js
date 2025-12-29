@@ -95,7 +95,7 @@ class TopView extends GameBox {
         this.map.update( this.offset );
 
         // render companion behind hero?
-        if ( this.companion && this.companion.data.type !== Config.npc.FLOAT && this.companion.hitbox.y < this.hero.hitbox.y ) {
+        if ( this.companion && this.companion.data.type !== Config.npc.ai.FLOAT && this.companion.hitbox.y < this.hero.hitbox.y ) {
             this.companion.render();
         }
 
@@ -107,7 +107,7 @@ class TopView extends GameBox {
         }
 
         // render companion infront of hero?
-        if ( this.companion && ( this.companion.data.type !== Config.npc.FLOAT && this.companion.hitbox.y > this.hero.hitbox.y ) ) {
+        if ( this.companion && ( this.companion.data.type !== Config.npc.ai.FLOAT && this.companion.hitbox.y > this.hero.hitbox.y ) ) {
             this.companion.render();
         }
 
@@ -115,7 +115,7 @@ class TopView extends GameBox {
         this.map.render( this.camera );
 
         // render companion infront of everything?
-        if ( this.companion && this.companion.data.type === Config.npc.FLOAT ) {
+        if ( this.companion && this.companion.data.type === Config.npc.ai.FLOAT ) {
             this.companion.render();
         }
     }
@@ -201,7 +201,7 @@ class TopView extends GameBox {
             tiles: this.checkTiles( poi, this.hero ),
         };
 
-        if ( collision.door && !( collision.door.data.action && collision.door.data.action.quest ) ) {
+        if ( collision.door ) {
             this.handleHeroDoorAction( poi, this.hero.dir, collision.door );
 
         } else if ( collision.npc ) {
@@ -859,7 +859,7 @@ class TopView extends GameBox {
             this.player.gameaudio.hitSound( Config.verbs.LIFT );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.interact.tile.sprite = new Sprite({
-                type: Config.npc.FLOAT,
+                type: Config.npc.ai.FLOAT,
                 layer: "foreground",
                 width: this.map.data.tilesize,
                 height: this.map.data.tilesize,
@@ -1083,6 +1083,19 @@ class TopView extends GameBox {
 
 
     handleHeroDoorAction ( poi, dir, door ) {
+        // Try interaction first (dialogue, etc.)
+        if ( door.canInteract( dir ) ) {
+            door.doInteract( dir );
+            return;
+        }
+
+        // Try quest check next
+        if ( door.data.action?.quest?.check ) {
+            door.handleQuestCheck( door.data.action.quest.check );
+            return;
+        }
+        
+        // Otherwise try action (open/close) if no quest is involved
         const verb = door.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
         
         if ( door.canDoAction( verb ) ) {

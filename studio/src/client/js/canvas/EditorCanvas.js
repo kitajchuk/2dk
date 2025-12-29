@@ -1038,7 +1038,8 @@ class EditorCanvas {
 
     renderNPCMenu ( coords, extraData ) {
         this.editor.menus.renderMenu( "editor-npc-menu", {
-            ais: Utils.getOptionData( window.lib2dk.Config.npc ),
+            ais: Utils.getOptionData( window.lib2dk.Config.npc.ai ),
+            types: Utils.getOptionData( window.lib2dk.Config.npc.types ),
             game: this.game,
             coords,
             actions: Utils.getOptionData( window.lib2dk.Config.verbs ),

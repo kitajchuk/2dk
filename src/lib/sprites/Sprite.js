@@ -414,7 +414,7 @@ class Sprite {
             const hasPartialHitbox = ( this.hitbox.width * this.hitbox.height ) !== ( this.width * this.height );
 
             // Assume that FLOAT should always render to the foreground
-            if ( this.data.type === Config.npc.FLOAT ) {
+            if ( this.data.type === Config.npc.ai.FLOAT ) {
                 this.layer = "foreground";
 
             // Sprites that have a smaller hitbox than their actual size can flip layer

@@ -12,12 +12,14 @@ import Config from "../Config";
 class Door extends Sprite {
     constructor ( data, map ) {
         super( data, map );
+        this.states = structuredClone( this.data.states );
         this.open = false;
         this.opening = false;
         this.closing = false;
         this.counter = 0;
         this.rumble = 0;
         this.originalX = this.position.x;
+        this.dialogue = null;
 
         this.initialize();
     }
@@ -30,10 +32,34 @@ class Door extends Sprite {
             this.open = this.data.action.verb === Config.verbs.OPEN ? completed ? true : false : completed ? false : true;
             this.counter = this.open ? this.data.height : 0;
         }
+
+        // Same as NPC shift() method
+        if ( this.states.length ) {
+            this.state = this.states.shift();
+            this.dir = this.state.dir;
+            this.verb = this.state.verb;
+        }
     }
 
 
     destroy () {}
+
+    
+    payload () {
+        if ( this.data.payload.dialogue && !this.dialogue ) {
+            this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
+            this.dialogue.then( () => {
+                this.resetDialogue();
+            }).catch( () => {
+                this.resetDialogue();
+            });
+        }
+    }
+
+
+    resetDialogue () {
+        this.dialogue = null;
+    }
 
 
 /*******************************************************************************
@@ -219,8 +245,21 @@ class Door extends Sprite {
 /*******************************************************************************
 * Interactions
 *******************************************************************************/
+    canInteract ( dir ) {
+        return ( this.state.action && ( !this.state.action.dir || dir === this.state.action.dir ) );
+    }
+
+
     canDoAction ( verb ) {
         return ( this.data.action && this.data.action.verb && verb === this.data.action.verb );
+    }
+
+
+    doInteract () {
+        // Handle dialogue payload
+        if ( this.data.payload ) {
+            this.payload();
+        }
     }
 
 

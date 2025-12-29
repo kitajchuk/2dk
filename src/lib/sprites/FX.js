@@ -28,7 +28,7 @@ class FX extends Sprite {
             this.previousElapsed = elapsed;
         }
 
-        if ( this.data.type === Config.npc.FLOAT ) {
+        if ( this.data.type === Config.npc.ai.FLOAT ) {
             this.position.y--;
         }
 
@@ -61,7 +61,7 @@ class FX extends Sprite {
                     this.frame = this.data.stepsX - 1;
 
                     // Resets the animation sequence, as in a loop...
-                    if ( this.data.type === Config.npc.FLOAT ) {
+                    if ( this.data.type === Config.npc.ai.FLOAT ) {
                         this.position.y = this.data.spawn.y;
                     }
                 }

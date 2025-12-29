@@ -1,7 +1,8 @@
 // Maps reference source NPC in game.json
 const npcReference = {
     id: "",
-    ai: "",
+    ai: undefined || "",
+    type: undefined || "",
     spawn: {
         x: 0,
         y: 0
