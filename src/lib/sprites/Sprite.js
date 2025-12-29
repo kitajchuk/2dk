@@ -158,16 +158,27 @@ class Sprite {
     }
 
 
-    isQuestComplete ( quest ) {
+    checkQuest ( quest ) {
         if ( this.data.action && this.data.action.quest && this.data.action.quest.check ) {
             const { key, value } = this.data.action.quest.check;
 
             if ( key === quest ) {
                 return this.gamequest.checkQuest( key, value );
+
             }
         }
 
-        return 0;
+        return false;
+    }
+
+
+    isQuestComplete () {
+        if ( this.data.action && this.data.action.quest && this.data.action.quest.check ) {
+            const { key } = this.data.action.quest.check;
+            return this.gamequest.getCompleted( key );
+        }
+
+        return false;
     }
 
 
@@ -356,33 +367,28 @@ class Sprite {
     }
 
 
-    handleHealthCheck () {
-        if ( !this.stats ) {
-            return;
-        }
-
-        if ( this.stats.health <= 0 ) {
-            this.gamebox.smokeObject( this, this.data.action.fx );
-            this.player.gameaudio.hitSound( this.data.action.sound || Config.verbs.SMASH );
-            this.map.killObject( "npcs", this );
-            this.handleQuestUpdate();
-        }
-    }
-
-
-    handleQuestUpdate () {
-        if ( this.data.action.quest ) {
-            if ( this.data.action.quest.set ) {
-                const { key, value } = this.data.action.quest.set;
-                this.gamequest.hitQuest( key, value );
-                this.gamebox.checkQuests( key );
-            }
-        }
-    }
+    // Can be handled in the subclass...
+    handleHealthCheck () {}
 
 
     // Can be handled in the subclass...
     handleQuestCheck () {}
+
+
+    handleQuestUpdate () {
+        if ( !this.data.action.quest || !this.data.action.quest.set ) {
+            return;
+        }
+
+        const { key, value } = this.data.action.quest.set;
+
+        if ( this.gamequest.getCompleted( key ) ) {
+            return;
+        }
+
+        this.gamequest.hitQuest( key, value );
+        this.gamebox.checkQuests( key );
+    }
 
 
 /*******************************************************************************

@@ -18,6 +18,18 @@ class Door extends Sprite {
         this.counter = 0;
         this.rumble = 0;
         this.originalX = this.position.x;
+
+        this.initialize();
+    }
+
+
+    initialize () {
+        if ( this.data.action ) {
+            const completed = this.isQuestComplete();
+
+            this.open = this.data.action.verb === Config.verbs.OPEN ? completed ? true : false : completed ? false : true;
+            this.counter = this.open ? this.data.height : 0;
+        }
     }
 
 
@@ -53,12 +65,19 @@ class Door extends Sprite {
 * Handlers
 *******************************************************************************/
     handleQuestCheck ( quest ) {
-        if ( this.isQuestComplete( quest ) ) {
+        if ( this.checkQuest( quest ) ) {
+            this.gamequest.completeQuest( quest );
+
+            // TODO: This is rough but maybe we should just complete the quest instead of hitting it?
+            if ( this.data.action.quest.set ) {
+                const { key, value } = this.data.action.quest.set;
+                this.gamequest.hitQuest( key, value );
+            }
+
             const verb = this.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
 
             if ( this.canDoAction( verb ) ) {
                 this.doAction( verb );
-                this.handleQuestUpdate();
             }
         }
     }

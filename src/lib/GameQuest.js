@@ -4,17 +4,31 @@ class GameQuest {
         this.quests = {
             // [key string]: [value number]
         };
+        this.completed = {
+            // [key string]: [value boolean]
+        };
     }
 
 
     hitQuest ( quest, value ) {
+        if ( this.completed[ quest ] ) {
+            return;
+        }
+
         if ( !this.quests[ quest ] ) {
             this.quests[ quest ] = 0;
         }
 
         this.quests[ quest ] += value;
+    }
 
-        console.log( this.quests );
+
+    completeQuest ( quest ) {
+        this.completed[ quest ] = true;
+        
+        if ( this.quests[ quest ] ) {
+            delete this.quests[ quest ];
+        }
     }
 
 
@@ -24,6 +38,11 @@ class GameQuest {
         }
 
         return this.quests[ quest ];
+    }
+
+
+    getCompleted ( quest ) {
+        return this.completed[ quest ] ?? false;
     }
 
 

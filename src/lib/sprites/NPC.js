@@ -161,6 +161,20 @@ class NPC extends Sprite {
 /*******************************************************************************
 * Handlers
 *******************************************************************************/
+    handleHealthCheck () {
+        if ( !this.stats ) {
+            return;
+        }
+
+        if ( this.stats.health <= 0 ) {
+            this.gamebox.smokeObject( this, this.data.action.fx );
+            this.player.gameaudio.hitSound( this.data.action.sound || Config.verbs.SMASH );
+            this.map.killObject( "npcs", this );
+            this.handleQuestUpdate();
+        }
+    }
+
+
     handleAI () {
         if ( this.stillTimer ) {
             return;
