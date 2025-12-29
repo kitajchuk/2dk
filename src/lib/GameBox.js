@@ -8,6 +8,7 @@ import Hero from "./sprites/Hero";
 import Companion from "./sprites/Companion";
 import FX from "./sprites/FX";
 import CellAutoMap from "./maps/CellAutoMap";
+import GameQuest from "./GameQuest";
 
 
 
@@ -68,6 +69,7 @@ class GameBox {
             heroground: null,
             foreground: null,
         };
+        this.gamequest = new GameQuest( this );
 
         let initMapData = Loader.cash( this.player.heroData.map );
         let initHeroData = this.player.heroData;
@@ -132,9 +134,6 @@ class GameBox {
     clear () {
         Object.keys( this.layers ).forEach( ( id ) => {
             this.layers[ id ].onCanvas.clear();
-
-            // Reset global alpha at the beginning of each frame
-            this.layers[ id ].onCanvas.context.globalAlpha = 1.0;
         });
     }
 
@@ -181,7 +180,7 @@ class GameBox {
 
 /*******************************************************************************
 * Rendering
-Can all be handled in plugin GameBox
+* Can all be handled in plugin GameBox
 *******************************************************************************/
     blit () {}
     update () {}
@@ -556,6 +555,23 @@ Can all be handled in plugin GameBox
         }
 
         return false;
+    }
+
+
+    checkQuests ( quest ) {
+        this.hero.handleQuestCheck( quest );
+
+        if ( this.companion ) {
+            this.companion.handleQuestCheck( quest );
+        }
+
+        this.map.doors.forEach( ( door ) => {
+            door.handleQuestCheck( quest );
+        });
+
+        this.map.npcs.forEach( ( npc ) => {
+            npc.handleQuestCheck( quest );
+        });
     }
 
 

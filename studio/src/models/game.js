@@ -26,7 +26,7 @@ module.exports = {
         sprite: 0,
         spawn: 0,
         map: "",
-        companion: null || {
+        companion: undefined || {
             id: "",
             type: ""
         }
