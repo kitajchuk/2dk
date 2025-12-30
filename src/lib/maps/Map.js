@@ -345,6 +345,19 @@ class Map {
             return false;
         }
 
+        const tile = {
+            x: lookupX * this.data.tilesize,
+            y: lookupY * this.data.tilesize,
+            width: this.data.tilesize,
+            height: this.data.tilesize,
+        };
+
+        const collides = Utils.collide( tile, this.gamebox.hero.hitbox );
+
+        if ( !collides ) {
+            return false;
+        }
+
         // Foreground is unique in that it can be shifted behind the hero.
         // However, it's not good enough to just check the current foreground tile.
         // If the next tile down also contains foreground texture data we need to check
