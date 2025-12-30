@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 232,
+    "save": 233,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -379,8 +379,8 @@
                 "height": 68
             },
             "stats": {
-                "power": 1,
-                "health": 3
+                "power": 0.25,
+                "health": 1
             },
             "verbs": {
                 "face": {
