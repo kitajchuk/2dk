@@ -3,8 +3,8 @@ import Config, { DIRS } from "../Config";
 import GameBox from "../GameBox";
 import Spring from "../Spring";
 import Tween from "../Tween";
-import Sprite from "../sprites/Sprite";
 import FX from "../sprites/FX";
+import { LiftedTile } from "../sprites/Hero";
 
 
 
@@ -864,37 +864,15 @@ class TopView extends GameBox {
         this.hero.cycle( Config.verbs.PULL, dir );
         setTimeout( () => {
             const activeTiles = this.map.getActiveTiles( this.interact.tile.group );
-            const tileCel = activeTiles.getTile();
+            const tile = activeTiles.getTile();
+            const spawn = {
+                x: this.interact.tile.coord[ 0 ] * this.map.data.tilesize,
+                y: this.interact.tile.coord[ 1 ] * this.map.data.tilesize,
+            };
 
             this.player.gameaudio.hitSound( Config.verbs.LIFT );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
-            this.interact.tile.sprite = new Sprite({
-                type: Config.npc.ai.FLOAT,
-                layer: "foreground",
-                width: this.map.data.tilesize,
-                height: this.map.data.tilesize,
-                spawn: {
-                    x: this.interact.tile.coord[ 0 ] * this.map.data.tilesize,
-                    y: this.interact.tile.coord[ 1 ] * this.map.data.tilesize,
-                },
-                image: this.map.data.image,
-                hitbox: {
-                    x: 0,
-                    y: 0,
-                    width: this.map.data.tilesize,
-                    height: this.map.data.tilesize,
-                },
-                verbs: {
-                    face: {
-                        down: {
-                            offsetX: tileCel[ 0 ],
-                            offsetY: tileCel[ 1 ],
-                        },
-                    },
-                },
-
-            }, this.map );
-            this.interact.tile.sprite.hero = this.hero;
+            this.interact.tile.sprite = new LiftedTile( spawn, tile, this.map, this.hero );
             this.map.addNPC( this.interact.tile.sprite );
             this.hero.cycle( Config.verbs.LIFT, this.hero.dir );
             this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
@@ -1125,30 +1103,29 @@ class TopView extends GameBox {
 * Sprite Handlers
 *******************************************************************************/
     handleThrow ( sprite ) {
-        sprite.throwing = this.hero.dir;
+        sprite.throwing = true;
 
         let throwX;
         let throwY;
         const dist = this.map.data.tilesize * 2;
 
-        if ( sprite.throwing === "left" ) {
-            throwX = sprite.position.x - dist;
-            throwY = sprite.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
-        }
-
-        if ( sprite.throwing === "right" ) {
-            throwX = sprite.position.x + dist;
-            throwY = sprite.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
-        }
-
-        if ( sprite.throwing === "up" ) {
-            throwX = sprite.position.x;
-            throwY = sprite.position.y - dist;
-        }
-
-        if ( sprite.throwing === "down" ) {
-            throwX = sprite.position.x;
-            throwY = this.hero.footbox.y + dist;
+        switch ( this.hero.dir ) {
+            case "left":
+                throwX = sprite.position.x - dist;
+                throwY = this.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
+                break;
+            case "right":
+                throwX = sprite.position.x + dist;
+                throwY = this.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
+                break;
+            case "up":
+                throwX = sprite.position.x;
+                throwY = sprite.position.y - dist;
+                break;
+            case "down":
+                throwX = sprite.position.x;
+                throwY = this.hero.footbox.y + dist;
+                break;
         }
 
         this.interact.tile.spring = new Spring( this.player, sprite.position.x, sprite.position.y, 60, 3.5 );

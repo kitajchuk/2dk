@@ -9,7 +9,7 @@ import Config from "../Config";
 * Door Sprite
 * Can open shaking and smoking
 *******************************************************************************/
-class Door extends Sprite {
+export default class Door extends Sprite {
     constructor ( data, map ) {
         super( data, map );
         this.states = structuredClone( this.data.states );
@@ -280,7 +280,3 @@ class Door extends Sprite {
         this.rumble = 60;
     }
 }
-
-
-
-export default Door;

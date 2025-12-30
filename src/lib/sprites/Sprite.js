@@ -9,7 +9,7 @@ import Config from "../Config";
 * Something that is "alive"...
 * All sprites need update, blit, render AND destroy methods...
 *******************************************************************************/
-class Sprite {
+export default class Sprite {
     constructor ( data, map ) {
         this.data = data;
         this.map = map;
@@ -114,6 +114,11 @@ class Sprite {
     }
 
 
+    visible () {
+        return Utils.collide( this.gamebox.camera, this.getFullbox() );
+    }
+
+
     hit ( power = 1, timer = 50 ) {
         this.counter = 0;
         this.hitTimer = timer;
@@ -127,96 +132,18 @@ class Sprite {
     }
 
 
-    isHitOrStill () {
-        return this.hitTimer > 0 || this.stillTimer > 0;
-    }
-
-
-    visible () {
-        return Utils.collide( this.gamebox.camera, this.getFullbox() );
-    }
-
-
-    isHero () {
-        return this === this.gamebox.hero;
-    }
-
-
-    isCompanion () {
-        return this === this.gamebox.companion;
-    }
-
-
-    isLifted () {
-        return Utils.def( this.hero );
-    }
-
-
     isIdle () {
         return ( this.idle.x && this.idle.y );
     }
 
 
+    isHitOrStill () {
+        return this.hitTimer > 0 || this.stillTimer > 0;
+    }
+
+
     isJumping () {
         return this.position.z < 0;
-    }
-
-
-    checkQuest ( quest ) {
-        if ( this.data.action && this.data.action.quest && this.data.action.quest.check ) {
-            const { key, value } = this.data.action.quest.check;
-
-            if ( key === quest ) {
-                return this.gamequest.checkQuest( key, value );
-
-            }
-        }
-
-        return false;
-    }
-
-
-    isQuestComplete () {
-        if ( this.data.action && this.data.action.quest && this.data.action.quest.check ) {
-            const { key } = this.data.action.quest.check;
-            return this.gamequest.getCompleted( key );
-        }
-
-        return false;
-    }
-
-
-/*******************************************************************************
-* Controls
-*******************************************************************************/
-    handleControls () {
-        if ( this.stillTimer ) {
-            return;
-        }
-
-        if ( this.controls.left ) {
-            this.physics.vx = Utils.limit( this.physics.vx - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
-            this.idle.x = false;
-
-        } else if ( this.controls.right ) {
-            this.physics.vx = Utils.limit( this.physics.vx + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
-            this.idle.x = false;
-
-        } else {
-            this.idle.x = true;
-        }
-
-        if ( this.controls.up ) {
-            this.physics.vy = Utils.limit( this.physics.vy - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
-            this.idle.y = false;
-
-        } else if ( this.controls.down ) {
-            this.physics.vy = Utils.limit( this.physics.vy + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
-            this.idle.y = false;
-
-        } else {
-            this.idle.y = true;
-        }
     }
 
 
@@ -375,23 +302,34 @@ class Sprite {
     handleHealthCheck () {}
 
 
-    // Can be handled in the subclass...
-    handleQuestCheck () {}
-
-
-    handleQuestUpdate () {
-        if ( !this.data.action?.quest?.set ) {
+    handleControls () {
+        if ( this.stillTimer ) {
             return;
         }
-
-        const { key, value } = this.data.action.quest.set;
-
-        if ( this.gamequest.getCompleted( key ) ) {
-            return;
+    
+        if ( this.controls.left ) {
+            this.physics.vx = Utils.limit( this.physics.vx - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.idle.x = false;
+    
+        } else if ( this.controls.right ) {
+            this.physics.vx = Utils.limit( this.physics.vx + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.idle.x = false;
+    
+        } else {
+            this.idle.x = true;
         }
-
-        this.gamequest.hitQuest( key, value );
-        this.gamebox.checkQuests( key );
+    
+        if ( this.controls.up ) {
+            this.physics.vy = Utils.limit( this.physics.vy - this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.idle.y = false;
+    
+        } else if ( this.controls.down ) {
+            this.physics.vy = Utils.limit( this.physics.vy + this.speed, -this.physics.controlmaxv, this.physics.controlmaxv );
+            this.idle.y = false;
+    
+        } else {
+            this.idle.y = true;
+        }
     }
 
 
@@ -411,40 +349,12 @@ class Sprite {
     }
 
 
-    applyRenderLayer () {
-        // Move between BG and FG relative to Hero
-        if ( !this.isHero() && !this.isCompanion() ) {
-            const isHeroColliding = Utils.collide( this.getFullbox(), this.gamebox.hero.getFullbox() );
-            const hasPartialHitbox = ( this.hitbox.width * this.hitbox.height ) !== ( this.width * this.height );
-
-            // Assume that FLOAT should always render to the foreground
-            if ( this.data.type === Config.npc.ai.FLOAT ) {
-                this.layer = "foreground";
-
-            // Sprites that have a smaller hitbox than their actual size can flip layer
-            } else if ( hasPartialHitbox && isHeroColliding ) {
-                if ( this.hitbox.y > this.gamebox.hero.hitbox.y ) {
-                    this.layer = "foreground";
-
-                } else {
-                    this.layer = "background";
-                }
-            }
-        }
-    }
+    // Can be handled in the subclass...
+    applyRenderLayer () {}
 
 
     applyPosition () {
-        // A lifted object
-        // Need to NOT hardcode the 42 here...
-        if ( this.isLifted() && !this.throwing ) {
-            this.position.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
-            this.position.y = this.hero.position.y - this.height + 42;
-
-        // Basic collision for NPCs...
-        } else if ( !this.isLifted() ) {
-            this.position = this.getNextPoi();
-        }
+        this.position = this.getNextPoi();
     }
 
 
@@ -637,8 +547,51 @@ class Sprite {
             return tile.fall && Utils.contains( tile.tilebox, this.footbox );
         }) );
     }
+
+
+/*******************************************************************************
+* Quests
+*******************************************************************************/
+    checkQuest ( quest ) {
+        if ( this.data.action && this.data.action.quest && this.data.action.quest.check ) {
+            const { key, value } = this.data.action.quest.check;
+
+            if ( key === quest ) {
+                return this.gamequest.checkQuest( key, value );
+
+            }
+        }
+
+        return false;
+    }
+
+
+    isQuestComplete () {
+        if ( this.data.action && this.data.action.quest && this.data.action.quest.check ) {
+            const { key } = this.data.action.quest.check;
+            return this.gamequest.getCompleted( key );
+        }
+
+        return false;
+    }
+
+
+    // Can be handled in the subclass...
+    handleQuestCheck () {}
+
+
+    handleQuestUpdate () {
+        if ( !this.data.action?.quest?.set ) {
+            return;
+        }
+
+        const { key, value } = this.data.action.quest.set;
+
+        if ( this.gamequest.getCompleted( key ) ) {
+            return;
+        }
+
+        this.gamequest.hitQuest( key, value );
+        this.gamebox.checkQuests( key );
+    }
 }
-
-
-
-export default Sprite;

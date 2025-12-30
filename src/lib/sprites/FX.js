@@ -7,7 +7,7 @@ import Config from "../Config";
 * Visual Effects Sprite
 * Self destructive when duration is met...
 *******************************************************************************/
-class FX extends Sprite {
+export default class FX extends Sprite {
     constructor ( data, map ) {
         super( data, map );
 
@@ -71,7 +71,3 @@ class FX extends Sprite {
         this.spritecel = this.getCel();
     }
 }
-
-
-
-export default FX;

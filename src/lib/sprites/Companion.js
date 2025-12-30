@@ -9,7 +9,7 @@ import Sprite from "./Sprite";
 * Companion NPC
 * Have different behaviors for being "anchored" to a Hero
 *******************************************************************************/
-class Companion extends Sprite {
+export default class Companion extends Sprite {
     constructor ( data, hero ) {
         super( data, hero.map );
         this.layer = ( this.data.type === Config.npc.ai.FLOAT ? "foreground" : "heroground" );
@@ -175,7 +175,3 @@ class Companion extends Sprite {
         }
     }
 }
-
-
-
-export default Companion;

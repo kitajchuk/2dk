@@ -7,7 +7,7 @@ import Sprite from "./Sprite";
 * Hero
 * There can be only one per Map
 *******************************************************************************/
-class Hero extends Sprite {
+export default class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
         this.layer = "heroground";
@@ -319,4 +319,47 @@ class Hero extends Sprite {
 
 
 
-export default Hero;
+/*******************************************************************************
+* Lifted Tile
+* There can be only one at a time
+*******************************************************************************/
+export class LiftedTile extends Sprite {
+    constructor ( spawn, tile, map, hero ) {
+        const data = {
+            type: Config.npc.ai.FLOAT,
+            layer: "foreground",
+            width: map.data.tilesize,
+            height: map.data.tilesize,
+            image: map.data.image,
+            spawn,
+            hitbox: {
+                x: 0,
+                y: 0,
+                width: map.data.tilesize,
+                height: map.data.tilesize,
+            },
+            verbs: {
+                face: {
+                    down: {
+                        offsetX: tile[ 0 ],
+                        offsetY: tile[ 1 ],
+                    },
+                },
+            },
+        };
+        super( data, map );
+        this.hero = hero;
+        this.throwing = false;
+    }
+
+
+    applyPosition () {
+        if ( !this.throwing ) {
+            this.position.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
+            this.position.y = this.hero.hitbox.y - this.height;
+            return;
+        }
+
+        this.position = this.getNextPoi();
+    }
+}

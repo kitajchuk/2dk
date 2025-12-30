@@ -9,7 +9,7 @@ import Sprite from "./Sprite";
 * Shifting states...
 * AI logics?
 *******************************************************************************/
-class NPC extends Sprite {
+export default class NPC extends Sprite {
     constructor ( data, map ) {
         super( data, map );
         this.states = structuredClone( this.data.states );
@@ -157,6 +157,27 @@ class NPC extends Sprite {
         }
 
         this.position = poi;
+    }
+
+
+    applyRenderLayer () {
+        // Move between BG and FG relative to Hero
+        const isHeroColliding = Utils.collide( this.getFullbox(), this.gamebox.hero.getFullbox() );
+        const hasPartialHitbox = ( this.hitbox.width * this.hitbox.height ) !== ( this.width * this.height );
+
+        // Assume that FLOAT should always render to the foreground
+        if ( this.data.type === Config.npc.ai.FLOAT ) {
+            this.layer = "foreground";
+
+        // Sprites that have a smaller hitbox than their actual size can flip layer
+        } else if ( hasPartialHitbox && isHeroColliding ) {
+            if ( this.hitbox.y > this.gamebox.hero.hitbox.y ) {
+                this.layer = "foreground";
+
+            } else {
+                this.layer = "background";
+            }
+        }
     }
 
 
@@ -339,7 +360,3 @@ class NPC extends Sprite {
         }
     }
 }
-
-
-
-export default NPC;
