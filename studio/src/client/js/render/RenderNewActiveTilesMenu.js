@@ -92,7 +92,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 <div class="editor__label">Mask (Can mask the hero sprite)</div>
                 <div class="select">
                     <select class="select__field js-activetile-field js-select" name="mask">
-                        <option value="">FX (for sprite masking)</option>
+                        <option value="">Mask FX</option>
                         ${game.fx.map( ( fx ) => `
                             <option value="${fx.id}">${fx.id}</option>
                         ` ).join( "" )}
@@ -103,18 +103,34 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 </div>
             </div>
             <!-- Attack is an internalized VERB object -->
-            <div class="editor__setting">
-                <div class="editor__label">Action (omit if tile is passive, e.g. grass)</div>
-                <div class="select">
-                    <select class="select__field js-activetile-field js-select" name="action">
-                        <option value="">Action</option>
-                        ${tileActions.map( ( action ) => `
-                            <option value="${action}">${action}</option>
-                        ` ).join( "" )}
-                    </select>
-                    <span class="select__icon">
-                        ${window.feather.icons[ "chevron-down" ].toSvg()}
-                    </span>
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__label">Action (omit if tile is passive, e.g. grass)</div>
+                    <div class="select">
+                        <select class="select__field js-activetile-field js-select" name="action">
+                            <option value="">Action</option>
+                            ${tileActions.map( ( action ) => `
+                                <option value="${action}">${action}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <div class="editor__label">Direction (for "jump" action)</div>
+                    <div class="select">
+                        <select class="select__field js-activetile-field js-select" name="direction">
+                            <option value="">Direction</option>
+                            ${facing.map( ( facing ) => `
+                                <option value="${facing}">${facing}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="editor__setting editor__setting--multi">
@@ -127,9 +143,10 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                     </div>
                 </div>
                 <div>
+                    <div class="editor__label">FX (for attack action)</div>
                     <div class="select">
                         <select class="select__field js-activetile-field js-select" name="fx">
-                            <option value="">FX (for attack action)</option>
+                            <option value="">Attack FX</option>
                             ${game.fx.map( ( fx ) => `
                                 <option value="${fx.id}">${fx.name}</option>
                             ` ).join( "" )}
@@ -187,20 +204,6 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                     <option value="2" label="2">2</option>
                     <option value="3" label="3">3</option>
                 </datalist>
-            </div>
-            <div class="editor__setting">
-                <div class="editor__label">Direction (for "jump" action)</div>
-                <div class="select">
-                    <select class="select__field js-activetile-field js-select" name="direction">
-                        <option value="">Direction</option>
-                        ${facing.map( ( facing ) => `
-                            <option value="${facing}">${facing}</option>
-                        ` ).join( "" )}
-                    </select>
-                    <span class="select__icon">
-                        ${window.feather.icons[ "chevron-down" ].toSvg()}
-                    </span>
-                </div>
             </div>
             <div class="editor__setting">
                 <button class="button editor__button editor__upload-button js-activetiles-post">Create</button>

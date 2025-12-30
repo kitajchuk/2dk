@@ -22,6 +22,7 @@ const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events }) =
             <!-- coords and spawn are handled in the app code -->
             <input class="js-mapevent-field" type="hidden" name="coords" value="${JSON.stringify( coords )}" />
             <div class="editor__setting">
+                <div class="editor__label">Event type</div>
                 <div class="select">
                     <select class="select__field js-select js-mapevent-field" name="type">
                         <option value="">Event type</option>
@@ -35,6 +36,7 @@ const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events }) =
                 </div>
             </div>
             <div class="editor__setting">
+                <div class="editor__label">Direction</div>
                 <div class="select">
                     <select class="select__field js-select js-mapevent-field" name="dir">
                         <option value="">Direction</option>
@@ -48,9 +50,10 @@ const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events }) =
                 </div>
             </div>
             <div class="editor__setting">
+                <div class="editor__label">Sound (optional if type is dialogue)</div>
                 <div class="select">
                     <select class="select__field js-select js-mapevent-field" name="sound">
-                        <option value="">Sound (optional if type is dialogue)</option>
+                        <option value="">Sound</option>
                         ${sounds.files.map( ( sound ) => `
                             <option value="${sound}">${sound}</option>
                         ` ).join( "" )}
@@ -65,9 +68,10 @@ const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events }) =
                 <textarea class="editor__field input textarea js-mapevent-field" name="dialogue"></textarea>
             </div>
             <div class="editor__setting">
+                <div class="editor__label">Target Map (required for door or boundary types)</div>
                 <div class="select">
                     <select class="select__field js-select js-select-map js-mapevent-field" name="map" id="editor-mapevent-map">
-                        <option value="">Target Map (required for door or boundary types)</option>
+                        <option value="">Target Map</option>
                         ${maps.map( ( map ) => `
                             <option value="${map.id}">${map.name}</option>
                         ` ).join( "" )}

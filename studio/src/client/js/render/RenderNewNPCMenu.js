@@ -48,9 +48,10 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
             <input class="js-npc-field" type="hidden" name="mouseCoords" value="${JSON.stringify( mouseCoordsToUse )}" />
             <div class="editor__setting editor__setting--multi">
                 <div>
+                    <div class="editor__label">AI (optional)</div>
                     <div class="select">
                         <select class="select__field js-select js-npc-field" name="ai">
-                            <option value="">AI (optional)</option>
+                            <option value="">AI</option>
                             ${ais.map( ( ai ) => `
                                 <option value="${ai}" ${existingAI === ai ? "selected" : ""}>${ai}</option>
                             ` ).join( "" )}
@@ -61,9 +62,10 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
                     </div>
                 </div>
                 <div>
+                    <div class="editor__label">Type (optional)</div>
                     <div class="select">
                         <select class="select__field js-select js-npc-field" name="type">
-                            <option value="">Type (optional)</option>
+                            <option value="">Type</option>
                             ${types.map( ( type ) => `
                                 <option value="${type}" ${existingType === type ? "selected" : ""}>${type}</option>
                             ` ).join( "" )}
@@ -76,9 +78,10 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
+                    <div class="editor__label">FX (optional for action)</div>
                     <div class="select">
                         <select class="select__field js-npc-field js-select" name="fx">
-                            <option value="">FX (optional for action)</option>
+                            <option value="">FX</option>
                             ${game.fx.map( ( fx ) => `
                                 <option value="${fx.id}" ${existingAction.fx === fx.id ? "selected" : ""}>${fx.id}</option>
                             ` ).join( "" )}
@@ -89,9 +92,10 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
                     </div>
                 </div>
                 <div>
+                    <div class="editor__label">Sound (optional for action)</div>
                     <div class="select">
                         <select class="select__field js-select js-npc-field" name="sound">
-                            <option value="">Sound (optional for action)</option>
+                            <option value="">Sound</option>
                             ${Object.keys( game.sounds ).map( ( sound ) => `
                                 <option value="${sound}" ${existingAction.sound === sound ? "selected" : ""}>${sound}</option>
                             ` ).join( "" )}
@@ -104,9 +108,10 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
+                    <div class="editor__label">Action (optional)</div>
                     <div class="select">
                         <select class="select__field js-npc-field js-select" name="action">
-                            <option value="">Action (optional)</option>
+                            <option value="">Action</option>
                             ${npcActions.map( ( action ) => `
                                 <option value="${action}" ${existingAction.verb === action ? "selected" : ""}>${action}</option>
                             ` ).join( "" )}
@@ -117,9 +122,10 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
                     </div>
                 </div>
                 <div>
+                    <div class="editor__label">Dialogue (optional)</div>
                     <div class="select">
                         <select class="select__field js-select js-npc-field" name="dialogue">
-                            <option value="">Dialogue (optional)</option>
+                            <option value="">Dialogue</option>
                             ${dialogue.map( ( dialogue ) => `
                                 <option value="${dialogue}" ${existingDialogueType === dialogue ? "selected" : ""}>${dialogue}</option>
                             ` ).join( "" )}
