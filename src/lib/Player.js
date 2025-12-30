@@ -92,12 +92,7 @@ class Player extends Controller {
 
             Promise.all( resources ).then( () => {
                 this.splashLoad.innerHTML = this.getSplash( "Press Start" );
-                this.gameaudio = new GameAudio( this );
                 this.gamepad = new GamePad( this );
-
-                if ( this.data.plugin === Config.plugins.TOPVIEW ) {
-                    this.gamebox = new TopView( this );
-                }
 
                 this.bind();
                 Promise.resolve();
@@ -113,10 +108,8 @@ class Player extends Controller {
 
     getSplash ( display ) {
         return `
-            <div>
-                <div>${this.data.name}: Save #${this.data.save}, Release v${this.data.release}</div>
-                <div>${display}</div>
-            </div>
+            <div>${this.data.name}: Save #${this.data.save}, Release v${this.data.release}</div>
+            <div>${display}</div>
         `;
     }
 
@@ -239,6 +232,12 @@ class Player extends Controller {
         if ( !this.ready ) {
             this.ready = true;
             this.element.classList.add( "is-started" );
+
+            this.gameaudio = new GameAudio( this );
+
+            if ( this.data.plugin === Config.plugins.TOPVIEW ) {
+                this.gamebox = new TopView( this );
+            }
 
             // Game cycle (requestAnimationFrame)
             this.go( this.onGameBlit.bind( this ) );
