@@ -1261,6 +1261,10 @@ class EditorCanvas {
                 }
             }
 
+            if ( data.quest ) {
+                extraData.action.quest = JSON.parse( data.quest );
+            }
+
             if ( data.dialogue ) {
                 extraData.payload = {
                     dialogue: {

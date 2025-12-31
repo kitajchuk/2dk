@@ -709,7 +709,7 @@
 
 /* Menus */
 .editor__menus {
-    background-color: rgba( 0, 0, 0, 0.25 );
+    background-color: rgba( 0, 0, 0, 0.5 );
     position: fixed;
     left: 0;
     top: 0;
@@ -729,10 +729,12 @@
     padding: 24px;
     position: fixed;
     left: 50%;
-    top: 50%;
-    transform: translate3d( -50%, -50%, 0 );
+    top: calc( 50px + 24px );
+    transform: translateX( -50% );
     width: 100%;
     max-width: 640px;
+    max-height: calc( 100vh - 50px - 24px - 24px );
+    overflow-y: auto;
     z-index: -1;
     pointer-events: none;
     display: none;

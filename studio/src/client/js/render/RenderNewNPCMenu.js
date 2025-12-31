@@ -8,6 +8,7 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
     const existingAI = npcToEdit ? npcToEdit.ai : "";
     const existingType = npcToEdit ? npcToEdit.type : "";
     const existingAction = npcToEdit && npcToEdit.action ? npcToEdit.action : {};
+    const existingQuest = existingAction.quest ? existingAction.quest : "";
     const existingDialogueType = hasExistingDialogue ? npcToEdit.payload.dialogue.type : "";
     const existingText = hasExistingDialogue ? npcToEdit.payload.dialogue.text : "";
     const existingYes = hasExistingDialogue && npcToEdit.payload.dialogue.yes ? npcToEdit.payload.dialogue.yes : {};
@@ -155,6 +156,10 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
             <div class="editor__setting">
                 <div class="editor__label">No text (required for prompt dialogue)</div>
                 <textarea class="editor__field input textarea js-npc-field" name="no">${existingNo.text ? existingNo.text.join( "\n\n" ) : ""}</textarea>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Quest (raw data)</div>
+                <textarea class="editor__field input textarea js-npc-field" name="quest">${existingQuest ? JSON.stringify( existingQuest, null, 2 ) : ""}</textarea>
             </div>
             <div class="editor__setting">
                 <button class="button editor__button editor__upload-button js-npc-post" data-type="npc">${npcToEdit ? "Update" : "Create"}</button>
