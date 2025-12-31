@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 237,
+    "save": 247,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -878,6 +878,37 @@
                     "down": {
                         "offsetX": 448,
                         "offsetY": 512
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "read",
+                        "dir": "up"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "dresser",
+            "name": "Dresser",
+            "width": 64,
+            "height": 96,
+            "image": "assets/tiles/inside.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 96
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 192,
+                        "offsetY": 256
                     }
                 }
             },

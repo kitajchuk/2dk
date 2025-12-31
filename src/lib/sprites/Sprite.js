@@ -579,12 +579,12 @@ export default class Sprite {
     handleQuestCheck () {}
 
 
-    handleQuestUpdate () {
-        if ( !this.data.action?.quest?.set ) {
+    handleQuestUpdate ( set ) {
+        if ( !this.data.action?.quest?.set && !set ) {
             return;
         }
 
-        const { key, value } = this.data.action.quest.set;
+        const { key, value } = set || this.data.action.quest.set;
 
         if ( this.gamequest.getCompleted( key ) ) {
             return;

@@ -50,6 +50,10 @@ export default class Door extends Sprite {
             this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
             this.dialogue.then( () => {
                 this.resetDialogue();
+                
+                if ( this.data.payload.quest?.set ) {
+                    this.handleQuestUpdate( this.data.payload.quest?.set );
+                }
             }).catch( () => {
                 this.resetDialogue();
             });

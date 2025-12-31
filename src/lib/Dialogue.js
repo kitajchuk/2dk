@@ -30,6 +30,13 @@ class Dialogue {
     }
 
 
+    writePrompt ( text ) {
+        text.push( `<span class="a">A: ${this.data.yes.label}</span>`);
+        text.push( `<span>,&nbsp;</span>`);
+        text.push( `<span class="b">B: ${this.data.no.label}</span>`);
+    }
+
+
     clear () {
         this.element.innerHTML = "";
     }
@@ -67,7 +74,15 @@ class Dialogue {
             this.resolve = resolve;
             this.reject = reject;
             this.element.classList.add( "is-texting" );
-            this.write( this.data.text.shift() );
+
+            const text = [ `<div>${this.data.text.shift()}</div>` ];
+            
+            if ( !this.data.text.length && this.data.type === Config.dialogue.types.PROMPT ) {
+                this.writePrompt( text );
+            }
+
+            this.write( text.join( "" ) );
+
             this.timeout = setTimeout( () => {
                 this.ready = true;
 
@@ -128,9 +143,7 @@ class Dialogue {
 
             // No more text so show prompts...
             if ( !this.data.text.length ) {
-                text.push( `<span class="a">A: ${this.data.yes.label}</span>`);
-                text.push( `<span>,&nbsp;</span>`);
-                text.push( `<span class="b">B: ${this.data.no.label}</span>`);
+                this.writePrompt( text );
             }
 
             this.write( text.join( "" ) );
