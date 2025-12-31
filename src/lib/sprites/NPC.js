@@ -201,7 +201,7 @@ export default class NPC extends Sprite {
             this.gamebox.smokeObject( this, this.data.action.fx );
             this.player.gameaudio.hitSound( this.data.action.sound || Config.verbs.SMASH );
             this.map.killObject( "npcs", this );
-            this.handleQuestUpdate();
+            this.handleQuestFlagUpdate();
         }
     }
 
