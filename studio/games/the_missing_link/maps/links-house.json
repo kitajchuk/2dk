@@ -108,7 +108,7 @@
                 "sound": "smash",
                 "quest": {
                     "check": {
-                        "key": "dresser-drawer-pushed-left",
+                        "key": "dresser-drawer-pushed",
                         "value": 1
                     }
                 }
@@ -120,66 +120,21 @@
                         "There's a loose drawer. Do you want to push it?"
                     ],
                     "yes": {
-                        "label": "Sure!",
+                        "label": "Yes",
                         "text": [
-                            "It slides in easily."
+                            "It slides in easily!"
                         ]
                     },
                     "no": {
-                        "label": "Uh, no...",
+                        "label": "No",
                         "text": [
-                            "Nothing happens."
+                            "Nothing happens..."
                         ]
                     }
                 },
                 "quest": {
                     "set": {
-                        "key": "dresser-drawer-pushed-left",
-                        "value": 1
-                    }
-                }
-            }
-        },
-        {
-            "id": "dresser",
-            "spawn": {
-                "x": 640,
-                "y": 448
-            },
-            "type": "door",
-            "action": {
-                "verb": "open",
-                "fx": "smoke",
-                "sound": "smash",
-                "quest": {
-                    "check": {
-                        "key": "dresser-drawer-pushed-right",
-                        "value": 1
-                    }
-                }
-            },
-            "payload": {
-                "dialogue": {
-                    "type": "prompt",
-                    "text": [
-                        "There's a loose drawer. Should you push it?"
-                    ],
-                    "yes": {
-                        "label": "Yes!",
-                        "text": [
-                            "It's sticky but it goes in."
-                        ]
-                    },
-                    "no": {
-                        "label": "Nope",
-                        "text": [
-                            "Nothing happens."
-                        ]
-                    }
-                },
-                "quest": {
-                    "set": {
-                        "key": "dresser-drawer-pushed-right",
+                        "key": "dresser-drawer-pushed",
                         "value": 1
                     }
                 }
@@ -1395,7 +1350,7 @@
                         256
                     ],
                     [
-                        256,
+                        448,
                         256
                     ]
                 ],
@@ -1449,7 +1404,7 @@
                         256
                     ],
                     [
-                        256,
+                        448,
                         256
                     ]
                 ],
@@ -1483,7 +1438,7 @@
                         256
                     ],
                     [
-                        256,
+                        448,
                         320
                     ]
                 ],
@@ -1529,7 +1484,7 @@
                         256
                     ],
                     [
-                        256,
+                        448,
                         320
                     ]
                 ],

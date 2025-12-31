@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 247,
+    "save": 253,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -895,13 +895,13 @@
         {
             "id": "dresser",
             "name": "Dresser",
-            "width": 64,
+            "width": 128,
             "height": 96,
             "image": "assets/tiles/inside.png",
             "hitbox": {
                 "x": 0,
                 "y": 0,
-                "width": 64,
+                "width": 128,
                 "height": 96
             },
             "verbs": {

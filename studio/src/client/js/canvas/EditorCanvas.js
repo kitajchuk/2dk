@@ -1261,8 +1261,8 @@ class EditorCanvas {
                 }
             }
 
-            if ( data.quest ) {
-                extraData.action.quest = JSON.parse( data.quest );
+            if ( data.actionQuest ) {
+                extraData.action.quest = JSON.parse( data.actionQuest );
             }
 
             if ( data.dialogue ) {
@@ -1272,6 +1272,10 @@ class EditorCanvas {
                         text: Utils.parseDialogueText( data.text ),
                     },
                 };
+
+                if ( data.payloadQuest ) {
+                    extraData.payload.quest = JSON.parse( data.payloadQuest );
+                }
 
                 if ( data.dialogue === window.lib2dk.Config.dialogue.types.PROMPT ) {
                     if ( data.yeslabel && data.yes ) {

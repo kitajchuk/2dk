@@ -4,12 +4,14 @@ const { html } = require( "./Render" );
 
 const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, actions, npcToEdit }) => {
     const mouseCoordsToUse = npcToEdit ? [ npcToEdit.spawn.x, npcToEdit.spawn.y ] : mouseCoords;
-    const hasExistingDialogue = npcToEdit && npcToEdit.payload && npcToEdit.payload.dialogue;
+    const hasExistingPayload = npcToEdit && npcToEdit.payload;
+    const hasExistingDialogue = hasExistingPayload && npcToEdit.payload.dialogue;
     const existingAI = npcToEdit ? npcToEdit.ai : "";
     const existingType = npcToEdit ? npcToEdit.type : "";
     const existingAction = npcToEdit && npcToEdit.action ? npcToEdit.action : {};
     const existingQuest = existingAction.quest ? existingAction.quest : "";
     const existingDialogueType = hasExistingDialogue ? npcToEdit.payload.dialogue.type : "";
+    const existingPayloadQuest = hasExistingPayload ? npcToEdit.payload.quest : "";
     const existingText = hasExistingDialogue ? npcToEdit.payload.dialogue.text : "";
     const existingYes = hasExistingDialogue && npcToEdit.payload.dialogue.yes ? npcToEdit.payload.dialogue.yes : {};
     const existingNo = hasExistingDialogue && npcToEdit.payload.dialogue.no ? npcToEdit.payload.dialogue.no : {};
@@ -107,35 +109,41 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
                     </div>
                 </div>
             </div>
-            <div class="editor__setting editor__setting--multi">
-                <div>
-                    <div class="editor__label">Action (optional)</div>
-                    <div class="select">
-                        <select class="select__field js-npc-field js-select" name="action">
-                            <option value="">Action</option>
-                            ${npcActions.map( ( action ) => `
-                                <option value="${action}" ${existingAction.verb === action ? "selected" : ""}>${action}</option>
-                            ` ).join( "" )}
-                        </select>
-                        <span class="select__icon">
-                            ${window.feather.icons[ "chevron-down" ].toSvg()}
-                        </span>
-                    </div>
+            <div class="editor__setting">
+                <div class="editor__label">Action (optional)</div>
+                <div class="select">
+                    <select class="select__field js-npc-field js-select" name="action">
+                        <option value="">Action</option>
+                        ${npcActions.map( ( action ) => `
+                            <option value="${action}" ${existingAction.verb === action ? "selected" : ""}>${action}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
                 </div>
-                <div>
-                    <div class="editor__label">Dialogue (optional)</div>
-                    <div class="select">
-                        <select class="select__field js-select js-npc-field" name="dialogue">
-                            <option value="">Dialogue</option>
-                            ${dialogue.map( ( dialogue ) => `
-                                <option value="${dialogue}" ${existingDialogueType === dialogue ? "selected" : ""}>${dialogue}</option>
-                            ` ).join( "" )}
-                        </select>
-                        <span class="select__icon">
-                            ${window.feather.icons[ "chevron-down" ].toSvg()}
-                        </span>
-                    </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Action Quest (raw data)</div>
+                <textarea class="editor__field input textarea js-npc-field" name="actionQuest">${existingQuest ? JSON.stringify( existingQuest, null, 2 ) : ""}</textarea>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Dialogue (optional)</div>
+                <div class="select">
+                    <select class="select__field js-select js-npc-field" name="dialogue">
+                        <option value="">Dialogue</option>
+                        ${dialogue.map( ( dialogue ) => `
+                            <option value="${dialogue}" ${existingDialogueType === dialogue ? "selected" : ""}>${dialogue}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
                 </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Dialogue Quest (raw data)</div>
+                <textarea class="editor__field input textarea js-npc-field" name="payloadQuest">${existingPayloadQuest ? JSON.stringify( existingPayloadQuest, null, 2 ) : ""}</textarea>
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Text (required for either dialogue type)</div>
@@ -156,10 +164,6 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
             <div class="editor__setting">
                 <div class="editor__label">No text (required for prompt dialogue)</div>
                 <textarea class="editor__field input textarea js-npc-field" name="no">${existingNo.text ? existingNo.text.join( "\n\n" ) : ""}</textarea>
-            </div>
-            <div class="editor__setting">
-                <div class="editor__label">Quest (raw data)</div>
-                <textarea class="editor__field input textarea js-npc-field" name="quest">${existingQuest ? JSON.stringify( existingQuest, null, 2 ) : ""}</textarea>
             </div>
             <div class="editor__setting">
                 <button class="button editor__button editor__upload-button js-npc-post" data-type="npc">${npcToEdit ? "Update" : "Create"}</button>
