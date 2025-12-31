@@ -35,13 +35,28 @@ export default class Hero extends Sprite {
     }
 
 
+    equip ( eq ) {
+        this.data.equipped[ eq ] = true;
+    }
+
+
+    unequip ( eq ) {
+        this.data.equipped[ eq ] = false;
+    }
+
+
+    isEquipped ( eq ) {
+        return this.data.equipped[ eq ] || false;
+    }
+
+
     hasWeapon () {
-        return this.data.weapon?.[ this.dir ]?.length;
+        return this.data.equipped.weapon && this.data.weapon?.[ this.dir ]?.length;
     }
 
 
     hasShield () {
-        return this.data.shield?.[ this.verb ]?.[ this.dir ]?.length;
+        return this.data.equipped.shield && this.data.shield?.[ this.verb ]?.[ this.dir ]?.length;
     }
 
 

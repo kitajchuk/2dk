@@ -35,7 +35,11 @@
     "hero": {
         "sprite": 0,
         "spawn": 0,
-        "map": "maps/home-base.json"
+        "map": "maps/home-base.json",
+        "equipped": {
+            "weapon": false,
+            "shield": false
+        }
     },
     "heroes": [
         {

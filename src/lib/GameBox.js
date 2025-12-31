@@ -559,19 +559,19 @@ class GameBox {
     }
 
 
-    checkQuests ( quest ) {
-        this.hero.handleQuestCheck( quest );
+    checkQuestsFlags ( quest ) {
+        this.hero.handleQuestFlagCheck( quest );
 
         if ( this.companion ) {
-            this.companion.handleQuestCheck( quest );
+            this.companion.handleQuestFlagCheck( quest );
         }
 
         this.map.doors.forEach( ( door ) => {
-            door.handleQuestCheck( quest );
+            door.handleQuestFlagCheck( quest );
         });
 
         this.map.npcs.forEach( ( npc ) => {
-            npc.handleQuestCheck( quest );
+            npc.handleQuestFlagCheck( quest );
         });
     }
 

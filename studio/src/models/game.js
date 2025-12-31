@@ -26,6 +26,10 @@ module.exports = {
         sprite: 0,
         spawn: 0,
         map: "",
+        equipped: {
+            weapon: false,
+            shield: false
+        },
         companion: undefined || {
             id: "",
             type: ""

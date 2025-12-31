@@ -230,11 +230,11 @@
                 "fx": "smoke",
                 "sound": "smash",
                 "quest": {
-                    "set": {
+                    "setFlag": {
                         "key": "moblin-camp-opened",
                         "value": 1
                     },
-                    "check": {
+                    "checkFlag": {
                         "key": "octorok-killed",
                         "value": 3
                     }
@@ -270,7 +270,7 @@
                 "fx": "smoke",
                 "sound": "smash",
                 "quest": {
-                    "set": {
+                    "setFlag": {
                         "key": "octorok-killed",
                         "value": 1
                     }
@@ -290,7 +290,7 @@
                 "fx": "smoke",
                 "sound": "smash",
                 "quest": {
-                    "set": {
+                    "setFlag": {
                         "key": "octorok-killed",
                         "value": 1
                     }
@@ -310,7 +310,7 @@
                 "fx": "smoke",
                 "sound": "smash",
                 "quest": {
-                    "set": {
+                    "setFlag": {
                         "key": "octorok-killed",
                         "value": 1
                     }

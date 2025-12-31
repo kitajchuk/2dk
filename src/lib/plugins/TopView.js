@@ -919,7 +919,7 @@ class TopView extends GameBox {
         }
         
         // @check: hero-verb-check
-        if ( !this.hero.can( Config.verbs.ATTACK ) ) {
+        if ( !this.hero.can( Config.verbs.ATTACK ) || !this.hero.hasWeapon() ) {
             return;
         }
         
@@ -1077,8 +1077,8 @@ class TopView extends GameBox {
         }
 
         // Try quest check next
-        if ( door.data.action?.quest?.check ) {
-            door.handleQuestCheck( door.data.action.quest.check );
+        if ( door.data.action?.quest?.checkFlag ) {
+            door.handleQuestCheck( door.data.action.quest.checkFlag );
             return;
         }
         

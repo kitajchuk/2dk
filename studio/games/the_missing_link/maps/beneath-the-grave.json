@@ -72,8 +72,21 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "You got the Master Sword!"
+                        "You got the Master Sword!",
+                        "Now you can attack enemies!"
                     ]
+                },
+                "quest": {
+                    "checkEquip": {
+                        "key": "shield",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "It won't budge..."
+                            ]
+                        }
+                    },
+                    "setEquip": "weapon"
                 }
             }
         },

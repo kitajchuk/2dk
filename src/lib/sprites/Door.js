@@ -27,7 +27,7 @@ export default class Door extends Sprite {
 
     initialize () {
         if ( this.data.action ) {
-            const completed = this.isQuestComplete();
+            const completed = this.isQuestFlagComplete();
 
             this.open = this.data.action.verb === Config.verbs.OPEN ? completed ? true : false : completed ? false : true;
             this.counter = this.open ? this.data.height : 0;
@@ -51,8 +51,8 @@ export default class Door extends Sprite {
             this.dialogue.then( () => {
                 this.resetDialogue();
                 
-                if ( this.data.payload.quest?.set ) {
-                    this.handleQuestUpdate( this.data.payload.quest?.set );
+                if ( this.data.payload.quest?.setFlag ) {
+                    this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
                 }
             }).catch( () => {
                 this.resetDialogue();
@@ -94,13 +94,13 @@ export default class Door extends Sprite {
 /*******************************************************************************
 * Handlers
 *******************************************************************************/
-    handleQuestCheck ( quest ) {
-        if ( this.checkQuest( quest ) ) {
+    handleQuestFlagCheck ( quest ) {
+        if ( this.checkQuestFlag( quest ) ) {
             this.gamequest.completeQuest( quest );
 
             // TODO: This is rough but maybe we should just complete the quest instead of hitting it?
-            if ( this.data.action.quest.set ) {
-                const { key, value } = this.data.action.quest.set;
+            if ( this.data.action.quest.setFlag ) {
+                const { key, value } = this.data.action.quest.setFlag;
                 this.gamequest.hitQuest( key, value );
             }
 
@@ -262,6 +262,12 @@ export default class Door extends Sprite {
     doInteract () {
         // Handle dialogue payload
         if ( this.data.payload ) {
+            const canDoPayload = this.canDoPayload();
+
+            if ( !canDoPayload ) {
+                return;
+            }
+
             this.payload();
         }
     }

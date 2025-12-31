@@ -548,12 +548,36 @@ export default class Sprite {
     }
 
 
+    // This is more specifically an NPC or Door payload check...
+    // This should be moved but we'd need to refactor NPC subclass patterns first...
+    canDoPayload () {
+        if ( this.data.payload.quest?.checkEquip ) {
+            const { key, dialogue } = this.data.payload.quest.checkEquip;
+
+            if ( !this.gamebox.hero.isEquipped( key ) ) {
+                // A simple message to the player...
+                if ( dialogue ) {
+                    this.dialogue = this.gamebox.dialogue.play( dialogue );
+                    this.dialogue.then( () => {
+                        this.resetDialogue();
+                    }).catch( () => {
+                        this.resetDialogue();
+                    });
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
 /*******************************************************************************
 * Quests
 *******************************************************************************/
-    checkQuest ( quest ) {
-        if ( this.data.action && this.data.action.quest && this.data.action.quest.check ) {
-            const { key, value } = this.data.action.quest.check;
+    checkQuestFlag ( quest ) {
+        if ( this.data.action?.quest?.checkFlag ) {
+            const { key, value } = this.data.action.quest.checkFlag;
 
             if ( key === quest ) {
                 return this.gamequest.checkQuest( key, value );
@@ -565,9 +589,9 @@ export default class Sprite {
     }
 
 
-    isQuestComplete () {
-        if ( this.data.action && this.data.action.quest && this.data.action.quest.check ) {
-            const { key } = this.data.action.quest.check;
+    isQuestFlagComplete () {
+        if ( this.data.action?.quest?.checkFlag ) {
+            const { key } = this.data.action.quest.checkFlag;
             return this.gamequest.getCompleted( key );
         }
 
@@ -576,21 +600,30 @@ export default class Sprite {
 
 
     // Can be handled in the subclass...
-    handleQuestCheck () {}
+    handleQuestFlagCheck () {}
 
 
-    handleQuestUpdate ( set ) {
-        if ( !this.data.action?.quest?.set && !set ) {
+    // Can be handled in the subclass...
+    handleQuestEquipCheck () {}
+
+
+    handleQuestFlagUpdate ( setFlag ) {
+        if ( !this.data.action?.quest?.setFlag && !setFlag ) {
             return;
         }
 
-        const { key, value } = set || this.data.action.quest.set;
+        const { key, value } = setFlag || this.data.action.quest.setFlag;
 
         if ( this.gamequest.getCompleted( key ) ) {
             return;
         }
 
         this.gamequest.hitQuest( key, value );
-        this.gamebox.checkQuests( key );
+        this.gamebox.checkQuestsFlags( key );
+    }
+
+
+    handleQuestEquipUpdate ( setEquip ) {
+        this.gamebox.hero.equip( setEquip );
     }
 }

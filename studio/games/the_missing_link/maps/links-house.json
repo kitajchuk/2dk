@@ -90,8 +90,12 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "Empty..."
+                        "You got Master Shinji's shield!",
+                        "Now you can block enemies!"
                     ]
+                },
+                "quest": {
+                    "setEquip": "shield"
                 }
             }
         },
@@ -107,7 +111,7 @@
                 "fx": "smoke",
                 "sound": "smash",
                 "quest": {
-                    "check": {
+                    "checkFlag": {
                         "key": "dresser-drawer-pushed",
                         "value": 1
                     }
@@ -133,7 +137,7 @@
                     }
                 },
                 "quest": {
-                    "set": {
+                    "setFlag": {
                         "key": "dresser-drawer-pushed",
                         "value": 1
                     }

@@ -46,6 +46,14 @@ export default class NPC extends Sprite {
             this.dialogue.then( () => {
                 this.resetDialogue();
                 this.handleAI();
+
+                if ( this.data.payload.quest?.setFlag ) {
+                    this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
+                }
+
+                if ( this.data.payload.quest?.setEquip ) {
+                    this.handleQuestEquipUpdate( this.data.payload.quest.setEquip );
+                }
             }).catch( () => {
                 this.resetDialogue();
             });
@@ -339,6 +347,12 @@ export default class NPC extends Sprite {
     doInteract () {
         // Handle dialogue payload
         if ( this.data.payload ) {
+            const canDoPayload = this.canDoPayload();
+
+            if ( !canDoPayload ) {
+                return;
+            }
+
             this.payload();
         }
 
