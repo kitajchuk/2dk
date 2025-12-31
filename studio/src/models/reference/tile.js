@@ -1,3 +1,5 @@
+const action = require("./action");
+
 module.exports = {
     group: "",
     layer: "",
@@ -9,12 +11,6 @@ module.exports = {
     // FX reference (game.json)
     mask: undefined || "",
     // Action reference (action.js)
-    actions: undefined || [
-        {
-            verb: "",
-            dir: undefined || "",
-            fx: undefined || "",
-            sound: undefined || ""
-        }
-    ]
+    actions: undefined ||
+        action,
 };

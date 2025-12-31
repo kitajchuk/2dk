@@ -1,3 +1,6 @@
+const action = require("./action");
+const quest = require("./quest");
+
 // Maps reference source NPC in game.json
 const npcReference = {
     id: "",
@@ -20,34 +23,10 @@ const npcReference = {
                 text: []
             }
         },
-        quest: undefined || {
-            set: undefined || {
-                key: "",
-                value: "",
-            },
-            check: undefined || {
-                key: "",
-                value: "",
-            },
-        },
+        quest: undefined || quest,
     },
     // Action reference (action.js)
-    action: undefined || {
-        verb: "",
-        dir: undefined || "",
-        fx: undefined || "",
-        sound: undefined || "",
-        quest: undefined || {
-            set: undefined || {
-                key: "",
-                value: 1,
-            },
-            check: undefined || {
-                key: "",
-                value: 1,
-            },
-        },
-    }
+    action: undefined || action,
 };
 
 const verbFrame = {
@@ -110,13 +89,7 @@ module.exports = {
             verb: "",
             dir: "",
             // Action reference (action.js)
-            action: undefined || {
-                verb: "",
-                dir: "",
-                fx: undefined || "",
-                sound: undefined || "",
-                shift: undefined || true,
-            }
+            action: undefined || action,
         }
     ]
 };

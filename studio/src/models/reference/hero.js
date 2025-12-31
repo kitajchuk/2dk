@@ -44,8 +44,7 @@ module.exports = {
     stats: {
         power: 1,
         health: 3,
-        stamina: 3,
-        strength: 1
+        strength: 0
     },
     shadow: undefined || {
         offsetX: 0,

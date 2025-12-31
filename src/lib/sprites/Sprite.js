@@ -147,6 +147,11 @@ export default class Sprite {
     }
 
 
+    checkStat ( stat, value ) {
+        return this.stats[ stat ] >= value;
+    }
+
+
 /*******************************************************************************
 * Rendering
 * Order is: blit, update, render { renderBefore, renderAfter }
@@ -557,12 +562,7 @@ export default class Sprite {
             if ( !this.gamebox.hero.isEquipped( key ) ) {
                 // A simple message to the player...
                 if ( dialogue ) {
-                    this.dialogue = this.gamebox.dialogue.play( dialogue );
-                    this.dialogue.then( () => {
-                        this.resetDialogue();
-                    }).catch( () => {
-                        this.resetDialogue();
-                    });
+                    this.gamebox.dialogue.auto( dialogue );
                 }
                 return false;
             }

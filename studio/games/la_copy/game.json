@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 792,
+    "save": 793,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -35,8 +35,8 @@
         "spawn": 0,
         "map": "maps/mabe-village.json",
         "equipped": {
-            "weapon": false,
-            "shield": false
+            "weapon": true,
+            "shield": true
         },
         "companion": {
             "id": "dog",
@@ -58,7 +58,8 @@
             },
             "stats": {
                 "power": 1,
-                "health": 3
+                "health": 3,
+                "strength": 1
             },
             "shadow": {
                 "offsetX": 368,

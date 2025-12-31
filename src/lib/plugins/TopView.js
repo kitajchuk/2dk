@@ -39,6 +39,7 @@ class TopView extends GameBox {
         this.jumping = false;
         this.falling = false;
         this.locked = false;
+        this.liftLocked = false;
         this.keyTimer = null;
     }
 
@@ -189,7 +190,7 @@ class TopView extends GameBox {
 
 
     pressA () {
-        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill() ) {
+        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.liftLocked || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -262,6 +263,10 @@ class TopView extends GameBox {
     handleReleaseA () {
         if ( this.jumping || this.attacking || this.dropin || this.running || this.hero.isHitOrStill() ) {
             return;
+        }
+
+        if ( this.liftLocked ) {
+            this.liftLocked = false;
         }
 
         if ( this.hero.is( Config.verbs.GRAB ) ) {
@@ -440,7 +445,7 @@ class TopView extends GameBox {
             this.interact.push = 0;
         }
 
-        if ( this.locked || this.falling || this.parkour || this.attacking ) {
+        if ( this.locked || this.falling || this.parkour || this.attacking || this.liftLocked ) {
             return;
         }
 
@@ -859,6 +864,21 @@ class TopView extends GameBox {
 
 
     handleHeroLift ( poi, dir ) {
+        const action = this.interact.tile.instance.data.actions.find( ( action ) => {
+            return action.verb === Config.verbs.LIFT;
+        });
+
+        if ( action?.stat ) {
+            const { key, value } = action.stat;
+
+            if ( !this.hero.checkStat( key, value ) ) {
+                this.liftLocked = true;
+                this.dialogue.auto( action.stat.dialogue );
+                this.hero.cycle( Config.verbs.PULL, dir );
+                return;
+            }
+        }
+
         this.locked = true;
         this.hero.cycle( Config.verbs.PULL, dir );
         setTimeout( () => {
