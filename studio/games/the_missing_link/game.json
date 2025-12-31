@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 235,
+    "save": 236,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -163,6 +163,124 @@
                         "positionY": 56
                     }
                 ]
+            },
+            "shield": {
+                "face": {
+                    "down": [
+                        {
+                            "width": 28,
+                            "height": 32,
+                            "offsetX": 460,
+                            "offsetY": 0,
+                            "positionX": 20,
+                            "positionY": 53
+                        }
+                    ],
+                    "up": [
+                        {
+                            "width": 12,
+                            "height": 32,
+                            "offsetX": 540,
+                            "offsetY": 60,
+                            "positionX": 66,
+                            "positionY": 44
+                        }
+                    ],
+                    "left": [
+                        {
+                            "width": 20,
+                            "height": 32,
+                            "offsetX": 552,
+                            "offsetY": 0,
+                            "positionX": 14,
+                            "positionY": 52
+                        }
+                    ],
+                    "right": [
+                        {
+                            "width": 20,
+                            "height": 32,
+                            "offsetX": 624,
+                            "offsetY": 60,
+                            "positionX": 54,
+                            "positionY": 52
+                        }
+                    ]
+                },
+                "walk": {
+                    "down": [
+                        {
+                            "width": 28,
+                            "height": 32,
+                            "offsetX": 460,
+                            "offsetY": 0,
+                            "positionX": 20,
+                            "positionY": 56
+                        },
+                        {
+                            "width": 28,
+                            "height": 32,
+                            "offsetX": 460,
+                            "offsetY": 0,
+                            "positionX": 20,
+                            "positionY": 52
+                        }
+                    ],
+                    "up": [
+                        {
+                            "width": 12,
+                            "height": 32,
+                            "offsetX": 540,
+                            "offsetY": 60,
+                            "positionX": 66,
+                            "positionY": 48
+                        },
+                        {
+                            "width": 12,
+                            "height": 32,
+                            "offsetX": 540,
+                            "offsetY": 60,
+                            "positionX": 66,
+                            "positionY": 44
+                        }
+                    ],
+                    "left": [
+                        {
+                            "width": 20,
+                            "height": 32,
+                            "offsetX": 552,
+                            "offsetY": 0,
+                            "positionX": 16,
+                            "positionY": 52
+                        },
+                        {
+                            "width": 20,
+                            "height": 32,
+                            "offsetX": 552,
+                            "offsetY": 0,
+                            "positionX": 14,
+                            "positionY": 52
+                        }
+                    ],
+                    "right": [
+                        {
+                            "width": 20,
+                            "height": 32,
+                            "offsetX": 624,
+                            "offsetY": 60,
+                            "positionX": 56,
+                            "positionY": 52
+                        },
+                        {
+                            "width": 20,
+                            "height": 32,
+                            "offsetX": 624,
+                            "offsetY": 60,
+                            "positionX": 54,
+                            "positionY": 52
+                        }
+                    ]
+                }
             },
             "verbs": {
                 "face": {
@@ -781,7 +899,7 @@
             "name": "Smoke",
             "width": 64,
             "height": 64,
-            "layer": "foreground",
+            "layer": "heroground",
             "image": "assets/sprites/fx.png",
             "offsetX": 0,
             "offsetY": 0,
@@ -789,24 +907,11 @@
             "dur": 500
         },
         {
-            "id": "smoke-rough",
-            "name": "Smoke Rough",
-            "width": 64,
-            "height": 64,
-            "layer": "foreground",
-            "image": "assets/sprites/fx.png",
-            "offsetX": 0,
-            "offsetY": 192,
-            "stepsX": 4,
-            "dur": 500,
-            "opacity": 0.7
-        },
-        {
             "id": "grass",
             "name": "Grass",
             "width": 64,
             "height": 64,
-            "layer": "foreground",
+            "layer": "heroground",
             "image": "assets/sprites/fx.png",
             "offsetX": 0,
             "offsetY": 64,
@@ -818,7 +923,7 @@
             "name": "Leaves",
             "width": 64,
             "height": 64,
-            "layer": "foreground",
+            "layer": "heroground",
             "image": "assets/sprites/fx.png",
             "offsetX": 0,
             "offsetY": 128,

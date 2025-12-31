@@ -274,7 +274,6 @@ export default class Sprite {
             this.footbox.width,
             this.footbox.height
         );
-
         this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
     }
 

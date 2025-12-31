@@ -36,7 +36,12 @@ export default class Hero extends Sprite {
 
 
     hasWeapon () {
-        return this.data.weapon && this.data.weapon[ this.dir ] && this.data.weapon[ this.dir ].length;
+        return this.data.weapon?.[ this.dir ]?.length;
+    }
+
+
+    hasShield () {
+        return this.data.shield?.[ this.verb ]?.[ this.dir ]?.length;
     }
 
 
@@ -56,7 +61,7 @@ export default class Hero extends Sprite {
 
 
     renderAfter () {
-        if ( this.is( Config.verbs.ATTACK ) && this.hasWeapon() ) {
+        if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) ) {
             this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
                 this.image,
                 this.data.weapon[ this.dir ][ this.frame ].offsetX,
@@ -74,6 +79,21 @@ export default class Hero extends Sprite {
             if ( this.frame > 0 ) {
                 this.handleAttackFrame();
             }
+
+        }
+        
+        if ( this.hasShield() ) {
+            this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+                this.image,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetX,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetY,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].width,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].height,
+                this.offset.x + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionX,
+                this.offset.y + this.position.z + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionY,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].width / this.scale,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].height / this.scale
+            );
         }
 
         if ( this.player.query.get( "debug" ) ) {
@@ -83,19 +103,32 @@ export default class Hero extends Sprite {
 
     
     renderAfterDebug () {
-        if ( this.gamebox.attacking && this.hasWeapon() ) {
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
+        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.teal;
+
+        if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) ) {
             const weaponbox = this.getWeaponbox( "offset" );
 
-            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
-            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.teal;
             this.gamebox.layers.foreground.onCanvas.context.fillRect(
                 weaponbox.x,
                 weaponbox.y,
                 weaponbox.width,
                 weaponbox.height
             );
-            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
         }
+
+        if ( this.hasShield() ) {
+            const shieldbox = this.getShieldbox( "offset" );
+
+            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+                shieldbox.x,
+                shieldbox.y,
+                shieldbox.width,
+                shieldbox.height
+            );
+        }
+
+        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
     }
 
 
@@ -200,13 +233,24 @@ export default class Hero extends Sprite {
 /*******************************************************************************
 * Getters
 *******************************************************************************/
-    // Use "offset" to draw weaponbox debug box
+    // Use "offset" to draw weapon debug box
     getWeaponbox ( prop = "position" ) {
         return {
             x: this[ prop ].x + this.data.weapon[ this.dir ][ this.frame ].positionX,
             y: this[ prop ].y + this.data.weapon[ this.dir ][ this.frame ].positionY,
             width: this.data.weapon[ this.dir ][ this.frame ].width,
             height: this.data.weapon[ this.dir ][ this.frame ].height
+        };
+    }
+
+
+    // Use "offset" to draw shield debug box
+    getShieldbox ( prop = "position" ) {
+        return {
+            x: this[ prop ].x + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionX,
+            y: this[ prop ].y + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionY,
+            width: this.data.shield[ this.verb ][ this.dir ][ this.frame ].width,
+            height: this.data.shield[ this.verb ][ this.dir ][ this.frame ].height
         };
     }
 
@@ -314,6 +358,31 @@ export default class Hero extends Sprite {
             ) &&
             firstJumpTile.instance.canInteract( Config.verbs.JUMP ).dir === dir
         );
+    }
+
+
+    canShield ( npc ) {
+        if ( !this.hasShield() ) {
+            return false;
+        }
+
+        if ( this.dir === "left" && npc.hitbox.x + npc.hitbox.width <= this.hitbox.x ) {
+            return true;
+        }
+
+        if ( this.dir === "right" && npc.hitbox.x >= this.hitbox.x + this.hitbox.width ) {
+            return true;
+        }
+
+        if ( this.dir === "up" && npc.hitbox.y + npc.hitbox.height <= this.hitbox.y ) {
+            return true;
+        }
+
+        if ( this.dir === "down" && npc.hitbox.y >= this.hitbox.y + this.hitbox.height ) {
+            return true;
+        }
+
+        return false;
     }
 }
 

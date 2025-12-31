@@ -1,3 +1,4 @@
+// Weapon or shield frame reference
 const weaponFrame = {
     offsetX: 0,
     offsetY: 0,
@@ -55,6 +56,12 @@ module.exports = {
         up: [],
         left: [],
         right: []
+    },
+    shield: undefined || {
+        down: {},
+        up: {},
+        left: {},
+        right: {}
     },
     verbs: {
         face: {

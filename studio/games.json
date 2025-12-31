@@ -8,7 +8,7 @@
         "maxresolution": 2,
         "diagonaldpad": true,
         "icon": "icon.png",
-        "save": 809,
+        "save": 811,
         "release": 1,
         "plugin": "topview"
     },
@@ -21,7 +21,7 @@
         "maxresolution": 2,
         "diagonaldpad": true,
         "icon": "icon.png",
-        "save": 789,
+        "save": 791,
         "release": 1,
         "plugin": "topview"
     },
@@ -34,7 +34,7 @@
         "maxresolution": 2,
         "diagonaldpad": true,
         "icon": "icon.png",
-        "save": 791,
+        "save": 793,
         "release": 1,
         "plugin": "topview"
     },
@@ -47,7 +47,7 @@
         "maxresolution": 1,
         "diagonaldpad": false,
         "icon": "icon.png",
-        "save": 120,
+        "save": 121,
         "release": 1,
         "plugin": "topview"
     },
@@ -60,7 +60,7 @@
         "maxresolution": 2,
         "diagonaldpad": true,
         "icon": "icon.png",
-        "save": 235,
+        "save": 236,
         "release": 1,
         "plugin": "topview"
     }
