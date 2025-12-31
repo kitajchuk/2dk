@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 791,
+    "save": 792,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -458,24 +458,24 @@
                     "dur": 1000,
                     "stop": true,
                     "down": {
-                        "offsetX": 460,
-                        "offsetY": 0,
-                        "stepsX": 2
+                        "offsetX": 0,
+                        "offsetY": 460,
+                        "stepsX": 3
                     },
                     "up": {
-                        "offsetX": 460,
-                        "offsetY": 0,
-                        "stepsX": 2
+                        "offsetX": 0,
+                        "offsetY": 460,
+                        "stepsX": 3
                     },
                     "left": {
-                        "offsetX": 460,
-                        "offsetY": 0,
-                        "stepsX": 2
+                        "offsetX": 0,
+                        "offsetY": 460,
+                        "stepsX": 3
                     },
                     "right": {
-                        "offsetX": 460,
-                        "offsetY": 0,
-                        "stepsX": 2
+                        "offsetX": 0,
+                        "offsetY": 460,
+                        "stepsX": 3
                     }
                 }
             }

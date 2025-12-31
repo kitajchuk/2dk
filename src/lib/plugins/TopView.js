@@ -39,7 +39,6 @@ class TopView extends GameBox {
         this.jumping = false;
         this.falling = false;
         this.locked = false;
-        this.dropin = false;
         this.keyTimer = null;
     }
 

@@ -53,6 +53,7 @@ class GameBox {
     constructor ( player ) {
         this.player = player;
         this.step = 1;
+        this.dropin = false;
         this.offset = {
             x: 0,
             y: 0,
@@ -605,6 +606,11 @@ class GameBox {
         // Applies new hero offset!
         // Plays the new map's music
         this.initMap();
+
+        // Handle the `dropin` effect
+        if ( this.dropin ) {
+            this.hero.position.z = -( this.camera.height / 2 );
+        }
 
         // Create a new Companion
         if ( this.companion ) {
