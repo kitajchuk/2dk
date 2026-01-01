@@ -17,14 +17,17 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 123,
+    "save": 124,
     "release": 1,
     "plugin": "topview",
     "hero": {
         "sprite": 0,
         "spawn": 0,
         "map": "maps/pallet-town-and-route-1.json",
-        "companion": null
+        "equipped": {
+            "weapon": false,
+            "shield": false
+        }
     },
     "sounds": {},
     "heroes": [

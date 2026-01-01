@@ -1,3 +1,13 @@
+const cellauto = {
+    algo: "maze",
+    walls: {
+        // Texture reference (texture.js)
+    },
+    textures: [
+        // Texture reference (texture.js)
+    ],
+};
+
 module.exports = {
     id: "",
     name: "",
@@ -19,15 +29,7 @@ module.exports = {
             dir: "down"
         }
     ],
-    cellauto: undefined || {
-        algo: "maze",
-        walls: {
-            // Texture reference (texture.js)
-        },
-        textures: [
-            // Texture reference (texture.js)
-        ],
-    },
+    cellauto: undefined,
     // FX reference (game.json)
     fx: [],
     tiles: [],

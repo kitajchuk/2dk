@@ -1,3 +1,8 @@
+const companion = {
+    id: "",
+    type: ""
+};
+
 module.exports = {
     id: "",
     name: "",
@@ -30,10 +35,7 @@ module.exports = {
             weapon: false,
             shield: false
         },
-        companion: undefined || {
-            id: "",
-            type: ""
-        }
+        companion: undefined,
     },
     // Hero library
     heroes: [],
