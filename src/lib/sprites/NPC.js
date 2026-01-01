@@ -12,7 +12,6 @@ import Sprite from "./Sprite";
 export default class NPC extends Sprite {
     constructor ( data, map ) {
         super( data, map );
-        this.states = structuredClone( this.data.states );
         this.dialogue = null;
         
         // AI things...
@@ -23,20 +22,32 @@ export default class NPC extends Sprite {
         this.dirY = null;
         this.stepsX = 0;
         this.stepsY = 0;
+        this.states = structuredClone( this.data.states );
 
-        this.shift();
+        this.initialize();
     }
 
 
     destroy () {}
 
 
-    shift () {
-        if ( this.states.length ) {
-            this.state = this.states.shift();
-            this.dir = this.state.dir;
-            this.verb = this.state.verb;
+    initialize () {
+        const equip = this.data.payload?.quest?.setEquip;
+        // TODO: Make this more robust for more than just two states...
+        const index = equip && this.gamebox.hero.isEquipped( equip ) ? 1 : 0;
+        this.setState( index );
+    }
+
+
+    setState ( index ) {
+        if ( !this.states.length ) {
+            return;
         }
+
+        this.stateIndex = index;
+        this.state = this.states[ this.stateIndex ];
+        this.dir = this.state.dir;
+        this.verb = this.state.verb;
     }
 
 
@@ -367,9 +378,9 @@ export default class NPC extends Sprite {
             this.dir = this.state.dir;
         }
 
-        // Handle shifting states
+        // Handle shifting states (TODO: "shift" is a bad name for this...)
         if ( this.state.action.shift ) {
-            this.shift();
+            this.setState( this.stateIndex + 1 );
         }
     }
 }

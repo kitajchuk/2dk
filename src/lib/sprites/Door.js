@@ -12,7 +12,6 @@ import Config from "../Config";
 export default class Door extends Sprite {
     constructor ( data, map ) {
         super( data, map );
-        this.states = structuredClone( this.data.states );
         this.open = false;
         this.opening = false;
         this.closing = false;
@@ -20,9 +19,13 @@ export default class Door extends Sprite {
         this.rumble = 0;
         this.originalX = this.position.x;
         this.dialogue = null;
+        this.states = structuredClone( this.data.states );
 
         this.initialize();
     }
+
+
+    destroy () {}
 
 
     initialize () {
@@ -33,16 +36,21 @@ export default class Door extends Sprite {
             this.counter = this.open ? this.data.height : 0;
         }
 
-        // Same as NPC shift() method
-        if ( this.states.length ) {
-            this.state = this.states.shift();
-            this.dir = this.state.dir;
-            this.verb = this.state.verb;
-        }
+        this.setState( 0 );
     }
 
 
-    destroy () {}
+    // Same as NPC setState() method
+    setState ( index ) {
+        if ( !this.states.length ) {
+            return;
+        }
+
+        this.stateIndex = index;
+        this.state = this.states[ this.stateIndex ];
+        this.dir = this.state.dir;
+        this.verb = this.state.verb;
+    }
 
     
     payload () {

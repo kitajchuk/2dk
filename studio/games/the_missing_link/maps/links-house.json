@@ -92,10 +92,6 @@
                 "x": 608,
                 "y": 223
             },
-            "action": {
-                "verb": "open",
-                "sound": "chest"
-            },
             "payload": {
                 "dialogue": {
                     "type": "text",

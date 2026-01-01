@@ -188,7 +188,7 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "Shinji House"
+                        "Master Shinji's House"
                     ]
                 }
             }
@@ -215,7 +215,7 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "Here lies Master Shinji. May he rest in peace above heroes point."
+                        "Here lies Master Shinji. May he rest in peace..."
                     ]
                 }
             }
@@ -233,7 +233,7 @@
                         "NW — Imperial City",
                         "W  — Great Lake",
                         "E  — Shinji House",
-                        "NE — Moblin Camp Grounds"
+                        "NE — Moblin Hideout"
                     ]
                 }
             }
