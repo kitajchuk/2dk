@@ -51,6 +51,9 @@ class TopView extends GameBox {
     blit ( elapsed ) {
         this.clear();
 
+        // blit render queue
+        this.renderQueue.blit( elapsed );
+
         // blit hero
         this.hero.blit( elapsed );
 
@@ -96,19 +99,19 @@ class TopView extends GameBox {
 
         // render companion behind hero?
         if ( this.companion && this.companion.data.type !== Config.npc.ai.FLOAT && this.companion.hitbox.y < this.hero.hitbox.y ) {
-            this.companion.render();
+            this.renderQueue.add( this.companion );
         }
 
         // render hero
-        this.hero.render();
+        this.renderQueue.add( this.hero );
 
         if ( this.interact.mask ) {
-            this.interact.mask.render();
+            this.renderQueue.add( this.interact.mask );
         }
 
         // render companion infront of hero?
         if ( this.companion && ( this.companion.data.type !== Config.npc.ai.FLOAT && this.companion.hitbox.y > this.hero.hitbox.y ) ) {
-            this.companion.render();
+            this.renderQueue.add( this.companion );
         }
 
         // render map
@@ -116,8 +119,11 @@ class TopView extends GameBox {
 
         // render companion infront of everything?
         if ( this.companion && this.companion.data.type === Config.npc.ai.FLOAT ) {
-            this.companion.render();
+            this.renderQueue.add( this.companion );
         }
+
+        // render render queue
+        this.renderQueue.render();
     }
 
 
@@ -913,29 +919,35 @@ class TopView extends GameBox {
 
         switch ( this.hero.dir ) {
             case "left":
-                throwX = sprite.position.x - dist;
-                throwY = this.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
+                throwX = this.interact.tile.sprite.position.x - dist;
+                throwY = this.hero.footbox.y - ( this.interact.tile.sprite.height - this.hero.footbox.height );
                 break;
             case "right":
-                throwX = sprite.position.x + dist;
-                throwY = this.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
+                throwX = this.interact.tile.sprite.position.x + dist;
+                throwY = this.hero.footbox.y - ( this.interact.tile.sprite.height - this.hero.footbox.height );
                 break;
             case "up":
-                throwX = sprite.position.x;
-                throwY = sprite.position.y - dist;
+                throwX = this.interact.tile.sprite.position.x;
+                throwY = this.interact.tile.sprite.position.y - dist;
                 break;
             case "down":
-                throwX = sprite.position.x;
+                throwX = this.interact.tile.sprite.position.x;
                 throwY = this.hero.footbox.y + dist;
                 break;
         }
 
-        this.interact.tile.spring = new Spring( this.player, sprite.position.x, sprite.position.y, 60, 3.5 );
+        this.interact.tile.spring = new Spring( 
+            this.player,
+            this.interact.tile.sprite.position.x,
+            this.interact.tile.sprite.position.y,
+            60,
+            3.5
+        );
         this.interact.tile.spring.poi = {
             x: throwX,
             y: throwY,
         };
-        this.interact.tile.spring.bind( sprite );
+        this.interact.tile.spring.bind( this.interact.tile.sprite );
     }
 
 

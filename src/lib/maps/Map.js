@@ -168,38 +168,44 @@ class Map {
 
         // Separate background / foreground NPCs
         const npcsBg = this.npcs.filter( ( npc ) => {
-            return npc.data.type !== Config.npc.ai.FLOAT && npc.layer === "background";
+            return npc.data.type !== Config.npc.ai.FLOAT && npc.layer === Config.layers.background;
         });
         const npcsFg = this.npcs.filter( ( npc ) => {
-            return npc.data.type === Config.npc.ai.FLOAT || npc.layer === "foreground";
+            return npc.data.type === Config.npc.ai.FLOAT || npc.layer === Config.layers.foreground;
         });
 
         // Draw background textures
-        this.renderTextures( "background" );
+        this.gamebox.renderQueue.add({
+            render: this.renderTextures.bind( this, Config.layers.background ),
+            layer: Config.layers.background,
+        });
 
         // Draw NPCs to background
         npcsBg.forEach( ( npc ) => {
-            npc.render();
+            this.gamebox.renderQueue.add( npc );
         });
 
         // Draw doors to background
         this.doors.forEach( ( door ) => {
-            door.render();
+            this.gamebox.renderQueue.add( door );
         });
 
         // Draw foreground textures
-        this.renderTextures( "foreground" );
+        this.gamebox.renderQueue.add({
+            render: this.renderTextures.bind( this, Config.layers.foreground ),
+            layer: Config.layers.foreground,
+        });
 
         // Draw NPCs to foreground
         // Float NPCs are included always
         npcsFg.forEach( ( npc ) => {
-            npc.render();
+            this.gamebox.renderQueue.add( npc );
         });
 
         // Draw FX
         // This is the topmost layer so we can do cool stuff...
         this.fx.forEach( ( fx ) => {
-            fx.render();
+            this.gamebox.renderQueue.add( fx );
         });
 
         // Visual event debugging....
@@ -213,9 +219,9 @@ class Map {
         const visibleColliders = this.gamebox.getVisibleColliders();
 
         visibleColliders.forEach( ( collider ) => {
-            this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
-            this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.red;
-            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+            this.gamebox.mapLayer.context.globalAlpha = 0.5;
+            this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
+            this.gamebox.mapLayer.context.fillRect(
                 this.offset.x + ( collider[ 0 ] * this.data.collider ),
                 this.offset.y + ( collider[ 1 ] * this.data.collider ),
                 this.data.collider,
@@ -223,7 +229,7 @@ class Map {
             );
         });
 
-        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
+        this.gamebox.mapLayer.context.globalAlpha = 1.0;
     }
 
 
@@ -238,7 +244,7 @@ class Map {
         );
 
         // Draw offscreen Map canvases to the onscreen World canvases
-        this.gamebox.layers[ id ].onCanvas.context.drawImage(
+        this.gamebox.draw(
             this.layers[ id ].offCanvas.canvas,
             0,
             0,
@@ -341,7 +347,7 @@ class Map {
 
 
     checkShiftableForeground ( layer, lookupY, lookupX ) {
-        if ( layer !== "foreground" ) {
+        if ( layer !== Config.layers.foreground ) {
             return false;
         }
 

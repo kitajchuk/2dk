@@ -12,15 +12,7 @@
         top: 0;
         width: 100%;
         height: 100%;
-    
-        &[data-layer="background"],
-        &[data-layer="heroground"] {
-            z-index: 1;
-        }
-    
-        &[data-layer="foreground"] {
-            z-index: 3;
-        }
+        z-index: 1;
     }
     
 }

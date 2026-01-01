@@ -77,7 +77,7 @@ export default class Hero extends Sprite {
 
     renderAfter () {
         if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) ) {
-            this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+            this.gamebox.draw(
                 this.image,
                 this.data.weapon[ this.dir ][ this.frame ].offsetX,
                 this.data.weapon[ this.dir ][ this.frame ].offsetY,
@@ -98,7 +98,7 @@ export default class Hero extends Sprite {
         }
         
         if ( this.hasShield() ) {
-            this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+            this.gamebox.draw(
                 this.image,
                 this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetX,
                 this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetY,
@@ -118,13 +118,13 @@ export default class Hero extends Sprite {
 
     
     renderAfterDebug () {
-        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
-        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.teal;
+        this.gamebox.mapLayer.context.globalAlpha = 0.5;
+        this.gamebox.mapLayer.context.fillStyle = Config.colors.teal;
 
         if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) ) {
             const weaponbox = this.getWeaponbox( "offset" );
 
-            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+            this.gamebox.mapLayer.context.fillRect(
                 weaponbox.x,
                 weaponbox.y,
                 weaponbox.width,
@@ -135,7 +135,7 @@ export default class Hero extends Sprite {
         if ( this.hasShield() ) {
             const shieldbox = this.getShieldbox( "offset" );
 
-            this.gamebox.layers.foreground.onCanvas.context.fillRect(
+            this.gamebox.mapLayer.context.fillRect(
                 shieldbox.x,
                 shieldbox.y,
                 shieldbox.width,
@@ -143,7 +143,7 @@ export default class Hero extends Sprite {
             );
         }
 
-        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
+        this.gamebox.mapLayer.context.globalAlpha = 1.0;
     }
 
 
@@ -411,7 +411,7 @@ export class LiftedTile extends Sprite {
     constructor ( spawn, tile, map, hero ) {
         const data = {
             type: Config.npc.ai.FLOAT,
-            layer: "foreground",
+            layer: Config.layers.foreground,
             width: map.data.tilesize,
             height: map.data.tilesize,
             image: map.data.image,

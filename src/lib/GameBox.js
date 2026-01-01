@@ -49,6 +49,44 @@ class Camera {
 
 
 
+class RenderQueue {
+    constructor () {
+        this.queue = [];
+    }
+
+
+    blit () {
+        this.queue = [];
+    }
+
+
+    // Supports anything with a "render" method and a "layer" property
+    add ( sprite ) {
+        this.queue.push( sprite );
+    }
+
+
+    render () {
+        this.queue.filter( ( sprite ) => {
+            return sprite.layer === Config.layers.background;
+        }).forEach( ( sprite ) => {
+            sprite.render();
+        });
+        this.queue.filter( ( sprite ) => {
+            return sprite.layer === Config.layers.heroground;
+        }).forEach( ( sprite ) => {
+            sprite.render();
+        });
+        this.queue.filter( ( sprite ) => {
+            return sprite.layer === Config.layers.foreground;
+        }).forEach( ( sprite ) => {
+            sprite.render();
+        });
+    }
+}
+
+
+
 class GameBox {
     constructor ( player ) {
         this.player = player;
@@ -65,15 +103,20 @@ class GameBox {
             this.player.height * this.player.resolution,
             this.player.resolution
         );
-        this.layers = {
-            background: null,
-            heroground: null,
-            foreground: null,
-        };
+        this.mapLayer = null;
         this.gamequest = new GameQuest( this );
+        this.renderQueue = new RenderQueue();
+
+        // Dialogues
+        this.dialogue = new Dialogue( this );
+
+        // Sounds
+        this.currentMusic = null;
 
         let initMapData = Loader.cash( this.player.heroData.map );
         let initHeroData = this.player.heroData;
+
+        this.build();
 
         const _init = () => {
             // Map
@@ -103,13 +146,6 @@ class GameBox {
                 this.companion = new Companion( initHeroData.companion, this.hero );
             }
 
-            // Dialogues
-            this.dialogue = new Dialogue( this );
-
-            // Sounds
-            this.currentMusic = null;
-
-            this.build();
             this.initMap();
         };
 
@@ -133,9 +169,12 @@ class GameBox {
 
 
     clear () {
-        Object.keys( this.layers ).forEach( ( id ) => {
-            this.layers[ id ].onCanvas.clear();
-        });
+        this.mapLayer.clear();
+    }
+
+
+    draw ( ...args ) {
+        this.mapLayer.context.drawImage( ...args );
     }
 
 
@@ -143,10 +182,14 @@ class GameBox {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__gamebox";
 
-        // Render layers
-        Object.keys( this.layers ).forEach( ( id ) => {
-            this.addLayer( id );
+        this.mapLayer = new MapLayer({
+            id: "gameground",
+            width: this.camera.width,
+            height: this.camera.height,
         });
+        this.mapLayer.canvas.width = `${this.camera.width * this.camera.resolution}`;
+        this.mapLayer.canvas.height = `${this.camera.height * this.camera.resolution}`;
+        this.element.appendChild( this.mapLayer.canvas );
 
         this.player.screen.appendChild( this.element );
         this.player.screen.appendChild( this.dialogue.element );
@@ -161,21 +204,6 @@ class GameBox {
         } else {
             this.player.gameaudio.playSound( this.currentMusic );
         }
-    }
-
-
-    addLayer ( id ) {
-        this.layers[ id ] = {};
-        this.layers[ id ].onCanvas = new MapLayer({
-            id,
-            width: this.camera.width,
-            height: this.camera.height,
-        });
-
-        this.layers[ id ].onCanvas.canvas.width = `${this.camera.width * this.camera.resolution}`;
-        this.layers[ id ].onCanvas.canvas.height = `${this.camera.height * this.camera.resolution}`;
-
-        this.element.appendChild( this.layers[ id ].onCanvas.canvas );
     }
 
 
@@ -387,7 +415,6 @@ class GameBox {
                 height: this.map.data.collider,
                 x: colliders[ i ][ 0 ] * this.map.data.collider,
                 y: colliders[ i ][ 1 ] * this.map.data.collider,
-                layer: "foreground",
             };
 
             if ( Utils.collide( hitbox, tile ) ) {

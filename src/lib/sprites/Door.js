@@ -85,7 +85,7 @@ export default class Door extends Sprite {
             return;
         }
 
-        this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+        this.gamebox.draw(
             this.image,
             this.spritecel[ 0 ],
             this.spritecel[ 1 ],
@@ -96,6 +96,10 @@ export default class Door extends Sprite {
             this.width,
             this.height - this.counter
         );
+
+        if ( this.player.query.get( "debug" ) ) {
+            this.renderDebug();
+        }
     }
 
 

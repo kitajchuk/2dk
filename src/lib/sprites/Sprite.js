@@ -216,7 +216,7 @@ export default class Sprite {
         this.applyRenderLayer();
 
         if ( this.data.shadow && !this.is( Config.verbs.FALL ) ) {
-            this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+            this.gamebox.draw(
                 this.image,
                 this.data.shadow.offsetX,
                 this.data.shadow.offsetY,
@@ -231,7 +231,7 @@ export default class Sprite {
 
         this.applyOpacity();
 
-        this.gamebox.layers[ this.layer ].onCanvas.context.drawImage(
+        this.gamebox.draw(
             this.image,
             this.spritecel[ 0 ],
             this.spritecel[ 1 ],
@@ -243,7 +243,7 @@ export default class Sprite {
             this.height
         );
 
-        this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 1.0;
+        this.gamebox.mapLayer.context.globalAlpha = 1.0;
 
         if ( Utils.func( this.renderAfter ) ) {
             this.renderAfter();
@@ -256,30 +256,30 @@ export default class Sprite {
 
 
     renderDebug () {
-        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.25;
-        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.white;
-        this.gamebox.layers.foreground.onCanvas.context.fillRect(
+        this.gamebox.mapLayer.context.globalAlpha = 0.25;
+        this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
+        this.gamebox.mapLayer.context.fillRect(
             this.offset.x,
             this.offset.y,
             this.width,
             this.height
         );
-        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 0.5;
-        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.red;
-        this.gamebox.layers.foreground.onCanvas.context.fillRect(
+        this.gamebox.mapLayer.context.globalAlpha = 0.5;
+        this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
+        this.gamebox.mapLayer.context.fillRect(
             this.offset.x + ( this.data.hitbox.x / this.scale ),
             this.offset.y + ( this.data.hitbox.y / this.scale ),
             this.hitbox.width,
             this.hitbox.height
         );
-        this.gamebox.layers.foreground.onCanvas.context.fillStyle = Config.colors.green;
-        this.gamebox.layers.foreground.onCanvas.context.fillRect(
+        this.gamebox.mapLayer.context.fillStyle = Config.colors.green;
+        this.gamebox.mapLayer.context.fillRect(
             this.offset.x + ( this.data.hitbox.x / this.scale ),
             this.offset.y + ( this.data.hitbox.y / this.scale ) + ( this.hitbox.height / 2 ),
             this.footbox.width,
             this.footbox.height
         );
-        this.gamebox.layers.foreground.onCanvas.context.globalAlpha = 1.0;
+        this.gamebox.mapLayer.context.globalAlpha = 1.0;
     }
 
 
@@ -342,12 +342,12 @@ export default class Sprite {
 *******************************************************************************/
     applyOpacity () {
         if ( this.opacity ) {
-            this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = this.opacity;
+            this.gamebox.mapLayer.context.globalAlpha = this.opacity;
         }
 
         if ( this.hitTimer > 0 ) {
             if ( this.hitTimer % 5 === 0 ) {
-                this.gamebox.layers[ this.layer ].onCanvas.context.globalAlpha = 0.25;
+                this.gamebox.mapLayer.context.globalAlpha = 0.25;
             }
         }
     }
