@@ -68,7 +68,7 @@ class TopView extends GameBox {
 
         // blit interaction tile sprite?
         if ( this.interact.tile && this.interact.tile.sprite && this.interact.tile.spring ) {
-            this.handleThrowing( elapsed );
+            this.blitThrowing( elapsed );
         }
 
         // dropin effect for new map?
@@ -905,7 +905,37 @@ class TopView extends GameBox {
         this.hero.face( this.hero.dir );
         this.player.gameaudio.hitSound( Config.verbs.THROW );
         this.hero.physics.maxv = this.hero.physics.controlmaxv;
-        this.handleThrow( this.interact.tile.sprite );
+        this.interact.tile.sprite.throwing = true;
+
+        let throwX;
+        let throwY;
+        const dist = this.map.data.tilesize * 2;
+
+        switch ( this.hero.dir ) {
+            case "left":
+                throwX = sprite.position.x - dist;
+                throwY = this.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
+                break;
+            case "right":
+                throwX = sprite.position.x + dist;
+                throwY = this.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
+                break;
+            case "up":
+                throwX = sprite.position.x;
+                throwY = sprite.position.y - dist;
+                break;
+            case "down":
+                throwX = sprite.position.x;
+                throwY = this.hero.footbox.y + dist;
+                break;
+        }
+
+        this.interact.tile.spring = new Spring( this.player, sprite.position.x, sprite.position.y, 60, 3.5 );
+        this.interact.tile.spring.poi = {
+            x: throwX,
+            y: throwY,
+        };
+        this.interact.tile.spring.bind( sprite );
     }
 
 
@@ -1121,44 +1151,9 @@ class TopView extends GameBox {
 /*******************************************************************************
 * Sprite Handlers
 *******************************************************************************/
-    handleThrow ( sprite ) {
-        sprite.throwing = true;
-
-        let throwX;
-        let throwY;
-        const dist = this.map.data.tilesize * 2;
-
-        switch ( this.hero.dir ) {
-            case "left":
-                throwX = sprite.position.x - dist;
-                throwY = this.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
-                break;
-            case "right":
-                throwX = sprite.position.x + dist;
-                throwY = this.hero.footbox.y - ( sprite.height - this.hero.footbox.height );
-                break;
-            case "up":
-                throwX = sprite.position.x;
-                throwY = sprite.position.y - dist;
-                break;
-            case "down":
-                throwX = sprite.position.x;
-                throwY = this.hero.footbox.y + dist;
-                break;
-        }
-
-        this.interact.tile.spring = new Spring( this.player, sprite.position.x, sprite.position.y, 60, 3.5 );
-        this.interact.tile.spring.poi = {
-            x: throwX,
-            y: throwY,
-        };
-        this.interact.tile.spring.bind( sprite );
-    }
-
-
-    handleThrowing ( elapsed ) {
+    blitThrowing ( elapsed ) {
         if ( this.interact.tile.spring.isResting ) {
-            this.handleThrew();
+            this.killThrowing();
 
         } else {
             const collision = {
@@ -1168,7 +1163,7 @@ class TopView extends GameBox {
             };
 
             if ( collision.map || collision.npc || collision.camera ) {
-                this.handleThrew();
+                this.killThrowing();
 
             } else {
                 this.interact.tile.spring.blit( elapsed );
@@ -1177,7 +1172,7 @@ class TopView extends GameBox {
     }
 
 
-    handleThrew () {
+    killThrowing () {
         const attackAction = this.interact.tile.instance.canAttack();
         this.smokeObject( this.interact.tile.sprite, attackAction?.fx );
         this.player.gameaudio.hitSound( Config.verbs.SMASH );
