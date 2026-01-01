@@ -1,6 +1,6 @@
 {
-    "id": "links-house",
-    "name": "Links House",
+    "id": "master-shinjis-house",
+    "name": "Master Shinji's House",
     "type": "indoor",
     "tilesize": 64,
     "width": 1280,
@@ -9,8 +9,8 @@
     "tileheight": 16,
     "collider": 16,
     "image": "assets/tiles/inside.png",
-    "snapshot": "assets/snapshots/links-house.png",
-    "thumbnail": "assets/snapshots/links-house-thumb.png",
+    "snapshot": "assets/snapshots/master-shinjis-house.png",
+    "thumbnail": "assets/snapshots/master-shinjis-house-thumb.png",
     "sound": "assets/sounds/bgm-interior-theme.mp3",
     "spawn": [
         {
@@ -71,7 +71,7 @@
             ],
             "type": "door",
             "dir": "down",
-            "map": "maps/home-base.json",
+            "map": "maps/unknown-corner-of-the-world.json",
             "spawn": 0
         },
         {
@@ -81,7 +81,7 @@
             ],
             "type": "door",
             "dir": "down",
-            "map": "maps/home-base.json",
+            "map": "maps/unknown-corner-of-the-world.json",
             "spawn": 0
         }
     ],

@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 267,
+    "save": 270,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -35,7 +35,7 @@
     "hero": {
         "sprite": 0,
         "spawn": 0,
-        "map": "maps/home-base.json",
+        "map": "maps/unknown-corner-of-the-world.json",
         "equipped": {
             "weapon": false,
             "shield": false
@@ -1026,7 +1026,7 @@
         "assets/sounds/sfx-sword.mp3",
         "assets/sounds/sfx-throw.mp3",
         "maps/beneath-the-grave.json",
-        "maps/home-base.json",
-        "maps/links-house.json"
+        "maps/master-shinjis-house.json",
+        "maps/unknown-corner-of-the-world.json"
     ]
 }

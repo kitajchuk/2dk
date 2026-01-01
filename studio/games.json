@@ -60,7 +60,7 @@
         "maxresolution": 2,
         "diagonaldpad": true,
         "icon": "icon.png",
-        "save": 267,
+        "save": 270,
         "release": 1,
         "plugin": "topview"
     }

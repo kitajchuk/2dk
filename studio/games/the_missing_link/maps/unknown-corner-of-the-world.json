@@ -1,6 +1,6 @@
 {
-    "id": "home-base",
-    "name": "Home Base",
+    "id": "unknown-corner-of-the-world",
+    "name": "Unknown Corner of the World",
     "type": "world",
     "tilesize": 64,
     "width": 2560,
@@ -9,8 +9,8 @@
     "tileheight": 32,
     "collider": 16,
     "image": "assets/tiles/tiles.png",
-    "snapshot": "assets/snapshots/home-base.png",
-    "thumbnail": "assets/snapshots/home-base-thumb.png",
+    "snapshot": "assets/snapshots/unknown-corner-of-the-world.png",
+    "thumbnail": "assets/snapshots/unknown-corner-of-the-world-thumb.png",
     "sound": "assets/sounds/bgm-world-theme.mp3",
     "spawn": [
         {
@@ -49,7 +49,6 @@
             "layer": "background",
             "offsetX": 0,
             "offsetY": 512,
-            "mask": true,
             "actions": [
                 {
                     "verb": "lift",
@@ -140,7 +139,7 @@
             ],
             "type": "door",
             "dir": "up",
-            "map": "maps/links-house.json",
+            "map": "maps/master-shinjis-house.json",
             "spawn": 0
         },
         {
