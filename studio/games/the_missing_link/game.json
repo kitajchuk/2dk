@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 254,
+    "save": 263,
     "release": 1,
     "plugin": "topview",
     "sounds": {
@@ -924,6 +924,37 @@
                     "action": {
                         "verb": "read",
                         "dir": "up"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "letter",
+            "name": "Letter",
+            "width": 56,
+            "height": 40,
+            "image": "assets/sprites/npcs.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 56,
+                "height": 40
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 412,
+                        "offsetY": 140
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "read",
+                        "dir": "down"
                     }
                 }
             ]
