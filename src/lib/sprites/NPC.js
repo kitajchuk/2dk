@@ -185,15 +185,15 @@ export default class NPC extends Sprite {
 
         // Assume that FLOAT should always render to the foreground
         if ( this.data.type === Config.npc.ai.FLOAT ) {
-            this.layer = Config.layers.foreground;
+            this.layer = "foreground";
 
         // Sprites that have a smaller hitbox than their actual size can flip layer
         } else if ( hasPartialHitbox && isHeroColliding ) {
             if ( this.hitbox.y > this.gamebox.hero.hitbox.y ) {
-                this.layer = Config.layers.foreground;
+                this.layer = "foreground";
 
             } else {
-                this.layer = Config.layers.background;
+                this.layer = "background";
             }
         }
     }

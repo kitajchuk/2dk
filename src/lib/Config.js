@@ -8,12 +8,7 @@ const getStyleVar = ( prop ) => {
 
 
 const Config = {
-    layers: {
-        background: "background",
-        heroground: "heroground",
-        foreground: "foreground",
-    },
-    // VERBS and TILES:
+    // VERBS and TILES...
     // These alone sort of "break" the idea of the "anybody's game".
     // These imply that you would be given a preset of "verbs" and "tiles"
     // to choose from when adding ActiveTiles groups to a map.

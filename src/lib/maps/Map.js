@@ -168,16 +168,16 @@ class Map {
 
         // Separate background / foreground NPCs
         const npcsBg = this.npcs.filter( ( npc ) => {
-            return npc.data.type !== Config.npc.ai.FLOAT && npc.layer === Config.layers.background;
+            return npc.data.type !== Config.npc.ai.FLOAT && npc.layer === "background";
         });
         const npcsFg = this.npcs.filter( ( npc ) => {
-            return npc.data.type === Config.npc.ai.FLOAT || npc.layer === Config.layers.foreground;
+            return npc.data.type === Config.npc.ai.FLOAT || npc.layer === "foreground";
         });
 
         // Draw background textures
         this.gamebox.renderQueue.add({
-            render: this.renderTextures.bind( this, Config.layers.background ),
-            layer: Config.layers.background,
+            render: this.renderTextures.bind( this, "background" ),
+            layer: "background",
         });
 
         // Draw NPCs to background
@@ -192,8 +192,8 @@ class Map {
 
         // Draw foreground textures
         this.gamebox.renderQueue.add({
-            render: this.renderTextures.bind( this, Config.layers.foreground ),
-            layer: Config.layers.foreground,
+            render: this.renderTextures.bind( this, "foreground" ),
+            layer: "foreground",
         });
 
         // Draw NPCs to foreground
@@ -347,7 +347,7 @@ class Map {
 
 
     checkShiftableForeground ( layer, lookupY, lookupX ) {
-        if ( layer !== Config.layers.foreground ) {
+        if ( layer !== "foreground" ) {
             return false;
         }
 

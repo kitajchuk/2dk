@@ -68,17 +68,17 @@ class RenderQueue {
 
     render () {
         this.queue.filter( ( sprite ) => {
-            return sprite.layer === Config.layers.background;
+            return sprite.layer === "background";
         }).forEach( ( sprite ) => {
             sprite.render();
         });
         this.queue.filter( ( sprite ) => {
-            return sprite.layer === Config.layers.heroground;
+            return sprite.layer === "heroground";
         }).forEach( ( sprite ) => {
             sprite.render();
         });
         this.queue.filter( ( sprite ) => {
-            return sprite.layer === Config.layers.foreground;
+            return sprite.layer === "foreground";
         }).forEach( ( sprite ) => {
             sprite.render();
         });

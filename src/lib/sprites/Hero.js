@@ -411,7 +411,7 @@ export class LiftedTile extends Sprite {
     constructor ( spawn, tile, map, hero ) {
         const data = {
             type: Config.npc.ai.FLOAT,
-            layer: Config.layers.foreground,
+            layer: "foreground",
             width: map.data.tilesize,
             height: map.data.tilesize,
             image: map.data.image,
