@@ -600,6 +600,7 @@ class DB {
 
                 newGame.id = Cache.slugify( data.name );
                 newGame.name = data.name;
+                newGame.currency = data.currency || gameModel.currency;
                 newGame.width = Number( data.width ) || gameModel.width;
                 newGame.height = Number( data.height ) || gameModel.height;
                 newGame.tilesize = Number( data.tilesize ) || gameModel.tilesize;

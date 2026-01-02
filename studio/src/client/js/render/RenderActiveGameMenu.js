@@ -36,6 +36,10 @@ const renderActiveGameMenu = ( game ) => {
                 <div class="editor__label">Game name</div>
                 <input class="input editor__field" type="text" name="name" value="${game.name}" readonly disabled />
             </div>
+            <div class="editor__setting">
+                <div class="editor__label">Currency</div>
+                <input class="input editor__field" type="text" name="currency" value="${game.currency}" readonly disabled />
+            </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">Save version</div>

@@ -23,6 +23,10 @@ const renderNewGameMenu = () => {
                 <div class="editor__label">Game name</div>
                 <input class="input editor__field js-addgame-field" type="text" placeholder="Game name" name="name" />
             </div>
+            <div class="editor__setting">
+                <div class="editor__label">Currency</div>
+                <input class="input editor__field js-addgame-field" type="text" placeholder="Currency" name="currency" />
+            </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">Screen width</div>
