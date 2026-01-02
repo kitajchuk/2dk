@@ -127,10 +127,30 @@ class Player extends Controller {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk";
         this.element.dataset.resolution = this.resolution;
+        this.buildSplash();
+        this.buildScreen();
+        this.buildMenu();
+        document.body.appendChild( this.element );
+    }
+
+
+    buildMenu () {
+        this.menu = document.createElement( "div" );
+        this.menu.className = "_2dk__menu";
+        this.element.appendChild( this.menu );
+    }
+
+
+    buildScreen () {
         this.screen = document.createElement( "div" );
         this.screen.className = "_2dk__screen";
         this.screen.style.width = `${this.width}px`;
         this.screen.style.height = `${this.height}px`;
+        this.element.appendChild( this.screen );
+    }
+
+
+    buildSplash () {
         this.splash = document.createElement( "div" );
         this.splash.className = "_2dk__splash";
         this.splashInfo = document.createElement( "div" );
@@ -146,10 +166,28 @@ class Player extends Controller {
         this.splash.appendChild( this.splashLoad );
         this.splash.appendChild( this.splashUpdate );
         this.element.appendChild( this.splash );
-        this.element.appendChild( this.screen );
-        document.body.appendChild( this.element );
     }
 
+
+    showMenu () {
+        // TODO: This is a stub temp menu so we can see the hero stats...
+        if ( this.gamebox.hero ) {
+            this.menu.innerHTML = `
+                <div>Health: ${this.gamebox.hero.stats.health}</div>
+                <div>Power: ${this.gamebox.hero.stats.power}</div>
+                <div>Strength: ${this.gamebox.hero.stats.strength}</div>
+                <div>Currency: ${this.gamebox.hero.currency}</div>
+                <div>Weapon: ${this.gamebox.hero.data.equipped.weapon ? "Equipped" : "Not Equipped"}</div>
+                <div>Shield: ${this.gamebox.hero.data.equipped.shield ? "Equipped" : "Not Equipped"}</div>
+            `;
+        }
+        this.menu.classList.add( "is-active" );
+    }
+
+
+    hideMenu () {
+        this.menu.classList.remove( "is-active" );
+    }
 
     fadeOut () {
         this.element.classList.add( "is-fader" );
@@ -198,6 +236,7 @@ class Player extends Controller {
         this.paused = true;
         this.gamepad.clear();
         this.gamebox.pause( true );
+
     }
 
 
@@ -301,11 +340,13 @@ class Player extends Controller {
 
         if ( this.paused ) {
             this.resume();
+            this.hideMenu();
             this.emit( Config.broadcast.RESUMED );
 
         } else {
             this.pause();
             this.stop();
+            this.showMenu();
             this.emit( Config.broadcast.PAUSED );
         }
     }

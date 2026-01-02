@@ -307,6 +307,13 @@
                         "key": "octorok-killed",
                         "value": 1
                     }
+                },
+                "bonus": {
+                    "items": [
+                        "heart",
+                        "green-rupee"
+                    ],
+                    "chance": 5
                 }
             }
         },
@@ -327,6 +334,13 @@
                         "key": "octorok-killed",
                         "value": 1
                     }
+                },
+                "bonus": {
+                    "items": [
+                        "heart",
+                        "green-rupee"
+                    ],
+                    "chance": 5
                 }
             }
         },
@@ -347,6 +361,13 @@
                         "key": "octorok-killed",
                         "value": 1
                     }
+                },
+                "bonus": {
+                    "items": [
+                        "heart",
+                        "green-rupee"
+                    ],
+                    "chance": 5
                 }
             }
         }

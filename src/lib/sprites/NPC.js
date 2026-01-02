@@ -213,6 +213,15 @@ export default class NPC extends Sprite {
             this.player.gameaudio.hitSound( this.data.action.sound || Config.verbs.SMASH );
             this.map.killObject( "npcs", this );
             this.handleQuestFlagUpdate();
+
+            if ( this.data.action.bonus ) {
+                const item = this.data.action.bonus.items[ Utils.random( 0, this.data.action.bonus.items.length - 1 ) ];
+                const chance = Utils.random( 0, 100 );
+
+                if ( !this.data.action.bonus.chance || chance <= this.data.action.bonus.chance ) {
+                    this.gamebox.spawnItem( item, this.position );
+                }
+            }
         }
     }
 
@@ -241,7 +250,7 @@ export default class NPC extends Sprite {
             this.counter = Utils.random( 60, 120 );
 
             const lastDir = this.dir;
-            const newDir = DIRS[ Utils.random( 0, DIRS.length ) ];
+            const newDir = DIRS[ Utils.random( 0, DIRS.length - 1 ) ];
 
             // Always pick a new direction
             if ( lastDir === newDir ) {
