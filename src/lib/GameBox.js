@@ -9,6 +9,7 @@ import Companion from "./sprites/Companion";
 import FX from "./sprites/FX";
 import CellAutoMap from "./maps/CellAutoMap";
 import GameQuest from "./GameQuest";
+import Item from "./sprites/Item";
 
 
 
@@ -232,7 +233,7 @@ class GameBox {
 
 
 /*******************************************************************************
-* FX utilities
+* Sprite utilities
 *******************************************************************************/
     smokeObject ( obj, fx = "smoke" ) {
         const origin = {
@@ -245,8 +246,8 @@ class GameBox {
             spawn: origin,
         }, "fx" );
 
-        this.map.addFX( new FX( data, this.map ) );
-        this.map.addFX( new FX( Utils.merge( data, {
+        this.map.addObject( "fx", new FX( data, this.map ) );
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
             spawn: {
                 x: origin.x - ( this.map.data.tilesize / 4 ),
                 y: origin.y - ( this.map.data.tilesize / 4 ),
@@ -255,7 +256,7 @@ class GameBox {
             vy: -8,
 
         }), this.map ) );
-        this.map.addFX( new FX( Utils.merge( data, {
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
             spawn: {
                 x: origin.x + ( this.map.data.tilesize / 4 ),
                 y: origin.y - ( this.map.data.tilesize / 4 ),
@@ -264,7 +265,7 @@ class GameBox {
             vy: -8,
 
         }), this.map ) );
-        this.map.addFX( new FX( Utils.merge( data, {
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
             spawn: {
                 x: origin.x - ( this.map.data.tilesize / 4 ),
                 y: origin.y + ( this.map.data.tilesize / 4 ),
@@ -273,7 +274,7 @@ class GameBox {
             vy: 8,
 
         }), this.map ) );
-        this.map.addFX( new FX( Utils.merge( data, {
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
             spawn: {
                 x: origin.x + ( this.map.data.tilesize / 4 ),
                 y: origin.y + ( this.map.data.tilesize / 4 ),
@@ -282,6 +283,19 @@ class GameBox {
             vy: 8,
 
         }), this.map ) );
+    }
+
+
+    spawnItem ( item, position ) {
+        const data = this.player.getMergedData({
+            id: item,
+        }, "items" );
+        const spawn = {
+            x: position.x + ( this.map.data.tilesize / 2 ) - ( data.width / 2 ),
+            y: position.y + ( this.map.data.tilesize / 2 ) - ( data.height / 2 ),
+        };
+
+        this.map.addObject( "items", new Item( spawn, data, this.map ) );
     }
 
 
@@ -352,6 +366,21 @@ class GameBox {
         }
 
         return npcs;
+    }
+
+
+    getVisibleItems () {
+        const items = [];
+
+        for ( let i = this.map.items.length; i--; ) {
+            const collides = Utils.collide( this.camera, this.map.items[ i ].getFullbox() );
+
+            if ( collides ) {
+                items.push( this.map.items[ i ] );
+            }
+        }
+
+        return items;
     }
 
 
@@ -514,6 +543,21 @@ class GameBox {
 
     checkDoor ( poi, sprite ) {
         return this.checkNPC( poi, sprite, "doors" );
+    }
+
+
+    checkItems ( poi, sprite ) {
+        const items = this.getVisibleItems();
+
+        // Ad-hoc "sprite" object with { x, y, width, height }
+        // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
+        const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
+
+        for ( let i = items.length; i--; ) {
+            if ( Utils.collide( lookbox, items[ i ].hitbox ) ) {
+                return items[ i ];
+            }
+        }
     }
 
 

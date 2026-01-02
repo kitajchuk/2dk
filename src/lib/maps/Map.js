@@ -29,14 +29,21 @@ class Map {
             background: null,
             foreground: null,
         };
-        this.activeTiles = [];
-        this.fx = [];
-        this.npcs = [];
-        this.doors = [];
         this.offset = {
             x: 0,
             y: 0,
         };
+
+        // From map data
+        this.activeTiles = [];
+        this.fx = [];
+        this.npcs = [];
+        this.doors = [];
+
+        // From live game state
+        this.items = [];
+        this.sprites = [];
+        
         this.build();
     }
 
@@ -66,6 +73,16 @@ class Map {
             fx.destroy();
         });
         this.fx = null;
+
+        this.items.forEach( ( item ) => {
+            item.destroy();
+        });
+        this.items = null;
+
+        this.sprites.forEach( ( sprite ) => {
+            sprite.destroy();
+        });
+        this.sprites = null;
 
         this.image = null;
     }
@@ -140,6 +157,14 @@ class Map {
         this.fx.forEach( ( fx ) => {
             fx.blit( elapsed );
         });
+
+        this.sprites.forEach( ( sprite ) => {
+            sprite.blit( elapsed );
+        });
+
+        this.items.forEach( ( item ) => {
+            item.blit( elapsed );
+        });
     }
 
 
@@ -156,6 +181,14 @@ class Map {
 
         this.fx.forEach( ( fx ) => {
             fx.update();
+        });
+
+        this.sprites.forEach( ( sprite ) => {
+            sprite.update();
+        });
+
+        this.items.forEach( ( item ) => {
+            item.update();
         });
     }
 
@@ -200,6 +233,16 @@ class Map {
         // Float NPCs are included always
         npcsFg.forEach( ( npc ) => {
             this.gamebox.renderQueue.add( npc );
+        });
+
+        // Draw items to heroground
+        this.items.forEach( ( item ) => {
+            this.gamebox.renderQueue.add( item );
+        });
+
+        // Draw sprites to their respective layers
+        this.sprites.forEach( ( sprite ) => {
+            this.gamebox.renderQueue.add( sprite );
         });
 
         // Draw FX
@@ -456,13 +499,8 @@ class Map {
     }
 
 
-    addNPC ( npc ) {
-        this.npcs.push( npc );
-    }
-
-
-    addFX ( fx ) {
-        this.fx.push( fx );
+    addObject ( type, obj ) {
+        this[ type ].push( obj );
     }
 
 

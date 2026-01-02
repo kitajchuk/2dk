@@ -203,13 +203,12 @@ const Utils = {
     },
 
 
-    // From Akihabara helpers:
-
-
-    // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L78
-    random  ( min, range ) {
-        return min + Math.floor( Math.random() * range );
+    random  ( min, max ) {
+        return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
     },
+
+
+    // From Akihabara helpers:
 
 
     // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L103

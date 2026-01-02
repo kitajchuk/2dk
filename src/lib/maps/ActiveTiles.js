@@ -1,5 +1,5 @@
 import Config from "../Config";
-import FX from "../sprites/FX";
+import Utils from "../Utils";
 
 
 
@@ -81,8 +81,17 @@ class ActiveTiles {
             width: this.map.data.tilesize,
             height: this.map.data.tilesize,
         };
+
+        if ( action.bonus ) {
+            const item = action.bonus.items[ Utils.random( 0, action.bonus.items.length - 1 ) ];
+            const chance = Utils.random( 0, 100 );
+
+            if ( !action.bonus.chance || chance <= action.bonus.chance ) {
+                this.gamebox.spawnItem( item, obj.position );
+            }
+        }
         
-        this.map.gamebox.smokeObject( obj, action?.fx );
+        this.gamebox.smokeObject( obj, action.fx );
     }
 
 

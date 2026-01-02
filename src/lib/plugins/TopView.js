@@ -459,6 +459,7 @@ class TopView extends GameBox {
             map: this.checkMap( poi, this.hero ),
             npc: this.checkNPC( poi, this.hero ),
             door: this.checkDoor( poi, this.hero ),
+            item: this.checkItems( poi, this.hero ),
             tiles: this.checkTiles( poi, this.hero ),
             event: this.checkEvents( poi, this.hero ),
             camera: this.checkCamera( poi, this.hero ),
@@ -485,6 +486,10 @@ class TopView extends GameBox {
                 this.handleHeroEventDialogue( poi, dir, collision.event );
                 // No return as this is a passive event
             }
+        }
+
+        if ( collision.item ) {
+            this.handleHeroItem( poi, dir, collision.item );
         }
 
         if ( collision.door ) {
@@ -821,6 +826,27 @@ class TopView extends GameBox {
     }
 
 
+    handleHeroItem ( poi, dir, item ) {
+        if ( !item.canPickup() ) {
+            return;
+        }
+
+        if ( item.data.sound ) {
+            this.player.gameaudio.hitSound( item.data.sound );
+        }
+
+        if ( item.data.currency ) {
+            this.hero.receive( item.data.currency );
+        }
+
+        if ( item.data.stat ) {
+            this.hero.updateStat( item.data.stat.key, item.data.stat.value );
+        }
+
+        this.map.killObject( "items", item );
+    }
+
+
     handleHeroCamera ( poi, dir ) {
         this.hero.cycle( this.hero.verb, dir );
     }
@@ -898,7 +924,7 @@ class TopView extends GameBox {
             this.player.gameaudio.hitSound( Config.verbs.LIFT );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.interact.tile.sprite = new LiftedTile( spawn, tile, this.map, this.hero );
-            this.map.addNPC( this.interact.tile.sprite );
+            this.map.addObject( "sprites", this.interact.tile.sprite );
             this.hero.cycle( Config.verbs.LIFT, this.hero.dir );
             this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
             this.locked = false;
@@ -1188,7 +1214,7 @@ class TopView extends GameBox {
         const attackAction = this.interact.tile.instance.canAttack();
         this.smokeObject( this.interact.tile.sprite, attackAction?.fx );
         this.player.gameaudio.hitSound( Config.verbs.SMASH );
-        this.map.killObject( "npcs", this.interact.tile.sprite );
+        this.map.killObject( "sprites", this.interact.tile.sprite );
         this.interact.tile = null;
     }
 }

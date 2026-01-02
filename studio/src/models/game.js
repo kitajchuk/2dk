@@ -25,6 +25,7 @@ module.exports = {
     save: 1,
     release: 1.0,
     plugin: "topview",
+    currency: "",
     sounds: {},
     // Hero reference
     hero: {
@@ -35,10 +36,13 @@ module.exports = {
             weapon: false,
             shield: false
         },
+        currency: 0,
         companion: undefined,
     },
     // Hero library
     heroes: [],
+    // Item library
+    items: [],
     // NPC library
     npcs: [],
     // Object library

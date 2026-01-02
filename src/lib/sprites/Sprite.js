@@ -86,7 +86,10 @@ export default class Sprite {
         this.stats = this.data.stats ? structuredClone( this.data.stats ) : {
             power: 1,
             health: 1,
+            strength: 0,
         };
+        // Cannot increase health beyond this value...
+        this.maxHealth = this.stats.health;
     }
 
 
@@ -149,6 +152,16 @@ export default class Sprite {
 
     checkStat ( stat, value ) {
         return this.stats[ stat ] >= value;
+    }
+
+
+    updateStat ( stat, value ) {
+        if ( stat === "health" ) {
+            this.stats[ stat ] = Math.min( this.stats[ stat ] + value, this.maxHealth );
+            return;
+        }
+
+        this.stats[ stat ] += value;
     }
 
 

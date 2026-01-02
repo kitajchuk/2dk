@@ -65,7 +65,14 @@
                 },
                 {
                     "verb": "attack",
-                    "fx": "leaves"
+                    "fx": "leaves",
+                    "bonus": {
+                        "items": [
+                            "heart",
+                            "green-rupee"
+                        ],
+                        "chance": 20
+                    }
                 }
             ]
         },
@@ -86,7 +93,14 @@
             "friction": 1.5,
             "actions": [
                 {
-                    "verb": "attack"
+                    "verb": "attack",
+                    "bonus": {
+                        "items": [
+                            "heart",
+                            "green-rupee"
+                        ],
+                        "chance": 10
+                    }
                 }
             ]
         },

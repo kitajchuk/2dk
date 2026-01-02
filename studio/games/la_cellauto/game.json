@@ -20,6 +20,7 @@
     "save": 797,
     "release": 1,
     "plugin": "topview",
+    "currency": "rupees",
     "sounds": {
         "lift": "assets/sounds/sfx-pick-up.mp3",
         "jump": "assets/sounds/sfx-jump.mp3",
@@ -38,6 +39,7 @@
             "weapon": true,
             "shield": true
         },
+        "currency": 0,
         "companion": {
             "id": "dog",
             "type": "walk"
@@ -486,6 +488,7 @@
             }
         }
     ],
+    "items": [],
     "objects": [],
     "npcs": [
         {

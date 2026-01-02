@@ -51,7 +51,14 @@
                 },
                 {
                     "verb": "attack",
-                    "fx": "smoke"
+                    "fx": "smoke",
+                    "bonus": {
+                        "items": [
+                            "heart",
+                            "green-rupee"
+                        ],
+                        "chance": 20
+                    }
                 }
             ]
         },

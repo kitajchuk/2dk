@@ -20,6 +20,7 @@
     "save": 125,
     "release": 1,
     "plugin": "topview",
+    "currency": "cash",
     "hero": {
         "sprite": 0,
         "spawn": 0,
@@ -27,7 +28,8 @@
         "equipped": {
             "weapon": false,
             "shield": false
-        }
+        },
+        "currency": 0
     },
     "sounds": {},
     "heroes": [
@@ -139,6 +141,7 @@
             }
         }
     ],
+    "items": [],
     "npcs": [
         {
             "id": "sign",

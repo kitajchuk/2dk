@@ -11,6 +11,7 @@ export default class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
         this.layer = "heroground";
+        this.currency = this.data.currency || 0;
         // Hero controls are defined by the Player
         this.controls = this.player.controls;
     }
@@ -45,6 +46,16 @@ export default class Hero extends Sprite {
     }
 
 
+    pay ( amount ) {
+        this.currency -= amount;
+    }
+
+
+    receive ( amount ) {
+        this.currency += amount;
+    }
+
+    
     isEquipped ( eq ) {
         return this.data.equipped[ eq ] || false;
     }
@@ -157,7 +168,12 @@ export default class Hero extends Sprite {
         const collision = {
             npc: this.gamebox.checkNPC( poi, weaponBox ),
             tiles: this.gamebox.checkTiles( poi, weaponBox ),
+            item: this.gamebox.checkItems( poi, weaponBox ),
         };
+
+        if ( collision.item ) {
+            this.gamebox.handleHeroItem( poi, this.dir, collision.item );
+        }
 
         if ( collision.npc && !collision.npc.hitTimer && collision.npc.canDoAction( Config.verbs.ATTACK ) ) {
             collision.npc.hit( this.stats.power );
@@ -410,8 +426,7 @@ export default class Hero extends Sprite {
 export class LiftedTile extends Sprite {
     constructor ( spawn, tile, map, hero ) {
         const data = {
-            type: Config.npc.ai.FLOAT,
-            layer: "foreground",
+            layer: "heroground",
             width: map.data.tilesize,
             height: map.data.tilesize,
             image: map.data.image,

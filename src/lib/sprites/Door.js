@@ -205,7 +205,7 @@ export default class Door extends Sprite {
         }, "fx" );
 
         // Center
-        this.map.addFX( new FX( Utils.merge( data, {
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
             spawn: {
                 x: this.position.x + ( this.width / 2 ) - ( data.width / 2 ),
                 y: this.position.y + this.height - (data.height / 2 ),
@@ -214,7 +214,7 @@ export default class Door extends Sprite {
         }), this.map ) );
 
         // Left
-        this.map.addFX( new FX( Utils.merge( data, {
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
             spawn: {
                 x: this.position.x - ( data.width / 2 ),
                 y: this.position.y + this.height - (data.height / 2 ),
@@ -224,7 +224,7 @@ export default class Door extends Sprite {
         }), this.map ) );
 
         // Right
-        this.map.addFX( new FX( Utils.merge( data, {
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
             spawn: {
                 x: this.position.x + this.width - ( data.width / 2 ),
                 y: this.position.y + this.height - (data.height / 2 ),
@@ -236,7 +236,7 @@ export default class Door extends Sprite {
         // Add more FX if the door is wider than a tile
         if ( this.width > this.map.data.tilesize ) {
             // Left center
-            this.map.addFX( new FX( Utils.merge( data, {
+            this.map.addObject( "fx", new FX( Utils.merge( data, {
                 spawn: {
                     x: this.position.x + ( this.width / 4 ) - ( data.width / 2 ),
                     y: this.position.y + this.height - (data.height / 2 ),
@@ -246,7 +246,7 @@ export default class Door extends Sprite {
             }), this.map ) );
 
             // Right center
-            this.map.addFX( new FX( Utils.merge( data, {
+            this.map.addObject( "fx", new FX( Utils.merge( data, {
                 spawn: {
                     x: this.position.x + this.width - ( this.width / 4 ) - ( data.width / 2 ),
                     y: this.position.y + this.height - (data.height / 2 ),
