@@ -69,6 +69,12 @@ module.exports = {
         power: 1,
         health: 1
     },
+    drops: undefined || [
+        {
+            id: "",
+            chance: 0,
+        },
+    ],
     verbs: {
         face: {
             down: {},

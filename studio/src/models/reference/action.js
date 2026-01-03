@@ -15,8 +15,10 @@ module.exports = {
             text: [],
         },
     },
-    bonus: undefined || {
-        items: undefined || [],
-        chance: undefined || 50
-    }
+    drops: undefined || [
+        {
+            id: "",
+            chance: 0,
+        },
+    ],
 };

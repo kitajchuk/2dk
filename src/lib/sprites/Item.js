@@ -25,6 +25,7 @@ export default class Item extends Sprite {
         };
         super( data, map );
         this.bounce = 6;
+        this.killCounter = 60 * 6;
     }
 
 
@@ -32,12 +33,29 @@ export default class Item extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
+        if ( this.killCounter > 0 ) {
+            this.killCounter--;
+
+            if ( this.killCounter === 0 ) {
+                this.map.killObject( "items", this );
+            }
+        }
+
         if ( this.bounce > 0 && this.position.z === 0 ) {
             this.physics.vz = -this.bounce;
             this.bounce--;
         }
 
         this.position = this.getNextPoi();
+    }
+
+
+    applyOpacity () {
+        if ( this.killCounter <= 60 * 2 ) {
+            if ( this.killCounter % 5 === 0 ) {
+                this.gamebox.mapLayer.context.globalAlpha = 0.25;
+            }
+        }
     }
 
 /*******************************************************************************

@@ -17,7 +17,7 @@ const Utils = {
 
 
     def ( el ) {
-        return el !== undefined;
+        return el !== undefined && el !== null;
     },
 
 

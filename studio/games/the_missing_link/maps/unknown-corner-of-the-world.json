@@ -66,13 +66,20 @@
                 {
                     "verb": "attack",
                     "fx": "leaves",
-                    "bonus": {
-                        "items": [
-                            "heart",
-                            "green-rupee"
-                        ],
-                        "chance": 20
-                    }
+                    "drops": [
+                        {
+                            "id": "heart",
+                            "chance": 20
+                        },
+                        {
+                            "id": "green-rupee",
+                            "chance": 20
+                        },
+                        {
+                            "id": "blue-rupee",
+                            "chance": 10
+                        }
+                    ]
                 }
             ]
         },
@@ -94,13 +101,20 @@
             "actions": [
                 {
                     "verb": "attack",
-                    "bonus": {
-                        "items": [
-                            "heart",
-                            "green-rupee"
-                        ],
-                        "chance": 10
-                    }
+                    "drops": [
+                        {
+                            "id": "heart",
+                            "chance": 10
+                        },
+                        {
+                            "id": "green-rupee",
+                            "chance": 10
+                        },
+                        {
+                            "id": "blue-rupee",
+                            "chance": 5
+                        }
+                    ]
                 }
             ]
         },
@@ -307,13 +321,6 @@
                         "key": "octorok-killed",
                         "value": 1
                     }
-                },
-                "bonus": {
-                    "items": [
-                        "heart",
-                        "green-rupee"
-                    ],
-                    "chance": 5
                 }
             }
         },
@@ -334,13 +341,6 @@
                         "key": "octorok-killed",
                         "value": 1
                     }
-                },
-                "bonus": {
-                    "items": [
-                        "heart",
-                        "green-rupee"
-                    ],
-                    "chance": 5
                 }
             }
         },
@@ -361,13 +361,6 @@
                         "key": "octorok-killed",
                         "value": 1
                     }
-                },
-                "bonus": {
-                    "items": [
-                        "heart",
-                        "green-rupee"
-                    ],
-                    "chance": 5
                 }
             }
         }

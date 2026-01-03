@@ -52,13 +52,16 @@
                 {
                     "verb": "attack",
                     "fx": "smoke",
-                    "bonus": {
-                        "items": [
-                            "heart",
-                            "green-rupee"
-                        ],
-                        "chance": 20
-                    }
+                    "drops": [
+                        {
+                            "id": "heart",
+                            "chance": 15
+                        },
+                        {
+                            "id": "green-rupee",
+                            "chance": 15
+                        }
+                    ]
                 }
             ]
         },

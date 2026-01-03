@@ -286,16 +286,21 @@ class GameBox {
     }
 
 
-    spawnItem ( item, position ) {
-        const data = this.player.getMergedData({
-            id: item,
-        }, "items" );
-        const spawn = {
-            x: position.x + ( this.map.data.tilesize / 2 ) - ( data.width / 2 ),
-            y: position.y + ( this.map.data.tilesize / 2 ) - ( data.height / 2 ),
-        };
+    triggerDrop ( drops, position ) {
+        const drop = drops[ Utils.random( 0, drops.length - 1 ) ];
+        const chance = Utils.random( 0, 100 );
 
-        this.map.addObject( "items", new Item( spawn, data, this.map ) );
+        if ( !Utils.def( drop.chance ) || chance <= drop.chance ) {
+            const data = this.player.getMergedData({
+                id: drop.id,
+            }, "items" );
+            const spawn = {
+                x: position.x + ( this.map.data.tilesize / 2 ) - ( data.width / 2 ),
+                y: position.y + ( this.map.data.tilesize / 2 ) - ( data.height / 2 ),
+            };
+    
+            this.map.addObject( "items", new Item( spawn, data, this.map ) );
+        }
     }
 
 

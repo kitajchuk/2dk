@@ -54,7 +54,17 @@
                     "verb": "push"
                 },
                 {
-                    "verb": "attack"
+                    "verb": "attack",
+                    "drops": [
+                        {
+                            "id": "heart",
+                            "chance": 15
+                        },
+                        {
+                            "id": "green-rupee",
+                            "chance": 15
+                        }
+                    ]
                 }
             ]
         }

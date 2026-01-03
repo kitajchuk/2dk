@@ -82,13 +82,8 @@ class ActiveTiles {
             height: this.map.data.tilesize,
         };
 
-        if ( action.bonus ) {
-            const item = action.bonus.items[ Utils.random( 0, action.bonus.items.length - 1 ) ];
-            const chance = Utils.random( 0, 100 );
-
-            if ( !action.bonus.chance || chance <= action.bonus.chance ) {
-                this.gamebox.spawnItem( item, obj.position );
-            }
+        if ( action.drops ) {
+            this.gamebox.triggerDrop( action.drops, obj.position );
         }
         
         this.gamebox.smokeObject( obj, action.fx );

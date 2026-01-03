@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v798";
+const CACHE_NAME = "v799";
 const CACHE_URLS = [
     "",
     "index.html",
@@ -17,6 +17,7 @@ const CACHE_URLS = [
     "assets/tiles/tiles.png",
     "assets/sprites/fx.png",
     "assets/sprites/hero_la.png",
+    "assets/sprites/items.png",
     "assets/sprites/npcs.png",
     "assets/sounds/bgm-cave.mp3",
     "assets/sounds/bgm-house.mp3",
@@ -31,9 +32,11 @@ const CACHE_URLS = [
     "assets/sounds/sfx-dropping.mp3",
     "assets/sounds/sfx-jump.mp3",
     "assets/sounds/sfx-pick-up.mp3",
+    "assets/sounds/sfx-rupee.mp3",
     "assets/sounds/sfx-smash.mp3",
     "assets/sounds/sfx-sword.mp3",
     "assets/sounds/sfx-throw.mp3",
+    "assets/sounds/sxf-heart.mp3",
     "maps/cell-auto.json",
 ];
 

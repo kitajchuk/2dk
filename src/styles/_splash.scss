@@ -107,6 +107,7 @@
         color: var( --black );
         font-size: 14px;
         display: none;
+        pointer-events: auto;
 
         &.has-update {
             display: block;

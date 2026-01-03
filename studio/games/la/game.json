@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 817,
+    "save": 818,
     "release": 1,
     "plugin": "topview",
     "currency": "rupees",
@@ -29,7 +29,11 @@
         "chest": "assets/sounds/sfx-chest-unlock.mp3",
         "attack": "assets/sounds/sfx-sword.mp3",
         "bounce": "assets/sounds/sfx-bounce.mp3",
-        "parkour": "assets/sounds/sfx-dropping.mp3"
+        "parkour": "assets/sounds/sfx-dropping.mp3",
+        "itemGet": "assets/sounds/sfx-item-get.mp3",
+        "moveObject": "assets/sounds/sfx-move-object.mp3",
+        "rupee": "assets/sounds/sfx-rupee.mp3",
+        "heart": "assets/sounds/sxf-heart.mp3"
     },
     "hero": {
         "sprite": 0,
@@ -39,7 +43,7 @@
             "weapon": true,
             "shield": true
         },
-        "currency": "rupees",
+        "currency": 0,
         "companion": {
             "id": "dog",
             "type": "walk"
@@ -488,7 +492,96 @@
             }
         }
     ],
-    "items": [],
+    "items": [
+        {
+            "id": "weapon",
+            "name": "Sword",
+            "width": 32,
+            "height": 64,
+            "image": "assets/sprites/items.png",
+            "offsetX": 272,
+            "offsetY": 0
+        },
+        {
+            "id": "shield",
+            "name": "Shield",
+            "width": 32,
+            "height": 40,
+            "image": "assets/sprites/items.png",
+            "offsetX": 208,
+            "offsetY": 12
+        },
+        {
+            "id": "power-bracelet",
+            "name": "Power Bracelet",
+            "width": 32,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 16,
+            "offsetY": 4,
+            "stat": {
+                "key": "strength",
+                "value": 1
+            }
+        },
+        {
+            "id": "rocs-feather",
+            "name": "Roc's Feather",
+            "width": 28,
+            "height": 64,
+            "image": "assets/sprites/items.png",
+            "offsetX": 82,
+            "offsetY": 0,
+            "verb": "jump"
+        },
+        {
+            "id": "green-rupee",
+            "name": "Green Rupee",
+            "width": 28,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 146,
+            "offsetY": 68,
+            "currency": 1,
+            "sound": "rupee"
+        },
+        {
+            "id": "blue-rupee",
+            "name": "Blue Rupee",
+            "width": 28,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 18,
+            "offsetY": 68,
+            "currency": 5,
+            "sound": "rupee"
+        },
+        {
+            "id": "red-rupee",
+            "name": "Red Rupee",
+            "width": 28,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 82,
+            "offsetY": 68,
+            "currency": 20,
+            "sound": "rupee"
+        },
+        {
+            "id": "heart",
+            "name": "Heart",
+            "width": 28,
+            "height": 28,
+            "image": "assets/sprites/items.png",
+            "offsetX": 274,
+            "offsetY": 82,
+            "stat": {
+                "key": "health",
+                "value": 1
+            },
+            "sound": "heart"
+        }
+    ],
     "npcs": [
         {
             "id": "octorok",
@@ -509,6 +602,20 @@
                 "power": 1,
                 "health": 1
             },
+            "drops": [
+                {
+                    "id": "heart",
+                    "chance": 10
+                },
+                {
+                    "id": "green-rupee",
+                    "chance": 10
+                },
+                {
+                    "id": "blue-rupee",
+                    "chance": 5
+                }
+            ],
             "verbs": {
                 "face": {
                     "left": {
@@ -911,6 +1018,7 @@
         "assets/tiles/tiles.png",
         "assets/sprites/fx.png",
         "assets/sprites/hero_la.png",
+        "assets/sprites/items.png",
         "assets/sprites/npcs.png",
         "assets/sounds/bgm-cave.mp3",
         "assets/sounds/bgm-house.mp3",
@@ -923,8 +1031,12 @@
         "assets/sounds/sfx-bounce.mp3",
         "assets/sounds/sfx-chest-unlock.mp3",
         "assets/sounds/sfx-dropping.mp3",
+        "assets/sounds/sfx-heart.mp3",
+        "assets/sounds/sfx-item-get.mp3",
         "assets/sounds/sfx-jump.mp3",
+        "assets/sounds/sfx-move-object.mp3",
         "assets/sounds/sfx-pick-up.mp3",
+        "assets/sounds/sfx-rupee.mp3",
         "assets/sounds/sfx-smash.mp3",
         "assets/sounds/sfx-sword.mp3",
         "assets/sounds/sfx-throw.mp3",

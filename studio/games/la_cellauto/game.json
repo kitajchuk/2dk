@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 798,
+    "save": 799,
     "release": 1,
     "plugin": "topview",
     "currency": "rupees",
@@ -39,11 +39,7 @@
             "weapon": true,
             "shield": true
         },
-        "currency": 0,
-        "companion": {
-            "id": "dog",
-            "type": "walk"
-        }
+        "currency": 0
     },
     "heroes": [
         {
@@ -490,244 +486,7 @@
     ],
     "items": [],
     "objects": [],
-    "npcs": [
-        {
-            "id": "ghost",
-            "name": "Ghost",
-            "width": 68,
-            "height": 68,
-            "image": "assets/sprites/npcs.png",
-            "opacity": 0.75,
-            "dir": "left",
-            "layer": "foreground",
-            "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 0,
-                "height": 0
-            },
-            "verbs": {
-                "face": {
-                    "dur": 1000,
-                    "left": {
-                        "offsetX": 2,
-                        "offsetY": 206,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": 138,
-                        "offsetY": 206,
-                        "stepsX": 2
-                    },
-                    "up-left": {
-                        "offsetX": 274,
-                        "offsetY": 206,
-                        "stepsX": 2
-                    },
-                    "up-right": {
-                        "offsetX": 410,
-                        "offsetY": 206,
-                        "stepsX": 2
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "face",
-                    "dir": "left"
-                }
-            ]
-        },
-        {
-            "id": "fisherman",
-            "name": "Fisherman",
-            "width": 128,
-            "height": 64,
-            "image": "assets/sprites/npcs.png",
-            "hitbox": {
-                "x": 64,
-                "y": 0,
-                "width": 64,
-                "height": 64
-            },
-            "verbs": {
-                "face": {
-                    "dur": 500,
-                    "down": {
-                        "offsetX": 0,
-                        "offsetY": 140,
-                        "stepsX": 2
-                    }
-                },
-                "talk": {
-                    "down": {
-                        "offsetX": 256,
-                        "offsetY": 140
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "face",
-                    "dir": "down",
-                    "action": {
-                        "verb": "talk",
-                        "dir": "up"
-                    }
-                }
-            ]
-        },
-        {
-            "id": "cucco",
-            "name": "Cucco",
-            "width": 68,
-            "height": 68,
-            "image": "assets/sprites/npcs.png",
-            "bounce": true,
-            "dir": "left",
-            "maxv": 2,
-            "controlmaxv": 2,
-            "hitbox": {
-                "x": 2,
-                "y": 2,
-                "width": 64,
-                "height": 64
-            },
-            "verbs": {
-                "face": {
-                    "left": {
-                        "offsetX": 0,
-                        "offsetY": 70
-                    },
-                    "right": {
-                        "offsetX": 136,
-                        "offsetY": 70
-                    }
-                },
-                "walk": {
-                    "dur": 250,
-                    "left": {
-                        "offsetX": 2,
-                        "offsetY": 70,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": 138,
-                        "offsetY": 70,
-                        "stepsX": 2
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "face",
-                    "dir": "left"
-                }
-            ]
-        },
-        {
-            "id": "dog",
-            "name": "Dog",
-            "width": 68,
-            "height": 68,
-            "image": "assets/sprites/npcs.png",
-            "bounce": true,
-            "dir": "left",
-            "maxv": 2,
-            "controlmaxv": 2,
-            "hitbox": {
-                "x": 2,
-                "y": 2,
-                "width": 64,
-                "height": 64
-            },
-            "verbs": {
-                "face": {
-                    "dur": 500,
-                    "left": {
-                        "offsetX": 2,
-                        "offsetY": 2,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": 138,
-                        "offsetY": 2,
-                        "stepsX": 2
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "face",
-                    "dir": "left"
-                }
-            ]
-        },
-        {
-            "id": "sign",
-            "name": "Sign",
-            "width": 64,
-            "height": 64,
-            "image": "assets/tiles/tiles.png",
-            "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 64,
-                "height": 64
-            },
-            "verbs": {
-                "face": {
-                    "down": {
-                        "offsetX": 0,
-                        "offsetY": 384
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "face",
-                    "dir": "down",
-                    "action": {
-                        "verb": "read",
-                        "dir": "up"
-                    }
-                }
-            ]
-        },
-        {
-            "id": "bird-statue",
-            "name": "Bird Statue",
-            "width": 64,
-            "height": 128,
-            "image": "assets/tiles/tiles.png",
-            "hitbox": {
-                "x": 0,
-                "y": 72,
-                "width": 64,
-                "height": 56
-            },
-            "verbs": {
-                "face": {
-                    "dur": 1000,
-                    "down": {
-                        "offsetX": 0,
-                        "offsetY": 2304,
-                        "stepsX": 4
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "face",
-                    "dir": "down",
-                    "action": {
-                        "verb": "read",
-                        "dir": "up"
-                    }
-                }
-            ]
-        }
-    ],
+    "npcs": [],
     "fx": [
         {
             "id": "smoke",
@@ -771,6 +530,7 @@
         "assets/tiles/tiles.png",
         "assets/sprites/fx.png",
         "assets/sprites/hero_la.png",
+        "assets/sprites/items.png",
         "assets/sprites/npcs.png",
         "assets/sounds/bgm-cave.mp3",
         "assets/sounds/bgm-house.mp3",
@@ -785,9 +545,11 @@
         "assets/sounds/sfx-dropping.mp3",
         "assets/sounds/sfx-jump.mp3",
         "assets/sounds/sfx-pick-up.mp3",
+        "assets/sounds/sfx-rupee.mp3",
         "assets/sounds/sfx-smash.mp3",
         "assets/sounds/sfx-sword.mp3",
         "assets/sounds/sfx-throw.mp3",
+        "assets/sounds/sxf-heart.mp3",
         "maps/cell-auto.json"
     ]
 }
