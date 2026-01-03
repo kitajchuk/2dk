@@ -2,7 +2,7 @@ import Sprite from "./Sprite";
 
 
 
-export default class Item extends Sprite {
+export default class ItemDrop extends Sprite {
     constructor ( spawn, item, map ) {
         const data = {
             layer: "background",

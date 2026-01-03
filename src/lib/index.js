@@ -4,12 +4,16 @@ import NPC from "./sprites/NPC";
 import Hero from "./sprites/Hero";
 import Sprite from "./sprites/Sprite";
 import Companion from "./sprites/Companion";
+import ItemDrop from "./sprites/ItemDrop";
+import Door from "./sprites/Door";
 import Config from "./Config";
 import Controller from "./Controller";
 import Dialogue from "./Dialogue";
 import GameAudio from "./GameAudio";
-import GameBox, { Camera } from "./GameBox";
+import GameBox, { Camera, RenderQueue } from "./GameBox";
 import GamePad from "./GamePad";
+import GameQuest from "./GameQuest";
+import GameWorker from "./GameWorker";
 import Loader from "./Loader";
 import Map from "./maps/Map";
 import MapLayer from "./maps/MapLayer";
@@ -31,7 +35,9 @@ const lib = {
     FX,
     NPC,
     Hero,
+    Door,
     Sprite,
+    ItemDrop,
     Companion,
 
     // ...rest
@@ -39,8 +45,10 @@ const lib = {
     Controller,
     Dialogue,
     GameAudio,
-    GameBox, Camera,
+    GameBox, Camera, RenderQueue,
     GamePad,
+    GameQuest,
+    GameWorker,
     Loader,
     Map, MapLayer, ActiveTiles,
     CellAutoMap,

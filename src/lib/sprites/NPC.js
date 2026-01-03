@@ -28,13 +28,11 @@ export default class NPC extends Sprite {
     }
 
 
-    destroy () {}
-
-
     initialize () {
-        const equip = this.data.payload?.quest?.setEquip;
+        const id = this.data.payload?.quest?.setItem;
+        const item = this.gamebox.hero.items.find( ( item ) => item.id === id );
         // TODO: Make this more robust for more than just two states...
-        const index = equip && this.gamebox.hero.isEquipped( equip ) ? 1 : 0;
+        const index = item && this.gamebox.hero.hasItem( item.id ) ? 1 : 0;
         this.setState( index );
     }
 
@@ -53,21 +51,37 @@ export default class NPC extends Sprite {
 
     payload () {
         if ( this.data.payload.dialogue && !this.dialogue ) {
+            // For basic text dialogue, we need to check for quests immediately...
+            if ( this.data.payload.dialogue.type === Config.dialogue.types.TEXT ) {
+                this.payloadQuest();
+            }
+
             this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
             this.dialogue.then( () => {
                 this.resetDialogue();
                 this.handleAI();
 
-                if ( this.data.payload.quest?.setFlag ) {
-                    this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
-                }
+                // TODO: Reset the hero item get sequence...
 
-                if ( this.data.payload.quest?.setEquip ) {
-                    this.handleQuestEquipUpdate( this.data.payload.quest.setEquip );
+                // For prompt dialogue, we need to check for quests on resolution (e.g. pressed "a")
+                if ( this.data.payload.dialogue.type === Config.dialogue.types.PROMPT ) {
+                    this.payloadQuest();
                 }
+                
             }).catch( () => {
                 this.resetDialogue();
             });
+        }
+    }
+
+
+    payloadQuest () {
+        if ( this.data.payload.quest?.setFlag ) {
+            this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
+        }
+
+        if ( this.data.payload.quest?.setItem ) {
+            this.handleQuestItemUpdate( this.data.payload.quest.setItem );
         }
     }
 
@@ -215,7 +229,7 @@ export default class NPC extends Sprite {
             this.handleQuestFlagUpdate();
 
             if ( this.data.drops ) {
-                this.gamebox.triggerDrop( this.data.drops, this.position );
+                this.gamebox.itemDrop( this.data.drops, this.position );
             }
         }
     }

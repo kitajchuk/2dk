@@ -13,4 +13,5 @@ module.exports = {
     },
     currency: undefined || 0,
     verb: undefined || "",
+    equip: undefined || "",
 };

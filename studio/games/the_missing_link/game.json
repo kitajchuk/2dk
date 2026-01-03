@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 275,
+    "save": 276,
     "release": 1,
     "plugin": "topview",
     "currency": "rupees",
@@ -47,8 +47,8 @@
     },
     "heroes": [
         {
-            "id": "la",
-            "name": "BK",
+            "id": "kiln",
+            "name": "Kiln",
             "width": 92,
             "height": 92,
             "image": "assets/sprites/hero_la.png",
@@ -292,6 +292,12 @@
                 }
             },
             "verbs": {
+                "item": {
+                    "down": {
+                        "offsetX": 276,
+                        "offsetY": 460
+                    }
+                },
                 "face": {
                     "down": {
                         "offsetX": 0,
@@ -490,13 +496,14 @@
     ],
     "items": [
         {
-            "id": "weapon",
+            "id": "sword",
             "name": "Sword",
             "width": 32,
             "height": 64,
             "image": "assets/sprites/items.png",
             "offsetX": 272,
-            "offsetY": 0
+            "offsetY": 0,
+            "equip": "weapon"
         },
         {
             "id": "shield",
@@ -505,7 +512,8 @@
             "height": 40,
             "image": "assets/sprites/items.png",
             "offsetX": 208,
-            "offsetY": 12
+            "offsetY": 12,
+            "equip": "shield"
         },
         {
             "id": "power-bracelet",

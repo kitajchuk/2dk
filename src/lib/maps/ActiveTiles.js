@@ -83,7 +83,7 @@ class ActiveTiles {
         };
 
         if ( action.drops ) {
-            this.gamebox.triggerDrop( action.drops, obj.position );
+            this.gamebox.itemDrop( action.drops, obj.position );
         }
         
         this.gamebox.smokeObject( obj, action.fx );

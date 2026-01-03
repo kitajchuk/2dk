@@ -25,9 +25,6 @@ export default class Door extends Sprite {
     }
 
 
-    destroy () {}
-
-
     initialize () {
         if ( this.data.action ) {
             const completed = this.isQuestFlagComplete();

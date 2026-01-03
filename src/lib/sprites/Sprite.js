@@ -569,10 +569,10 @@ export default class Sprite {
     // This is more specifically an NPC or Door payload check...
     // This should be moved but we'd need to refactor NPC subclass patterns first...
     canDoPayload () {
-        if ( this.data.payload.quest?.checkEquip ) {
-            const { key, dialogue } = this.data.payload.quest.checkEquip;
+        if ( this.data.payload.quest?.checkItem ) {
+            const { id, dialogue } = this.data.payload.quest.checkItem;
 
-            if ( !this.gamebox.hero.isEquipped( key ) ) {
+            if ( !this.gamebox.hero.hasItem( id ) ) {
                 // A simple message to the player...
                 if ( dialogue ) {
                     this.gamebox.dialogue.auto( dialogue );
@@ -617,7 +617,7 @@ export default class Sprite {
 
 
     // Can be handled in the subclass...
-    handleQuestEquipCheck () {}
+    handleQuestItemCheck () {}
 
 
     handleQuestFlagUpdate ( setFlag ) {
@@ -636,7 +636,7 @@ export default class Sprite {
     }
 
 
-    handleQuestEquipUpdate ( setEquip ) {
-        this.gamebox.hero.equip( setEquip );
+    handleQuestItemUpdate ( itemId ) {
+        this.gamebox.hero.giveItem( itemId );
     }
 }

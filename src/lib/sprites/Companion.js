@@ -24,9 +24,6 @@ export default class Companion extends Sprite {
     }
 
 
-    destroy () {}
-
-
 /*******************************************************************************
 * Rendering
 * Order is: blit, update, render

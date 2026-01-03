@@ -17,7 +17,7 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 126,
+    "save": 127,
     "release": 1,
     "plugin": "topview",
     "currency": "cash",
@@ -48,7 +48,8 @@
             },
             "stats": {
                 "power": 1,
-                "health": 3
+                "health": 3,
+                "strength": 0
             },
             "shadow": {
                 "offsetX": 128,

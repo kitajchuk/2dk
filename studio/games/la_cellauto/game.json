@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 799,
+    "save": 800,
     "release": 1,
     "plugin": "topview",
     "currency": "rupees",
@@ -29,7 +29,11 @@
         "chest": "assets/sounds/sfx-chest-unlock.mp3",
         "attack": "assets/sounds/sfx-sword.mp3",
         "bounce": "assets/sounds/sfx-bounce.mp3",
-        "parkour": "assets/sounds/sfx-dropping.mp3"
+        "parkour": "assets/sounds/sfx-dropping.mp3",
+        "itemGet": "assets/sounds/sfx-item-get.mp3",
+        "moveObject": "assets/sounds/sfx-move-object.mp3",
+        "rupee": "assets/sounds/sfx-rupee.mp3",
+        "heart": "assets/sounds/sfx-heart.mp3"
     },
     "hero": {
         "sprite": 0,
@@ -484,7 +488,98 @@
             }
         }
     ],
-    "items": [],
+    "items": [
+        {
+            "id": "sword",
+            "name": "Sword",
+            "width": 32,
+            "height": 64,
+            "image": "assets/sprites/items.png",
+            "offsetX": 272,
+            "offsetY": 0,
+            "equip": "weapon"
+        },
+        {
+            "id": "shield",
+            "name": "Shield",
+            "width": 32,
+            "height": 40,
+            "image": "assets/sprites/items.png",
+            "offsetX": 208,
+            "offsetY": 12,
+            "equip": "shield"
+        },
+        {
+            "id": "power-bracelet",
+            "name": "Power Bracelet",
+            "width": 32,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 16,
+            "offsetY": 4,
+            "stat": {
+                "key": "strength",
+                "value": 1
+            }
+        },
+        {
+            "id": "rocs-feather",
+            "name": "Roc's Feather",
+            "width": 28,
+            "height": 64,
+            "image": "assets/sprites/items.png",
+            "offsetX": 82,
+            "offsetY": 0,
+            "verb": "jump"
+        },
+        {
+            "id": "green-rupee",
+            "name": "Green Rupee",
+            "width": 28,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 146,
+            "offsetY": 68,
+            "currency": 1,
+            "sound": "rupee"
+        },
+        {
+            "id": "blue-rupee",
+            "name": "Blue Rupee",
+            "width": 28,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 18,
+            "offsetY": 68,
+            "currency": 5,
+            "sound": "rupee"
+        },
+        {
+            "id": "red-rupee",
+            "name": "Red Rupee",
+            "width": 28,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 82,
+            "offsetY": 68,
+            "currency": 20,
+            "sound": "rupee"
+        },
+        {
+            "id": "heart",
+            "name": "Heart",
+            "width": 28,
+            "height": 28,
+            "image": "assets/sprites/items.png",
+            "offsetX": 274,
+            "offsetY": 82,
+            "stat": {
+                "key": "health",
+                "value": 1
+            },
+            "sound": "heart"
+        }
+    ],
     "objects": [],
     "npcs": [],
     "fx": [

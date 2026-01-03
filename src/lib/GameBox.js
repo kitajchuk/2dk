@@ -9,86 +9,11 @@ import Companion from "./sprites/Companion";
 import FX from "./sprites/FX";
 import CellAutoMap from "./maps/CellAutoMap";
 import GameQuest from "./GameQuest";
-import Item from "./sprites/Item";
+import ItemDrop from "./sprites/ItemDrop";
 
 
 
-const stopVerbs = [
-    Config.verbs.GRAB,
-    Config.verbs.LIFT,
-];
-const actionVerbs = [
-    Config.verbs.LIFT,
-    Config.verbs.PULL,
-    Config.verbs.PUSH,
-    Config.verbs.FALL,
-    Config.verbs.ATTACK,
-];
-// @see notes in ./Config.js as these are related to that line of thought...
-const footTiles = [
-    Config.tiles.STAIRS,
-    Config.tiles.WATER,
-    Config.tiles.GRASS,
-    Config.tiles.HOLES,
-];
-const cameraTiles = [
-    Config.tiles.STAIRS,
-    Config.tiles.GRASS,
-];
-
-
-
-class Camera {
-    constructor ( x, y, width, height, resolution ) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.resolution = resolution;
-    }
-}
-
-
-
-class RenderQueue {
-    constructor () {
-        this.queue = [];
-    }
-
-
-    blit () {
-        this.queue = [];
-    }
-
-
-    // Supports anything with a "render" method and a "layer" property
-    add ( sprite ) {
-        this.queue.push( sprite );
-    }
-
-
-    render () {
-        this.queue.filter( ( sprite ) => {
-            return sprite.layer === "background";
-        }).forEach( ( sprite ) => {
-            sprite.render();
-        });
-        this.queue.filter( ( sprite ) => {
-            return sprite.layer === "heroground";
-        }).forEach( ( sprite ) => {
-            sprite.render();
-        });
-        this.queue.filter( ( sprite ) => {
-            return sprite.layer === "foreground";
-        }).forEach( ( sprite ) => {
-            sprite.render();
-        });
-    }
-}
-
-
-
-class GameBox {
+export default class GameBox {
     constructor ( player ) {
         this.player = player;
         this.step = 1;
@@ -286,7 +211,7 @@ class GameBox {
     }
 
 
-    triggerDrop ( drops, position ) {
+    itemDrop ( drops, position ) {
         const drop = drops[ Utils.random( 0, drops.length - 1 ) ];
         const chance = Utils.random( 0, 100 );
 
@@ -299,7 +224,7 @@ class GameBox {
                 y: position.y + ( this.map.data.tilesize / 2 ) - ( data.height / 2 ),
             };
     
-            this.map.addObject( "items", new Item( spawn, data, this.map ) );
+            this.map.addObject( "items", new ItemDrop( spawn, data, this.map ) );
         }
     }
 
@@ -656,6 +581,7 @@ class GameBox {
 * Map Switching
 *******************************************************************************/
     initMap () {
+        this.map.initialize();
         this.update( this.hero.position );
         this.hero.applyOffset();
         this.player.gameaudio.addSound({
@@ -763,9 +689,75 @@ class GameBox {
 
 
 
-export default GameBox;
+const stopVerbs = [
+    Config.verbs.GRAB,
+    Config.verbs.LIFT,
+];
+const actionVerbs = [
+    Config.verbs.LIFT,
+    Config.verbs.PULL,
+    Config.verbs.PUSH,
+    Config.verbs.FALL,
+    Config.verbs.ATTACK,
+];
+// @see notes in ./Config.js as these are related to that line of thought...
+const footTiles = [
+    Config.tiles.STAIRS,
+    Config.tiles.WATER,
+    Config.tiles.GRASS,
+    Config.tiles.HOLES,
+];
+const cameraTiles = [
+    Config.tiles.STAIRS,
+    Config.tiles.GRASS,
+];
 
-export {
-    Camera,
-    GameBox,
+
+
+export class Camera {
+    constructor ( x, y, width, height, resolution ) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.resolution = resolution;
+    }
+}
+
+
+
+export class RenderQueue {
+    constructor () {
+        this.queue = [];
+    }
+
+
+    blit () {
+        this.queue = [];
+    }
+
+
+    // Supports anything with a "render" method and a "layer" property
+    add ( sprite ) {
+        this.queue.push( sprite );
+    }
+
+
+    render () {
+        this.queue.filter( ( sprite ) => {
+            return sprite.layer === "background";
+        }).forEach( ( sprite ) => {
+            sprite.render();
+        });
+        this.queue.filter( ( sprite ) => {
+            return sprite.layer === "heroground";
+        }).forEach( ( sprite ) => {
+            sprite.render();
+        });
+        this.queue.filter( ( sprite ) => {
+            return sprite.layer === "foreground";
+        }).forEach( ( sprite ) => {
+            sprite.render();
+        });
+    }
 }

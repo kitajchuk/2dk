@@ -12,6 +12,7 @@ export default class Hero extends Sprite {
         super( data, map );
         this.layer = "heroground";
         this.currency = this.data.currency || 0;
+        this.items = [];
         // Hero controls are defined by the Player
         this.controls = this.player.controls;
     }
@@ -32,6 +33,55 @@ export default class Hero extends Sprite {
         } else {
             this.physics.maxv = this.physics.maxvstatic;
             this.physics.controlmaxv = this.physics.controlmaxvstatic;
+        }
+    }
+
+
+    hasItem ( id ) {
+        return this.items.some( ( item ) => item.id === id );
+    }
+
+
+    giveItem ( id ) {
+        if ( this.hasItem( id ) ) {
+            return;
+        }
+
+        const item = this.player.getMergedData({
+            id,
+        }, "items" );
+
+        this.items.push( item );
+
+        if ( this.data.verbs.item?.down ) {
+            // TODO: Trigger item get sequence...
+        }
+
+        if ( item.equip ) {
+            this.equip( item.equip );
+        }
+
+        if ( item.verb ) {
+            // TODO: Handle verb items (e.g. jump)...
+        }
+    }
+
+
+    takeItem ( id ) {
+        const item = this.items.find( ( item ) => item.id === id );
+    
+        if ( !item ) {
+            return;
+        }
+
+        this.items.splice( this.items.indexOf( item ), 1 );
+
+        if ( item.equip ) {
+            this.unequip( item.equip );
+        }
+
+        if ( item.verb ) {
+            // TODO: Handle verb items (e.g. jump)...
         }
     }
 

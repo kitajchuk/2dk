@@ -173,6 +173,7 @@ class Player extends Controller {
         // TODO: This is a stub temp menu so we can see the hero stats...
         if ( this.gamebox.hero ) {
             this.menu.innerHTML = `
+                <div>Hero: ${this.gamebox.hero.data.name}</div>
                 <div>Health: ${this.gamebox.hero.stats.health}</div>
                 <div>Power: ${this.gamebox.hero.stats.power}</div>
                 <div>Strength: ${this.gamebox.hero.stats.strength}</div>

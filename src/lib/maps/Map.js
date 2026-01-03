@@ -43,8 +43,6 @@ class Map {
         // From live game state
         this.items = [];
         this.sprites = [];
-        
-        this.build();
     }
 
 
@@ -88,8 +86,8 @@ class Map {
     }
 
 
-    build () {
-        // Render layers
+    initialize () {
+        // Texture layers
         Object.keys( this.layers ).forEach( ( id ) => {
             this.addLayer( id );
         });

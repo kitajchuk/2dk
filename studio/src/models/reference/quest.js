@@ -7,12 +7,12 @@ module.exports = {
         key: "",
         value: 1,
     },
-    setEquip: undefined || "",
-    checkEquip: undefined || {
-        key: "",
+    setItem: undefined || "",
+    checkItem: undefined || {
+        id: "",
         dialogue: undefined || {
             type: "",
-            text: [],
-        },
+            text: []
+        }
     },
 };

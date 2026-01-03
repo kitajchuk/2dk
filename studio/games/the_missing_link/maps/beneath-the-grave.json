@@ -77,8 +77,8 @@
                     ]
                 },
                 "quest": {
-                    "checkEquip": {
-                        "key": "shield",
+                    "checkItem": {
+                        "id": "shield",
                         "dialogue": {
                             "type": "text",
                             "text": [
@@ -86,7 +86,7 @@
                             ]
                         }
                     },
-                    "setEquip": "weapon"
+                    "setItem": "sword"
                 }
             }
         },
