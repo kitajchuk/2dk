@@ -399,9 +399,12 @@ class Map {
             height: this.data.tilesize,
         };
 
-        const collides = Utils.collide( tile, this.gamebox.hero.hitbox );
+        const collides = {
+            hero: Utils.collide( tile, this.gamebox.hero.getFullbox() ),
+            companion: this.gamebox.companion ? Utils.collide( tile, this.gamebox.companion.getFullbox() ) : false,
+        };
 
-        if ( !collides ) {
+        if ( !collides.hero && !collides.companion ) {
             return false;
         }
 
@@ -414,13 +417,14 @@ class Map {
         // E.g. hero renders behind one foreground tile and in front of the tile below it
         // even though visually the hero should be behind both tiles.
 
-        const isShiftable = ( lookupY * this.data.tilesize ) < this.gamebox.hero.position.y;
+        const heroPosition = this.gamebox.hero.position.y + this.gamebox.hero.height;
+        const isShiftable = tile.y + tile.height < heroPosition;
 
         if ( isShiftable ) {
             const nextLookupY = lookupY + 1;
 
             if ( this.data.textures[ layer ][ nextLookupY ][ lookupX ] ) {
-                const isNextShiftable = ( nextLookupY * this.data.tilesize ) < this.gamebox.hero.position.y;
+                const isNextShiftable = ( nextLookupY * this.data.tilesize ) + this.data.tilesize < heroPosition;
 
                 return isNextShiftable;
 

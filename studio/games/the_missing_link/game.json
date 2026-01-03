@@ -17,10 +17,10 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 276,
+    "save": 277,
     "release": 1,
     "plugin": "topview",
-    "currency": "rupees",
+    "currency": "Rupees",
     "sounds": {
         "lift": "assets/sounds/sfx-pick-up.mp3",
         "jump": "assets/sounds/sfx-jump.mp3",

@@ -17,10 +17,10 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 127,
+    "save": 128,
     "release": 1,
     "plugin": "topview",
-    "currency": "cash",
+    "currency": "Cash",
     "hero": {
         "sprite": 0,
         "spawn": 0,
