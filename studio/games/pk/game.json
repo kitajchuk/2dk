@@ -214,7 +214,6 @@
             "name": "Grass",
             "width": 32,
             "height": 32,
-            "layer": "heroground",
             "image": "assets/tiles/pk-tiles.png",
             "offsetX": 0,
             "offsetY": 1376,
