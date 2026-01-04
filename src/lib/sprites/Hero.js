@@ -69,7 +69,6 @@ export default class Hero extends Sprite {
 
         if ( this.data.verbs.item?.down ) {
             this.itemGet = new ItemGet( this.position, item, this.map, this );
-            this.map.addObject( "items", this.itemGet );
             this.stillTimer = Infinity;
             this.cycle( "item", "down" );
             this.player.gameaudio.hitSound( "itemGet" );
@@ -159,6 +158,10 @@ export default class Hero extends Sprite {
         if ( this.maskFX ) {
             this.maskFX.blit( elapsed );
         }
+
+        if ( this.itemGet ) {
+            this.itemGet.blit( elapsed );
+        }
     }
 
 
@@ -174,12 +177,20 @@ export default class Hero extends Sprite {
         if ( this.maskFX ) {
             this.maskFX.update();
         }
+
+        if ( this.itemGet ) {
+            this.itemGet.update();
+        }
     }
 
 
     renderAfter () {
         if ( this.maskFX ) {
             this.maskFX.render();
+        }
+
+        if ( this.itemGet ) {
+            this.itemGet.render();
         }
 
         if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) ) {
@@ -562,8 +573,11 @@ export class ItemGet extends Sprite {
 
 
     applyPosition () {
-        this.position.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
-        this.position.y = this.hero.position.y - this.height;
+        this.position = {
+            x: this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 ),
+            y: this.hero.position.y,
+            z: -this.height,
+        }
     }
 }
 

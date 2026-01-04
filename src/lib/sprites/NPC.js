@@ -63,7 +63,6 @@ export default class NPC extends Sprite {
 
                 // Reset the hero item get sequence...
                 if ( this.gamebox.hero.itemGet ) {
-                    this.map.killObject( "items", this.gamebox.hero.itemGet );
                     this.gamebox.hero.itemGet = null;
                     this.gamebox.hero.stillTimer = 0;
                     this.gamebox.hero.face( "down" );
