@@ -130,10 +130,13 @@ export default class NPC extends Sprite {
 
     applyFloatPosition () {
         const poi = this.getNextPoi();
-        const wouldLeaveTextures = this.gamebox.checkTextures( poi, this );
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
+        };
             
-        if ( wouldLeaveTextures ) {
-            this.position.z = -this.map.data.tilesize;
+        if ( collision.map || collision.doors ) {
+            this.position.z = -( this.map.data.tilesize * 0.75 );
             this.handleAI();
             return;
         }
@@ -141,7 +144,7 @@ export default class NPC extends Sprite {
         this.position = {
             x: poi.x,
             y: poi.y,
-            z: -this.map.data.tilesize,
+            z: -( this.map.data.tilesize * 0.75 ),
         };
     }
 

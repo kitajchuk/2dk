@@ -211,11 +211,6 @@ class Map {
             render: this.renderTextures.bind( this, "foreground" ),
             layer: "foreground",
         });
-
-        // Visual event debugging....
-        if ( this.player.query.get( "debug" ) ) {
-            this.renderDebug();
-        }
     }
 
 

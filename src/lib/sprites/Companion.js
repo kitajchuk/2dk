@@ -54,7 +54,7 @@ export default class Companion extends Sprite {
 
 
     blitFloat () {
-        this.position.z = -( this.map.data.tilesize * 2 );
+        this.position.z = -( this.map.data.tilesize );
 
         if ( ( this.hero.position.x + ( this.hero.width / 2 ) ) > ( this.position.x + ( this.width / 2 ) ) ) {
             this.dir = "right";

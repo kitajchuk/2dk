@@ -548,8 +548,8 @@
             "hitbox": {
                 "x": 0,
                 "y": 0,
-                "width": 0,
-                "height": 0
+                "width": 68,
+                "height": 68
             },
             "verbs": {
                 "face": {

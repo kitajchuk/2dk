@@ -85,6 +85,11 @@ class TopView extends GameBox {
 
         // render render queue
         this.renderQueue.render();
+
+        // Visual event debugging....
+        if ( this.player.query.get( "debug" ) ) {
+            this.map.renderDebug();
+        }
     }
 
 
