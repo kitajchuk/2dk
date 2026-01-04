@@ -244,6 +244,11 @@ class TopView extends GameBox {
 
 
     releaseA () {
+        if ( this.hero.itemGet ) {
+            this.dialogue.check( true, false );
+            return;
+        }
+
         if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }

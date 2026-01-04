@@ -12,6 +12,7 @@ export default class Hero extends Sprite {
         super( data, map );
         this.layer = "heroground";
         this.currency = this.data.currency || 0;
+        this.itemGet = null;
         this.items = [];
         // Hero controls are defined by the Player
         this.controls = this.player.controls;
@@ -54,7 +55,11 @@ export default class Hero extends Sprite {
         this.items.push( item );
 
         if ( this.data.verbs.item?.down ) {
-            // TODO: Trigger item get sequence...
+            this.itemGet = new ItemGet( this.position, item, this.map, this );
+            this.map.addObject( "items", this.itemGet );
+            this.stillTimer = Infinity;
+            this.cycle( "item", "down" );
+            this.player.gameaudio.hitSound( "itemGet" );
         }
 
         if ( item.equip ) {
@@ -464,6 +469,44 @@ export default class Hero extends Sprite {
         }
 
         return false;
+    }
+}
+
+
+
+/*******************************************************************************
+* Item Get
+* Used to display the item the hero is getting
+*******************************************************************************/
+export class ItemGet extends Sprite {
+    constructor ( spawn, item, map, hero ) {
+        const data = {
+            layer: "heroground",
+            spawn,
+            hitbox: {
+                x: 0,
+                y: 0,
+                width: item.width,
+                height: item.height,
+            },
+            verbs: {
+                face: {
+                    down: {
+                        offsetX: item.offsetX,
+                        offsetY: item.offsetY,
+                    },
+                },
+            },
+            ...item,
+        };
+        super( data, map );
+        this.hero = hero;
+    }
+
+
+    applyPosition () {
+        this.position.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
+        this.position.y = this.hero.position.y - this.height;
     }
 }
 

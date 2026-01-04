@@ -61,7 +61,13 @@ export default class NPC extends Sprite {
                 this.resetDialogue();
                 this.handleAI();
 
-                // TODO: Reset the hero item get sequence...
+                // Reset the hero item get sequence...
+                if ( this.gamebox.hero.itemGet ) {
+                    this.map.killObject( "items", this.gamebox.hero.itemGet );
+                    this.gamebox.hero.itemGet = null;
+                    this.gamebox.hero.stillTimer = 0;
+                    this.gamebox.hero.face( "down" );
+                }
 
                 // For prompt dialogue, we need to check for quests on resolution (e.g. pressed "a")
                 if ( this.data.payload.dialogue.type === Config.dialogue.types.PROMPT ) {
@@ -385,8 +391,8 @@ export default class NPC extends Sprite {
             this.payload();
         }
 
-        // Handle sound
-        if ( this.state.action.sound ) {
+        // Handle sound (skip if we're doing the item get sequence)
+        if ( this.state.action.sound && !this.gamebox.hero.itemGet ) {
             this.player.gameaudio.hitSound( this.state.action.sound );
         }
 
