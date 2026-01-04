@@ -618,6 +618,11 @@ export default class GameBox {
         // Fade out...
         this.player.fadeOut();
 
+        // Cleanup any extra things
+        if ( this.hero.liftedTile ) {
+            this.hero.liftedTile = null;
+        }
+
         setTimeout( () => {
             // New Map data
             const newMapData = Loader.cash( event.map );

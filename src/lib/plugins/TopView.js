@@ -803,12 +803,14 @@ class TopView extends GameBox {
 
 
     handleHeroEventDoor ( poi, dir, event ) {
+        this.interact.tile = null;
         this.player.stop();
         this.changeMap( event );
     }
 
 
     handleHeroEventBoundary ( poi, dir, event ) {
+        this.interact.tile = null;
         this.player.stop();
         this.changeMap( event );
     }
@@ -819,6 +821,7 @@ class TopView extends GameBox {
             return;
         }
 
+        this.interact.tile = null;
         this.player.stop();
         this.changeCellautoMap( poi, dir, collision );
     }
