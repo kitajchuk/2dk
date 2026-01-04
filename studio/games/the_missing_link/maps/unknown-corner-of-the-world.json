@@ -484,11 +484,66 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "The flying rooster slumbers for eternity",
-                        "..."
+                        "The flying rooster is the symbol of strength."
                     ]
                 }
             }
+        },
+        {
+            "id": "sign",
+            "spawn": {
+                "x": 1984,
+                "y": 384
+            },
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Whatever you do don't go looking around.",
+                        "We're not hiding anything around here..."
+                    ]
+                }
+            }
+        },
+        {
+            "id": "cucco",
+            "spawn": {
+                "x": 2176,
+                "y": 448
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "cucco",
+            "spawn": {
+                "x": 1920,
+                "y": 192
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "cucco",
+            "spawn": {
+                "x": 1664,
+                "y": 448
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "dog",
+            "spawn": {
+                "x": 2112,
+                "y": 320
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "dog",
+            "spawn": {
+                "x": 1664,
+                "y": 256
+            },
+            "ai": "wander"
         }
     ],
     "objects": [],

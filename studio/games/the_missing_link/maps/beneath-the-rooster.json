@@ -36,6 +36,14 @@
                     "fx": "smoke"
                 }
             ]
+        },
+        {
+            "group": "torches",
+            "layer": "background",
+            "offsetX": 448,
+            "offsetY": 2304,
+            "stepsX": 4,
+            "dur": 2000
         }
     ],
     "events": [

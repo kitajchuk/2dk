@@ -199,8 +199,6 @@ export default class NPC extends Sprite {
 
 
     applyRenderLayer () {
-        // Move between BG and FG relative to Hero
-        const isHeroColliding = Utils.collide( this.getFullbox(), this.gamebox.hero.getFullbox() );
         const hasPartialHitbox = ( this.hitbox.width * this.hitbox.height ) !== ( this.width * this.height );
 
         // Assume that FLOAT should always render to the foreground
@@ -208,8 +206,12 @@ export default class NPC extends Sprite {
             this.layer = "foreground";
 
         // Sprites that have a smaller hitbox than their actual size can flip layer
-        } else if ( hasPartialHitbox && isHeroColliding ) {
-            if ( this.hitbox.y > this.gamebox.hero.hitbox.y ) {
+        } else if ( hasPartialHitbox ) {
+            // Move between BG and FG relative to Hero
+            const isHeroColliding = Utils.collide( this.getFullbox(), this.gamebox.hero.getFullbox() );
+            const isInFrontOfHero = this.hitbox.y + this.hitbox.height > this.gamebox.hero.position.y + this.gamebox.hero.height;
+
+            if ( isHeroColliding && isInFrontOfHero ) {
                 this.layer = "foreground";
 
             } else {
