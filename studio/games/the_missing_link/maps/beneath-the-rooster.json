@@ -29,11 +29,35 @@
             "offsetY": 384,
             "actions": [
                 {
-                    "verb": "lift"
+                    "verb": "lift",
+                    "stat": {
+                        "key": "strength",
+                        "value": 1,
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "This is too heavy for you!"
+                            ]
+                        }
+                    }
                 },
                 {
                     "verb": "attack",
-                    "fx": "smoke"
+                    "fx": "smoke",
+                    "drops": [
+                        {
+                            "id": "heart",
+                            "chance": 20
+                        },
+                        {
+                            "id": "green-rupee",
+                            "chance": 20
+                        },
+                        {
+                            "id": "blue-rupee",
+                            "chance": 10
+                        }
+                    ]
                 }
             ]
         },
@@ -44,6 +68,27 @@
             "offsetY": 2304,
             "stepsX": 4,
             "dur": 2000
+        },
+        {
+            "group": "stones",
+            "layer": "background",
+            "offsetX": 192,
+            "offsetY": 640,
+            "actions": [
+                {
+                    "verb": "lift",
+                    "stat": {
+                        "key": "strength",
+                        "value": 1,
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "This is too heavy for you!"
+                            ]
+                        }
+                    }
+                }
+            ]
         }
     ],
     "events": [
@@ -805,8 +850,8 @@
                         384
                     ],
                     [
-                        640,
-                        384
+                        192,
+                        640
                     ]
                 ],
                 [
@@ -909,8 +954,8 @@
                         384
                     ],
                     [
-                        640,
-                        384
+                        192,
+                        640
                     ]
                 ],
                 [
@@ -919,8 +964,8 @@
                         384
                     ],
                     [
-                        640,
-                        384
+                        192,
+                        640
                     ]
                 ],
                 [
