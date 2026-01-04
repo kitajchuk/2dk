@@ -12,7 +12,6 @@ import Sprite from "./Sprite";
 export default class Companion extends Sprite {
     constructor ( data, hero ) {
         super( data, hero.map );
-        this.layer = ( this.data.type === Config.npc.ai.FLOAT ? "foreground" : "heroground" );
         this.hero = hero;
         this.spring = new Spring( this.player, this.position.x, this.position.y, 10 );
         this.spring.bind( this );

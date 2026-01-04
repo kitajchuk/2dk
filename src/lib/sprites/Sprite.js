@@ -16,6 +16,7 @@ export default class Sprite {
         this.gamebox = this.map.gamebox;
         this.player = this.gamebox.player;
         this.gamequest = this.gamebox.gamequest;
+        this.layer = "heroground";
         this.scale = ( this.data.scale || 1 );
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
@@ -68,7 +69,6 @@ export default class Sprite {
             width: this.hitbox.width,
             height: this.hitbox.height / 2,
         };
-        this.layer = ( this.data.layer || "background" );
         this.spritecel = this.getCel();
         this.previousElapsed = null;
         this.resetElapsed = false;
@@ -230,8 +230,6 @@ export default class Sprite {
             this.renderBefore();
         }
 
-        this.applyRenderLayer();
-
         if ( this.data.shadow && !this.is( Config.verbs.FALL ) ) {
             this.gamebox.draw(
                 this.image,
@@ -368,10 +366,6 @@ export default class Sprite {
             }
         }
     }
-
-
-    // Can be handled in the subclass...
-    applyRenderLayer () {}
 
 
     applyPosition () {

@@ -191,19 +191,11 @@ class Map {
     }
 
 
-    render ( camera ) {
+    render ( camera, hero, companion ) {
         this.clear();
 
         this.camera = camera;
         this.renderBox = this.getRenderbox( camera );
-
-        // Separate background / foreground NPCs
-        const npcsBg = this.npcs.filter( ( npc ) => {
-            return npc.data.type !== Config.npc.ai.FLOAT && npc.layer === "background";
-        });
-        const npcsFg = this.npcs.filter( ( npc ) => {
-            return npc.data.type === Config.npc.ai.FLOAT || npc.layer === "foreground";
-        });
 
         // Draw background textures
         this.gamebox.renderQueue.add({
@@ -211,15 +203,8 @@ class Map {
             layer: "background",
         });
 
-        // Draw NPCs to background
-        npcsBg.forEach( ( npc ) => {
-            this.gamebox.renderQueue.add( npc );
-        });
-
-        // Draw doors to background
-        this.doors.forEach( ( door ) => {
-            this.gamebox.renderQueue.add( door );
-        });
+        // Merge all sprites into a single array and sort by (y position + height) ascending
+        this.renderSprites( hero, companion );
 
         // Draw foreground textures
         this.gamebox.renderQueue.add({
@@ -227,32 +212,35 @@ class Map {
             layer: "foreground",
         });
 
-        // Draw NPCs to foreground
-        // Float NPCs are included always
-        npcsFg.forEach( ( npc ) => {
-            this.gamebox.renderQueue.add( npc );
-        });
-
-        // Draw items to heroground
-        this.items.forEach( ( item ) => {
-            this.gamebox.renderQueue.add( item );
-        });
-
-        // Draw sprites to their respective layers
-        this.sprites.forEach( ( sprite ) => {
-            this.gamebox.renderQueue.add( sprite );
-        });
-
-        // Draw FX
-        // This is the topmost layer so we can do cool stuff...
-        this.fx.forEach( ( fx ) => {
-            this.gamebox.renderQueue.add( fx );
-        });
-
         // Visual event debugging....
         if ( this.player.query.get( "debug" ) ) {
             this.renderDebug();
         }
+    }
+
+
+    renderSprites ( hero, companion ) {
+        const sprites = [
+            hero,
+            ...this.fx,
+            ...this.npcs,
+            ...this.doors,
+            ...this.items,
+            ...this.sprites,
+        ];
+
+        if ( companion ) {
+            sprites.push( companion );
+        }
+
+        sprites.sort( ( a, b ) => {
+            const ay = a.position.y + a.height;
+            const by = b.position.y + b.height;
+            return ay - by;
+
+        }).forEach( ( sprite ) => {
+            this.gamebox.renderQueue.add( sprite );
+        });
     }
 
 

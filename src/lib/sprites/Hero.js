@@ -11,7 +11,6 @@ import Spring from "../Spring";
 export default class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
-        this.layer = "heroground";
         this.currency = this.data.currency || 0;
         this.itemGet = null;
         this.liftedTile = null;
@@ -562,7 +561,6 @@ export default class Hero extends Sprite {
 export class ItemGet extends Sprite {
     constructor ( spawn, item, map, hero ) {
         const data = {
-            layer: "heroground",
             spawn,
             hitbox: {
                 x: 0,
@@ -604,7 +602,6 @@ export class ItemGet extends Sprite {
 export class LiftedTile extends Sprite {
     constructor ( spawn, tile, map, hero ) {
         const data = {
-            layer: "heroground",
             width: map.data.tilesize,
             height: map.data.tilesize,
             image: map.data.image,

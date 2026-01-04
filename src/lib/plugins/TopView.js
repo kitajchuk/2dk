@@ -80,26 +80,8 @@ class TopView extends GameBox {
         // update map
         this.map.update( this.offset );
 
-        // render companion behind hero?
-        if ( this.companion && this.companion.data.type !== Config.npc.ai.FLOAT && this.companion.hitbox.y < this.hero.hitbox.y ) {
-            this.renderQueue.add( this.companion );
-        }
-
-        // render hero
-        this.renderQueue.add( this.hero );
-
-        // render companion infront of hero?
-        if ( this.companion && ( this.companion.data.type !== Config.npc.ai.FLOAT && this.companion.hitbox.y > this.hero.hitbox.y ) ) {
-            this.renderQueue.add( this.companion );
-        }
-
         // render map
-        this.map.render( this.camera );
-
-        // render companion infront of everything?
-        if ( this.companion && this.companion.data.type === Config.npc.ai.FLOAT ) {
-            this.renderQueue.add( this.companion );
-        }
+        this.map.render( this.camera, this.hero, this.companion );
 
         // render render queue
         this.renderQueue.render();
