@@ -1,5 +1,6 @@
 import Config from "../Config";
 import Sprite from "./Sprite";
+import Spring from "../Spring";
 
 
 
@@ -162,6 +163,10 @@ export default class Hero extends Sprite {
         if ( this.itemGet ) {
             this.itemGet.blit( elapsed );
         }
+
+        if ( this.liftedTile ) {
+            this.liftedTile.blit( elapsed );
+        }
     }
 
 
@@ -181,6 +186,10 @@ export default class Hero extends Sprite {
         if ( this.itemGet ) {
             this.itemGet.update();
         }
+
+        if ( this.liftedTile ) {
+            this.liftedTile.update();
+        }
     }
 
 
@@ -191,6 +200,10 @@ export default class Hero extends Sprite {
 
         if ( this.itemGet ) {
             this.itemGet.render();
+        }
+
+        if ( this.liftedTile ) {
+            this.liftedTile.render();
         }
 
         if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) ) {
@@ -569,6 +582,7 @@ export class ItemGet extends Sprite {
         };
         super( data, map );
         this.hero = hero;
+        this.spring = null;
     }
 
 
@@ -616,13 +630,97 @@ export class LiftedTile extends Sprite {
     }
 
 
+    blit ( elapsed ) {
+        if ( !this.spring ) {
+            return;
+        }
+
+        if ( this.spring.isResting ) {
+            this.kill();
+            return;
+        }
+
+        const collision = {
+            map: this.gamebox.checkMap( this.position, this ),
+            npc: this.gamebox.checkNPC( this.position, this ),
+            camera: this.gamebox.checkCamera( this.position, this ),
+        };
+
+        if ( collision.map || collision.npc || collision.camera ) {
+            this.kill();
+            return;
+
+        }
+        
+        this.spring.blit( elapsed );
+    }
+
+
+    kill () {
+        const attackAction = this.gamebox.interact.tile.instance.canAttack();
+        this.gamebox.smokeObject( this, attackAction?.fx );
+        this.player.gameaudio.hitSound( Config.verbs.SMASH );
+        this.gamebox.interact.tile = null;
+
+        // Kills THIS sprite
+        this.hero.liftedTile = null;
+    }
+
+
     applyPosition () {
         if ( !this.throwing ) {
-            this.position.x = this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 );
-            this.position.y = this.hero.hitbox.y - this.height;
+            this.position = {
+                x: this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 ),
+                y: this.hero.hitbox.y,
+                z: -this.height,
+            };
             return;
         }
 
         this.position = this.getNextPoi();
+    }
+
+
+    throw () {
+        this.hero.face( this.hero.dir );
+        this.player.gameaudio.hitSound( Config.verbs.THROW );
+        this.hero.physics.maxv = this.hero.physics.controlmaxv;
+        this.throwing = true;
+
+        let throwX;
+        let throwY;
+        const dist = this.map.data.tilesize * 2;
+
+        switch ( this.hero.dir ) {
+            case "left":
+                throwX = this.position.x - dist;
+                throwY = this.hero.footbox.y - ( this.height - this.hero.footbox.height );
+                break;
+            case "right":
+                throwX = this.position.x + dist;
+                throwY = this.hero.footbox.y - ( this.height - this.hero.footbox.height );
+                break;
+            case "up":
+                throwX = this.position.x;
+                throwY = this.position.y - dist;
+                break;
+            case "down":
+                throwX = this.position.x;
+                throwY = this.hero.footbox.y + dist;
+                break;
+        }
+
+        this.spring = new Spring( 
+            this.player,
+            this.position.x,
+            this.position.y,
+            60,
+            3.5
+        );
+        this.spring.poi = {
+            x: throwX,
+            y: throwY,
+        };
+        this.spring.bind( this );
     }
 }

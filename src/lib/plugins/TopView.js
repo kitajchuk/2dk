@@ -18,8 +18,6 @@ class TopView extends GameBox {
             //     group?,
             //     coord?,
             //     throw?,
-            //     sprite?
-            //     spring?
             // }
             tile: null,
             // fall: {
@@ -62,11 +60,6 @@ class TopView extends GameBox {
 
         // blit map
         this.map.blit( elapsed );
-
-        // blit interaction tile sprite?
-        if ( this.interact.tile && this.interact.tile.sprite && this.interact.tile.spring ) {
-            this.blitThrowing( elapsed );
-        }
 
         // dropin effect for new map?
         if ( this.dropin && this.hero.position.z === 0 ) {
@@ -271,8 +264,8 @@ class TopView extends GameBox {
         }
 
         if ( this.hero.is( Config.verbs.LIFT ) ) {
-            if ( this.interact.tile.throw ) {
-                this.handleHeroThrow();
+            if ( this.interact.tile.throw && this.hero.liftedTile ) {
+                this.hero.liftedTile.throw();
 
             } else {
                 this.interact.tile.throw = true;
@@ -893,57 +886,12 @@ class TopView extends GameBox {
 
             this.player.gameaudio.hitSound( Config.verbs.LIFT );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
-            this.interact.tile.sprite = new LiftedTile( spawn, tile, this.map, this.hero );
-            this.map.addObject( "sprites", this.interact.tile.sprite );
+            this.hero.liftedTile = new LiftedTile( spawn, tile, this.map, this.hero );
             this.hero.cycle( Config.verbs.LIFT, this.hero.dir );
             this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
             this.locked = false;
 
         }, this.hero.getDur( Config.verbs.LIFT ) );
-    }
-
-
-    handleHeroThrow () {
-        this.hero.face( this.hero.dir );
-        this.player.gameaudio.hitSound( Config.verbs.THROW );
-        this.hero.physics.maxv = this.hero.physics.controlmaxv;
-        this.interact.tile.sprite.throwing = true;
-
-        let throwX;
-        let throwY;
-        const dist = this.map.data.tilesize * 2;
-
-        switch ( this.hero.dir ) {
-            case "left":
-                throwX = this.interact.tile.sprite.position.x - dist;
-                throwY = this.hero.footbox.y - ( this.interact.tile.sprite.height - this.hero.footbox.height );
-                break;
-            case "right":
-                throwX = this.interact.tile.sprite.position.x + dist;
-                throwY = this.hero.footbox.y - ( this.interact.tile.sprite.height - this.hero.footbox.height );
-                break;
-            case "up":
-                throwX = this.interact.tile.sprite.position.x;
-                throwY = this.interact.tile.sprite.position.y - dist;
-                break;
-            case "down":
-                throwX = this.interact.tile.sprite.position.x;
-                throwY = this.hero.footbox.y + dist;
-                break;
-        }
-
-        this.interact.tile.spring = new Spring( 
-            this.player,
-            this.interact.tile.sprite.position.x,
-            this.interact.tile.sprite.position.y,
-            60,
-            3.5
-        );
-        this.interact.tile.spring.poi = {
-            x: throwX,
-            y: throwY,
-        };
-        this.interact.tile.spring.bind( this.interact.tile.sprite );
     }
 
 
@@ -1153,39 +1101,6 @@ class TopView extends GameBox {
         if ( npc.canInteract( dir ) ) {
             npc.doInteract( dir );
         }
-    }
-
-
-/*******************************************************************************
-* Sprite Handlers
-*******************************************************************************/
-    blitThrowing ( elapsed ) {
-        if ( this.interact.tile.spring.isResting ) {
-            this.killThrowing();
-
-        } else {
-            const collision = {
-                map: this.checkMap( this.interact.tile.sprite.position, this.interact.tile.sprite ),
-                npc: this.checkNPC( this.interact.tile.sprite.position, this.interact.tile.sprite ),
-                camera: this.checkCamera( this.interact.tile.sprite.position, this.interact.tile.sprite ),
-            };
-
-            if ( collision.map || collision.npc || collision.camera ) {
-                this.killThrowing();
-
-            } else {
-                this.interact.tile.spring.blit( elapsed );
-            }
-        }
-    }
-
-
-    killThrowing () {
-        const attackAction = this.interact.tile.instance.canAttack();
-        this.smokeObject( this.interact.tile.sprite, attackAction?.fx );
-        this.player.gameaudio.hitSound( Config.verbs.SMASH );
-        this.map.killObject( "sprites", this.interact.tile.sprite );
-        this.interact.tile = null;
     }
 }
 
