@@ -294,7 +294,7 @@ export default class Hero extends Sprite {
         }
 
         if ( collision.npc && !collision.npc.hitTimer && collision.npc.canDoAction( Config.verbs.ATTACK ) ) {
-            collision.npc.hit( this.stats.power );
+            collision.npc.hit( this.getStat( "power" ) );
         }
 
         if ( collision.tiles && collision.tiles.attack.length ) {
