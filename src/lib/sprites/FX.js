@@ -10,7 +10,6 @@ import Config from "../Config";
 export default class FX extends Sprite {
     constructor ( data, map ) {
         super( data, map );
-
         this.paused = false;
     }
 

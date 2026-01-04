@@ -13,6 +13,8 @@ export default class Hero extends Sprite {
         this.layer = "heroground";
         this.currency = this.data.currency || 0;
         this.itemGet = null;
+        this.liftedTile = null;
+        this.maskFX = null;
         this.items = [];
         // Hero controls are defined by the Player
         this.controls = this.player.controls;
@@ -153,6 +155,13 @@ export default class Hero extends Sprite {
 * Rendering
 * Order is: blit, update, render
 *******************************************************************************/
+    blitAfter ( elapsed ) {
+        if ( this.maskFX ) {
+            this.maskFX.blit( elapsed );
+        }
+    }
+
+
     update () {
         // Handle player controls
         this.handleControls();
@@ -161,10 +170,18 @@ export default class Hero extends Sprite {
         this.handleVelocity();
         this.handleGravity();
         this.applyGravity();
+
+        if ( this.maskFX ) {
+            this.maskFX.update();
+        }
     }
 
 
     renderAfter () {
+        if ( this.maskFX ) {
+            this.maskFX.render();
+        }
+
         if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) ) {
             this.gamebox.draw(
                 this.image,
@@ -280,6 +297,23 @@ export default class Hero extends Sprite {
         this.position.x = poi.x;
         this.position.y = poi.y;
         this.applyHitbox();
+        this.applyHeroMask();
+    }
+
+
+    applyHeroMask () {
+        if ( this.maskFX ) {
+            const maskX = this.position.x + ( ( this.width - this.maskFX.width ) / 2 );
+            const maskY = this.position.y + ( ( this.height - this.maskFX.height ) );
+            this.maskFX.position.x = maskX;
+            this.maskFX.position.y = maskY;
+
+            if ( this.isIdle() && this.maskFX.frame === this.maskFX.data.stepsX - 1 ) {
+                this.maskFX.paused = true;
+            } else {
+                this.maskFX.paused = false;
+            }
+        }
     }
 
 

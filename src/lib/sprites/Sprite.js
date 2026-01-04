@@ -194,6 +194,10 @@ export default class Sprite {
 
         // Set frame and sprite rendering cel
         this.applyFrame( elapsed );
+
+        if ( Utils.func( this.blitAfter ) ) {
+            this.blitAfter( elapsed );
+        }
     }
 
 
