@@ -38,6 +38,17 @@ export default class Hero extends Sprite {
     }
 
 
+    checkStat ( stat, value ) {
+        return this.getStat( stat ) >= value;
+    }
+
+
+    getStat ( stat ) {
+        const items = this.items.filter( ( item ) => item.stat?.key === stat );
+        return this.stats[ stat ] + items.reduce( ( acc, item ) => acc + item.stat.value, 0 );
+    }
+
+
     hasItem ( id ) {
         return this.items.some( ( item ) => item.id === id );
     }
@@ -69,6 +80,14 @@ export default class Hero extends Sprite {
         if ( item.verb ) {
             // TODO: Handle verb items (e.g. jump)...
         }
+
+        if ( item.stat ) {
+            // TODO: Handle stat items (e.g. strength)...
+        }
+
+        if ( item.currency ) {
+            this.receive( item.currency );
+        }
     }
 
 
@@ -87,6 +106,10 @@ export default class Hero extends Sprite {
 
         if ( item.verb ) {
             // TODO: Handle verb items (e.g. jump)...
+        }
+
+        if ( item.stat ) {
+            // TODO: Handle stat items (e.g. strength)...
         }
     }
 

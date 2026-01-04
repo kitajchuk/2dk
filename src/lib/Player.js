@@ -174,9 +174,9 @@ class Player extends Controller {
         if ( this.gamebox.hero ) {
             this.menu.innerHTML = `
                 <div>Hero: ${this.gamebox.hero.data.name}</div>
-                <div>Health: ${this.gamebox.hero.stats.health}</div>
-                <div>Power: ${this.gamebox.hero.stats.power}</div>
-                <div>Strength: ${this.gamebox.hero.stats.strength}</div>
+                <div>Health: ${this.gamebox.hero.getStat( "health" )}</div>
+                <div>Power: ${this.gamebox.hero.getStat( "power" )}</div>
+                <div>Strength: ${this.gamebox.hero.getStat( "strength" )}</div>
                 <div>${this.data.currency}: ${this.gamebox.hero.currency}</div>
                 <div>Weapon: ${this.gamebox.hero.data.equipped.weapon ? "Equipped" : "Not Equipped"}</div>
                 <div>Shield: ${this.gamebox.hero.data.equipped.shield ? "Equipped" : "Not Equipped"}</div>
