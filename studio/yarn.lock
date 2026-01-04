@@ -702,31 +702,12 @@ progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-properjs-easing@~0.2:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/properjs-easing/-/properjs-easing-0.2.0.tgz#2994edf6a122ff0db4915433c8a081907dc9090c"
-  integrity sha1-KZTt9qEi/w20kVQzyKCBkH3JCQw=
-
 properjs-lager@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/properjs-lager/-/properjs-lager-0.1.2.tgz#d930fd45892d0a3e18e868aed5d42316dffcc0df"
   integrity sha1-2TD9RYktCj4Y6Giu1dQjFt/8wN8=
   dependencies:
     colors "^1.1.2"
-
-properjs-mediabox@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/properjs-mediabox/-/properjs-mediabox-0.3.4.tgz#db3bf6fff52afaf19ef22a6ed04a50df52696744"
-  integrity sha1-2zv2//Uq+vGe8ipu0EpQ31JpZ0Q=
-  dependencies:
-    properjs-tween "~0.2"
-
-properjs-tween@~0.2:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/properjs-tween/-/properjs-tween-0.2.0.tgz#b311639b75a309504c5074b1c70936a8ce4e10cc"
-  integrity sha1-sxFjm3WjCVBMUHSxxwk2qM5OEMw=
-  dependencies:
-    properjs-easing "~0.2"
 
 pump@^3.0.0:
   version "3.0.0"

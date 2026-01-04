@@ -273,7 +273,7 @@ class Player extends Controller {
             this.ready = true;
             this.element.classList.add( "is-started" );
 
-            this.gameaudio = new GameAudio( this );
+            this.gameaudio = new GameAudio( this.device );
 
             if ( this.data.plugin === Config.plugins.TOPVIEW ) {
                 this.gamebox = new TopView( this );

@@ -1,6 +1,6 @@
 class GameAudio {
-    constructor ( player ) {
-        this.player = player;
+    constructor ( device ) {
+        this.device = device;
         this.sounds = {};
         this.build();
     }
@@ -8,7 +8,7 @@ class GameAudio {
 
     build () {
         // MARK: mobile-audio-disabled
-        if ( this.player.device ) {
+        if ( this.device ) {
             return;
         }
 
@@ -32,7 +32,7 @@ class GameAudio {
 
     addSound ( data ) {
         // MARK: mobile-audio-disabled
-        if ( this.player.device ) {
+        if ( this.device ) {
             return;
         }
 

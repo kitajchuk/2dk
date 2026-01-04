@@ -1,10 +1,9 @@
 const cache = require( "../../server/cache" );
-const MediaBox = require( "properjs-mediabox" );
 
 
-const mediabox = new MediaBox();
-const channel = "bgm";
-const duration = 1;
+
+let gameaudio;
+
 
 
 const Utils = {
@@ -32,75 +31,44 @@ const Utils = {
 
 
     destroySound () {
-        const sounds = mediabox.getAudios();
+        if ( !gameaudio ) {
+            return;
+        }
 
-        mediabox.stopChannel( channel );
-
-        Object.keys( sounds ).forEach( ( id ) => {
-            mediabox.destroyMedia( id );
+        Object.keys( gameaudio.sounds ).forEach( ( id ) => {
+            gameaudio.stopSound( id );
         });
     },
 
 
     processSound ( sampler, gameId ) {
         const select = sampler.querySelector( ".js-select-sounds" );
-        const options = [ ...select.querySelectorAll( "option" ) ];
         const sound = select.value;
         const data = sampler.dataset;
         const soundId = cache.slugify( `${sound}${data.spot}` );
-        const addMedia = ( snd, sId ) => {
-            mediabox.addAudio({
-                id: sId,
-                src: [`./games/${gameId}/assets/sounds/${snd}`],
-                channel,
-                onloaded () {
-                    mediabox.crossFadeChannel( channel, sId, duration );
-                },
-            });
-        };
-        const addEvent = ( snd, sId ) => {
-            mediabox.addMediaEvent( sId, "ended", () => {
-                let nextUp = options.find( ( opt ) => {
-                    return opt.value === snd;
-                } )?.nextElementSibling;
 
-                if ( !nextUp ) {
-                    // Circle back to the first option
-                    nextUp = select.querySelector( "option:nth-child(2)" );
-                }
-
-                const _snd = nextUp.value;
-                const _sId = cache.slugify( `${_snd}${data.spot}` );
-
-                select.selectedIndex = options.indexOf( nextUp );
-
-                if ( !mediabox.getMedia( _sId ) ) {
-                    addMedia( _snd, _sId );
-                    addEvent( _snd, _sId );
-
-                } else {
-                    mediabox.setMediaProp( _sId, "currentTime", 0 );
-                    mediabox.crossFadeChannel( channel, _sId, duration );
-                }
-            });
-        };
+        if ( !gameaudio ) {
+            gameaudio = new window.lib2dk.GameAudio( false );
+        }
 
         if ( sound ) {
-            if ( !mediabox.getMedia( soundId ) ) {
-                addMedia( sound, soundId );
-                addEvent( sound, soundId );
+            if ( !gameaudio.sounds[ soundId ] ) {
+                gameaudio.addSound({
+                    id: soundId,
+                    src: `./games/${gameId}/assets/sounds/${sound}`,
+                    channel: "bgm",
+                });
+                gameaudio.playSound( soundId );
 
                 sampler.classList.add( "is-playing" );
 
-            } else if ( ( mediabox.getMedia( soundId ) && mediabox.isPlaying( soundId ) ) ) {
-                mediabox.fadeChannelOut( channel, duration );
+            } else if ( gameaudio.sounds[ soundId ] && gameaudio.sounds[ soundId ].playing ) {
+                gameaudio.stopSound( soundId );
 
                 sampler.classList.remove( "is-playing" );
 
-            } else if ( ( mediabox.getMedia( soundId ) && !mediabox.isPlaying( soundId ) ) ) {
-                mediabox.setMediaProp( soundId, "currentTime", 0 );
-                mediabox.crossFadeChannel( channel, soundId, duration );
-
+            } else if ( gameaudio.sounds[ soundId ] && !gameaudio.sounds[ soundId ].playing ) {
+                gameaudio.playSound( soundId );
                 sampler.classList.add( "is-playing" );
             }
         }
