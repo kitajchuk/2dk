@@ -186,22 +186,6 @@ const getMapsMenu = () => {
                 },
                 enabled: activeMap ? true : false,
             },
-            {
-                label: "Undo Paint (TODO)",
-                accelerator: "CmdOrCtrl+Z",
-                click () {
-                    mainWindow.webContents.send( "menu-undomap", null );
-                },
-                enabled: activeMap ? true : false,
-            },
-            {
-                label: "Redo Paint (TODO)",
-                accelerator: "Shift+CmdOrCtrl+Z",
-                click () {
-                    mainWindow.webContents.send( "menu-redomap", null );
-                },
-                enabled: activeMap ? true : false,
-            },
         ],
     };
 };
@@ -226,6 +210,49 @@ const getFileMenu = () => {
         label: "File",
         submenu: [
             isMac ? { role: "close" } : { role: "quit" },
+        ],
+    };
+};
+const getEditMenu = () => {
+    return {
+        label: "Edit",
+        submenu: [
+            {
+                label: "Undo",
+                accelerator: "CmdOrCtrl+Z",
+                role: "undo",
+            },
+            {
+                label: "Redo",
+                accelerator: "Shift+CmdOrCtrl+Z",
+                role: "redo",
+            },
+            { type: "separator" },
+            {
+                label: "Cut",
+                accelerator: "CmdOrCtrl+X",
+                role: "cut",
+            },
+            {
+                label: "Copy",
+                accelerator: "CmdOrCtrl+C",
+                role: "copy",
+            },
+            {
+                label: "Paste",
+                accelerator: "CmdOrCtrl+V",
+                role: "paste",
+            },
+            {
+                label: "Delete",
+                accelerator: "Delete",
+                role: "delete",
+            },
+            {
+                label: "Select All",
+                accelerator: "CmdOrCtrl+A",
+                role: "selectall",
+            },
         ],
     };
 };
@@ -284,6 +311,7 @@ const setMenu = () => {
     Menu.setApplicationMenu( Menu.buildFromTemplate( [
         getAppMenu(),
         getFileMenu(),
+        getEditMenu(),
         getGamesMenu(),
         getMapsMenu(),
         getViewMenu(),
