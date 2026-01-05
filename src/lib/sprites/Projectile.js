@@ -51,6 +51,7 @@ export default class Projectile extends Sprite {
         };
         
         if ( collision.map || collision.hero || collision.doors || collision.camera || this.canTileStop( poi, this.dir, collision ) ) {
+            this.map.killObject( "sprites", this );
             this.gamebox.smokeObject( this );
             this.player.gameaudio.hitSound( Config.verbs.SMASH );
 

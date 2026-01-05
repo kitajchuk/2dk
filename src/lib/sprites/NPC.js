@@ -107,13 +107,6 @@ export default class NPC extends Sprite {
 * Update is overridden for Sprite subclasses with different behaviors
 * Default behavior for a Sprite is to be static but with Physics forces
 *******************************************************************************/
-    blitAfter ( elapsed ) {
-        if ( this.projectile ) {
-            this.projectile.blit( elapsed );
-        }
-    }
-
-
     update () {
         if ( !this.visible() ) {
             return;
@@ -121,18 +114,8 @@ export default class NPC extends Sprite {
 
         this.handleControls();
         this.handleAI();
+        this.handleProjectile();
         this.updateStack();
-
-        if ( this.projectile ) {
-            this.projectile.update();
-        }
-    }
-
-
-    renderAfter () {
-        if ( this.projectile ) {
-            this.projectile.render();
-        }
     }
 
 
@@ -259,14 +242,14 @@ export default class NPC extends Sprite {
                     break;
             }
         }
-
-        if ( this.data.projectile ) {
-            this.handleProjectile();
-        }
     }
 
 
     handleProjectile () {
+        if ( !this.data.projectile ) {
+            return;
+        }
+
         if ( this.projectile ) {
             return;
         }
@@ -289,6 +272,7 @@ export default class NPC extends Sprite {
 
                     this.projectile = new Projectile( data, spawn, this.dir, this, this.map );
 
+                    this.map.addObject( "sprites", this.projectile );
                     this.gamebox.smokeObject( this );
                     this.player.gameaudio.hitSound( Config.verbs.SMASH );
                 }
