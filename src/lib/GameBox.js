@@ -118,7 +118,6 @@ export default class GameBox {
         this.element.appendChild( this.mapLayer.canvas );
 
         this.player.screen.appendChild( this.element );
-        this.player.screen.appendChild( this.dialogue.element );
     }
 
 
@@ -617,11 +616,6 @@ export default class GameBox {
 
         // Fade out...
         this.player.fadeOut();
-
-        // Cleanup any extra things
-        if ( this.hero.liftedTile ) {
-            this.hero.liftedTile = null;
-        }
 
         setTimeout( () => {
             // New Map data

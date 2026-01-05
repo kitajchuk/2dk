@@ -5,6 +5,7 @@ import Config from "./Config";
 class Dialogue {
     constructor ( gamebox ) {
         this.gamebox = gamebox;
+        this.player = this.gamebox.player;
         this.data = null;
         this.ready = false;
         this.pressed = false;
@@ -22,10 +23,11 @@ class Dialogue {
     build () {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__dialogue";
+        this.player.screen.appendChild( this.element );
     }
 
 
-    write ( text ) {
+    writeText ( text ) {
         this.element.innerHTML = `<div class="_2dk__dialogue__text">${text}</div>`;
     }
 
@@ -37,8 +39,14 @@ class Dialogue {
     }
 
 
-    clear () {
+    clearText () {
         this.element.innerHTML = "";
+    }
+
+    
+    clearTimeout () {
+        clearTimeout( this.timeout );
+        this.timeout = null;
     }
 
 
@@ -47,13 +55,11 @@ class Dialogue {
             return;
         }
 
-        if ( this.timeout ) {
-            clearTimeout( this.timeout );
-        }
+        this.clearTimeout();
 
         this.data = structuredClone( data );
         this.element.classList.add( "is-texting" );
-        this.write( this.data.text.shift() );
+        this.writeText( this.data.text.shift() );
         this.timeout = setTimeout( () => {
             this.teardown();
 
@@ -63,7 +69,7 @@ class Dialogue {
 
     play ( data ) {
         if ( this.active ) {
-            return;
+            this.reset();
         }
 
         this.active = true;
@@ -81,12 +87,12 @@ class Dialogue {
                 this.writePrompt( text );
             }
 
-            this.write( text.join( "" ) );
+            this.writeText( text.join( "" ) );
 
             this.timeout = setTimeout( () => {
                 this.ready = true;
 
-            }, this.debounce );
+            }, this.duration );
         });
     }
 
@@ -115,11 +121,11 @@ class Dialogue {
 
     handleText () {
         if ( this.data.text.length ) {
-            this.write( this.data.text.shift() );
+            this.writeText( this.data.text.shift() );
             this.timeout = setTimeout( () => {
                 this.pressed = false;
 
-            }, this.debounce );
+            }, this.duration );
 
         } else {
             if ( this.isResolve ) {
@@ -146,11 +152,11 @@ class Dialogue {
                 this.writePrompt( text );
             }
 
-            this.write( text.join( "" ) );
+            this.writeText( text.join( "" ) );
             this.timeout = setTimeout( () => {
                 this.pressed = false;
 
-            }, this.debounce );
+            }, this.duration );
 
         // A-button will confirm if there is no more text...
         } else if ( a ) {
@@ -177,16 +183,22 @@ class Dialogue {
     }
 
 
-    teardown () {
-        this.element.classList.remove( "is-texting" );
+    reset () {
+        this.clearTimeout();
         this.data = null;
         this.ready = false;
         this.pressed = false;
         this.isResolve = false;
         this.resolve = null;
         this.reject = null;
+    }
+
+
+    teardown () {
+        this.reset();
+        this.element.classList.remove( "is-texting" );
         this.timeout = setTimeout( () => {
-            this.clear();
+            this.clearText();
             this.active = false;
             this.timeout = null;
 
