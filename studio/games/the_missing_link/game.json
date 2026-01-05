@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 331,
+    "save": 334,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1110,6 +1110,28 @@
             "image": "assets/sprites/fx.png",
             "offsetX": 0,
             "offsetY": 128,
+            "stepsX": 4,
+            "dur": 750
+        },
+        {
+            "id": "grass-dead",
+            "name": "Grass Dead",
+            "width": 64,
+            "height": 64,
+            "image": "assets/sprites/fx.png",
+            "offsetX": 128,
+            "offsetY": 64,
+            "stepsX": 2,
+            "dur": 250
+        },
+        {
+            "id": "leaves-dead",
+            "name": "Leaves Dead",
+            "width": 64,
+            "height": 64,
+            "image": "assets/sprites/fx.png",
+            "offsetX": 0,
+            "offsetY": 192,
             "stepsX": 4,
             "dur": 750
         }

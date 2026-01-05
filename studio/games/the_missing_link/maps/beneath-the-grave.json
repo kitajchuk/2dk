@@ -59,7 +59,7 @@
                 },
                 {
                     "verb": "attack",
-                    "fx": "smoke",
+                    "fx": "leaves",
                     "drops": [
                         {
                             "id": "heart",
