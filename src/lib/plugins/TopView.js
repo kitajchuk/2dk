@@ -47,6 +47,16 @@ class TopView extends GameBox {
     blit ( elapsed ) {
         this.clear();
 
+        // Safely handle hero death so we exit the blit loop and reset the player cleanly
+        if ( this.hero.deathCounter > 0 ) {
+            this.hero.deathCounter--;
+        }
+
+        if ( this.hero.killed && this.hero.deathCounter === 0 ) {
+            this.player.reset();
+            return;
+        }
+
         // blit render queue
         this.renderQueue.blit( elapsed );
 

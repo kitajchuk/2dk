@@ -18,6 +18,8 @@ export default class Hero extends Sprite {
         this.items = [];
         // Hero controls are defined by the Player
         this.controls = this.player.controls;
+        this.killed = false;
+        this.deathCounter = 0;
     }
 
 
@@ -313,6 +315,21 @@ export default class Hero extends Sprite {
                     }
                 }
             });
+        }
+    }
+
+
+    handleHealthCheck () {
+        if ( this.stats.health <= 0 ) {
+            this.killed = true;
+            this.stillTimer = Infinity;
+            this.deathCounter = 240;
+            
+            if ( this.data.verbs.kill?.down ) {
+                this.cycle( "kill", "down" );
+                this.player.gameaudio.stop();
+                this.player.gameaudio.hitSound( "death" );
+            }
         }
     }
 
