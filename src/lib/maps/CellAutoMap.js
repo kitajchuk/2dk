@@ -20,6 +20,11 @@ class CellAutoMap {
     }
 
 
+    destroy () {
+        this.controller.stop();
+    }
+
+
     initialize ( map ) {
         const { algo, textures: textureStack } = map.cellauto;
 

@@ -12,6 +12,12 @@ class Player extends Controller {
     constructor () {
         super();
 
+        this.initialize();
+        this.detect();
+    }
+
+
+    initialize () {
         this.ready = false;
         this.paused = true;
         this.stopped = false;
@@ -26,7 +32,28 @@ class Player extends Controller {
             down: false,
         };
         this.previousElapsed = null;
-        this.detect();
+    }
+
+
+    reset () {
+        // Stop the RAF loop
+        super.stop();
+
+        // Clear the gamepad
+        this.gamepad.clear();
+
+        // Destroy the gamebox
+        this.gamebox.destroy();
+
+        // Stop the audio
+        this.gameaudio.stop();
+
+        // Player cleanup and reset state
+        this.hideMenu();
+        this.initialize();
+        this.element.classList.remove( "is-started", "is-fader" );
+        this.gamebox = null;
+        this.gameaudio = null;
     }
 
 

@@ -20,6 +20,12 @@ class Dialogue {
     }
 
 
+    destroy () {
+        this.teardown();
+        this.element.remove();
+    }
+
+
     build () {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__dialogue";

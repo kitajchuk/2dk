@@ -40,7 +40,7 @@ export default class GameBox {
         this.currentMusic = null;
 
         let initMapData = Loader.cash( this.player.heroData.map );
-        let initHeroData = this.player.heroData;
+        let initHeroData = structuredClone( this.player.heroData );
 
         this.build();
 
@@ -91,6 +91,17 @@ export default class GameBox {
         } else {
             _init();
         }
+    }
+
+
+    destroy () {
+        this.hero.destroy();
+        this.companion?.destroy();
+        this.map.destroy();
+        this.cellauto?.destroy();
+        this.mapLayer.destroy();
+        this.dialogue.destroy();
+        this.element.remove();
     }
 
 

@@ -1036,7 +1036,9 @@ class TopView extends GameBox {
         }, 0 ) );
 
         if ( maskTile && maskAmount >= 100 ) {
-            const maskData = this.player.data.fx.find( ( fx ) => fx.id === maskTile.instance.data.mask );
+            const maskData = this.player.getMergedData( {
+                id: maskTile.instance.data.mask,
+            }, "fx" );
             
             if ( maskData && !this.hero.maskFX ) {
                 this.hero.maskFX = new FX({
