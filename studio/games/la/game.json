@@ -974,6 +974,7 @@
         }
     ],
     "objects": [],
+    "projectiles": [],
     "fx": [
         {
             "id": "smoke",

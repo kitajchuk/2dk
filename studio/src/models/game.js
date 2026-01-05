@@ -49,6 +49,8 @@ module.exports = {
     objects: [],
     // FX library
     fx: [],
+    // Projectile library
+    projectiles: [],
     // Asset bundle
     bundle: []
 };

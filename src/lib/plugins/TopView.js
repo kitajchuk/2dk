@@ -455,7 +455,6 @@ class TopView extends GameBox {
         if ( collision.npc ) {
             if ( collision.npc.data.type === Config.npc.types.ENEMY && !collision.npc.isHitOrStill() && !this.hero.canShield( collision.npc ) ) {
                 this.hero.hit( collision.npc.stats.power );
-                this.hero.physics.vz = -6;
                 return;
             }
 

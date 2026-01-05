@@ -59,6 +59,7 @@ module.exports = {
     controlmaxv: undefined || 4,
     opacity: undefined || 1.0,
     bounce: undefined || true,
+    projectile: undefined || "",
     hitbox: {
         x: 0,
         y: 0,

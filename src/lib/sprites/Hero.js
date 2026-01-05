@@ -26,6 +26,12 @@ export default class Hero extends Sprite {
     }
 
 
+    hit ( ...args ) {
+        super.hit( ...args );
+        this.physics.vz = -6;
+    }
+
+
     resetMaxV () {
         // Resume running speed...
         if ( this.gamebox.running ) {

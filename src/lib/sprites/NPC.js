@@ -1,6 +1,7 @@
 import Utils from "../Utils";
 import Config, { DIRS } from "../Config";
 import Sprite from "./Sprite";
+import Projectile from "./Projectile";
 
 
 
@@ -17,7 +18,9 @@ export default class NPC extends Sprite {
         // AI things...
         // Initial cooldown period upon spawn (don't immediately move)
         // requestAnimationFrame runs 60fps so we use (60 * seconds)
-        this.counter = this.data.ai ? 60 : 0;
+        this.aiCounter = this.data.ai ? 60 : 0;
+        this.projectileCounter = this.data.projectile ? 120 : 0;
+        this.projectile = null;
         this.dirX = null;
         this.dirY = null;
         this.stepsX = 0;
@@ -104,6 +107,13 @@ export default class NPC extends Sprite {
 * Update is overridden for Sprite subclasses with different behaviors
 * Default behavior for a Sprite is to be static but with Physics forces
 *******************************************************************************/
+    blitAfter ( elapsed ) {
+        if ( this.projectile ) {
+            this.projectile.blit( elapsed );
+        }
+    }
+
+
     update () {
         if ( !this.visible() ) {
             return;
@@ -112,6 +122,17 @@ export default class NPC extends Sprite {
         this.handleControls();
         this.handleAI();
         this.updateStack();
+
+        if ( this.projectile ) {
+            this.projectile.update();
+        }
+    }
+
+
+    renderAfter () {
+        if ( this.projectile ) {
+            this.projectile.render();
+        }
     }
 
 
@@ -189,7 +210,7 @@ export default class NPC extends Sprite {
             // Let wandering NPCs cool down before moving again
             // While roaming NPCs can immediately move again
             if ( this.data.ai === Config.npc.ai.ROAM ) {
-                this.counter = 0;
+                this.aiCounter = 0;
             }
             
             this.handleAI();
@@ -238,19 +259,56 @@ export default class NPC extends Sprite {
                     break;
             }
         }
+
+        if ( this.data.projectile ) {
+            this.handleProjectile();
+        }
+    }
+
+
+    handleProjectile () {
+        if ( this.projectile ) {
+            return;
+        }
+
+        if ( this.projectileCounter > 0 ) {
+            this.projectileCounter--;
+
+            if ( this.projectileCounter === 0 ) {
+                const chance = Utils.random( 0, 100 );
+
+                if ( chance <= 25 ) {
+                    const data = this.gamebox.player.getMergedData({
+                        id: this.data.projectile,
+                    }, "projectiles" );
+
+                    const spawn = {
+                        x: this.position.x + ( this.width / 2 ) - ( data.width / 2 ),
+                        y: this.position.y + ( this.height / 2 ) - ( data.height / 2 ),
+                    }
+
+                    this.projectile = new Projectile( data, spawn, this.dir, this, this.map );
+
+                    this.gamebox.smokeObject( this );
+                    this.player.gameaudio.hitSound( Config.verbs.SMASH );
+                }
+
+                this.projectileCounter = 120;
+            }
+        }
     }
 
 
     handleRoam () {
-        if ( !this.counter ) {
-            this.counter = Utils.random( 60, 120 );
+        if ( !this.aiCounter ) {
+            this.aiCounter = Utils.random( 60, 120 );
 
             const lastDir = this.dir;
             const newDir = DIRS[ Utils.random( 0, DIRS.length - 1 ) ];
 
             // Always pick a new direction
             if ( lastDir === newDir ) {
-                this.counter = 0;
+                this.aiCounter = 0;
                 this.handleRoam();
                 return;
             }
@@ -262,7 +320,7 @@ export default class NPC extends Sprite {
                 this.verb = Config.verbs.WALK;
             }
         } else {
-            this.counter--;
+            this.aiCounter--;
         }
 
         DIRS.forEach( ( dir ) => {
@@ -277,7 +335,7 @@ export default class NPC extends Sprite {
 
 
     handleWander () {
-        if ( !this.counter ) {
+        if ( !this.aiCounter ) {
             const lastDirX = this.dirX;
             const lastDirY = this.dirY;
             const newDirX = ["left", "right"][ Utils.random( 0, 2 ) ];
@@ -289,14 +347,14 @@ export default class NPC extends Sprite {
                 return;
             }
 
-            this.counter = Utils.random( 60, 120 );
+            this.aiCounter = Utils.random( 60, 120 );
             this.stepsX = Utils.random( 30, 60 );
             this.stepsY = Utils.random( 30, 60 );
             this.dirX = newDirX;
             this.dirY = newDirY;
 
         } else {
-            this.counter--;
+            this.aiCounter--;
         }
 
         if ( this.stepsX ) {

@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 334,
+    "save": 335,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -591,6 +591,18 @@
         }
     ],
     "objects": [],
+    "projectiles": [
+        {
+            "id": "bullet",
+            "name": "Bullet",
+            "width": 56,
+            "height": 60,
+            "image": "assets/sprites/npcs.png",
+            "offsetX": 552,
+            "offsetY": 278,
+            "power": 1
+        }
+    ],
     "npcs": [
         {
             "id": "octorok",
@@ -601,6 +613,7 @@
             "verb": "walk",
             "maxv": 1,
             "controlmaxv": 1,
+            "projectile": "bullet",
             "hitbox": {
                 "x": 0,
                 "y": 0,

@@ -6,6 +6,7 @@ import Sprite from "./sprites/Sprite";
 import Companion from "./sprites/Companion";
 import ItemDrop from "./sprites/ItemDrop";
 import Door from "./sprites/Door";
+import Projectile from "./sprites/Projectile";
 import Config from "./Config";
 import Controller from "./Controller";
 import Dialogue from "./Dialogue";
@@ -39,6 +40,7 @@ const lib = {
     Sprite,
     ItemDrop,
     Companion,
+    Projectile,
 
     // ...rest
     Config,
