@@ -31,6 +31,11 @@ class GameAudio {
 
 
     stop () {
+        // MARK: mobile-audio-disabled
+        if ( this.device ) {
+            return;
+        }
+
         this.channels.bgm.node.pause();
         this.channels.sfx.node.pause();
     }
