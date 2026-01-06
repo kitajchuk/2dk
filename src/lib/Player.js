@@ -259,8 +259,10 @@ class Player extends Controller {
         window.onresize = this.onRotate.bind( this );
     }
 
+
     // Stops game button events from dispatching to the gamebox
     pause () {
+        super.stop();
         this.paused = true;
         this.gamepad.clear();
         this.gamebox.pause( true );
@@ -270,6 +272,7 @@ class Player extends Controller {
 
     // Stops the gamebox from rendering
     stop () {
+        super.stop();
         this.stopped = true;
         this.gamepad.clear();
         this.gamebox.pause( true );
@@ -278,9 +281,16 @@ class Player extends Controller {
 
     // Resumes playable state, not paused and not stopped
     resume () {
+        this.blit();
         this.paused = false;
         this.stopped = false;
         this.gamebox.pause( false );
+    }
+
+
+    blit () {
+        // Game cycle (requestAnimationFrame)
+        this.go( this.onGameBlit.bind( this ) );
     }
 
 
@@ -306,8 +316,7 @@ class Player extends Controller {
                 this.gamebox = new TopView( this );
             }
 
-            // Game cycle (requestAnimationFrame)
-            this.go( this.onGameBlit.bind( this ) );
+            this.blit();
         }
     }
 
