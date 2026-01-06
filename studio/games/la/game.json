@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 824,
+    "save": 825,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -33,7 +33,8 @@
         "itemGet": "assets/sounds/sfx-item-get.mp3",
         "moveObject": "assets/sounds/sfx-move-object.mp3",
         "rupee": "assets/sounds/sfx-rupee.mp3",
-        "heart": "assets/sounds/sxf-heart.mp3"
+        "heart": "assets/sounds/sxf-heart.mp3",
+        "death": "assets/sounds/sfx-death.mp3"
     },
     "hero": {
         "sprite": 0,
@@ -1177,7 +1178,9 @@
             "height": 60,
             "offsetX": 552,
             "offsetY": 278,
-            "power": 0.5
+            "power": 0.5,
+            "fx": "smoke",
+            "sound": "smash"
         },
         {
             "id": "arrow",
@@ -1296,6 +1299,7 @@
         "assets/sounds/sfx-smash.mp3",
         "assets/sounds/sfx-sword.mp3",
         "assets/sounds/sfx-throw.mp3",
+        "assets/sounds/sfx-death.mp3",
         "maps/bottom-of-the-well.json",
         "maps/mabe-village.json",
         "maps/marins-house.json",

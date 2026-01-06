@@ -11,6 +11,20 @@ export default class Projectile extends Sprite {
             x: npc.position.x + ( npc.width / 2 ) - ( width / 2 ),
             y: npc.position.y + ( npc.height / 2 ) - ( height / 2 ),
         }
+        switch ( dir ) {
+            case "left":
+                spawn.x -= width;
+                break;
+            case "right":
+                spawn.x += width;
+                break;
+            case "up":
+                spawn.y -= height;
+                break;
+            case "down":
+                spawn.y += height;
+                break;
+        }
         const hitbox = {
             x: 0,
             y: 0,
@@ -43,6 +57,19 @@ export default class Projectile extends Sprite {
         };
         super( data, map );
         this.npc = npc;
+        this.map.addObject( "sprites", this );
+        this.sparks();
+    }
+
+
+    sparks () {
+        if ( this.data.fx ) {
+            this.gamebox.smokeObject( this, this.data.fx );
+        }
+
+        if ( this.data.sound ) {
+            this.player.gameaudio.hitSound( this.data.sound );
+        }
     }
 
 
@@ -70,8 +97,8 @@ export default class Projectile extends Sprite {
         
         if ( collision.map || collision.hero || collision.doors || collision.camera || this.canTileStop( poi, this.dir, collision ) ) {
             this.map.killObject( "sprites", this );
-            this.gamebox.smokeObject( this );
-            this.player.gameaudio.hitSound( Config.verbs.SMASH );
+
+            this.sparks();
 
             // Kill THIS projectile attached to an NPC
             this.npc.projectile = null;

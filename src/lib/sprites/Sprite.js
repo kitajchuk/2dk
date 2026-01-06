@@ -54,8 +54,8 @@ export default class Sprite {
         this.data.hitbox = this.data.hitbox || {
             x: 0,
             y: 0,
-            width: this.data.width,
-            height: this.data.height,
+            width: this.data.width / this.scale,
+            height: this.data.height / this.scale,
         };
         this.hitbox = {
             x: this.position.x + ( this.data.hitbox.x / this.scale ),

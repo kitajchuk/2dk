@@ -7,6 +7,8 @@ module.exports = {
     offsetX: undefined || 0,
     offsetY: undefined || 0,
     power: 0,
+    fx: undefined || "",
+    sound: undefined || "",
     dirs: undefined || {
         down: {
             width: 0,

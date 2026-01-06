@@ -374,10 +374,6 @@ export default class NPC extends Sprite {
                     }, "projectiles" );
 
                     this.projectile = new Projectile( data, this.dir, this, this.map );
-
-                    this.map.addObject( "sprites", this.projectile );
-                    this.gamebox.smokeObject( this );
-                    this.player.gameaudio.hitSound( Config.verbs.SMASH );
                 }
 
                 this.projectileCounter = 120;

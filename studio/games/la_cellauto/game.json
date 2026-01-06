@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 804,
+    "save": 805,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -33,7 +33,8 @@
         "itemGet": "assets/sounds/sfx-item-get.mp3",
         "moveObject": "assets/sounds/sfx-move-object.mp3",
         "rupee": "assets/sounds/sfx-rupee.mp3",
-        "heart": "assets/sounds/sfx-heart.mp3"
+        "heart": "assets/sounds/sfx-heart.mp3",
+        "death": "assets/sounds/sfx-death.mp3"
     },
     "hero": {
         "sprite": 0,
@@ -292,6 +293,18 @@
                 }
             },
             "verbs": {
+                "kill": {
+                    "down": {
+                        "offsetX": 368,
+                        "offsetY": 460
+                    }
+                },
+                "item": {
+                    "down": {
+                        "offsetX": 276,
+                        "offsetY": 460
+                    }
+                },
                 "face": {
                     "down": {
                         "offsetX": 0,
@@ -643,6 +656,7 @@
         "assets/sounds/sfx-sword.mp3",
         "assets/sounds/sfx-throw.mp3",
         "assets/sounds/sxf-heart.mp3",
+        "assets/sounds/sfx-death.mp3",
         "maps/cell-auto.json"
     ]
 }
