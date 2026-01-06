@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 823,
+    "save": 824,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -296,6 +296,18 @@
                 }
             },
             "verbs": {
+                "kill": {
+                    "down": {
+                        "offsetX": 368,
+                        "offsetY": 460
+                    }
+                },
+                "item": {
+                    "down": {
+                        "offsetX": 276,
+                        "offsetY": 460
+                    }
+                },
                 "face": {
                     "down": {
                         "offsetX": 0,
@@ -584,6 +596,90 @@
     ],
     "npcs": [
         {
+            "id": "moblin",
+            "name": "Moblin",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "verb": "walk",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "projectile": "arrow",
+            "hitbox": {
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
+            },
+            "stats": {
+                "power": 1,
+                "health": 3
+            },
+            "drops": [
+                {
+                    "id": "heart",
+                    "chance": 10
+                },
+                {
+                    "id": "green-rupee",
+                    "chance": 10
+                },
+                {
+                    "id": "blue-rupee",
+                    "chance": 5
+                }
+            ],
+            "verbs": {
+                "face": {
+                    "left": {
+                        "offsetX": 204,
+                        "offsetY": 340
+                    },
+                    "down": {
+                        "offsetX": 340,
+                        "offsetY": 340
+                    },
+                    "up": {
+                        "offsetX": 476,
+                        "offsetY": 340
+                    },
+                    "right": {
+                        "offsetX": 544,
+                        "offsetY": 340
+                    }
+                },
+                "walk": {
+                    "dur": 500,
+                    "left": {
+                        "offsetX": 136,
+                        "offsetY": 340,
+                        "stepsX": 2
+                    },
+                    "down": {
+                        "offsetX": 272,
+                        "offsetY": 340,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 408,
+                        "offsetY": 340,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 544,
+                        "offsetY": 340,
+                        "stepsX": 2
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "walk",
+                    "dir": "down"
+                }
+            ]
+        },
+        {
             "id": "octorok",
             "name": "Octorok",
             "width": 68,
@@ -592,14 +688,15 @@
             "verb": "walk",
             "maxv": 1,
             "controlmaxv": 1,
+            "projectile": "bullet",
             "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 68,
-                "height": 68
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
             },
             "stats": {
-                "power": 1,
+                "power": 0.25,
                 "health": 1
             },
             "drops": [
@@ -672,6 +769,7 @@
             "width": 68,
             "height": 68,
             "image": "assets/sprites/npcs.png",
+            "maxv": 1,
             "opacity": 0.75,
             "dir": "left",
             "hitbox": {
@@ -762,10 +860,10 @@
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 68,
-                "height": 68
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
             },
             "verbs": {
                 "face": {
@@ -810,10 +908,10 @@
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 0,
-                "y": 0,
-                "width": 68,
-                "height": 68
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
             },
             "verbs": {
                 "face": {
@@ -968,13 +1066,152 @@
             "states": [
                 {
                     "verb": "face",
-                    "dir": "down"
+                    "dir": "down",
+                    "action": {
+                        "verb": "read"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "grave",
+            "name": "Grave",
+            "width": 64,
+            "height": 64,
+            "image": "assets/tiles/tiles.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 64
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 448,
+                        "offsetY": 512
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "read",
+                        "dir": "up"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "dresser",
+            "name": "Dresser",
+            "width": 64,
+            "height": 96,
+            "image": "assets/tiles/inside.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 96
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 192,
+                        "offsetY": 256
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "read",
+                        "dir": "up"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "letter",
+            "name": "Letter",
+            "width": 56,
+            "height": 40,
+            "image": "assets/sprites/npcs.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 56,
+                "height": 40
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 412,
+                        "offsetY": 140
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "read",
+                        "dir": "down"
+                    }
                 }
             ]
         }
     ],
     "objects": [],
-    "projectiles": [],
+    "projectiles": [
+        {
+            "id": "bullet",
+            "name": "Bullet",
+            "image": "assets/sprites/npcs.png",
+            "width": 56,
+            "height": 60,
+            "offsetX": 552,
+            "offsetY": 278,
+            "power": 0.5
+        },
+        {
+            "id": "arrow",
+            "name": "Arrow",
+            "image": "assets/sprites/npcs.png",
+            "power": 1,
+            "dirs": {
+                "left": {
+                    "offsetX": 548,
+                    "offsetY": 208,
+                    "width": 64,
+                    "height": 32
+                },
+                "down": {
+                    "offsetX": 648,
+                    "offsetY": 208,
+                    "width": 32,
+                    "height": 64
+                },
+                "up": {
+                    "offsetX": 616,
+                    "offsetY": 208,
+                    "width": 32,
+                    "height": 64
+                },
+                "right": {
+                    "offsetX": 548,
+                    "offsetY": 240,
+                    "width": 64,
+                    "height": 32
+                }
+            }
+        }
+    ],
     "fx": [
         {
             "id": "smoke",
@@ -1006,6 +1243,28 @@
             "image": "assets/sprites/fx.png",
             "offsetX": 0,
             "offsetY": 128,
+            "stepsX": 4,
+            "dur": 750
+        },
+        {
+            "id": "grass-dead",
+            "name": "Grass Dead",
+            "width": 64,
+            "height": 64,
+            "image": "assets/sprites/fx.png",
+            "offsetX": 128,
+            "offsetY": 64,
+            "stepsX": 2,
+            "dur": 250
+        },
+        {
+            "id": "leaves-dead",
+            "name": "Leaves Dead",
+            "width": 64,
+            "height": 64,
+            "image": "assets/sprites/fx.png",
+            "offsetX": 0,
+            "offsetY": 192,
             "stepsX": 4,
             "dur": 750
         }
