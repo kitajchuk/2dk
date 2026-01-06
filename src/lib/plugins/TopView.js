@@ -375,9 +375,9 @@ class TopView extends GameBox {
 * Hero Handlers...
 *******************************************************************************/
     handleResetHeroDirs () {
-        DIRS.forEach( ( dir ) => {
-            this.player.controls[ dir ] = false;
-        });
+        for ( let i = DIRS.length; i--; ) {
+            this.player.controls[ DIRS[ i ] ] = false;
+        }
     }
 
 
@@ -698,11 +698,11 @@ class TopView extends GameBox {
                     const dpad = this.player.gamepad.checkDpad();
 
                     if ( dpad.length ) {
-                        dpad.forEach( ( ctrl ) => {
-                            ctrl.dpad.forEach( ( dir ) => {
-                                this.player.controls[ dir ] = true;
-                            });
-                        });
+                        for ( let j = dpad.length; j--; ) {
+                            for ( let k = dpad[ j ].dpad.length; k--; ) {
+                                this.player.controls[ dpad[ j ].dpad[ k ] ] = true;
+                            }
+                        }
                     }
                 }
             },
@@ -1073,9 +1073,9 @@ class TopView extends GameBox {
         }, 0 ) );
 
         if ( frictionTiles.length && frictionAmount >= 100 ) {
-            frictionTiles.forEach( ( tile ) => {
-                this.hero.physics.maxv = this.hero.physics.controlmaxv / tile.instance.data.friction;
-            });
+            for ( let i = frictionTiles.length; i--; ) {
+                this.hero.physics.maxv = this.hero.physics.controlmaxv / frictionTiles[ i ].instance.data.friction;
+            }
 
         } else if ( this.hero.canResetMaxV() ) {
             this.hero.resetMaxV();

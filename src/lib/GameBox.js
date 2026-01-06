@@ -53,13 +53,13 @@ export default class GameBox {
             this.hero = new Hero( initHeroData, this.map );
 
             // Sounds
-            Object.keys( this.player.data.sounds ).forEach( ( id ) => {
+            for ( const id in this.player.data.sounds ) {
                 this.player.gameaudio.addSound({
                     id,
                     src: this.player.data.sounds[ id ],
                     channel: "sfx",
                 });
-            });
+            }
 
             // Companion?
             if ( initHeroData.companion ) {
@@ -487,14 +487,16 @@ export default class GameBox {
         };
         const activeTiles = this.getVisibleActiveTiles();
 
-        activeTiles.forEach( ( instance ) => {
+        for ( let i = activeTiles.length; i--; ) {
+            const instance = activeTiles[ i ];
             // Ad-hoc "sprite" object with { x, y, width, height }
             // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
             const isInstance = ( Utils.func( sprite.getFootbox ) && Utils.func( sprite.getHitbox ) );
             const isFootTile = footTiles.indexOf( instance.data.group ) !== -1;
             const lookbox = isInstance ? isFootTile ? sprite.getFootbox( poi ) : sprite.getHitbox( poi ) : sprite;
 
-            instance.pushed.forEach( ( coord ) => {
+            for ( let j = instance.pushed.length; j--; ) {
+                const coord = instance.pushed[ j ];
                 const tilebox = {
                     width: this.map.data.tilesize,
                     height: this.map.data.tilesize,
@@ -537,14 +539,10 @@ export default class GameBox {
                         tiles.passive.push( match );
                     }
                 }
-            });
-        });
-
-        if ( tiles.action.length || tiles.attack.length || tiles.passive.length ) {
-            return tiles
+            }
         }
 
-        return false;
+        return ( tiles.action.length || tiles.attack.length || tiles.passive.length ) ? tiles : false;
     }
 
 
@@ -555,13 +553,13 @@ export default class GameBox {
             this.companion.handleQuestFlagCheck( quest );
         }
 
-        this.map.doors.forEach( ( door ) => {
-            door.handleQuestFlagCheck( quest );
-        });
+        for ( let i = this.map.doors.length; i--; ) {
+            this.map.doors[ i ].handleQuestFlagCheck( quest );
+        }
 
-        this.map.npcs.forEach( ( npc ) => {
-            npc.handleQuestFlagCheck( quest );
-        });
+        for ( let i = this.map.npcs.length; i--; ) {
+            this.map.npcs[ i ].handleQuestFlagCheck( quest );
+        }
     }
 
 
@@ -716,36 +714,34 @@ export class Camera {
 
 export class RenderQueue {
     constructor () {
-        this.queue = [];
+        this.blit();
     }
 
 
     blit () {
-        this.queue = [];
+        this.background = [];
+        this.heroground = [];
+        this.foreground = [];
     }
 
 
     // Supports anything with a "render" method and a "layer" property
     add ( sprite ) {
-        this.queue.push( sprite );
+        this[ sprite.layer ].push( sprite );
     }
 
 
     render () {
-        this.queue.filter( ( sprite ) => {
-            return sprite.layer === "background";
-        }).forEach( ( sprite ) => {
-            sprite.render();
-        });
-        this.queue.filter( ( sprite ) => {
-            return sprite.layer === "heroground";
-        }).forEach( ( sprite ) => {
-            sprite.render();
-        });
-        this.queue.filter( ( sprite ) => {
-            return sprite.layer === "foreground";
-        }).forEach( ( sprite ) => {
-            sprite.render();
-        });
+        for ( let i = this.background.length; i--; ) {
+            this.background[ i ].render();
+        }
+
+        for ( let i = 0; i < this.heroground.length; i++ ) {
+            this.heroground[ i ].render();
+        }
+
+        for ( let i = this.foreground.length; i--; ) {
+            this.foreground[ i ].render();
+        }
     }
 }

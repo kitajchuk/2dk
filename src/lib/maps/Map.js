@@ -47,39 +47,39 @@ class Map {
 
 
     destroy () {
-        Object.keys( this.layers ).forEach( ( id ) => {
+        for ( const id in this.layers ) {
             this.layers[ id ].offCanvas.destroy();
-        });
+        }
         this.layers = null;
 
-        this.activeTiles.forEach( ( activeTiles ) => {
-            activeTiles.destroy();
-        });
+        for ( let i = this.activeTiles.length; i--; ) {
+            this.activeTiles[ i ].destroy();
+        }
         this.activeTiles = null;
 
-        this.npcs.forEach( ( npc ) => {
-            npc.destroy();
-        });
+        for ( let i = this.npcs.length; i--; ) {
+            this.npcs[ i ].destroy();
+        }
         this.npcs = null;
 
-        this.doors.forEach( ( door ) => {
-            door.destroy();
-        });
+        for ( let i = this.doors.length; i--; ) {
+            this.doors[ i ].destroy();
+        }
         this.doors = null;
 
-        this.fx.forEach( ( fx ) => {
-            fx.destroy();
-        });
+        for ( let i = this.fx.length; i--; ) {
+            this.fx[ i ].destroy();
+        }
         this.fx = null;
 
-        this.items.forEach( ( item ) => {
-            item.destroy();
-        });
+        for ( let i = this.items.length; i--; ) {
+            this.items[ i ].destroy();
+        }
         this.items = null;
 
-        this.sprites.forEach( ( sprite ) => {
-            sprite.destroy();
-        });
+        for ( let i = this.sprites.length; i--; ) {
+            this.sprites[ i ].destroy();
+        }
         this.sprites = null;
 
         this.image = null;
@@ -88,33 +88,29 @@ class Map {
 
     initialize () {
         // Texture layers
-        Object.keys( this.layers ).forEach( ( id ) => {
+        for ( const id in this.layers ) {
             this.addLayer( id );
-        });
+        }
 
         // FX
-        this.data.fx.forEach( ( data ) => {
-            this.fx.push( new FX( this.player.getMergedData( data, "fx", true ), this ) );
-        });
+        for ( let i = this.data.fx.length; i--; ) {
+            this.fx.push( new FX( this.player.getMergedData( this.data.fx[ i ], "fx", true ), this ) );
+        }
 
-        // Doors
-        this.data.npcs.filter( ( npc ) => {
-            return npc.type === Config.npc.types.DOOR;
-        }).forEach( ( data ) => {
-            this.doors.push( new Door( this.player.getMergedData( data, "npcs" ), this ) );
-        });
-
-        // NPCs
-        this.data.npcs.filter( ( npc ) => {
-            return !npc.type || npc.type !== Config.npc.types.DOOR;
-        }).forEach( ( data ) => {
-            this.npcs.push( new NPC( this.player.getMergedData( data, "npcs" ), this ) );
-        });
+        // NPCs and Doors
+        for ( let i = this.data.npcs.length; i--; ) {
+            if ( this.data.npcs[ i ].type === Config.npc.types.DOOR ) {
+                this.doors.push( new Door( this.player.getMergedData( this.data.npcs[ i ], "npcs" ), this ) );
+    
+            } else {
+                this.npcs.push( new NPC( this.player.getMergedData( this.data.npcs[ i ], "npcs" ), this ) );
+            }
+        }
 
         // Tiles
-        this.data.tiles.forEach( ( data ) => {
-            this.activeTiles.push( new ActiveTiles( data, this ) );
-        });
+        for ( let i = this.data.tiles.length; i--; ) {
+            this.activeTiles.push( new ActiveTiles( this.data.tiles[ i ], this ) );
+        }
     }
 
 
@@ -140,54 +136,54 @@ class Map {
 * Map data order is: tiles, objects, hero, npcs, fx
 *******************************************************************************/
     blit ( elapsed ) {
-        this.activeTiles.forEach( ( activeTiles ) => {
-            activeTiles.blit( elapsed );
-        });
+        for ( let i = this.activeTiles.length; i--; ) {
+            this.activeTiles[ i ].blit( elapsed );
+        }
 
-        this.npcs.forEach( ( npc ) => {
-            npc.blit( elapsed );
-        });
+        for ( let i = this.npcs.length; i--; ) {
+            this.npcs[ i ].blit( elapsed );
+        }
 
-        this.doors.forEach( ( door ) => {
-            door.blit( elapsed );
-        });
+        for ( let i = this.doors.length; i--; ) {
+            this.doors[ i ].blit( elapsed );
+        }
 
-        this.fx.forEach( ( fx ) => {
-            fx.blit( elapsed );
-        });
+        for ( let i = this.fx.length; i--; ) {
+            this.fx[ i ].blit( elapsed );
+        }
 
-        this.sprites.forEach( ( sprite ) => {
-            sprite.blit( elapsed );
-        });
+        for ( let i = this.sprites.length; i--; ) {
+            this.sprites[ i ].blit( elapsed );
+        }
 
-        this.items.forEach( ( item ) => {
-            item.blit( elapsed );
-        });
+        for ( let i = this.items.length; i--; ) {
+            this.items[ i ].blit( elapsed );
+        }
     }
 
 
     update ( offset ) {
         this.offset = offset;
 
-        this.npcs.forEach( ( npc ) => {
-            npc.update();
-        });
+        for ( let i = this.npcs.length; i--; ) {
+            this.npcs[ i ].update();
+        }
 
-        this.doors.forEach( ( door ) => {
-            door.update();
-        });
+        for ( let i = this.doors.length; i--; ) {
+            this.doors[ i ].update();
+        }
 
-        this.fx.forEach( ( fx ) => {
-            fx.update();
-        });
+        for ( let i = this.fx.length; i--; ) {
+            this.fx[ i ].update();
+        }
 
-        this.sprites.forEach( ( sprite ) => {
-            sprite.update();
-        });
+        for ( let i = this.sprites.length; i--; ) {
+            this.sprites[ i ].update();
+        }
 
-        this.items.forEach( ( item ) => {
-            item.update();
-        });
+        for ( let i = this.items.length; i--; ) {
+            this.items[ i ].update();
+        }
     }
 
 
@@ -214,6 +210,7 @@ class Map {
     }
 
 
+    // TODO: This could be better optimized...
     renderSprites ( hero, companion ) {
         const sprites = [
             hero,
@@ -229,29 +226,28 @@ class Map {
         }
 
         sprites.sort( ( a, b ) => {
-            const ay = a.position.y + a.height;
-            const by = b.position.y + b.height;
-            return ay - by;
-
-        }).forEach( ( sprite ) => {
-            this.gamebox.renderQueue.add( sprite );
+            return ( a.position.y + a.height ) - ( b.position.y + b.height );
         });
+
+        for ( let i = 0; i < sprites.length; i++ ) {
+            this.gamebox.renderQueue.add( sprites[ i ] );
+        }
     }
 
 
     renderDebug () {
         const visibleColliders = this.gamebox.getVisibleColliders();
 
-        visibleColliders.forEach( ( collider ) => {
+        for ( let i = visibleColliders.length; i--; ) {
             this.gamebox.mapLayer.context.globalAlpha = 0.5;
             this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
             this.gamebox.mapLayer.context.fillRect(
-                this.offset.x + ( collider[ 0 ] * this.data.collider ),
-                this.offset.y + ( collider[ 1 ] * this.data.collider ),
+                this.offset.x + ( visibleColliders[ i ][ 0 ] * this.data.collider ),
+                this.offset.y + ( visibleColliders[ i ][ 1 ] * this.data.collider ),
                 this.data.collider,
                 this.data.collider
             );
-        });
+        }
 
         this.gamebox.mapLayer.context.globalAlpha = 1.0;
     }
@@ -283,9 +279,9 @@ class Map {
 
 
     clear () {
-        Object.keys( this.layers ).forEach( ( id ) => {
+        for ( const id in this.layers ) {
             this.layers[ id ].offCanvas.clear();
-        });
+        }
     }
 
 
@@ -319,7 +315,7 @@ class Map {
         const width = ( renderBox.width / this.data.tilesize );
         const ret = {};
 
-        Object.keys( this.data.textures ).forEach( ( id ) => {
+        for ( const id in this.data.textures ) {
             let y = 0;
 
             ret[ id ] = [];
@@ -364,7 +360,7 @@ class Map {
 
                 y++;
             }
-        });
+        }
 
         return ret;
     }

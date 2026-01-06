@@ -32,11 +32,11 @@ const Utils = {
         base = structuredClone( base );
         pr = structuredClone( pr );
 
-        Object.keys( pr ).forEach( ( i ) => {
+        for ( const i in pr ) {
             if ( !base[ i ] || f ) {
                 base[ i ] = pr[ i ];
             }
-        });
+        }
 
         return base;
     },

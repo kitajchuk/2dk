@@ -278,14 +278,9 @@ export default class NPC extends Sprite {
             this.aiCounter--;
         }
 
-        DIRS.forEach( ( dir ) => {
-            if ( dir === this.dir ) {
-                this.controls[ dir ] = true;
-
-            } else {
-                this.controls[ dir ] = false;
-            }
-        });
+        for ( let i = DIRS.length; i--; ) {
+            this.controls[ DIRS[ i ] ] = ( DIRS[ i ] === this.dir );
+        }
     }
 
 

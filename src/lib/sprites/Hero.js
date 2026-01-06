@@ -306,15 +306,15 @@ export default class Hero extends Sprite {
         }
 
         if ( collision.tiles && collision.tiles.attack.length ) {
-            collision.tiles.attack.forEach( ( tile ) => {
-                if ( tile.attack ) {
-                    const attackAction = tile.instance.canAttack();
+            for ( let i = collision.tiles.attack.length; i--; ) {
+                if ( collision.tiles.attack[ i ].attack ) {
+                    const attackAction = collision.tiles.attack[ i ].instance.canAttack();
 
                     if ( attackAction ) {
-                        tile.instance.attack( tile.coord, attackAction );
+                        collision.tiles.attack[ i ].instance.attack( collision.tiles.attack[ i ].coord, attackAction );
                     }
                 }
-            });
+            }
         }
     }
 
