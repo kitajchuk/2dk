@@ -10,6 +10,7 @@ class Dialogue {
         this.ready = false;
         this.pressed = false;
         this.active = false;
+        this.isAuto = false;
         this.isResolve = false;
         this.resolve = null;
         this.reject = null;
@@ -62,7 +63,8 @@ class Dialogue {
         }
 
         this.clearTimeout();
-
+        
+        this.isAuto = true;
         this.data = structuredClone( data );
         this.element.classList.add( "is-texting" );
         this.writeText( this.data.text.shift() );
@@ -74,7 +76,7 @@ class Dialogue {
 
 
     play ( data ) {
-        if ( this.active ) {
+        if ( this.active || this.isAuto ) {
             this.reset();
         }
 
@@ -194,6 +196,7 @@ class Dialogue {
         this.data = null;
         this.ready = false;
         this.pressed = false;
+        this.isAuto = false;
         this.isResolve = false;
         this.resolve = null;
         this.reject = null;
