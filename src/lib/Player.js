@@ -362,6 +362,10 @@ class Player extends Controller {
 
 
     onPressStart () {
+        if ( this.gamebox?.hero?.killed ) {
+            return;
+        }
+
         if ( !this.ready ) {
             this.onReady();
         }

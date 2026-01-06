@@ -130,7 +130,7 @@ export default class Sprite {
         this.face( this.dir );
 
         if ( this.stats ) {
-            this.stats.health -= power;
+            this.stats.health = Math.max( this.stats.health - power, 0 );
         }
     }
 

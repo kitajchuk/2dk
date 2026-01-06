@@ -4,24 +4,41 @@ import Sprite from "./Sprite";
 
 
 export default class Projectile extends Sprite {
-    constructor ( projectile, spawn, dir, npc, map ) {
+    constructor ( projectile, dir, npc, map ) {
+        const width = projectile.dirs ? projectile.dirs[ dir ].width : projectile.width;
+        const height = projectile.dirs ? projectile.dirs[ dir ].height : projectile.height;
+        const spawn = {
+            x: npc.position.x + ( npc.width / 2 ) - ( width / 2 ),
+            y: npc.position.y + ( npc.height / 2 ) - ( height / 2 ),
+        }
+        const hitbox = {
+            x: 0,
+            y: 0,
+            width,
+            height,
+        }
+        const verbs = projectile.dirs ? {
+            face: {
+                down: projectile.dirs.down,
+                up: projectile.dirs.up,
+                left: projectile.dirs.left,
+                right: projectile.dirs.right,
+            },
+        } : {
+            face: {
+                [dir]: {
+                    offsetX: projectile.offsetX,
+                    offsetY: projectile.offsetY,
+                },
+            },
+        }
         const data = {
             dir,
             spawn,
-            hitbox: {
-                x: 0,
-                y: 0,
-                width: projectile.width,
-                height: projectile.height,
-            },
-            verbs: {
-                face: {
-                    [dir]: {
-                        offsetX: projectile.offsetX,
-                        offsetY: projectile.offsetY,
-                    },
-                },
-            },
+            width,
+            height,
+            hitbox,
+            verbs,
             ...projectile,
         };
         super( data, map );
@@ -35,6 +52,7 @@ export default class Projectile extends Sprite {
         }
 
         this.controls[ this.dir ] = true;
+
         this.handleControls();
         this.updateStack();
     }

@@ -572,6 +572,30 @@
                 "y": 256
             },
             "ai": "wander"
+        },
+        {
+            "id": "moblin",
+            "spawn": {
+                "x": 93,
+                "y": 1054
+            },
+            "ai": "roam",
+            "type": "enemy",
+            "action": {
+                "verb": "attack"
+            }
+        },
+        {
+            "id": "moblin",
+            "spawn": {
+                "x": 444,
+                "y": 1435
+            },
+            "ai": "roam",
+            "type": "enemy",
+            "action": {
+                "verb": "attack"
+            }
         }
     ],
     "objects": [],

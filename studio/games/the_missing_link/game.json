@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 338,
+    "save": 343,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -602,15 +602,131 @@
         {
             "id": "bullet",
             "name": "Bullet",
+            "image": "assets/sprites/npcs.png",
             "width": 56,
             "height": 60,
-            "image": "assets/sprites/npcs.png",
             "offsetX": 552,
             "offsetY": 278,
-            "power": 1
+            "power": 0.5
+        },
+        {
+            "id": "arrow",
+            "name": "Arrow",
+            "image": "assets/sprites/npcs.png",
+            "power": 1,
+            "dirs": {
+                "left": {
+                    "offsetX": 548,
+                    "offsetY": 208,
+                    "width": 64,
+                    "height": 32
+                },
+                "down": {
+                    "offsetX": 648,
+                    "offsetY": 208,
+                    "width": 32,
+                    "height": 64
+                },
+                "up": {
+                    "offsetX": 616,
+                    "offsetY": 208,
+                    "width": 32,
+                    "height": 64
+                },
+                "right": {
+                    "offsetX": 548,
+                    "offsetY": 240,
+                    "width": 64,
+                    "height": 32
+                }
+            }
         }
     ],
     "npcs": [
+        {
+            "id": "moblin",
+            "name": "Moblin",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "verb": "walk",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "projectile": "arrow",
+            "hitbox": {
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
+            },
+            "stats": {
+                "power": 1,
+                "health": 3
+            },
+            "drops": [
+                {
+                    "id": "heart",
+                    "chance": 10
+                },
+                {
+                    "id": "green-rupee",
+                    "chance": 10
+                },
+                {
+                    "id": "blue-rupee",
+                    "chance": 5
+                }
+            ],
+            "verbs": {
+                "face": {
+                    "left": {
+                        "offsetX": 204,
+                        "offsetY": 340
+                    },
+                    "down": {
+                        "offsetX": 340,
+                        "offsetY": 340
+                    },
+                    "up": {
+                        "offsetX": 476,
+                        "offsetY": 340
+                    },
+                    "right": {
+                        "offsetX": 544,
+                        "offsetY": 340
+                    }
+                },
+                "walk": {
+                    "dur": 500,
+                    "left": {
+                        "offsetX": 136,
+                        "offsetY": 340,
+                        "stepsX": 2
+                    },
+                    "down": {
+                        "offsetX": 272,
+                        "offsetY": 340,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 408,
+                        "offsetY": 340,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 544,
+                        "offsetY": 340,
+                        "stepsX": 2
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "walk",
+                    "dir": "down"
+                }
+            ]
+        },
         {
             "id": "octorok",
             "name": "Octorok",

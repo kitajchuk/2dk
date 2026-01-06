@@ -192,7 +192,7 @@ export default class NPC extends Sprite {
         if ( isCollision ) {
             // Let wandering NPCs cool down before moving again
             // While roaming NPCs can immediately move again
-            if ( this.data.ai === Config.npc.ai.ROAM ) {
+            if ( this.data.ai === Config.npc.ai.ROAM || this.data.ai === Config.npc.ai.WALK ) {
                 this.aiCounter = 0;
             }
             
@@ -245,47 +245,12 @@ export default class NPC extends Sprite {
     }
 
 
-    handleProjectile () {
-        if ( !this.data.projectile ) {
-            return;
-        }
-
-        if ( this.projectile ) {
-            return;
-        }
-
-        if ( this.projectileCounter > 0 ) {
-            this.projectileCounter--;
-
-            if ( this.projectileCounter === 0 ) {
-                const chance = Utils.random( 0, 100 );
-
-                if ( chance <= 25 ) {
-                    const data = this.gamebox.player.getMergedData({
-                        id: this.data.projectile,
-                    }, "projectiles" );
-
-                    const spawn = {
-                        x: this.position.x + ( this.width / 2 ) - ( data.width / 2 ),
-                        y: this.position.y + ( this.height / 2 ) - ( data.height / 2 ),
-                    }
-
-                    this.projectile = new Projectile( data, spawn, this.dir, this, this.map );
-
-                    this.map.addObject( "sprites", this.projectile );
-                    this.gamebox.smokeObject( this );
-                    this.player.gameaudio.hitSound( Config.verbs.SMASH );
-                }
-
-                this.projectileCounter = 120;
-            }
-        }
-    }
-
-
     handleRoam () {
         if ( !this.aiCounter ) {
-            this.aiCounter = Utils.random( 60, 120 );
+            const min = this.data.ai === Config.npc.ai.WALK ? 240 : 120;
+            const max = this.data.ai === Config.npc.ai.WALK ? 360 : 240;
+
+            this.aiCounter = Utils.random( min, max );
 
             const lastDir = this.dir;
             const newDir = DIRS[ Utils.random( 0, DIRS.length - 1 ) ];
@@ -387,6 +352,38 @@ export default class NPC extends Sprite {
         }
     }
 
+
+    handleProjectile () {
+        if ( !this.data.projectile ) {
+            return;
+        }
+
+        if ( this.projectile ) {
+            return;
+        }
+
+        if ( this.projectileCounter > 0 ) {
+            this.projectileCounter--;
+
+            if ( this.projectileCounter === 0 ) {
+                const chance = Utils.random( 0, 100 );
+
+                if ( chance <= 25 ) {
+                    const data = this.gamebox.player.getMergedData({
+                        id: this.data.projectile,
+                    }, "projectiles" );
+
+                    this.projectile = new Projectile( data, this.dir, this, this.map );
+
+                    this.map.addObject( "sprites", this.projectile );
+                    this.gamebox.smokeObject( this );
+                    this.player.gameaudio.hitSound( Config.verbs.SMASH );
+                }
+
+                this.projectileCounter = 120;
+            }
+        }
+    }
 
 
 /*******************************************************************************

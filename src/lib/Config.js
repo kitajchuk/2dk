@@ -82,6 +82,7 @@ const Config = {
             ROAM: "roam",
             FLOAT: "float",
             WANDER: "wander",
+            FACE: "face",
         },
         types: {
             DOOR: "door",
