@@ -40,6 +40,12 @@ export default class NPC extends Sprite {
     }
 
 
+    hit ( ...args ) {
+        super.hit( ...args );
+        this.aiCounter = 0;
+    }
+
+
     setState ( index ) {
         if ( !this.states.length ) {
             return;

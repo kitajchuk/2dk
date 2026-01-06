@@ -123,10 +123,10 @@ export default class Sprite {
 
 
     hit ( power = 1, timer = 50 ) {
-        this.counter = 0;
         this.hitTimer = timer;
         this.stillTimer = timer;
         this.resetPhysics();
+        this.face( this.dir );
 
         if ( this.stats ) {
             this.stats.health = Math.max( this.stats.health - power, 0 );
