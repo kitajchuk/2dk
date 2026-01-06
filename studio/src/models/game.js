@@ -26,6 +26,11 @@ module.exports = {
     release: 1.0,
     plugin: "topview",
     currency: "",
+    intro: {
+        image: "",
+        music: "",
+        text: [],
+    },
     sounds: {},
     // Hero reference
     hero: {

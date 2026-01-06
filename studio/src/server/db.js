@@ -46,6 +46,7 @@ class DB {
             sprites: path.join( this.gameRoot, "assets", "sprites" ),
             sounds: path.join( this.gameRoot, "assets", "sounds" ),
             snapshots: path.join( this.gameRoot, "assets", "snapshots" ),
+            scenes: path.join( this.gameRoot, "assets", "scenes" ),
         };
         this.cache = new Cache();
 
@@ -81,6 +82,10 @@ class DB {
             utils.readDir( this.files.sounds ).then( ( sounds ) => {
                 this.cache.set( "sounds", sounds );
                 this.logInfo( "loaded sounds" );
+            }),
+            utils.readDir( this.files.scenes ).then( ( scenes ) => {
+                this.cache.set( "scenes", scenes );
+                this.logInfo( "loaded scenes" );
             }),
         ]);
 
@@ -478,6 +483,11 @@ class DB {
             bundle.push( `assets/sounds/${sound}` );
         });
 
+        this.cache.get( "scenes" ).forEach( ( scene ) => {
+            caches.push( `    "assets/scenes/${scene}",` );
+            bundle.push( `assets/scenes/${scene}` );
+        });
+
         this.cache.get( "maps" ).forEach( ( map ) => {
             caches.push( `    "maps/${map.id}.json",` );
             bundle.push( `maps/${map.id}.json` );
@@ -634,6 +644,7 @@ class DB {
                 utils.makeDir( path.join( assetsDir, "tiles" ) );
                 utils.makeDir( path.join( assetsDir, "sprites" ) );
                 utils.makeDir( path.join( assetsDir, "sounds" ) );
+                utils.makeDir( path.join( assetsDir, "scenes" ) );
                 utils.makeDir( path.join( assetsDir, "snapshots" ) );
                 utils.copyFile( path.join( paths.templates, "icon.png" ), path.join( gameDir, "icon.png" ) );
 

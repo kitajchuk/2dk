@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 345,
+    "save": 346,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -35,6 +35,17 @@
         "rupee": "assets/sounds/sfx-rupee.mp3",
         "heart": "assets/sounds/sfx-heart.mp3",
         "death": "assets/sounds/sfx-death.mp3"
+    },
+    "intro": {
+        "image": "assets/scenes/logo.png",
+        "music": "assets/sounds/bgm-intro-theme.mp3",
+        "text": [
+            "Over the generations, throughout time, this land gave birth to heroes.",
+            "Links to peace within the realm. Heroes of time over and again.",
+            "But, time cannot be trusted. It's Links are not always connected.",
+            "As the years pass, darkness spreads across the land.",
+            "The search for the missing Link begins."
+        ]
     },
     "hero": {
         "sprite": 0,
@@ -1305,6 +1316,7 @@
         "assets/sounds/sfx-smash.mp3",
         "assets/sounds/sfx-sword.mp3",
         "assets/sounds/sfx-throw.mp3",
+        "assets/scenes/logo.png",
         "maps/beneath-the-grave.json",
         "maps/beneath-the-rooster.json",
         "maps/master-shinjis-house.json",
