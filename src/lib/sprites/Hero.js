@@ -31,6 +31,7 @@ export default class Hero extends Sprite {
     hit ( ...args ) {
         super.hit( ...args );
         this.physics.vz = -6;
+        this.face( this.dir );
     }
 
 
