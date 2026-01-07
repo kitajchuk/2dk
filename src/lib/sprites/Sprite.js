@@ -405,7 +405,7 @@ export default class Sprite {
         // Useful for ensuring clean maths below for cycles like attacking...
         if ( this.resetElapsed ) {
             this.resetElapsed = false;
-            this.previousElapsed = null;
+            this.previousElapsed = elapsed;
         }
 
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
