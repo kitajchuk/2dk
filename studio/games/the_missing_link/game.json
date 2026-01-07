@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 349,
+    "save": 370,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -559,6 +559,16 @@
             "offsetX": 82,
             "offsetY": 0,
             "verb": "jump"
+        },
+        {
+            "id": "bow",
+            "name": "Bow",
+            "width": 24,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 20,
+            "offsetY": 132,
+            "projectile": "arrow"
         },
         {
             "id": "green-rupee",
@@ -1320,6 +1330,7 @@
         "maps/beneath-the-grave.json",
         "maps/beneath-the-rooster.json",
         "maps/master-shinjis-house.json",
+        "maps/under-the-plateau.json",
         "maps/unknown-corner-of-the-world.json"
     ]
 }
