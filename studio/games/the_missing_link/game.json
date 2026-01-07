@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 373,
+    "save": 374,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -637,6 +637,8 @@
             "name": "Arrow",
             "image": "assets/sprites/npcs.png",
             "power": 1,
+            "fx": "smoke",
+            "sound": "smash",
             "dirs": {
                 "left": {
                     "offsetX": 548,

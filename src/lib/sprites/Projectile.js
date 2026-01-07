@@ -95,18 +95,6 @@ export default class Projectile extends Sprite {
 
     applyPosition () {
         const poi = this.getNextPoi();
-
-        if ( this.hitCounter > 0 ) {
-            this.hitCounter--;
-            this.position = poi;
-
-            if ( this.hitCounter === 0 ) {
-                this.kill();
-            }
-
-            return;
-        }
-
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
             hero: this.gamebox.checkHero( poi, this ),
@@ -120,7 +108,7 @@ export default class Projectile extends Sprite {
                 this.gamebox.hero.hit( this.data.power );
             }
             
-            this.hitCounter = 4;
+            this.kill();
 
             return;
         }

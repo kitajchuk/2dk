@@ -949,7 +949,10 @@ class TopView extends GameBox {
         this.attacking = true;
         this.hero.resetElapsed = true;
         this.hero.cycle( Config.verbs.ATTACK, this.hero.dir );
-        this.player.gameaudio.hitSound( Config.verbs.ATTACK );
+        
+        if ( isWeapon ) {
+            this.player.gameaudio.hitSound( Config.verbs.ATTACK );
+        }
 
         setTimeout( () => {
             this.hero.face( this.hero.dir );

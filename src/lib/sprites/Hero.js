@@ -617,18 +617,6 @@ export class HeroProjectile extends Projectile {
 
     applyPosition () {
         const poi = this.getNextPoi();
-
-        if ( this.hitCounter > 0 ) {
-            this.hitCounter--;
-            this.position = poi;
-
-            if ( this.hitCounter === 0 ) {
-                this.kill();
-            }
-
-            return;
-        }
-
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
             npc: this.gamebox.checkNPC( poi, this ),
@@ -642,7 +630,7 @@ export class HeroProjectile extends Projectile {
                 collision.npc.hit( this.data.power );
             }
 
-            this.hitCounter = 4;
+            this.kill();
 
             return;
         }
