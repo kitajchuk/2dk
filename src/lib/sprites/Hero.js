@@ -351,6 +351,10 @@ export default class Hero extends Sprite {
             this.killed = true;
             this.stillTimer = Infinity;
             this.deathCounter = 240;
+
+            if ( this.maskFX ) {
+                this.maskFX.paused = true;
+            }
             
             if ( this.data.verbs.kill?.down ) {
                 this.cycle( "kill", "down" );
