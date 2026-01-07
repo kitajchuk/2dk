@@ -9,6 +9,10 @@ import Config from "../Config";
 *******************************************************************************/
 export default class FX extends Sprite {
     constructor ( data, map ) {
+        if ( data.type === Config.npc.ai.FLOAT ) {
+            data.layer = "foreground";
+        }
+
         super( data, map );
         this.paused = false;
     }

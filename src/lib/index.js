@@ -1,7 +1,7 @@
 import TopView from "./plugins/TopView";
 import FX from "./sprites/FX";
 import NPC from "./sprites/NPC";
-import Hero, { ItemGet, LiftedTile } from "./sprites/Hero";
+import Hero, { ItemGet, LiftedTile, HeroProjectile } from "./sprites/Hero";
 import Sprite from "./sprites/Sprite";
 import Companion from "./sprites/Companion";
 import ItemDrop from "./sprites/ItemDrop";
@@ -35,7 +35,7 @@ const lib = {
     // sprites
     FX,
     NPC,
-    Hero, ItemGet, LiftedTile,
+    Hero, ItemGet, LiftedTile, HeroProjectile,
     Door,
     Sprite,
     ItemDrop,
