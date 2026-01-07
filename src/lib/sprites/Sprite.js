@@ -424,6 +424,7 @@ export default class Sprite {
                         this.previousElapsed = null;
 
                         if ( this.data.verbs[ this.verb ].stop ) {
+                            this.frame = this.data.verbs[ this.verb ][ this.dir ].stepsX - 1;
                             this.frameStopped = true;
 
                         } else {
