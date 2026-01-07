@@ -36,8 +36,9 @@ class GameAudio {
             return;
         }
 
-        this.channels.bgm.node.pause();
-        this.channels.sfx.node.pause();
+        for ( const id in this.sounds ) {
+            this.stopSound( id );
+        }
     }
 
 

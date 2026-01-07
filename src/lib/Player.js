@@ -31,7 +31,6 @@ class Player extends Controller {
             up: false,
             down: false,
         };
-        this.previousElapsed = null;
     }
 
 
@@ -53,7 +52,6 @@ class Player extends Controller {
         this.initialize();
         this.element.classList.remove( "is-started", "is-fader" );
         this.gamebox = null;
-        this.gameaudio = null;
     }
 
 
@@ -120,6 +118,7 @@ class Player extends Controller {
             Promise.all( resources ).then( () => {
                 this.splashLoad.innerHTML = this.getSplash( "Press Start" );
                 this.gamepad = new GamePad( this );
+                this.gameaudio = new GameAudio( this.device );
 
                 this.bind();
                 Promise.resolve();
@@ -300,21 +299,18 @@ class Player extends Controller {
             this.ready = true;
             this.element.classList.add( "is-started" );
 
-            this.gameaudio = new GameAudio( this.device );
-
             if ( this.data.plugin === Config.plugins.TOPVIEW ) {
-                this.gamebox = new TopView( this );
+                this.gamebox = new TopView(
+                    this,
+                    // Game cycle (requestAnimationFrame)
+                    this.go.bind( this, this.onGameBlit.bind( this ) )
+                );
             }
-
-            // Game cycle (requestAnimationFrame)
-            this.go( this.onGameBlit.bind( this ) );
         }
     }
 
 
     onGameBlit ( elapsed ) {
-        this.previousElapsed = elapsed;
-
         // Rendering happens if NOT stopped
         if ( !this.stopped ) {
             this.gamebox.blit( elapsed );
@@ -335,11 +331,11 @@ class Player extends Controller {
                 );
 
             } else {
-                dpad.forEach( ( ctrl ) => {
-                    ctrl.dpad.forEach( ( dir ) => {
-                        this.gamebox.pressD( dir );
-                    });
-                });
+                for ( let i = dpad.length; i--; ) {
+                    for ( let j = dpad[ i ].dpad.length; j--; ) {
+                        this.gamebox.pressD( dpad[ i ].dpad[ j ] );
+                    }
+                }
             }
 
             // Action buttons

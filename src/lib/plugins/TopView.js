@@ -9,8 +9,8 @@ import { LiftedTile } from "../sprites/Hero";
 
 
 class TopView extends GameBox {
-    constructor ( player ) {
-        super( player );
+    constructor ( player, onReady ) {
+        super( player, onReady );
 
         // Interactions
         this.interact = {
@@ -698,9 +698,9 @@ class TopView extends GameBox {
                     const dpad = this.player.gamepad.checkDpad();
 
                     if ( dpad.length ) {
-                        for ( let j = dpad.length; j--; ) {
-                            for ( let k = dpad[ j ].dpad.length; k--; ) {
-                                this.player.controls[ dpad[ j ].dpad[ k ] ] = true;
+                        for ( let i = dpad.length; i--; ) {
+                            for ( let j = dpad[ i ].dpad.length; j--; ) {
+                                this.player.controls[ dpad[ i ].dpad[ j ] ] = true;
                             }
                         }
                     }

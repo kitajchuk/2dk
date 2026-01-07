@@ -14,8 +14,9 @@ import ItemDrop from "./sprites/ItemDrop";
 
 
 export default class GameBox {
-    constructor ( player ) {
+    constructor ( player, onReady ) {
         this.player = player;
+        this.onReady = onReady;
         this.step = 1;
         this.dropin = false;
         this.offset = {
@@ -72,6 +73,7 @@ export default class GameBox {
                 this.companion = new Companion( initHeroData.companion, this.hero );
             }
 
+            this.onReady();
             this.initMap();
         };
 
