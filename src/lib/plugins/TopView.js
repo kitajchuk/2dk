@@ -698,8 +698,8 @@ class TopView extends GameBox {
                     const dpad = this.player.gamepad.checkDpad();
 
                     if ( dpad.length ) {
-                        for ( let i = dpad.length; i--; ) {
-                            for ( let j = dpad[ i ].dpad.length; j--; ) {
+                        for ( let i = 0; i < dpad.length; i++ ) {
+                            for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
                                 this.player.controls[ dpad[ i ].dpad[ j ] ] = true;
                             }
                         }

@@ -332,8 +332,8 @@ class Player extends Controller {
                 );
 
             } else {
-                for ( let i = dpad.length; i--; ) {
-                    for ( let j = dpad[ i ].dpad.length; j--; ) {
+                for ( let i = 0; i < dpad.length; i++ ) {
+                    for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
                         this.gamebox.pressD( dpad[ i ].dpad[ j ] );
                     }
                 }
