@@ -929,10 +929,21 @@ class TopView extends GameBox {
         if ( this.attacking ) {
             return;
         }
-        
+
         // @check: hero-verb-check
-        if ( !this.hero.can( Config.verbs.ATTACK ) || !this.hero.hasWeapon() ) {
+        if ( !this.hero.can( Config.verbs.ATTACK ) ) {
             return;
+        }
+
+        const isWeapon = this.hero.hasWeapon() && this.hero.mode === Config.hero.modes.WEAPON;
+        const isProjectile = this.hero.hasProjectile() && this.hero.mode === Config.hero.modes.PROJECTILE;
+
+        if ( !isWeapon && !isProjectile ) {
+            return;
+        }
+
+        if ( isProjectile ) {
+            this.hero.fireProjectile();
         }
         
         this.attacking = true;

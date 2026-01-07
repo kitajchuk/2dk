@@ -76,6 +76,12 @@ const Config = {
         RESUMED: "resumed",
         MAPEVENT: "mapevent",
     },
+    hero: {
+        modes: {
+            WEAPON: "weapon",
+            PROJECTILE: "projectile",
+        },
+    },
     npc: {
         ai: {
             WALK: "walk",

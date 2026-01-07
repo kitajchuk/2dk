@@ -241,6 +241,7 @@ class Player extends Controller {
 
         // Start button (pause)
         this.gamepad.on( "start-press", this.onPressStart.bind( this ) );
+        this.gamepad.on( "select-press", this.onPressSelect.bind( this ) );
 
         // A button (action)
         this.gamepad.on( "a-press", this.onPressA.bind( this ) );
@@ -376,6 +377,26 @@ class Player extends Controller {
             this.stop();
             this.showMenu();
             this.emit( Config.broadcast.PAUSED );
+        }
+    }
+
+
+    onPressSelect () {
+        if ( !this.ready ) {
+            return;
+        }
+
+        if ( !this.gamebox.hero.hasProjectile() ) {
+            return;
+        }
+
+        switch ( this.gamebox.hero.mode ) {
+            case Config.hero.modes.WEAPON:
+                this.gamebox.hero.mode = Config.hero.modes.PROJECTILE;
+                break;
+            case Config.hero.modes.PROJECTILE:
+                this.gamebox.hero.mode = Config.hero.modes.WEAPON;
+                break;
         }
     }
 

@@ -56,6 +56,7 @@ export default class Projectile extends Sprite {
             ...projectile,
         };
         super( data, map );
+        this.hitCounter = 0;
         this.npc = npc;
         this.map.addObject( "sprites", this );
         this.sparks();
@@ -85,8 +86,27 @@ export default class Projectile extends Sprite {
     }
 
 
+    kill () {
+        this.map.killObject( "sprites", this );
+        this.sparks();
+        this.npc.projectile = null;
+    }
+
+
     applyPosition () {
         const poi = this.getNextPoi();
+
+        if ( this.hitCounter > 0 ) {
+            this.hitCounter--;
+            this.position = poi;
+
+            if ( this.hitCounter === 0 ) {
+                this.kill();
+            }
+
+            return;
+        }
+
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
             hero: this.gamebox.checkHero( poi, this ),
@@ -96,16 +116,11 @@ export default class Projectile extends Sprite {
         };
         
         if ( collision.map || collision.hero || collision.doors || collision.camera || this.canTileStop( poi, this.dir, collision ) ) {
-            this.map.killObject( "sprites", this );
-
-            this.sparks();
-
-            // Kill THIS projectile attached to an NPC
-            this.npc.projectile = null;
-
             if ( collision.hero && !this.gamebox.hero.isHitOrStill() && !this.gamebox.hero.canShield( this ) ) {
                 this.gamebox.hero.hit( this.data.power );
             }
+            
+            this.hitCounter = 4;
 
             return;
         }

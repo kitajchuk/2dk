@@ -1,6 +1,7 @@
 import Config from "../Config";
 import Sprite from "./Sprite";
 import Spring from "../Spring";
+import Projectile from "./Projectile";
 
 
 
@@ -20,6 +21,8 @@ export default class Hero extends Sprite {
         this.controls = this.player.controls;
         this.killed = false;
         this.deathCounter = 0;
+        this.projectile = null;
+        this.mode = Config.hero.modes.WEAPON;
     }
 
 
@@ -64,6 +67,26 @@ export default class Hero extends Sprite {
     }
 
 
+    hasProjectile () {
+        return this.items.some( ( item ) => item.projectile );
+    }
+
+
+    fireProjectile () {
+        const item = this.items.find( ( item ) => item.projectile );
+
+        if ( !item ) {
+            return;
+        }
+
+        const data = this.gamebox.player.getMergedData({
+            id: item.projectile,
+        }, "projectiles" );
+
+        this.projectile = new HeroProjectile( data, this.dir, this, this.map );
+    }
+
+
     giveItem ( id ) {
         if ( this.hasItem( id ) ) {
             return;
@@ -92,6 +115,10 @@ export default class Hero extends Sprite {
 
         if ( item.stat ) {
             // TODO: Handle stat items (e.g. strength)...
+        }
+
+        if ( item.projectile ) {
+            // TODO: Handle projectile items (e.g. bow)...
         }
 
         if ( item.currency ) {
@@ -213,7 +240,7 @@ export default class Hero extends Sprite {
             this.liftedTile.render();
         }
 
-        if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) ) {
+        if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) && this.mode === Config.hero.modes.WEAPON ) {
             this.gamebox.draw(
                 this.image,
                 this.data.weapon[ this.dir ][ this.frame ].offsetX,
@@ -572,6 +599,55 @@ export default class Hero extends Sprite {
         }
 
         return false;
+    }
+}
+
+
+
+/*******************************************************************************
+* Hero Projectile
+* Used to display the projectile the hero is firing
+*******************************************************************************/
+export class HeroProjectile extends Projectile {
+    constructor ( projectile, dir, hero, map ) {
+        super( projectile, dir, hero, map );
+        this.hero = hero;
+    }
+
+
+    applyPosition () {
+        const poi = this.getNextPoi();
+
+        if ( this.hitCounter > 0 ) {
+            this.hitCounter--;
+            this.position = poi;
+
+            if ( this.hitCounter === 0 ) {
+                this.kill();
+            }
+
+            return;
+        }
+
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
+            camera: this.gamebox.checkCamera( poi, this ),
+        };
+        
+        if ( collision.map || collision.npc || collision.doors || collision.camera || this.canTileStop( poi, this.dir, collision ) ) {
+            if ( collision.npc && collision.npc.data.type === Config.npc.types.ENEMY && !collision.npc.isHitOrStill() ) {
+                collision.npc.hit( this.data.power );
+            }
+
+            this.hitCounter = 4;
+
+            return;
+        }
+
+        this.position = poi;
     }
 }
 
