@@ -25,9 +25,18 @@ class Spring {
         this.sprite = null;
         this.previousElapsed = null;
 
-        this.player.on( Config.broadcast.PAUSED, () => {
-            this.previousElapsed = null;
-        });
+        this.onPaused = this.handlePaused.bind( this );
+        this.player.on( Config.broadcast.PAUSED, this.onPaused );
+    }
+
+
+    destroy () {
+        this.player.off( Config.broadcast.PAUSED, this.onPaused );
+    }
+
+
+    handlePaused () {
+        this.previousElapsed = null;
     }
 
 

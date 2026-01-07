@@ -18,6 +18,11 @@ export default class Companion extends Sprite {
     }
 
 
+    destroy () {
+        this.spring.destroy();
+    }
+
+
     visible () {
         return true;
     }

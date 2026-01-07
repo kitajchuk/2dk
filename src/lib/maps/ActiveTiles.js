@@ -29,20 +29,27 @@ class ActiveTiles {
             this.previousElapsed = elapsed;
         }
 
-        this.frame = 0;
+        this.applyFrame( elapsed );
+    }
 
+
+    applyFrame ( elapsed ) {
         if ( this.data.stepsX ) {
-            const diff = ( elapsed - this.previousElapsed );
+            const interval = this.data.dur / this.data.stepsX;
+            const delta = ( elapsed - this.previousElapsed );
 
-            this.frame = Math.min(
-                Math.floor( ( diff / this.data.dur ) * this.data.stepsX ),
-                ( this.data.stepsX - 1 )
-            );
+            if ( delta >= interval ) {
+                this.previousElapsed = elapsed - ( delta % interval );
+                this.frame++;
 
-            if ( diff >= this.data.dur ) {
-                this.previousElapsed = elapsed;
-                this.frame = 0;
+                if ( this.frame >= this.data.stepsX ) {
+                    this.previousElapsed = null;
+                    this.frame = 0;
+                }
             }
+
+        } else {
+            this.frame = 0;
         }
     }
 

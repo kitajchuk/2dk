@@ -722,13 +722,25 @@ export class LiftedTile extends Sprite {
     }
 
 
+    destroy () {
+        const attackAction = this.gamebox.interact.tile.instance.canAttack();
+        this.gamebox.smokeObject( this, attackAction?.fx );
+        this.player.gameaudio.hitSound( Config.verbs.SMASH );
+        this.gamebox.interact.tile = null;
+
+        // Kills THIS sprite
+        this.hero.liftedTile = null;
+        this.spring.destroy();
+    }
+
+
     blit ( elapsed ) {
         if ( !this.spring ) {
             return;
         }
 
         if ( this.spring.isResting ) {
-            this.kill();
+            this.destroy();
             return;
         }
 
@@ -739,23 +751,12 @@ export class LiftedTile extends Sprite {
         };
 
         if ( collision.map || collision.npc || collision.camera ) {
-            this.kill();
+            this.destroy();
             return;
 
         }
         
         this.spring.blit( elapsed );
-    }
-
-
-    kill () {
-        const attackAction = this.gamebox.interact.tile.instance.canAttack();
-        this.gamebox.smokeObject( this, attackAction?.fx );
-        this.player.gameaudio.hitSound( Config.verbs.SMASH );
-        this.gamebox.interact.tile = null;
-
-        // Kills THIS sprite
-        this.hero.liftedTile = null;
     }
 
 

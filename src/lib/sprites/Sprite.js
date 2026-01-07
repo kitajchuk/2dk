@@ -402,12 +402,10 @@ export default class Sprite {
             return;
         }
 
-        this.frame = 0;
-
         // Useful for ensuring clean maths below for cycles like attacking...
         if ( this.resetElapsed ) {
             this.resetElapsed = false;
-            this.previousElapsed = elapsed;
+            this.previousElapsed = null;
         }
 
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
@@ -415,24 +413,28 @@ export default class Sprite {
                 Utils.log( "Static lift..." );
 
             } else {
-                const diff = ( elapsed - this.previousElapsed );
+                const interval = this.data.verbs[ this.verb ].dur / this.data.verbs[ this.verb ][ this.dir ].stepsX;
+                const delta = ( elapsed - this.previousElapsed );
 
-                this.frame = Math.min(
-                    Math.floor( ( diff / this.data.verbs[ this.verb ].dur ) * this.data.verbs[ this.verb ][ this.dir ].stepsX ),
-                    ( this.data.verbs[ this.verb ][ this.dir ].stepsX - 1 )
-                );
+                if ( delta >= interval ) {
+                    this.previousElapsed = elapsed - ( delta % interval );
+                    this.frame++;
 
-                if ( diff >= this.data.verbs[ this.verb ].dur ) {
-                    this.previousElapsed = elapsed;
+                    if ( this.frame >= this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
+                        this.previousElapsed = null;
 
-                    if ( this.data.verbs[ this.verb ].stop ) {
-                        this.frameStopped = true;
+                        if ( this.data.verbs[ this.verb ].stop ) {
+                            this.frameStopped = true;
 
-                    } else {
-                        this.frame = 0;
+                        } else {
+                            this.frame = 0;
+                        }
                     }
                 }
             }
+
+        } else {
+            this.frame = 0;
         }
 
         this.spritecel = this.getCel();

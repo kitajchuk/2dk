@@ -48,27 +48,32 @@ export default class FX extends Sprite {
 
 
     applyFrame ( elapsed ) {
-        this.frame = 0;
-
         if ( this.data.stepsX ) {
-            const diff = ( elapsed - this.previousElapsed );
+            const interval = this.data.dur / this.data.stepsX;
+            const delta = ( elapsed - this.previousElapsed );
 
-            this.frame = Math.floor( ( diff / this.data.dur ) * this.data.stepsX );
+            if ( delta >= interval ) {
+                this.previousElapsed = elapsed - ( delta % interval );
+                this.frame++;
 
-            if ( diff >= this.data.dur ) {
-                if ( this.data.kill ) {
-                    this.map.killObject( "fx", this );
-
-                } else {
-                    this.previousElapsed = elapsed;
-                    this.frame = this.data.stepsX - 1;
-
-                    // Resets the animation sequence, as in a loop...
-                    if ( this.data.type === Config.npc.ai.FLOAT ) {
-                        this.position.y = this.data.spawn.y;
+                if ( this.frame >= this.data.stepsX ) {
+                    if ( this.data.kill ) {
+                        this.map.killObject( "fx", this );
+    
+                    } else {
+                        this.previousElapsed = null;
+                        this.frame = 0;
+    
+                        // Resets the animation sequence, as in a loop...
+                        if ( this.data.type === Config.npc.ai.FLOAT ) {
+                            this.position.y = this.data.spawn.y;
+                        }
                     }
                 }
             }
+
+        } else {
+            this.frame = 0;
         }
 
         this.spritecel = this.getCel();
