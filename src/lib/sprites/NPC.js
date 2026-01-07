@@ -26,6 +26,7 @@ export default class NPC extends Sprite {
         this.stepsX = 0;
         this.stepsY = 0;
         this.states = structuredClone( this.data.states );
+        this.pushed = null;
 
         this.initialize();
     }
@@ -129,11 +130,59 @@ export default class NPC extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
-        if ( this.data.ai === Config.npc.ai.FLOAT ) {
+        if ( this.pushed ) {
+            this.applyPushedPosition();
+
+        } else if ( this.data.ai === Config.npc.ai.FLOAT ) {
             this.applyFloatPosition();
 
         } else {
             this.applyNormalPosition();
+        }
+    }
+
+
+    applyPushedPosition () {
+        const poi = {
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z,
+        };
+
+        switch ( this.pushed.dir ) {
+            case "left":
+                poi.x -= 1;
+                break;
+            case "right":
+                poi.x += 1;
+                break;
+            case "up":
+                poi.y -= 1;
+                break;
+            case "down":
+                poi.y += 1;
+                break;
+        }
+
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
+            camera: this.gamebox.checkCamera( poi, this ),
+        };
+
+        if ( collision.map || collision.npc || collision.doors || collision.camera || this.canTileStop( poi, null, collision ) ) {
+            this.pushed = null;
+            this.gamebox.locked = false;
+            return;
+        }
+
+        this.position = poi;
+
+        if ( this.position.x === this.pushed.poi.x && this.position.y === this.pushed.poi.y ) {
+            this.pushed = null;
+            this.gamebox.locked = false;
         }
     }
 

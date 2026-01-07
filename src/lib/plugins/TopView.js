@@ -1,7 +1,6 @@
 import Utils from "../Utils";
 import Config, { DIRS } from "../Config";
 import GameBox from "../GameBox";
-import Spring from "../Spring";
 import Tween from "../Tween";
 import FX from "../sprites/FX";
 import { LiftedTile } from "../sprites/Hero";
@@ -721,49 +720,36 @@ class TopView extends GameBox {
 
             this.hero.face( dir );
 
-            const destPos = {};
+            const position = {};
             const distance = this.map.data.tilesize;
 
-            if ( dir === "left" ) {
-                destPos.x = collision.npc.position.x - distance;
-                destPos.y = collision.npc.position.y;
-            } else if ( dir === "right" ) {
-                destPos.x = collision.npc.position.x + distance;
-                destPos.y = collision.npc.position.y;
-            } else if ( dir === "up" ) {
-                destPos.x = collision.npc.position.x;
-                destPos.y = collision.npc.position.y - distance;
-            } else if ( dir === "down" ) {
-                destPos.x = collision.npc.position.x;
-                destPos.y = collision.npc.position.y + distance;
+            switch ( dir ) {
+                case "left":
+                    position.x = collision.npc.position.x - distance;
+                    position.y = collision.npc.position.y;
+                    break;
+                case "right":
+                    position.x = collision.npc.position.x + distance;
+                    position.y = collision.npc.position.y;
+                    break;
+                case "up":
+                    position.x = collision.npc.position.x;
+                    position.y = collision.npc.position.y - distance;
+                    break;
+                case "down":
+                    position.x = collision.npc.position.x;
+                    position.y = collision.npc.position.y + distance;
+                    break;
             }
+
+            collision.npc.pushed = {
+                poi: position,
+                dir,
+            };
 
             if ( collision.npc.data.action.sound ) {
                 this.player.gameaudio.hitSound( collision.npc.data.action.sound );
             }
-
-            new Tween( this ).tween({
-                to: destPos,
-                from: collision.npc.position,
-                duration: 1000,
-                update: ( tweenPoi ) => {
-                    const tweenCollision = {
-                        map: this.checkMap( tweenPoi, collision.npc ),
-                        camera: this.checkCamera( tweenPoi, collision.npc ),
-                    };
-                    const isCollision = tweenCollision.map || tweenCollision.camera;
-
-                    if ( !isCollision ) {
-                        collision.npc.position.x = tweenPoi.x;
-                        collision.npc.position.y = tweenPoi.y;
-                        collision.npc.applyOffset();
-                    }
-                },
-                complete: () => {
-                    this.interact.push = 0;
-                    this.locked = false;
-                },
-            });
         }
     }
 
