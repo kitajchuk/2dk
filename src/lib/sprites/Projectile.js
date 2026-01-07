@@ -97,13 +97,22 @@ export default class Projectile extends Sprite {
         const poi = this.getNextPoi();
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
             hero: this.gamebox.checkHero( poi, this ),
             tiles: this.gamebox.checkTiles( poi, this ),
             doors: this.gamebox.checkDoor( poi, this ),
             camera: this.gamebox.checkCamera( poi, this ),
         };
-        
-        if ( collision.map || collision.hero || collision.doors || collision.camera || this.canTileStop( poi, this.dir, collision ) ) {
+
+        const isCollision = (
+            collision.map ||
+            collision.npc ||
+            collision.hero ||
+            collision.doors ||
+            this.canTileStop( poi, null, collision )
+        );
+
+        if ( isCollision ) {
             if ( collision.hero && !this.gamebox.hero.isHitOrStill() && !this.gamebox.hero.canShield( this ) ) {
                 this.gamebox.hero.hit( this.data.power );
             }

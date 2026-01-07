@@ -624,8 +624,16 @@ export class HeroProjectile extends Projectile {
             doors: this.gamebox.checkDoor( poi, this ),
             camera: this.gamebox.checkCamera( poi, this ),
         };
+
+        const isCollision = (
+            collision.map ||
+            collision.npc ||
+            collision.doors ||
+            collision.camera ||
+            this.canTileStop( poi, this.dir, collision )
+        );
         
-        if ( collision.map || collision.npc || collision.doors || collision.camera || this.canTileStop( poi, this.dir, collision ) ) {
+        if ( isCollision ) {
             if ( collision.npc && collision.npc.data.type === Config.npc.types.ENEMY && !collision.npc.isHitOrStill() ) {
                 collision.npc.hit( this.data.power );
             }
