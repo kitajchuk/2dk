@@ -313,6 +313,7 @@ class TopView extends GameBox {
 
         if ( this.attacking ) {
             this.attacking = false;
+            this.hero.face( this.hero.dir );
         }
 
         this.dialogue.check( false, true );
@@ -333,6 +334,7 @@ class TopView extends GameBox {
 
         if ( this.attacking ) {
             this.attacking = false;
+            this.hero.face( this.hero.dir );
         }
 
     }
