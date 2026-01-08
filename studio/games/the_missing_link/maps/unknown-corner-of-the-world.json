@@ -26,18 +26,6 @@
             "height": 92
         },
         {
-            "x": 650,
-            "y": 692,
-            "width": 92,
-            "height": 92
-        },
-        {
-            "x": 1556,
-            "y": 341,
-            "width": 92,
-            "height": 92
-        },
-        {
             "x": 1907,
             "y": 452,
             "width": 92,
@@ -521,7 +509,8 @@
                 "y": 320
             },
             "action": {
-                "verb": "push"
+                "verb": "push",
+                "sound": "moveObject"
             },
             "payload": {
                 "dialogue": {

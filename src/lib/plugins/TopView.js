@@ -604,6 +604,7 @@ class TopView extends GameBox {
                 tile.tilebox.x + ( increment * ( this.map.data.tilesize ) ),
                 tile.tilebox.y,
             ];
+            elevation = 1;
 
         } else {
             destTile = [
@@ -659,6 +660,7 @@ class TopView extends GameBox {
             dir,
             tile: destTile,
             event: destEvent,
+            elevation,
             isEventDoor,
         };
     }

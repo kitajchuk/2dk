@@ -87,7 +87,7 @@
             "type": "door",
             "dir": "down",
             "map": "maps/unknown-corner-of-the-world.json",
-            "spawn": 5
+            "spawn": 3
         }
     ],
     "npcs": [

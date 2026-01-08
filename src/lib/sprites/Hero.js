@@ -419,18 +419,20 @@ export default class Hero extends Sprite {
         // Ideally this is based on the duration of the jump verb for sprite cycle timing...
         // this.getDur( Config.verbs.JUMP )
 
+        const speed = this.parkour.elevation === 1 ? 4 : this.parkour.elevation * 3;
+
         switch ( this.parkour.dir ) {
             case "left":
-                poi.x = Math.max( poi.x - 6, this.parkour.poi.x );
+                poi.x = Math.max( poi.x - speed, this.parkour.poi.x );
                 break;
             case "right":
-                poi.x = Math.min( poi.x + 6, this.parkour.poi.x );
+                poi.x = Math.min( poi.x + speed, this.parkour.poi.x );
                 break;
             case "up":
-                poi.y = Math.max( poi.y - 6, this.parkour.poi.y );
+                poi.y = Math.max( poi.y - speed, this.parkour.poi.y );
                 break;
             case "down":
-                poi.y = Math.min( poi.y + 6, this.parkour.poi.y) ;
+                poi.y = Math.min( poi.y + speed, this.parkour.poi.y) ;
                 break;
         }
 
