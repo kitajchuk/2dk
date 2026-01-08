@@ -413,12 +413,23 @@ export default class Hero extends Sprite {
         }
         if ( this.position.x === this.falling.to.x && this.position.y === this.falling.to.y ) {
             this.falling.didReset = true;
+
+            if ( !this.falling.resetCounter ) {
+                this.falling.resetCounter = 30;
+
+            } else if ( this.falling.resetCounter > 0 ) {
+                this.falling.resetCounter--;
+            }
         }
         this.applyFallingPosition();
     }
 
 
     applyFallingPosition () {
+        if ( this.falling.resetCounter && this.falling.resetCounter > 0 ) {
+            return;
+        }
+
         const poi = {
             x: this.position.x,
             y: this.position.y,
