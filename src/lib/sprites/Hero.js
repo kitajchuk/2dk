@@ -23,6 +23,7 @@ export default class Hero extends Sprite {
         this.deathCounter = 0;
         this.projectile = null;
         this.mode = Config.hero.modes.WEAPON;
+        this.parkour = null;
     }
 
 
@@ -370,11 +371,96 @@ export default class Hero extends Sprite {
 * Hero uses custom position and offset determinance...
 *******************************************************************************/
     applyPosition ( poi, dir ) {
+        if ( this.parkour ) {
+            if ( this.parkour.didEventDoor ) {
+                // The FALL will trigger a frameStopped, so we need to handle that...
+                // This wouldn't work if he event verb was anything other than FALL...
+                if ( this.frameStopped ) {
+                    this.frameStopped = false;
+                    this.gamebox.dropin = true;
+                    this.applyParkourComplete();
+                    return;
+                }
+                return;
+            }
+            if ( this.position.x === this.parkour.poi.x && this.position.y === this.parkour.poi.y ) {
+                if ( this.parkour.isEventDoor ) {
+                    if ( this.parkour.event.verb && this.can( this.parkour.event.verb ) ) {
+                        this.parkour.didEventDoor = true;
+                        this.cycle( this.parkour.event.verb, this.parkour.dir );
+
+                    } else {
+                        this.applyParkourComplete();
+                    }
+                    return;
+                }
+                this.applyParkourLanding();
+                return;
+            }
+            this.applyParkourPosition();
+            return;
+        }
+
         this.dir = dir;
         this.position.x = poi.x;
         this.position.y = poi.y;
         this.applyHitbox();
         this.applyHeroMask();
+    }
+
+
+    applyParkourPosition () {
+        const poi = {
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z,
+        };
+
+        // Ideally this is based on the duration of the jump verb for sprite cycle timing...
+        // this.getDur( Config.verbs.JUMP )
+
+        switch ( this.parkour.dir ) {
+            case "left":
+                poi.x = Math.max( poi.x - 6, this.parkour.poi.x );
+                break;
+            case "right":
+                poi.x = Math.min( poi.x + 6, this.parkour.poi.x );
+                break;
+            case "up":
+                poi.y = Math.max( poi.y - 6, this.parkour.poi.y );
+                break;
+            case "down":
+                poi.y = Math.min( poi.y + 6, this.parkour.poi.y) ;
+                break;
+        }
+
+        this.position = poi;
+    }
+
+
+    applyParkourComplete () {
+        this.gamebox.handleCriticalReset();
+        this.gamebox.handleHeroEventDoor( this.parkour.poi, this.parkour.dir, this.parkour.event );
+        this.gamebox.jumping = false;
+        this.parkour = null;
+    }
+
+
+    applyParkourLanding () {
+        this.face( this.parkour.dir );
+        this.gamebox.jumping = false;
+        this.parkour = null;
+
+        // Resume directional control if still active
+        const dpad = this.player.gamepad.checkDpad();
+
+        if ( dpad.length ) {
+            for ( let i = 0; i < dpad.length; i++ ) {
+                for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
+                    this.player.controls[ dpad[ i ].dpad[ j ] ] = true;
+                }
+            }
+        }
     }
 
 
@@ -424,6 +510,10 @@ export default class Hero extends Sprite {
 
 
     applyCycle () {
+        if ( this.parkour ) {
+            return;
+        }
+
         // Lifting and carrying an object trumps all
         if ( this.is( Config.verbs.LIFT ) ) {
             this.cycle( Config.verbs.LIFT, this.dir );

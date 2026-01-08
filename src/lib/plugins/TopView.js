@@ -25,10 +25,6 @@ class TopView extends GameBox {
             fall: null,
             push: 0,
         };
-        // parkour: {
-        //     tween?
-        // }
-        this.parkour = null;
         this.attacking = false;
         this.running = false;
         this.jumping = false;
@@ -395,7 +391,6 @@ class TopView extends GameBox {
         this.hero.face( this.hero.dir );
 
         // Reset flags
-        this.parkour = false;
         this.jumping = false;
         this.falling = false;
         this.attacking = false;
@@ -411,11 +406,16 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( this.locked || this.jumping || this.falling || this.parkour || this.dropin ) {
+        if ( this.hero.parkour ) {
+            this.applyHero( poi, dir );
+            return;
+        }
+
+        if ( this.locked || this.jumping || this.falling || this.dropin ) {
             this.interact.push = 0;
         }
 
-        if ( this.locked || this.falling || this.parkour || this.attacking || this.liftLocked ) {
+        if ( this.locked || this.falling || this.attacking || this.liftLocked ) {
             return;
         }
 
@@ -626,27 +626,24 @@ class TopView extends GameBox {
             case "left":
                 destPos = {
                     x: destTile[ 0 ] - ( this.hero.width - this.map.data.tilesize ),
-                    y: isEventDoor ? destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ) : this.hero.position.y,
+                    y: this.hero.position.y,
                 };
                 break;
-
             case "right":
                 destPos = {
                     x: destTile[ 0 ],
-                    y: isEventDoor ? destTile[ 1 ] - ( ( this.hero.height - this.map.data.tilesize ) / 2 ) : this.hero.position.y,
+                    y: this.hero.position.y,
                 };
                 break;
-
             case "up":
                 destPos = {
-                    x: isEventDoor ? destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ) : this.hero.position.x,
+                    x: this.hero.position.x,
                     y: destTile[ 1 ],
                 };
                 break;
-
             case "down":
                 destPos = {
-                    x: isEventDoor ? destTile[ 0 ] - ( ( this.hero.width - this.map.data.tilesize ) / 2 ) : this.hero.position.x,
+                    x: this.hero.position.x,
                     y: destTile[ 1 ] - ( this.hero.height - this.map.data.tilesize ),
                 };
                 break;
@@ -654,58 +651,16 @@ class TopView extends GameBox {
 
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, dir );
-        this.hero.physics.vz = -( this.map.data.tilesize / 2.6667 );
+        this.hero.physics.vz = -( this.map.data.tilesize / 4 );
         this.player.gameaudio.hitSound( "parkour" );
-        this.parkour = {};
-        this.parkour.tween = new Tween( this );
-        this.parkour.tween.bind( this.hero );
-        this.parkour.tween.tween({
-            to: destPos,
-            from: {
-                x: this.hero.position.x,
-                y: this.hero.position.y,
-            },
-            duration: this.hero.getDur( Config.verbs.JUMP ),
-            complete: () => {
-                if ( isEventDoor ) {
-                    if ( destEvent.verb && this.hero.can( destEvent.verb ) ) {
-                        this.hero.cycle( destEvent.verb, dir );
 
-                        setTimeout( () => {
-                            this.dropin = true;
-                            this.hero.frameStopped = false;
-                            this.jumping = false;
-                            this.parkour = null;
-                            this.handleCriticalReset();
-                            this.handleHeroEventDoor( poi, dir, destEvent );
-
-                        }, this.hero.getDur( destEvent.verb ) );
-
-                    } else {
-                        this.jumping = false;
-                        this.parkour = null;
-                        this.handleCriticalReset();
-                        this.handleHeroEventDoor( poi, dir, destEvent );
-                    }
-
-                } else {
-                    this.jumping = false;
-                    this.parkour = null;
-                    this.hero.face( dir );
-
-                    // Resume directional control if still active
-                    const dpad = this.player.gamepad.checkDpad();
-
-                    if ( dpad.length ) {
-                        for ( let i = 0; i < dpad.length; i++ ) {
-                            for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
-                                this.player.controls[ dpad[ i ].dpad[ j ] ] = true;
-                            }
-                        }
-                    }
-                }
-            },
-        });
+        this.hero.parkour = {
+            poi: destPos,
+            dir,
+            tile: destTile,
+            event: destEvent,
+            isEventDoor,
+        };
     }
 
 
