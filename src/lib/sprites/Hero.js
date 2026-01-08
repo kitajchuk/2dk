@@ -459,6 +459,17 @@ export default class Hero extends Sprite {
 
 
     applyParkourLanding () {
+        const attackAction = this.parkour.activeTiles && this.parkour.activeTiles.canAttack();
+
+        if ( attackAction ) {
+                this.parkour.activeTiles.attack( [
+                    this.parkour.tile[ 0 ] / this.map.data.tilesize,
+                    this.parkour.tile[ 1 ] / this.map.data.tilesize,
+                ],
+                attackAction
+            );
+        }
+
         this.face( this.parkour.dir );
         this.gamebox.jumping = false;
         this.parkour = null;

@@ -561,7 +561,7 @@ export default class Sprite {
 
     canTileFall ( poi, dir, collision ) {
         return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
-            return tile.fall && Utils.contains( tile.tilebox, this.footbox );
+            return tile.fall && Utils.contains( tile.tilebox, this.hitbox );
         }) );
     }
 

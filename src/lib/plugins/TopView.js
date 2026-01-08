@@ -624,6 +624,13 @@ class TopView extends GameBox {
         });
         const isEventDoor = destEvent && destEvent.type === Config.events.DOOR;
 
+        const activeTiles = this.map.activeTiles.find( ( activeTiles ) => {
+            return activeTiles.isPushed([
+                destTile[ 0 ] / this.map.data.tilesize,
+                destTile[ 1 ] / this.map.data.tilesize,
+            ]);
+        });
+
         // Get the destination position
         switch ( dir ) {
             case "left":
@@ -664,6 +671,7 @@ class TopView extends GameBox {
             event: destEvent,
             elevation,
             isEventDoor,
+            activeTiles,
         };
     }
 
