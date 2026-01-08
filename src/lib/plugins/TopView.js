@@ -1,7 +1,6 @@
 import Utils from "../Utils";
 import Config, { DIRS } from "../Config";
 import GameBox from "../GameBox";
-import Tween from "../Tween";
 import FX from "../sprites/FX";
 import { LiftedTile } from "../sprites/Hero";
 
@@ -19,10 +18,6 @@ class TopView extends GameBox {
             //     throw?,
             // }
             tile: null,
-            // fall: {
-            //     tween?
-            // }
-            fall: null,
             push: 0,
         };
         this.attacking = false;
@@ -270,7 +265,7 @@ class TopView extends GameBox {
 
 
     pressB () {
-        if ( this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill() ) {
+        if ( this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -408,7 +403,7 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( this.hero.parkour ) {
+        if ( this.hero.parkour || this.hero.falling ) {
             this.applyHero( poi, dir );
             return;
         }
@@ -917,7 +912,6 @@ class TopView extends GameBox {
     handleHeroFall ( poi, dir, tiles ) {
         this.handleResetHeroDirs();
 
-        const cycleDur = this.hero.getDur( Config.verbs.FALL );
         const fallTile = tiles.action.find( ( tile ) => {
             return tile.fall;
         });
@@ -950,7 +944,7 @@ class TopView extends GameBox {
             y: ( resetTile.y * this.map.data.tilesize ) - finalOffsetY,
         };
 
-        // Center the hero's sprite on the fall tile as the animation's final destination
+        // // Center the hero's sprite on the fall tile as the animation's final destination
         const coordX = fallCoords[ 0 ] * this.map.data.tilesize;
         const coordY = fallCoords[ 1 ] * this.map.data.tilesize;
         const fallOffsetY = ( ( this.hero.height - this.map.data.tilesize ) / 2 );
@@ -961,34 +955,13 @@ class TopView extends GameBox {
         };
 
         this.falling = true;
-        this.interact.fall = {};
-        this.interact.fall.tween = new Tween( this );
-        this.interact.fall.tween.bind( this.hero );
-        this.interact.fall.tween.tween({
-            to: fallToPosition,
-            from: {
-                x: this.hero.position.x,
-                y: this.hero.position.y,
-            },
-            duration: cycleDur / 2,
-            complete: () => {
-                setTimeout( () => {
-                    this.interact.fall.tween.tween({
-                        to: finalResetPosition,
-                        from: fallToPosition,
-                        duration: cycleDur / 2,
-                        complete: () => {
-                            this.falling = false;
-                            this.hero.frameStopped = false;
-                            this.interact.fall = null;
-                            this.hero.face( this.hero.dir );
-                        },
-                    });
-
-                }, cycleDur / 2 );
-            },
-        });
         this.hero.cycle( Config.verbs.FALL, this.hero.dir );
+        this.player.gameaudio.hitSound( "parkour" );
+
+        this.hero.falling = {
+            reset: finalResetPosition,
+            to: fallToPosition,
+        };
     }
 
 

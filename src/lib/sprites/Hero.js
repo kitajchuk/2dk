@@ -24,6 +24,7 @@ export default class Hero extends Sprite {
         this.projectile = null;
         this.mode = Config.hero.modes.WEAPON;
         this.parkour = null;
+        this.falling = null;
     }
 
 
@@ -382,32 +383,12 @@ export default class Hero extends Sprite {
 *******************************************************************************/
     applyPosition ( poi, dir ) {
         if ( this.parkour ) {
-            if ( this.parkour.didEventDoor ) {
-                // The FALL will trigger a frameStopped, so we need to handle that...
-                // This wouldn't work if he event verb was anything other than FALL...
-                if ( this.frameStopped ) {
-                    this.frameStopped = false;
-                    this.gamebox.dropin = true;
-                    this.applyParkourComplete();
-                    return;
-                }
-                return;
-            }
-            if ( this.position.x === this.parkour.poi.x && this.position.y === this.parkour.poi.y ) {
-                if ( this.parkour.isEventDoor ) {
-                    if ( this.parkour.event.verb && this.can( this.parkour.event.verb ) ) {
-                        this.parkour.didEventDoor = true;
-                        this.cycle( this.parkour.event.verb, this.parkour.dir );
+            this.applyParkour();
+            return;
+        }
 
-                    } else {
-                        this.applyParkourComplete();
-                    }
-                    return;
-                }
-                this.applyParkourLanding();
-                return;
-            }
-            this.applyParkourPosition();
+        if ( this.falling ) {
+            this.applyFalling();
             return;
         }
 
@@ -416,6 +397,85 @@ export default class Hero extends Sprite {
         this.position.y = poi.y;
         this.applyHitbox();
         this.applyHeroMask();
+    }
+
+
+    applyFalling () {
+        if ( this.position.x === this.falling.reset.x && this.position.y === this.falling.reset.y ) {
+            this.position.x = this.falling.reset.x;
+            this.position.y = this.falling.reset.y;
+            this.falling = null;
+            this.frameStopped = false;
+            this.gamebox.falling = false;
+            this.face( this.dir );
+            this.hit( 0.25 );
+            return;
+        }
+        if ( this.position.x === this.falling.to.x && this.position.y === this.falling.to.y ) {
+            this.falling.didReset = true;
+        }
+        this.applyFallingPosition();
+    }
+
+
+    applyFallingPosition () {
+        const poi = {
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z,
+        };
+
+        // Ideally this is based on the duration of the fall verb for sprite cycle timing...
+        // this.getDur( Config.verbs.FALL )
+
+        const speed = 2;
+        const destination = this.falling.didReset ? this.falling.reset : this.falling.to;
+
+        if ( Math.abs( poi.x - destination.x ) > speed ) {
+            poi.x += poi.x < destination.x ? speed : -speed;
+
+        } else {
+            poi.x = destination.x;
+        }
+
+        if ( Math.abs( poi.y - destination.y ) > speed ) {
+            poi.y += poi.y < destination.y ? speed : -speed;
+
+        } else {
+            poi.y = destination.y;
+        }
+
+        this.position = poi;
+    }
+
+
+    applyParkour () {
+        if ( this.parkour.didEventDoor ) {
+            // The FALL will trigger a frameStopped, so we need to handle that...
+            // This wouldn't work if he event verb was anything other than FALL...
+            if ( this.frameStopped ) {
+                this.frameStopped = false;
+                this.gamebox.dropin = true;
+                this.applyParkourComplete();
+                return;
+            }
+            return;
+        }
+        if ( this.position.x === this.parkour.poi.x && this.position.y === this.parkour.poi.y ) {
+            if ( this.parkour.isEventDoor ) {
+                if ( this.parkour.event.verb && this.can( this.parkour.event.verb ) ) {
+                    this.parkour.didEventDoor = true;
+                    this.cycle( this.parkour.event.verb, this.parkour.dir );
+
+                } else {
+                    this.applyParkourComplete();
+                }
+                return;
+            }
+            this.applyParkourLanding();
+            return;
+        }
+        this.applyParkourPosition();
     }
 
 
@@ -533,7 +593,7 @@ export default class Hero extends Sprite {
 
 
     applyCycle () {
-        if ( this.parkour ) {
+        if ( this.parkour || this.falling ) {
             return;
         }
 
