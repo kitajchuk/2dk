@@ -17,7 +17,7 @@
     "maxresolution": 1,
     "diagonaldpad": false,
     "icon": "icon.png",
-    "save": 143,
+    "save": 144,
     "release": 1,
     "plugin": "topview",
     "currency": "Cash",
@@ -142,6 +142,7 @@
             }
         }
     ],
+    "hud": {},
     "items": [],
     "npcs": [
         {

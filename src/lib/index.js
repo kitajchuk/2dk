@@ -24,6 +24,7 @@ import Spring from "./Spring";
 import Utils from "./Utils";
 import CellAuto from "./vendor/CellAuto";
 import CellAutoMap from "./maps/CellAutoMap";
+import HUD from "./HUD";
 
 
 
@@ -56,6 +57,7 @@ const lib = {
     Player,
     Spring,
     Utils,
+    HUD,
 
     // vendor
     CellAuto,

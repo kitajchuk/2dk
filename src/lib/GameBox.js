@@ -34,7 +34,6 @@ export default class GameBox {
         this.mapLayer = null;
         this.gamequest = new GameQuest( this );
         this.renderQueue = new RenderQueue( this );
-        this.hud = new HUD( this );
 
         // Dialogues
         this.dialogue = new Dialogue( this );
@@ -54,6 +53,9 @@ export default class GameBox {
             // Hero
             initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
             this.hero = new Hero( initHeroData, this.map );
+
+            // HUD
+            this.hud = new HUD( this );
 
             // Sounds
             for ( const id in this.player.data.sounds ) {
@@ -724,27 +726,36 @@ export class RenderQueue {
 
 
     blit () {
-        this.layers = {
-            background: [],
-            heroground: [],
-            foreground: [],
-        };
+        this.background = [];
+        this.heroground = [];
+        this.foreground = [];
     }
 
 
     // Supports anything with a "render" method and a "layer" property
     add ( sprite ) {
-        this.layers[ sprite.layer ].push( sprite );
+        this[ sprite.layer ].push( sprite );
     }
 
 
     render () {
-        for ( const layer in this.layers ) {
-            for ( let i = this.layers[ layer ].length; i--; ) {
-                this.gamebox.mapLayer.context.save();
-                this.layers[ layer ][ i ].render();
-                this.gamebox.mapLayer.context.restore();
-            }
+        for ( let i = this.background.length; i--; ) {
+            this.safeRender( this.background[ i ] );
         }
+
+        for ( let i = 0; i < this.heroground.length; i++ ) {
+            this.safeRender( this.heroground[ i ] );
+        }
+
+        for ( let i = this.foreground.length; i--; ) {
+            this.safeRender( this.foreground[ i ] );
+        }
+    }
+
+
+    safeRender ( sprite ) {
+        this.gamebox.mapLayer.context.save();
+        sprite.render();
+        this.gamebox.mapLayer.context.restore();
     }
 }

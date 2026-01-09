@@ -1,11 +1,14 @@
 import Config from "./Config";
+import Loader from "./Loader";
 
 
 
 export default class HUD {
     constructor ( gamebox ) {
         this.gamebox = gamebox;
+        this.map = this.gamebox.map;
         this.player = this.gamebox.player;
+        this.hero = this.gamebox.hero;
     }
 
 
@@ -15,17 +18,17 @@ export default class HUD {
 
 
     render () {
-        this.gamebox.mapLayer.context.save();
         this.renderHealth();
-        this.gamebox.mapLayer.context.restore();
+        this.renderCurrency();
     }
 
 
     renderHealth () {
-        const step = 32;
-        const health = this.gamebox.hero.getStat( "health" );
-        const maxHealth = this.gamebox.hero.maxHealth;
+        const step = this.map.data.tilesize;
+        const health = this.hero.getStat( "health" );
+        const maxHealth = this.hero.maxHealth;
 
+        this.gamebox.mapLayer.context.save();
         this.gamebox.mapLayer.context.globalAlpha = 0.5;
         this.gamebox.mapLayer.context.fillStyle = Config.colors.yellow;
         this.gamebox.mapLayer.context.beginPath();
@@ -33,7 +36,7 @@ export default class HUD {
             20,
             20,
             step * maxHealth,
-            step / 2,
+            step / 4,
             2
         );
         this.gamebox.mapLayer.context.fill();
@@ -46,7 +49,7 @@ export default class HUD {
             20,
             20,
             step * health,
-            step / 2,
+            step / 4,
             2
         );
         this.gamebox.mapLayer.context.fill();
@@ -60,10 +63,51 @@ export default class HUD {
             20,
             20,
             step * maxHealth,
-            step / 2,
+            step / 4,
             2
         );
         this.gamebox.mapLayer.context.stroke();
         this.gamebox.mapLayer.context.closePath();
+        this.gamebox.mapLayer.context.restore();
+    }
+
+
+    renderCurrency () {
+        const currency = this.hero.currency;
+        const currString = `x${currency}`;
+
+        this.gamebox.mapLayer.context.save();
+
+        if ( this.player.data.hud.currency ) {
+            const width = this.player.data.hud.currency.width * this.hero.scale;
+            const height = this.player.data.hud.currency.height * this.hero.scale;
+            const diff = ( height - 16 * this.hero.scale ) / 2;
+            const offsetX = 20 + width + currString.length * 16;
+            const offsetY = 20 - diff / 2;
+
+            this.gamebox.mapLayer.context.drawImage(
+                Loader.cash( this.player.data.hud.currency.image ),
+                this.player.data.hud.currency.offsetX,
+                this.player.data.hud.currency.offsetY,
+                width,
+                height,
+                this.gamebox.mapLayer.data.width - offsetX,
+                offsetY,
+                width,
+                height
+            );
+        }
+
+        this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
+        this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
+        this.gamebox.mapLayer.context.textAlign = "right";
+        this.gamebox.mapLayer.context.textBaseline = "top";
+        this.gamebox.mapLayer.context.fillText(
+            currString,
+            this.gamebox.mapLayer.data.width - 20,
+            20
+        );
+
+        this.gamebox.mapLayer.context.restore();
     }
 }
