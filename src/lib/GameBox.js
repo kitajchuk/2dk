@@ -32,7 +32,7 @@ export default class GameBox {
         );
         this.mapLayer = null;
         this.gamequest = new GameQuest( this );
-        this.renderQueue = new RenderQueue();
+        this.renderQueue = new RenderQueue( this );
 
         // Dialogues
         this.dialogue = new Dialogue( this );
@@ -715,7 +715,8 @@ export class Camera {
 
 
 export class RenderQueue {
-    constructor () {
+    constructor ( gamebox ) {
+        this.gamebox = gamebox;
         this.blit();
     }
 
@@ -734,6 +735,8 @@ export class RenderQueue {
 
 
     render () {
+        this.gamebox.mapLayer.context.save();
+
         for ( let i = this.background.length; i--; ) {
             this.background[ i ].render();
         }
@@ -745,5 +748,7 @@ export class RenderQueue {
         for ( let i = this.foreground.length; i--; ) {
             this.foreground[ i ].render();
         }
+
+        this.gamebox.mapLayer.context.restore();
     }
 }

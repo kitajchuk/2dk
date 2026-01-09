@@ -238,8 +238,9 @@ class Map {
     renderDebug () {
         const visibleColliders = this.gamebox.getVisibleColliders();
 
+        this.gamebox.mapLayer.context.globalAlpha = 0.5;
+
         for ( let i = visibleColliders.length; i--; ) {
-            this.gamebox.mapLayer.context.globalAlpha = 0.5;
             this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
             this.gamebox.mapLayer.context.fillRect(
                 this.offset.x + ( visibleColliders[ i ][ 0 ] * this.data.collider ),
@@ -248,8 +249,6 @@ class Map {
                 this.data.collider
             );
         }
-
-        this.gamebox.mapLayer.context.globalAlpha = 1.0;
     }
 
 

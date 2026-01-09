@@ -257,8 +257,6 @@ export default class Sprite {
             this.height
         );
 
-        this.gamebox.mapLayer.context.globalAlpha = 1.0;
-
         if ( Utils.func( this.renderAfter ) ) {
             this.renderAfter();
         }
@@ -293,7 +291,6 @@ export default class Sprite {
             this.footbox.width,
             this.footbox.height
         );
-        this.gamebox.mapLayer.context.globalAlpha = 1.0;
     }
 
 

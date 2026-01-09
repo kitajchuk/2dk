@@ -318,8 +318,6 @@ export default class Hero extends Sprite {
                 shieldbox.height
             );
         }
-
-        this.gamebox.mapLayer.context.globalAlpha = 1.0;
     }
 
 
