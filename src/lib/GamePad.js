@@ -169,11 +169,14 @@ class GamePad extends Controller {
         this.element = document.createElement( "div" );
         this.dpad = document.createElement( "div" );
         this.btns = document.createElement( "div" );
+        this.menu = document.createElement( "div" );
         this.element.className = "_2dk__gamepad";
         this.dpad.className = "_2dk__gamepad__dpad";
         this.btns.className = "_2dk__gamepad__btns";
+        this.menu.className = "_2dk__gamepad__menu";
         this.element.appendChild( this.dpad );
         this.element.appendChild( this.btns );
+        this.element.appendChild( this.menu );
         this.diagonaldpad = this.player.data.diagonaldpad;
         this.availableControls = Object.keys( touchControls );
         this.functionalControls = Object.keys( touchControls ).reduce( ( acc, btn ) => {
@@ -198,6 +201,8 @@ class GamePad extends Controller {
             touchControls[ btn ].btn = btn.split( "-" );
             touchControls[ btn ].elem = document.createElement( "div" );
             touchControls[ btn ].elem.className = `_2dk__gamepad__${btn}`;
+            touchControls[ btn ].elem.role = "button";
+
             
             if ( touchControls[ btn ].key ) {
                 touchControls[ btn ].elem.dataset.key = touchControls[ btn ].key;
@@ -213,6 +218,9 @@ class GamePad extends Controller {
 
             if ( touchControls[ btn ].dpad ) {
                 this.dpad.appendChild( touchControls[ btn ].elem );
+
+            } else if ( touchControls[ btn ].menu ) {
+                this.menu.appendChild( touchControls[ btn ].elem );
 
             } else {
                 this.btns.appendChild( touchControls[ btn ].elem );

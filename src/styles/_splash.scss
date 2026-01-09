@@ -2,7 +2,7 @@
     ._2dk__splash {
         color: white;
         background-color: var( --black );
-        position: absolute;
+        position: fixed;
         left: 0;
         top: 0;
         width: 100%;
@@ -23,7 +23,7 @@
 
     ._2dk__splash__load {
         display: none;
-        position: absolute;
+        position: fixed;
         left: 0;
         top: 0;
         width: 100%;
@@ -40,7 +40,7 @@
 
     ._2dk__splash__info {
         display: none;
-        position: absolute;
+        position: fixed;
         left: 0;
         top: 0;
         width: 100%;
@@ -95,7 +95,7 @@
     }
 
     ._2dk__splash__update {
-        position: absolute;
+        position: fixed;
         left: 20px;
         top: 20px;
         right: 20px;
