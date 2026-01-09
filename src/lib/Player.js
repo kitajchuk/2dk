@@ -431,14 +431,14 @@ class Player extends Controller {
 
     onReleaseA () {
         this.controls.a = false;
-        this.gamebox.releaseA && this.gamebox.releaseA();
+        this.gamebox && this.gamebox.releaseA && this.gamebox.releaseA();
     }
 
 
     onReleaseHoldA () {
         this.controls.a = false;
         this.controls.aHold = false;
-        this.gamebox.releaseHoldA && this.gamebox.releaseHoldA();
+        this.gamebox && this.gamebox.releaseHoldA && this.gamebox.releaseHoldA();
     }
 
 
@@ -455,14 +455,14 @@ class Player extends Controller {
     onReleaseB () {
         this.controls.b = false;
         this.controls.bHold = false;
-        this.gamebox.releaseB && this.gamebox.releaseB();
+        this.gamebox && this.gamebox.releaseB && this.gamebox.releaseB();
     }
 
 
     onReleaseHoldB () {
         this.controls.b = false;
         this.controls.bHold = false;
-        this.gamebox.releaseHoldB && this.gamebox.releaseHoldB();
+        this.gamebox && this.gamebox.releaseHoldB && this.gamebox.releaseHoldB();
     }
 }
 
