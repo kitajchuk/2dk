@@ -106,9 +106,9 @@ export default class Projectile extends Sprite {
 
         const isCollision = (
             collision.map ||
-            collision.npc ||
             collision.hero ||
             collision.doors ||
+            ( collision.npc && collision.npc !== this.npc ) ||
             this.canTileStop( poi, null, collision )
         );
 
