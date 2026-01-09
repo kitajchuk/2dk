@@ -53,6 +53,9 @@ class TopView extends GameBox {
         // blit hero
         this.hero.blit( elapsed );
 
+        // blit HUD
+        this.hud.blit( elapsed );
+
         // blit companion
         if ( this.companion ) {
             this.companion.blit( elapsed );
@@ -90,6 +93,9 @@ class TopView extends GameBox {
         if ( this.player.query.get( "debug" ) ) {
             this.map.renderDebug();
         }
+
+        // render HUD
+        this.hud.render();
     }
 
 

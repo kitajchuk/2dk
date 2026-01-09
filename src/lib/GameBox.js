@@ -10,6 +10,7 @@ import FX from "./sprites/FX";
 import CellAutoMap from "./maps/CellAutoMap";
 import GameQuest from "./GameQuest";
 import ItemDrop from "./sprites/ItemDrop";
+import HUD from "./HUD";
 
 
 
@@ -33,6 +34,7 @@ export default class GameBox {
         this.mapLayer = null;
         this.gamequest = new GameQuest( this );
         this.renderQueue = new RenderQueue( this );
+        this.hud = new HUD( this );
 
         // Dialogues
         this.dialogue = new Dialogue( this );
