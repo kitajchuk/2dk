@@ -724,33 +724,27 @@ export class RenderQueue {
 
 
     blit () {
-        this.background = [];
-        this.heroground = [];
-        this.foreground = [];
+        this.layers = {
+            background: [],
+            heroground: [],
+            foreground: [],
+        };
     }
 
 
     // Supports anything with a "render" method and a "layer" property
     add ( sprite ) {
-        this[ sprite.layer ].push( sprite );
+        this.layers[ sprite.layer ].push( sprite );
     }
 
 
     render () {
-        this.gamebox.mapLayer.context.save();
-
-        for ( let i = this.background.length; i--; ) {
-            this.background[ i ].render();
+        for ( const layer in this.layers ) {
+            for ( let i = this.layers[ layer ].length; i--; ) {
+                this.gamebox.mapLayer.context.save();
+                this.layers[ layer ][ i ].render();
+                this.gamebox.mapLayer.context.restore();
+            }
         }
-
-        for ( let i = 0; i < this.heroground.length; i++ ) {
-            this.heroground[ i ].render();
-        }
-
-        for ( let i = this.foreground.length; i--; ) {
-            this.foreground[ i ].render();
-        }
-
-        this.gamebox.mapLayer.context.restore();
     }
 }
