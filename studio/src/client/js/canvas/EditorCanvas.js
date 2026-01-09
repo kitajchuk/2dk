@@ -1467,6 +1467,14 @@ class EditorCanvas {
                     newData.elevation = data.elevation;
                 }
 
+                if ( data.actionStat ) {
+                    firstAction.stat = JSON.parse( data.actionStat );
+                }
+
+                if ( data.actionDrops ) {
+                    firstAction.drops = JSON.parse( data.actionDrops );
+                }
+
                 newData.actions.push( firstAction );
 
                 // Secondary action for attack
@@ -1477,6 +1485,14 @@ class EditorCanvas {
 
                     if ( data.fx ) {
                         secondAction.fx = data.fx;
+                    }
+
+                    if ( data.attackStat ) {
+                        secondAction.stat = JSON.parse( data.attackStat );
+                    }
+
+                    if ( data.attackDrops ) {
+                        secondAction.drops = JSON.parse( data.attackDrops );
                     }
 
                     newData.actions.push( secondAction );

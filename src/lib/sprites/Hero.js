@@ -883,7 +883,8 @@ export class ItemGet extends Sprite {
 * There can be only one at a time
 *******************************************************************************/
 export class LiftedTile extends Sprite {
-    constructor ( spawn, tile, map, hero ) {
+    constructor ( spawn, activeTiles, map, hero ) {
+        const tile = activeTiles.getTile();
         const data = {
             width: map.data.tilesize,
             height: map.data.tilesize,
@@ -907,11 +908,17 @@ export class LiftedTile extends Sprite {
         super( data, map );
         this.hero = hero;
         this.throwing = false;
+        this.activeTiles = activeTiles;
     }
 
 
     destroy () {
-        const attackAction = this.gamebox.interact.tile.instance.canAttack();
+        const attackAction = this.activeTiles.canAttack();
+
+        if ( attackAction?.drops ) {
+            this.gamebox.itemDrop( attackAction.drops, this.position );
+        }
+        
         this.gamebox.smokeObject( this, attackAction?.fx );
         this.player.gameaudio.hitSound( Config.verbs.SMASH );
         this.gamebox.interact.tile = null;

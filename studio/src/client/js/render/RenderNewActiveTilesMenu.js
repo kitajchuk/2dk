@@ -135,6 +135,16 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
+                    <div class="editor__label">Action Stat Data (raw data)</div>
+                    <textarea class="editor__field input textarea js-activetile-field" name="actionStat"></textarea>
+                </div>
+                <div>
+                    <div class="editor__label">Action Drops Data (raw data)</div>
+                    <textarea class="editor__field input textarea js-activetile-field" name="actionDrops"></textarea>
+                </div>
+            </div>
+            <div class="editor__setting editor__setting--multi">
+                <div>
                     <div class="editor__checkbox">
                         <label class="checkbox">
                             <input class="check js-activetile-field" type="checkbox" name="attack" />
@@ -155,6 +165,16 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                             ${window.feather.icons[ "chevron-down" ].toSvg()}
                         </span>
                     </div>
+                </div>
+            </div>
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__label">Attack Stat Data (raw data)</div>
+                    <textarea class="editor__field input textarea js-activetile-field" name="attackStat"></textarea>
+                </div>
+                <div>
+                    <div class="editor__label">Attack Drops Data (raw data)</div>
+                    <textarea class="editor__field input textarea js-activetile-field" name="attackDrops"></textarea>
                 </div>
             </div>
             <div class="editor__setting">
