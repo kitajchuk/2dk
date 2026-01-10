@@ -113,12 +113,12 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "You got the Bracelet!",
-                        "Now you can lift heavy things!"
+                        "You got the Feather!",
+                        "Now you can jump over holes in the ground!"
                     ]
                 },
                 "quest": {
-                    "setItem": "bracelet"
+                    "setItem": "feather"
                 }
             }
         }
