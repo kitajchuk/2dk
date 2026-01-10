@@ -366,6 +366,10 @@ class Map {
 
 
     checkShiftableForeground ( layer, lookupY, lookupX ) {
+        // TODO: Need to figure out a good heuristic for this...
+        // This works unless you actually don't want the foreground to shift based on the environment design...
+        return false;
+
         if ( layer !== "foreground" ) {
             return false;
         }

@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v392";
+const CACHE_NAME = "v444";
 const CACHE_URLS = [
     "",
     "index.html",
@@ -45,6 +45,7 @@ const CACHE_URLS = [
     "assets/sounds/sfx-throw.mp3",
     "assets/scenes/logo.png",
     "maps/beneath-the-grave.json",
+    "maps/beneath-the-moblin-hideout.json",
     "maps/beneath-the-rooster.json",
     "maps/master-shinjis-house.json",
     "maps/under-the-plateau.json",
