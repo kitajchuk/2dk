@@ -32,7 +32,9 @@ module.exports = {
         text: [],
     },
     sounds: {},
-    hud: {},
+    hud: {
+        // Currency...
+    },
     // Hero reference
     hero: {
         sprite: 0,
