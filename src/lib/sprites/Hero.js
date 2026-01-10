@@ -857,7 +857,7 @@ export class HeroProjectile extends Projectile {
 * Used to display the item the hero is getting
 *******************************************************************************/
 export class ItemGet extends Sprite {
-    constructor ( spawn, item, map, hero ) {
+    constructor ( spawn, { verb, ...item }, map, hero ) {
         const data = {
             spawn,
             hitbox: {
@@ -878,7 +878,6 @@ export class ItemGet extends Sprite {
         };
         super( data, map );
         this.hero = hero;
-        this.spring = null;
     }
 
 
