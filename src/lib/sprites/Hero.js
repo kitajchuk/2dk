@@ -53,6 +53,9 @@ export default class Hero extends Sprite {
     }
 
 
+/*******************************************************************************
+* Stats
+*******************************************************************************/
     checkStat ( stat, value ) {
         return this.getStat( stat ) >= value;
     }
@@ -64,8 +67,16 @@ export default class Hero extends Sprite {
     }
 
 
+/*******************************************************************************
+* Items
+*******************************************************************************/
     hasItem ( id ) {
         return this.items.some( ( item ) => item.id === id );
+    }
+
+
+    hasJump () {
+        return this.items.some( ( item ) => item.verb === Config.verbs.JUMP );
     }
 
 
@@ -152,6 +163,22 @@ export default class Hero extends Sprite {
     }
 
 
+/*******************************************************************************
+* Currency
+*******************************************************************************/
+    pay ( amount ) {
+        this.currency -= amount;
+    }
+
+
+    receive ( amount ) {
+        this.currency += amount;
+    }
+
+
+/*******************************************************************************
+* Equipped
+*******************************************************************************/
     equip ( eq ) {
         this.data.equipped[ eq ] = true;
     }
@@ -162,16 +189,6 @@ export default class Hero extends Sprite {
     }
 
 
-    pay ( amount ) {
-        this.currency -= amount;
-    }
-
-
-    receive ( amount ) {
-        this.currency += amount;
-    }
-
-    
     isEquipped ( eq ) {
         return this.data.equipped[ eq ] || false;
     }

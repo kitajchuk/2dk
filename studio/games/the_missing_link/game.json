@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 463,
+    "save": 464,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -547,8 +547,8 @@
             "equip": "shield"
         },
         {
-            "id": "power-bracelet",
-            "name": "Power Bracelet",
+            "id": "bracelet",
+            "name": "Bracelet",
             "width": 32,
             "height": 56,
             "image": "assets/sprites/items.png",
@@ -560,8 +560,8 @@
             }
         },
         {
-            "id": "rocs-feather",
-            "name": "Roc's Feather",
+            "id": "feather",
+            "name": "Feather",
             "width": 28,
             "height": 64,
             "image": "assets/sprites/items.png",

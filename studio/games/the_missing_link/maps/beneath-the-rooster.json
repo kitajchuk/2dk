@@ -113,12 +113,12 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "You got the Power Bracelet!",
+                        "You got the Bracelet!",
                         "Now you can lift heavy things!"
                     ]
                 },
                 "quest": {
-                    "setItem": "power-bracelet"
+                    "setItem": "bracelet"
                 }
             }
         }

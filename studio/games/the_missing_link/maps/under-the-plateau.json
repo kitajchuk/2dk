@@ -161,13 +161,12 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "You got the Fairy Bow!",
-                        "Switch weapons with Select.",
-                        "Now you can shoot arrows at enemies."
+                        "You got the Feather!",
+                        "Now you can jump over obstacles."
                     ]
                 },
                 "quest": {
-                    "setItem": "bow"
+                    "setItem": "feather"
                 }
             }
         },

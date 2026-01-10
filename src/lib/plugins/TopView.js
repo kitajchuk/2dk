@@ -198,9 +198,13 @@ class TopView extends GameBox {
             this.interact.tile = collision.tiles.action[ 0 ];
             this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
 
-        // Jump...
-        } else if ( !this.hero.is( Config.verbs.LIFT ) && !this.hero.is( Config.verbs.GRAB ) ) {
-            this.handleHeroJump( poi, this.hero.dir );
+        } else {
+            const notLifting = !this.hero.is( Config.verbs.LIFT ) && !this.hero.is( Config.verbs.GRAB )
+            
+            // Jump...
+            if ( notLifting && this.hero.hasJump() ) {
+                this.handleHeroJump( poi, this.hero.dir );
+            }
         }
     }
 
