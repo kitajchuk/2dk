@@ -333,7 +333,7 @@ class Map {
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
                             const celsCopy = structuredClone( this.data.textures[ id ][ lookupY ][ lookupX ] );
                             const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
-                            const isShiftableForeground = this.checkShiftableForeground( id, lookupY, lookupX );
+                            const isShiftableForeground = id === "foreground" && this.checkShiftableForeground( id, lookupY, lookupX, celsCopy );
                             
                             // Shift foreground behind hero render if textures and hero position determine so
                             if ( isShiftableForeground ) {
@@ -365,15 +365,13 @@ class Map {
     }
 
 
-    checkShiftableForeground ( layer, lookupY, lookupX ) {
-        // TODO: Need to figure out a good heuristic for this...
-        // This works unless you actually don't want the foreground to shift based on the environment design...
-        return false;
-
+    checkShiftableForeground ( layer, lookupY, lookupX, fgCel ) {
+        // Fail safe but this is already gated
         if ( layer !== "foreground" ) {
             return false;
         }
 
+        // Check if the foreground tile collides with the hero or companion before we even consider shifting
         const tile = {
             x: lookupX * this.data.tilesize,
             y: lookupY * this.data.tilesize,
@@ -387,6 +385,20 @@ class Map {
         };
 
         if ( !collides.hero && !collides.companion ) {
+            return false;
+        }
+
+        // Compare the current foreground and background cels and if they don't match we can't shift
+        let bgCel = structuredClone( this.data.textures.background[ lookupY ][ lookupX ] );
+
+        if ( fgCel === 0 || bgCel === 0 ) {
+            return false;
+        }
+
+        fgCel = fgCel[ fgCel.length - 1 ];
+        bgCel = bgCel[ bgCel.length - 1 ];
+
+        if ( fgCel[ 0 ] !== bgCel[ 0 ] && fgCel[ 1 ] !== bgCel[ 1 ] ) {
             return false;
         }
 
