@@ -20,6 +20,7 @@ export default class HUD {
     render () {
         this.renderHealth();
         this.renderCurrency();
+        this.renderCollectibles();
     }
 
 
@@ -107,6 +108,50 @@ export default class HUD {
             this.gamebox.mapLayer.data.width - 20,
             20
         );
+
+        this.gamebox.mapLayer.context.restore();
+    }
+
+
+    renderCollectibles () {
+        this.gamebox.mapLayer.context.save();
+
+        if ( this.player.data.hud.collectibles ) {
+            for ( let i = this.player.data.hud.collectibles.length; i--; ) {
+                const collectible = this.player.data.hud.collectibles[ i ];
+                const item = this.hero.items.find( ( item ) => item.id === collectible.id );
+                const collected = item ? item.collected : 0;
+                const collectString = `x${collected}`;
+
+                const width = collectible.width * this.hero.scale;
+                const height = collectible.height * this.hero.scale;
+                const diff = ( height - 16 * this.hero.scale ) / 2;
+                const offsetX = 20 + width + collectString.length * 16;
+                const offsetY = 60 - diff / 2;
+
+                this.gamebox.mapLayer.context.drawImage(
+                    Loader.cash( collectible.image ),
+                    collectible.offsetX,
+                    collectible.offsetY,
+                    width,
+                    height,
+                    this.gamebox.mapLayer.data.width - offsetX,
+                    offsetY,
+                    width,
+                    height
+                );
+
+                this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
+                this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
+                this.gamebox.mapLayer.context.textAlign = "right";
+                this.gamebox.mapLayer.context.textBaseline = "top";
+                this.gamebox.mapLayer.context.fillText(
+                    collectString,
+                    this.gamebox.mapLayer.data.width - 20,
+                    60
+                );
+            }
+        }
 
         this.gamebox.mapLayer.context.restore();
     }

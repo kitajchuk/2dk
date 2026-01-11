@@ -122,11 +122,20 @@ export default class Hero extends Sprite {
         const item = this.items.find( ( item ) => item.id === id );
 
         if ( item ) {
-            item.collect++;
+            item.collected++;
             return;
         }
 
         this.giveItem( id );
+    }
+
+
+    takeCollectible ( id ) {
+        const item = this.items.find( ( item ) => item.id === id );
+
+        if ( item && item.collect ) {
+            item.collected = Math.max( 0, item.collected - 1 );
+        }
     }
 
 
@@ -152,6 +161,10 @@ export default class Hero extends Sprite {
         if ( item.currency ) {
             this.receive( item.currency );
         }
+
+        if ( item.collect ) {
+            item.collected = 1;
+        }
     }
 
 
@@ -174,7 +187,7 @@ export default class Hero extends Sprite {
 * Currency
 *******************************************************************************/
     pay ( amount ) {
-        this.currency -= amount;
+        this.currency = Math.max( 0, this.currency - amount );
     }
 
 

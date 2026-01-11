@@ -563,13 +563,18 @@ export default class Sprite {
     canDoPayload () {
         if ( this.data.payload.quest?.checkItem ) {
             const { id, dialogue } = this.data.payload.quest.checkItem;
+            const item = this.gamebox.hero.items.find( ( item ) => item.id === id );
 
-            if ( !this.gamebox.hero.hasItem( id ) ) {
+            if ( !item || ( item && item.collect && item.collected <= 0 ) ) {
                 // A simple message to the player...
                 if ( dialogue ) {
                     this.gamebox.dialogue.auto( dialogue );
                 }
                 return false;
+
+            // Take one (e.g. a small key or something...)
+            } else if ( item && item.collect && item.collected > 0 ) {
+                this.gamebox.hero.takeCollectible( id );
             }
         }
 
