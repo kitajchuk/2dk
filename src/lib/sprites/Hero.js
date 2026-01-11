@@ -345,11 +345,7 @@ export default class Hero extends Sprite {
     handleAttackFrame () {
         const poi = this.getNextPoiByDir( this.dir, 1 );
         const weaponBox = this.getWeaponbox();
-        const collision = {
-            npc: this.gamebox.checkNPC( poi, weaponBox ),
-            tiles: this.gamebox.checkTiles( poi, weaponBox ),
-            item: this.gamebox.checkItems( poi, weaponBox ),
-        };
+        const collision = this.gamebox.checkCollisions( poi, weaponBox );
 
         if ( collision.item ) {
             this.gamebox.handleHeroItem( poi, this.dir, collision.item );
@@ -712,7 +708,7 @@ export default class Hero extends Sprite {
 /*******************************************************************************
 * Checks
 *******************************************************************************/
-    canMoveWhileJumping ( poi, dir, collision ) {
+    canMoveWhileJumping ( collision ) {
         return (
             !collision.map &&
             !collision.npc &&
@@ -729,27 +725,27 @@ export default class Hero extends Sprite {
     }
 
 
-    canEventDoor ( poi, dir, collision ) {
+    canEventDoor ( collision ) {
         return ( collision.event.type === Config.events.DOOR );
     }
 
 
-    canEventBoundary ( poi, dir, collision ) {
+    canEventBoundary ( collision ) {
         return ( collision.event.type === Config.events.BOUNDARY && collision.camera );
     }
 
 
-    canEventDialogue ( poi, dir, collision ) {
+    canEventDialogue ( collision ) {
         return ( collision.event.type === Config.events.DIALOGUE && collision.event.payload );
     }
 
 
-    canLift ( poi, dir ) {
+    canLift ( dir ) {
         return ( dir === Config.opposites[ this.dir ] );
     }
 
 
-    canTileJump ( poi, dir, collision ) {
+    canTileJump ( dir, collision ) {
         const hasPassiveTiles = collision.tiles && collision.tiles.passive.length;
 
         if ( this.is( Config.verbs.LIFT ) || !hasPassiveTiles ) {
@@ -820,20 +816,14 @@ export class HeroProjectile extends Projectile {
 
     applyPosition () {
         const poi = this.getNextPoi();
-        const collision = {
-            map: this.gamebox.checkMap( poi, this ),
-            npc: this.gamebox.checkNPC( poi, this ),
-            tiles: this.gamebox.checkTiles( poi, this ),
-            doors: this.gamebox.checkDoor( poi, this ),
-            camera: this.gamebox.checkCamera( poi, this ),
-        };
+        const collision = this.gamebox.checkCollisions( poi, this );
 
         const isCollision = (
             collision.map ||
             collision.npc ||
             collision.doors ||
             collision.camera ||
-            this.canTileStop( poi, this.dir, collision )
+            this.canTileStop( collision )
         );
         
         if ( isCollision ) {
@@ -953,11 +943,7 @@ export class LiftedTile extends Sprite {
             return;
         }
 
-        const collision = {
-            map: this.gamebox.checkMap( this.position, this ),
-            npc: this.gamebox.checkNPC( this.position, this ),
-            camera: this.gamebox.checkCamera( this.position, this ),
-        };
+        const collision = this.gamebox.checkCollisions( this.position, this );
 
         if ( collision.map || collision.npc || collision.camera ) {
             this.destroy();

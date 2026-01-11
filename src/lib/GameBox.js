@@ -352,6 +352,25 @@ export default class GameBox {
     }
 
 
+    checkCollisions ( poi, sprite, doHeroCheck = false ) {
+        const collisions = {
+            map: this.checkMap( poi, sprite ),
+            npc: this.checkNPC( poi, sprite ),
+            door: this.checkDoor( poi, sprite ),
+            item: this.checkItems( poi, sprite ),
+            tiles: this.checkTiles( poi, sprite ),
+            event: this.checkEvents( poi, sprite ),
+            camera: this.checkCamera( poi, sprite ),
+        };
+
+        if ( doHeroCheck ) {
+            collisions.hero = this.checkHero( poi, sprite );
+        }
+
+        return collisions;
+    }
+
+
     checkCamera ( poi, sprite ) {
         let ret = false;
 
@@ -526,7 +545,7 @@ export default class GameBox {
                             return actionVerbs.indexOf( action.verb ) !== -1;
                         }) ? true : false ),
                         attack: ( instance.data.actions && instance.canAttack() ? true : false ),
-                        camera: ( cameraTiles.indexOf( instance.data.group ) !== -1 ),
+                        camera: instance.data.friction || instance.data.mask,
                         amount,
                         tilebox,
                         collides,
@@ -698,10 +717,6 @@ const footTiles = [
     Config.tiles.WATER,
     Config.tiles.GRASS,
     Config.tiles.HOLES,
-];
-const cameraTiles = [
-    Config.tiles.STAIRS,
-    Config.tiles.GRASS,
 ];
 
 

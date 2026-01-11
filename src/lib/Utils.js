@@ -59,16 +59,14 @@ const Utils = {
     },
 
 
-    collide ( box1, box2 ) {
-        let ret = false;
-
+    collide ( box1, box2, tolerance = 0 ) {
         if (
-            box1.x < ( box2.x + box2.width ) &&
-            ( box1.x + box1.width ) > box2.x &&
-            box1.y < ( box2.y + box2.height ) &&
-            ( box1.height + box1.y ) > box2.y
+            (box1.x + tolerance) < (box2.x + box2.width - tolerance) &&
+            (box1.x + box1.width - tolerance) > (box2.x + tolerance) &&
+            (box1.y + tolerance) < (box2.y + box2.height - tolerance) &&
+            (box1.height + box1.y - tolerance) > (box2.y + tolerance)
         ) {
-            ret = {
+            return {
                 // box1.x1 snapped to ZERO
                 x: Math.max( 0, ( box1.x - box2.x ) ),
                 // box1.y1 snapped to ZERO
@@ -80,7 +78,7 @@ const Utils = {
             };
         }
 
-        return ret;
+        return false;
     },
 
 

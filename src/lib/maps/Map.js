@@ -238,6 +238,7 @@ class Map {
     renderDebug () {
         const visibleColliders = this.gamebox.getVisibleColliders();
 
+        this.gamebox.mapLayer.context.save();
         this.gamebox.mapLayer.context.globalAlpha = 0.5;
 
         for ( let i = visibleColliders.length; i--; ) {
@@ -249,6 +250,8 @@ class Map {
                 this.data.collider
             );
         }
+
+        this.gamebox.mapLayer.context.restore();
     }
 
 

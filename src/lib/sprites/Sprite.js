@@ -268,6 +268,7 @@ export default class Sprite {
 
 
     renderDebug () {
+        this.gamebox.mapLayer.context.save();
         this.gamebox.mapLayer.context.globalAlpha = 0.25;
         this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
         this.gamebox.mapLayer.context.fillRect(
@@ -291,6 +292,7 @@ export default class Sprite {
             this.footbox.width,
             this.footbox.height
         );
+        this.gamebox.mapLayer.context.restore();
     }
 
 
@@ -549,16 +551,17 @@ export default class Sprite {
 /*******************************************************************************
 * Checks
 *******************************************************************************/
-    canTileStop ( poi, dir, collision ) {
+    canTileStop ( collision ) {
         return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
             return tile.stop;
         }) );
     }
 
 
-    canTileFall ( poi, dir, collision ) {
+    canTileFall ( collision, tolerance = 0 ) {
+        // TODO: Look at ALL fall tiles at once for better determination...
         return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
-            return tile.fall && Utils.contains( tile.tilebox, this.hitbox );
+            return tile.fall && Utils.collide( tile.tilebox, this.footbox, tolerance );
         }) );
     }
 

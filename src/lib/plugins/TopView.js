@@ -173,11 +173,7 @@ class TopView extends GameBox {
         }
 
         const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
-        const collision = {
-            npc: this.checkNPC( poi, this.hero ),
-            door: this.checkDoor( poi, this.hero ),
-            tiles: this.checkTiles( poi, this.hero ),
-        };
+        const collision = this.checkCollisions( poi, this.hero );
 
         if ( collision.door ) {
             this.handleHeroDoorAction( poi, this.hero.dir, collision.door );
@@ -426,18 +422,10 @@ class TopView extends GameBox {
             return;
         }
 
-        const collision = {
-            map: this.checkMap( poi, this.hero ),
-            npc: this.checkNPC( poi, this.hero ),
-            door: this.checkDoor( poi, this.hero ),
-            item: this.checkItems( poi, this.hero ),
-            tiles: this.checkTiles( poi, this.hero ),
-            event: this.checkEvents( poi, this.hero ),
-            camera: this.checkCamera( poi, this.hero ),
-        };
+        const collision = this.checkCollisions( poi, this.hero );
 
         if ( this.jumping ) {
-            if ( this.hero.canMoveWhileJumping( poi, dir, collision ) ) {
+            if ( this.hero.canMoveWhileJumping( collision ) ) {
                 this.applyHero( poi, dir );
             }
 
@@ -445,15 +433,15 @@ class TopView extends GameBox {
         }
 
         if ( collision.event ) {
-            if ( this.hero.canEventBoundary( poi, dir, collision ) ) {
+            if ( this.hero.canEventBoundary( collision ) ) {
                 this.handleHeroEventBoundary( poi, dir, collision.event );
                 return;
 
-            } else if ( this.hero.canEventDoor( poi, dir, collision ) ) {
+            } else if ( this.hero.canEventDoor( collision ) ) {
                 this.handleHeroEventDoor( poi, dir, collision.event );
                 return;
 
-            } else if ( this.hero.canEventDialogue( poi, dir, collision ) ) {
+            } else if ( this.hero.canEventDialogue( collision ) ) {
                 this.handleHeroEventDialogue( poi, dir, collision.event );
                 // No return as this is a passive event
             }
@@ -499,7 +487,7 @@ class TopView extends GameBox {
         }
 
         if ( this.hero.is( Config.verbs.GRAB ) ) {
-            if ( this.hero.canLift( poi, dir, collision ) ) {
+            if ( this.hero.canLift( dir ) ) {
                 this.handleHeroLift( poi, dir );
             }
 
@@ -508,16 +496,16 @@ class TopView extends GameBox {
 
         if ( collision.tiles ) {
             // Tile will allow leaping from it's edge, like a ledge...
-            if ( this.hero.canTileJump( poi, dir, collision ) ) {
+            if ( this.hero.canTileJump( dir, collision ) ) {
                 this.handleHeroTileJump( poi, dir, collision.tiles.passive.filter( ( tile ) => tile.jump ) );
 
             // Tile is behaves like a WALL, or Object you cannot walk on
-            } else if ( this.hero.canTileStop( poi, dir, collision ) ) {
+            } else if ( this.hero.canTileStop( collision ) ) {
                 this.handleHeroPush( poi, dir, collision.tiles.action[ 0 ] );
                 return;
 
             // When you fall down, you gotta get back up again...
-            } else if ( this.hero.canTileFall( poi, dir, collision ) ) {
+            } else if ( this.hero.canTileFall( collision, 5 ) ) {
                 this.handleHeroFall( poi, dir, collision.tiles );
                 return;
             }

@@ -236,33 +236,6 @@
             ]
         },
         {
-            "group": "grass-dead",
-            "layer": "background",
-            "offsetX": 64,
-            "offsetY": 2240,
-            "mask": "grass-dead",
-            "friction": 1.5,
-            "actions": [
-                {
-                    "verb": "attack",
-                    "drops": [
-                        {
-                            "id": "heart",
-                            "chance": 10
-                        },
-                        {
-                            "id": "green-rupee",
-                            "chance": 10
-                        },
-                        {
-                            "id": "blue-rupee",
-                            "chance": 5
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "group": "flowers-dirt",
             "layer": "background",
             "offsetX": 128,

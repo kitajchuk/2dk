@@ -164,13 +164,7 @@ export default class NPC extends Sprite {
                 break;
         }
 
-        const collision = {
-            map: this.gamebox.checkMap( poi, this ),
-            npc: this.gamebox.checkNPC( poi, this ),
-            tiles: this.gamebox.checkTiles( poi, this ),
-            doors: this.gamebox.checkDoor( poi, this ),
-            camera: this.gamebox.checkCamera( poi, this ),
-        };
+        const collision = this.gamebox.checkCollisions( poi, this );
 
         if ( collision.map || collision.npc || collision.doors || collision.camera || this.canTileStop( poi, null, collision ) ) {
             this.pushed = null;
@@ -189,10 +183,7 @@ export default class NPC extends Sprite {
 
     applyFloatPosition () {
         const poi = this.getNextPoi();
-        const collision = {
-            map: this.gamebox.checkMap( poi, this ),
-            doors: this.gamebox.checkDoor( poi, this ),
-        };
+        const collision = this.gamebox.checkCollisions( poi, this );
             
         if ( collision.map || collision.doors ) {
             this.position.z = -( this.map.data.tilesize * 0.75 );
@@ -210,19 +201,14 @@ export default class NPC extends Sprite {
 
     applyNormalPosition () {
         const poi = this.getNextPoi();
-        const collision = {
-            map: this.gamebox.checkMap( poi, this ),
-            npc: this.gamebox.checkNPC( poi, this ),
-            hero: this.gamebox.checkHero( poi, this ),
-            tiles: this.gamebox.checkTiles( poi, this ),
-            doors: this.gamebox.checkDoor( poi, this ),
-        };
+        const collision = this.gamebox.checkCollisions( poi, this, true );
         const isCollision = (
             collision.map ||
             collision.npc ||
             collision.hero ||
             collision.doors ||
-            this.canTileStop( poi, null, collision )
+            this.canTileStop( collision ) ||
+            this.canTileFall( collision )
         );
 
         // Roaming NPCs can push the hero back...
@@ -409,6 +395,11 @@ export default class NPC extends Sprite {
         }
 
         if ( this.projectile ) {
+            return;
+        }
+
+        if ( this.isHitOrStill() ) {
+            this.projectileCounter = 120;
             return;
         }
 
