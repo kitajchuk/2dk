@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 502,
+    "save": 507,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -625,6 +625,16 @@
                 "value": 1
             },
             "sound": "heart"
+        },
+        {
+            "id": "key",
+            "name": "Key",
+            "width": 28,
+            "height": 52,
+            "image": "assets/sprites/items.png",
+            "offsetX": 210,
+            "offsetY": 70,
+            "collect": 1
         }
     ],
     "objects": [],
