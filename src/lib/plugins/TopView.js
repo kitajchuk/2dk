@@ -460,6 +460,10 @@ class TopView extends GameBox {
 
         if ( collision.item ) {
             this.handleHeroItem( poi, dir, collision.item );
+
+            if ( collision.item.data.collect ) {
+                return;
+            }
         }
 
         if ( collision.door ) {
@@ -750,6 +754,19 @@ class TopView extends GameBox {
 
         if ( item.data.stat ) {
             this.hero.updateStat( item.data.stat.key, item.data.stat.value );
+        }
+
+        if ( item.data.collect ) {
+            this.hero.collectItem( item.data.id );
+
+            if ( item.data.dialogue ) {
+                this.dialogue.play( item.data.dialogue ).then( () => {
+                    this.hero.resetItemGet();
+
+                }).catch( () => {
+                    this.hero.resetItemGet();
+                });
+            }
         }
 
         this.map.killObject( "items", item );

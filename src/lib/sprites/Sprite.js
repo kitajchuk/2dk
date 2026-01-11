@@ -624,7 +624,7 @@ export default class Sprite {
         }
 
         this.gamequest.hitQuest( key, value );
-        this.gamebox.checkQuestsFlags( key );
+        this.gamebox.checkQuestFlags( key );
     }
 
 

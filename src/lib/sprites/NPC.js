@@ -2,6 +2,7 @@ import Utils from "../Utils";
 import Config, { DIRS } from "../Config";
 import Sprite from "./Sprite";
 import Projectile from "./Projectile";
+import KeyItemDrop from "./KeyItemDrop";
 
 
 
@@ -71,11 +72,8 @@ export default class NPC extends Sprite {
                 this.resetDialogue();
                 this.handleAI();
 
-                // Reset the hero item get sequence...
                 if ( this.gamebox.hero.itemGet ) {
-                    this.gamebox.hero.itemGet = null;
-                    this.gamebox.hero.stillTimer = 0;
-                    this.gamebox.hero.face( "down" );
+                    this.gamebox.hero.resetItemGet();
                 }
 
                 // For prompt dialogue, we need to check for quests on resolution (e.g. pressed "a")
@@ -271,10 +269,10 @@ export default class NPC extends Sprite {
         }
 
         if ( this.stats.health <= 0 ) {
+            this.handleQuestFlagUpdate();
             this.gamebox.smokeObject( this, this.data.action.fx );
             this.player.gameaudio.hitSound( this.data.action.sound || Config.verbs.SMASH );
             this.map.killObject( "npcs", this );
-            this.handleQuestFlagUpdate();
 
             if ( this.data.drops ) {
                 this.gamebox.itemDrop( this.data.drops, this.position );
@@ -285,6 +283,52 @@ export default class NPC extends Sprite {
 
     handleQuestItemUpdate ( itemId ) {
         this.gamebox.hero.giveItem( itemId, this.mapId );
+    }
+
+
+    handleQuestFlagCheck ( quest ) {
+        if ( this.checkQuestFlag( quest ) ) {
+            if ( this.data.action.quest.setFlag ) {
+                const { key, value } = this.data.action.quest.setFlag;
+
+                // Exit out if the quest flag has been completed already...
+                // This allows combining setFlag, checkFlag and dropItem quests together
+                // In the below example when an octorok is killed it will drop a key if it is the 3rd one and this quest has not been completed yet
+                /*
+                    "quest": {
+                        "dropItem": {
+                            "id": "key",
+                            "dialogue": {
+                                "type": "text",
+                                "text": [
+                                    "You got a small key!",
+                                    "I bet it opens something cool!"
+                                ]
+                            }
+                        },
+                        "setFlag": {
+                            "key": "octorok-killed",
+                            "value": 1
+                        },
+                        "checkFlag": {
+                            "key": "octorok-killed",
+                            "value": 3
+                        }
+                    }
+                */
+                if ( key === quest && this.isQuestFlagComplete() ) {
+                    return;
+                }
+
+                this.gamequest.hitQuest( key, value );
+            }
+
+            this.gamequest.completeQuest( quest );
+
+            if ( this.data.action.quest.dropItem ) {
+                this.gamebox.keyItemDrop( this.data.action.quest.dropItem, this.position );
+            }
+        }
     }
 
 

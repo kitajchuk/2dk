@@ -64,6 +64,13 @@ export default class Hero extends Sprite {
     }
 
 
+    resetItemGet () {
+        this.itemGet = null;
+        this.stillTimer = 0;
+        this.face( "down" );
+    }
+
+
 /*******************************************************************************
 * Stats
 *******************************************************************************/
@@ -111,11 +118,19 @@ export default class Hero extends Sprite {
     }
 
 
-    giveItem ( id, mapId ) {
-        if ( this.hasItem( id ) ) {
+    collectItem ( id ) {
+        const item = this.items.find( ( item ) => item.id === id );
+
+        if ( item ) {
+            item.collect++;
             return;
         }
 
+        this.giveItem( id );
+    }
+
+
+    giveItem ( id, mapId ) {
         const item = this.player.getMergedData({
             id,
             mapId,

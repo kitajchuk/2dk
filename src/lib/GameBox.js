@@ -10,7 +10,9 @@ import FX from "./sprites/FX";
 import CellAutoMap from "./maps/CellAutoMap";
 import GameQuest from "./GameQuest";
 import ItemDrop from "./sprites/ItemDrop";
+import KeyItemDrop from "./sprites/KeyItemDrop";
 import HUD from "./HUD";
+
 
 
 
@@ -242,6 +244,19 @@ export default class GameBox {
     
             this.map.addObject( "items", new ItemDrop( spawn, data, this.map ) );
         }
+    }
+
+
+    keyItemDrop ( dropItem, position ) {
+        const data = this.player.getMergedData({
+            id: dropItem.id,
+            dialogue: dropItem.dialogue,
+        }, "items" );
+        const spawn = {
+            x: position.x + ( this.map.data.tilesize / 2 ) - ( data.width / 2 ),
+            y: position.y + ( this.map.data.tilesize / 2 ) - ( data.height / 2 ),
+        };
+        this.map.addObject( "items", new KeyItemDrop( spawn, data, this.map ) );
     }
 
 
@@ -601,7 +616,7 @@ export default class GameBox {
     }
 
 
-    checkQuestsFlags ( quest ) {
+    checkQuestFlags ( quest ) {
         this.hero.handleQuestFlagCheck( quest );
 
         if ( this.companion ) {
