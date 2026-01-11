@@ -559,10 +559,22 @@ export default class Sprite {
 
 
     canTileFall ( collision, tolerance = 0 ) {
-        // TODO: Look at ALL fall tiles at once for better determination...
-        return ( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
-            return tile.fall && Utils.collide( tile.tilebox, this.footbox, tolerance );
-        }) );
+        const { tiles, empty } = collision;
+        const fallTiles = tiles && tiles.action.filter( ( tile ) => {
+            return tile.fall;
+        });
+
+        if ( fallTiles && fallTiles.length ) {
+            return fallTiles.some( ( tile ) => {
+                return Utils.collide( tile.tilebox, this.footbox, tolerance );
+            });
+        }
+
+        return empty && empty.some( ( tile ) => {
+            return Utils.collide( tile, this.footbox, tolerance );
+        });
+
+        return false;
     }
 
 

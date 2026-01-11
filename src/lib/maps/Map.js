@@ -187,11 +187,10 @@ class Map {
     }
 
 
-    render ( camera, hero, companion ) {
+    render ( hero, companion ) {
         this.clear();
 
-        this.camera = camera;
-        this.renderBox = this.getRenderbox( camera );
+        this.renderBox = this.getRenderbox();
 
         // Draw background textures
         this.gamebox.renderQueue.add({
@@ -287,27 +286,27 @@ class Map {
     }
 
 
-    getRenderbox ( camera ) {
+    getRenderbox () {
         const renderBox = {
-            x: Math.floor( camera.x / this.data.tilesize ) - 1,
-            y: Math.floor( camera.y / this.data.tilesize ) - 1,
-            width: camera.width + ( this.data.tilesize * 2 ),
-            height: camera.height + ( this.data.tilesize * 2 ),
+            x: Math.floor( this.camera.x / this.data.tilesize ) - 1,
+            y: Math.floor( this.camera.y / this.data.tilesize ) - 1,
+            width: this.camera.width + ( this.data.tilesize * 2 ),
+            height: this.camera.height + ( this.data.tilesize * 2 ),
             bleed: {},
             textures: {},
         };
 
-        renderBox.bleed = this.getBleed( renderBox, camera );
-        renderBox.textures = this.getTextures( renderBox, camera );
+        renderBox.bleed = this.getBleed( renderBox );
+        renderBox.textures = this.getTextures( renderBox );
 
         return renderBox;
     }
 
 
-    getBleed ( renderBox, camera ) {
+    getBleed ( renderBox ) {
         return {
-            x: -( camera.x - ( renderBox.x * this.data.tilesize ) ),
-            y: -( camera.y - ( renderBox.y * this.data.tilesize ) ),
+            x: -( this.camera.x - ( renderBox.x * this.data.tilesize ) ),
+            y: -( this.camera.y - ( renderBox.y * this.data.tilesize ) ),
         };
     }
 

@@ -352,22 +352,27 @@ export default class GameBox {
     }
 
 
-    checkCollisions ( poi, sprite, doHeroCheck = false ) {
-        const collisions = {
-            map: this.checkMap( poi, sprite ),
-            npc: this.checkNPC( poi, sprite ),
-            door: this.checkDoor( poi, sprite ),
-            item: this.checkItems( poi, sprite ),
-            tiles: this.checkTiles( poi, sprite ),
-            event: this.checkEvents( poi, sprite ),
-            camera: this.checkCamera( poi, sprite ),
-        };
+    getEmptyTiles ( layer = "background" ) {
+        const tiles = [];
 
-        if ( doHeroCheck ) {
-            collisions.hero = this.checkHero( poi, sprite );
+        if ( !this.map.renderBox ) {
+            return tiles;
         }
 
-        return collisions;
+        for ( let y = 0; y < this.map.renderBox.textures[ layer ].length; y++ ) {
+            for ( let x = 0; x < this.map.renderBox.textures[ layer ][ y ].length; x++ ) {
+                if ( this.map.renderBox.textures[ layer ][ y ][ x ] === 0 ) {
+                    tiles.push({
+                        x: ( this.map.renderBox.x + x ) * this.map.data.tilesize,
+                        y: ( this.map.renderBox.y + y ) * this.map.data.tilesize,
+                        width: this.map.data.tilesize,
+                        height: this.map.data.tilesize,
+                    });
+                }
+            }
+        }
+
+        return tiles;
     }
 
 
@@ -501,6 +506,22 @@ export default class GameBox {
                 return items[ i ];
             }
         }
+    }
+
+
+    checkEmpty ( sprite, layer = "background" ) {
+        const emptyTiles = this.getEmptyTiles( layer );
+        const touchedTiles = [];
+
+        for ( let i = emptyTiles.length; i--; ) {
+            const collides = Utils.collide( sprite.footbox, emptyTiles[ i ] );
+
+            if ( collides ) {
+                touchedTiles.push( emptyTiles[ i ] )
+            }
+        }
+
+        return touchedTiles.length ? touchedTiles : false;
     }
 
 

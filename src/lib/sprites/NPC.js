@@ -164,9 +164,15 @@ export default class NPC extends Sprite {
                 break;
         }
 
-        const collision = this.gamebox.checkCollisions( poi, this );
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
+            camera: this.gamebox.checkCamera( poi, this ),
+        };
 
-        if ( collision.map || collision.npc || collision.doors || collision.camera || this.canTileStop( poi, null, collision ) ) {
+        if ( collision.map || collision.npc || collision.doors || collision.camera || this.canTileStop( collision ) ) {
             this.pushed = null;
             this.gamebox.locked = false;
             return;
@@ -183,7 +189,10 @@ export default class NPC extends Sprite {
 
     applyFloatPosition () {
         const poi = this.getNextPoi();
-        const collision = this.gamebox.checkCollisions( poi, this );
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
+        };
             
         if ( collision.map || collision.doors ) {
             this.position.z = -( this.map.data.tilesize * 0.75 );
@@ -201,12 +210,21 @@ export default class NPC extends Sprite {
 
     applyNormalPosition () {
         const poi = this.getNextPoi();
-        const collision = this.gamebox.checkCollisions( poi, this, true );
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
+            hero: this.gamebox.checkHero( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
+            empty: this.gamebox.checkEmpty( this ),
+            camera: this.gamebox.checkCamera( poi, this ),
+        };
         const isCollision = (
             collision.map ||
             collision.npc ||
             collision.hero ||
             collision.doors ||
+            collision.camera ||
             this.canTileStop( collision ) ||
             this.canTileFall( collision )
         );
@@ -433,6 +451,11 @@ export default class NPC extends Sprite {
 
     canDoAction ( verb ) {
         return ( this.data.action && this.data.action.verb && verb === this.data.action.verb );
+    }
+
+
+    canHitHero () {
+        return this.data.type === Config.npc.types.ENEMY && !this.isHitOrStill() && !this.gamebox.hero.canShield( this );
     }
 
 

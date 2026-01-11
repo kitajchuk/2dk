@@ -84,7 +84,7 @@ class TopView extends GameBox {
         this.map.update( this.offset );
 
         // render map
-        this.map.render( this.camera, this.hero, this.companion );
+        this.map.render( this.hero, this.companion );
 
         // render render queue
         this.renderQueue.render();
@@ -173,7 +173,11 @@ class TopView extends GameBox {
         }
 
         const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
-        const collision = this.checkCollisions( poi, this.hero );
+        const collision = {
+            npc: this.checkNPC( poi, this.hero ),
+            door: this.checkDoor( poi, this.hero ),
+            tiles: this.checkTiles( poi, this.hero ),
+        };
 
         if ( collision.door ) {
             this.handleHeroDoorAction( poi, this.hero.dir, collision.door );
@@ -422,7 +426,16 @@ class TopView extends GameBox {
             return;
         }
 
-        const collision = this.checkCollisions( poi, this.hero );
+        const collision = {
+            map: this.checkMap( poi, this.hero ),
+            npc: this.checkNPC( poi, this.hero ),
+            door: this.checkDoor( poi, this.hero ),
+            item: this.checkItems( poi, this.hero ),
+            tiles: this.checkTiles( poi, this.hero ),
+            event: this.checkEvents( poi, this.hero ),
+            empty: this.checkEmpty( this.hero ),
+            camera: this.checkCamera( poi, this.hero ),
+        };
 
         if ( this.jumping ) {
             if ( this.hero.canMoveWhileJumping( collision ) ) {
@@ -457,7 +470,7 @@ class TopView extends GameBox {
         }
 
         if ( collision.npc ) {
-            if ( collision.npc.data.type === Config.npc.types.ENEMY && !collision.npc.isHitOrStill() && !this.hero.canShield( collision.npc ) ) {
+            if ( collision.npc.canHitHero() ) {
                 this.hero.hit( collision.npc.stats.power );
                 return;
             }
@@ -494,6 +507,13 @@ class TopView extends GameBox {
             return;
         }
 
+        // When you fall down, you gotta get back up again...
+        // Handles collision.tiles and collision.empty checks!
+        if ( this.hero.canTileFall( collision, 5 ) ) {
+            this.handleHeroFall( poi, dir, collision );
+            return;
+        }
+
         if ( collision.tiles ) {
             // Tile will allow leaping from it's edge, like a ledge...
             if ( this.hero.canTileJump( dir, collision ) ) {
@@ -502,11 +522,6 @@ class TopView extends GameBox {
             // Tile is behaves like a WALL, or Object you cannot walk on
             } else if ( this.hero.canTileStop( collision ) ) {
                 this.handleHeroPush( poi, dir, collision.tiles.action[ 0 ] );
-                return;
-
-            // When you fall down, you gotta get back up again...
-            } else if ( this.hero.canTileFall( collision, 5 ) ) {
-                this.handleHeroFall( poi, dir, collision.tiles );
                 return;
             }
 
@@ -906,42 +921,25 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroFall ( poi, dir, tiles ) {
+    handleHeroFall ( poi, dir, collision ) {
         this.handleResetHeroDirs();
 
-        const fallTile = tiles.action.find( ( tile ) => {
-            return tile.fall;
-        });
-        const fallCoords = fallTile.coord;
-        const surroundingTiles = Utils.getSurroundingTileCoords( fallCoords );
+        let fallCoords = [];
 
-        // Reset to the tile that the hero came from
-        let resetTile;
+        if ( collision.tiles ) {
+            fallCoords = collision.tiles.action.find( ( tile ) => {
+                return tile.fall;
+            }).coord;
 
-        switch ( dir ) {
-            case "up":
-                resetTile = surroundingTiles.bottom;
-                break;
-            case "down":
-                resetTile = surroundingTiles.top;
-                break;
-            case "left":
-                resetTile = surroundingTiles.right;
-                break;
-            case "right":
-                resetTile = surroundingTiles.left;
-                break;
+        } else if ( collision.empty ) {
+            const emptyTile = collision.empty[ 0 ];
+            fallCoords = [
+                emptyTile.x / this.map.data.tilesize,
+                emptyTile.y / this.map.data.tilesize,
+            ];
         }
 
-        // Center the hero's hitbox on the reset tile when the fall animation is complete
-        const finalOffsetX = ( ( this.hero.width - this.map.data.tilesize ) / 2 );
-        const finalOffsetY = ( this.hero.height - this.map.data.tilesize );
-        const finalResetPosition = {
-            x: ( resetTile.x * this.map.data.tilesize ) - finalOffsetX,
-            y: ( resetTile.y * this.map.data.tilesize ) - finalOffsetY,
-        };
-
-        // // Center the hero's sprite on the fall tile as the animation's final destination
+        // Center the hero's sprite on the fall tile as the animation's final destination
         const coordX = fallCoords[ 0 ] * this.map.data.tilesize;
         const coordY = fallCoords[ 1 ] * this.map.data.tilesize;
         const fallOffsetY = ( ( this.hero.height - this.map.data.tilesize ) / 2 );
@@ -951,13 +949,33 @@ class TopView extends GameBox {
             y: coordY - fallOffsetY,
         };
 
+        // Rest position
+        const fallResetPosition = {
+            x: this.hero.lastPositionOnGround.x,
+            y: this.hero.lastPositionOnGround.y,
+        };
+        switch ( dir ) {
+            case "left":
+                fallResetPosition.x += this.map.data.tilesize / 4;
+                break;
+            case "right":
+                fallResetPosition.x -= this.map.data.tilesize / 4;
+                break;
+            case "up":
+                fallResetPosition.y += this.map.data.tilesize / 2;
+                break;
+            case "down":
+                fallResetPosition.y -= this.map.data.tilesize / 4;
+                break;
+        }
+
         this.falling = true;
         this.hero.cycle( Config.verbs.FALL, this.hero.dir );
         this.player.gameaudio.hitSound( "parkour" );
 
         this.hero.falling = {
-            reset: finalResetPosition,
             to: fallToPosition,
+            reset: fallResetPosition,
         };
     }
 

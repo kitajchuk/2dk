@@ -25,6 +25,7 @@ export default class Hero extends Sprite {
         this.mode = Config.hero.modes.WEAPON;
         this.parkour = null;
         this.falling = null;
+        this.lastPositionOnGround = this.position;
     }
 
 
@@ -345,7 +346,11 @@ export default class Hero extends Sprite {
     handleAttackFrame () {
         const poi = this.getNextPoiByDir( this.dir, 1 );
         const weaponBox = this.getWeaponbox();
-        const collision = this.gamebox.checkCollisions( poi, weaponBox );
+        const collision = {
+            npc: this.gamebox.checkNPC( poi, weaponBox ),
+            tiles: this.gamebox.checkTiles( poi, weaponBox ),
+            item: this.gamebox.checkItems( poi, weaponBox ),
+        };
 
         if ( collision.item ) {
             this.gamebox.handleHeroItem( poi, this.dir, collision.item );
@@ -395,12 +400,21 @@ export default class Hero extends Sprite {
     applyPosition ( poi, dir ) {
         if ( this.parkour ) {
             this.applyParkour();
+            this.applyHitbox();
             return;
         }
 
         if ( this.falling ) {
             this.applyFalling();
+            this.applyHitbox();
             return;
+        }
+
+        if ( !this.gamebox.jumping ) {
+            this.lastPositionOnGround = {
+                x: this.position.x,
+                y: this.position.y,
+            };
         }
 
         this.dir = dir;
@@ -413,8 +427,8 @@ export default class Hero extends Sprite {
 
     applyFalling () {
         if ( this.position.x === this.falling.reset.x && this.position.y === this.falling.reset.y ) {
-            this.position.x = this.falling.reset.x;
-            this.position.y = this.falling.reset.y;
+            // this.position.x = this.falling.reset.x;
+            // this.position.y = this.falling.reset.y;
             this.falling = null;
             this.frameStopped = false;
             this.gamebox.falling = false;
@@ -816,7 +830,13 @@ export class HeroProjectile extends Projectile {
 
     applyPosition () {
         const poi = this.getNextPoi();
-        const collision = this.gamebox.checkCollisions( poi, this );
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
+            camera: this.gamebox.checkCamera( poi, this ),
+        };
 
         const isCollision = (
             collision.map ||
@@ -943,7 +963,11 @@ export class LiftedTile extends Sprite {
             return;
         }
 
-        const collision = this.gamebox.checkCollisions( this.position, this );
+        const collision = {
+            map: this.gamebox.checkMap( this.position, this ),
+            npc: this.gamebox.checkNPC( this.position, this ),
+            camera: this.gamebox.checkCamera( this.position, this ),
+        };
 
         if ( collision.map || collision.npc || collision.camera ) {
             this.destroy();
