@@ -518,12 +518,12 @@ export default class GameBox {
     }
 
 
-    checkEmpty ( sprite, layer = "background" ) {
+    checkEmpty ( poi, sprite, layer = "background" ) {
         const emptyTiles = this.getVisibleEmptyTiles( layer );
         const touchedTiles = [];
 
         for ( let i = emptyTiles.length; i--; ) {
-            const collides = Utils.collide( sprite.footbox, emptyTiles[ i ] );
+            const collides = Utils.collide( sprite.getHitbox( poi ), emptyTiles[ i ] );
 
             if ( collides ) {
                 touchedTiles.push( emptyTiles[ i ] )

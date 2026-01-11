@@ -216,7 +216,7 @@ export default class NPC extends Sprite {
             hero: this.gamebox.checkHero( poi, this ),
             tiles: this.gamebox.checkTiles( poi, this ),
             doors: this.gamebox.checkDoor( poi, this ),
-            empty: this.gamebox.checkEmpty( this ),
+            empty: this.gamebox.checkEmpty( poi, this ),
         };
         const isCollision = (
             collision.map ||
@@ -224,7 +224,7 @@ export default class NPC extends Sprite {
             collision.hero ||
             collision.doors ||
             this.canTileStop( collision ) ||
-            this.canTileFall( collision )
+            this.canTileFall( poi, collision )
         );
 
         // Roaming NPCs can push the hero back...
@@ -459,6 +459,29 @@ export default class NPC extends Sprite {
 
     canHitHero () {
         return this.data.type === Config.npc.types.ENEMY && !this.isHitOrStill() && !this.gamebox.hero.canShield( this );
+    }
+
+
+    canTileFall ( poi, collision ) {
+        const { tiles, empty } = collision;
+        const fallTiles = tiles && tiles.action.filter( ( tile ) => {
+            return tile.fall;
+        });
+        const hitbox = this.getHitbox( poi );
+
+        if ( fallTiles && fallTiles.length ) {
+            return fallTiles.some( ( tile ) => {
+                return Utils.collide( tile.tilebox, hitbox );
+            });
+        }
+
+        if ( empty ) {
+            return empty.some( ( tile ) => {
+                return Utils.collide( tile, hitbox );
+            });
+        }
+
+        return false;
     }
 
 

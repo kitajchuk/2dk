@@ -1,3 +1,4 @@
+import Utils from "../Utils";
 import Config from "../Config";
 import Sprite from "./Sprite";
 import Spring from "../Spring";
@@ -777,6 +778,52 @@ export default class Hero extends Sprite {
             ) &&
             firstJumpTile.instance.canInteract( Config.verbs.JUMP ).dir === dir
         );
+    }
+
+
+    canTileFall ( poi, collision ) {
+        const { tiles, empty } = collision;
+        const fallTiles = tiles && tiles.action.filter( ( tile ) => {
+            return tile.fall;
+        });
+        const tolerance = 5;
+
+        if ( fallTiles && fallTiles.length ) {
+            return fallTiles.some( ( tile ) => {
+                return Utils.collide( tile.tilebox, this.footbox, tolerance );
+            });
+        }
+
+        if ( empty ) {
+            const emptyTile = empty.find( ( tile ) => {
+                return Utils.collide( tile, this.footbox, tolerance );
+            });
+
+            if ( !emptyTile ) {
+                return false;
+            }
+
+            const tileCoords = [
+                emptyTile.x / this.map.data.tilesize,
+                emptyTile.y / this.map.data.tilesize,
+            ];
+
+            const event = this.map.getEvent( tileCoords );
+
+            if ( event ) {
+                return false;
+            }
+
+            const fgTile = this.gamebox.getEmptyTile( tileCoords, "foreground" );
+
+            if ( fgTile !== 0 ) {
+                return false;
+            }
+
+            return !!emptyTile;
+        }
+
+        return false;
     }
 
 

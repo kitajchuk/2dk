@@ -426,7 +426,7 @@ class TopView extends GameBox {
             item: this.checkItems( poi, this.hero ),
             tiles: this.checkTiles( poi, this.hero ),
             event: this.checkEvents( poi, this.hero ),
-            empty: this.checkEmpty( this.hero ),
+            empty: this.checkEmpty( poi, this.hero ),
             camera: this.checkCamera( poi, this.hero ),
         };
 
@@ -507,7 +507,7 @@ class TopView extends GameBox {
 
         // When you fall down, you gotta get back up again...
         // Handles collision.tiles and collision.empty checks!
-        if ( this.hero.canTileFall( collision, 5 ) ) {
+        if ( this.hero.canTileFall( poi, collision, 5 ) ) {
             this.handleHeroFall( poi, dir, collision );
             return;
         }

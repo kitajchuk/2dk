@@ -558,51 +558,6 @@ export default class Sprite {
     }
 
 
-    canTileFall ( collision, tolerance = 0 ) {
-        const { tiles, empty } = collision;
-        const fallTiles = tiles && tiles.action.filter( ( tile ) => {
-            return tile.fall;
-        });
-
-        if ( fallTiles && fallTiles.length ) {
-            return fallTiles.some( ( tile ) => {
-                return Utils.collide( tile.tilebox, this.footbox, tolerance );
-            });
-        }
-
-        if ( empty ) {
-            const emptyTile = empty.find( ( tile ) => {
-                return Utils.collide( tile, this.footbox, tolerance );
-            });
-
-            if ( !emptyTile ) {
-                return false;
-            }
-
-            const tileCoords = [
-                emptyTile.x / this.map.data.tilesize,
-                emptyTile.y / this.map.data.tilesize,
-            ];
-
-            const event = this.map.getEvent( tileCoords );
-
-            if ( event ) {
-                return false;
-            }
-
-            const fgTile = this.gamebox.getEmptyTile( tileCoords, "foreground" );
-
-            if ( fgTile !== 0 ) {
-                return false;
-            }
-
-            return !!emptyTile;
-        }
-
-        return false;
-    }
-
-
     // This is more specifically an NPC or Door payload check...
     // This should be moved but we'd need to refactor NPC subclass patterns first...
     canDoPayload () {
