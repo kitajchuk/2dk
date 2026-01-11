@@ -160,7 +160,10 @@
                 "y": 722
             },
             "ai": "roam",
-            "type": "enemy"
+            "type": "enemy",
+            "action": {
+                "verb": "attack"
+            }
         }
     ],
     "objects": [],
