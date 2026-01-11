@@ -382,7 +382,7 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "N  — Road Closed",
+                        "N  — Graveyard (Road Closed)",
                         "NE — Moblin Hideout",
                         "E  — Shinji Farm",
                         "W  — Great Lake",
@@ -600,7 +600,7 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "To venture beyond you must become light as a feather."
+                        "N — Graveyard"
                     ]
                 }
             }
@@ -615,7 +615,8 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "Stay out!"
+                        "Stay out!",
+                        "You can't do anything here anyway."
                     ]
                 }
             }
@@ -14482,20 +14483,20 @@
                 ],
                 [
                     [
-                        128,
-                        448
+                        448,
+                        896
                     ]
                 ],
                 [
                     [
-                        128,
-                        448
+                        448,
+                        896
                     ]
                 ],
                 [
                     [
-                        128,
-                        448
+                        448,
+                        896
                     ]
                 ],
                 [
