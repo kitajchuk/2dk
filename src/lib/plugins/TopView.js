@@ -26,7 +26,6 @@ class TopView extends GameBox {
         this.falling = false;
         this.locked = false;
         this.liftLocked = false;
-        this.keyTimer = null;
     }
 
 
@@ -384,12 +383,6 @@ class TopView extends GameBox {
 
 
     handleCriticalReset () {
-        // Timer used for jumping / parkour
-        if ( this.keyTimer ) {
-            clearTimeout( this.keyTimer );
-            this.keyTimer = null;
-        }
-
         // Applied for parkour
         // this.player.controls[ this.hero.dir ] = false;
         this.handleResetHeroDirs();
@@ -440,6 +433,11 @@ class TopView extends GameBox {
         if ( this.jumping ) {
             if ( this.hero.canMoveWhileJumping( collision ) ) {
                 this.applyHero( poi, dir );
+            }
+
+            if ( this.hero.position.z === 0 ) {
+                this.jumping = false;
+                this.hero.face( dir );
             }
 
             return;
@@ -549,17 +547,8 @@ class TopView extends GameBox {
         }
 
         // Remove mask when jumping (will be reapplied if landing on a tile again)
-        this.hero.maskFX = null;
-        this.hero.resetMaxV();
         this.jumping = true;
-        this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
-        this.hero.physics.vz = -( this.map.data.tilesize / 4 );
-        this.player.gameaudio.hitSound( Config.verbs.JUMP );
-        this.keyTimer = setTimeout( () => {
-            this.jumping = false;
-            this.hero.face( this.hero.dir );
-
-        }, this.hero.getDur( Config.verbs.JUMP ) );
+        this.hero.jump();
     }
 
 

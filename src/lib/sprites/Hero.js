@@ -40,6 +40,15 @@ export default class Hero extends Sprite {
     }
 
 
+    jump () {
+        this.maskFX = null;
+        this.resetMaxV();
+        this.cycle( Config.verbs.JUMP, this.dir );
+        this.physics.vz = -( this.map.data.tilesize / 3 );
+        this.player.gameaudio.hitSound( Config.verbs.JUMP );
+    }
+
+
     resetMaxV () {
         // Resume running speed...
         if ( this.gamebox.running ) {
