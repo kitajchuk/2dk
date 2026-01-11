@@ -570,9 +570,34 @@ export default class Sprite {
             });
         }
 
-        return empty && empty.some( ( tile ) => {
-            return Utils.collide( tile, this.footbox, tolerance );
-        });
+        if ( empty ) {
+            const emptyTile = empty.find( ( tile ) => {
+                return Utils.collide( tile, this.footbox, tolerance );
+            });
+
+            if ( !emptyTile ) {
+                return false;
+            }
+
+            const tileCoords = [
+                emptyTile.x / this.map.data.tilesize,
+                emptyTile.y / this.map.data.tilesize,
+            ];
+
+            const event = this.map.getEvent( tileCoords );
+
+            if ( event ) {
+                return false;
+            }
+
+            const fgTile = this.gamebox.getEmptyTile( tileCoords, "foreground" );
+
+            if ( fgTile !== 0 ) {
+                return false;
+            }
+
+            return !!emptyTile;
+        }
 
         return false;
     }

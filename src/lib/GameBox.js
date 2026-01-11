@@ -352,7 +352,7 @@ export default class GameBox {
     }
 
 
-    getEmptyTiles ( layer = "background" ) {
+    getVisibleEmptyTiles ( layer = "background" ) {
         const tiles = [];
 
         if ( !this.map.renderBox ) {
@@ -361,18 +361,27 @@ export default class GameBox {
 
         for ( let y = 0; y < this.map.renderBox.textures[ layer ].length; y++ ) {
             for ( let x = 0; x < this.map.renderBox.textures[ layer ][ y ].length; x++ ) {
-                if ( this.map.renderBox.textures[ layer ][ y ][ x ] === 0 ) {
-                    tiles.push({
-                        x: ( this.map.renderBox.x + x ) * this.map.data.tilesize,
-                        y: ( this.map.renderBox.y + y ) * this.map.data.tilesize,
-                        width: this.map.data.tilesize,
-                        height: this.map.data.tilesize,
-                    });
+                const tile = {
+                    x: ( this.map.renderBox.x + x ) * this.map.data.tilesize,
+                    y: ( this.map.renderBox.y + y ) * this.map.data.tilesize,
+                    width: this.map.data.tilesize,
+                    height: this.map.data.tilesize,
+                };
+                const collides = Utils.collide( tile, this.camera );
+                const isEmpty = this.map.renderBox.textures[ layer ][ y ][ x ] === 0;
+
+                if ( collides && isEmpty ) {
+                    tiles.push( tile );
                 }
             }
         }
 
         return tiles;
+    }
+
+
+    getEmptyTile ( coords, layer = "background" ) {
+        return this.map.data.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ];
     }
 
 
@@ -510,7 +519,7 @@ export default class GameBox {
 
 
     checkEmpty ( sprite, layer = "background" ) {
-        const emptyTiles = this.getEmptyTiles( layer );
+        const emptyTiles = this.getVisibleEmptyTiles( layer );
         const touchedTiles = [];
 
         for ( let i = emptyTiles.length; i--; ) {

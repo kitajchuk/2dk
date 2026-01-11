@@ -515,6 +515,13 @@ class Map {
     }
 
 
+    getEvent ( coords ) {
+        return this.data.events.find( ( event ) => {
+            return event.coords[ 0 ] === coords[ 0 ] && event.coords[ 1 ] === coords[ 1 ];
+        });
+    }
+
+
     addObject ( type, obj ) {
         this[ type ].push( obj );
     }
