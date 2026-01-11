@@ -11,8 +11,10 @@ import Projectile from "./Projectile";
 * AI logics?
 *******************************************************************************/
 export default class NPC extends Sprite {
-    constructor ( data, map ) {
+    constructor ( data, map, mapId ) {
         super( data, map );
+        this.mapId = mapId;
+        this.states = structuredClone( this.data.states );
         this.dialogue = null;
         
         // AI things...
@@ -25,7 +27,6 @@ export default class NPC extends Sprite {
         this.dirY = null;
         this.stepsX = 0;
         this.stepsY = 0;
-        this.states = structuredClone( this.data.states );
         this.pushed = null;
 
         this.initialize();
@@ -33,10 +34,9 @@ export default class NPC extends Sprite {
 
 
     initialize () {
-        const id = this.data.payload?.quest?.setItem;
-        const item = this.gamebox.hero.items.find( ( item ) => item.id === id );
+        const item = this.gamebox.hero.items.find( ( item ) => item.mapId === this.mapId );
         // TODO: Make this more robust for more than just two states...
-        const index = item && this.gamebox.hero.hasItem( item.id ) ? 1 : 0;
+        const index = item ? 1 : 0;
         this.setState( index );
     }
 
@@ -217,14 +217,12 @@ export default class NPC extends Sprite {
             tiles: this.gamebox.checkTiles( poi, this ),
             doors: this.gamebox.checkDoor( poi, this ),
             empty: this.gamebox.checkEmpty( this ),
-            camera: this.gamebox.checkCamera( poi, this ),
         };
         const isCollision = (
             collision.map ||
             collision.npc ||
             collision.hero ||
             collision.doors ||
-            collision.camera ||
             this.canTileStop( collision ) ||
             this.canTileFall( collision )
         );
@@ -282,6 +280,11 @@ export default class NPC extends Sprite {
                 this.gamebox.itemDrop( this.data.drops, this.position );
             }
         }
+    }
+
+
+    handleQuestItemUpdate ( itemId ) {
+        this.gamebox.hero.giveItem( itemId, this.mapId );
     }
 
 

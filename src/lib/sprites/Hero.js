@@ -101,13 +101,14 @@ export default class Hero extends Sprite {
     }
 
 
-    giveItem ( id ) {
+    giveItem ( id, mapId ) {
         if ( this.hasItem( id ) ) {
             return;
         }
 
         const item = this.player.getMergedData({
             id,
+            mapId,
         }, "items" );
 
         this.items.push( item );
@@ -121,18 +122,6 @@ export default class Hero extends Sprite {
 
         if ( item.equip ) {
             this.equip( item.equip );
-        }
-
-        if ( item.verb ) {
-            // TODO: Handle verb items (e.g. jump)...
-        }
-
-        if ( item.stat ) {
-            // TODO: Handle stat items (e.g. strength)...
-        }
-
-        if ( item.projectile ) {
-            // TODO: Handle projectile items (e.g. bow)...
         }
 
         if ( item.currency ) {
@@ -152,14 +141,6 @@ export default class Hero extends Sprite {
 
         if ( item.equip ) {
             this.unequip( item.equip );
-        }
-
-        if ( item.verb ) {
-            // TODO: Handle verb items (e.g. jump)...
-        }
-
-        if ( item.stat ) {
-            // TODO: Handle stat items (e.g. strength)...
         }
     }
 

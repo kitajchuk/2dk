@@ -648,7 +648,6 @@ export default class Sprite {
     }
 
 
-    handleQuestItemUpdate ( itemId ) {
-        this.gamebox.hero.giveItem( itemId );
-    }
+    // Can be handled in the subclass...
+    handleQuestItemUpdate () {}
 }

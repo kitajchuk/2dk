@@ -94,16 +94,34 @@ class Map {
 
         // FX
         for ( let i = this.data.fx.length; i--; ) {
-            this.fx.push( new FX( this.player.getMergedData( this.data.fx[ i ], "fx", true ), this ) );
+            this.fx.push(
+                new FX(
+                    this.player.getMergedData( this.data.fx[ i ], "fx", true ),
+                    this
+                )
+            );
         }
 
         // NPCs and Doors
         for ( let i = this.data.npcs.length; i--; ) {
             if ( this.data.npcs[ i ].type === Config.npc.types.DOOR ) {
-                this.doors.push( new Door( this.player.getMergedData( this.data.npcs[ i ], "npcs" ), this ) );
+                this.doors.push(
+                    new Door(
+                        this.player.getMergedData( this.data.npcs[ i ], "npcs" ),
+                        this
+                    )
+                );
     
             } else {
-                this.npcs.push( new NPC( this.player.getMergedData( this.data.npcs[ i ], "npcs" ), this ) );
+                this.npcs.push(
+                    new NPC(
+                        this.player.getMergedData( this.data.npcs[ i ], "npcs" ),
+                        this,
+                        // Unique map ID for the NPC
+                        // This is used to identify the NPC when giving items
+                        `npc-${this.data.id}-${i}`
+                    )
+                );
             }
         }
 
