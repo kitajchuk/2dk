@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 507,
+    "save": 508,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -519,7 +519,17 @@
             "image": "assets/sprites/items.png",
             "offsetX": 82,
             "offsetY": 146
-        }
+        },
+        "collectibles": [
+            {
+                "id": "key",
+                "width": 32,
+                "height": 36,
+                "image": "assets/sprites/items.png",
+                "offsetX": 144,
+                "offsetY": 142
+            }
+        ]
     },
     "items": [
         {
@@ -634,7 +644,7 @@
             "image": "assets/sprites/items.png",
             "offsetX": 210,
             "offsetY": 70,
-            "collect": 1
+            "collect": true
         }
     ],
     "objects": [],

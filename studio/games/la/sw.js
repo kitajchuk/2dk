@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v851";
+const CACHE_NAME = "v852";
 const CACHE_URLS = [
     "",
     "index.html",
