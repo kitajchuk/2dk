@@ -138,12 +138,42 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "It's a long jump.",
-                        "And a longer way down.",
                         "Good luck..."
                     ]
                 }
             }
+        },
+        {
+            "id": "cucco",
+            "spawn": {
+                "x": 735,
+                "y": 285
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "cucco",
+            "spawn": {
+                "x": 541,
+                "y": 347
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "dog",
+            "spawn": {
+                "x": 540,
+                "y": 163
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "cucco",
+            "spawn": {
+                "x": 472,
+                "y": 799
+            },
+            "ai": "wander"
         }
     ],
     "objects": [],

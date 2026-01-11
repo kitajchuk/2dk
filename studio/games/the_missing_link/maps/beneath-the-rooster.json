@@ -121,6 +121,15 @@
                     "setItem": "feather"
                 }
             }
+        },
+        {
+            "id": "moblin",
+            "spawn": {
+                "x": 733,
+                "y": 468
+            },
+            "ai": "roam",
+            "type": "enemy"
         }
     ],
     "objects": [],
