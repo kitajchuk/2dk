@@ -306,28 +306,18 @@ export default class Hero extends Sprite {
 
         }
         
-        try {
-            if ( this.hasShield() && !this.gamebox.attacking ) {
-                this.gamebox.draw(
-                    this.image,
-                    this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetX,
-                    this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetY,
-                    this.data.shield[ this.verb ][ this.dir ][ this.frame ].width,
-                    this.data.shield[ this.verb ][ this.dir ][ this.frame ].height,
-                    this.offset.x + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionX,
-                    this.offset.y + this.position.z + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionY,
-                    this.data.shield[ this.verb ][ this.dir ][ this.frame ].width / this.scale,
-                    this.data.shield[ this.verb ][ this.dir ][ this.frame ].height / this.scale
-                );
-            }
-        } catch (error) {
-            console.log({
-                dir: this.dir,
-                verb: this.verb,
-                frame: this.frame,
-                attacking: this.gamebox.attacking,
-            });
-            console.error( error );
+        if ( this.hasShield() && !this.gamebox.attacking ) {
+            this.gamebox.draw(
+                this.image,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetX,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetY,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].width,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].height,
+                this.offset.x + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionX,
+                this.offset.y + this.position.z + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionY,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].width / this.scale,
+                this.data.shield[ this.verb ][ this.dir ][ this.frame ].height / this.scale
+            );
         }
 
         if ( this.player.query.get( "debug" ) ) {

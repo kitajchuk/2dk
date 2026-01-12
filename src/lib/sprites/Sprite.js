@@ -125,6 +125,7 @@ export default class Sprite {
     hit ( power = 1, timer = 50 ) {
         this.hitTimer = timer;
         this.stillTimer = timer;
+        this.frame = 0;
         this.resetPhysics();
         this.face( this.dir );
 

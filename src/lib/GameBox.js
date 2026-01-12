@@ -283,21 +283,29 @@ export default class GameBox {
 * Collision checks
 * Can all be handled in plugin GameBox
 *******************************************************************************/
-    getVisibleColliders () {
-        const colliders = [];
-
+    getRenderBox () {
         // renderBox isn't defined until the map begins rendering
         // use it when it is available so that NPCs don't get collision
         // locked when they are partially off-screen
-        const cameraBox = this.map.renderBox ? {
-            x: this.camera.x - this.map.data.tilesize,
-            y: this.camera.y - this.map.data.tilesize,
-            width: this.map.renderBox.width,
-            height: this.map.renderBox.height,
-        } : this.camera;
+        if ( this.map.renderBox ) {
+            return {
+                x: this.map.renderBox.x * this.map.data.tilesize,
+                y: this.map.renderBox.y * this.map.data.tilesize,
+                width: this.map.renderBox.width,
+                height: this.map.renderBox.height,
+            };
+        }
+
+        // If the map hasn't rendered yet, use the camera
+        return this.camera;
+    }
+
+
+    getVisibleColliders () {
+        const colliders = [];
 
         for ( let i = this.map.data.collision.length; i--; ) {
-            const collides = Utils.collide( cameraBox, {
+            const collides = Utils.collide( this.getRenderBox(), {
                 width: this.map.data.collider,
                 height: this.map.data.collider,
                 x: this.map.data.collision[ i ][ 0 ] * this.map.data.collider,
@@ -317,7 +325,7 @@ export default class GameBox {
         const events = [];
 
         for ( let i = this.map.data.events.length; i--; ) {
-            const collides = Utils.collide( this.camera, {
+            const collides = Utils.collide( this.getRenderBox(), {
                 width: this.map.data.tilesize,
                 height: this.map.data.tilesize,
                 x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.tilesize,
@@ -338,7 +346,7 @@ export default class GameBox {
         const npcs = [];
 
         for ( let i = this.map[ type ].length; i--; ) {
-            const collides = Utils.collide( this.camera, this.map[ type ][ i ].getFullbox() );
+            const collides = Utils.collide( this.getRenderBox(), this.map[ type ][ i ].getFullbox() );
 
             if ( collides ) {
                 npcs.push( this.map[ type ][ i ] );
@@ -353,7 +361,7 @@ export default class GameBox {
         const items = [];
 
         for ( let i = this.map.items.length; i--; ) {
-            const collides = Utils.collide( this.camera, this.map.items[ i ].getFullbox() );
+            const collides = Utils.collide( this.getRenderBox(), this.map.items[ i ].getFullbox() );
 
             if ( collides ) {
                 items.push( this.map.items[ i ] );
@@ -369,7 +377,7 @@ export default class GameBox {
 
         for ( let i = this.map.activeTiles.length; i--; ) {
             for ( let j = this.map.activeTiles[ i ].pushed.length; j--; ) {
-                const collides = Utils.collide( this.camera, {
+                const collides = Utils.collide( this.getRenderBox(), {
                     width: this.map.data.tilesize,
                     height: this.map.data.tilesize,
                     x: this.map.activeTiles[ i ].pushed[ j ][ 0 ] * this.map.data.tilesize,
@@ -401,7 +409,7 @@ export default class GameBox {
                     width: this.map.data.tilesize,
                     height: this.map.data.tilesize,
                 };
-                const collides = Utils.collide( tile, this.camera );
+                const collides = Utils.collide( this.getRenderBox(), tile );
                 const isEmpty = this.map.renderBox.textures[ layer ][ y ][ x ] === 0;
 
                 if ( collides && isEmpty ) {
