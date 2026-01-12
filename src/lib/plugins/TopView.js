@@ -1045,17 +1045,14 @@ class TopView extends GameBox {
 
 
     handleHeroDoorAction ( poi, dir, door ) {
-        // Try interaction first (dialogue, etc.)
-        if ( door.canInteract( dir ) ) {
-            door.doInteract( dir );
+        // Mark: Quest checkFlag
+        // Mark: Quest checkItem
+        if ( door.data.action?.quest ) {
+            door.handleQuestInteractionCheck();
             return;
         }
 
-        // Try quest check next
-        if ( door.data.action?.quest?.checkFlag ) {
-            door.handleQuestCheck( door.data.action.quest.checkFlag );
-            return;
-        }
+        // TODO: We don't handle the payload here like we do with NPCs...
         
         // Otherwise try action (open/close) if no quest is involved
         const verb = door.open ? Config.verbs.CLOSE : Config.verbs.OPEN;

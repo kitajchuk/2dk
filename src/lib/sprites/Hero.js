@@ -88,8 +88,14 @@ export default class Hero extends Sprite {
 /*******************************************************************************
 * Items
 *******************************************************************************/
-    hasItem ( id ) {
-        return this.items.some( ( item ) => item.id === id );
+    itemCheck ( id ) {
+        const item = this.getItem( id );
+        return ( item && item.collect && item.collected > 0 ) || item;
+    }
+
+
+    getItem ( id ) {
+        return this.items.find( ( item ) => item.id === id );
     }
 
 

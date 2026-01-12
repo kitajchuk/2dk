@@ -56,9 +56,9 @@ export default class Door extends Sprite {
             this.dialogue.then( () => {
                 this.resetDialogue();
                 
-                if ( this.data.payload.quest?.setFlag ) {
-                    this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
-                }
+                // if ( this.data.payload.quest?.setFlag ) {
+                //     this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
+                // }
             }).catch( () => {
                 this.resetDialogue();
             });
@@ -96,28 +96,6 @@ export default class Door extends Sprite {
 
         if ( this.player.query.get( "debug" ) ) {
             this.renderDebug();
-        }
-    }
-
-
-/*******************************************************************************
-* Handlers
-*******************************************************************************/
-    handleQuestFlagCheck ( quest ) {
-        if ( this.checkQuestFlag( quest ) ) {
-            this.gamequest.completeQuest( quest );
-
-            // TODO: This is rough but maybe we should just complete the quest instead of hitting it?
-            if ( this.data.action.quest.setFlag ) {
-                const { key, value } = this.data.action.quest.setFlag;
-                this.gamequest.hitQuest( key, value );
-            }
-
-            const verb = this.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
-
-            if ( this.canDoAction( verb ) ) {
-                this.doAction( verb );
-            }
         }
     }
 
@@ -271,12 +249,6 @@ export default class Door extends Sprite {
     doInteract () {
         // Handle dialogue payload
         if ( this.data.payload ) {
-            const canDoPayload = this.canDoPayload();
-
-            if ( !canDoPayload ) {
-                return;
-            }
-
             this.payload();
         }
     }
@@ -297,5 +269,80 @@ export default class Door extends Sprite {
         this.opening = true;
         this.counter = 0;
         this.rumble = 60;
+    }
+
+/*******************************************************************************
+* Quests
+*******************************************************************************/
+    handleQuestInteractionCheck () {
+        // Mark: Quest checkFlag
+        if ( this.data.action?.quest?.checkFlag ) {
+            const { key, dialogue } = this.data.action.quest.checkFlag;
+
+            // Exit out if the quest flag has been completed already...
+            if ( this.isQuestFlagComplete() ) {
+                return;
+            }
+
+            if ( !this.checkQuestFlag( key ) ) {
+                // A simple message to the player...
+                if ( dialogue ) {
+                    this.gamebox.dialogue.auto( dialogue );
+                }
+                return;
+            }
+
+            this.handleQuestFlagCheck( key );
+        }
+
+        // Mark: Quest checkItem
+        if ( this.data.action?.quest?.checkItem ) {
+            const { id, dialogue } = this.data.action.quest.checkItem;
+
+            if ( !this.gamebox.hero.itemCheck( id ) ) {
+                // A simple message to the player...
+                if ( dialogue ) {
+                    this.gamebox.dialogue.auto( dialogue );
+                }
+                return;
+            }
+
+            this.handleQuestItemCheck( id );
+        }
+    }
+
+
+    handleQuestFlagCheck ( quest ) {
+        if ( this.checkQuestFlag( quest ) ) {
+            this.gamequest.completeQuest( quest );
+
+            if ( this.data.action.quest.setFlag ) {
+                const { key, value } = this.data.action.quest.setFlag;
+                this.gamequest.hitQuest( key, value );
+            }
+
+            const verb = this.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
+
+            if ( this.canDoAction( verb ) ) {
+                this.doAction( verb );
+            }
+        }
+    }
+
+
+    handleQuestItemCheck ( itemId ) {
+        if ( this.gamebox.hero.itemCheck( itemId ) ) {
+            const item = this.gamebox.hero.getItem( itemId );
+
+            if ( item && item.collect ) {
+                this.gamebox.hero.takeCollectible( itemId );
+            }
+
+            const verb = this.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
+
+            if ( this.canDoAction( verb ) ) {
+                this.doAction( verb );
+            }
+        }
     }
 }

@@ -409,7 +409,13 @@
                     },
                     "checkFlag": {
                         "key": "moblin-killed",
-                        "value": 3
+                        "value": 3,
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "The camp is locked."
+                            ]
+                        }
                     }
                 }
             }

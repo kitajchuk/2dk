@@ -88,17 +88,6 @@ export default class NPC extends Sprite {
     }
 
 
-    payloadQuest () {
-        if ( this.data.payload.quest?.setFlag ) {
-            this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
-        }
-
-        if ( this.data.payload.quest?.setItem ) {
-            this.handleQuestItemUpdate( this.data.payload.quest.setItem );
-        }
-    }
-
-
     resetDialogue () {
         this.dialogue = null;
         this.dir = this.state.dir;
@@ -276,57 +265,6 @@ export default class NPC extends Sprite {
 
             if ( this.data.drops ) {
                 this.gamebox.itemDrop( this.data.drops, this.position );
-            }
-        }
-    }
-
-
-    handleQuestItemUpdate ( itemId ) {
-        this.gamebox.hero.giveItem( itemId, this.mapId );
-    }
-
-
-    handleQuestFlagCheck ( quest ) {
-        if ( this.checkQuestFlag( quest ) ) {
-            if ( this.data.action.quest.setFlag ) {
-                const { key, value } = this.data.action.quest.setFlag;
-
-                // Exit out if the quest flag has been completed already...
-                // This allows combining setFlag, checkFlag and dropItem quests together
-                // In the below example when an octorok is killed it will drop a key if it is the 3rd one and this quest has not been completed yet
-                /*
-                    "quest": {
-                        "dropItem": {
-                            "id": "key",
-                            "dialogue": {
-                                "type": "text",
-                                "text": [
-                                    "You got a small key!",
-                                    "I bet it opens something cool!"
-                                ]
-                            }
-                        },
-                        "setFlag": {
-                            "key": "octorok-killed",
-                            "value": 1
-                        },
-                        "checkFlag": {
-                            "key": "octorok-killed",
-                            "value": 3
-                        }
-                    }
-                */
-                if ( key === quest && this.isQuestFlagComplete() ) {
-                    return;
-                }
-
-                this.gamequest.hitQuest( key, value );
-            }
-
-            this.gamequest.completeQuest( quest );
-
-            if ( this.data.action.quest.dropItem ) {
-                this.gamebox.keyItemDrop( this.data.action.quest.dropItem, this.position );
             }
         }
     }
@@ -555,6 +493,91 @@ export default class NPC extends Sprite {
         // Handle shifting states (TODO: "shift" is a bad name for this...)
         if ( this.state.action.shift ) {
             this.setState( this.stateIndex + 1 );
+        }
+    }
+
+
+/*******************************************************************************
+* Quests
+*******************************************************************************/
+    payloadQuest () {
+        // Mark: Quest collectible
+        // This has already been gated by the Sprite.canDoPayload() method so we just need to collect the item...
+        if ( this.data.payload.quest?.checkItem ) {
+            const { id } = this.data.payload.quest.checkItem;
+            this.handleQuestItemCheck( id );
+        }
+
+        // Mark: Quest setFlag
+        if ( this.data.payload.quest?.setFlag ) {
+            this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
+        }
+
+        // Mark: Quest setItem
+        if ( this.data.payload.quest?.setItem ) {
+            this.handleQuestItemUpdate( this.data.payload.quest.setItem );
+        }
+    }
+
+
+    handleQuestItemUpdate ( itemId ) {
+        this.gamebox.hero.giveItem( itemId, this.mapId );
+    }
+
+
+    handleQuestFlagCheck ( quest ) {
+        if ( this.checkQuestFlag( quest ) ) {
+            if ( this.data.action.quest.setFlag ) {
+                const { key, value } = this.data.action.quest.setFlag;
+
+                // Exit out if the quest flag has been completed already...
+                // This allows combining setFlag, checkFlag and dropItem quests together
+                // In the below example when an octorok is killed it will drop a key if it is the 3rd one and this quest has not been completed yet
+                /*
+                    "quest": {
+                        "dropItem": {
+                            "id": "key",
+                            "dialogue": {
+                                "type": "text",
+                                "text": [
+                                    "You got a small key!",
+                                    "I bet it opens something cool!"
+                                ]
+                            }
+                        },
+                        "setFlag": {
+                            "key": "octorok-killed",
+                            "value": 1
+                        },
+                        "checkFlag": {
+                            "key": "octorok-killed",
+                            "value": 3
+                        }
+                    }
+                */
+                if ( key === quest && this.isQuestFlagComplete() ) {
+                    return;
+                }
+
+                this.gamequest.hitQuest( key, value );
+            }
+
+            this.gamequest.completeQuest( quest );
+
+            if ( this.data.action.quest.dropItem ) {
+                this.gamebox.keyItemDrop( this.data.action.quest.dropItem, this.position );
+            }
+        }
+    }
+
+
+    handleQuestItemCheck ( itemId ) {
+        if ( this.gamebox.hero.itemCheck( itemId ) ) {
+            const item = this.gamebox.hero.getItem( itemId );
+
+            if ( item && item.collect ) {
+                this.gamebox.hero.takeCollectible( itemId );
+            }
         }
     }
 }
