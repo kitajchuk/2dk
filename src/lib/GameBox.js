@@ -617,12 +617,6 @@ export default class GameBox {
 
 
     checkQuestFlags ( quest ) {
-        this.hero.handleQuestFlagCheck( quest );
-
-        if ( this.companion ) {
-            this.companion.handleQuestFlagCheck( quest );
-        }
-
         for ( let i = this.map.doors.length; i--; ) {
             this.map.doors[ i ].handleQuestFlagCheck( quest );
         }

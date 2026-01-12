@@ -558,32 +558,6 @@ export default class Sprite {
     }
 
 
-    // This is more specifically an NPC or Door payload check...
-    // This should be moved but we'd need to refactor NPC subclass patterns first...
-    canDoPayload () {
-        // MARK: Quest checkItem
-        if ( this.data.payload.quest?.checkItem ) {
-            const { id, dialogue } = this.data.payload.quest.checkItem;
-
-            if ( !this.gamebox.hero.itemCheck( id ) ) {
-                // A simple message to the player...
-                if ( dialogue ) {
-                    this.gamebox.dialogue.auto( dialogue );
-                }
-                return false;
-            }
-        }
-
-        // MARK: Quest checkFlag
-        if ( this.data.payload.quest?.checkFlag ) {
-            const { key } = this.data.payload.quest.checkFlag;
-            return this.checkQuestFlag( key );
-        }
-
-        return true;
-    }
-
-
 /*******************************************************************************
 * Quests
 *******************************************************************************/

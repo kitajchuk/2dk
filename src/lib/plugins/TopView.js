@@ -1045,6 +1045,12 @@ class TopView extends GameBox {
 
 
     handleHeroDoorAction ( poi, dir, door ) {
+        // Simple dialogue payload...
+        if ( door.canInteract( dir ) ) {
+            door.doInteract( dir );
+            return;
+        }
+
         // Mark: Quest checkFlag
         // Mark: Quest checkItem
         if ( door.data.action?.quest ) {

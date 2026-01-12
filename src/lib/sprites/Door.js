@@ -56,9 +56,9 @@ export default class Door extends Sprite {
             this.dialogue.then( () => {
                 this.resetDialogue();
                 
-                // if ( this.data.payload.quest?.setFlag ) {
-                //     this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
-                // }
+                if ( this.data.payload.quest?.setFlag ) {
+                    this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
+                }
             }).catch( () => {
                 this.resetDialogue();
             });
@@ -276,7 +276,7 @@ export default class Door extends Sprite {
 *******************************************************************************/
     handleQuestInteractionCheck () {
         // Mark: Quest checkFlag
-        if ( this.data.action?.quest?.checkFlag ) {
+        if ( this.data.action.quest.checkFlag ) {
             const { key, dialogue } = this.data.action.quest.checkFlag;
 
             // Exit out if the quest flag has been completed already...
@@ -296,7 +296,7 @@ export default class Door extends Sprite {
         }
 
         // Mark: Quest checkItem
-        if ( this.data.action?.quest?.checkItem ) {
+        if ( this.data.action.quest.checkItem ) {
             const { id, dialogue } = this.data.action.quest.checkItem;
 
             if ( !this.gamebox.hero.itemCheck( id ) ) {
@@ -321,11 +321,7 @@ export default class Door extends Sprite {
                 this.gamequest.hitQuest( key, value );
             }
 
-            const verb = this.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
-
-            if ( this.canDoAction( verb ) ) {
-                this.doAction( verb );
-            }
+            this.handleDoAction();
         }
     }
 
@@ -338,11 +334,16 @@ export default class Door extends Sprite {
                 this.gamebox.hero.takeCollectible( itemId );
             }
 
-            const verb = this.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
+            this.handleDoAction();
+        }
+    }
 
-            if ( this.canDoAction( verb ) ) {
-                this.doAction( verb );
-            }
+
+    handleDoAction () {
+        const verb = this.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
+
+        if ( this.canDoAction( verb ) ) {
+            this.doAction( verb );
         }
     }
 }

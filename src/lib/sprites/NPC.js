@@ -497,6 +497,30 @@ export default class NPC extends Sprite {
     }
 
 
+    canDoPayload () {
+        // MARK: Quest checkItem
+        if ( this.data.payload.quest?.checkItem ) {
+            const { id, dialogue } = this.data.payload.quest.checkItem;
+
+            if ( !this.gamebox.hero.itemCheck( id ) ) {
+                // A simple message to the player...
+                if ( dialogue ) {
+                    this.gamebox.dialogue.auto( dialogue );
+                }
+                return false;
+            }
+        }
+
+        // MARK: Quest checkFlag
+        if ( this.data.payload.quest?.checkFlag ) {
+            const { key } = this.data.payload.quest.checkFlag;
+            return this.checkQuestFlag( key );
+        }
+
+        return true;
+    }
+
+
 /*******************************************************************************
 * Quests
 *******************************************************************************/
