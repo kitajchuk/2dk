@@ -556,11 +556,19 @@ export default class Sprite {
             return tile.stop;
         }) );
     }
+}
+
 
 
 /*******************************************************************************
-* Quests
+* Quest interface
 *******************************************************************************/
+export class QuestSprite extends Sprite {
+    constructor ( data, map ) {
+        super( data, map );
+    }
+
+
     checkQuestFlag ( quest ) {
         if ( this.data.action?.quest?.checkFlag ) {
             const { key, value } = this.data.action.quest.checkFlag;

@@ -1057,15 +1057,9 @@ class TopView extends GameBox {
             door.handleQuestInteractionCheck();
             return;
         }
-
-        // TODO: We don't handle the payload here like we do with NPCs...
         
         // Otherwise try action (open/close) if no quest is involved
-        const verb = door.open ? Config.verbs.CLOSE : Config.verbs.OPEN;
-        
-        if ( door.canDoAction( verb ) ) {
-            door.doAction( verb );
-        }
+        door.handleDoAction();
     }
 
 

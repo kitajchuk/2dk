@@ -2,9 +2,10 @@ import TopView from "./plugins/TopView";
 import FX from "./sprites/FX";
 import NPC from "./sprites/NPC";
 import Hero, { ItemGet, LiftedTile, HeroProjectile } from "./sprites/Hero";
-import Sprite from "./sprites/Sprite";
+import Sprite, { QuestSprite } from "./sprites/Sprite";
 import Companion from "./sprites/Companion";
 import ItemDrop from "./sprites/ItemDrop";
+import KeyItemDrop from "./sprites/KeyItemDrop";
 import Door from "./sprites/Door";
 import Projectile from "./sprites/Projectile";
 import Config from "./Config";
@@ -37,10 +38,11 @@ const lib = {
     NPC,
     Hero, ItemGet, LiftedTile, HeroProjectile,
     Door,
-    Sprite,
+    Sprite, QuestSprite,
     ItemDrop,
     Companion,
     Projectile,
+    KeyItemDrop,
 
     // ...rest
     Config,

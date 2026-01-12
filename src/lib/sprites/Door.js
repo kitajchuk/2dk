@@ -1,6 +1,6 @@
 import Utils from "../Utils";
 import FX from "./FX";
-import Sprite from "./Sprite";
+import { QuestSprite } from "./Sprite";
 import Config from "../Config";
 
 
@@ -9,7 +9,7 @@ import Config from "../Config";
 * Door Sprite
 * Can open shaking and smoking
 *******************************************************************************/
-export default class Door extends Sprite {
+export default class Door extends QuestSprite {
     constructor ( data, map ) {
         super( data, map );
         this.open = false;

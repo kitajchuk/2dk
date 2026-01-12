@@ -1,8 +1,7 @@
 import Utils from "../Utils";
 import Config, { DIRS } from "../Config";
-import Sprite from "./Sprite";
+import { QuestSprite } from "./Sprite";
 import Projectile from "./Projectile";
-import KeyItemDrop from "./KeyItemDrop";
 
 
 
@@ -11,7 +10,7 @@ import KeyItemDrop from "./KeyItemDrop";
 * Shifting states...
 * AI logics?
 *******************************************************************************/
-export default class NPC extends Sprite {
+export default class NPC extends QuestSprite {
     constructor ( data, map, mapId ) {
         super( data, map );
         this.mapId = mapId;
@@ -64,7 +63,7 @@ export default class NPC extends Sprite {
         if ( this.data.payload.dialogue && !this.dialogue ) {
             // For basic text dialogue, we need to check for quests immediately...
             if ( this.data.payload.dialogue.type === Config.dialogue.types.TEXT ) {
-                this.payloadQuest();
+                this.handlePayloadQuest();
             }
 
             this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
@@ -78,7 +77,7 @@ export default class NPC extends Sprite {
 
                 // For prompt dialogue, we need to check for quests on resolution (e.g. pressed "a")
                 if ( this.data.payload.dialogue.type === Config.dialogue.types.PROMPT ) {
-                    this.payloadQuest();
+                    this.handlePayloadQuest();
                 }
                 
             }).catch( () => {
@@ -524,9 +523,9 @@ export default class NPC extends Sprite {
 /*******************************************************************************
 * Quests
 *******************************************************************************/
-    payloadQuest () {
+    handlePayloadQuest () {
         // Mark: Quest collectible
-        // This has already been gated by the Sprite.canDoPayload() method so we just need to collect the item...
+        // This has already been gated by the canDoPayload() method so we just need to collect the item...
         if ( this.data.payload.quest?.checkItem ) {
             const { id } = this.data.payload.quest.checkItem;
             this.handleQuestItemCheck( id );
