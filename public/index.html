@@ -29,14 +29,14 @@
             }
             h1 {
                 font-size: 28px;
-                padding-top: 64px;
+                margin-top: 64px;
             }
             h2 {
                 font-size: 22px;
-                padding-top: 64px;
+                margin-top: 64px;
             }
             ul {
-                padding-top: 32px;
+                margin-top: 32px;
             }
             ul li {
                 margin: 16px 0;
@@ -83,8 +83,9 @@
                 color: var(--grey);
                 font-size: 12px;
             }
-            .logo {
-                max-width: 420px;
+            video {
+                max-width: 640px;
+                margin-top: 32px;
             }
             @media (max-width: 832px) {
                 .screens img {
@@ -108,7 +109,9 @@
         </header>
         <main>
             <h1>2dk dev demo</h1>
-            <img src="/games/the_missing_link/assets/scenes/logo.png" loading="lazy" class="logo" />
+            <video type="video/mp4" poster="/games/the_missing_link/assets/scenes/logo.png" controls muted playsinline>
+                <source src="/img/the-missing-link-gameplay.m4v" type="video/mp4" />
+            </video>
             <ul>
                 <li>
                     <p><a target="_blank" href="/games/the_missing_link/">Save to your Home Screen</a>.</p>
