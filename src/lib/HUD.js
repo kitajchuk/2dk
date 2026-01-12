@@ -97,17 +97,17 @@ export default class HUD {
                 width,
                 height
             );
-        }
 
-        this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
-        this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
-        this.gamebox.mapLayer.context.textAlign = "right";
-        this.gamebox.mapLayer.context.textBaseline = "top";
-        this.gamebox.mapLayer.context.fillText(
-            currString,
-            this.gamebox.mapLayer.data.width - 20,
-            20
-        );
+            this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
+            this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
+            this.gamebox.mapLayer.context.textAlign = "right";
+            this.gamebox.mapLayer.context.textBaseline = "top";
+            this.gamebox.mapLayer.context.fillText(
+                currString,
+                this.gamebox.mapLayer.data.width - 20,
+                20
+            );
+        }
 
         this.gamebox.mapLayer.context.restore();
     }
@@ -138,17 +138,17 @@ export default class HUD {
                 width,
                 height
             );
-        }
 
-        this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
-        this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
-        this.gamebox.mapLayer.context.textAlign = "right";
-        this.gamebox.mapLayer.context.textBaseline = "top";
-        this.gamebox.mapLayer.context.fillText(
-            collectString,
-            this.gamebox.mapLayer.data.width - 20,
-            60
-        );
+            this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
+            this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
+            this.gamebox.mapLayer.context.textAlign = "right";
+            this.gamebox.mapLayer.context.textBaseline = "top";
+            this.gamebox.mapLayer.context.fillText(
+                collectString,
+                this.gamebox.mapLayer.data.width - 20,
+                60
+            );
+        }
 
         this.gamebox.mapLayer.context.restore();
     }
