@@ -8,19 +8,26 @@
 
 
 2dk is a hobby project combining my love for web technologies and my nostalgic passion for 2D gaming, specifically the Game Boy era. 
-It's a never ending creative outlet, whenever I have the time, to tinker and develop new features across the engine and studio software.
+It's an ongoing creative outlet, as I have the time, to tinker and develop new features across the engine and studio software.
 
 <img src="./public/2dk.png" width="100%" />
+
+## The process
+I've followed a pretty simple model: games should be created in the studio software in a designer like fashion and game makers should never write a lick of code. To do this I iterate on the best models for the game data, hard-code it, develop support for it in the game engine and circle back to adding support for it in the studio software. The game engine is always some amount ahead of the studio software's support for the features. Eventually I'll get around to better documenting how the game engine works and therefore how these features work in the studio software.
 
 ## Game bundles
 A 2dk game is a static [PWA](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) that contains all its own resources and data files. The Player, or engine, has a mobile first philosophy behind it and is designed to be played as a standalone web app on your phone. It handles offline mode with a [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) that caches all the game resources.
 
-<img src="./public/img/ios-adventure-02.jpeg" width="100%" />
+<img src="./public/img/mobile-01.png" width="100%" />
 
 ## Game making
-Currently you can create and paint maps quite well for the background, foreground and collision layers. It's basically Photoshop for 2D map painting. I've been using the game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. If you run the Studio you'll find it's there, named [LA](https://2dk.kitajchuk.com/games/la/).
+It's basically Photoshop for 2D map painting. You can paint background and foreground layers as well has a basic map collision layer. You can add NPCs to the maps and give them various attributes like dialogue, roaming AIs, projectiles etc. You can also manage meta layers to create spawn points, map events and active tiles.
 
-<img src="./public/img/screen-mysterious-forest.jpg" width="100%" />
+I've been using my favorite game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. The developer demo is a Zelda-based game called [The Missing Link](https://2dk.kitajchuk.com/games/the_missing_link/). This game is based on some very old dabbling with the Akihabara game library from quite a long time ago. I've archived that game [here](https://github.com/kitajchuk/legacy-the-missing-link).
+
+
+
+<img src="./public/img/screenshot-01.jpg" width="100%" />
 
 
 
