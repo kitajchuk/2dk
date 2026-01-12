@@ -125,7 +125,7 @@ export default class Hero extends Sprite {
 
 
     collectItem ( id ) {
-        const item = this.items.find( ( item ) => item.id === id );
+        const item = this.getItem( id );
 
         if ( item ) {
             item.collected++;
@@ -137,7 +137,7 @@ export default class Hero extends Sprite {
 
 
     takeCollectible ( id ) {
-        const item = this.items.find( ( item ) => item.id === id );
+        const item = this.getItem( id );
 
         if ( item && item.collect ) {
             item.collected = Math.max( 0, item.collected - 1 );

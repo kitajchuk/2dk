@@ -55,6 +55,7 @@ export default class GameBox {
             // Hero
             initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
             this.hero = new Hero( initHeroData, this.map );
+            this.seedItems();
 
             // HUD
             this.hud = new HUD( this );
@@ -257,6 +258,24 @@ export default class GameBox {
             y: position.y + ( this.map.data.tilesize / 2 ) - ( data.height / 2 ),
         };
         this.map.addObject( "items", new KeyItemDrop( spawn, data, this.map ) );
+    }
+
+
+    seedItems () {
+        const items = this.player.query.get( "items" ).split( "," );
+
+        for ( let i = items.length; i--; ) {
+            const item = items[ i ];
+            const data = this.player.getMergedData({
+                id: item,
+                // Doesn't support mapId which is defined by NPCs so this is PURELY for debugging / testing
+            }, "items" );
+            this.hero.items.push( data );
+
+            if ( data.equip ) {
+                this.hero.equip( data.equip );
+            }
+        }
     }
 
 
