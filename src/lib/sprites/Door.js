@@ -247,6 +247,10 @@ export default class Door extends QuestSprite {
 
 
     doInteract () {
+        if ( this.opening || this.closing ) {
+            return;
+        }
+
         // Handle dialogue payload
         if ( this.data.payload ) {
             this.payload();
