@@ -143,7 +143,6 @@ export default class GameBox {
 
     pause ( paused ) {
         if ( paused ) {
-            this.hero.face( this.hero.dir );
             this.player.gameaudio.stopSound( this.currentMusic );
 
         } else {
