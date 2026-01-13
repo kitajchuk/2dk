@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 519,
+    "save": 520,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -526,6 +526,15 @@
             "image": "assets/sprites/items.png",
             "offsetX": 144,
             "offsetY": 142
+        },
+        "interact": {
+            "read": {
+                "width": 56,
+                "height": 52,
+                "image": "assets/sprites/hero_la.png",
+                "offsetX": 478,
+                "offsetY": 480
+            }
         }
     },
     "items": [
