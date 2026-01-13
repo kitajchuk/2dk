@@ -5,6 +5,7 @@ import GameAudio from "./GameAudio";
 import Loader from "./Loader";
 import Controller from "./Controller";
 import TopView from "./plugins/TopView";
+import { renderMenu, renderSplash, renderSplashInfo } from "./DOM";
 
 
 
@@ -111,12 +112,12 @@ class Player extends Controller {
                 return this.loader.load( url ).then( () => {
                     counter++;
 
-                    this.splashLoad.innerHTML = this.getSplash( `Loaded ${counter} of ${resources.length} game resources...` );
+                    this.splashLoad.innerHTML = renderSplash( this.data, `Loaded ${counter} of ${resources.length} game resources...` );
                 });
             });
 
             Promise.all( resources ).then( () => {
-                this.splashLoad.innerHTML = this.getSplash( "Press Start" );
+                this.splashLoad.innerHTML = renderSplash( this.data, "Press Start" );
                 this.gamepad = new GamePad( this );
                 this.gameaudio = new GameAudio( this.device );
 
@@ -129,14 +130,6 @@ class Player extends Controller {
 
     getResolution ( res ) {
         return res > this.data.maxresolution ? this.data.maxresolution : res;
-    }
-
-
-    getSplash ( display ) {
-        return `
-            <div>${this.data.name}: Save #${this.data.save}, Release v${this.data.release}</div>
-            <div>${display}</div>
-        `;
     }
 
 
@@ -181,10 +174,10 @@ class Player extends Controller {
         this.splash.className = "_2dk__splash";
         this.splashInfo = document.createElement( "div" );
         this.splashInfo.className = "_2dk__splash__info";
-        this.splashInfo.innerHTML = `<div>Rotate to Landscape.</div><div>${this.installed ? "Webapp Installed" : "Install Webapp"}</div>`;
+        this.splashInfo.innerHTML = renderSplashInfo( this.installed );
         this.splashLoad = document.createElement( "div" );
         this.splashLoad.className = "_2dk__splash__load";
-        this.splashLoad.innerHTML = this.getSplash( "Loading game bundle..." );
+        this.splashLoad.innerHTML = renderSplash( this.data, "Loading game bundle..." );
         this.splashUpdate = document.createElement( "div" );
         this.splashUpdate.className = "_2dk__splash__update";
         this.splashUpdate.innerHTML = "<div>Update Available</div>";
@@ -198,15 +191,7 @@ class Player extends Controller {
     showMenu () {
         // TODO: This is a stub temp menu so we can see the hero stats...
         if ( this.gamebox.hero ) {
-            this.menu.innerHTML = `
-                <div>Hero: ${this.gamebox.hero.data.name}</div>
-                <div>Health: ${this.gamebox.hero.getStat( "health" )}</div>
-                <div>Power: ${this.gamebox.hero.getStat( "power" )}</div>
-                <div>Strength: ${this.gamebox.hero.getStat( "strength" )}</div>
-                <div>${this.data.currency}: ${this.gamebox.hero.currency}</div>
-                <div>Weapon: ${this.gamebox.hero.data.equipped.weapon ? "Equipped" : "Not Equipped"}</div>
-                <div>Shield: ${this.gamebox.hero.data.equipped.shield ? "Equipped" : "Not Equipped"}</div>
-            `;
+            this.menu.innerHTML = renderMenu( this.gamebox.hero );
         }
         this.menu.classList.add( "is-active" );
     }

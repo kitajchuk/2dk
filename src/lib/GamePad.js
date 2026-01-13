@@ -21,7 +21,7 @@ const touchDpad = [
     Config.keys.RIGHT,
 ];
 
-const touchControls = {
+export const touchControls = {
     a: {
         key: Config.keys.A,
         elem: null,
@@ -130,7 +130,7 @@ const touchControls = {
 
 
 
-class GamePad extends Controller {
+export default class GamePad extends Controller {
     constructor ( player ) {
         super();
 
@@ -600,7 +600,3 @@ class GamePad extends Controller {
         }
     }
 }
-
-
-
-export default GamePad;

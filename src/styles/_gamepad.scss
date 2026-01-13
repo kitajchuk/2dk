@@ -142,6 +142,7 @@
         }
     }
     ._2dk__gamepad__a {
+        position: relative;
         width: 64px;
         height: 64px;
         border-radius: 64px;
@@ -149,6 +150,7 @@
         transform: translateY( 4px );
     }
     ._2dk__gamepad__b {
+        position: relative;
         width: 64px;
         height: 64px;
         border-radius: 64px;
@@ -166,5 +168,26 @@
         width: 82px;
         height: 32px;
         border-radius: 10px 10px 0px 0px;
+    }
+
+    ._2dk__gamepad__sprite {
+        left: 0;
+        top: 0;
+        display: block;
+        position: absolute;
+        transform: scale( 0.5 ) translate( -150%, -75% ) rotate( 30deg );
+        transform-origin: center center;
+
+        ._2dk__gamepad__a & {
+            transform: scale( 0.5 ) translate( -150%, -75% ) rotate( 30deg );
+        }
+    }
+
+    ._2dk__menu {
+        &.is-active + ._2dk__gamepad {
+            ._2dk__gamepad__sprite {
+                display: none;
+            }
+        }
     }
 }
