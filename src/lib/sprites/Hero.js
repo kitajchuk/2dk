@@ -1003,9 +1003,12 @@ export class LiftedTile extends Sprite {
         if ( attackAction?.drops ) {
             this.gamebox.itemDrop( attackAction.drops, this.position );
         }
+
+        if ( attackAction?.sound ) {
+            this.player.gameaudio.hitSound( attackAction.sound );
+        }
         
         this.gamebox.smokeObject( this, attackAction?.fx );
-        this.player.gameaudio.hitSound( Config.verbs.SMASH );
         this.gamebox.interact.tile = null;
 
         // Kills THIS sprite

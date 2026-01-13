@@ -259,8 +259,11 @@ export default class NPC extends QuestSprite {
         if ( this.stats.health <= 0 ) {
             this.handleQuestFlagUpdate();
             this.gamebox.smokeObject( this, this.data.action.fx );
-            this.player.gameaudio.hitSound( this.data.action.sound || Config.verbs.SMASH );
             this.map.killObject( "npcs", this );
+
+            if ( this.data.action.sound ) {
+                this.player.gameaudio.hitSound( this.data.action.sound );
+            }
 
             if ( this.data.drops ) {
                 this.gamebox.itemDrop( this.data.drops, this.position );

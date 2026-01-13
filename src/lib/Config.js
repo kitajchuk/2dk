@@ -27,10 +27,11 @@ const Config = {
         JUMP: "jump",
         FALL: "fall",
         THROW: "throw",
-        SMASH: "smash",
         ATTACK: "attack",
         OPEN: "open",
         CLOSE: "close",
+        TALK: "talk",
+        READ: "read",
     },
     map: {
         types: {
@@ -81,6 +82,11 @@ const Config = {
             WEAPON: "weapon",
             PROJECTILE: "projectile",
         },
+        interact: {
+            TALK: "talk",
+            READ: "read",
+            GRAB: "grab",
+        }
     },
     npc: {
         ai: {
