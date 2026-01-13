@@ -48,18 +48,18 @@ export default class HUD {
         if ( this.gamebox.hero.mode !== this.buttons.b ) {
             switch ( this.gamebox.hero.mode ) {
                 case Config.hero.modes.WEAPON:
-                    touchControls.b.elem.innerHTML = renderButtonSprite(
-                        this.hero.items.find( ( item ) => item.equip === "weapon" ),
-                        "B"
-                    );
-                    this.buttons.b = Config.hero.modes.WEAPON;
+                    const weaponItem = this.hero.items.find( ( item ) => item.equip === "weapon" );
+                    if ( weaponItem ) {
+                        touchControls.b.elem.innerHTML = renderButtonSprite( weaponItem, "B" );
+                        this.buttons.b = Config.hero.modes.WEAPON;
+                    }
                     break;
                 case Config.hero.modes.PROJECTILE:
-                    touchControls.b.elem.innerHTML = renderButtonSprite(
-                        this.hero.items.find( ( item ) => item.projectile ),
-                        "B"
-                    );
-                    this.buttons.b = Config.hero.modes.PROJECTILE;
+                    const projectileItem = this.hero.items.find( ( item ) => item.projectile );
+                    if ( projectileItem ) {
+                        touchControls.b.elem.innerHTML = renderButtonSprite( projectileItem, "B" );
+                        this.buttons.b = Config.hero.modes.PROJECTILE;
+                    }
                     break;
             }
         }

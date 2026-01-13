@@ -262,18 +262,22 @@ export default class GameBox {
 
 
     seedItems () {
-        const items = this.player.query.get( "items" ).split( "," );
+        const param = this.player.query.get( "items" );
 
-        for ( let i = items.length; i--; ) {
-            const item = items[ i ];
-            const data = this.player.getMergedData({
-                id: item,
-                // Doesn't support mapId which is defined by NPCs so this is PURELY for debugging / testing
-            }, "items" );
-            this.hero.items.push( data );
+        if ( param ) {
+            const items = param.split( "," );
 
-            if ( data.equip ) {
-                this.hero.equip( data.equip );
+            for ( let i = items.length; i--; ) {
+                const item = items[ i ];
+                const data = this.player.getMergedData({
+                    id: item,
+                    // Doesn't support mapId which is defined by NPCs so this is PURELY for debugging / testing
+                }, "items" );
+                this.hero.items.push( data );
+    
+                if ( data.equip ) {
+                    this.hero.equip( data.equip );
+                }
             }
         }
     }

@@ -175,12 +175,8 @@
         top: 0;
         display: block;
         position: absolute;
-        transform: scale( 0.5 ) translate( -150%, -75% ) rotate( 30deg );
+        transform: scale( 0.65 ) translate( -150%, -75% ) rotate( 30deg );
         transform-origin: center center;
-
-        ._2dk__gamepad__a & {
-            transform: scale( 0.5 ) translate( -150%, -75% ) rotate( 30deg );
-        }
     }
 
     ._2dk__menu {
