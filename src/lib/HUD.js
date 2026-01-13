@@ -35,13 +35,38 @@ export default class HUD {
 
 
     renderButtons () {
-        if ( !this.buttons.a ) {
+        if ( this.gamebox.hero.interact ) {
+            if ( this.buttons.a !== this.gamebox.hero.interact ) {
+                switch ( this.gamebox.hero.interact ) {
+                    case Config.hero.interact.READ:
+                        const readItem = this.player.data.hud.interact?.read;
+                        if ( readItem ) {
+                            touchControls.a.elem.innerHTML = renderButtonSprite( readItem, "A", 0 );
+                        } else {
+                            this.gamepad.renderButtonText( "a" );
+                        }
+                        break;
+                    case Config.hero.interact.GRAB:
+                        const grabItem = this.hero.items.find( ( item ) => item.stat && item.stat.key === "strength" );
+                        if ( grabItem ) {
+                            touchControls.a.elem.innerHTML = renderButtonSprite( grabItem, "A" );
+                        } else {
+                            this.gamepad.renderButtonText( "a" );
+                        }
+                        break;
+                }
+                this.buttons.a = this.gamebox.hero.interact;
+            }
+
+        } else if ( this.buttons.a !== Config.verbs.JUMP ) {
             const jumpItem = this.hero.items.find( ( item ) => item.verb === Config.verbs.JUMP );
 
             if ( jumpItem ) {
                 touchControls.a.elem.innerHTML = renderButtonSprite( jumpItem, "A" );
-                this.buttons.a = Config.verbs.JUMP;
+            } else {
+                this.gamepad.renderButtonText( "a" );
             }
+            this.buttons.a = Config.verbs.JUMP;
         }
 
         if ( this.gamebox.hero.mode !== this.buttons.b ) {

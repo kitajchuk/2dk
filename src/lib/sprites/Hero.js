@@ -24,6 +24,7 @@ export default class Hero extends Sprite {
         this.deathCounter = 0;
         this.projectile = null;
         this.mode = Config.hero.modes.WEAPON;
+        this.interact = null;
         this.parkour = null;
         this.falling = null;
         this.lastPositionOnGround = this.position;
@@ -253,6 +254,9 @@ export default class Hero extends Sprite {
         // Handle player controls
         this.handleControls();
 
+        // Handle passive interaction
+        this.handlePassiveInteraction();
+
         // The physics stack...
         this.handleVelocity();
         this.handleGravity();
@@ -357,6 +361,32 @@ export default class Hero extends Sprite {
 /*******************************************************************************
 * Handlers
 *******************************************************************************/
+    handlePassiveInteraction () {
+        const poi = this.getNextPoiByDir( this.dir, 1 );
+        const collision = {
+            npc: this.gamebox.checkNPC( poi, this ),
+            door: this.gamebox.checkDoor( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+        };
+        const notLifting = !this.is( Config.verbs.LIFT ) && !this.is( Config.verbs.GRAB ) && !this.is( Config.verbs.PULL );
+        const isDoorRead = collision.door && collision.door.canInteract( this.dir );
+        const isNPCRead = collision.npc && collision.npc.canInteract( this.dir );
+        const isGrabTile = this.canGrabTile( collision ) || !notLifting;
+
+        if ( this.gamebox.dialogue.active || isDoorRead || isNPCRead ) {
+            this.interact = Config.hero.interact.READ;
+
+        } else if ( isGrabTile ) {
+            this.interact = Config.hero.interact.GRAB;
+
+        } else if ( notLifting ) {
+            this.interact = null;
+        }
+
+        return { poi, collision };
+    }
+
+
     // Needs to be called for every frame of attack animation
     handleAttackFrame () {
         const poi = this.getNextPoiByDir( this.dir, 1 );
@@ -774,6 +804,19 @@ export default class Hero extends Sprite {
     }
 
 
+    canGrabTile ( collision ) {
+        return (
+            collision.tiles &&
+            collision.tiles.action.length &&
+            collision.tiles.action[ 0 ].action &&
+            collision.tiles.action[ 0 ].instance.canInteract( Config.verbs.LIFT ) &&
+            // @check: hero-verb-check
+            this.can( Config.verbs.LIFT ) &&
+            this.can( Config.verbs.GRAB )
+        );
+    }
+
+
     canTileJump ( dir, collision ) {
         const hasPassiveTiles = collision.tiles && collision.tiles.passive.length;
 
@@ -1061,6 +1104,7 @@ export class LiftedTile extends Sprite {
         this.hero.face( this.hero.dir );
         this.player.gameaudio.hitSound( Config.verbs.THROW );
         this.hero.physics.maxv = this.hero.physics.controlmaxv;
+        this.hero.interact = null;
         this.throwing = true;
 
         let throwX;

@@ -212,9 +212,7 @@ export default class GamePad extends Controller {
                 touchControls[ btn ].elem.dataset.off = "true";
             }
 
-            if ( touchControls[ btn ].text ) {
-                touchControls[ btn ].elem.innerHTML = `<span>${touchControls[ btn ].text}</span>`;
-            }
+            this.renderButtonText( btn );
 
             if ( touchControls[ btn ].dpad ) {
                 this.dpad.appendChild( touchControls[ btn ].elem );
@@ -231,6 +229,13 @@ export default class GamePad extends Controller {
 
         if ( !this.player.device ) {
             this.element.style.display = "none";
+        }
+    }
+
+
+    renderButtonText ( btn ) {
+        if ( touchControls[ btn ].text ) {
+            touchControls[ btn ].elem.innerHTML = `<span>${touchControls[ btn ].text}</span>`;
         }
     }
 

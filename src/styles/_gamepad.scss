@@ -172,8 +172,6 @@
 
     ._2dk__gamepad__sprite {
         display: block;
-        transform: scale( 0.65 ) rotate( 30deg );
-        transform-origin: center center;
 
         & + span {
             display: none;

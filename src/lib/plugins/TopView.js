@@ -184,21 +184,12 @@ class TopView extends GameBox {
         } else if ( collision.npc ) {
             this.handleHeroNPCAction( poi, this.hero.dir, collision.npc );
 
-        } else if (
-            collision.tiles &&
-            collision.tiles.action.length &&
-            collision.tiles.action[ 0 ].action &&
-            collision.tiles.action[ 0 ].instance.canInteract( Config.verbs.LIFT ) &&
-            // @check: hero-verb-check
-            this.hero.can( Config.verbs.LIFT ) &&
-            this.hero.can( Config.verbs.GRAB ) &&
-            !this.interact.tile
-        ) {
+        } else if ( this.hero.canGrabTile( collision ) && !this.interact.tile ) {
             this.interact.tile = collision.tiles.action[ 0 ];
             this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
 
         } else {
-            const notLifting = !this.hero.is( Config.verbs.LIFT ) && !this.hero.is( Config.verbs.GRAB )
+            const notLifting = !this.hero.is( Config.verbs.LIFT ) && !this.hero.is( Config.verbs.GRAB );
             
             // Jump...
             if ( notLifting && this.hero.hasJump() ) {

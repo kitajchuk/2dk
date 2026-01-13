@@ -2,7 +2,7 @@ export const html = String.raw;
 
 
 
-export const renderButtonSprite = ( item, btn ) => {
+export const renderButtonSprite = ( item, btn, rotate = 30 ) => {
     return html`
         <style>
             #${item.id} {
@@ -10,6 +10,8 @@ export const renderButtonSprite = ( item, btn ) => {
                 height: ${item.height}px;
                 background-image: url(${item.image});
                 background-position: -${item.offsetX}px -${item.offsetY}px;
+                transform: scale( 0.65 ) rotate( ${rotate}deg );
+                transform-origin: center center;
             }
         </style>
         <span class="_2dk__gamepad__sprite" id="${item.id}"></span>

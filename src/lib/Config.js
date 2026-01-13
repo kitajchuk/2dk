@@ -83,7 +83,6 @@ const Config = {
             PROJECTILE: "projectile",
         },
         interact: {
-            TALK: "talk",
             READ: "read",
             GRAB: "grab",
         }
