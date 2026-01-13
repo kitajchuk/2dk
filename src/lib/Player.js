@@ -191,7 +191,7 @@ class Player extends Controller {
     showMenu () {
         // TODO: This is a stub temp menu so we can see the hero stats...
         if ( this.gamebox.hero ) {
-            this.menu.innerHTML = renderMenu( this.gamebox.hero );
+            this.menu.innerHTML = renderMenu( this );
         }
         this.menu.classList.add( "is-active" );
     }

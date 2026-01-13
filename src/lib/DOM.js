@@ -18,13 +18,15 @@ export const renderButtonSprite = ( item, btn ) => {
 };
 
 
-export const renderMenu = ( hero ) => {
+export const renderMenu = ( player ) => {
+    const hero = player.gamebox.hero;
+
     return html`
         <div>Hero: ${hero.data.name}</div>
         <div>Health: ${hero.getStat( "health" )}</div>
         <div>Power: ${hero.getStat( "power" )}</div>
         <div>Strength: ${hero.getStat( "strength" )}</div>
-        <div>${hero.data.currency}: ${hero.currency}</div>
+        <div>${player.data.currency}: ${hero.currency}</div>
         <div>Weapon: ${hero.data.equipped.weapon ? "Equipped" : "Not Equipped"}</div>
         <div>Shield: ${hero.data.equipped.shield ? "Equipped" : "Not Equipped"}</div>
     `;
