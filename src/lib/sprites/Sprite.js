@@ -107,6 +107,11 @@ export default class Sprite {
 
 
     cycle ( verb, dir ) {
+        // Reset frame when verb changes
+        if ( verb !== this.verb ) {
+            this.frame = 0;
+        }
+
         this.dir = dir;
         this.verb = verb;
     }
