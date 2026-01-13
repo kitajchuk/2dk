@@ -23,7 +23,6 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
             action !== window.lib2dk.Config.verbs.WALK &&
             action !== window.lib2dk.Config.verbs.FACE &&
             action !== window.lib2dk.Config.verbs.THROW &&
-            action !== window.lib2dk.Config.verbs.SMASH &&
             action !== window.lib2dk.Config.verbs.JUMP &&
             action !== window.lib2dk.Config.verbs.FALL &&
             action !== window.lib2dk.Config.verbs.GRAB

@@ -25,8 +25,7 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
             action !== window.lib2dk.Config.verbs.RUN &&
             action !== window.lib2dk.Config.verbs.WALK &&
             action !== window.lib2dk.Config.verbs.FACE &&
-            action !== window.lib2dk.Config.verbs.THROW &&
-            action !== window.lib2dk.Config.verbs.SMASH
+            action !== window.lib2dk.Config.verbs.THROW
         );
     });
 
