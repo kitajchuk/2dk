@@ -530,10 +530,10 @@
         "interact": {
             "read": {
                 "width": 56,
-                "height": 52,
+                "height": 60,
                 "image": "assets/sprites/hero_la.png",
                 "offsetX": 478,
-                "offsetY": 480
+                "offsetY": 472
             }
         }
     },
