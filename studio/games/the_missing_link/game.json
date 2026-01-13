@@ -741,6 +741,90 @@
                 "face": {
                     "left": {
                         "offsetX": 204,
+                        "offsetY": 408
+                    },
+                    "down": {
+                        "offsetX": 340,
+                        "offsetY": 408
+                    },
+                    "up": {
+                        "offsetX": 476,
+                        "offsetY": 408
+                    },
+                    "right": {
+                        "offsetX": 544,
+                        "offsetY": 408
+                    }
+                },
+                "walk": {
+                    "dur": 500,
+                    "left": {
+                        "offsetX": 136,
+                        "offsetY": 408,
+                        "stepsX": 2
+                    },
+                    "down": {
+                        "offsetX": 272,
+                        "offsetY": 408,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 408,
+                        "offsetY": 408,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 544,
+                        "offsetY": 408,
+                        "stepsX": 2
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "walk",
+                    "dir": "down"
+                }
+            ]
+        },
+        {
+            "id": "boarblin",
+            "name": "Boarblin",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "verb": "walk",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "projectile": "arrow",
+            "hitbox": {
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
+            },
+            "stats": {
+                "power": 1,
+                "health": 3
+            },
+            "drops": [
+                {
+                    "id": "heart",
+                    "chance": 10
+                },
+                {
+                    "id": "green-rupee",
+                    "chance": 10
+                },
+                {
+                    "id": "blue-rupee",
+                    "chance": 5
+                }
+            ],
+            "verbs": {
+                "face": {
+                    "left": {
+                        "offsetX": 204,
                         "offsetY": 340
                     },
                     "down": {
