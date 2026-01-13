@@ -251,27 +251,6 @@ export default class NPC extends QuestSprite {
 /*******************************************************************************
 * Handlers
 *******************************************************************************/
-    handleHealthCheck () {
-        if ( !this.stats ) {
-            return;
-        }
-
-        if ( this.stats.health <= 0 ) {
-            this.handleQuestFlagUpdate();
-            this.gamebox.smokeObject( this, this.data.action.fx );
-            this.map.killObject( "npcs", this );
-
-            if ( this.data.action.sound ) {
-                this.player.gameaudio.hitSound( this.data.action.sound );
-            }
-
-            if ( this.data.drops ) {
-                this.gamebox.itemDrop( this.data.drops, this.position );
-            }
-        }
-    }
-
-
     handleAI () {
         if ( this.stillTimer ) {
             return;
@@ -526,6 +505,41 @@ export default class NPC extends QuestSprite {
 /*******************************************************************************
 * Quests
 *******************************************************************************/
+    handleHealthCheck () {
+        if ( !this.stats ) {
+            return;
+        }
+
+        if ( this.stats.health <= 0 ) {
+            this.handleQuestFlagUpdate();
+            this.gamebox.smokeObject( this, this.data.action.fx );
+            this.map.killObject( "npcs", this );
+
+            if ( this.data.action.sound ) {
+                this.player.gameaudio.hitSound( this.data.action.sound );
+            }
+
+            if ( this.data.drops && !this.circularCheckQuestFlag() ) {
+                this.gamebox.itemDrop( this.data.drops, this.position );
+            }
+        }
+    }
+
+
+    circularCheckQuestFlag() {
+        if ( this.data.action.quest?.checkFlag && this.data.action.quest?.setFlag && this.data.action.quest?.dropItem ) {
+            const { key: checkKey } = this.data.action.quest.checkFlag;
+            const { key: setKey } = this.data.action.quest.setFlag;
+
+            if ( checkKey === setKey ) {
+                return this.gamequest.getCompleted( checkKey );
+            }
+        }
+
+        return false;
+    }
+
+
     handlePayloadQuest () {
         // Mark: Quest collectible
         // This has already been gated by the canDoPayload() method so we just need to collect the item...
