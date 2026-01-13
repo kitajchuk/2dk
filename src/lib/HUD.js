@@ -29,8 +29,7 @@ export default class HUD {
         this.renderHealth();
         this.renderCurrency();
         this.renderKeys();
-        // TODO: Figure out how we want to do this...
-        // this.renderItems();
+        this.renderItems();
         this.renderButtons();
     }
 
@@ -200,30 +199,20 @@ export default class HUD {
 
 
     renderItems () {
-        const y = 80;
-        let x = 20;
-        const gutter = 20;
-        const scale = 2
+        const shield = this.hero.items.find( ( item ) => item.equip === "shield" );
 
-        const height = this.hero.items.reduce( ( acc, item ) => acc > item.height ? acc : item.height, 0 );
-        
-        for ( let i = this.hero.items.length; i--; ) {
-            const item = this.hero.items[ i ];
-            const offsetY = y - item.height / scale - ( ( height / scale - item.height / scale ) / 2 );
-
+        if ( shield ) {
             this.gamebox.mapLayer.context.drawImage(
-                Loader.cash( item.image ),
-                item.offsetX,
-                item.offsetY,
-                item.width,
-                item.height,
-                x,
-                offsetY,
-                item.width / scale,
-                item.height / scale
+                Loader.cash( shield.image ),
+                shield.offsetX,
+                shield.offsetY,
+                shield.width,
+                shield.height,
+                20,
+                50,
+                shield.width,
+                shield.height
             );
-
-            x += item.width / scale + gutter;
         }
     }
 }
