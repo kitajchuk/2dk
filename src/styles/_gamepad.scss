@@ -171,18 +171,23 @@
     }
 
     ._2dk__gamepad__sprite {
-        left: 0;
-        top: 0;
         display: block;
-        position: absolute;
-        transform: scale( 0.65 ) translate( -150%, -75% ) rotate( 30deg );
+        transform: scale( 0.65 ) rotate( 30deg );
         transform-origin: center center;
+
+        & + span {
+            display: none;
+        }
     }
 
     ._2dk__menu {
         &.is-active + ._2dk__gamepad {
             ._2dk__gamepad__sprite {
                 display: none;
+
+                & + span {
+                    display: block;
+                }
             }
         }
     }
