@@ -98,7 +98,7 @@
                 5
             ],
             "type": "door",
-            "map": "maps/unknown-corner-of-the-world.json",
+            "map": "maps/lost-corner-of-the-world.json",
             "spawn": 2
         }
     ],

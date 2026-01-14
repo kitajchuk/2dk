@@ -252,15 +252,8 @@
                 0,
                 2
             ],
-            "type": "boundary",
-            "map": "maps/mabe-village.json",
-            "dir": "left"
-        },
-        {
-            "coords": [
-                0,
-                3
-            ],
+            "width": 64,
+            "height": 128,
             "type": "boundary",
             "map": "maps/mabe-village.json",
             "dir": "left"

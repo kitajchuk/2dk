@@ -99,6 +99,8 @@ const renderEvent = ( event, map ) => {
     const x = cx * map.tilesize;
     const y = cy * map.tilesize;
     const id = `event-x${cx}-y${cy}`;
+    const width = event.width || map.tilesize;
+    const height = event.height || map.tilesize;
 
     return html`
         <div id="${id}" class="editor__block is-event js-event-tile" data-event-x="${cx}" data-event-y="${cy}">
@@ -106,8 +108,8 @@ const renderEvent = ( event, map ) => {
                 #${id} {
                     top: ${y}px;
                     left: ${x}px;
-                    width: ${map.tilesize}px;
-                    height: ${map.tilesize}px;
+                    width: ${width}px;
+                    height: ${height}px;
                     position: absolute;
                 }
             </style>

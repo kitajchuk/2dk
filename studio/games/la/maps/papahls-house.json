@@ -75,16 +75,8 @@
                 4,
                 12
             ],
-            "type": "door",
-            "map": "maps/mabe-village.json",
-            "dir": "down",
-            "spawn": 1
-        },
-        {
-            "coords": [
-                5,
-                12
-            ],
+            "width": 128,
+            "height": 64,
             "type": "door",
             "map": "maps/mabe-village.json",
             "dir": "down",
@@ -95,16 +87,8 @@
                 14,
                 12
             ],
-            "type": "door",
-            "map": "maps/mabe-village.json",
-            "dir": "down",
-            "spawn": 2
-        },
-        {
-            "coords": [
-                15,
-                12
-            ],
+            "width": 128,
+            "height": 64,
             "type": "door",
             "map": "maps/mabe-village.json",
             "dir": "down",

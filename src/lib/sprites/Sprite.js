@@ -543,11 +543,13 @@ export default class Sprite {
     }
 
 
-    getFullbox () {
+    getFullbox ( poi = null ) {
+        const position = poi || this.position;
+
         return {
-            x: this.position.x,
+            x: position.x,
             // Keep an eye on the use of position.z here...
-            y: this.position.y + this.position.z,
+            y: position.y + position.z,
             width: this.width,
             height: this.height,
         };

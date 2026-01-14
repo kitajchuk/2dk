@@ -18,6 +18,12 @@
             "y": 878,
             "width": 92,
             "height": 92
+        },
+        {
+            "x": 594,
+            "y": 44,
+            "width": 92,
+            "height": 92
         }
     ],
     "fx": [],
@@ -111,20 +117,24 @@
                 9,
                 15
             ],
+            "width": 128,
+            "height": 64,
             "type": "door",
             "dir": "down",
-            "map": "maps/unknown-corner-of-the-world.json",
+            "map": "maps/lost-corner-of-the-world.json",
             "spawn": 4
         },
         {
             "coords": [
-                10,
-                15
+                9,
+                0
             ],
+            "width": 128,
+            "height": 64,
             "type": "door",
-            "dir": "down",
-            "map": "maps/unknown-corner-of-the-world.json",
-            "spawn": 4
+            "dir": "up",
+            "map": "maps/untended-graveyard.json",
+            "spawn": 0
         }
     ],
     "npcs": [

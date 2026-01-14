@@ -1,6 +1,6 @@
 {
-    "id": "unknown-corner-of-the-world",
-    "name": "Unknown Corner of the World",
+    "id": "lost-corner-of-the-world",
+    "name": "Lost Corner of the World",
     "type": "world",
     "tilesize": 64,
     "width": 2560,
@@ -9,8 +9,8 @@
     "tileheight": 32,
     "collider": 16,
     "image": "assets/tiles/tiles.png",
-    "snapshot": "assets/snapshots/unknown-corner-of-the-world.png",
-    "thumbnail": "assets/snapshots/unknown-corner-of-the-world-thumb.png",
+    "snapshot": "assets/snapshots/lost-corner-of-the-world.png",
+    "thumbnail": "assets/snapshots/lost-corner-of-the-world-thumb.png",
     "sound": "assets/sounds/bgm-world-theme.mp3",
     "spawn": [
         {
@@ -286,9 +286,11 @@
         },
         {
             "coords": [
-                26,
+                25,
                 13
             ],
+            "width": 192,
+            "height": 64,
             "type": "door",
             "dir": "up",
             "map": "maps/beneath-the-moblin-hideout.json",

@@ -338,15 +338,8 @@
                 39,
                 2
             ],
-            "type": "boundary",
-            "map": "maps/ukuku-prairie-west.json",
-            "dir": "right"
-        },
-        {
-            "coords": [
-                39,
-                3
-            ],
+            "width": 64,
+            "height": 128,
             "type": "boundary",
             "map": "maps/ukuku-prairie-west.json",
             "dir": "right"
@@ -356,33 +349,8 @@
                 4,
                 0
             ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
-                5,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
-                6,
-                0
-            ],
-            "type": "boundary",
-            "map": "maps/mysterious-forest.json",
-            "dir": "up"
-        },
-        {
-            "coords": [
-                7,
-                0
-            ],
+            "width": 256,
+            "height": 64,
             "type": "boundary",
             "map": "maps/mysterious-forest.json",
             "dir": "up"
@@ -392,24 +360,8 @@
                 4,
                 31
             ],
-            "type": "boundary",
-            "map": "maps/toronbo-shores-west.json",
-            "dir": "down"
-        },
-        {
-            "coords": [
-                5,
-                31
-            ],
-            "type": "boundary",
-            "map": "maps/toronbo-shores-west.json",
-            "dir": "down"
-        },
-        {
-            "coords": [
-                6,
-                31
-            ],
+            "width": 192,
+            "height": 64,
             "type": "boundary",
             "map": "maps/toronbo-shores-west.json",
             "dir": "down"

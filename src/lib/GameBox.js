@@ -329,10 +329,10 @@ export default class GameBox {
 
         for ( let i = this.map.data.events.length; i--; ) {
             const collides = Utils.collide( this.getRenderBox(), {
-                width: this.map.data.tilesize,
-                height: this.map.data.tilesize,
                 x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.tilesize,
                 y: this.map.data.events[ i ].coords[ 1 ] * this.map.data.tilesize,
+                width: this.map.data.events[ i ].width || this.map.data.tilesize,
+                height: this.map.data.events[ i ].height || this.map.data.tilesize,
             });
 
             if ( collides ) {
@@ -482,34 +482,22 @@ export default class GameBox {
     checkEvents ( poi, sprite ) {
         const events = this.getVisibleEvents();
 
-        let amount = 0;
-
         for ( let i = events.length; i--; ) {
             const tile = {
-                width: this.map.data.tilesize,
-                height: this.map.data.tilesize,
                 x: events[ i ].coords[ 0 ] * this.map.data.tilesize,
                 y: events[ i ].coords[ 1 ] * this.map.data.tilesize,
+                width: events[ i ].width || this.map.data.tilesize,
+                height: events[ i ].height || this.map.data.tilesize,
             };
+
+            // An event without a "dir" can be triggered from any direction
             const hasDir = events[ i ].dir;
-            const isBoundary = events[ i ].type === Config.events.BOUNDARY;
-            const lookbox = ( isBoundary ? sprite.getFullbox() : sprite.hitbox );
-            const collides = Utils.collide( lookbox, tile );
+            const isDir = hasDir ? ( sprite.dir === hasDir ) : true;
+            const hitbox = tile.y === 0 || tile.x === 0 ? sprite.getFullbox( poi ) : sprite.getHitbox( poi );
+            const collides = Utils.collide( hitbox, tile, 20 );
 
-            if ( collides ) {
-                // Cumulative amount of the event tile(s) that can be colliding with the sprite
-                amount += ( collides.width * collides.height ) / ( tile.width * tile.height ) * 100;
-
-                const isDir = hasDir ? ( sprite.dir === hasDir ) : true;
-                const isThresh = isBoundary ? ( amount >= 50 ) : ( amount >= 20 );
-
-                // An event without a "dir" can be triggered from any direction
-                if ( isThresh && isDir ) {
-                    return Object.assign( events[ i ], {
-                        collides,
-                        amount,
-                    });
-                }
+            if ( collides && isDir ) {
+                return events[ i ];
             }
         }
 
