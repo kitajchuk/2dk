@@ -242,17 +242,6 @@
             "offsetY": 2240,
             "stepsX": 5,
             "dur": 2000
-        },
-        {
-            "group": "holes",
-            "layer": "background",
-            "offsetX": 128,
-            "offsetY": 448,
-            "actions": [
-                {
-                    "verb": "fall"
-                }
-            ]
         }
     ],
     "events": [
