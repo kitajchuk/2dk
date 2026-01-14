@@ -490,10 +490,12 @@ export default class GameBox {
                 height: events[ i ].height || this.map.data.tilesize,
             };
 
+            const useFullBox = tile.y === 0 || tile.x === 0 || tile.x + tile.width === this.map.width;
+
             // An event without a "dir" can be triggered from any direction
             const hasDir = events[ i ].dir;
             const isDir = hasDir ? ( sprite.dir === hasDir ) : true;
-            const hitbox = tile.y === 0 || tile.x === 0 ? sprite.getFullbox( poi ) : sprite.getHitbox( poi );
+            const hitbox = useFullBox ? sprite.getFullbox( poi ) : sprite.getHitbox( poi );
             const collides = Utils.collide( hitbox, tile, 20 );
 
             if ( collides && isDir ) {
