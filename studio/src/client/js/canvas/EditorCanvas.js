@@ -904,8 +904,8 @@ class EditorCanvas {
             return window.lib2dk.Utils.collide( cursorPoint, {
                 x: event.coords[ 0 ] * this.map.tilesize,
                 y: event.coords[ 1 ] * this.map.tilesize,
-                width: this.map.tilesize,
-                height: this.map.tilesize,
+                width: event.width || this.map.tilesize,
+                height: event.height || this.map.tilesize,
             });
         });
     }
@@ -1340,6 +1340,14 @@ class EditorCanvas {
                 coords,
                 type: data.type,
             };
+
+            if ( data.width ) {
+                newData.width = parseInt( data.width, 10 ) * this.map.tilesize;
+            }
+
+            if ( data.height ) {
+                newData.height = parseInt( data.height, 10 ) * this.map.tilesize;
+            }
 
             if ( data.dir ) {
                 newData.dir = data.dir;

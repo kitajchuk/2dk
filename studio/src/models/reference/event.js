@@ -6,6 +6,8 @@ module.exports = {
     type: "",
     map: "",
     dir: "",
+    width: undefined || 64,
+    height: undefined || 64,
     verb: undefined || "",
     spawn: undefined || 0,
     sound: undefined || "",

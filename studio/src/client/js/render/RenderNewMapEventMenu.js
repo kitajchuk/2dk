@@ -21,6 +21,16 @@ const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events }) =
             </div>
             <!-- coords and spawn are handled in the app code -->
             <input class="js-mapevent-field" type="hidden" name="coords" value="${JSON.stringify( coords )}" />
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__label">Event width (in tiles)</div>
+                    <input class="input editor__field js-mapevent-field" type="number" placeholder="Event width" name="width" value="1" />
+                </div>
+                <div>
+                    <div class="editor__label">Event height (in tiles)</div>
+                    <input class="input editor__field js-mapevent-field" type="number" placeholder="Event height" name="height" value="1" />
+                </div>
+            </div>
             <div class="editor__setting">
                 <div class="editor__label">Event type</div>
                 <div class="select">
