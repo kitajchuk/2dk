@@ -104,6 +104,7 @@ export default class GameBox {
 
 
     destroy () {
+        this.hud.reset();
         this.hero.destroy();
         this.companion?.destroy();
         this.map.destroy();

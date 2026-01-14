@@ -26,11 +26,19 @@ export default class HUD {
 
 
     render () {
+        this.renderButtons();
         this.renderHealth();
         this.renderCurrency();
         this.renderKeys();
         this.renderItems();
-        this.renderButtons();
+    }
+
+
+    reset () {
+        this.gamepad.renderButtonText( "a" );
+        this.gamepad.renderButtonText( "b" );
+        this.buttons.a = null;
+        this.buttons.b = null;
     }
 
 
