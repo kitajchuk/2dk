@@ -53,8 +53,6 @@ module.exports = {
     items: [],
     // NPC library
     npcs: [],
-    // Object library
-    objects: [],
     // FX library
     fx: [],
     // Projectile library

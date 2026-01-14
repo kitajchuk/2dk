@@ -36,8 +36,6 @@ module.exports = {
     events: [],
     // NPC reference (game.json)
     npcs: [],
-    // Object reference (game.json)
-    objects: [],
     collision: [],
     textures: {
         background: [],

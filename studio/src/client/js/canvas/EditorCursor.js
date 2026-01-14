@@ -243,29 +243,18 @@ class EditorCursor {
 
 
     applyCursorNPC () {
-        this._applyCursorObjectOrNPC( this.editorCanvas.currentNPC );
+        this._applyCursorNPC( this.editorCanvas.currentNPC );
     }
 
 
-    applyCursorObject () {
-        this._applyCursorObjectOrNPC( this.editorCanvas.currentObject );
-    }
-
-
-    _applyCursorObjectOrNPC ( objOrNPC ) {
-        const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
+    _applyCursorNPC ( npc ) {
         const ctx = this.cursors.canvas.getContext( "2d" );
-        const width = objOrNPC.width;
-        const height = objOrNPC.height;
+        const width = npc.width;
+        const height = npc.height;
 
-        let offsetX = objOrNPC.offsetX;
-        let offsetY = objOrNPC.offsetY;
-
-        if ( isNPC ) {
-            const state = objOrNPC.states[ 0 ];
-            offsetX = objOrNPC.verbs[ state.verb ][ state.dir ].offsetX;
-            offsetY = objOrNPC.verbs[ state.verb ][ state.dir ].offsetY;
-        }
+        const state = npc.states[ 0 ];
+        const offsetX = npc.verbs[ state.verb ][ state.dir ].offsetX;
+        const offsetY = npc.verbs[ state.verb ][ state.dir ].offsetY;
 
         this.cursors.canvas.width = width;
         this.cursors.canvas.height = height;
@@ -273,7 +262,7 @@ class EditorCursor {
         this.cursors.canvas.style.height = `${height}px`;
 
         ctx.drawImage(
-            this.editorCanvas.assets[ objOrNPC.image ],
+            this.editorCanvas.assets[ npc.image ],
             offsetX,
             offsetY,
             width,

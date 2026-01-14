@@ -54,26 +54,6 @@ const renderNPC = ( npc, game ) => {
     `;
 };
 
-const renderObject = ( obj, game ) => {
-    const id = `obj-${obj.id}`;
-    const src = `./games/${game.id}/${obj.image}`;
-
-    return html`
-        <div class="js-obj-tile" data-obj="${obj.id}">
-            <style>
-                #${id} {
-                    width: ${obj.width}px;
-                    height: ${obj.height}px;
-                    background-image: url(${src});
-                    background-position: -${obj.offsetX}px -${obj.offsetY}px;
-                }
-            </style>
-            <div id="${id}"></div>
-            <div>${obj.name}</div>
-        </div>
-    `;
-};
-
 const renderSpawn = ( spawn, rect ) => {
     const id = `spawn-x${spawn.x}-y${spawn.y}`;
 
@@ -150,6 +130,5 @@ module.exports = {
     renderGame,
     renderSpawn,
     renderEvent,
-    renderObject,
     renderActiveTile,
 };

@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 855,
+    "save": 856,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -953,9 +953,9 @@
             "image": "assets/tiles/tiles.png",
             "hitbox": {
                 "x": 0,
-                "y": 0,
+                "y": 32,
                 "width": 64,
-                "height": 64
+                "height": 32
             },
             "verbs": {
                 "face": {
@@ -1177,7 +1177,6 @@
             ]
         }
     ],
-    "objects": [],
     "projectiles": [
         {
             "id": "bullet",

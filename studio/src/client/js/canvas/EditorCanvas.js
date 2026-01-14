@@ -9,7 +9,6 @@ const {
     renderTile,
     renderSpawn,
     renderEvent,
-    renderObject,
     renderActiveTile,
 } = require( "../render/Render" );
 const Utils = require( "../Utils" );
@@ -30,7 +29,6 @@ class EditorCanvas {
         this.canvasMouseCoords = null;
         this.tilesetCoords = [];
         this.currentNPC = null;
-        this.currentObject = null;
         this.isEscape = false;
         this.isMouseDownTiles = false;
         this.isMouseMovedTiles = false;
@@ -47,7 +45,6 @@ class EditorCanvas {
         };
         this.pickers = {
             all: document.querySelectorAll( ".js-picker" ),
-            objPickerBox: document.getElementById( "editor-obj-picker-box" ),
             npcPickerBox: document.getElementById( "editor-npc-picker-box" ),
         };
         this.layers = {
@@ -56,7 +53,6 @@ class EditorCanvas {
             collision: document.getElementById( "editor-c" ),
             mapgrid: document.getElementById( "editor-mapgrid" ),
             npc: document.getElementById( "editor-npc" ),
-            obj: document.getElementById( "editor-obj" ),
             spawn: document.getElementById( "editor-spawn" ),
             event: document.getElementById( "editor-event" ),
             tiles: document.getElementById( "editor-tiles" ),
@@ -66,7 +62,6 @@ class EditorCanvas {
             foreground: null,
             collision: null,
             npc: null,
-            obj: null,
         };
         this.canvases = {
             tilepaint: document.getElementById( "editor-tilepaint-canvas" ),
@@ -177,7 +172,6 @@ class EditorCanvas {
             this.currentTileCoord = null;
             this.canvasMouseCoords = null;
             this.currentNPC = null;
-            this.currentObject = null;
             this.tilesetCoords = [];
             this.map = null;
             this.game = null;
@@ -246,12 +240,10 @@ class EditorCanvas {
             this.drawTextures();
             this.drawColliders();
             this.drawNPCs();
-            this.drawObjects();
             this.drawSpawns();
             this.drawEvents();
             this.drawActiveTiles();
             this.renderNPCLoadout();
-            this.renderObjectLoadout();
         });
     }
 
@@ -394,29 +386,6 @@ class EditorCanvas {
     }
 
 
-    drawObjects () {
-        this.map.objects.forEach( ( obj ) => {
-            const baseObj = this.game.objects.find( ( gobj ) => {
-                return obj.id === gobj.id;
-            });
-
-            if ( baseObj ) {
-                this.contexts.obj.context.drawImage(
-                    this.assets[ baseObj.image ],
-                    baseObj.offsetX,
-                    baseObj.offsetY,
-                    baseObj.width,
-                    baseObj.height,
-                    obj.spawn.x,
-                    obj.spawn.y,
-                    baseObj.width,
-                    baseObj.height
-                );
-            }
-        });
-    }
-
-
     drawSpawns () {
         this.layers.spawn.innerHTML = this.map.spawn.map( ( spawn ) => {
             return renderSpawn( spawn, this.spawn );
@@ -522,13 +491,6 @@ class EditorCanvas {
     renderNPCLoadout () {
         this.pickers.npcPickerBox.innerHTML = this.game.npcs.map( ( npc ) => {
             return renderNPC( npc, this.game );
-        }).join( "" );
-    }
-
-
-    renderObjectLoadout () {
-        this.pickers.objPickerBox.innerHTML = this.game.objects.map( ( obj ) => {
-            return renderObject( obj, this.game );
         }).join( "" );
     }
 
@@ -817,30 +779,19 @@ class EditorCanvas {
 
 
     applyPreviewNPC () {
-        this._applyPreviewObjectOrNPC( this.currentNPC );
+        this._applyPreviewNPC( this.currentNPC );
     }
 
 
-    applyPreviewObject () {
-        this._applyPreviewObjectOrNPC( this.currentObject );
-    }
-
-
-    _applyPreviewObjectOrNPC ( objOrNPC ) {
-        const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
+    _applyPreviewNPC ( npc ) {
         const ctx = this.canvases.preview.getContext( "2d" );
         const scale = this.map.tilesize / this.gridsize;
-        const width = objOrNPC.width;
-        const height = objOrNPC.height;
+        const width = npc.width;
+        const height = npc.height;
 
-        let offsetX = objOrNPC.offsetX;
-        let offsetY = objOrNPC.offsetY;
-
-        if ( isNPC ) {
-            const state = objOrNPC.states[ 0 ];
-            offsetX = objOrNPC.verbs[ state.verb ][ state.dir ].offsetX;
-            offsetY = objOrNPC.verbs[ state.verb ][ state.dir ].offsetY;
-        }
+        const state = npc.states[ 0 ];
+        const offsetX = npc.verbs[ state.verb ][ state.dir ].offsetX;
+        const offsetY = npc.verbs[ state.verb ][ state.dir ].offsetY;
 
         this.clearCanvas( this.canvases.preview );
         this.canvases.preview.width = width;
@@ -849,7 +800,7 @@ class EditorCanvas {
         this.canvases.preview.style.height = `${height / scale}px`;
         
         ctx.drawImage(
-            this.assets[ objOrNPC.image ],
+            this.assets[ npc.image ],
             offsetX,
             offsetY,
             width,
@@ -1031,11 +982,6 @@ class EditorCanvas {
     }
 
 
-    applyObject ( coords ) {
-        this._applyObjectOrNPC( coords, this.currentObject );
-    }
-
-
     renderNPCMenu ( coords, extraData ) {
         this.editor.menus.renderMenu( "editor-npc-menu", {
             ais: Utils.getOptionData( window.lib2dk.Config.npc.ai ),
@@ -1052,13 +998,13 @@ class EditorCanvas {
 
     applyNPC ( coords ) {
         if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
-            this._applyObjectOrNPC( coords, this.currentNPC );
+            this._applyNPC( coords, this.currentNPC );
 
         } else if ( this.editor.actions.mode === Config.EditorActions.modes.SELECT ) {
             this._editNPC( coords );    
 
         // When creating an NPC we want to provide a few more options before
-        // calling the _applyObjectOrNPC method and passing extraData.
+        // calling the _applyNPC method and passing extraData.
         } else if ( this.currentNPC && this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
             this.renderNPCMenu( coords );
         }
@@ -1083,34 +1029,14 @@ class EditorCanvas {
     }
 
 
-    _applyObjectOrNPC ( coords, objectOrNPC, extraData = {} ) {
-        const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
-
-        // Must reference map data by key to mutate it
-        let _mapDataKey = isNPC ? "npcs" : "objects";
-        let _gameData = isNPC ? this.game.npcs : this.game.objects;
-        let _context = isNPC ? this.contexts.npc : this.contexts.obj;
-        let _redraw = isNPC ? this.drawNPCs.bind( this ) : this.drawObjects.bind( this );
-
-        if ( objectOrNPC && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
-            let spawnX;
-            let spawnY;
-
+    _applyNPC ( coords, npc, extraData = {} ) {
+        if ( npc && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
             // NPCs don't need to be locked to the tile grid
-            if ( isNPC ) {
-                // In the case of NPCs we passed the canvasMouseCoords through the menu
-                spawnX = coords[ 0 ];
-                spawnY = coords[ 1 ];
-
-            // Objects will be locked to the tile grid
-            } else {
-                const offsetCoords = this.cursor.getCursorOffsetCoords( coords, objectOrNPC );
-                spawnX = offsetCoords[ 0 ] * this.map.tilesize;
-                spawnY = offsetCoords[ 1 ] * this.map.tilesize;
-            }
-
-            const newObjectOrNPC = {
-                id: objectOrNPC.id,
+            // In the case of NPCs we passed the canvasMouseCoords through the menu
+            const spawnX = coords[ 0 ];
+            const spawnY = coords[ 1 ];
+            const newNPC = {
+                id: npc.id,
                 spawn: {
                     x: spawnX,
                     y: spawnY,
@@ -1119,71 +1045,54 @@ class EditorCanvas {
                 ...extraData,
             };
 
-            const existingObjectOrNPC = this.map.objects.find( ( obj ) => {
-                return ( 
-                    obj.id === newObjectOrNPC.id && 
-                    obj.spawn.x === newObjectOrNPC.spawn.x && 
-                    obj.spawn.y === newObjectOrNPC.spawn.y
-                );
-            });
+            this.map.npcs.push( newNPC );
 
-            if ( existingObjectOrNPC ) {
-                return;
-            }
+            const state = npc.states[ 0 ];
+            const offsetX = npc.verbs[ state.verb ][ state.dir ].offsetX;
+            const offsetY = npc.verbs[ state.verb ][ state.dir ].offsetY;
 
-            this.map[ _mapDataKey ].push( newObjectOrNPC );
-
-            let offsetX = objectOrNPC.offsetX;
-            let offsetY = objectOrNPC.offsetY;
-
-            if ( isNPC ) {
-                const state = objectOrNPC.states[ 0 ];
-                offsetX = objectOrNPC.verbs[ state.verb ][ state.dir ].offsetX;
-                offsetY = objectOrNPC.verbs[ state.verb ][ state.dir ].offsetY;
-            }
-
-            _context.context.drawImage(
-                this.assets[ objectOrNPC.image ],
+            this.contexts.npc.context.drawImage(
+                this.assets[ npc.image ],
                 offsetX,
                 offsetY,
-                objectOrNPC.width,
-                objectOrNPC.height,
-                newObjectOrNPC.spawn.x,
-                newObjectOrNPC.spawn.y,
-                objectOrNPC.width,
-                objectOrNPC.height
+                npc.width,
+                npc.height,
+                newNPC.spawn.x,
+                newNPC.spawn.y,
+                npc.width,
+                npc.height
             );
-        } else if ( !objectOrNPC && this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+        } else if ( !npc && this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             const cursorPoint = this.getCursorPoint();
-            const topmostObjectOrNPCs = this.map[ _mapDataKey ].filter( ( obj ) => {
-                const baseObjectOrNPC = _gameData.find( ( gobj ) => {
-                    return obj.id === gobj.id;
+            const topmostNPCs = this.map.npcs.filter( ( npc ) => {
+                const baseNPC = this.game.npcs.find( ( gobj ) => {
+                    return npc.id === gobj.id;
                 });
                 
-                const objectOrNPCSprite = {
-                    x: obj.spawn.x,
-                    y: obj.spawn.y,
-                    width: baseObjectOrNPC.width,
-                    height: baseObjectOrNPC.height,
+                const npcSprite = {
+                    x: npc.spawn.x,
+                    y: npc.spawn.y,
+                    width: baseNPC.width,
+                    height: baseNPC.height,
                 };
 
-                return window.lib2dk.Utils.collide( objectOrNPCSprite, cursorPoint );
+                return window.lib2dk.Utils.collide( npcSprite, cursorPoint );
             });
-            const topmostObjectOrNPC = topmostObjectOrNPCs.pop();
+            const topmostNPC = topmostNPCs.pop();
 
-            if ( topmostObjectOrNPC ) {
-                this.map[ _mapDataKey ] = this.map[ _mapDataKey ].reduce( ( acc, obj ) => {
-                    if ( obj.spawn.x === topmostObjectOrNPC.spawn.x && obj.spawn.y === topmostObjectOrNPC.spawn.y ) {
+            if ( topmostNPC ) {
+                this.map.npcs = this.map.npcs.reduce( ( acc, npc ) => {
+                    if ( npc.spawn.x === topmostNPC.spawn.x && npc.spawn.y === topmostNPC.spawn.y ) {
                         return acc;
                     }
 
-                    acc.push( obj );
+                    acc.push( npc );
 
                     return acc;
                 }, []);
 
-                _context.clear();
-                _redraw();
+                this.contexts.npc.clear();
+                this.drawNPCs();
             }
         }
     }
@@ -1319,7 +1228,7 @@ class EditorCanvas {
                     coords[ 1 ] * this.map.tilesize,
                 ] : mouseCoords;
     
-                this._applyObjectOrNPC( renderCoords, this.currentNPC, extraData );
+                this._applyNPC( renderCoords, this.currentNPC, extraData );
             }
 
             this.editor.menus.removeMenus();
@@ -1558,24 +1467,6 @@ class EditorCanvas {
             this.resetPreview();
             this.applyPreviewNPC();
             this.cursor.applyCursorNPC();
-        }); 
-
-        document.addEventListener( "click", ( e ) => {
-            const target = e.target.closest( ".js-obj-tile" );
-
-            if ( !target ) {
-                return;
-            }
-
-            const id = target.dataset.obj;
-
-            this.currentObject = this.game.objects.find( ( obj ) => {
-                return obj.id === id;
-            });
-
-            this.resetPreview();
-            this.applyPreviewObject();
-            this.cursor.applyCursorObject();
         });
     }
 
@@ -1742,9 +1633,6 @@ class EditorCanvas {
                     } else if ( this.currentNPC && this.canApplyNPC() ) {
                         this.cursor.showCanvasCursor( coords, this.currentNPC );
 
-                    } else if ( this.currentObject && this.canApplyObject() ) {
-                        this.cursor.showCanvasCursor( coords, this.currentObject );
-
                     } else if ( this.canApplySpawn() ) {
                         this.cursor.showSpawnCursor( coords );
 
@@ -1772,9 +1660,6 @@ class EditorCanvas {
 
                 } else if ( this.canApplyNPC() ) {
                     this.applyNPC( coords );
-
-                } else if ( this.canApplyObject() ) {
-                    this.applyObject( coords );
 
                 } else if ( this.canApplySpawn() ) {
                     this.applySpawn( coords );
@@ -1832,13 +1717,6 @@ class EditorCanvas {
     canApplyNPC () {
         return (
             this.editor.layers.mode === Config.EditorLayers.modes.NPC
-        );
-    }
-
-
-    canApplyObject () {
-        return (
-            this.editor.layers.mode === Config.EditorLayers.modes.OBJ
         );
     }
 
