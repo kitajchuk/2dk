@@ -21,6 +21,7 @@ export default class NPC extends QuestSprite {
         // Initial cooldown period upon spawn (don't immediately move)
         // requestAnimationFrame runs 60fps so we use (60 * seconds)
         this.aiCounter = this.data.ai ? 60 : 0;
+        this.aiCoolDown = this.data.ai === Config.npc.ai.WALK ? 240 : 0;
         this.projectileCounter = this.data.projectile ? 120 : 0;
         this.projectile = null;
         this.dirX = null;
@@ -66,8 +67,13 @@ export default class NPC extends QuestSprite {
                 this.handlePayloadQuest();
             }
 
+            if ( this.data.ai === Config.npc.ai.WALK ) {
+                this.freezeWalk();
+            }
+
             this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
             this.dialogue.then( () => {
+                this.stillTimer = 0;
                 this.resetDialogue();
                 this.handleAI();
 
@@ -116,6 +122,10 @@ export default class NPC extends QuestSprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
+        if ( this.stillTimer > 0 ) {
+            return;
+        }
+
         if ( this.pushed ) {
             this.applyPushedPosition();
 
@@ -235,8 +245,12 @@ export default class NPC extends QuestSprite {
         if ( isCollision ) {
             // Let wandering NPCs cool down before moving again
             // While roaming NPCs can immediately move again
-            if ( this.data.ai === Config.npc.ai.ROAM || this.data.ai === Config.npc.ai.WALK ) {
+            if ( this.data.ai === Config.npc.ai.ROAM ) {
                 this.aiCounter = 0;
+            }
+
+            if ( this.data.ai === Config.npc.ai.WALK ) {
+                this.resetWalk();
             }
             
             this.handleAI();
@@ -258,6 +272,9 @@ export default class NPC extends QuestSprite {
 
         if ( this.data.ai ) {
             switch ( this.data.ai ) {
+                case Config.npc.ai.WALK:
+                    this.handleWalk();
+                    break;
                 case Config.npc.ai.ROAM:
                     this.handleRoam();
                     break;
@@ -270,10 +287,69 @@ export default class NPC extends QuestSprite {
     }
 
 
+    resetWalk () {
+        this.aiCounter = 0;
+        this.aiCoolDown = 240;
+        this.face( this.dir );
+        this.handleResetControls();
+    }
+
+
+    freezeWalk () {
+        this.stillTimer = Infinity;
+        this.aiCounter = 0;
+        this.aiCoolDown = 240;
+        this.handleResetControls();
+        this.face( Config.opposites[ this.gamebox.hero.dir ] );
+    }
+
+
+    handleWalk () {
+        if ( !this.aiCounter ) {
+            if ( this.aiCoolDown > 0 ) {
+                this.aiCoolDown--;
+                return;
+            }
+
+            const min = 60;
+            const max = 120;
+
+            this.aiCounter = Utils.random( min, max );
+
+            const lastDir = this.dir;
+            const newDir = DIRS[ Utils.random( 0, DIRS.length - 1 ) ];
+
+            // Always pick a new direction
+            if ( lastDir === newDir ) {
+                this.aiCounter = 0;
+                this.handleWalk();
+                return;
+            }
+
+            this.dir = newDir;
+
+            // @check: hero-verb-check
+            if ( this.can( Config.verbs.WALK ) ) {
+                this.verb = Config.verbs.WALK;
+            }
+
+            for ( let i = DIRS.length; i--; ) {
+                this.controls[ DIRS[ i ] ] = ( DIRS[ i ] === this.dir );
+            }
+        } else {
+            this.aiCounter--;
+
+            if ( this.aiCounter === 0 ) {
+                this.resetWalk();
+            }
+        }
+    }
+
+
     handleRoam () {
         if ( !this.aiCounter ) {
-            const min = this.data.ai === Config.npc.ai.WALK ? 240 : 120;
-            const max = this.data.ai === Config.npc.ai.WALK ? 360 : 240;
+            const min = 120;
+            const max = 240;
 
             this.aiCounter = Utils.random( min, max );
 

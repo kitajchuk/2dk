@@ -1,6 +1,6 @@
 import Utils from "../Utils";
 import Loader from "../Loader";
-import Config from "../Config";
+import Config, { DIRS } from "../Config";
 
 
 
@@ -251,17 +251,32 @@ export default class Sprite {
 
         this.applyOpacity();
 
+        const flipX = this.data.verbs[ this.verb ][ this.dir ].flipX;
+        const flipY = this.data.verbs[ this.verb ][ this.dir ].flipY;
+
+        this.gamebox.mapLayer.context.save();
+        this.gamebox.mapLayer.context.translate(
+            flipX ? this.width : 0,
+            flipY ? this.height : 0
+        );
+        this.gamebox.mapLayer.context.scale(
+            flipX ? -1 : 1,
+            flipY ? -1 : 1
+        );
+
         this.gamebox.draw(
             this.image,
             this.spritecel[ 0 ],
             this.spritecel[ 1 ],
             this.data.width,
             this.data.height,
-            this.offset.x,
-            this.offset.y + this.position.z,
+            this.offset.x * ( flipX ? -1 : 1 ),
+            this.offset.y * ( flipY ? -1 : 1 ) + this.position.z,
             this.width,
             this.height
         );
+
+        this.gamebox.mapLayer.context.restore();
 
         if ( Utils.func( this.renderAfter ) ) {
             this.renderAfter();
@@ -318,6 +333,13 @@ export default class Sprite {
 
     handleGravity () {
         this.physics.vz++;
+    }
+
+
+    handleResetControls () {
+        for ( let i = DIRS.length; i--; ) {
+            this.controls[ DIRS[ i ] ] = false;
+        }
     }
 
 

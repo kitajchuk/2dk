@@ -13,6 +13,15 @@ export default class FX extends Sprite {
             data.layer = "foreground";
         }
 
+        data.verbs = {
+            face: {
+                down: {
+                    offsetX: data.offsetX,
+                    offsetY: data.offsetY,
+                },
+            },
+        };
+
         super( data, map );
         this.paused = false;
     }

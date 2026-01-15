@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 560,
+    "save": 562,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1036,6 +1036,75 @@
                     "action": {
                         "verb": "talk",
                         "dir": "up"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "old-man",
+            "name": "Old Man",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "hitbox": {
+                "x": 4,
+                "y": 20,
+                "width": 64,
+                "height": 48
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 272,
+                        "offsetY": 480
+                    },
+                    "up": {
+                        "offsetX": 408,
+                        "offsetY": 480
+                    },
+                    "left": {
+                        "offsetX": 548,
+                        "offsetY": 480
+                    },
+                    "right": {
+                        "offsetX": 548,
+                        "offsetY": 480,
+                        "flipX": true
+                    }
+                },
+                "walk": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": 272,
+                        "offsetY": 480,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 408,
+                        "offsetY": 480,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 548,
+                        "offsetY": 480,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 548,
+                        "offsetY": 480,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "talk"
                     }
                 }
             ]
