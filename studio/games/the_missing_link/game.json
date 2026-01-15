@@ -1065,11 +1065,11 @@
                         "offsetY": 480
                     },
                     "left": {
-                        "offsetX": 548,
+                        "offsetX": 544,
                         "offsetY": 480
                     },
                     "right": {
-                        "offsetX": 548,
+                        "offsetX": 544,
                         "offsetY": 480,
                         "flipX": true
                     }
@@ -1087,12 +1087,12 @@
                         "stepsX": 2
                     },
                     "left": {
-                        "offsetX": 548,
+                        "offsetX": 544,
                         "offsetY": 480,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": 548,
+                        "offsetX": 544,
                         "offsetY": 480,
                         "stepsX": 2,
                         "flipX": true
