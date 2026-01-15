@@ -308,16 +308,11 @@ export default class GameBox {
     getVisibleColliders () {
         const colliders = [];
 
-        for ( let i = this.map.data.collision.length; i--; ) {
-            const collides = Utils.collide( this.getRenderBox(), {
-                width: this.map.data.collider,
-                height: this.map.data.collider,
-                x: this.map.data.collision[ i ][ 0 ] * this.map.data.collider,
-                y: this.map.data.collision[ i ][ 1 ] * this.map.data.collider,
-            });
+        for ( let i = this.map.colliders.length; i--; ) {
+            const collides = Utils.collide( this.getRenderBox(), this.map.colliders[ i ] );
 
             if ( collides ) {
-                colliders.push( this.map.data.collision[ i ] );
+                colliders.push( this.map.colliders[ i ] );
             }
         }
 
@@ -328,16 +323,11 @@ export default class GameBox {
     getVisibleEvents () {
         const events = [];
 
-        for ( let i = this.map.data.events.length; i--; ) {
-            const collides = Utils.collide( this.getRenderBox(), {
-                x: this.map.data.events[ i ].coords[ 0 ] * this.map.data.tilesize,
-                y: this.map.data.events[ i ].coords[ 1 ] * this.map.data.tilesize,
-                width: this.map.data.events[ i ].width || this.map.data.tilesize,
-                height: this.map.data.events[ i ].height || this.map.data.tilesize,
-            });
+        for ( let i = this.map.events.length; i--; ) {
+            const collides = Utils.collide( this.getRenderBox(), this.map.events[ i ].eventbox );
 
             if ( collides ) {
-                events.push( this.map.data.events[ i ] );
+                events.push( this.map.events[ i ] );
             }
         }
 
@@ -381,15 +371,17 @@ export default class GameBox {
 
         for ( let i = this.map.activeTiles.length; i--; ) {
             for ( let j = this.map.activeTiles[ i ].pushed.length; j--; ) {
-                const collides = Utils.collide( this.getRenderBox(), {
-                    width: this.map.data.tilesize,
-                    height: this.map.data.tilesize,
-                    x: this.map.activeTiles[ i ].pushed[ j ][ 0 ] * this.map.data.tilesize,
-                    y: this.map.activeTiles[ i ].pushed[ j ][ 1 ] * this.map.data.tilesize,
-                });
+                if ( activeTiles.indexOf( this.map.activeTiles[ i ] ) === -1 ) {
+                    const collides = Utils.collide( this.getRenderBox(), {
+                        width: this.map.data.tilesize,
+                        height: this.map.data.tilesize,
+                        x: this.map.activeTiles[ i ].pushed[ j ][ 0 ] * this.map.data.tilesize,
+                        y: this.map.activeTiles[ i ].pushed[ j ][ 1 ] * this.map.data.tilesize,
+                    });
 
-                if ( collides && activeTiles.indexOf( this.map.activeTiles[ i ] ) === -1 ) {
-                    activeTiles.push( this.map.activeTiles[ i ] );
+                    if ( collides ) {
+                        activeTiles.push( this.map.activeTiles[ i ] );
+                    }
                 }
             }
         }
@@ -407,17 +399,20 @@ export default class GameBox {
 
         for ( let y = 0; y < this.map.renderBox.textures[ layer ].length; y++ ) {
             for ( let x = 0; x < this.map.renderBox.textures[ layer ][ y ].length; x++ ) {
-                const tile = {
-                    x: ( this.map.renderBox.x + x ) * this.map.data.tilesize,
-                    y: ( this.map.renderBox.y + y ) * this.map.data.tilesize,
-                    width: this.map.data.tilesize,
-                    height: this.map.data.tilesize,
-                };
-                const collides = Utils.collide( this.getRenderBox(), tile );
                 const isEmpty = this.map.renderBox.textures[ layer ][ y ][ x ] === 0;
 
-                if ( collides && isEmpty ) {
-                    tiles.push( tile );
+                if ( isEmpty ) {
+                    const tile = {
+                        x: ( this.map.renderBox.x + x ) * this.map.data.tilesize,
+                        y: ( this.map.renderBox.y + y ) * this.map.data.tilesize,
+                        width: this.map.data.tilesize,
+                        height: this.map.data.tilesize,
+                    };
+                    const collides = Utils.collide( this.getRenderBox(), tile );
+
+                    if ( collides ) {
+                        tiles.push( tile );
+                    }
                 }
             }
         }
@@ -464,14 +459,7 @@ export default class GameBox {
         const colliders = this.getVisibleColliders();
 
         for ( let i = colliders.length; i--; ) {
-            const tile = {
-                width: this.map.data.collider,
-                height: this.map.data.collider,
-                x: colliders[ i ][ 0 ] * this.map.data.collider,
-                y: colliders[ i ][ 1 ] * this.map.data.collider,
-            };
-
-            if ( Utils.collide( hitbox, tile ) ) {
+            if ( Utils.collide( hitbox, colliders[ i ] ) ) {
                 return true;
             }
         }
@@ -484,20 +472,11 @@ export default class GameBox {
         const events = this.getVisibleEvents();
 
         for ( let i = events.length; i--; ) {
-            const tile = {
-                x: events[ i ].coords[ 0 ] * this.map.data.tilesize,
-                y: events[ i ].coords[ 1 ] * this.map.data.tilesize,
-                width: events[ i ].width || this.map.data.tilesize,
-                height: events[ i ].height || this.map.data.tilesize,
-            };
-
-            const useFullBox = tile.y === 0 || tile.x === 0 || tile.x + tile.width === this.map.width;
-
             // An event without a "dir" can be triggered from any direction
-            const hasDir = events[ i ].dir;
+            const hasDir = events[ i ].data.dir;
             const isDir = hasDir ? ( sprite.dir === hasDir ) : true;
-            const hitbox = useFullBox ? sprite.getFullbox( poi ) : sprite.getHitbox( poi );
-            const collides = Utils.collide( hitbox, tile, 20 );
+            const hitbox = events[ i ].isEdgeTile ? sprite.getFullbox( poi ) : sprite.getHitbox( poi );
+            const collides = Utils.collide( hitbox, events[ i ].eventbox, events[ i ].tolerance );
 
             if ( collides && isDir ) {
                 return events[ i ];
@@ -713,12 +692,12 @@ export default class GameBox {
 
         setTimeout( () => {
             // New Map data
-            const newMapData = Loader.cash( event.map );
+            const newMapData = Loader.cash( event.data.map );
             const newHeroPos = this.hero.getPositionForNewMap();
 
             // Set a spawn index...
-            this.hero.position.x = ( Utils.def( event.spawn ) ? newMapData.spawn[ event.spawn ].x : newHeroPos.x );
-            this.hero.position.y = ( Utils.def( event.spawn ) ? newMapData.spawn[ event.spawn ].y : newHeroPos.y );
+            this.hero.position.x = ( Utils.def( event.data.spawn ) ? newMapData.spawn[ event.data.spawn ].x : newHeroPos.x );
+            this.hero.position.y = ( Utils.def( event.data.spawn ) ? newMapData.spawn[ event.data.spawn ].y : newHeroPos.y );
 
             this.afterChangeMap( newMapData );
 

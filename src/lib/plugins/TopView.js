@@ -608,13 +608,13 @@ class TopView extends GameBox {
         }
 
         // Get the destination event
-        const destEvent = this.getVisibleEvents().find( ( evt ) => {
+        const destEvent = this.getVisibleEvents().find( ( event ) => {
             return (
-                evt.coords[ 0 ] * this.map.data.tilesize === destTile[ 0 ] &&
-                evt.coords[ 1 ] * this.map.data.tilesize === destTile[ 1 ]
+                event.eventbox.x === destTile[ 0 ] &&
+                event.eventbox.y === destTile[ 1 ]
             );
         });
-        const isEventDoor = destEvent && destEvent.type === Config.events.DOOR;
+        const isEventDoor = destEvent && destEvent.data.type === Config.events.DOOR;
 
         const activeTiles = this.map.activeTiles.find( ( activeTiles ) => {
             return activeTiles.isPushed([
@@ -805,15 +805,15 @@ class TopView extends GameBox {
     handleHeroEventDialogue ( poi, dir, event ) {
         // TODO: Add dialogue modes so this can be "auto" or "play" (user has to press A/B to advance)
         this.dialogue.auto({
-            text: event.payload.dialogue.text,
+            text: event.data.payload.dialogue.text,
         });
 
-        if ( event.sound ) {
-            this.currentMusic = event.sound.split( "/" ).pop().split( "." )[ 0 ];
+        if ( event.data.sound ) {
+            this.currentMusic = event.data.sound.split( "/" ).pop().split( "." )[ 0 ];
 
             this.player.gameaudio.addSound({
                 id: this.currentMusic,
-                src: event.sound,
+                src: event.data.sound,
                 channel: "bgm",
             });
 

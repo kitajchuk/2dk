@@ -6,6 +6,7 @@ import Door from "../sprites/Door";
 import FX from "../sprites/FX";
 import MapLayer from "./MapLayer";
 import ActiveTiles from "./ActiveTiles";
+import MapEvent from "./MapEvent";
 
 
 
@@ -39,6 +40,8 @@ class Map {
         this.fx = [];
         this.npcs = [];
         this.doors = [];
+        this.events = [];
+        this.colliders = [];
 
         // From live game state
         this.items = [];
@@ -83,6 +86,8 @@ class Map {
         this.sprites = null;
 
         this.image = null;
+        this.events = null;
+        this.colliders = null;
     }
 
 
@@ -128,6 +133,21 @@ class Map {
         // Tiles
         for ( let i = this.data.tiles.length; i--; ) {
             this.activeTiles.push( new ActiveTiles( this.data.tiles[ i ], this ) );
+        }
+
+        // Events
+        for ( let i = this.data.events.length; i--; ) {
+            this.events.push( new MapEvent( this.data.events[ i ], this ) );
+        }
+
+        // Colliders
+        for ( let i = this.data.collision.length; i--; ) {
+            this.colliders.push({
+                x: this.data.collision[ i ][ 0 ] * this.data.collider,
+                y: this.data.collision[ i ][ 1 ] * this.data.collider,
+                width: this.data.collider,
+                height: this.data.collider,
+            });
         }
     }
 
@@ -516,8 +536,11 @@ class Map {
 
 
     getEvent ( coords ) {
-        return this.data.events.find( ( event ) => {
-            return event.coords[ 0 ] === coords[ 0 ] && event.coords[ 1 ] === coords[ 1 ];
+        return this.events.find( ( event ) => {
+            return (
+                event.data.coords[ 0 ] === coords[ 0 ] && 
+                event.data.coords[ 1 ] === coords[ 1 ]
+            );
         });
     }
 

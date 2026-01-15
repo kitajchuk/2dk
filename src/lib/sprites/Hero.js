@@ -544,9 +544,9 @@ export default class Hero extends Sprite {
         }
         if ( this.position.x === this.parkour.poi.x && this.position.y === this.parkour.poi.y ) {
             if ( this.parkour.isEventDoor ) {
-                if ( this.parkour.event.verb && this.can( this.parkour.event.verb ) ) {
+                if ( this.parkour.event.data.verb && this.can( this.parkour.event.data.verb ) ) {
                     this.parkour.didEventDoor = true;
-                    this.cycle( this.parkour.event.verb, this.parkour.dir );
+                    this.cycle( this.parkour.event.data.verb, this.parkour.dir );
 
                 } else {
                     this.applyParkourComplete();
@@ -785,17 +785,17 @@ export default class Hero extends Sprite {
 
 
     canEventDoor ( collision ) {
-        return ( collision.event.type === Config.events.DOOR );
+        return ( collision.event.data.type === Config.events.DOOR );
     }
 
 
     canEventBoundary ( collision ) {
-        return ( collision.event.type === Config.events.BOUNDARY && collision.camera );
+        return ( collision.event.data.type === Config.events.BOUNDARY && collision.camera );
     }
 
 
     canEventDialogue ( collision ) {
-        return ( collision.event.type === Config.events.DIALOGUE && collision.event.payload );
+        return ( collision.event.data.type === Config.events.DIALOGUE && collision.event.data.payload );
     }
 
 
