@@ -185,7 +185,7 @@ class TopView extends GameBox {
             this.handleHeroNPCAction( poi, this.hero.dir, collision.npc );
 
         } else if ( this.hero.canGrabTile( collision ) && !this.interact.tile ) {
-            this.interact.tile = collision.tiles.action[ 0 ];
+            this.interact.tile = Utils.getMostCollidingTile( collision.tiles.action );
             this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
 
         } else {
@@ -510,11 +510,11 @@ class TopView extends GameBox {
         if ( collision.tiles ) {
             // Tile will allow leaping from it's edge, like a ledge...
             if ( this.hero.canTileJump( dir, collision ) ) {
-                this.handleHeroTileJump( poi, dir, collision.tiles.passive.filter( ( tile ) => tile.jump ) );
+                this.handleHeroTileJump( poi, dir, collision );
 
             // Tile is behaves like a WALL, or Object you cannot walk on
             } else if ( this.hero.canTileStop( collision ) ) {
-                this.handleHeroPush( poi, dir, collision.tiles.action[ 0 ] );
+                this.handleHeroPush( poi, dir );
                 return;
             }
 
@@ -547,13 +547,15 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroTileJump ( poi, dir, jumpTiles ) {
+    handleHeroTileJump ( poi, dir, collision ) {
         this.handleResetHeroDirs();
+
+        const jumpTiles = collision.tiles.passive.filter( ( tile ) => tile.jump );
 
         // Get the axis and increment
         const axis = dir === "left" || dir === "right" ? 0 : 1;
         const increment = dir === "left" || dir === "up" ? -1 : 1;
-        const tile = jumpTiles[ 0 ];
+        const tile = Utils.getMostCollidingTile( jumpTiles );
 
         // Get the next tile
         // What we're doing here is finding the next tile in the direction of the jump as a reference
@@ -924,9 +926,11 @@ class TopView extends GameBox {
         let fallCoords = [];
 
         if ( collision.tiles ) {
-            fallCoords = collision.tiles.action.find( ( tile ) => {
+            const fallTiles = collision.tiles.action.filter( ( tile ) => {
                 return tile.fall;
-            }).coord;
+            });
+            const fallTile = Utils.getMostCollidingTile( fallTiles );
+            fallCoords = fallTile.coord;
 
         } else if ( collision.empty ) {
             const emptyTile = collision.empty[ 0 ];
@@ -993,9 +997,7 @@ class TopView extends GameBox {
     handleMaskTiles ( tiles ) {
         const maskTiles = tiles.passive.filter( ( tile ) => tile.instance.data.mask );
         const maskTile = maskTiles.find( ( tile ) => tile.instance.data.mask );
-        const maskAmount = Math.ceil( maskTiles.reduce( ( total, tile ) => {
-            return total + tile.amount;
-        }, 0 ) );
+        const maskAmount = Utils.getTotalCollisionAmount( maskTiles );
 
         if ( maskTile && maskAmount >= 100 ) {
             const maskData = this.player.getMergedData( {
@@ -1020,9 +1022,7 @@ class TopView extends GameBox {
 
     handleFrictionTiles ( tiles ) {
         const frictionTiles = tiles.passive.filter( ( tile ) => tile.instance.data.friction );
-        const frictionAmount = Math.ceil( frictionTiles.reduce( ( total, tile ) => {
-            return total + tile.amount;
-        }, 0 ) );
+        const frictionAmount = Utils.getTotalCollisionAmount( frictionTiles );
 
         if ( frictionTiles.length && frictionAmount >= 100 ) {
             for ( let i = frictionTiles.length; i--; ) {

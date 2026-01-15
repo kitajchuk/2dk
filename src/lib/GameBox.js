@@ -541,7 +541,10 @@ export default class GameBox {
             const collides = Utils.collide( sprite.getHitbox( poi ), emptyTiles[ i ] );
 
             if ( collides ) {
-                touchedTiles.push( emptyTiles[ i ] )
+                touchedTiles.push({
+                    ...emptyTiles[ i ],
+                    amount: Utils.getCollisionAmount( collides, sprite.hitbox ),
+                });
             }
         }
 
@@ -577,7 +580,7 @@ export default class GameBox {
 
                 if ( collides ) {
                     // The amount is the percentage of the lookbox that is colliding with the tilebox
-                    const amount = ( collides.width * collides.height ) / ( lookbox.width * lookbox.height ) * 100;
+                    const amount = Utils.getCollisionAmount( collides, lookbox );
                     const match = {
                         jump: ( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ? true : false ),
                         fall: ( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ? true : false ),

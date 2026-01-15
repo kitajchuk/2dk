@@ -82,6 +82,29 @@ const Utils = {
     },
 
 
+    getCollisionAmount ( box1, box2 ) {
+        return ( box1.width * box1.height ) / ( box2.width * box2.height ) * 100;
+    },
+
+
+    getTotalCollisionAmount ( tiles ) {
+        return Math.ceil( tiles.reduce(( acc, tile ) => {
+            return acc + tile.amount;
+        }, 0 ) );
+    },
+
+
+    getMostCollidingTile ( tiles ) {
+        return tiles.reduce(( acc, tile ) => {
+            if ( !acc ) {
+                return tile;
+            }
+
+            return tile.amount > acc.amount ? tile : acc;
+        }, null );
+    },
+
+
     /*
     ctx.drawImage(
         img/cvs,
