@@ -13,7 +13,7 @@ import Projectile from "./Projectile";
 export default class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
-        this.statusEffect = null;
+        this.status = null;
         this.currency = this.data.currency || 0;
         this.itemGet = null;
         this.liftedTile = null;
@@ -900,7 +900,7 @@ export default class Hero extends Sprite {
             return false;
         }
 
-        if ( npc.statusAbility && npc.statusAbility !== this.statusEffect ) {
+        if ( npc.status && npc.status !== this.status ) {
             return false;
         }
 

@@ -55,7 +55,12 @@
             "weapon": false,
             "shield": false
         },
-        "currency": 0
+        "currency": 0,
+        "status": {
+            "curse": {
+                "maxHealth": 0.5
+            }
+        }
     },
     "heroes": [
         {
@@ -1008,7 +1013,7 @@
             "height": 68,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
-            "status": "cursed",
+            "status": "curse",
             "dir": "left",
             "hitbox": {
                 "x": 4,

@@ -48,7 +48,7 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "If you wish to enter the tomb you must inherit the curse."
+                        "..."
                     ]
                 }
             }
@@ -63,7 +63,7 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "Double bubble toil and trouble."
+                        "..."
                     ]
                 }
             }

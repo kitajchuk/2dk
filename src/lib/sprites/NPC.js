@@ -16,7 +16,7 @@ export default class NPC extends QuestSprite {
         this.mapId = mapId;
         this.states = structuredClone( this.data.states );
         this.dialogue = null;
-        this.statusAbility = this.data.statusAbility || null;
+        this.status = this.data.status || null;
         
         // AI things...
         // Initial cooldown period upon spawn (don't immediately move)
@@ -507,8 +507,8 @@ export default class NPC extends QuestSprite {
             !this.hitTimer &&
             this.canDoAction( Config.verbs.ATTACK ) &&
             (
-                !this.statusAbility ||
-                this.statusAbility === this.gamebox.hero.statusEffect
+                !this.status ||
+                this.status === this.gamebox.hero.status
             )
         );
     }
