@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 562,
+    "save": 567,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -55,7 +55,12 @@
             "weapon": false,
             "shield": false
         },
-        "currency": 0
+        "currency": 0,
+        "statusEffects": {
+            "cursed": {
+                "maxHealth": 0.5
+            }
+        }
     },
     "heroes": [
         {
@@ -1002,6 +1007,75 @@
             ]
         },
         {
+            "id": "cursed-ghost",
+            "name": "Cursed Ghost",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "statusAbility": "cursed",
+            "stats": {
+                "power": 1,
+                "health": 4
+            },
+            "dir": "left",
+            "hitbox": {
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
+            },
+            "drops": [
+                {
+                    "id": "heart",
+                    "chance": 10
+                },
+                {
+                    "id": "green-rupee",
+                    "chance": 10
+                },
+                {
+                    "id": "blue-rupee",
+                    "chance": 5
+                }
+            ],
+            "verbs": {
+                "face": {
+                    "dur": 1000,
+                    "left": {
+                        "offsetX": 476,
+                        "offsetY": 0
+                    },
+                    "right": {
+                        "offsetX": 476,
+                        "offsetY": 0,
+                        "flipX": true
+                    }
+                },
+                "walk": {
+                    "dur": 1000,
+                    "left": {
+                        "offsetX": 476,
+                        "offsetY": 0,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 476,
+                        "offsetY": 0,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "left"
+                }
+            ]
+        },
+        {
             "id": "fisherman",
             "name": "Fisherman",
             "width": 128,
@@ -1026,6 +1100,39 @@
                     "down": {
                         "offsetX": 256,
                         "offsetY": 140
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "talk",
+                        "dir": "up"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "witch",
+            "name": "Witch",
+            "width": 68,
+            "height": 136,
+            "image": "assets/sprites/npcs.png",
+            "hitbox": {
+                "x": 4,
+                "y": 68,
+                "width": 64,
+                "height": 68
+            },
+            "verbs": {
+                "face": {
+                    "dur": 1000,
+                    "down": {
+                        "offsetX": 272,
+                        "offsetY": 0,
+                        "stepsX": 3
                     }
                 }
             },

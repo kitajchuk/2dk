@@ -13,6 +13,7 @@ import Projectile from "./Projectile";
 export default class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
+        this.statusEffect = null;
         this.currency = this.data.currency || 0;
         this.itemGet = null;
         this.liftedTile = null;
@@ -401,7 +402,7 @@ export default class Hero extends Sprite {
             this.gamebox.handleHeroItem( poi, this.dir, collision.item );
         }
 
-        if ( collision.npc && !collision.npc.hitTimer && collision.npc.canDoAction( Config.verbs.ATTACK ) ) {
+        if ( collision.npc && collision.npc.canBeAttacked() ) {
             collision.npc.hit( this.getStat( "power" ) );
         }
 
@@ -951,7 +952,7 @@ export class HeroProjectile extends Projectile {
         );
         
         if ( isCollision ) {
-            if ( collision.npc && collision.npc.data.type === Config.npc.types.ENEMY && !collision.npc.isHitOrStill() ) {
+            if ( collision.npc && collision.npc.isEnemy() && !collision.npc.isHitOrStill() ) {
                 collision.npc.hit( this.data.power );
             }
 

@@ -52,6 +52,35 @@
                     ]
                 }
             }
+        },
+        {
+            "id": "witch",
+            "spawn": {
+                "x": 1472,
+                "y": 1600
+            },
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "Double bubble toil and trouble."
+                    ]
+                }
+            }
+        },
+        {
+            "id": "cursed-ghost",
+            "spawn": {
+                "x": 1952,
+                "y": 1629
+            },
+            "ai": "float",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
         }
     ],
     "collision": [

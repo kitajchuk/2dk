@@ -253,7 +253,6 @@ class Editor {
             "background",       
             "foreground",
             "npc",
-            "obj",
         ];
 
         layers.forEach(( layer ) => {

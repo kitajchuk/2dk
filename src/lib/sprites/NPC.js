@@ -16,6 +16,7 @@ export default class NPC extends QuestSprite {
         this.mapId = mapId;
         this.states = structuredClone( this.data.states );
         this.dialogue = null;
+        this.statusAbility = this.data.statusAbility || null;
         
         // AI things...
         // Initial cooldown period upon spawn (don't immediately move)
@@ -97,6 +98,11 @@ export default class NPC extends QuestSprite {
         this.dialogue = null;
         this.dir = this.state.dir;
         this.verb = this.state.verb;
+    }
+
+
+    isEnemy () {
+        return this.data.type === Config.npc.types.ENEMY;
     }
 
 
@@ -199,7 +205,7 @@ export default class NPC extends QuestSprite {
         this.position = {
             x: poi.x,
             y: poi.y,
-            z: -( this.map.data.tilesize * 0.75 ),
+            z: this.isEnemy() ? 0 : -( this.map.data.tilesize * 0.75 ),
         };
     }
 
@@ -496,8 +502,20 @@ export default class NPC extends QuestSprite {
     }
 
 
+    canBeAttacked () {
+        return (
+            !this.hitTimer &&
+            this.canDoAction( Config.verbs.ATTACK ) &&
+            (
+                !this.statusAbility ||
+                this.statusAbility === this.gamebox.hero.statusEffect
+            )
+        );
+    }
+
+
     canHitHero () {
-        return this.data.type === Config.npc.types.ENEMY && !this.isHitOrStill() && !this.gamebox.hero.canShield( this );
+        return this.isEnemy() && !this.isHitOrStill() && !this.gamebox.hero.canShield( this );
     }
 
 

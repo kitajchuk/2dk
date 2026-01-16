@@ -489,7 +489,10 @@ export default class GameBox {
 
     checkNPC ( poi, sprite, type = "npcs" ) {
         const npcs = this.getVisibleNPCs( type ).filter( ( npc ) => {
-            return npc.data.ai !== Config.npc.ai.FLOAT;
+            if ( npc.data.ai === Config.npc.ai.FLOAT ) {
+                return npc.isEnemy();
+            }
+            return true;
         });
 
         // Ad-hoc "sprite" object with { x, y, width, height }
