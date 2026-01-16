@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 567,
+    "save": 568,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -55,12 +55,7 @@
             "weapon": false,
             "shield": false
         },
-        "currency": 0,
-        "statusEffects": {
-            "cursed": {
-                "maxHealth": 0.5
-            }
-        }
+        "currency": 0
     },
     "heroes": [
         {
@@ -1013,12 +1008,7 @@
             "height": 68,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
-            "controlmaxv": 1,
-            "statusAbility": "cursed",
-            "stats": {
-                "power": 1,
-                "health": 4
-            },
+            "status": "cursed",
             "dir": "left",
             "hitbox": {
                 "x": 4,
@@ -1026,34 +1016,8 @@
                 "width": 64,
                 "height": 64
             },
-            "drops": [
-                {
-                    "id": "heart",
-                    "chance": 10
-                },
-                {
-                    "id": "green-rupee",
-                    "chance": 10
-                },
-                {
-                    "id": "blue-rupee",
-                    "chance": 5
-                }
-            ],
             "verbs": {
                 "face": {
-                    "dur": 1000,
-                    "left": {
-                        "offsetX": 476,
-                        "offsetY": 0
-                    },
-                    "right": {
-                        "offsetX": 476,
-                        "offsetY": 0,
-                        "flipX": true
-                    }
-                },
-                "walk": {
                     "dur": 1000,
                     "left": {
                         "offsetX": 476,

@@ -900,6 +900,10 @@ export default class Hero extends Sprite {
             return false;
         }
 
+        if ( npc.statusAbility && npc.statusAbility !== this.statusEffect ) {
+            return false;
+        }
+
         if ( this.dir === "left" && npc.hitbox.x + npc.hitbox.width <= this.hitbox.x ) {
             return true;
         }
