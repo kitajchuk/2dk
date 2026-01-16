@@ -190,6 +190,7 @@ export default class NPC extends QuestSprite {
 
 
     applyFloatPosition () {
+        const z = this.isEnemy() ? 0 : -( this.map.data.tilesize * 0.75 );
         const poi = this.getNextPoi();
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
@@ -197,7 +198,7 @@ export default class NPC extends QuestSprite {
         };
             
         if ( collision.map || collision.doors ) {
-            this.position.z = -( this.map.data.tilesize * 0.75 );
+            this.position.z = z;
             this.handleAI();
             return;
         }
@@ -205,7 +206,7 @@ export default class NPC extends QuestSprite {
         this.position = {
             x: poi.x,
             y: poi.y,
-            z: this.isEnemy() ? 0 : -( this.map.data.tilesize * 0.75 ),
+            z,
         };
     }
 

@@ -81,6 +81,14 @@
                 "fx": "smoke",
                 "sound": "smash"
             }
+        },
+        {
+            "id": "mouse",
+            "spawn": {
+                "x": 1344,
+                "y": 1664
+            },
+            "ai": "wander"
         }
     ],
     "collision": [

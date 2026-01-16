@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 568,
+    "save": 570,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1113,6 +1113,45 @@
                         "verb": "talk",
                         "dir": "up"
                     }
+                }
+            ]
+        },
+        {
+            "id": "mouse",
+            "name": "Mouse",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "bounce": true,
+            "dir": "right",
+            "maxv": 2,
+            "controlmaxv": 2,
+            "hitbox": {
+                "x": 4,
+                "y": 28,
+                "width": 64,
+                "height": 40
+            },
+            "verbs": {
+                "face": {
+                    "dur": 300,
+                    "right": {
+                        "offsetX": 480,
+                        "offsetY": 68,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 480,
+                        "offsetY": 68,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "right"
                 }
             ]
         },
