@@ -39,7 +39,82 @@
         }
     ],
     "fx": [],
-    "tiles": [],
+    "tiles": [
+        {
+            "group": "torches",
+            "layer": "background",
+            "offsetX": 448,
+            "offsetY": 2304,
+            "stepsX": 4,
+            "dur": 2000
+        },
+        {
+            "group": "grass-dead",
+            "layer": "background",
+            "offsetX": 64,
+            "offsetY": 2240,
+            "mask": "grass-dead",
+            "friction": 1.5,
+            "actions": [
+                {
+                    "verb": "attack",
+                    "drops": [
+                        {
+                            "id": "heart",
+                            "chance": 10
+                        },
+                        {
+                            "id": "green-rupee",
+                            "chance": 10
+                        },
+                        {
+                            "id": "blue-rupee",
+                            "chance": 5
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "group": "shrubs-dead",
+            "layer": "background",
+            "offsetX": 0,
+            "offsetY": 576,
+            "actions": [
+                {
+                    "verb": "lift",
+                    "stat": {
+                        "key": "strength",
+                        "value": 1,
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "This is too heavy for you!"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "verb": "attack",
+                    "fx": "leaves-dead",
+                    "drops": [
+                        {
+                            "id": "heart",
+                            "chance": 20
+                        },
+                        {
+                            "id": "green-rupee",
+                            "chance": 20
+                        },
+                        {
+                            "id": "blue-rupee",
+                            "chance": 10
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
     "events": [
         {
             "coords": [
@@ -64,6 +139,18 @@
             "dir": "down",
             "map": "maps/untended-graveyard.json",
             "spawn": 2
+        },
+        {
+            "coords": [
+                2,
+                15
+            ],
+            "type": "door",
+            "width": 64,
+            "height": 64,
+            "dir": "down",
+            "map": "maps/untended-graveyard.json",
+            "spawn": 3
         }
     ],
     "npcs": [
