@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 570,
+    "save": 638,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1128,13 +1128,13 @@
             "controlmaxv": 2,
             "hitbox": {
                 "x": 4,
-                "y": 28,
+                "y": 4,
                 "width": 64,
-                "height": 40
+                "height": 64
             },
             "verbs": {
                 "face": {
-                    "dur": 300,
+                    "dur": 350,
                     "right": {
                         "offsetX": 480,
                         "offsetY": 68,
@@ -1167,7 +1167,7 @@
                 "x": 4,
                 "y": 20,
                 "width": 64,
-                "height": 48
+                "height": 44
             },
             "verbs": {
                 "face": {
@@ -1535,6 +1535,33 @@
                         "verb": "read",
                         "dir": "down"
                     }
+                }
+            ]
+        },
+        {
+            "id": "tomb",
+            "name": "Tomb",
+            "width": 192,
+            "height": 128,
+            "image": "assets/tiles/tiles.png",
+            "hitbox": {
+                "x": 0,
+                "y": 64,
+                "width": 192,
+                "height": 64
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 0,
+                        "offsetY": 1984
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down"
                 }
             ]
         }
