@@ -112,7 +112,7 @@ class Map {
             if ( this.data.npcs[ i ].type === Config.npc.types.DOOR ) {
                 this.doors.push(
                     new Door(
-                        this.player.getMergedData( this.data.npcs[ i ], "npcs" ),
+                        this.player.getMergedData( this.data.npcs[ i ], "npcs", true ),
                         this
                     )
                 );
@@ -120,7 +120,7 @@ class Map {
             } else {
                 this.npcs.push(
                     new NPC(
-                        this.player.getMergedData( this.data.npcs[ i ], "npcs" ),
+                        this.player.getMergedData( this.data.npcs[ i ], "npcs", true ),
                         this,
                         // Unique map ID for the NPC
                         // This is used to identify the NPC when giving items

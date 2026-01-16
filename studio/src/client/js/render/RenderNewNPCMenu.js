@@ -10,6 +10,7 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
     const existingType = npcToEdit ? npcToEdit.type : "";
     const existingAction = npcToEdit && npcToEdit.action ? npcToEdit.action : {};
     const existingQuest = existingAction.quest ? existingAction.quest : "";
+    const existingStates = npcToEdit ? npcToEdit.states : "";
     const existingDialogueType = hasExistingDialogue ? npcToEdit.payload.dialogue.type : "";
     const existingPayloadQuest = hasExistingPayload ? npcToEdit.payload.quest : "";
     const existingText = hasExistingDialogue ? npcToEdit.payload.dialogue.text : "";
@@ -107,6 +108,10 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
                         </span>
                     </div>
                 </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">State overrides (raw data)</div>
+                <textarea class="editor__field input textarea js-npc-field" name="states">${existingStates ? JSON.stringify( existingStates, null, 2 ) : ""}</textarea>
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Action (optional)</div>

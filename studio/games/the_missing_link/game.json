@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 638,
+    "save": 677,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -540,6 +540,9 @@
                 "offsetX": 478,
                 "offsetY": 472
             }
+        },
+        "status": {
+            "curse": {}
         }
     },
     "items": [
@@ -1658,6 +1661,7 @@
         "maps/beneath-the-grave.json",
         "maps/beneath-the-moblin-hideout.json",
         "maps/beneath-the-rooster.json",
+        "maps/graveyard-residence.json",
         "maps/lost-corner-of-the-world.json",
         "maps/master-shinjis-house.json",
         "maps/under-the-plateau.json",

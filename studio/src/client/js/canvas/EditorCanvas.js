@@ -1156,6 +1156,10 @@ class EditorCanvas {
                 extraData.type = data.type;
             }
 
+            if ( data.states ) {
+                extraData.states = JSON.parse( data.states );
+            }
+
             if ( data.action ) {
                 extraData.action = {
                     verb: data.action,
