@@ -18,6 +18,12 @@
             "y": 734,
             "width": 92,
             "height": 92
+        },
+        {
+            "x": 435,
+            "y": 332,
+            "width": 92,
+            "height": 92
         }
     ],
     "fx": [],
@@ -101,6 +107,18 @@
             "dir": "down",
             "map": "maps/untended-graveyard.json",
             "spawn": 1
+        },
+        {
+            "coords": [
+                7,
+                4
+            ],
+            "type": "door",
+            "width": 64,
+            "height": 64,
+            "dir": "up",
+            "map": "maps/tunnel-crypt.json",
+            "spawn": 2
         }
     ],
     "npcs": [
@@ -156,6 +174,22 @@
                 "y": 594
             },
             "ai": "wander"
+        },
+        {
+            "id": "letter",
+            "spawn": {
+                "x": 356,
+                "y": 701
+            },
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "This graveyard is too spooky and dangerous so we've packed up and left.",
+                        "Unfortunately we lost the key so we had to leave our treasure behind..."
+                    ]
+                }
+            }
         }
     ],
     "collision": [

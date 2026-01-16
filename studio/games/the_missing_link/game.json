@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 677,
+    "save": 716,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1664,6 +1664,7 @@
         "maps/graveyard-residence.json",
         "maps/lost-corner-of-the-world.json",
         "maps/master-shinjis-house.json",
+        "maps/tunnel-crypt.json",
         "maps/under-the-plateau.json",
         "maps/untended-graveyard.json"
     ]
