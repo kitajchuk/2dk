@@ -227,7 +227,8 @@ export default class NPC extends QuestSprite {
             collision.hero ||
             collision.doors ||
             this.canTileStop( collision ) ||
-            this.canTileFall( poi, collision )
+            this.canTileFall( poi, collision ) ||
+            this.canTileSwim( poi, collision )
         );
 
         // Roaming NPCs can push the hero back...

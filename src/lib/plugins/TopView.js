@@ -505,12 +505,12 @@ class TopView extends GameBox {
 
         // When you fall down, you gotta get back up again...
         // Handles collision.tiles and collision.empty checks!
-        if ( this.hero.canTileFall( poi, collision, 5 ) ) {
+        if ( this.hero.canTileFall( poi, collision ) ) {
             this.handleHeroFall( poi, dir, collision );
             return;
         }
 
-        if ( this.hero.canTileSwim( poi, collision ) ) {
+        if ( this.hero.canTileSwim( poi, collision, 5 ) ) {
             this.handleHeroTileSwim( poi, dir, collision );
             return;
         }

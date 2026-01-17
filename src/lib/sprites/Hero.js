@@ -861,23 +861,6 @@ export default class Hero extends Sprite {
     }
 
 
-    canTileSwim ( poi, collision ) {
-        const { tiles } = collision;
-        const swimTiles = tiles && tiles.action.filter( ( tile ) => {
-            return tile.swim;
-        });
-        const tolerance = 5;
-
-        if ( swimTiles && swimTiles.length ) {
-            return swimTiles.some( ( tile ) => {
-                return Utils.collide( tile.tilebox, this.footbox, tolerance );
-            });
-        }
-
-        return false;
-    }
-
-
     canTileFall ( poi, collision ) {
         const { tiles, empty } = collision;
         const fallTiles = tiles && tiles.action.filter( ( tile ) => {

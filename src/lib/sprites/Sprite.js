@@ -591,6 +591,22 @@ export default class Sprite {
             return tile.stop;
         }) );
     }
+
+
+    canTileSwim ( poi, collision, tolerance = 0 ) {
+        const { tiles } = collision;
+        const swimTiles = tiles && tiles.action.filter( ( tile ) => {
+            return tile.swim;
+        });
+
+        if ( swimTiles && swimTiles.length ) {
+            return swimTiles.some( ( tile ) => {
+                return Utils.collide( tile.tilebox, this.footbox, tolerance );
+            });
+        }
+
+        return false;
+    }
 }
 
 
