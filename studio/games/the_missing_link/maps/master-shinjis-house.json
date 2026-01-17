@@ -116,13 +116,7 @@
             "type": "door",
             "action": {
                 "verb": "open",
-                "sound": "smash",
-                "quest": {
-                    "checkFlag": {
-                        "key": "dresser-drawer-pushed",
-                        "value": 1
-                    }
-                }
+                "sound": "smash"
             },
             "payload": {
                 "dialogue": {
@@ -141,12 +135,6 @@
                         "text": [
                             "Nothing happens..."
                         ]
-                    }
-                },
-                "quest": {
-                    "setFlag": {
-                        "key": "dresser-drawer-pushed",
-                        "value": 1
                     }
                 }
             }

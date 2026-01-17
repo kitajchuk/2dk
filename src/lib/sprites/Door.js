@@ -10,8 +10,9 @@ import Config from "../Config";
 * Can open shaking and smoking
 *******************************************************************************/
 export default class Door extends QuestSprite {
-    constructor ( data, map ) {
+    constructor ( data, map, mapId ) {
         super( data, map );
+        this.mapId = mapId;
         this.open = false;
         this.opening = false;
         this.closing = false;
@@ -27,7 +28,7 @@ export default class Door extends QuestSprite {
 
     initialize () {
         if ( this.data.action ) {
-            const completed = this.isQuestFlagComplete();
+            const completed = this.gamequest.getCompleted( this.mapId );
 
             this.open = this.data.action.verb === Config.verbs.OPEN ? completed ? true : false : completed ? false : true;
             this.counter = this.open ? this.data.height : 0;
@@ -284,7 +285,7 @@ export default class Door extends QuestSprite {
             const { key, dialogue } = this.data.action.quest.checkFlag;
 
             // Exit out if the quest flag has been completed already...
-            if ( this.isQuestFlagComplete() ) {
+            if ( this.gamequest.getCompleted( key ) ) {
                 return;
             }
 
@@ -303,6 +304,11 @@ export default class Door extends QuestSprite {
         if ( this.data.action.quest.checkItem ) {
             const { id, dialogue } = this.data.action.quest.checkItem;
 
+            // Exit out if the quest flag has been completed already...
+            if ( this.gamequest.getCompleted( this.mapId ) ) {
+                return;
+            }
+
             if ( !this.gamebox.hero.itemCheck( id ) ) {
                 // A simple message to the player...
                 if ( dialogue ) {
@@ -316,15 +322,16 @@ export default class Door extends QuestSprite {
     }
 
 
-    handleQuestFlagCheck ( quest ) {
-        if ( this.checkQuestFlag( quest ) ) {
-            this.gamequest.completeQuest( quest );
+    handleQuestFlagCheck ( checkFlag ) {
+        if ( this.checkQuestFlag( checkFlag ) ) {
+            this.gamequest.completeQuest( checkFlag );
 
             if ( this.data.action.quest.setFlag ) {
                 const { key, value } = this.data.action.quest.setFlag;
                 this.gamequest.hitQuest( key, value );
             }
 
+            this.gamequest.completeQuest( this.mapId );
             this.handleDoAction();
         }
     }
@@ -338,6 +345,7 @@ export default class Door extends QuestSprite {
                 this.gamebox.hero.takeCollectible( itemId );
             }
 
+            this.gamequest.completeQuest( this.mapId );
             this.handleDoAction();
         }
     }

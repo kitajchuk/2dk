@@ -396,10 +396,6 @@
                 "fx": "smoke",
                 "sound": "smash",
                 "quest": {
-                    "setFlag": {
-                        "key": "moblin-camp-opened",
-                        "value": 1
-                    },
                     "checkFlag": {
                         "key": "moblin-killed",
                         "value": 3,

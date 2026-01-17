@@ -92,7 +92,16 @@ export default class Hero extends Sprite {
 *******************************************************************************/
     itemCheck ( id ) {
         const item = this.getItem( id );
-        return ( item && item.collect && item.collected > 0 ) || item;
+
+        if ( item ) {
+            if ( item.collect ) {
+                return item.collected > 0;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
 

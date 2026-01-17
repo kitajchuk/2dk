@@ -335,10 +335,6 @@
                 "fx": "smoke",
                 "sound": "smash",
                 "quest": {
-                    "setFlag": {
-                        "key": "tomb-opened",
-                        "value": 1
-                    },
                     "checkItem": {
                         "id": "tomb-key",
                         "dialogue": {

@@ -113,7 +113,10 @@ class Map {
                 this.doors.push(
                     new Door(
                         this.player.getMergedData( this.data.npcs[ i ], "npcs", true ),
-                        this
+                        this,
+                        // Unique map ID for the NPC
+                        // This is used to identify the NPC when giving items
+                        `door-${this.data.id}-${i}`
                     )
                 );
     

@@ -283,6 +283,14 @@ export default class GameBox {
     }
 
 
+    seedItemLive ( id ) {
+        this.hero.giveItem( id );
+        this.hero.stillTimer = 0;
+        this.hero.itemGet = null;
+        this.hero.face( this.hero.dir );
+    }
+
+
 /*******************************************************************************
 * Collision checks
 * Can all be handled in plugin GameBox
