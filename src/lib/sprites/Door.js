@@ -55,13 +55,8 @@ export default class Door extends QuestSprite {
         if ( this.data.payload.dialogue && !this.dialogue ) {
             this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
             this.dialogue.then( () => {
-                this.gamequest.completeQuest( this.mapId );
-                this.handleDoAction();
                 this.resetDialogue();
-                
-                if ( this.data.payload.quest?.setFlag ) {
-                    this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
-                }
+                this.handleCompleteQuest();
             }).catch( () => {
                 this.resetDialogue();
             });
@@ -333,8 +328,7 @@ export default class Door extends QuestSprite {
                 this.gamequest.hitQuest( key, value );
             }
 
-            this.gamequest.completeQuest( this.mapId );
-            this.handleDoAction();
+            this.handleCompleteQuest();
         }
     }
 
@@ -347,8 +341,17 @@ export default class Door extends QuestSprite {
                 this.gamebox.hero.takeCollectible( itemId );
             }
 
-            this.gamequest.completeQuest( this.mapId );
-            this.handleDoAction();
+            this.handleCompleteQuest();
+        }
+    }
+
+
+    handleCompleteQuest () {
+        this.gamequest.completeQuest( this.mapId );
+        this.handleDoAction();
+
+        if ( this.data.payload.quest?.setFlag ) {
+            this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
         }
     }
 

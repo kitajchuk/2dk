@@ -634,16 +634,6 @@ export class QuestSprite extends Sprite {
     }
 
 
-    isQuestFlagComplete () {
-        if ( this.data.action?.quest?.checkFlag ) {
-            const { key } = this.data.action.quest.checkFlag;
-            return this.gamequest.getCompleted( key );
-        }
-
-        return false;
-    }
-
-
     // Can be handled in the subclass...
     handleQuestFlagCheck () {}
 

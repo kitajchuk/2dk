@@ -636,6 +636,16 @@ export default class NPC extends QuestSprite {
     }
 
 
+    isQuestFlagComplete () {
+        if ( this.data.action?.quest?.checkFlag ) {
+            const { key } = this.data.action.quest.checkFlag;
+            return this.gamequest.getCompleted( key );
+        }
+
+        return false;
+    }
+
+
     handlePayloadQuest () {
         // Mark: Quest collectible
         // This has already been gated by the canDoPayload() method so we just need to collect the item...
