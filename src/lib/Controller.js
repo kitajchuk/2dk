@@ -8,11 +8,13 @@ class Controller {
         this.animate = null;
         this.started = false;
         this.cycle = null;
-        this.fps = fps;
-        this.interval = 1000 / this.fps;
+        this.interval = 1000 / fps;
         this.frame = 0;
         this.then = null;
         this.now = null;
+        this.fps = fps;
+        this.fpsThen = null;
+        this.actualFPS = fps;
     }
 
 
@@ -21,22 +23,32 @@ class Controller {
             return this;
         }
 
-        // this.frame = 0;
+        this.frame = 0;
         this.started = true;
         this.then = performance.now();
+        this.fpsThen = performance.now();
+        this.actualFPS = this.fps;
 
-        this.animate = ( elapsed ) => {
+        this.animate = ( timestamp ) => {
             this.cycle = window.requestAnimationFrame( this.animate );
-            this.now = elapsed;
+            this.now = timestamp;
+            this.frame++;
 
             const delta = this.now - this.then;
 
             if ( delta >= this.interval ) {
                 this.then = this.now - ( delta % this.interval );
-                this.frame++;
 
                 if ( Utils.func( callback ) ) {
-                    callback( elapsed, this.frame );
+                    callback( timestamp );
+                }
+
+                const elapsed = ( timestamp - this.fpsThen ) / 1000;
+
+                if ( elapsed >= 1 ) {
+                    this.actualFPS = Math.round( this.frame / elapsed );
+                    this.frame = 0;
+                    this.fpsThen = timestamp;
                 }
             }
 
@@ -54,7 +66,9 @@ class Controller {
         this.cycle = null;
         this.then = null;
         this.now = null;
-        // this.frame = 0;
+        this.frame = 0;
+        this.fpsThen = null;
+        this.actualFPS = this.fps;
     }
 
 
