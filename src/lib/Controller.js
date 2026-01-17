@@ -3,11 +3,16 @@
 import Utils from "./Utils";
 
 class Controller {
-    constructor () {
+    constructor ( fps = 60 ) {
         this.handlers = {};
         this.animate = null;
         this.started = false;
         this.cycle = null;
+        this.fps = fps;
+        this.interval = 1000 / this.fps;
+        this.frame = 0;
+        this.then = null;
+        this.now = null;
     }
 
 
@@ -16,14 +21,25 @@ class Controller {
             return this;
         }
 
+        // this.frame = 0;
         this.started = true;
+        this.then = performance.now();
 
         this.animate = ( elapsed ) => {
             this.cycle = window.requestAnimationFrame( this.animate );
+            this.now = elapsed;
 
-            if ( Utils.func( callback ) ) {
-                callback( elapsed );
+            const delta = this.now - this.then;
+
+            if ( delta >= this.interval ) {
+                this.then = this.now - ( delta % this.interval );
+                this.frame++;
+
+                if ( Utils.func( callback ) ) {
+                    callback( elapsed, this.frame );
+                }
             }
+
         };
 
         this.cycle = window.requestAnimationFrame( this.animate );
@@ -36,6 +52,9 @@ class Controller {
         this.animate = null;
         this.started = false;
         this.cycle = null;
+        this.then = null;
+        this.now = null;
+        // this.frame = 0;
     }
 
 
