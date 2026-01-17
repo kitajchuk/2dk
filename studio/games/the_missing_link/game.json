@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 788,
+    "save": 792,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1274,21 +1274,23 @@
                         "offsetY": 70
                     },
                     "right": {
-                        "offsetX": 136,
-                        "offsetY": 70
+                        "offsetX": 0,
+                        "offsetY": 70,
+                        "flipX": true
                     }
                 },
                 "walk": {
                     "dur": 250,
                     "left": {
-                        "offsetX": 2,
+                        "offsetX": 0,
                         "offsetY": 70,
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": 138,
+                        "offsetX": 0,
                         "offsetY": 70,
-                        "stepsX": 2
+                        "stepsX": 2,
+                        "flipX": true
                     }
                 }
             },
@@ -1296,6 +1298,56 @@
                 {
                     "verb": "face",
                     "dir": "left"
+                }
+            ]
+        },
+        {
+            "id": "cucco-blue",
+            "name": "Blue Cucco",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "bounce": true,
+            "dir": "right",
+            "maxv": 2,
+            "controlmaxv": 2,
+            "hitbox": {
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
+            },
+            "verbs": {
+                "face": {
+                    "right": {
+                        "offsetX": 136,
+                        "offsetY": 70
+                    },
+                    "left": {
+                        "offsetX": 136,
+                        "offsetY": 70,
+                        "flipX": true
+                    }
+                },
+                "walk": {
+                    "dur": 250,
+                    "right": {
+                        "offsetX": 136,
+                        "offsetY": 70,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 136,
+                        "offsetY": 70,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "right"
                 }
             ]
         },
@@ -1324,9 +1376,10 @@
                         "stepsX": 2
                     },
                     "right": {
-                        "offsetX": 138,
+                        "offsetX": 2,
                         "offsetY": 2,
-                        "stepsX": 2
+                        "stepsX": 2,
+                        "flipX": true
                     }
                 }
             },
@@ -1334,6 +1387,45 @@
                 {
                     "verb": "face",
                     "dir": "left"
+                }
+            ]
+        },
+        {
+            "id": "dog-black",
+            "name": "Black Dog",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "bounce": true,
+            "dir": "right",
+            "maxv": 2,
+            "controlmaxv": 2,
+            "hitbox": {
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
+            },
+            "verbs": {
+                "face": {
+                    "dur": 500,
+                    "right": {
+                        "offsetX": 138,
+                        "offsetY": 2,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 138,
+                        "offsetY": 2,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "right"
                 }
             ]
         },

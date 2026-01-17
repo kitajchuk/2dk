@@ -300,22 +300,6 @@
     ],
     "npcs": [
         {
-            "id": "cucco",
-            "spawn": {
-                "x": 1945,
-                "y": 1500
-            },
-            "ai": "wander"
-        },
-        {
-            "id": "cucco",
-            "spawn": {
-                "x": 1759,
-                "y": 1379
-            },
-            "ai": "wander"
-        },
-        {
             "id": "dog",
             "spawn": {
                 "x": 1697,
@@ -538,22 +522,6 @@
             "ai": "wander"
         },
         {
-            "id": "cucco",
-            "spawn": {
-                "x": 1664,
-                "y": 448
-            },
-            "ai": "wander"
-        },
-        {
-            "id": "dog",
-            "spawn": {
-                "x": 2112,
-                "y": 320
-            },
-            "ai": "wander"
-        },
-        {
             "id": "dog",
             "spawn": {
                 "x": 1664,
@@ -627,6 +595,38 @@
             "action": {
                 "verb": "attack"
             }
+        },
+        {
+            "id": "cucco-blue",
+            "spawn": {
+                "x": 1935,
+                "y": 1492
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "cucco",
+            "spawn": {
+                "x": 1764,
+                "y": 1447
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "dog-black",
+            "spawn": {
+                "x": 2112,
+                "y": 320
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "cucco-blue",
+            "spawn": {
+                "x": 1664,
+                "y": 448
+            },
+            "ai": "wander"
         }
     ],
     "collision": [
