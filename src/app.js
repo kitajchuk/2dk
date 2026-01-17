@@ -9,7 +9,7 @@ import GameWorker from "./lib/GameWorker";
 class App {
     constructor () {
         window.onload = () => {
-            this.player = new Player();
+            this.player = new Player( 60, true );
             this.gameworker = new GameWorker( this.player );
             this.player.load().then(() => {
                 this.gameworker.register();

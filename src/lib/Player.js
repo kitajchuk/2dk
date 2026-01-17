@@ -10,8 +10,8 @@ import { renderMenu, renderSplash, renderSplashInfo } from "./DOM";
 
 
 class Player extends Controller {
-    constructor () {
-        super();
+    constructor ( ...args ) {
+        super( ...args );
 
         this.initialize();
         this.detect();
