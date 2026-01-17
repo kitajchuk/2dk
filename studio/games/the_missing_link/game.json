@@ -321,6 +321,30 @@
                         "offsetY": 460
                     }
                 },
+                "dive": {
+                    "dur": 500,
+                    "stop": true,
+                    "down": {
+                        "offsetX": 552,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 552,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 552,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 552,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    }
+                },
                 "face": {
                     "down": {
                         "offsetX": 0,

@@ -235,7 +235,12 @@ export default class Sprite {
             this.renderBefore();
         }
 
-        if ( this.data.shadow && !this.is( Config.verbs.FALL ) ) {
+        if ( 
+            this.data.shadow &&
+            !this.is( Config.verbs.FALL ) &&
+            !this.is( Config.verbs.DIVE ) &&
+            !this.is( Config.verbs.SWIM )
+        ) {
             this.gamebox.draw(
                 this.image,
                 this.data.shadow.offsetX,

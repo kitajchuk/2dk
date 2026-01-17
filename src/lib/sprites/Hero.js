@@ -106,6 +106,11 @@ export default class Hero extends Sprite {
     }
 
 
+    hasSwim () {
+        return this.items.some( ( item ) => item.verb === Config.verbs.SWIM );
+    }
+
+
     hasProjectile () {
         return this.items.some( ( item ) => item.projectile );
     }
@@ -473,8 +478,6 @@ export default class Hero extends Sprite {
 
     applyFalling () {
         if ( this.position.x === this.falling.reset.x && this.position.y === this.falling.reset.y ) {
-            // this.position.x = this.falling.reset.x;
-            // this.position.y = this.falling.reset.y;
             this.falling = null;
             this.frameStopped = false;
             this.gamebox.falling = false;
@@ -846,6 +849,23 @@ export default class Hero extends Sprite {
             ) &&
             firstJumpTile.instance.canInteract( Config.verbs.JUMP ).dir === dir
         );
+    }
+
+
+    canTileSwim ( poi, collision ) {
+        const { tiles } = collision;
+        const swimTiles = tiles && tiles.action.filter( ( tile ) => {
+            return tile.swim;
+        });
+        const tolerance = 5;
+
+        if ( swimTiles && swimTiles.length ) {
+            return swimTiles.some( ( tile ) => {
+                return Utils.collide( tile.tilebox, this.footbox, tolerance );
+            });
+        }
+
+        return false;
     }
 
 

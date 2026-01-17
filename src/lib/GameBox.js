@@ -587,6 +587,7 @@ export default class GameBox {
                     const match = {
                         jump: ( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ? true : false ),
                         fall: ( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ? true : false ),
+                        swim: ( instance.data.actions && instance.canInteract( Config.verbs.SWIM ) ? true : false ),
                         stop: ( instance.data.actions && instance.data.actions.find( ( action ) => {
                             return stopVerbs.indexOf( action.verb ) !== -1;
                         }) ? true : false ),
@@ -754,6 +755,7 @@ const actionVerbs = [
     Config.verbs.PULL,
     Config.verbs.PUSH,
     Config.verbs.FALL,
+    Config.verbs.SWIM,
     Config.verbs.ATTACK,
 ];
 // @see notes in ./Config.js as these are related to that line of thought...

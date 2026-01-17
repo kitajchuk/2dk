@@ -510,6 +510,11 @@ class TopView extends GameBox {
             return;
         }
 
+        if ( this.hero.canTileSwim( poi, collision ) ) {
+            this.handleHeroTileSwim( poi, dir, collision );
+            return;
+        }
+
         if ( collision.tiles ) {
             // Tile will allow leaping from it's edge, like a ledge...
             if ( this.hero.canTileJump( dir, collision ) ) {
@@ -923,26 +928,7 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroFall ( poi, dir, collision ) {
-        this.handleResetHeroDirs();
-
-        let fallCoords = [];
-
-        if ( collision.tiles ) {
-            const fallTiles = collision.tiles.action.filter( ( tile ) => {
-                return tile.fall;
-            });
-            const fallTile = Utils.getMostCollidingTile( fallTiles );
-            fallCoords = fallTile.coord;
-
-        } else if ( collision.empty ) {
-            const emptyTile = collision.empty[ 0 ];
-            fallCoords = [
-                emptyTile.x / this.map.data.tilesize,
-                emptyTile.y / this.map.data.tilesize,
-            ];
-        }
-
+    getFallPosition ( fallCoords, dir ) {
         // Center the hero's sprite on the fall tile as the animation's final destination
         const coordX = fallCoords[ 0 ] * this.map.data.tilesize;
         const coordY = fallCoords[ 1 ] * this.map.data.tilesize;
@@ -972,6 +958,60 @@ class TopView extends GameBox {
                 fallResetPosition.y -= this.map.data.tilesize / 4;
                 break;
         }
+
+        return {
+            fallToPosition,
+            fallResetPosition,
+        };
+    }
+
+
+    handleHeroTileSwim ( poi, dir, collision ) {
+        this.handleResetHeroDirs();
+        
+        // TODO: Handle swim animation when we get there but for now take a dive
+        if ( !this.hero.hasSwim() ) {
+            const diveTiles = collision.tiles.action.filter( ( tile ) => {
+                return tile.swim;
+            });
+            const diveTile = Utils.getMostCollidingTile( diveTiles );
+            const fallCoords = diveTile.coord;
+
+            const { fallToPosition, fallResetPosition } = this.getFallPosition( fallCoords, dir );
+
+            this.falling = true;
+            this.hero.cycle( Config.verbs.DIVE, this.hero.dir );
+            this.player.gameaudio.hitSound( "parkour" );
+
+            this.hero.falling = {
+                to: fallToPosition,
+                reset: fallResetPosition,
+            };
+        }
+    }
+
+
+    handleHeroFall ( poi, dir, collision ) {
+        this.handleResetHeroDirs();
+
+        let fallCoords = [];
+
+        if ( collision.tiles ) {
+            const fallTiles = collision.tiles.action.filter( ( tile ) => {
+                return tile.fall;
+            });
+            const fallTile = Utils.getMostCollidingTile( fallTiles );
+            fallCoords = fallTile.coord;
+
+        } else if ( collision.empty ) {
+            const emptyTile = collision.empty[ 0 ];
+            fallCoords = [
+                emptyTile.x / this.map.data.tilesize,
+                emptyTile.y / this.map.data.tilesize,
+            ];
+        }
+
+        const { fallToPosition, fallResetPosition } = this.getFallPosition( fallCoords, dir );
 
         this.falling = true;
         this.hero.cycle( Config.verbs.FALL, this.hero.dir );

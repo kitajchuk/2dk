@@ -32,6 +32,8 @@ const Config = {
         CLOSE: "close",
         TALK: "talk",
         READ: "read",
+        SWIM: "swim",
+        DIVE: "dive",
     },
     map: {
         types: {
