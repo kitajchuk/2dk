@@ -26,6 +26,7 @@ export default class HUD {
 
 
     render () {
+        this.renderFPS();
         this.renderButtons();
         this.renderHealth();
         this.renderCurrency();
@@ -39,6 +40,27 @@ export default class HUD {
         this.gamepad.renderButtonText( "b" );
         this.buttons.a = null;
         this.buttons.b = null;
+    }
+
+
+    renderFPS () {
+        const fps = this.player.actualFPS;
+        const fpsString = `FPS: ${fps}`;
+        const x = 20, y = 100;
+
+        this.gamebox.mapLayer.context.save();
+        
+        this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
+        this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
+        this.gamebox.mapLayer.context.textAlign = "right";
+        this.gamebox.mapLayer.context.textBaseline = "top";
+        this.gamebox.mapLayer.context.fillText(
+            fpsString,
+            this.gamebox.mapLayer.data.width - x,
+            y
+        );
+
+        this.gamebox.mapLayer.context.restore();
     }
 
 
