@@ -432,14 +432,6 @@
             "id": "ghost",
             "spawn": {
                 "x": 1438,
-                "y": 1695
-            },
-            "ai": "float"
-        },
-        {
-            "id": "ghost",
-            "spawn": {
-                "x": 1438,
                 "y": 485
             },
             "ai": "float"
@@ -516,24 +508,8 @@
         {
             "id": "ghost",
             "spawn": {
-                "x": 1052,
-                "y": 482
-            },
-            "ai": "float"
-        },
-        {
-            "id": "ghost",
-            "spawn": {
                 "x": 792,
                 "y": 732
-            },
-            "ai": "float"
-        },
-        {
-            "id": "ghost",
-            "spawn": {
-                "x": 348,
-                "y": 610
             },
             "ai": "float"
         },
@@ -593,6 +569,30 @@
                 "x": 1024,
                 "y": 1280
             }
+        },
+        {
+            "id": "ghost-white",
+            "spawn": {
+                "x": 990,
+                "y": 481
+            },
+            "ai": "float"
+        },
+        {
+            "id": "ghost-white",
+            "spawn": {
+                "x": 366,
+                "y": 621
+            },
+            "ai": "float"
+        },
+        {
+            "id": "ghost-white",
+            "spawn": {
+                "x": 1439,
+                "y": 1764
+            },
+            "ai": "float"
         }
     ],
     "collision": [

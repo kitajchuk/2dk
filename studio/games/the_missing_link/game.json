@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 792,
+    "save": 796,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1005,24 +1005,75 @@
                 "face": {
                     "dur": 1000,
                     "left": {
-                        "offsetX": 2,
+                        "offsetX": 0,
                         "offsetY": 206,
                         "stepsX": 2
                     },
                     "right": {
+                        "offsetX": 0,
+                        "offsetY": 206,
+                        "stepsX": 2,
+                        "flipX": true
+                    },
+                    "up-left": {
                         "offsetX": 138,
                         "offsetY": 206,
                         "stepsX": 2
                     },
-                    "up-left": {
+                    "up-right": {
+                        "offsetX": 138,
+                        "offsetY": 206,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "left"
+                }
+            ]
+        },
+        {
+            "id": "ghost-white",
+            "name": "White Ghost",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "maxv": 1,
+            "opacity": 0.75,
+            "dir": "right",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 68,
+                "height": 68
+            },
+            "verbs": {
+                "face": {
+                    "dur": 1000,
+                    "right": {
                         "offsetX": 274,
                         "offsetY": 206,
                         "stepsX": 2
                     },
+                    "left": {
+                        "offsetX": 274,
+                        "offsetY": 206,
+                        "stepsX": 2,
+                        "flipX": true
+                    },
                     "up-right": {
-                        "offsetX": 410,
+                        "offsetX": 408,
                         "offsetY": 206,
                         "stepsX": 2
+                    },
+                    "up-left": {
+                        "offsetX": 408,
+                        "offsetY": 206,
+                        "stepsX": 2,
+                        "flipX": true
                     }
                 }
             },

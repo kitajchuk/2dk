@@ -154,14 +154,6 @@
         {
             "id": "ghost",
             "spawn": {
-                "x": 840,
-                "y": 266
-            },
-            "ai": "float"
-        },
-        {
-            "id": "ghost",
-            "spawn": {
                 "x": 927,
                 "y": 617
             },
@@ -190,6 +182,14 @@
                     ]
                 }
             }
+        },
+        {
+            "id": "ghost-white",
+            "spawn": {
+                "x": 800,
+                "y": 287
+            },
+            "ai": "float"
         }
     ],
     "collision": [

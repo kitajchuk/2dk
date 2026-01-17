@@ -187,14 +187,6 @@
         {
             "id": "ghost",
             "spawn": {
-                "x": 1056,
-                "y": 290
-            },
-            "ai": "float"
-        },
-        {
-            "id": "ghost",
-            "spawn": {
                 "x": 164,
                 "y": 164
             },
@@ -231,14 +223,6 @@
         {
             "id": "ghost",
             "spawn": {
-                "x": 219,
-                "y": 422
-            },
-            "ai": "float"
-        },
-        {
-            "id": "ghost",
-            "spawn": {
                 "x": 486,
                 "y": 326
             },
@@ -257,6 +241,22 @@
             "spawn": {
                 "x": 1117,
                 "y": 610
+            },
+            "ai": "float"
+        },
+        {
+            "id": "ghost-white",
+            "spawn": {
+                "x": 993,
+                "y": 288
+            },
+            "ai": "float"
+        },
+        {
+            "id": "ghost-white",
+            "spawn": {
+                "x": 223,
+                "y": 416
             },
             "ai": "float"
         }
