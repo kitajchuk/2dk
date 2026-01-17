@@ -3,7 +3,7 @@
 import Utils from "./Utils";
 
 class Controller {
-    constructor ( fps = 60 ) {
+    constructor ( fps = 60, ctrlFPS = false ) {
         this.handlers = {};
         this.animate = null;
         this.started = false;
@@ -13,8 +13,9 @@ class Controller {
         this.then = null;
         this.now = null;
         this.fps = fps;
+        this.ctrlFPS = ctrlFPS;
         this.fpsThen = null;
-        this.actualFPS = fps;
+        this.actualFPS = 0;
     }
 
 
@@ -34,27 +35,35 @@ class Controller {
             this.now = timestamp;
             this.frame++;
 
-            const delta = this.now - this.then;
+            if ( this.ctrlFPS ) {
+                const delta = this.now - this.then;
 
-            if ( delta >= this.interval ) {
-                this.then = this.now - ( delta % this.interval );
-
-                if ( Utils.func( callback ) ) {
+                if ( delta >= this.interval ) {
+                    this.then = this.now - ( delta % this.interval );
+                    this.updateFPS( timestamp );
                     callback( timestamp );
                 }
 
-                const elapsed = ( timestamp - this.fpsThen ) / 1000;
-
-                if ( elapsed >= 1 ) {
-                    this.actualFPS = Math.round( this.frame / elapsed );
-                    this.frame = 0;
-                    this.fpsThen = timestamp;
-                }
+            // Uncontrolled FPS
+            } else {
+                this.updateFPS( timestamp );
+                callback( timestamp );
             }
 
         };
 
         this.cycle = window.requestAnimationFrame( this.animate );
+    }
+
+
+    updateFPS ( timestamp ) {
+        const elapsed = ( timestamp - this.fpsThen ) / 1000;
+
+        if ( elapsed >= 1 ) {
+            this.actualFPS = Math.round( this.frame / elapsed );
+            this.frame = 0;
+            this.fpsThen = timestamp;
+        }
     }
 
 
