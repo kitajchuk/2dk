@@ -45,18 +45,19 @@ export default class HUD {
 
     renderFPS () {
         const fps = this.player.actualFPS;
-        const fpsString = `FPS: ${fps}`;
-        const x = 20, y = 100;
+        const fpsCtrled = this.player.ctrlFPS ? "Controlled" : "Uncontrolled";
+        const fpsString = `${fpsCtrled} FPS: ${fps}`;
+        const x = 220, y = 20;
 
         this.gamebox.mapLayer.context.save();
         
-        this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
+        this.gamebox.mapLayer.context.font = "16px Calamity-Bold";
         this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
-        this.gamebox.mapLayer.context.textAlign = "right";
+        this.gamebox.mapLayer.context.textAlign = "left";
         this.gamebox.mapLayer.context.textBaseline = "top";
         this.gamebox.mapLayer.context.fillText(
             fpsString,
-            this.gamebox.mapLayer.data.width - x,
+            x,
             y
         );
 
