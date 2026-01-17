@@ -19,6 +19,7 @@
             "dir": "left"
         }
     ],
+    "dropin": true,
     "fx": [],
     "tiles": [],
     "events": [

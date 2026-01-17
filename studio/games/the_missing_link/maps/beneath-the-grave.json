@@ -27,8 +27,8 @@
             "layer": "background",
             "offsetX": 0,
             "offsetY": 2112,
-            "stepsX": 3,
-            "dur": 1000
+            "stepsX": 4,
+            "dur": 1500
         },
         {
             "group": "torches",
