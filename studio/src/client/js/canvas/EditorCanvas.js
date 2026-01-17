@@ -27,6 +27,7 @@ class EditorCanvas {
         this.spawn = null;
         this.assets = {};
         this.canvasMouseCoords = null;
+        this.lastEraseCoords = null;
         this.tilesetCoords = [];
         this.currentNPC = null;
         this.isEscape = false;
@@ -171,6 +172,7 @@ class EditorCanvas {
             this.isMouseDownCanvas = false;
             this.currentTileCoord = null;
             this.canvasMouseCoords = null;
+            this.lastEraseCoords = null;
             this.currentNPC = null;
             this.tilesetCoords = [];
             this.map = null;
@@ -581,15 +583,35 @@ class EditorCanvas {
 
     trash ( layer, coords ) {
         this.tilesetCoords = [];
-        this.map.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ] = 0;
 
-        clearTile(
-            this.contexts[ layer ].context,
-            coords[ 0 ] * this.map.tilesize,
-            coords[ 1 ] * this.map.tilesize,
-            this.map.tilesize,
-            this.map.tilesize
-        );
+        const texture = this.map.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ];
+        const textures = Array.isArray( texture ) ? texture : [ texture ];
+
+        textures.pop();
+
+        if ( textures.length ) {
+            this.map.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ] = textures;
+
+            window.lib2dk.Utils.drawMapTile(
+                this.contexts[ layer ].context,
+                this.dom.tileset,
+                textures,
+                this.map.tilesize,
+                this.map.tilesize,
+                coords[ 0 ],
+                coords[ 1 ]
+            );
+
+        } else {
+            this.map.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ] = 0;
+            clearTile(
+                this.contexts[ layer ].context,
+                coords[ 0 ] * this.map.tilesize,
+                coords[ 1 ] * this.map.tilesize,
+                this.map.tilesize,
+                this.map.tilesize
+            );
+        }
     }
 
 
@@ -822,6 +844,21 @@ class EditorCanvas {
 
         } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             this.trash( layer, coords );
+        }
+    }
+
+
+    applyLayerWithTrashCheck ( layer, coords ) {
+        if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+            if ( this.lastEraseCoords && this.lastEraseCoords[ 0 ] === coords[ 0 ] && this.lastEraseCoords[ 1 ] === coords[ 1 ] ) {
+                return;
+            }
+
+            this.lastEraseCoords = coords;
+            this.trash( layer, coords );
+            
+        } else {
+            this.applyLayer( layer, coords );
         }
     }
 
@@ -1627,25 +1664,29 @@ class EditorCanvas {
 
             if ( this.editor.canMapFunction() ) {
                 if ( this.isMouseDownCanvas ) {
-                    if ( this.canApplyLayer() ) {
-                        this.applyLayer( this.editor.layers.mode, coords );
+                    if ( !this.canApplyLayer() ) {
+                        return;
                     }
-                } else {
-                    if ( this.canApplyLayer() ) {
-                        this.cursor.showCanvasCursor( coords );
 
-                    } else if ( this.currentNPC && this.canApplyNPC() ) {
-                        this.cursor.showCanvasCursor( coords, this.currentNPC );
+                    this.applyLayerWithTrashCheck( this.editor.layers.mode, coords );
 
-                    } else if ( this.canApplySpawn() ) {
-                        this.cursor.showSpawnCursor( coords );
+                    return;
+                }
 
-                    } else if ( this.canApplyEvent() ) {
-                        this.cursor.showEventCursor( coords );
+                if ( this.canApplyLayer() ) {
+                    this.cursor.showCanvasCursor( coords );
 
-                    } else if ( this.canApplyActiveTiles() ) {
-                        this.cursor.showTilesCursor( coords );
-                    }
+                } else if ( this.currentNPC && this.canApplyNPC() ) {
+                    this.cursor.showCanvasCursor( coords, this.currentNPC );
+
+                } else if ( this.canApplySpawn() ) {
+                    this.cursor.showSpawnCursor( coords );
+
+                } else if ( this.canApplyEvent() ) {
+                    this.cursor.showEventCursor( coords );
+
+                } else if ( this.canApplyActiveTiles() ) {
+                    this.cursor.showTilesCursor( coords );
                 }
             }
         });
@@ -1660,7 +1701,7 @@ class EditorCanvas {
                 const coords = this.getMouseCoords( e, this.map.tilesize );
 
                 if ( this.canApplyLayer() ) {
-                    this.applyLayer( this.editor.layers.mode, coords );
+                    this.applyLayerWithTrashCheck( this.editor.layers.mode, coords );
 
                 } else if ( this.canApplyNPC() ) {
                     this.applyNPC( coords );
@@ -1676,6 +1717,7 @@ class EditorCanvas {
                 }
             }
 
+            this.lastEraseCoords = null;
             this.isMouseDownCanvas = false;
         });
 
