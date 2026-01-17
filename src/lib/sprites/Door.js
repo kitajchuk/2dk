@@ -350,7 +350,7 @@ export default class Door extends QuestSprite {
         this.gamequest.completeQuest( this.mapId );
         this.handleDoAction();
 
-        if ( this.data.payload.quest?.setFlag ) {
+        if ( this.data.payload?.quest?.setFlag ) {
             this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
         }
     }
