@@ -3,9 +3,9 @@
 export default class Controller {
     constructor () {
         this.handlers = {};
+        this.cycle = null;
         this.animate = null;
         this.started = false;
-        this.cycle = null;
     }
 
 
@@ -25,9 +25,9 @@ export default class Controller {
 
     stop () {
         window.cancelAnimationFrame( this.cycle );
-        this.animate = null;
-        this.started = false;
         this.cycle = null;
+        // this.animate = null;
+        this.started = false;
     }
 
 
