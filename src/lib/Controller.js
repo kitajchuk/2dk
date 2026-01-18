@@ -1,21 +1,11 @@
 // A cleanup of the original ProperJS Controller
 // https://github.com/kitajchuk/Controller
-import Utils from "./Utils";
-
-class Controller {
-    constructor ( fps = 60, ctrlFPS = false ) {
+export default class Controller {
+    constructor () {
         this.handlers = {};
         this.animate = null;
         this.started = false;
         this.cycle = null;
-        this.interval = 1000 / fps;
-        this.frame = 0;
-        this.then = null;
-        this.now = null;
-        this.fps = fps;
-        this.ctrlFPS = ctrlFPS;
-        this.fpsThen = null;
-        this.actualFPS = 0;
     }
 
 
@@ -24,60 +14,20 @@ class Controller {
             return this;
         }
 
-        this.frame = 0;
         this.started = true;
-        this.then = performance.now();
-        this.fpsThen = performance.now();
-        this.actualFPS = this.fps;
-
-        this.animate = ( timestamp ) => {
+        this.animate = ( currentTime ) => {
+            callback( currentTime );
             this.cycle = window.requestAnimationFrame( this.animate );
-            this.now = timestamp;
-            this.frame++;
-
-            if ( this.ctrlFPS ) {
-                const delta = this.now - this.then;
-
-                if ( delta >= this.interval ) {
-                    this.then = this.now - ( delta % this.interval );
-                    this.updateFPS( timestamp );
-                    callback( timestamp );
-                }
-
-            // Uncontrolled FPS
-            } else {
-                this.updateFPS( timestamp );
-                callback( timestamp );
-            }
-
         };
-
         this.cycle = window.requestAnimationFrame( this.animate );
-    }
-
-
-    updateFPS ( timestamp ) {
-        const elapsed = ( timestamp - this.fpsThen ) / 1000;
-
-        if ( elapsed >= 1 ) {
-            this.actualFPS = Math.round( this.frame / elapsed );
-            this.frame = 0;
-            this.fpsThen = timestamp;
-        }
     }
 
 
     stop () {
         window.cancelAnimationFrame( this.cycle );
-
         this.animate = null;
         this.started = false;
         this.cycle = null;
-        this.then = null;
-        this.now = null;
-        this.frame = 0;
-        this.fpsThen = null;
-        this.actualFPS = this.fps;
     }
 
 
@@ -85,13 +35,11 @@ class Controller {
         const events = event.split( " " );
 
         events.forEach( ( event ) => {
-            if ( Utils.func( handler ) ) {
-                if ( !this.handlers[ event ] ) {
-                    this.handlers[event ] = [];
-                }
-
-                this.handlers[ event ].push( handler );
+            if ( !this.handlers[ event ] ) {
+                this.handlers[event ] = [];
             }
+
+            this.handlers[ event ].push( handler );
         });
     }
 
@@ -126,7 +74,3 @@ class Controller {
         });
     }
 }
-
-
-
-export default Controller;

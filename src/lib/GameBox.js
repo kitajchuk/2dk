@@ -7,7 +7,6 @@ import MapLayer from "./maps/MapLayer";
 import Hero from "./sprites/Hero";
 import Companion from "./sprites/Companion";
 import FX from "./sprites/FX";
-import CellAutoMap from "./maps/CellAutoMap";
 import GameQuest from "./GameQuest";
 import ItemDrop from "./sprites/ItemDrop";
 import KeyItemDrop from "./sprites/KeyItemDrop";
@@ -17,9 +16,8 @@ import HUD from "./HUD";
 
 
 export default class GameBox {
-    constructor ( player, onReady ) {
+    constructor ( player ) {
         this.player = player;
-        this.onReady = onReady;
         this.step = 1;
         this.dropin = false;
         this.offset = {
@@ -46,60 +44,39 @@ export default class GameBox {
         let initMapData = Loader.cash( this.player.heroData.map );
         let initHeroData = structuredClone( this.player.heroData );
 
-        this.build();
+        // Map
+        this.map = new Map( initMapData, this );
 
-        const _init = () => {
-            // Map
-            this.map = new Map( initMapData, this );
+        // Hero
+        initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
+        this.hero = new Hero( initHeroData, this.map );
+        this.seedItems();
 
-            // Hero
-            initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
-            this.hero = new Hero( initHeroData, this.map );
-            this.seedItems();
+        // HUD
+        this.hud = new HUD( this );
 
-            // HUD
-            this.hud = new HUD( this );
-
-            // Sounds
-            for ( const id in this.player.data.sounds ) {
-                this.player.gameaudio.addSound({
-                    id,
-                    src: this.player.data.sounds[ id ],
-                    channel: "sfx",
-                });
-            }
-
-            // Companion?
-            if ( initHeroData.companion ) {
-                initHeroData.companion = this.player.getMergedData( initHeroData.companion, "npcs" );
-                initHeroData.companion.spawn = {
-                    x: this.hero.position.x,
-                    y: this.hero.position.y,
-                };
-
-                this.companion = new Companion( initHeroData.companion, this.hero );
-            }
-
-            this.onReady();
-            this.initMap();
-        };
-
-        // Cellular automata map
-        if ( initMapData.cellauto ) {
-            this.cellauto = new CellAutoMap();
-            this.cellauto.initialize( initMapData );
-            this.cellauto.generate( ( { textures } ) => {
-                initMapData.textures.background = textures;
-            }).then( ( { textures, spawn } ) => {
-                initMapData.textures.background = textures;
-                initMapData.spawn = [ spawn ];
-                Utils.log( "Cellauto map ready!" );
-                _init();
+        // Sounds
+        for ( const id in this.player.data.sounds ) {
+            this.player.gameaudio.addSound({
+                id,
+                src: this.player.data.sounds[ id ],
+                channel: "sfx",
             });
-            // Standard map
-        } else {
-            _init();
         }
+
+        // Companion?
+        if ( initHeroData.companion ) {
+            initHeroData.companion = this.player.getMergedData( initHeroData.companion, "npcs" );
+            initHeroData.companion.spawn = {
+                x: this.hero.position.x,
+                y: this.hero.position.y,
+            };
+
+            this.companion = new Companion( initHeroData.companion, this.hero );
+        }
+
+        this.build();
+        this.initMap();
     }
 
 
@@ -108,7 +85,6 @@ export default class GameBox {
         this.hero.destroy();
         this.companion?.destroy();
         this.map.destroy();
-        this.cellauto?.destroy();
         this.mapLayer.destroy();
         this.dialogue.destroy();
         this.element.remove();
@@ -117,6 +93,7 @@ export default class GameBox {
 
     clear () {
         this.mapLayer.clear();
+        this.renderQueue.clear();
     }
 
 
@@ -155,9 +132,11 @@ export default class GameBox {
 /*******************************************************************************
 * Rendering
 * Can all be handled in plugin GameBox
+* Order is: blit, update, render
 *******************************************************************************/
     blit () {}
     update () {}
+    render () {}
 
 
 /*******************************************************************************
@@ -718,38 +697,6 @@ export default class GameBox {
 
         }, 1000 );
     }
-
-
-    changeCellautoMap ( poi, dir, collision ) {
-        // Pause the Player so no game buttons dispatch
-        this.player.pause();
-
-        // Fade out...
-        this.player.fadeOut();
-
-        setTimeout( () => {
-            // New Map data (keep reusing the same map for cellauto)
-            const newMapData = Loader.cash( this.hero.data.map );
-
-            // Set a new position...
-            this.hero.position = this.hero.getPositionForNewMap();
-
-            // TODO: Fix the new map spawn area so hero doesn't spawn into collision
-
-            this.cellauto.initialize( newMapData );
-            this.cellauto.generate( ( { textures } ) => {
-                newMapData.textures.background = textures;
-            }).then( ( { textures, spawn } ) => {
-                newMapData.textures.background = textures;
-                newMapData.spawn = [ spawn ];
-                this.hero.dir = dir;
-                this.hero.position.x = spawn.x;
-                this.hero.position.y = spawn.y;
-                this.afterChangeMap( newMapData );
-            });
-
-        }, 1000 );
-    }
 }
 
 
@@ -791,11 +738,11 @@ export class Camera {
 export class RenderQueue {
     constructor ( gamebox ) {
         this.gamebox = gamebox;
-        this.blit();
+        this.clear();
     }
 
 
-    blit () {
+    clear () {
         this.background = [];
         this.heroground = [];
         this.foreground = [];

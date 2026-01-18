@@ -7,8 +7,8 @@ import { LiftedTile } from "../sprites/Hero";
 
 
 class TopView extends GameBox {
-    constructor ( player, onReady ) {
-        super( player, onReady );
+    constructor ( player ) {
+        super( player );
 
         // Interactions
         this.interact = {
@@ -34,8 +34,6 @@ class TopView extends GameBox {
 * Order is: blit, update, render
 *******************************************************************************/
     blit ( elapsed ) {
-        this.clear();
-
         // Safely handle hero death so we exit the blit loop and reset the player cleanly
         if ( this.hero.deathCounter > 0 ) {
             this.hero.deathCounter--;
@@ -45,9 +43,6 @@ class TopView extends GameBox {
             this.player.reset();
             return;
         }
-
-        // blit render queue
-        this.renderQueue.blit( elapsed );
 
         // blit hero
         this.hero.blit( elapsed );
@@ -63,13 +58,17 @@ class TopView extends GameBox {
         // blit map
         this.map.blit( elapsed );
 
+        // TODO: Is there a better place for this?
         // dropin effect for new map?
         if ( this.dropin && this.hero.position.z === 0 ) {
             this.dropin = false;
         }
+    }
 
+
+    update () {
         // update gamebox (camera)
-        this.update();
+        this.updateCamera();
 
         // update hero
         this.hero.update();
@@ -81,24 +80,10 @@ class TopView extends GameBox {
 
         // update map
         this.map.update( this.offset );
-
-        // render map
-        this.map.render( this.hero, this.companion );
-
-        // render render queue
-        this.renderQueue.render();
-
-        // Visual event debugging....
-        if ( this.player.query.get( "debug" ) ) {
-            this.map.renderDebug();
-        }
-
-        // render HUD
-        this.hud.render();
     }
 
 
-    update () {
+    updateCamera () {
         const x = ( this.hero.position.x - ( ( this.camera.width / 2 ) - ( this.hero.width / 2 ) ) );
         const y = ( this.hero.position.y - ( ( this.camera.height / 2 ) - ( this.hero.height / 2 ) ) );
         const offset = {};
@@ -126,6 +111,26 @@ class TopView extends GameBox {
         this.offset = offset;
         this.camera.x = Math.abs( offset.x );
         this.camera.y = Math.abs( offset.y );
+    }
+
+
+    render () {
+        // Clear canvas and render queue
+        this.clear();
+
+        // render map
+        this.map.render( this.hero, this.companion );
+
+        // render render queue
+        this.renderQueue.render();
+
+        // Visual event debugging....
+        if ( this.player.query.get( "debug" ) ) {
+            this.map.renderDebug();
+        }
+
+        // render HUD
+        this.hud.render();
     }
 
 
@@ -488,10 +493,6 @@ class TopView extends GameBox {
         if ( collision.camera ) {
             this.handleHeroCamera( poi, dir );
 
-            if ( this.map.data.cellauto ) {
-                this.handleHeroEdgeBoundary( poi, dir, collision );
-            }
-
             return;
         }
 
@@ -798,18 +799,6 @@ class TopView extends GameBox {
         this.player.stop();
         this.changeMap( event );
     }
-
-
-    handleHeroEdgeBoundary ( poi, dir, collision ) {
-        if ( collision.camera !== dir ) {
-            return;
-        }
-
-        this.handleHeroEventCleanup();
-        this.player.stop();
-        this.changeCellautoMap( poi, dir, collision );
-    }
-
 
 
     handleHeroEventDialogue ( poi, dir, event ) {

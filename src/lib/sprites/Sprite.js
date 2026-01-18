@@ -23,7 +23,6 @@ export default class Sprite {
         this.dir = ( this.data.dir || this.data.spawn.dir || "down" );
         this.verb = ( this.data.verb || Config.verbs.FACE );
         this.image = Loader.cash( this.data.image );
-        this.speed = 1;
         this.frame = 0;
         this.opacity = ( data.opacity || 1.0 );
         this.position = {
@@ -31,6 +30,7 @@ export default class Sprite {
             y: ( this.data.spawn && this.data.spawn.y || 0 ),
             z: ( this.data.spawn && this.data.spawn.z || 0 ),
         };
+        this.speed = 1;
         this.physics = {
             vx: ( this.data.vx || 0 ),
             vy: ( this.data.vy || 0 ),

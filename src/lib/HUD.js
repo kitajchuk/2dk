@@ -44,9 +44,8 @@ export default class HUD {
 
 
     renderFPS () {
-        const fps = this.player.actualFPS;
-        const fpsCtrled = this.player.ctrlFPS ? "Controlled" : "Uncontrolled";
-        const fpsString = `${fpsCtrled} FPS: ${fps}`;
+        const fps = this.player.currentFPS;
+        const fpsString = `FPS: ${fps}`;
         const x = 220, y = 20;
 
         this.gamebox.mapLayer.context.save();
@@ -131,6 +130,7 @@ export default class HUD {
         this.gamebox.mapLayer.context.globalAlpha = 0.5;
         this.gamebox.mapLayer.context.fillStyle = Config.colors.yellow;
         this.gamebox.mapLayer.context.beginPath();
+        // TODO: roundRect throws error in Firefox...
         this.gamebox.mapLayer.context.roundRect(
             x,
             y,

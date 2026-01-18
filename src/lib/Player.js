@@ -13,6 +13,10 @@ class Player extends Controller {
     constructor () {
         super();
 
+        this.fps = Config.fps;
+        this.frame = 0;
+        this.interval = 1000 / this.fps;
+
         this.initialize();
         this.detect();
     }
@@ -67,9 +71,15 @@ class Player extends Controller {
     debug () {
         this.query = new URLSearchParams( window.location.search );
 
+        const fps = this.query.get( "fps" );
         const map = this.query.get( "map" );
         const spawn = this.query.get( "spawn" );
         const resolution = this.query.get( "resolution" );
+
+        if ( fps ) {
+            this.fps = Number( fps );
+            this.interval = 1000 / this.fps;
+        }
 
         if ( map ) {
             this.heroData.map = `maps/${map}`;
@@ -245,8 +255,93 @@ class Player extends Controller {
     }
 
 
+    // Overrides default go method to control frame rate
     go () {
-        super.go( this.onGameBlit.bind( this ) );
+        if ( this.started ) {
+            return this;
+        }
+
+        this.frame = 0;
+        this.started = true;
+        this.currentFPS = this.currentFPS || this.fps;
+        this.previousTime = performance.now();
+        this.previousFrameTime = this.previousTime;
+        this.animate = ( currentTime ) => {
+            const deltaTime = currentTime - this.previousTime;
+
+            if ( deltaTime >= this.interval ) {
+                // Update physics at controlled frame rate
+                this.blit( currentTime );
+                this.previousTime = currentTime - ( deltaTime % this.interval );
+
+                const elapsedFrameTime = currentTime - this.previousFrameTime;
+            
+                if ( elapsedFrameTime >= 1000 ) {
+                    this.currentFPS = this.frame;
+                    this.frame = 0;
+                    this.previousFrameTime = currentTime;
+                }
+                
+                this.frame++;
+            }
+
+            // Render at refresh rate
+            this.gamebox.render();
+
+            // Request next animation frame
+            this.cycle = window.requestAnimationFrame( this.animate );
+        };
+
+        // Start the animation loop
+        this.cycle = window.requestAnimationFrame( this.animate );
+    }
+
+
+    blit ( currentTime ) {
+        // Updates happen if NOT stopped
+        if ( !this.stopped ) {
+            this.gamebox.blit( currentTime );
+            this.gamebox.update();
+        }
+
+        // Soft pause only affects Hero updates and NPCs
+        // Hard stop will affect the entire blit/render engine...
+        if ( !this.paused ) {
+            // D-Pad movement
+            // Easier to check the gamepad than have player use event handlers...
+            const dpad = this.gamepad.checkDpad();
+
+            if ( !dpad.length ) {
+                this.gamebox.releaseD();
+                this.gamebox.handleHero(
+                    this.gamebox.hero.getNextPoi(),
+                    this.gamebox.hero.dir
+                );
+
+            } else {
+                for ( let i = 0; i < dpad.length; i++ ) {
+                    for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
+                        this.gamebox.pressD( dpad[ i ].dpad[ j ] );
+                    }
+                }
+            }
+
+            // Action buttons
+            // Easier to have the player use event handlers and check controls...
+            if ( this.controls.aHold ) {
+                this.gamebox.holdA();
+
+            } else if ( this.controls.a ) {
+                this.gamebox.pressA();
+            }
+
+            if ( this.controls.bHold ) {
+                this.gamebox.holdB();
+
+            } else if ( this.controls.b ) {
+                this.gamebox.pressB();
+            }
+        }
     }
 
 
@@ -295,57 +390,8 @@ class Player extends Controller {
             this.element.classList.add( "is-started" );
 
             if ( this.data.plugin === Config.plugins.TOPVIEW ) {
-                this.gamebox = new TopView(
-                    this,
-                    this.go.bind( this )
-                );
-            }
-        }
-    }
-
-
-    onGameBlit ( elapsed ) {
-        // Rendering happens if NOT stopped
-        if ( !this.stopped ) {
-            this.gamebox.blit( elapsed );
-        }
-
-        // Soft pause only affects Hero updates and NPCs
-        // Hard stop will affect the entire blit/render engine...
-        if ( !this.paused ) {
-            // D-Pad movement
-            // Easier to check the gamepad than have player use event handlers...
-            const dpad = this.gamepad.checkDpad();
-
-            if ( !dpad.length ) {
-                this.gamebox.releaseD();
-                this.gamebox.handleHero(
-                    this.gamebox.hero.getNextPoi(),
-                    this.gamebox.hero.dir
-                );
-
-            } else {
-                for ( let i = 0; i < dpad.length; i++ ) {
-                    for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
-                        this.gamebox.pressD( dpad[ i ].dpad[ j ] );
-                    }
-                }
-            }
-
-            // Action buttons
-            // Easier to have the player use event handlers and check controls...
-            if ( this.controls.aHold ) {
-                this.gamebox.holdA();
-
-            } else if ( this.controls.a ) {
-                this.gamebox.pressA();
-            }
-
-            if ( this.controls.bHold ) {
-                this.gamebox.holdB();
-
-            } else if ( this.controls.b ) {
-                this.gamebox.pressB();
+                this.gamebox = new TopView( this );
+                this.go();
             }
         }
     }
