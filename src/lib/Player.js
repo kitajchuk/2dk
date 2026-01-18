@@ -267,8 +267,8 @@ class Player extends Controller {
         this.previousTime = performance.now();
         this.previousFrameTime = this.previousTime;
         this.animate = ( currentTime ) => {
-            // Request next animation frame right away...
-            // this.cycle = window.requestAnimationFrame( this.animate );
+            // Request next animation frame right away (eager)...
+            this.cycle = window.requestAnimationFrame( this.animate );
 
             const deltaTime = currentTime - this.previousTime;
 
@@ -292,7 +292,7 @@ class Player extends Controller {
             this.gamebox.render();
 
             // Request next animation frame after logic is complete
-            this.cycle = window.requestAnimationFrame( this.animate );
+            // this.cycle = window.requestAnimationFrame( this.animate );
         };
 
         // Start the animation loop
