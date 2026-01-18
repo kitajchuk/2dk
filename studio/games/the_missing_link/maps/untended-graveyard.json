@@ -264,7 +264,7 @@
             "width": 64,
             "height": 64,
             "dir": "up",
-            "map": "maps/cathedral-of-the-damned.json",
+            "map": "maps/cathedral-of-the-cursed.json",
             "spawn": 0
         },
         {
@@ -395,8 +395,7 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "Behind — Cursed Tomb",
-                        "Ahead — Who knows..."
+                        "Tunnel Crypt"
                     ]
                 }
             }
@@ -415,7 +414,8 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "The flying rooster watches over the cursed tomb."
+                        "Here stands the flying rooster.",
+                        "His gaze watches over the cursed tomb."
                     ]
                 }
             }
@@ -474,24 +474,10 @@
             ],
             "payload": {
                 "dialogue": {
-                    "type": "prompt",
+                    "type": "text",
                     "text": [
-                        "I was on my way to the Lake and decided to see if they're biting along the way.",
-                        "My brother went on ahead.",
-                        "You like fishing, little buddy?"
-                    ],
-                    "yes": {
-                        "label": "Yes",
-                        "text": [
-                            "Great! Let's see what we can catch!"
-                        ]
-                    },
-                    "no": {
-                        "label": "No",
-                        "text": [
-                            "Oh well, it's not for everyone I guess..."
-                        ]
-                    }
+                        "..."
+                    ]
                 }
             }
         },
@@ -558,8 +544,8 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "Cathedral of the Damned",
-                        "A sanctuary for the cursed that walk among us"
+                        "Cathedral of the Cursed",
+                        "A holy sanctuary for those possessed by the dark sign."
                     ]
                 }
             }
@@ -10970,8 +10956,8 @@
                 ],
                 [
                     [
-                        256,
-                        1472
+                        448,
+                        1728
                     ]
                 ],
                 [
