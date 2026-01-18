@@ -4,7 +4,6 @@ import Config from "../Config";
 import NPC from "../sprites/NPC";
 import Door from "../sprites/Door";
 import FX from "../sprites/FX";
-import MapLayer from "./MapLayer";
 import ActiveTiles from "./ActiveTiles";
 import MapEvent from "./MapEvent";
 
