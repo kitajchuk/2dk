@@ -205,6 +205,8 @@ export default class Map {
         for ( let i = this.items.length; i--; ) {
             this.items[ i ].update();
         }
+
+        this.sortAllSprites();
     }
 
 
@@ -242,12 +244,15 @@ export default class Map {
     }
 
 
-    // TODO: This could be better optimized...
-    renderAllSprites () {
+    sortAllSprites () {
         this.allSprites.sort( ( a, b ) => {
             return a.prio - b.prio;
         });
+    }
 
+
+    // TODO: This could be better optimized...
+    renderAllSprites () {
         for ( let i = 0; i < this.allSprites.length; i++ ) {
             this.gamebox.renderQueue.add( this.allSprites[ i ] );
         }
