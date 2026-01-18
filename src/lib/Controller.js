@@ -26,7 +26,7 @@ export default class Controller {
     stop () {
         window.cancelAnimationFrame( this.cycle );
         this.cycle = null;
-        // this.animate = null;
+        this.animate = null;
         this.started = false;
     }
 
