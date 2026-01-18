@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 796,
+    "save": 798,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1353,8 +1353,8 @@
             ]
         },
         {
-            "id": "cucco-blue",
-            "name": "Blue Cucco",
+            "id": "cucco-red",
+            "name": "Red Cucco",
             "width": 68,
             "height": 68,
             "image": "assets/sprites/npcs.png",

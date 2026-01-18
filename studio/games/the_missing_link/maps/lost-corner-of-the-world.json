@@ -597,7 +597,7 @@
             }
         },
         {
-            "id": "cucco-blue",
+            "id": "cucco-red",
             "spawn": {
                 "x": 1935,
                 "y": 1492
@@ -621,7 +621,7 @@
             "ai": "wander"
         },
         {
-            "id": "cucco-blue",
+            "id": "cucco-red",
             "spawn": {
                 "x": 1664,
                 "y": 448
