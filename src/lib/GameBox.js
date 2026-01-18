@@ -54,6 +54,7 @@ export default class GameBox {
         // Hero
         initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
         this.hero = new Hero( initHeroData, this.map );
+        this.map.addAllSprite( this.hero );
         this.seedItems();
 
         // HUD
@@ -77,6 +78,7 @@ export default class GameBox {
             };
 
             this.companion = new Companion( initHeroData.companion, this.hero );
+            this.map.addAllSprite( this.companion );
         }
 
         this.build();
@@ -670,6 +672,7 @@ export default class GameBox {
         // Create new Map
         this.map = new Map( newMapData, this );
         this.hero.map = this.map;
+        this.map.addAllSprite( this.hero );
 
         // Initialize the new Map
         // Applies new hero offset!
@@ -690,6 +693,7 @@ export default class GameBox {
             };
             this.companion.destroy();
             this.companion = new Companion( newCompanionData, this.hero );
+            this.map.addAllSprite( this.companion );
         }
 
         // Clear the map change event

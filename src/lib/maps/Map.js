@@ -101,31 +101,32 @@ export default class Map {
                     this
                 )
             );
+            this.addAllSprite( this.fx[ i ] );
         }
 
         // NPCs and Doors
         for ( let i = this.data.npcs.length; i--; ) {
             if ( this.data.npcs[ i ].type === Config.npc.types.DOOR ) {
-                this.doors.push(
-                    new Door(
-                        this.player.getMergedData( this.data.npcs[ i ], "npcs", true ),
-                        this,
-                        // Unique map ID for the NPC
-                        // This is used to identify the NPC when giving items
-                        `door-${this.data.id}-${i}`
-                    )
-                );
+                const door = new Door(
+                    this.player.getMergedData( this.data.npcs[ i ], "npcs", true ),
+                    this,
+                    // Unique map ID for the NPC
+                    // This is used to identify the NPC when giving items
+                    `door-${this.data.id}-${i}`
+                )
+                this.doors.push( door );
+                this.addAllSprite( door );
     
             } else {
-                this.npcs.push(
-                    new NPC(
-                        this.player.getMergedData( this.data.npcs[ i ], "npcs", true ),
-                        this,
-                        // Unique map ID for the NPC
-                        // This is used to identify the NPC when giving items
-                        `npc-${this.data.id}-${i}`
-                    )
+                const npc = new NPC(
+                    this.player.getMergedData( this.data.npcs[ i ], "npcs", true ),
+                    this,
+                    // Unique map ID for the NPC
+                    // This is used to identify the NPC when giving items
+                    `npc-${this.data.id}-${i}`
                 );
+                this.npcs.push( npc );
+                this.addAllSprite( npc );
             }
         }
 
@@ -186,46 +187,24 @@ export default class Map {
     update ( offset ) {
         this.offset = offset;
 
-        this.addAllSprite( this.gamebox.hero );
-        this.addAllSprite( this.gamebox.companion );
-
         for ( let i = this.npcs.length; i--; ) {
             this.npcs[ i ].update();
-            this.addAllSprite( this.npcs[ i ] );
         }
 
         for ( let i = this.doors.length; i--; ) {
             this.doors[ i ].update();
-            this.addAllSprite( this.doors[ i ] );
         }
 
         for ( let i = this.fx.length; i--; ) {
             this.fx[ i ].update();
-            this.addAllSprite( this.fx[ i ] );
         }
 
         for ( let i = this.sprites.length; i--; ) {
             this.sprites[ i ].update();
-            this.addAllSprite( this.sprites[ i ] );
         }
 
         for ( let i = this.items.length; i--; ) {
             this.items[ i ].update();
-            this.addAllSprite( this.items[ i ] );
-        }
-    }
-
-
-    addAllSprite ( sprite ) {
-        if ( sprite && this.allSprites.indexOf( sprite ) === -1 ) {
-            this.allSprites.push( sprite );
-        }
-    }
-
-
-    removeAllSprite ( sprite ) {
-        if ( sprite && this.allSprites.indexOf( sprite ) !== -1 ) {
-            this.allSprites.splice( this.allSprites.indexOf( sprite ), 1 );
         }
     }
 
@@ -247,6 +226,20 @@ export default class Map {
             render: this.renderTextures.bind( this, "foreground" ),
             layer: "foreground",
         });
+    }
+
+
+    addAllSprite ( sprite ) {
+        if ( sprite && this.allSprites.indexOf( sprite ) === -1 ) {
+            this.allSprites.push( sprite );
+        }
+    }
+
+
+    removeAllSprite ( sprite ) {
+        if ( sprite && this.allSprites.indexOf( sprite ) !== -1 ) {
+            this.allSprites.splice( this.allSprites.indexOf( sprite ), 1 );
+        }
     }
 
 
