@@ -266,7 +266,7 @@ class Map {
         }
 
         sprites.sort( ( a, b ) => {
-            return ( a.position.y + a.height ) - ( b.position.y + b.height );
+            return a.prio - b.prio;
         });
 
         for ( let i = 0; i < sprites.length; i++ ) {

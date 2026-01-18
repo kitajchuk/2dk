@@ -350,7 +350,7 @@ class Player extends Controller {
 
     // Stops game button events from dispatching to the gamebox
     pause () {
-        // super.stop();
+        super.stop();
         this.paused = true;
         this.gamepad.clear();
         this.gamebox.pause( true );
@@ -360,7 +360,7 @@ class Player extends Controller {
 
     // Stops the gamebox from rendering
     stop () {
-        // super.stop();
+        super.stop();
         this.stopped = true;
         this.gamepad.clear();
         this.gamebox.pause( true );
@@ -369,7 +369,7 @@ class Player extends Controller {
 
     // Resumes playable state, not paused and not stopped
     resume () {
-        // this.go();
+        this.go();
         this.paused = false;
         this.stopped = false;
         this.gamebox.pause( false );

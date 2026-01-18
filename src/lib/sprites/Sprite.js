@@ -30,6 +30,7 @@ export default class Sprite {
             y: ( this.data.spawn && this.data.spawn.y || 0 ),
             z: ( this.data.spawn && this.data.spawn.z || 0 ),
         };
+        this.prio = this.position.y + this.height;
         this.speed = 1;
         this.physics = {
             vx: ( this.data.vx || 0 ),
@@ -220,6 +221,7 @@ export default class Sprite {
         this.handleVelocity();
         this.handleGravity();
         this.applyPosition();
+        this.applyPriority();
         this.applyHitbox();
         this.applyOffset();
         this.applyGravity();
@@ -401,6 +403,11 @@ export default class Sprite {
 
     applyPosition () {
         this.position = this.getNextPoi();
+    }
+
+
+    applyPriority () {
+        this.prio = this.position.y + this.height;
     }
 
 

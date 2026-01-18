@@ -362,6 +362,7 @@ class TopView extends GameBox {
     applyHero ( poi, dir ) {
         // Apply position
         this.hero.applyPosition( poi, dir );
+        this.hero.applyPriority();
 
         // Applly offset
         this.hero.applyOffset();
