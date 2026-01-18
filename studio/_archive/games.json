@@ -1,0 +1,41 @@
+[
+    {
+        "id": "la",
+        "name": "LA",
+        "width": 1056,
+        "height": 704,
+        "resolution": 1,
+        "maxresolution": 2,
+        "diagonaldpad": true,
+        "icon": "icon.png",
+        "save": 860,
+        "release": 1,
+        "plugin": "topview"
+    },
+    {
+        "id": "la_cellauto",
+        "name": "LA Cellauto",
+        "width": 1056,
+        "height": 704,
+        "resolution": 1,
+        "maxresolution": 2,
+        "diagonaldpad": true,
+        "icon": "icon.png",
+        "save": 827,
+        "release": 1,
+        "plugin": "topview"
+    },
+    {
+        "id": "pk",
+        "name": "PK",
+        "width": 528,
+        "height": 352,
+        "resolution": 1,
+        "maxresolution": 1,
+        "diagonaldpad": false,
+        "icon": "icon.png",
+        "save": 149,
+        "release": 1,
+        "plugin": "topview"
+    }
+]
