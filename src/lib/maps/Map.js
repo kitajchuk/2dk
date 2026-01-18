@@ -17,7 +17,7 @@ import MapEvent from "./MapEvent";
 * My preference is to keep this sort of logic out of the GameBox, which
 * manages Map offset and Camera position.
 *******************************************************************************/
-class Map {
+export default class Map {
     constructor ( data, gamebox ) {
         this.data = data;
         this.gamebox = gamebox;
@@ -48,31 +48,37 @@ class Map {
     destroy () {
         for ( let i = this.activeTiles.length; i--; ) {
             this.activeTiles[ i ].destroy();
+            this.activeTiles[ i ] = null;
         }
         this.activeTiles = null;
 
         for ( let i = this.npcs.length; i--; ) {
             this.npcs[ i ].destroy();
+            this.npcs[ i ] = null;
         }
         this.npcs = null;
 
         for ( let i = this.doors.length; i--; ) {
             this.doors[ i ].destroy();
+            this.doors[ i ] = null;
         }
         this.doors = null;
 
         for ( let i = this.fx.length; i--; ) {
             this.fx[ i ].destroy();
+            this.fx[ i ] = null;
         }
         this.fx = null;
 
         for ( let i = this.items.length; i--; ) {
             this.items[ i ].destroy();
+            this.items[ i ] = null;
         }
         this.items = null;
 
         for ( let i = this.sprites.length; i--; ) {
             this.sprites[ i ].destroy();
+            this.sprites[ i ] = null;
         }
         this.sprites = null;
 
@@ -319,49 +325,49 @@ class Map {
         const ret = {};
 
         for ( const id in this.data.textures ) {
-            let y = 0;
-
             ret[ id ] = [];
 
-            while ( y < height ) {
+            for ( let y = 0; y < height; y++ ) {
                 ret[ id ][ y ] = [];
 
                 const lookupY = renderBox.y + y;
 
                 if ( this.data.textures[ id ][ lookupY ] ) {
-                    let x = 0;
-
-                    while ( x < width ) {
+                    for ( let x = 0; x < width; x++ ) {
                         const lookupX = renderBox.x + x;
 
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
                             const celsCopy = structuredClone( this.data.textures[ id ][ lookupY ][ lookupX ] );
-                            const activeTile = this.getActiveTile( id, [lookupX, lookupY], celsCopy );
-                            const isShiftableForeground = id === "foreground" && this.checkShiftableForeground( id, lookupY, lookupX, celsCopy );
-                            
-                            // Shift foreground behind hero render if textures and hero position determine so
-                            if ( isShiftableForeground ) {
-                                ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
 
-                            } else {
+                            if ( id === "background" ) {
+                                const activeTile = this.getActiveTile( [ lookupX, lookupY ], celsCopy );
+
                                 ret[ id ][ y ][ x ] = celsCopy;
-                            }
-                            
-                            // Push any ActiveTiles to the cel stack
-                            if ( activeTile ) {
-                                ret[ id ][ y ][ x ].push( activeTile );
+
+                                // Push any ActiveTiles to the cel stack
+                                if ( activeTile ) {
+                                    ret[ id ][ y ][ x ].push( activeTile );
+                                }
+
+                            // Foreground...
+                            } else {
+                                const isShiftableForeground = this.checkShiftableForeground( lookupY, lookupX, celsCopy );
+
+                                // Shift foreground behind hero render if textures and hero position determine so
+                                if ( isShiftableForeground ) {
+                                    ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
+
+                                } else {
+                                    ret[ id ][ y ][ x ] = celsCopy;
+                                }
                             }
                             
                         // Empty textures are represented as 0 in the texture matrix (data)
                         } else {
                             ret[ id ][ y ][ x ] = 0;
                         }
-
-                        x++;
                     }
                 }
-
-                y++;
             }
         }
 
@@ -369,12 +375,7 @@ class Map {
     }
 
 
-    checkShiftableForeground ( layer, lookupY, lookupX, fgCel ) {
-        // Fail safe but this is already gated
-        if ( layer !== "foreground" ) {
-            return false;
-        }
-
+    checkShiftableForeground ( lookupY, lookupX, fgCel ) {
         // Check if the foreground tile collides with the hero or companion before we even consider shifting
         const tile = {
             x: lookupX * this.data.tilesize,
@@ -447,20 +448,15 @@ class Map {
     }
 
 
-    getActiveTile ( layer, celsCoords, celsCopy ) {
+    getActiveTile ( celsCoords, celsCopy ) {
         // Either return a tile or don't if it's a static thing...
-        const layerTiles = this.data.tiles.filter( ( tiles ) => {
-            return tiles.layer === layer;
-        });
+        // Only supported for the background layer for now...
 
-        for ( let i = layerTiles.length; i--; ) {
-            const tiles = layerTiles[ i ];
+        for ( let i = this.data.tiles.length; i--; ) {
+            const tiles = this.data.tiles[ i ];
             const topCel = celsCopy[ celsCopy.length - 1 ];
             const activeTiles = this.getActiveTiles( tiles.group );
             const isTileAnimated = tiles.stepsX;
-            const isTilePushed = activeTiles.isPushed( celsCoords );
-            const isTileSpliced = activeTiles.isSpliced( celsCoords );
-
 
             if ( activeTiles.pushed.length ) {
                 for ( let j = activeTiles.pushed.length; j--; ) {
@@ -475,6 +471,9 @@ class Map {
             }
 
             if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
+                const isTilePushed = activeTiles.isPushed( celsCoords );
+                const isTileSpliced = activeTiles.isSpliced( celsCoords );
+
                 // Push the tile to the coords Array...
                 // This lets us generate ActiveTile groups that will
                 // find their coordinates in real-time using spritesheet background-position...
@@ -520,7 +519,3 @@ class Map {
         obj = null;
     }
 }
-
-
-
-export default Map;
