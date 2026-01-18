@@ -14,7 +14,6 @@ import HUD from "./HUD";
 
 
 
-
 export default class GameBox {
     constructor ( player ) {
         this.player = player;
@@ -32,6 +31,10 @@ export default class GameBox {
             this.player.resolution
         );
         this.mapLayer = null;
+        this.mapLayers = {
+            background: null,
+            foreground: null,
+        };
         this.gamequest = new GameQuest( this );
         this.renderQueue = new RenderQueue( this );
 
@@ -94,6 +97,10 @@ export default class GameBox {
     clear () {
         this.mapLayer.clear();
         this.renderQueue.clear();
+
+        for ( const id in this.mapLayers ) {
+            this.mapLayers[ id ].clear();
+        }
     }
 
 
@@ -106,6 +113,7 @@ export default class GameBox {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk__gamebox";
 
+        // Main canvas visible on screen
         this.mapLayer = new MapLayer({
             id: "gameground",
             width: this.camera.width,
@@ -113,8 +121,22 @@ export default class GameBox {
         });
         this.mapLayer.canvas.width = `${this.camera.width * this.camera.resolution}`;
         this.mapLayer.canvas.height = `${this.camera.height * this.camera.resolution}`;
-        this.element.appendChild( this.mapLayer.canvas );
 
+        // Offscreen canvases for each texture layer
+        for ( const id in this.mapLayers ) {
+            const offWidth = this.camera.width + ( this.map.data.tilesize * 2 );
+            const offHeight = this.camera.height + ( this.map.data.tilesize * 2 );
+
+            this.mapLayers[ id ] = new MapLayer({
+                id,
+                width: offWidth,
+                height: offHeight,
+            });
+            this.mapLayers[ id ].canvas.width = `${offWidth * this.camera.resolution}`;
+            this.mapLayers[ id ].canvas.height = `${offHeight * this.camera.resolution}`;
+        }
+
+        this.element.appendChild( this.mapLayer.canvas );
         this.player.screen.appendChild( this.element );
     }
 

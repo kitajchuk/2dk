@@ -26,10 +26,6 @@ class Map {
         this.width = this.data.width;
         this.height = this.data.height;
         this.image = Loader.cash( data.image );
-        this.layers = {
-            background: null,
-            foreground: null,
-        };
         this.offset = {
             x: 0,
             y: 0,
@@ -50,11 +46,6 @@ class Map {
 
 
     destroy () {
-        for ( const id in this.layers ) {
-            this.layers[ id ].offCanvas.destroy();
-        }
-        this.layers = null;
-
         for ( let i = this.activeTiles.length; i--; ) {
             this.activeTiles[ i ].destroy();
         }
@@ -92,11 +83,6 @@ class Map {
 
 
     initialize () {
-        // Texture layers
-        for ( const id in this.layers ) {
-            this.addLayer( id );
-        }
-
         // FX
         for ( let i = this.data.fx.length; i--; ) {
             this.fx.push(
@@ -152,22 +138,6 @@ class Map {
                 height: this.data.collider,
             });
         }
-    }
-
-
-    addLayer ( id ) {
-        const offWidth = this.gamebox.camera.width + ( this.data.tilesize * 2 );
-        const offHeight = this.gamebox.camera.height + ( this.data.tilesize * 2 );
-
-        this.layers[ id ] = {};
-        this.layers[ id ].offCanvas = new MapLayer({
-            id,
-            width: offWidth,
-            height: offHeight,
-        });
-
-        this.layers[ id ].offCanvas.canvas.width = `${offWidth * this.gamebox.camera.resolution}`;
-        this.layers[ id ].offCanvas.canvas.height = `${offHeight * this.gamebox.camera.resolution}`;
     }
 
 
@@ -229,8 +199,6 @@ class Map {
 
 
     render ( hero, companion ) {
-        this.clear();
-
         this.renderBox = this.getRenderbox();
 
         // Draw background textures
@@ -298,7 +266,7 @@ class Map {
     renderTextures ( id ) {
         // Draw textures to background / foreground
         Utils.drawMapTiles(
-            this.layers[ id ].offCanvas.context,
+            this.gamebox.mapLayers[ id ].context,
             this.image,
             this.renderBox.textures[ id ],
             this.data.tilesize,
@@ -307,23 +275,16 @@ class Map {
 
         // Draw offscreen Map canvases to the onscreen World canvases
         this.gamebox.draw(
-            this.layers[ id ].offCanvas.canvas,
+            this.gamebox.mapLayers[ id ].canvas,
             0,
             0,
-            this.layers[ id ].offCanvas.canvas.width,
-            this.layers[ id ].offCanvas.canvas.height,
+            this.gamebox.mapLayers[ id ].canvas.width,
+            this.gamebox.mapLayers[ id ].canvas.height,
             this.renderBox.bleed.x,
             this.renderBox.bleed.y,
-            this.layers[ id ].offCanvas.canvas.width,
-            this.layers[ id ].offCanvas.canvas.height
+            this.gamebox.mapLayers[ id ].canvas.width,
+            this.gamebox.mapLayers[ id ].canvas.height
         );
-    }
-
-
-    clear () {
-        for ( const id in this.layers ) {
-            this.layers[ id ].offCanvas.clear();
-        }
     }
 
 
