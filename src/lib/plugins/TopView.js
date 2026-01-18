@@ -34,6 +34,12 @@ class TopView extends GameBox {
 * Order is: blit, update, render
 *******************************************************************************/
     blit ( elapsed ) {
+        // Capture map change event on the next blit cycle
+        if ( this.mapChangeEvent ) {
+            this.changeMap( this.mapChangeEvent );
+            return;
+        }
+
         // Safely handle hero death so we exit the blit loop and reset the player cleanly
         if ( this.hero.deathCounter > 0 ) {
             this.hero.deathCounter--;
@@ -790,15 +796,13 @@ class TopView extends GameBox {
 
     handleHeroEventDoor ( poi, dir, event ) {
         this.handleHeroEventCleanup();
-        this.player.stop();
-        this.changeMap( event );
+        this.mapChangeEvent = event;
     }
 
 
     handleHeroEventBoundary ( poi, dir, event ) {
         this.handleHeroEventCleanup();
-        this.player.stop();
-        this.changeMap( event );
+        this.mapChangeEvent = event;
     }
 
 

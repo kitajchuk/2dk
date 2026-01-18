@@ -367,6 +367,15 @@ class Player extends Controller {
     }
 
 
+    hardStop () {
+        super.stop();
+        this.paused = true;
+        this.stopped = true;
+        this.gamepad.clear();
+        this.gamebox.pause( true );
+    }
+
+
     // Resumes playable state, not paused and not stopped
     resume () {
         this.go();

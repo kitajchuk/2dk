@@ -35,6 +35,7 @@ export default class GameBox {
             background: null,
             foreground: null,
         };
+        this.mapChangeEvent = null;
         this.gamequest = new GameQuest( this );
         this.renderQueue = new RenderQueue( this );
 
@@ -648,7 +649,7 @@ export default class GameBox {
 *******************************************************************************/
     initMap () {
         this.map.initialize();
-        this.update( this.hero.position );
+        this.update();
         this.hero.applyOffset();
         this.player.gameaudio.addSound({
             id: this.map.data.id,
@@ -691,6 +692,9 @@ export default class GameBox {
             this.companion = new Companion( newCompanionData, this.hero );
         }
 
+        // Clear the map change event
+        this.mapChangeEvent = null;
+
         // Fade in...
         this.player.fadeIn();
 
@@ -701,7 +705,7 @@ export default class GameBox {
 
     changeMap ( event ) {
         // Pause the Player so no game buttons dispatch
-        this.player.pause();
+        this.player.hardStop();
 
         // Fade out...
         this.player.fadeOut();
