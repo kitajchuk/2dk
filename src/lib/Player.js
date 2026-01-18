@@ -268,13 +268,14 @@ class Player extends Controller {
         this.previousFrameTime = this.previousTime;
         this.animate = ( currentTime ) => {
             // Request next animation frame right away...
-            this.cycle = window.requestAnimationFrame( this.animate );
+            // this.cycle = window.requestAnimationFrame( this.animate );
+            this.blit( currentTime );
 
             const deltaTime = currentTime - this.previousTime;
 
             if ( deltaTime >= this.interval ) {
                 // Update physics at controlled frame rate
-                this.blit( currentTime );
+                this.gamebox.update();
                 this.previousTime = currentTime - ( deltaTime % this.interval );
 
                 const elapsedFrameTime = currentTime - this.previousFrameTime;
@@ -292,7 +293,7 @@ class Player extends Controller {
             this.gamebox.render();
 
             // Request next animation frame after logic is complete
-            // this.cycle = window.requestAnimationFrame( this.animate );
+            this.cycle = window.requestAnimationFrame( this.animate );
         };
 
         // Start the animation loop
@@ -304,7 +305,6 @@ class Player extends Controller {
         // Updates happen if NOT stopped
         if ( !this.stopped ) {
             this.gamebox.blit( currentTime );
-            this.gamebox.update();
         }
 
         // Soft pause only affects Hero updates and NPCs
