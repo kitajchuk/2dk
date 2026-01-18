@@ -125,7 +125,7 @@ class TopView extends GameBox {
         this.clear();
 
         // render map
-        this.map.render( this.hero, this.companion );
+        this.map.render();
 
         // render render queue
         this.renderQueue.render();

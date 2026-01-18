@@ -42,6 +42,9 @@ export default class Map {
         // From live game state
         this.items = [];
         this.sprites = [];
+
+        // For sprite render priority
+        this.allSprites = [];
     }
 
 
@@ -85,6 +88,7 @@ export default class Map {
         this.image = null;
         this.events = null;
         this.colliders = null;
+        this.allSprites = null;
     }
 
 
@@ -182,29 +186,51 @@ export default class Map {
     update ( offset ) {
         this.offset = offset;
 
+        this.addAllSprite( this.gamebox.hero );
+        this.addAllSprite( this.gamebox.companion );
+
         for ( let i = this.npcs.length; i--; ) {
             this.npcs[ i ].update();
+            this.addAllSprite( this.npcs[ i ] );
         }
 
         for ( let i = this.doors.length; i--; ) {
             this.doors[ i ].update();
+            this.addAllSprite( this.doors[ i ] );
         }
 
         for ( let i = this.fx.length; i--; ) {
             this.fx[ i ].update();
+            this.addAllSprite( this.fx[ i ] );
         }
 
         for ( let i = this.sprites.length; i--; ) {
             this.sprites[ i ].update();
+            this.addAllSprite( this.sprites[ i ] );
         }
 
         for ( let i = this.items.length; i--; ) {
             this.items[ i ].update();
+            this.addAllSprite( this.items[ i ] );
         }
     }
 
 
-    render ( hero, companion ) {
+    addAllSprite ( sprite ) {
+        if ( sprite && this.allSprites.indexOf( sprite ) === -1 ) {
+            this.allSprites.push( sprite );
+        }
+    }
+
+
+    removeAllSprite ( sprite ) {
+        if ( sprite && this.allSprites.indexOf( sprite ) !== -1 ) {
+            this.allSprites.splice( this.allSprites.indexOf( sprite ), 1 );
+        }
+    }
+
+
+    render () {
         this.renderBox = this.getRenderbox();
 
         // Draw background textures
@@ -214,7 +240,7 @@ export default class Map {
         });
 
         // Merge all sprites into a single array and sort by (y position + height) ascending
-        this.renderSprites( hero, companion );
+        this.renderAllSprites();
 
         // Draw foreground textures
         this.gamebox.renderQueue.add({
@@ -225,26 +251,13 @@ export default class Map {
 
 
     // TODO: This could be better optimized...
-    renderSprites ( hero, companion ) {
-        const sprites = [
-            hero,
-            ...this.fx,
-            ...this.npcs,
-            ...this.doors,
-            ...this.items,
-            ...this.sprites,
-        ];
-
-        if ( companion ) {
-            sprites.push( companion );
-        }
-
-        sprites.sort( ( a, b ) => {
+    renderAllSprites () {
+        this.allSprites.sort( ( a, b ) => {
             return a.prio - b.prio;
         });
 
-        for ( let i = 0; i < sprites.length; i++ ) {
-            this.gamebox.renderQueue.add( sprites[ i ] );
+        for ( let i = 0; i < this.allSprites.length; i++ ) {
+            this.gamebox.renderQueue.add( this.allSprites[ i ] );
         }
     }
 
@@ -422,7 +435,7 @@ export default class Map {
         if ( isShiftable ) {
             const nextLookupY = lookupY + 1;
 
-            if ( this.data.textures[ layer ][ nextLookupY ][ lookupX ] ) {
+            if ( this.data.textures.foreground[ nextLookupY ][ lookupX ] ) {
                 const isNextShiftable = ( nextLookupY * this.data.tilesize ) + this.data.tilesize < heroPosition;
 
                 return isNextShiftable;
@@ -510,10 +523,12 @@ export default class Map {
 
     addObject ( type, obj ) {
         this[ type ].push( obj );
+        this.addAllSprite( obj );
     }
 
 
     killObject ( type, obj ) {
+        this.removeAllSprite( obj );
         this[ type ].splice( this[ type ].indexOf( obj ), 1 );
         obj.destroy();
         obj = null;
