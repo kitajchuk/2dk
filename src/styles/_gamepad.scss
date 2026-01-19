@@ -179,7 +179,7 @@
     }
 
     ._2dk__menu {
-        &.is-active + ._2dk__gamepad {
+        &.is-active ~ ._2dk__gamepad {
             ._2dk__gamepad__sprite {
                 display: none;
 

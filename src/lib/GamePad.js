@@ -1,16 +1,50 @@
 import Utils from "./Utils";
 import Config from "./Config";
-import Controller from "./Controller";
 
 
 
-export default class GamePad extends Controller {
+export default class GamePad {
     constructor ( player ) {
-        super();
-
         this.player = player;
+        this.gamepad = null;
+        this.gamepadConnected = false;
         this.build();
         this.bind();
+    }
+
+
+/*******************************************************************************
+* Blit controls handling
+*******************************************************************************/
+    blit ( currentTime ) {
+        for ( let i = 0; i < this.blitControls.length; i++ ) {
+            const control = touchControls[ this.blitControls[ i ] ];
+
+            if ( control.touched && Utils.def( control.hold ) ) {
+                const timeSinceHold = currentTime - control.holdTime;
+
+                if ( timeSinceHold >= touchHoldTime ) {
+                    this.player.controls[ `${control.btn[ 0 ]}Hold` ] = true;
+                    return;
+                }
+
+                control.hold++;
+            }
+        }
+    }
+
+
+    // If connected this should be blit before the main blit above
+    blitNativeGamepad () {
+        if ( this.gamepadConnected ) {
+            this.gamepad = navigator.getGamepads()[ 0 ];
+
+            // GamePad Axes (dpad): [x, y]
+            this.handleGamepadAxes();
+
+            // GamePad Buttons (a, b, start, select)
+            this.handleGamepadButtons();
+        }
     }
 
 
@@ -66,6 +100,9 @@ export default class GamePad extends Controller {
 
             return acc;
         }, []);
+        this.blitControls = this.availableControls.filter( ( btn ) => {
+            return Utils.def( touchControls[ btn ].hold );
+        });
 
         this.availableControls.forEach( ( btn ) => {
             const isFunctional = this.functionalControls.some( ( functional ) => {
@@ -114,8 +151,6 @@ export default class GamePad extends Controller {
     }
 
 
-    // TODO: Fix this input stream handling for non-diagonal D-Pad as it is not fluid when switching directions (e.g. abrupt stop in between direction changes)
-    // NOTE: This only appears to be an issue with keyboard input, not gamepad input or touch input
     canReceiveInput ( key ) {
         const isDpad = touchDpad.includes( key );
         const hasDpad = inputStream.some( ( input ) => touchDpad.includes( input ) );
@@ -164,32 +199,6 @@ export default class GamePad extends Controller {
 
         this.availableControls.forEach( ( btn ) => {
             if ( touchControls[ btn ].key === key ) {
-                ret = touchControls[ btn ];
-            }
-        });
-
-        return ret;
-    }
-
-
-    getGamepad ( val ) {
-        let ret = null;
-
-        this.availableControls.forEach( ( btn ) => {
-            if ( touchControls[ btn ].gamepad && touchControls[ btn ].gamepad.indexOf( val ) !== -1 ) {
-                ret = touchControls[ btn ];
-            }
-        });
-
-        return ret;
-    }
-
-
-    getAxes ( xy, val ) {
-        let ret = null;
-
-        this.availableControls.forEach( ( btn ) => {
-            if ( touchControls[ btn ].axes && touchControls[ btn ].axes[ xy ] === val ) {
                 ret = touchControls[ btn ];
             }
         });
@@ -306,10 +315,133 @@ export default class GamePad extends Controller {
     }
 
 
-    handleGamepadAxes ( gamepad ) {
+    clearTouches () {
+        this.availableControls.forEach( ( btn ) => {
+            touchControls[ btn ].elem.classList.remove( "is-active" );
+        });
+    }
+
+
+    cancelTouches () {
+        this.availableControls.forEach( ( btn ) => {
+            if ( touchControls[ btn ].touched ) {
+                this.cancelTouch( touchControls[ btn ] );
+            }
+        });
+    }
+
+
+    cancelTouch ( control ) {
+        control.elem.classList.remove( "is-active" );
+        control.touched = false;
+
+        if ( control.dpad ) {
+            control.dpad.forEach( ( dpad, i ) => {
+                this.player.controls[ dpad ] = false;
+            });
+
+        } else {
+            switch ( control.btn[ 0 ] ) {
+                case "start":
+                case "select":
+                    // Do nothing for start and select buttons here
+                    this.player.controls[ control.btn[ 0 ] ] = false;
+                    break;
+                default:
+                    if ( Utils.def( control.holdTime ) ) {
+                        // Player will handle this since it needs to distinguish between release and hold-release
+                        // this.player.controls[ `${control.btn[ 0 ]}Hold` ] = false;
+                        control.hold = 0;
+                        control.holdTime = null;
+                    }
+        
+                    this.player.controls[ control.btn[ 0 ] ] = false;
+                    this.player.controls[ `${control.btn[ 0 ]}Release` ] = true;
+                    break;
+            }
+        }
+    }
+
+
+    startTouch ( control ) {
+        control.elem.classList.add( "is-active" );
+
+        if ( control.dpad ) {
+            control.touched = true;
+            control.dpad.forEach( ( dpad ) => {
+                this.player.controls[ dpad ] = true;
+            });
+
+        } else {
+            if ( control.touched ) {
+                return;
+            }
+
+            control.touched = true;
+
+            switch ( control.btn[ 0 ] ) {
+                case "start":
+                    // First start press initializes the game loop and sets the player to ready
+                    // When the game is paused the game loop is stopped and we need to manually handle resuming the game
+                    if ( !this.player.ready || ( this.player.ready && this.player.paused ) ) {
+                        this.player.onPressStart();
+                        return;
+                    }
+                    // Start presses during gameplay will be handled by the game loop at the end of the render cycle
+                    // in order to safely stop the game loop and show the menu
+                    this.player.controls.start = true;
+                    break;
+                case "select":
+                    if ( this.player.ready ) {
+                        this.player.controls.select = true;
+                    }
+                    break;
+                default:
+                    if ( Utils.def( control.hold ) ) {
+                        control.holdTime = performance.now();
+                    }
+        
+                    this.player.controls[ control.btn[ 0 ] ] = true;
+                    break;
+            }
+        }
+    }
+
+
+
+/*******************************************************************************
+* Native GamePad Interface
+*******************************************************************************/
+    getGamepad ( val ) {
+        let ret = null;
+
+        this.availableControls.forEach( ( btn ) => {
+            if ( touchControls[ btn ].gamepad && touchControls[ btn ].gamepad.indexOf( val ) !== -1 ) {
+                ret = touchControls[ btn ];
+            }
+        });
+
+        return ret;
+    }
+
+
+    getAxes ( xy, val ) {
+        let ret = null;
+
+        this.availableControls.forEach( ( btn ) => {
+            if ( touchControls[ btn ].axes && touchControls[ btn ].axes[ xy ] === val ) {
+                ret = touchControls[ btn ];
+            }
+        });
+
+        return ret;
+    }
+
+
+    handleGamepadAxes () {
         const controls = {
-            x: this.getAxes( 0, gamepad.axes[ 0 ] ),
-            y: this.getAxes( 1, gamepad.axes[ 1 ] ),
+            x: this.getAxes( 0, this.gamepad.axes[ 0 ] ),
+            y: this.getAxes( 1, this.gamepad.axes[ 1 ] ),
         };
 
         if ( controls.x && this.canReceiveInput( controls.x.key ) ) {
@@ -346,15 +478,15 @@ export default class GamePad extends Controller {
     }
 
 
-    handleGamepadButtons ( gamepad ) {
-        for ( let i = gamepad.buttons.length; i--; ) {
+    handleGamepadButtons () {
+        for ( let i = this.gamepad.buttons.length; i--; ) {
             const control = this.getGamepad( i );
 
-            if ( control && this.canReceiveInput( control.key ) && gamepad.buttons[ i ].pressed ) {
+            if ( control && this.canReceiveInput( control.key ) && this.gamepad.buttons[ i ].pressed ) {
                 this.pushInput( control.key );
                 this.startTouch( control );
 
-            } else if ( control && !this.canReceiveInput( control.key ) && !gamepad.buttons[ i ].pressed ) {
+            } else if ( control && !this.canReceiveInput( control.key ) && !this.gamepad.buttons[ i ].pressed ) {
                 this.removeInput( control.key );
                 this.cancelTouch( control );
             }
@@ -363,129 +495,22 @@ export default class GamePad extends Controller {
 
 
     onGamepadConnected () {
-        let gamepad = navigator.getGamepads()[ 0 ];
-
-        this.stop();
-        this.go( () => {
-            gamepad = navigator.getGamepads()[ 0 ];
-
-            // GamePad Axes (dpad): [x, y]
-            this.handleGamepadAxes( gamepad );
-
-            // GamePad Buttons (a, b, start, select)
-            this.handleGamepadButtons( gamepad );
-        });
-
-        Utils.log( `GamePad Connected: ${gamepad.id}`, gamepad );
+        this.gamepadConnected = true;
+        this.gamepad = navigator.getGamepads()[ 0 ];
+        Utils.log( `GamePad Connected: ${this.gamepad.id}`, this.gamepad );
     }
 
 
     onGamepadDisconnected () {
-        this.stop();
-    }
-
-
-    clearTouches () {
-        this.availableControls.forEach( ( btn ) => {
-            touchControls[ btn ].elem.classList.remove( "is-active" );
-        });
-    }
-
-
-    cancelTouches () {
-        this.availableControls.forEach( ( btn ) => {
-            if ( touchControls[ btn ].touched ) {
-                this.cancelTouch( touchControls[ btn ] );
-            }
-        });
-    }
-
-
-    cancelTouch ( control ) {
-        if ( control.timer ) {
-            clearInterval( control.timer );
-            control.timer = null;
-        }
-
-        control.elem.classList.remove( "is-active" );
-        control.touched = false;
-
-        this.handleTouchEnd( control );
-    }
-
-
-    startTouch ( control ) {
-        if ( !control.timer ) {
-            control.elem.classList.add( "is-active" );
-            control.touched = true;
-
-            this.handleTouchStart( control );
-
-            if ( Object.prototype.hasOwnProperty.call( control, "hold" ) && !control.menu ) {
-                control.timer = setInterval( () => {
-                    this.handleTouchStart( control );
-
-                }, touchInterval );
-            }
-        }
-    }
-
-
-    handleTouchStart ( control ) {
-        if ( control.touched && control.menu && control.hold > 0 ) {
-            control.hold++;
-            return;
-        }
-
-        if ( Object.prototype.hasOwnProperty.call( control, "hold" ) ) {
-            control.hold++;
-
-            if ( control.hold > touchRepeated ) {
-                this.emit( `${control.btn[ 0 ]}-holdpress` );
-
-            } else {
-                this.emit( `${control.btn[ 0 ]}-press` );
-            }
-
-        } else if ( control.dpad ) {
-            control.dpad.forEach( ( dpad, i ) => {
-                this.emit( `${control.btn[ i ]}-press`, dpad );
-            });
-
-        } else {
-            this.emit( `${control.btn[ 0 ]}-press`, null );
-        }
-    }
-
-
-    handleTouchEnd ( control ) {
-        if ( Object.prototype.hasOwnProperty.call( control, "hold" ) ) {
-            if ( control.hold > touchRepeated ) {
-                this.emit( `${control.btn[ 0 ]}-holdrelease` );
-
-            } else {
-                this.emit( `${control.btn[ 0 ]}-release` );
-            }
-
-            control.hold = 0;
-
-        } else if ( control.dpad ) {
-            control.dpad.forEach( ( dpad, i ) => {
-                this.emit( `${control.btn[ i ]}-release`, dpad );
-            });
-
-        } else {
-            this.emit( `${control.btn[ 0 ]}-release`, null );
-        }
+        this.gamepadConnected = false;
+        Utils.log( "GamePad Disconnected" );
     }
 }
 
 
 
 const inputStream = [];
-// Note: It takes 400ms to begin registering a button "hold" vs "press" (interval * repeated)
-const touchInterval = 8;
-const touchRepeated = 50;
+const touchHoldTime = 400;
 const touchDiagonals = [
     Config.keys.UPLEFT,
     Config.keys.UPRIGHT,
@@ -503,27 +528,25 @@ export const touchControls = {
     a: {
         key: Config.keys.A,
         elem: null,
-        timer: null,
         touched: false,
         hold: 0,
+        holdTime: null,
         text: "A",
         gamepad: [0],
     },
     b: {
         key: Config.keys.B,
         elem: null,
-        timer: null,
         touched: false,
         hold: 0,
+        holdTime: null,
         text: "B",
         gamepad: [1],
     },
     start: {
         key: Config.keys.START,
         elem: null,
-        timer: null,
         touched: false,
-        hold: 0,
         text: "Start",
         menu: true,
         gamepad: [9],
@@ -531,8 +554,6 @@ export const touchControls = {
     select: {
         key: Config.keys.SELECT,
         elem: null,
-        hold: 0,
-        timer: null,
         touched: false,
         text: "Select",
         menu: true,
@@ -542,14 +563,12 @@ export const touchControls = {
     "up-left": {
         key: Config.keys.UPLEFT,
         elem: null,
-        timer: null,
         touched: false,
         dpad: ["left", "up"],
     },
     up: {
         key: Config.keys.UP,
         elem: null,
-        timer: null,
         touched: false,
         dpad: ["up"],
         axes: [0, -1],
@@ -557,14 +576,12 @@ export const touchControls = {
     "up-right": {
         key: Config.keys.UPRIGHT,
         elem: null,
-        timer: null,
         touched: false,
         dpad: ["right", "up"],
     },
     left: {
         key: Config.keys.LEFT,
         elem: null,
-        timer: null,
         touched: false,
         dpad: ["left"],
         axes: [-1, 0],
@@ -577,7 +594,6 @@ export const touchControls = {
     right: {
         key: Config.keys.RIGHT,
         elem: null,
-        timer: null,
         touched: false,
         dpad: ["right"],
         axes: [1, 0],
@@ -585,14 +601,12 @@ export const touchControls = {
     "down-left": {
         key: Config.keys.DOWNLEFT,
         elem: null,
-        timer: null,
         touched: false,
         dpad: ["left", "down"],
     },
     down: {
         key: Config.keys.DOWN,
         elem: null,
-        timer: null,
         touched: false,
         dpad: ["down"],
         axes: [0, 1],
@@ -600,7 +614,6 @@ export const touchControls = {
     "down-right": {
         key: Config.keys.DOWNRIGHT,
         elem: null,
-        timer: null,
         touched: false,
         dpad: ["right", "down"],
     },

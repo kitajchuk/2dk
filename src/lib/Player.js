@@ -30,17 +30,28 @@ class Player extends Controller {
 
     initialize () {
         this.ready = false;
-        this.paused = true;
+        this.paused = false;
         this.stopped = false;
         this.controls = {
+            // Menu
+            start: false,
+            select: false,
+            // Actions
             a: false,
             aHold: false,
+            aRelease: false,
             b: false,
             bHold: false,
+            bRelease: false,
+            // D-Pad
             left: false,
+            leftRelease: false,
             right: false,
+            rightRelease: false,
             up: false,
+            upRelease: false,
             down: false,
+            downRelease: false,
         };
 
         // Controller properties
@@ -48,6 +59,7 @@ class Player extends Controller {
         this.rafId = null;
         this.animate = null;
         this.started = false;
+        this.idleStarted = false;
     }
 
 
@@ -55,10 +67,29 @@ class Player extends Controller {
 * Game Loop
 * Gamebox order is: blit, update, render
 *******************************************************************************/
+    idleGo () {
+        if ( this.device ) {
+            return;
+        }
+
+        if ( this.idleStarted ) {
+            return;
+        }
+
+        this.idleStarted = true;
+        this.animate = ( currentTime ) => {
+            this.rafId = window.requestAnimationFrame( this.animate );
+            if ( this.gamepad.gamepadConnected ) {
+                this.gamepad.blitNativeGamepad( currentTime );
+            }
+        };
+        this.rafId = window.requestAnimationFrame( this.animate );
+    }
+
     // Overrides default go method to control frame rate
     go () {
         if ( this.started ) {
-            return this;
+            return;
         }
 
         this.frame = 0;
@@ -99,7 +130,7 @@ class Player extends Controller {
 
     blit ( currentTime ) {
         this.blitUpdate( currentTime );
-        this.blitControls();
+        this.blitControls( currentTime );
     }
 
 
@@ -114,15 +145,18 @@ class Player extends Controller {
     }
 
 
-    blitControls () {
-        // Soft pause only affects Hero updates and NPCs
-        // Hard stop will affect the entire blit/render engine...
-        if ( this.paused ) {
+    blitControls ( currentTime ) {
+        if ( this.stopped ) {
             return;
         }
 
+        if ( this.gamepad.gamepadConnected ) {
+            this.gamepad.blitNativeGamepad();
+        }
+
+        this.gamepad.blit( currentTime );
+
         // D-Pad movement
-        // Easier to check the gamepad than have player use event handlers...
         const dpad = this.gamepad.checkDpad();
 
         if ( !dpad.length ) {
@@ -141,16 +175,37 @@ class Player extends Controller {
         }
 
         // Action buttons
-        // Easier to have the player use event handlers and check controls...
         if ( this.controls.aHold ) {
-            this.gamebox.holdA();
+            if ( this.controls.aRelease ) {
+                this.controls.aHold = false;
+                this.controls.aRelease = false;
+                this.gamebox.releaseHoldA();
+
+            } else {
+                this.gamebox.holdA();
+            }
+
+        } else if ( this.controls.aRelease ) {
+            this.controls.aRelease = false;
+            this.gamebox.releaseA();
 
         } else if ( this.controls.a ) {
             this.gamebox.pressA();
         }
 
         if ( this.controls.bHold ) {
-            this.gamebox.holdB();
+            if ( this.controls.bRelease ) {
+                this.controls.bHold = false;
+                this.controls.bRelease = false;
+                this.gamebox.releaseHoldB();
+
+            } else {
+                this.gamebox.holdB();
+            }
+
+        } else if ( this.controls.bRelease ) {
+            this.controls.bRelease = false;
+            this.gamebox.releaseB();
 
         } else if ( this.controls.b ) {
             this.gamebox.pressB();
@@ -160,6 +215,17 @@ class Player extends Controller {
 
     // Handle early captures in render() so that hardStop() safely cancels the RAF loop
     render () {
+        // Capture menu buttons at the end of the game loop cycle
+        if ( this.controls.start ) {
+            this.controls.start = false;
+            this.onPressStart();
+        }
+
+        if ( this.controls.select ) {
+            this.controls.select = false;
+            this.onPressSelect();
+        }
+
         // Capture map change event on the next blit cycle
         if ( this.gamebox.mapChangeEvent ) {
             this.gamebox.changeMap( this.gamebox.mapChangeEvent );
@@ -182,7 +248,6 @@ class Player extends Controller {
 
     reset () {
         // Stop the RAF loop
-        // this.gamepad.clear(); called in hardStop()
         this.hardStop();
 
         // Destroy the gamebox
@@ -198,25 +263,6 @@ class Player extends Controller {
 
         // Recreated in onReady() via onPressStart()
         delete this.gamebox;
-    }
-
-
-    // Stops game button events from dispatching to the gamebox
-    pause () {
-        super.stop();
-        this.paused = true;
-        this.gamepad.clear();
-        this.gamebox.pause( true );
-
-    }
-
-
-    // Stops the gamebox from rendering
-    stop () {
-        super.stop();
-        this.stopped = true;
-        this.gamepad.clear();
-        this.gamebox.pause( true );
     }
 
 
@@ -261,6 +307,9 @@ class Player extends Controller {
         this.gamepad = new GamePad( this );
         this.gameaudio = new GameAudio( this.device );
         this.bind();
+
+        // Handle basic pre-game raf cycle to capture gamepad connection before main game engine starts
+        this.idleGo();
     }
 
 
@@ -390,34 +439,6 @@ class Player extends Controller {
 * Event handling
 *******************************************************************************/
     bind () {
-        // Standard 4 point d-pad (action)
-        this.gamepad.on( "left-press", this.onDpadPress.bind( this ) );
-        this.gamepad.on( "right-press", this.onDpadPress.bind( this ) );
-        this.gamepad.on( "up-press", this.onDpadPress.bind( this ) );
-        this.gamepad.on( "down-press", this.onDpadPress.bind( this ) );
-
-        // Standard 4 point d-pad (cancel)
-        this.gamepad.on( "left-release", this.onDpadRelease.bind( this ) );
-        this.gamepad.on( "right-release", this.onDpadRelease.bind( this ) );
-        this.gamepad.on( "up-release", this.onDpadRelease.bind( this ) );
-        this.gamepad.on( "down-release", this.onDpadRelease.bind( this ) );
-
-        // Start button (pause)
-        this.gamepad.on( "start-press", this.onPressStart.bind( this ) );
-        this.gamepad.on( "select-press", this.onPressSelect.bind( this ) );
-
-        // A button (action)
-        this.gamepad.on( "a-press", this.onPressA.bind( this ) );
-        this.gamepad.on( "a-release", this.onReleaseA.bind( this ) );
-        this.gamepad.on( "a-holdpress", this.onPressHoldA.bind( this ) );
-        this.gamepad.on( "a-holdrelease", this.onReleaseHoldA.bind( this ) );
-
-        // B button (cancel)
-        this.gamepad.on( "b-press", this.onPressB.bind( this ) );
-        this.gamepad.on( "b-holdpress", this.onPressHoldB.bind( this ) );
-        this.gamepad.on( "b-release", this.onReleaseB.bind( this ) );
-        this.gamepad.on( "b-holdrelease", this.onReleaseHoldB.bind( this ) );
-
         // Screen size / Orientation change
         window.onresize = this.onRotate.bind( this );
     }
@@ -428,8 +449,7 @@ class Player extends Controller {
             this.resume();
 
         } else if ( this.ready ) {
-            this.pause();
-            this.stop();
+            this.hardStop();
         }
     }
 
@@ -441,6 +461,7 @@ class Player extends Controller {
 
             if ( this.data.plugin === Config.plugins.TOPVIEW ) {
                 this.gamebox = new TopView( this );
+                this.gamebox.pause( false );
                 this.go();
             }
         }
@@ -452,8 +473,15 @@ class Player extends Controller {
             return;
         }
 
+        // Stop the idle game loop
+        if ( this.idleStarted ) {
+            super.stop();
+            this.idleStarted = false;
+        }
+
         if ( !this.ready ) {
             this.onReady();
+            return;
         }
 
         if ( this.paused ) {
@@ -462,10 +490,14 @@ class Player extends Controller {
             this.emit( Config.broadcast.RESUMED );
 
         } else {
-            this.pause();
-            this.stop();
+            this.hardStop();
             this.showMenu();
             this.emit( Config.broadcast.PAUSED );
+
+            // Start the idle game loop ONLY if a gamepad is connected
+            if ( this.gamepad.gamepadConnected ) {
+                this.idleGo();
+            }
         }
     }
 
@@ -487,63 +519,6 @@ class Player extends Controller {
                 this.gamebox.hero.mode = Config.hero.modes.WEAPON;
                 break;
         }
-    }
-
-
-    onDpadPress ( dir ) {
-        this.controls[ dir ] = true;
-    }
-
-
-    onDpadRelease ( dir ) {
-        this.controls[ dir ] = false;
-    }
-
-
-    onPressA () {
-        this.controls.a = true;
-    }
-
-
-    onPressHoldA () {
-        this.controls.aHold = true;
-    }
-
-
-    onReleaseA () {
-        this.controls.a = false;
-        this.gamebox && this.gamebox.releaseA && this.gamebox.releaseA();
-    }
-
-
-    onReleaseHoldA () {
-        this.controls.a = false;
-        this.controls.aHold = false;
-        this.gamebox && this.gamebox.releaseHoldA && this.gamebox.releaseHoldA();
-    }
-
-
-    onPressB () {
-        this.controls.b = true;
-    }
-
-
-    onPressHoldB () {
-        this.controls.bHold = true;
-    }
-
-
-    onReleaseB () {
-        this.controls.b = false;
-        this.controls.bHold = false;
-        this.gamebox && this.gamebox.releaseB && this.gamebox.releaseB();
-    }
-
-
-    onReleaseHoldB () {
-        this.controls.b = false;
-        this.controls.bHold = false;
-        this.gamebox && this.gamebox.releaseHoldB && this.gamebox.releaseHoldB();
     }
 }
 
