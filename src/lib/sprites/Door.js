@@ -239,6 +239,11 @@ export default class Door extends QuestSprite {
     }
 
 
+    canInteractQuest () {
+        return this.data.action.quest?.checkFlag?.dialogue || this.data.action.quest?.checkItem?.dialogue;
+    }
+
+
     canDoAction ( verb ) {
         return ( this.data.action && this.data.action.verb && verb === this.data.action.verb );
     }

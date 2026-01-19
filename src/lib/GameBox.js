@@ -300,7 +300,16 @@ export default class GameBox {
 *******************************************************************************/
     getRenderBox () {
         // Expand the camera scope for collision checks so that NPCs don't get collision
-        // locked when they are partially off-screen
+        // locked when they are partially off-screen (2 tiles on each side)
+        //  +-----------------------------+
+        //  |    [ ][ ][ ][ ][ ][ ][ ]    |
+        //  |    [ ][ ][ ][ ][ ][ ][ ]    |
+        //  |    [ ][ ][■■■■■■■][ ][ ]    |
+        //  |    [ ][ ][■■■■■■■][ ][ ]    |
+        //  |    [ ][ ][■■■■■■■][ ][ ]    |
+        //  |    [ ][ ][ ][ ][ ][ ][ ]    |
+        //  |    [ ][ ][ ][ ][ ][ ][ ]    |
+        //  +-----------------------------+
         return {
             x: this.camera.x - this.map.data.tilesize * 2,
             y: this.camera.y - this.map.data.tilesize * 2,

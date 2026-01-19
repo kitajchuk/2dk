@@ -384,7 +384,7 @@ export default class Hero extends Sprite {
             tiles: this.gamebox.checkTiles( poi, this ),
         };
         const notLifting = !this.is( Config.verbs.LIFT ) && !this.is( Config.verbs.GRAB ) && !this.is( Config.verbs.PULL );
-        const isDoorRead = collision.door && collision.door.canInteract( this.dir );
+        const isDoorRead = collision.door && ( collision.door.canInteract( this.dir ) || collision.door.canInteractQuest() );
         const isNPCRead = collision.npc && collision.npc.canInteract( this.dir );
         const isGrabTile = this.canGrabTile( collision ) || !notLifting;
 
