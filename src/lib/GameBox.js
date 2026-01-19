@@ -299,20 +299,14 @@ export default class GameBox {
 * Can all be handled in plugin GameBox
 *******************************************************************************/
     getRenderBox () {
-        // renderBox isn't defined until the map begins rendering
-        // use it when it is available so that NPCs don't get collision
+        // Expand the camera scope for collision checks so that NPCs don't get collision
         // locked when they are partially off-screen
-        if ( this.map.renderBox ) {
-            return {
-                x: this.map.renderBox.x * this.map.data.tilesize,
-                y: this.map.renderBox.y * this.map.data.tilesize,
-                width: this.map.renderBox.width,
-                height: this.map.renderBox.height,
-            };
-        }
-
-        // If the map hasn't rendered yet, use the camera
-        return this.camera;
+        return {
+            x: this.camera.x - this.map.data.tilesize * 2,
+            y: this.camera.y - this.map.data.tilesize * 2,
+            width: this.camera.width + ( this.map.data.tilesize * 4 ),
+            height: this.camera.height + ( this.map.data.tilesize * 4 ),
+        };
     }
 
 

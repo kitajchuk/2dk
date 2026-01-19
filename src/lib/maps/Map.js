@@ -268,10 +268,10 @@ export default class Map {
         for ( let i = visibleColliders.length; i--; ) {
             this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
             this.gamebox.mapLayer.context.fillRect(
-                this.offset.x + ( visibleColliders[ i ][ 0 ] * this.data.collider ),
-                this.offset.y + ( visibleColliders[ i ][ 1 ] * this.data.collider ),
-                this.data.collider,
-                this.data.collider
+                this.offset.x + visibleColliders[ i ].x,
+                this.offset.y + visibleColliders[ i ].y,
+                visibleColliders[ i ].width,
+                visibleColliders[ i ].height
             );
         }
 
@@ -417,6 +417,12 @@ export default class Map {
             return false;
         }
 
+        const heroPosition = this.gamebox.hero.position.y + this.gamebox.hero.height;
+        const isShiftable = tile.y + tile.height < heroPosition;
+
+        return isShiftable;
+
+        // TODO: I think this logic is a non-issue now but keeping an eye on it for a bit...
         // Foreground is unique in that it can be shifted behind the hero.
         // However, it's not good enough to just check the current foreground tile.
         // If the next tile down also contains foreground texture data we need to check
@@ -426,23 +432,20 @@ export default class Map {
         // E.g. hero renders behind one foreground tile and in front of the tile below it
         // even though visually the hero should be behind both tiles.
 
-        const heroPosition = this.gamebox.hero.position.y + this.gamebox.hero.height;
-        const isShiftable = tile.y + tile.height < heroPosition;
+        // if ( isShiftable ) {
+        //     const nextLookupY = lookupY + 1;
 
-        if ( isShiftable ) {
-            const nextLookupY = lookupY + 1;
+        //     if ( this.data.textures.foreground[ nextLookupY ][ lookupX ] ) {
+        //         const isNextShiftable = ( nextLookupY * this.data.tilesize ) + this.data.tilesize < heroPosition;
 
-            if ( this.data.textures.foreground[ nextLookupY ][ lookupX ] ) {
-                const isNextShiftable = ( nextLookupY * this.data.tilesize ) + this.data.tilesize < heroPosition;
+        //         return isNextShiftable;
 
-                return isNextShiftable;
-
-            } else {
-                return true;
-            }
-        }
+        //     } else {
+        //         return true;
+        //     }
+        // }
         
-        return false;
+        // return false;
     }
 
 

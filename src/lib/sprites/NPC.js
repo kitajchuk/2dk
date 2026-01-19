@@ -356,11 +356,6 @@ export default class NPC extends QuestSprite {
 
     handleRoam () {
         if ( !this.aiCounter ) {
-            const min = 120;
-            const max = 240;
-
-            this.aiCounter = Utils.random( min, max );
-
             const lastDir = this.dir;
             const newDir = DIRS[ Utils.random( 0, DIRS.length - 1 ) ];
 
@@ -372,6 +367,7 @@ export default class NPC extends QuestSprite {
             }
 
             this.dir = newDir;
+            this.aiCounter = Utils.random( 120, 240 );
 
             // @check: hero-verb-check
             if ( this.can( Config.verbs.WALK ) ) {
