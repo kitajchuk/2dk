@@ -14,7 +14,7 @@ export default class NPC extends QuestSprite {
     constructor ( data, map, mapId ) {
         super( data, map );
         this.mapId = mapId;
-        this.states = structuredClone( this.data.states );
+        this.states = this.data.states;
         this.dialogue = null;
         this.status = this.data.status || null;
         

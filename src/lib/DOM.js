@@ -35,12 +35,18 @@ export const renderMenu = ( player ) => {
 }
 
 
-export const renderSplash = ( data, display ) => {
+export const renderSplash = ( display ) => {
     return html`
-        <div>${data.name}: Save #${data.save}, Release v${data.release}</div>
         <div>${display}</div>
     `;
 };
+
+
+export const renderGameInfo = ( data ) => {
+    return html`
+        <div>${data.name}: Save #${data.save}, Release ${data.release}</div>
+    `;
+}
 
 
 export const renderSplashInfo = ( installed ) => {

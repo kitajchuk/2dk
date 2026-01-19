@@ -347,7 +347,7 @@ export default class Map {
                         const lookupX = renderBox.x + x;
 
                         if ( this.data.textures[ id ][ lookupY ][ lookupX ] ) {
-                            const celsCopy = structuredClone( this.data.textures[ id ][ lookupY ][ lookupX ] );
+                            const celsCopy = [ ...this.data.textures[ id ][ lookupY ][ lookupX ] ];
 
                             if ( id === "background" ) {
                                 const activeTile = this.getActiveTile( [ lookupX, lookupY ], celsCopy );
@@ -404,7 +404,7 @@ export default class Map {
         }
 
         // Compare the current foreground and background cels and if they don't match we can't shift
-        let bgCel = structuredClone( this.data.textures.background[ lookupY ][ lookupX ] );
+        let bgCel = this.data.textures.background[ lookupY ][ lookupX ];
 
         if ( fgCel === 0 || bgCel === 0 ) {
             return false;

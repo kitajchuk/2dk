@@ -5,7 +5,7 @@ import GameAudio from "./GameAudio";
 import Loader from "./Loader";
 import Controller from "./Controller";
 import TopView from "./plugins/TopView";
-import { renderMenu, renderSplash, renderSplashInfo } from "./DOM";
+import { renderMenu, renderSplash, renderGameInfo, renderSplashInfo } from "./DOM";
 
 
 
@@ -17,8 +17,14 @@ class Player extends Controller {
         this.frame = 0;
         this.interval = 1000 / this.fps;
 
+        this.loader = new Loader();
+        this.Loader = Loader;
+
         this.initialize();
         this.detect();
+        this.build();
+        this.buildMenu();
+        this.buildSplash();
     }
 
 
@@ -36,15 +42,148 @@ class Player extends Controller {
             up: false,
             down: false,
         };
+
+        // Controller properties
+        this.handlers = {};
+        this.rafId = null;
+        this.animate = null;
+        this.started = false;
+    }
+
+
+/*******************************************************************************
+* Game Loop
+* Gamebox order is: blit, update, render
+*******************************************************************************/
+    // Overrides default go method to control frame rate
+    go () {
+        if ( this.started ) {
+            return this;
+        }
+
+        this.frame = 0;
+        this.started = true;
+        this.currentFPS = this.currentFPS || this.fps;
+        this.previousTime = performance.now();
+        this.previousFrameTime = this.previousTime;
+        this.animate = ( currentTime ) => {
+            // Request next animation frame right away (eager)...
+            this.rafId = window.requestAnimationFrame( this.animate );
+
+            const deltaTime = currentTime - this.previousTime;
+
+            if ( deltaTime >= this.interval ) {
+                // Update physics at controlled frame rate
+                this.previousTime = currentTime - ( deltaTime % this.interval );
+                this.blit( this.previousTime );
+
+                const elapsedFrameTime = currentTime - this.previousFrameTime;
+            
+                if ( elapsedFrameTime >= 1000 ) {
+                    this.currentFPS = this.frame;
+                    this.frame = 0;
+                    this.previousFrameTime = currentTime;
+                }
+                
+                this.frame++;
+            }
+
+            // Render at refresh rate
+            this.render();
+        };
+
+        // Start the animation loop
+        this.rafId = window.requestAnimationFrame( this.animate );
+    }
+
+
+    blit ( currentTime ) {
+        this.blitUpdate( currentTime );
+        this.blitControls();
+    }
+
+
+    blitUpdate ( currentTime ) {
+        if ( this.stopped ) {
+            return;
+        }
+
+        // Update the gamebox (playable cycles)
+        this.gamebox.blit( currentTime );
+        this.gamebox.update();
+    }
+
+
+    blitControls () {
+        // Soft pause only affects Hero updates and NPCs
+        // Hard stop will affect the entire blit/render engine...
+        if ( this.paused ) {
+            return;
+        }
+
+        // D-Pad movement
+        // Easier to check the gamepad than have player use event handlers...
+        const dpad = this.gamepad.checkDpad();
+
+        if ( !dpad.length ) {
+            this.gamebox.releaseD();
+            this.gamebox.handleHero(
+                this.gamebox.hero.getNextPoi(),
+                this.gamebox.hero.dir
+            );
+
+        } else {
+            for ( let i = 0; i < dpad.length; i++ ) {
+                for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
+                    this.gamebox.pressD( dpad[ i ].dpad[ j ] );
+                }
+            }
+        }
+
+        // Action buttons
+        // Easier to have the player use event handlers and check controls...
+        if ( this.controls.aHold ) {
+            this.gamebox.holdA();
+
+        } else if ( this.controls.a ) {
+            this.gamebox.pressA();
+        }
+
+        if ( this.controls.bHold ) {
+            this.gamebox.holdB();
+
+        } else if ( this.controls.b ) {
+            this.gamebox.pressB();
+        }
+    }
+
+
+    // Handle early captures in render() so that hardStop() safely cancels the RAF loop
+    render () {
+        // Capture map change event on the next blit cycle
+        if ( this.gamebox.mapChangeEvent ) {
+            this.gamebox.changeMap( this.gamebox.mapChangeEvent );
+            return;
+        }
+
+        // Safely handle hero death so we exit the blit loop and reset the player cleanly
+        if ( this.gamebox.hero.deathCounter > 0 ) {
+            this.gamebox.hero.deathCounter--;
+        }
+
+        if ( this.gamebox.hero.killed && this.gamebox.hero.deathCounter === 0 ) {
+            this.reset();
+            return;
+        }
+
+        this.gamebox.render();
     }
 
 
     reset () {
         // Stop the RAF loop
-        super.stop();
-
-        // Clear the gamepad
-        this.gamepad.clear();
+        // this.gamepad.clear(); called in hardStop()
+        this.hardStop();
 
         // Destroy the gamebox
         this.gamebox.destroy();
@@ -56,7 +195,72 @@ class Player extends Controller {
         this.hideMenu();
         this.initialize();
         this.element.classList.remove( "is-started", "is-fader" );
-        this.gamebox = null;
+
+        // Recreated in onReady() via onPressStart()
+        delete this.gamebox;
+    }
+
+
+    // Stops game button events from dispatching to the gamebox
+    pause () {
+        super.stop();
+        this.paused = true;
+        this.gamepad.clear();
+        this.gamebox.pause( true );
+
+    }
+
+
+    // Stops the gamebox from rendering
+    stop () {
+        super.stop();
+        this.stopped = true;
+        this.gamepad.clear();
+        this.gamebox.pause( true );
+    }
+
+
+    hardStop () {
+        super.stop();
+        this.paused = true;
+        this.stopped = true;
+        this.gamepad.clear();
+        this.gamebox.pause( true );
+    }
+
+
+    // Resumes playable state, not paused and not stopped
+    resume () {
+        this.go();
+        this.paused = false;
+        this.stopped = false;
+        this.gamebox.pause( false );
+    }
+
+
+
+/*******************************************************************************
+* Debug, loading etc...
+*******************************************************************************/
+    async load () {
+        this.data = await this.loader.loadBundle( "game.json", this.device, ( counter, length ) => {
+            this.splashLoad.innerHTML = renderSplash( `Loaded ${counter} of ${length} game resources...` );
+        });
+        this.heroData = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
+        this.resolution = this.getResolution( this.device ? 2 : this.data.resolution );
+        this.element.dataset.resolution = this.resolution;
+        this.debug();
+        this.width = this.data.width / this.resolution;
+        this.height = this.data.height / this.resolution;
+        this.buildScreen();
+        this.onRotate();
+        this.splashLoad.innerHTML = `
+            ${renderGameInfo( this.data )}
+            ${renderSplash( "Press Start" )}
+        `;
+        this.gamepad = new GamePad( this );
+        this.gameaudio = new GameAudio( this.device );
+        this.bind();
     }
 
 
@@ -96,48 +300,6 @@ class Player extends Controller {
     }
 
 
-    async load () {
-        this.loader = new Loader();
-        this.loader.loadJson( "game.json" ).then( ( data ) => {
-            this.data = data;
-            this.heroData = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
-            this.resolution = this.getResolution( this.device ? 2 : this.data.resolution );
-            this.debug();
-            this.width = this.data.width / this.resolution;
-            this.height = this.data.height / this.resolution;
-            this.build();
-            this.onRotate();
-
-            let counter = 0;
-
-            // MARK: mobile-audio-disabled
-            // Audio is still experimental for mobile so disabling for now...
-            const resources = data.bundle.filter( ( url ) => {
-                const type = url.split( "/" ).pop().split( "." ).pop();
-
-                return ( this.device ? ( type !== "mp3" ) : true );
-            })
-            // Map bundle resource URLs to a Loader promise types for initialization...
-            .map( ( url ) => {
-                return this.loader.load( url ).then( () => {
-                    counter++;
-
-                    this.splashLoad.innerHTML = renderSplash( this.data, `Loaded ${counter} of ${resources.length} game resources...` );
-                });
-            });
-
-            Promise.all( resources ).then( () => {
-                this.splashLoad.innerHTML = renderSplash( this.data, "Press Start" );
-                this.gamepad = new GamePad( this );
-                this.gameaudio = new GameAudio( this.device );
-
-                this.bind();
-                Promise.resolve();
-            });
-        });
-    }
-
-
     getResolution ( res ) {
         return res > this.data.maxresolution ? this.data.maxresolution : res;
     }
@@ -152,13 +314,12 @@ class Player extends Controller {
     }
 
 
+/*******************************************************************************
+* Build DOM
+*******************************************************************************/
     build () {
         this.element = document.createElement( "div" );
         this.element.className = "_2dk";
-        this.element.dataset.resolution = this.resolution;
-        this.buildSplash();
-        this.buildScreen();
-        this.buildMenu();
         document.body.appendChild( this.element );
     }
 
@@ -167,6 +328,25 @@ class Player extends Controller {
         this.menu = document.createElement( "div" );
         this.menu.className = "_2dk__menu";
         this.element.appendChild( this.menu );
+    }
+
+
+    buildSplash () {
+        this.splash = document.createElement( "div" );
+        this.splash.className = "_2dk__splash";
+        this.splashInfo = document.createElement( "div" );
+        this.splashInfo.className = "_2dk__splash__info";
+        this.splashInfo.innerHTML = renderSplashInfo( this.installed );
+        this.splashLoad = document.createElement( "div" );
+        this.splashLoad.className = "_2dk__splash__load";
+        this.splashLoad.innerHTML = renderSplash( "Loading game bundle..." );
+        this.splashUpdate = document.createElement( "div" );
+        this.splashUpdate.className = "_2dk__splash__update";
+        this.splashUpdate.innerHTML = "<div>Update Available</div>";
+        this.splash.appendChild( this.splashInfo );
+        this.splash.appendChild( this.splashLoad );
+        this.splash.appendChild( this.splashUpdate );
+        this.element.appendChild( this.splash );
     }
 
 
@@ -179,25 +359,10 @@ class Player extends Controller {
     }
 
 
-    buildSplash () {
-        this.splash = document.createElement( "div" );
-        this.splash.className = "_2dk__splash";
-        this.splashInfo = document.createElement( "div" );
-        this.splashInfo.className = "_2dk__splash__info";
-        this.splashInfo.innerHTML = renderSplashInfo( this.installed );
-        this.splashLoad = document.createElement( "div" );
-        this.splashLoad.className = "_2dk__splash__load";
-        this.splashLoad.innerHTML = renderSplash( this.data, "Loading game bundle..." );
-        this.splashUpdate = document.createElement( "div" );
-        this.splashUpdate.className = "_2dk__splash__update";
-        this.splashUpdate.innerHTML = "<div>Update Available</div>";
-        this.splash.appendChild( this.splashInfo );
-        this.splash.appendChild( this.splashLoad );
-        this.splash.appendChild( this.splashUpdate );
-        this.element.appendChild( this.splash );
-    }
 
-
+/*******************************************************************************
+* Presentation
+*******************************************************************************/
     showMenu () {
         // TODO: This is a stub temp menu so we can see the hero stats...
         if ( this.gamebox.hero ) {
@@ -221,6 +386,9 @@ class Player extends Controller {
     }
 
 
+/*******************************************************************************
+* Event handling
+*******************************************************************************/
     bind () {
         // Standard 4 point d-pad (action)
         this.gamepad.on( "left-press", this.onDpadPress.bind( this ) );
@@ -252,136 +420,6 @@ class Player extends Controller {
 
         // Screen size / Orientation change
         window.onresize = this.onRotate.bind( this );
-    }
-
-
-    // Overrides default go method to control frame rate
-    go () {
-        if ( this.started ) {
-            return this;
-        }
-
-        this.frame = 0;
-        this.started = true;
-        this.currentFPS = this.currentFPS || this.fps;
-        this.previousTime = performance.now();
-        this.previousFrameTime = this.previousTime;
-        this.animate = ( currentTime ) => {
-            // Request next animation frame right away (eager)...
-            this.cycle = window.requestAnimationFrame( this.animate );
-
-            const deltaTime = currentTime - this.previousTime;
-
-            if ( deltaTime >= this.interval ) {
-                // Update physics at controlled frame rate
-                this.previousTime = currentTime - ( deltaTime % this.interval );
-                this.blit( this.previousTime );
-
-                const elapsedFrameTime = currentTime - this.previousFrameTime;
-            
-                if ( elapsedFrameTime >= 1000 ) {
-                    this.currentFPS = this.frame;
-                    this.frame = 0;
-                    this.previousFrameTime = currentTime;
-                }
-                
-                this.frame++;
-            }
-
-            // Render at refresh rate
-            this.gamebox.render();
-
-            // Request next animation frame after logic is complete
-            // this.cycle = window.requestAnimationFrame( this.animate );
-        };
-
-        // Start the animation loop
-        this.cycle = window.requestAnimationFrame( this.animate );
-    }
-
-
-    blit ( currentTime ) {
-        // Updates happen if NOT stopped
-        if ( !this.stopped ) {
-            this.gamebox.blit( currentTime );
-            this.gamebox.update();
-        }
-
-        // Soft pause only affects Hero updates and NPCs
-        // Hard stop will affect the entire blit/render engine...
-        if ( !this.paused ) {
-            // D-Pad movement
-            // Easier to check the gamepad than have player use event handlers...
-            const dpad = this.gamepad.checkDpad();
-
-            if ( !dpad.length ) {
-                this.gamebox.releaseD();
-                this.gamebox.handleHero(
-                    this.gamebox.hero.getNextPoi(),
-                    this.gamebox.hero.dir
-                );
-
-            } else {
-                for ( let i = 0; i < dpad.length; i++ ) {
-                    for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
-                        this.gamebox.pressD( dpad[ i ].dpad[ j ] );
-                    }
-                }
-            }
-
-            // Action buttons
-            // Easier to have the player use event handlers and check controls...
-            if ( this.controls.aHold ) {
-                this.gamebox.holdA();
-
-            } else if ( this.controls.a ) {
-                this.gamebox.pressA();
-            }
-
-            if ( this.controls.bHold ) {
-                this.gamebox.holdB();
-
-            } else if ( this.controls.b ) {
-                this.gamebox.pressB();
-            }
-        }
-    }
-
-
-    // Stops game button events from dispatching to the gamebox
-    pause () {
-        super.stop();
-        this.paused = true;
-        this.gamepad.clear();
-        this.gamebox.pause( true );
-
-    }
-
-
-    // Stops the gamebox from rendering
-    stop () {
-        super.stop();
-        this.stopped = true;
-        this.gamepad.clear();
-        this.gamebox.pause( true );
-    }
-
-
-    hardStop () {
-        super.stop();
-        this.paused = true;
-        this.stopped = true;
-        this.gamepad.clear();
-        this.gamebox.pause( true );
-    }
-
-
-    // Resumes playable state, not paused and not stopped
-    resume () {
-        this.go();
-        this.paused = false;
-        this.stopped = false;
-        this.gamebox.pause( false );
     }
 
 

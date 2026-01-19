@@ -84,7 +84,7 @@ export default class Sprite {
         // Used for things like NPCs, enemies, Hero etx...
         this.hitTimer = 0;
         this.stillTimer = 0;
-        this.stats = this.data.stats ? structuredClone( this.data.stats ) : {
+        this.stats = this.data.stats ? { ...this.data.stats } : {
             power: 1,
             health: 1,
             strength: 0,

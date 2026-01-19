@@ -20,7 +20,7 @@ export default class Door extends QuestSprite {
         this.rumble = 0;
         this.originalX = this.position.x;
         this.dialogue = null;
-        this.states = structuredClone( this.data.states );
+        this.states = this.data.states;
 
         this.initialize();
     }

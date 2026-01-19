@@ -34,22 +34,6 @@ class TopView extends GameBox {
 * Order is: blit, update, render
 *******************************************************************************/
     blit ( elapsed ) {
-        // Capture map change event on the next blit cycle
-        if ( this.mapChangeEvent ) {
-            this.changeMap( this.mapChangeEvent );
-            return;
-        }
-
-        // Safely handle hero death so we exit the blit loop and reset the player cleanly
-        if ( this.hero.deathCounter > 0 ) {
-            this.hero.deathCounter--;
-        }
-
-        if ( this.hero.killed && this.hero.deathCounter === 0 ) {
-            this.player.reset();
-            return;
-        }
-
         // blit hero
         this.hero.blit( elapsed );
 
@@ -63,16 +47,15 @@ class TopView extends GameBox {
 
         // blit map
         this.map.blit( elapsed );
-
-        // TODO: Is there a better place for this?
-        // dropin effect for new map?
-        if ( this.dropin && this.hero.position.z === 0 ) {
-            this.dropin = false;
-        }
     }
 
 
     update () {
+        // Reset dropin flag if the hero is on the ground
+        if ( this.dropin && this.hero.position.z === 0 ) {
+            this.dropin = false;
+        }
+
         // update gamebox (camera)
         this.updateCamera();
 

@@ -4,132 +4,6 @@ import Controller from "./Controller";
 
 
 
-const inputStream = [];
-// Note: It takes 400ms to begin registering a button "hold" vs "press" (interval * repeated)
-const touchInterval = 8;
-const touchRepeated = 50;
-const touchDiagonals = [
-    Config.keys.UPLEFT,
-    Config.keys.UPRIGHT,
-    Config.keys.DOWNLEFT,
-    Config.keys.DOWNRIGHT,
-];
-const touchDpad = [
-    Config.keys.UP,
-    Config.keys.DOWN,
-    Config.keys.LEFT,
-    Config.keys.RIGHT,
-];
-
-export const touchControls = {
-    a: {
-        key: Config.keys.A,
-        elem: null,
-        timer: null,
-        touched: false,
-        hold: 0,
-        text: "A",
-        gamepad: [0],
-    },
-    b: {
-        key: Config.keys.B,
-        elem: null,
-        timer: null,
-        touched: false,
-        hold: 0,
-        text: "B",
-        gamepad: [1],
-    },
-    start: {
-        key: Config.keys.START,
-        elem: null,
-        timer: null,
-        touched: false,
-        hold: 0,
-        text: "Start",
-        menu: true,
-        gamepad: [9],
-    },
-    select: {
-        key: Config.keys.SELECT,
-        elem: null,
-        hold: 0,
-        timer: null,
-        touched: false,
-        text: "Select",
-        menu: true,
-        gamepad: [8],
-    },
-    // D-Pad
-    "up-left": {
-        key: Config.keys.UPLEFT,
-        elem: null,
-        timer: null,
-        touched: false,
-        dpad: ["left", "up"],
-    },
-    up: {
-        key: Config.keys.UP,
-        elem: null,
-        timer: null,
-        touched: false,
-        dpad: ["up"],
-        axes: [0, -1],
-    },
-    "up-right": {
-        key: Config.keys.UPRIGHT,
-        elem: null,
-        timer: null,
-        touched: false,
-        dpad: ["right", "up"],
-    },
-    left: {
-        key: Config.keys.LEFT,
-        elem: null,
-        timer: null,
-        touched: false,
-        dpad: ["left"],
-        axes: [-1, 0],
-    },
-    neutral: {
-        // D-pad center (non-interactive)
-        elem: null,
-        dpad: [],
-    },
-    right: {
-        key: Config.keys.RIGHT,
-        elem: null,
-        timer: null,
-        touched: false,
-        dpad: ["right"],
-        axes: [1, 0],
-    },
-    "down-left": {
-        key: Config.keys.DOWNLEFT,
-        elem: null,
-        timer: null,
-        touched: false,
-        dpad: ["left", "down"],
-    },
-    down: {
-        key: Config.keys.DOWN,
-        elem: null,
-        timer: null,
-        touched: false,
-        dpad: ["down"],
-        axes: [0, 1],
-    },
-    "down-right": {
-        key: Config.keys.DOWNRIGHT,
-        elem: null,
-        timer: null,
-        touched: false,
-        dpad: ["right", "down"],
-    },
-};
-
-
-
 export default class GamePad extends Controller {
     constructor ( player ) {
         super();
@@ -605,3 +479,129 @@ export default class GamePad extends Controller {
         }
     }
 }
+
+
+
+const inputStream = [];
+// Note: It takes 400ms to begin registering a button "hold" vs "press" (interval * repeated)
+const touchInterval = 8;
+const touchRepeated = 50;
+const touchDiagonals = [
+    Config.keys.UPLEFT,
+    Config.keys.UPRIGHT,
+    Config.keys.DOWNLEFT,
+    Config.keys.DOWNRIGHT,
+];
+const touchDpad = [
+    Config.keys.UP,
+    Config.keys.DOWN,
+    Config.keys.LEFT,
+    Config.keys.RIGHT,
+];
+
+export const touchControls = {
+    a: {
+        key: Config.keys.A,
+        elem: null,
+        timer: null,
+        touched: false,
+        hold: 0,
+        text: "A",
+        gamepad: [0],
+    },
+    b: {
+        key: Config.keys.B,
+        elem: null,
+        timer: null,
+        touched: false,
+        hold: 0,
+        text: "B",
+        gamepad: [1],
+    },
+    start: {
+        key: Config.keys.START,
+        elem: null,
+        timer: null,
+        touched: false,
+        hold: 0,
+        text: "Start",
+        menu: true,
+        gamepad: [9],
+    },
+    select: {
+        key: Config.keys.SELECT,
+        elem: null,
+        hold: 0,
+        timer: null,
+        touched: false,
+        text: "Select",
+        menu: true,
+        gamepad: [8],
+    },
+    // D-Pad
+    "up-left": {
+        key: Config.keys.UPLEFT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: ["left", "up"],
+    },
+    up: {
+        key: Config.keys.UP,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: ["up"],
+        axes: [0, -1],
+    },
+    "up-right": {
+        key: Config.keys.UPRIGHT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: ["right", "up"],
+    },
+    left: {
+        key: Config.keys.LEFT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: ["left"],
+        axes: [-1, 0],
+    },
+    neutral: {
+        // D-pad center (non-interactive)
+        elem: null,
+        dpad: [],
+    },
+    right: {
+        key: Config.keys.RIGHT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: ["right"],
+        axes: [1, 0],
+    },
+    "down-left": {
+        key: Config.keys.DOWNLEFT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: ["left", "down"],
+    },
+    down: {
+        key: Config.keys.DOWN,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: ["down"],
+        axes: [0, 1],
+    },
+    "down-right": {
+        key: Config.keys.DOWNRIGHT,
+        elem: null,
+        timer: null,
+        touched: false,
+        dpad: ["right", "down"],
+    },
+};

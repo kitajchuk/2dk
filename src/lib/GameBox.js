@@ -46,7 +46,7 @@ export default class GameBox {
         this.currentMusic = null;
 
         let initMapData = Loader.cash( this.player.heroData.map );
-        let initHeroData = structuredClone( this.player.heroData );
+        let initHeroData = { ...this.player.heroData };
 
         // Map
         this.map = new Map( initMapData, this );
@@ -668,6 +668,7 @@ export default class GameBox {
     afterChangeMap ( newMapData ) {
         // Destroy old Map
         this.map.destroy();
+        delete this.map;
 
         // Create new Map
         this.map = new Map( newMapData, this );
@@ -686,7 +687,7 @@ export default class GameBox {
 
         // Create a new Companion
         if ( this.companion ) {
-            const newCompanionData = structuredClone( this.hero.data.companion );
+            const newCompanionData = { ...this.hero.data.companion };
             newCompanionData.spawn = {
                 x: this.hero.position.x,
                 y: this.hero.position.y,

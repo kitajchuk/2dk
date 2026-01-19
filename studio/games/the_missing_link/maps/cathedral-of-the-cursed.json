@@ -31,6 +31,13 @@
             "dur": 2000
         },
         {
+            "group": "stairs",
+            "layer": "background",
+            "offsetX": 256,
+            "offsetY": 384,
+            "friction": 2
+        },
+        {
             "group": "grass-dead",
             "layer": "background",
             "offsetX": 64,

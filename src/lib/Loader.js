@@ -2,7 +2,7 @@ const cache = {};
 
 
 
-class Loader {
+export default class Loader {
     static cash ( id, val ) {
         if ( val ) {
             cache[ id ] = val;
@@ -86,8 +86,31 @@ class Loader {
             });
         });
     }
+
+
+    async loadBundle ( game, device, onLoadCallback ) {
+        const data = await this.loadJson( game );
+
+        let counter = 0;
+    
+        // MARK: mobile-audio-disabled
+        // Audio is still experimental for mobile so disabling for now...
+        const resources = device ? data.bundle.filter( ( url ) => {
+            const type = url.split( "/" ).pop().split( "." ).pop();
+            return type !== "mp3";
+        }) : data.bundle;
+
+        // Map bundle resource URLs to a Loader promise types for initialization...
+        await Promise.all(
+            resources.map( async ( url ) => {
+                await this.load( url );
+    
+                counter++;
+
+                onLoadCallback( counter, resources.length );
+            })
+        );
+
+        return data;
+    }
 }
-
-
-
-export default Loader;

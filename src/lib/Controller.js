@@ -3,7 +3,7 @@
 export default class Controller {
     constructor () {
         this.handlers = {};
-        this.cycle = null;
+        this.rafId = null;
         this.animate = null;
         this.started = false;
     }
@@ -16,16 +16,16 @@ export default class Controller {
 
         this.started = true;
         this.animate = ( currentTime ) => {
+            this.rafId = window.requestAnimationFrame( this.animate );
             callback( currentTime );
-            this.cycle = window.requestAnimationFrame( this.animate );
         };
-        this.cycle = window.requestAnimationFrame( this.animate );
+        this.rafId = window.requestAnimationFrame( this.animate );
     }
 
 
     stop () {
-        window.cancelAnimationFrame( this.cycle );
-        this.cycle = null;
+        window.cancelAnimationFrame( this.rafId );
+        this.rafId = null;
         this.animate = null;
         this.started = false;
     }
