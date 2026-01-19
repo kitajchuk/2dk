@@ -17,7 +17,6 @@ import HUD from "./HUD";
 export default class GameBox {
     constructor ( player ) {
         this.player = player;
-        this.step = 1;
         this.dropin = false;
         this.offset = {
             x: 0,

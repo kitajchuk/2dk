@@ -8,7 +8,13 @@ const getStyleVar = ( prop ) => {
 
 
 const Config = {
-    fps: 60,
+    player: {
+        fps: 60,
+    },
+    physics: {
+        maxv: 4,
+        speed: 1,
+    },
     // VERBS and TILES...
     // These alone sort of "break" the idea of the "anybody's game".
     // These imply that you would be given a preset of "verbs" and "tiles"

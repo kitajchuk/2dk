@@ -31,15 +31,15 @@ export default class Sprite {
             z: ( this.data.spawn && this.data.spawn.z || 0 ),
         };
         this.prio = this.position.y + this.height;
-        this.speed = 1;
+        this.speed = Config.physics.speed;
         this.physics = {
             vx: ( this.data.vx || 0 ),
             vy: ( this.data.vy || 0 ),
             vz: ( this.data.vz || 0 ),
-            maxv: ( this.data.maxv || 4 ),
-            controlmaxv: ( this.data.controlmaxv || 4 ),
-            maxvstatic: ( this.data.maxv || 4 ),
-            controlmaxvstatic: ( this.data.controlmaxv || 4 ),
+            maxv: ( this.data.maxv || Config.physics.maxv ),
+            controlmaxv: ( this.data.controlmaxv || Config.physics.maxv ),
+            maxvstatic: ( this.data.maxv || Config.physics.maxv ),
+            controlmaxvstatic: ( this.data.controlmaxv || Config.physics.maxv ),
         };
         // Hero offset is based on camera.
         // NPCs offset snaps to position.
@@ -530,19 +530,19 @@ export default class Sprite {
 
     getNextPoiByDir ( dir, ahead ) {
         if ( ahead && dir === "left" ) {
-            ahead = -this.physics.controlmaxv;
+            ahead = -this.physics.maxv;
         }
 
         if ( ahead && dir === "right" ) {
-            ahead = this.physics.controlmaxv;
+            ahead = this.physics.maxv;
         }
 
         if ( ahead && dir === "up" ) {
-            ahead = -this.physics.controlmaxv;
+            ahead = -this.physics.maxv;
         }
 
         if ( ahead && dir === "down" ) {
-            ahead = this.physics.controlmaxv;
+            ahead = this.physics.maxv;
         }
 
         if ( !ahead ) {

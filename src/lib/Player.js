@@ -13,7 +13,7 @@ class Player extends Controller {
     constructor () {
         super();
 
-        this.fps = Config.fps;
+        this.fps = Config.player.fps;
         this.frame = 0;
         this.interval = 1000 / this.fps;
 
