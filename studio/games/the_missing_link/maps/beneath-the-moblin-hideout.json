@@ -118,7 +118,7 @@
             "type": "door",
             "dir": "down",
             "map": "maps/lost-corner-of-the-world.json",
-            "spawn": 4
+            "spawn": 3
         },
         {
             "coords": [
