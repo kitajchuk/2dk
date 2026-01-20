@@ -176,11 +176,12 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "You found the lost treasure!"
+                        "You found the lost treasure!",
+                        "Now you can swim, but only while this map is under development..."
                     ]
                 },
                 "quest": {
-                    "setItem": "red-rupee"
+                    "setItem": "flippers"
                 }
             }
         },
