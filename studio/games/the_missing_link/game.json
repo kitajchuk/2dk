@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 907,
+    "save": 921,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1918,6 +1918,7 @@
         "maps/lost-corner-of-the-world.json",
         "maps/master-shinjis-house.json",
         "maps/old-hags-nest.json",
+        "maps/plateau-residence.json",
         "maps/tunnel-crypt.json",
         "maps/under-the-plateau.json",
         "maps/untended-graveyard.json"
