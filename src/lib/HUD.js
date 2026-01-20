@@ -89,9 +89,19 @@ export default class HUD {
                 this.buttons.a = this.gamebox.hero.interact;
             }
 
+        } else if ( this.gamebox.swimming ) {
+            if ( this.buttons.a !== Config.verbs.SWIM ) {
+                const swimItem = this.hero.items.find( ( item ) => item.verb === Config.verbs.SWIM );
+                if ( swimItem ) {
+                    touchControls.a.elem.innerHTML = renderButtonSprite( swimItem, "A" );
+                } else {
+                    this.gamepad.renderButtonText( "a" );
+                }
+                this.buttons.a = Config.verbs.SWIM;
+            }
+
         } else if ( this.buttons.a !== Config.verbs.JUMP ) {
             const jumpItem = this.hero.items.find( ( item ) => item.verb === Config.verbs.JUMP );
-
             if ( jumpItem ) {
                 touchControls.a.elem.innerHTML = renderButtonSprite( jumpItem, "A" );
             } else {
@@ -100,7 +110,13 @@ export default class HUD {
             this.buttons.a = Config.verbs.JUMP;
         }
 
-        if ( this.gamebox.hero.mode !== this.buttons.b ) {
+        if ( this.gamebox.swimming ) {
+            if ( this.buttons.b !== Config.verbs.DIVE ) {
+                this.gamepad.renderButtonText( "b" );
+                this.buttons.b = Config.verbs.DIVE;
+            }
+
+        } else if ( this.gamebox.hero.mode !== this.buttons.b ) {
             switch ( this.gamebox.hero.mode ) {
                 case Config.hero.modes.WEAPON:
                     const weaponItem = this.hero.items.find( ( item ) => item.equip === "weapon" );

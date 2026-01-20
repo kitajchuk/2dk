@@ -45,6 +45,7 @@ export default class NPC extends QuestSprite {
 
     hit ( ...args ) {
         super.hit( ...args );
+        this.face( this.dir );
         this.aiCounter = 0;
     }
 

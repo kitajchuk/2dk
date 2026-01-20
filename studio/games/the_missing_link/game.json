@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 868,
+    "save": 870,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -309,42 +309,6 @@
                 }
             },
             "verbs": {
-                "kill": {
-                    "down": {
-                        "offsetX": 368,
-                        "offsetY": 460
-                    }
-                },
-                "item": {
-                    "down": {
-                        "offsetX": 276,
-                        "offsetY": 460
-                    }
-                },
-                "dive": {
-                    "dur": 500,
-                    "stop": true,
-                    "down": {
-                        "offsetX": 552,
-                        "offsetY": 460,
-                        "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": 552,
-                        "offsetY": 460,
-                        "stepsX": 2
-                    },
-                    "left": {
-                        "offsetX": 552,
-                        "offsetY": 460,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": 552,
-                        "offsetY": 460,
-                        "stepsX": 2
-                    }
-                },
                 "face": {
                     "down": {
                         "offsetX": 0,
@@ -537,6 +501,65 @@
                         "offsetY": 460,
                         "stepsX": 3
                     }
+                },
+                "kill": {
+                    "down": {
+                        "offsetX": 368,
+                        "offsetY": 460
+                    }
+                },
+                "item": {
+                    "down": {
+                        "offsetX": 276,
+                        "offsetY": 460
+                    }
+                },
+                "dive": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": 552,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 552,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 552,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 552,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    }
+                },
+                "swim": {
+                    "dur": 250,
+                    "down": {
+                        "offsetX": 1104,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 920,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 736,
+                        "offsetY": 460,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 736,
+                        "offsetY": 460,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
                 }
             }
         }
@@ -618,6 +641,16 @@
             "verb": "jump"
         },
         {
+            "id": "flippers",
+            "name": "Flippers",
+            "width": 32,
+            "height": 60,
+            "image": "assets/sprites/items.png",
+            "offsetX": 144,
+            "offsetY": 2,
+            "verb": "swim"
+        },
+        {
             "id": "bow",
             "name": "Bow",
             "width": 24,
@@ -683,6 +716,16 @@
             "offsetX": 210,
             "offsetY": 70,
             "collect": true
+        },
+        {
+            "id": "mushroom",
+            "name": "Mushroom",
+            "width": 40,
+            "height": 44,
+            "image": "assets/sprites/items.png",
+            "offsetX": 204,
+            "offsetY": 138,
+            "status": "curse"
         }
     ],
     "projectiles": [

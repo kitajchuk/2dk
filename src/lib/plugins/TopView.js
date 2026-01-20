@@ -25,6 +25,7 @@ class TopView extends GameBox {
         this.jumping = false;
         this.falling = false;
         this.locked = false;
+        this.swimming = false;
         this.liftLocked = false;
     }
 
@@ -138,7 +139,7 @@ class TopView extends GameBox {
 
 
     releaseD () {
-        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.swimming || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -165,6 +166,10 @@ class TopView extends GameBox {
             return;
         }
 
+        if ( this.hero.kickCounter > 0 ) {
+            return;
+        }
+
         const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
         const collision = {
             npc: this.checkNPC( poi, this.hero ),
@@ -186,6 +191,11 @@ class TopView extends GameBox {
             this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
 
         } else {
+            if ( this.swimming ) {
+                this.hero.swimKick();
+                return;
+            }
+
             const notLifting = !this.hero.is( Config.verbs.LIFT ) && !this.hero.is( Config.verbs.GRAB );
             
             // Jump...
@@ -196,14 +206,7 @@ class TopView extends GameBox {
     }
 
 
-    holdA () {
-        Utils.log( "A Hold" );
-
-        if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
-            return;
-        }
-
-    }
+    holdA () {}
 
 
     releaseA () {
@@ -223,8 +226,6 @@ class TopView extends GameBox {
 
 
     releaseHoldA () {
-        Utils.log( "A Hold Release" );
-
         if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
@@ -266,6 +267,15 @@ class TopView extends GameBox {
             return;
         }
 
+        if ( this.hero.diveCounter > 0 ) {
+            return;
+        }
+
+        if ( this.swimming ) {
+            this.hero.swimDive();
+            return;
+        }
+
         // There will be extra blocking checks wrapped around this action
         if ( !this.jumping && !this.hero.is( Config.verbs.LIFT ) ) {
             switch ( this.player.data.bButton ) {
@@ -281,8 +291,6 @@ class TopView extends GameBox {
 
 
     holdB () {
-        Utils.log( "B Hold" );
-
         if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
@@ -328,7 +336,6 @@ class TopView extends GameBox {
             this.attacking = false;
             this.hero.face( this.hero.dir );
         }
-
     }
 
 
@@ -482,7 +489,6 @@ class TopView extends GameBox {
 
         if ( collision.camera ) {
             this.handleHeroCamera( poi, dir );
-
             return;
         }
 
@@ -502,8 +508,15 @@ class TopView extends GameBox {
         }
 
         if ( this.hero.canTileSwim( poi, collision, 5 ) ) {
-            this.handleHeroTileSwim( poi, dir, collision );
-            return;
+            if ( !this.hero.hasSwim() ) {
+                this.handleHeroTileSink( poi, dir, collision );
+
+            } else {
+                this.handleHeroTileSwim( poi, dir, collision );
+            }
+
+        } else if ( this.swimming ) {
+            this.resetHeroSwim();
         }
 
         if ( collision.tiles ) {
@@ -715,6 +728,10 @@ class TopView extends GameBox {
 
 
     handleHeroPush ( poi, dir ) {
+        if ( this.swimming ) {
+            return;
+        }
+
         this.interact.push++;
 
         if ( !this.hero.is( Config.verbs.LIFT ) && this.isPushing() ) {
@@ -943,28 +960,51 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroTileSwim ( poi, dir, collision ) {
+    handleHeroTileSink ( poi, dir, collision ) {
         this.handleResetHeroDirs();
-        
-        // TODO: Handle swim animation when we get there but for now take a dive
-        if ( !this.hero.hasSwim() ) {
-            const diveTiles = collision.tiles.action.filter( ( tile ) => {
-                return tile.swim;
-            });
-            const diveTile = Utils.getMostCollidingTile( diveTiles );
-            const fallCoords = diveTile.coord;
 
-            const { fallToPosition, fallResetPosition } = this.getFallPosition( fallCoords, dir );
+        const diveTiles = collision.tiles.action.filter( ( tile ) => {
+            return tile.swim;
+        });
+        const diveTile = Utils.getMostCollidingTile( diveTiles );
+        const fallCoords = diveTile.coord;
 
-            this.falling = true;
-            this.hero.cycle( Config.verbs.DIVE, this.hero.dir );
-            this.player.gameaudio.hitSound( "parkour" );
+        const { fallToPosition, fallResetPosition } = this.getFallPosition( fallCoords, dir );
 
-            this.hero.falling = {
-                to: fallToPosition,
-                reset: fallResetPosition,
-            };
+        this.falling = true;
+        this.hero.cycle( Config.verbs.DIVE, this.hero.dir );
+        this.player.gameaudio.hitSound( "parkour" );
+
+        this.hero.falling = {
+            to: fallToPosition,
+            reset: fallResetPosition,
+        };
+    }
+
+
+    handleHeroTileSwim ( poi, dir, collision ) {
+        this.swimming = true;
+
+        if ( !this.hero.kickCounter ) {
+            this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
         }
+
+        if ( this.hero.kickCounter > 0 || this.hero.diveCounter > 0 ) {
+            if ( this.hero.canMoveWhileJumping( collision ) ) {
+                this.applyHero( poi, dir );
+            }
+
+        } else {
+            this.hero.cycle( Config.verbs.SWIM, this.hero.dir );
+        }
+    }
+
+
+    resetHeroSwim () {
+        this.swimming = false;
+        this.hero.diveCounter = 0;
+        this.hero.kickCounter = 0;
+        this.hero.resetMaxV();
     }
 
 

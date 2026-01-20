@@ -23,6 +23,8 @@ export default class Hero extends Sprite {
         this.controls = this.player.controls;
         this.killed = false;
         this.deathCounter = 0;
+        this.kickCounter = 0;
+        this.diveCounter = 0;
         this.projectile = null;
         this.mode = Config.hero.modes.WEAPON;
         this.interact = null;
@@ -38,7 +40,16 @@ export default class Hero extends Sprite {
 
 
     hit ( ...args ) {
+        if ( this.diveCounter > 0 ) {
+            return;
+        }
+
         super.hit( ...args );
+
+        if ( !this.gamebox.swimming ) {
+            this.face( this.dir );
+        }
+
         this.physics.vz = -6;
     }
 
@@ -49,6 +60,19 @@ export default class Hero extends Sprite {
         this.cycle( Config.verbs.JUMP, this.dir );
         this.physics.vz = -( this.map.data.tilesize / 3 );
         this.player.gameaudio.hitSound( Config.verbs.JUMP );
+    }
+
+
+    swimKick () {
+        this.kickCounter = 30;
+        this.physics.maxv = this.physics.controlmaxv * 4;
+        this.player.gameaudio.hitSound( Config.verbs.JUMP );
+    }
+
+
+    swimDive () {
+        this.diveCounter = 120;
+        this.cycle( Config.verbs.DIVE, this.dir );
     }
 
 
@@ -251,6 +275,19 @@ export default class Hero extends Sprite {
 * Order is: blit, update, render
 *******************************************************************************/
     blitAfter ( elapsed ) {
+        if ( this.kickCounter > 0 ) {
+            this.kickCounter--;
+        }
+
+        if ( this.diveCounter > 0 ) {
+            this.diveCounter--;
+
+            // Exit dive cycle here in case we're handling early return collision in gamebox...
+            if ( this.diveCounter === 0 ) {
+                this.cycle( Config.verbs.SWIM, this.dir );
+            }
+        }
+
         if ( this.maskFX ) {
             this.maskFX.blit( elapsed );
         }
@@ -695,6 +732,14 @@ export default class Hero extends Sprite {
         if ( this.is( Config.verbs.LIFT ) ) {
             this.cycle( Config.verbs.LIFT, this.dir );
 
+        // Swimming needs to be captured...
+        } else if ( this.gamebox.swimming ) {
+            if ( this.diveCounter > 0 ) {
+                this.cycle( Config.verbs.DIVE, this.dir );
+            } else {
+                this.cycle( Config.verbs.SWIM, this.dir );
+            }
+
         // Jumping needs to be captured...
         } else if ( this.gamebox.jumping ) {
             this.cycle( Config.verbs.JUMP, this.dir );
@@ -793,7 +838,7 @@ export default class Hero extends Sprite {
 
 
     canResetMaxV () {
-        return ( this.physics.maxv !== this.physics.controlmaxv && !this.is( Config.verbs.LIFT ) );
+        return ( this.physics.maxv !== this.physics.controlmaxv && !this.is( Config.verbs.LIFT ) && !this.gamebox.swimming );
     }
 
 

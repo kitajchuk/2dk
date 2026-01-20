@@ -133,7 +133,6 @@ export default class Sprite {
         this.stillTimer = timer;
         this.frame = 0;
         this.resetPhysics();
-        this.face( this.dir );
 
         if ( this.stats ) {
             this.stats.health = Math.max( this.stats.health - power, 0 );
