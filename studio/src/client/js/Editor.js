@@ -18,8 +18,8 @@ class Editor {
     constructor () {
         this.menus = new EditorMenus( this );
         this.layers = new EditorLayers( this );
-        this.canvas = new EditorCanvas( this );
         this.actions = new EditorActions( this );
+        this.canvas = new EditorCanvas( this );
         
         this.baseUrl = `${window.location.pathname}`;
         this.mode = null;

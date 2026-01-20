@@ -90,7 +90,7 @@ class EditorCanvas {
         this.bindMapEventMenuPost();
         this.bindActiveTilesMenuPost();
 
-        this.setActiveLayer( this.editor.layers.mode );
+        this.updateDisabledLayerMapgrid();
     }
 
 
@@ -510,20 +510,6 @@ class EditorCanvas {
         );
     }
 
-    setActiveTool ( tool ) {
-        this.draggable.resetTool();
-
-        if ( tool ) {
-            this.draggable.setTool( tool );
-        }
-
-        if ( this.editor.actions.specialTools.includes( tool ) ) {
-            this.clearTileset();
-            this.cursor.reset();
-            this.editor.layers.resetLayers();
-        }
-    }
-
 
     togglePickers ( layer ) {
         // background, foreground, collision all use the "tile" picker
@@ -540,11 +526,38 @@ class EditorCanvas {
     }
 
 
+    updateDisabledLayerMapgrid () {
+        if ( !this.editor.layers.mode && !this.editor.actions.mode ) {
+            this.layers.mapgrid.classList.add( "is-disabled" );
+        } else {
+            this.layers.mapgrid.classList.remove( "is-disabled" );
+        }
+    }
+
+
+    setActiveTool ( tool ) {
+        this.draggable.resetTool();
+
+        this.updateDisabledLayerMapgrid();
+
+        if ( tool ) {
+            this.draggable.setTool( tool );
+        }
+
+        if ( this.editor.actions.specialTools.includes( tool ) ) {
+            this.clearTileset();
+            this.cursor.reset();
+            this.editor.layers.resetLayers();
+        }
+    }
+
+
     setActiveLayer ( layer ) {
         this.draggable.resetLayer();
 
+        this.updateDisabledLayerMapgrid();
+
         if ( !layer ) {
-            this.layers.mapgrid.classList.add( "is-disabled" );
             return;
         }
 

@@ -135,21 +135,6 @@
     ],
     "npcs": [
         {
-            "id": "sign",
-            "spawn": {
-                "x": 704,
-                "y": 640
-            },
-            "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "Good luck..."
-                    ]
-                }
-            }
-        },
-        {
             "id": "cucco",
             "spawn": {
                 "x": 735,

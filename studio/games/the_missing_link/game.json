@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 890,
+    "save": 904,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1274,6 +1274,44 @@
                 {
                     "verb": "face",
                     "dir": "right"
+                }
+            ]
+        },
+        {
+            "id": "dude",
+            "name": "Dude",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "hitbox": {
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
+            },
+            "verbs": {
+                "face": {
+                    "dur": 2000,
+                    "down": {
+                        "offsetX": 476,
+                        "offsetY": 136,
+                        "stepsX": 2
+                    }
+                },
+                "talk": {
+                    "down": {
+                        "offsetX": 480,
+                        "offsetY": 136
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "talk"
+                    }
                 }
             ]
         },
