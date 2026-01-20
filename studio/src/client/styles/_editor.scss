@@ -478,6 +478,10 @@
         display: block;
         opacity: 0;
     }
+
+    &.editor__mapgrid.is-disabled {
+        display: none;
+    }
 }
 .editor__background {
     z-index: 1;
@@ -511,6 +515,16 @@
     .feather {
         width: 24px;
         height: 24px;
+    }
+
+    .checkbox {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 4px;
+        justify-content: center;
+        pointer-events: auto;
     }
 
     &.is-spawn {

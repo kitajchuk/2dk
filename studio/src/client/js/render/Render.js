@@ -59,6 +59,10 @@ const renderSpawn = ( spawn, rect ) => {
 
     return html`
         <div id="${id}" class="editor__block is-spawn js-spawn-tile" data-spawn-x="${spawn.x}" data-spawn-y="${spawn.y}">
+            <label class="checkbox js-spawn-dropin">
+                <input class="check" type="checkbox" name="dropin" ${spawn.dropin ? "checked" : ""} />
+                <span class="label">Dropin</span>
+            </label>
             <style>
                 #${id} {
                     top: ${spawn.y}px;

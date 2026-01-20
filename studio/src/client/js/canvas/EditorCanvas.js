@@ -79,6 +79,7 @@ class EditorCanvas {
         this.cellauto = new window.lib2dk.CellAutoMap();
 
         this.bindMenuEvents();
+        this.bindSpawnEvents();
         this.bindMapgridEvents();
         this.bindColliderEvents();
         this.bindDocumentEvents();
@@ -88,6 +89,8 @@ class EditorCanvas {
         this.bindNPCMenuPost();
         this.bindMapEventMenuPost();
         this.bindActiveTilesMenuPost();
+
+        this.setActiveLayer( this.editor.layers.mode );
     }
 
 
@@ -538,23 +541,27 @@ class EditorCanvas {
 
 
     setActiveLayer ( layer ) {
-        this.draggable.resetLayer()
+        this.draggable.resetLayer();
 
-        if ( layer ) {
-            this.draggable.setLayer( layer );
-            this.togglePickers( layer );
+        if ( !layer ) {
+            this.layers.mapgrid.classList.add( "is-disabled" );
+            return;
+        }
 
-            if ( layer === Config.EditorLayers.modes.OBJ || layer === Config.EditorLayers.modes.NPC ) {
-                this.clearTileset();
+        this.layers.mapgrid.classList.remove( "is-disabled" );
+        this.draggable.setLayer( layer );
+        this.togglePickers( layer );
 
-            // Clear NPC & Object previews (if they exist)
-            } else if ( !this.tilesetCoords.length ) {
-                this.clearTileset();
-            }
+        if ( layer === Config.EditorLayers.modes.OBJ || layer === Config.EditorLayers.modes.NPC ) {
+            this.clearTileset();
 
-            if ( this.editor.actions.specialTools.includes( this.editor.actions.mode ) ) {
-                this.editor.actions.resetActions();
-            }
+        // Clear NPC & Object previews (if they exist)
+        } else if ( !this.tilesetCoords.length ) {
+            this.clearTileset();
+        }
+
+        if ( this.editor.actions.specialTools.includes( this.editor.actions.mode ) ) {
+            this.editor.actions.resetActions();
         }
     }
 
@@ -880,8 +887,6 @@ class EditorCanvas {
         return {
             x: this.canvasMouseCoords.x,
             y: this.canvasMouseCoords.y,
-            width: this.spawn.width ,
-            height: this.spawn.height,
         };
     }
 
@@ -1745,6 +1750,36 @@ class EditorCanvas {
         ipcRenderer.on( "menu-contextmenu", ( e, action ) => {
             this.isMouseDownCanvas = false;
             this.contextCoords = null;
+        });
+    }
+
+
+    bindSpawnEvents () {
+        this.layers.spawn.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-spawn-tile" );
+
+            if ( !target ) {
+                return;
+            }
+            
+            const dropin = target.querySelector( "input[name='dropin']" );
+            const hitSpawn = {
+                x: parseInt( target.dataset.spawnX, 10 ),
+                y: parseInt( target.dataset.spawnY, 10 ),
+            };
+
+            this.map.spawn = this.map.spawn.map(( spawn ) => {
+                if ( spawn.x === hitSpawn.x && spawn.y === hitSpawn.y ) {
+                    if ( dropin.checked ) {
+                        spawn.dropin = true;
+                    } else {
+                        delete spawn.dropin;
+                    }
+                }
+
+                return spawn;
+            });
+            
         });
     }
 

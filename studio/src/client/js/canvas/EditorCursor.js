@@ -191,8 +191,8 @@ class EditorCursor {
         this.cursors.dom.style.setProperty( "--o", 1 );
         this.cursors.dom.style.setProperty( "--x", `${newSpawn.x}px` );
         this.cursors.dom.style.setProperty( "--y", `${newSpawn.y}px` );
-        this.cursors.dom.style.setProperty( "--w", `${newSpawn.width}px` );
-        this.cursors.dom.style.setProperty( "--h", `${newSpawn.height}px` );
+        this.cursors.dom.style.setProperty( "--w", `${this.editorCanvas.spawn.width}px` );
+        this.cursors.dom.style.setProperty( "--h", `${this.editorCanvas.spawn.height}px` );
         this.cursors.dom.innerHTML = window.feather.icons[ "map-pin" ].toSvg();
         this.cursors.dom.classList.add( "editor__block", "is-spawn" );
     }
