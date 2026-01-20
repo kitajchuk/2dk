@@ -493,6 +493,11 @@ export default class GameBox {
             const collides = Utils.collide( hitbox, events[ i ].eventbox, events[ i ].tolerance );
 
             if ( collides && isDir ) {
+                if ( events[ i ].isSingleTile ) {
+                    if ( this.map.getActiveTileOnCoords( events[ i ].data.coords ) ) {
+                        return false;
+                    }
+                }
                 return events[ i ];
             }
         }

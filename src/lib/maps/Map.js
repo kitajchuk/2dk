@@ -461,6 +461,13 @@ export default class Map {
     }
 
 
+    getActiveTileOnCoords ( coords ) {
+        return this.activeTiles.find( ( activeTiles ) => {
+            return activeTiles.isPushed( coords );
+        });
+    }
+
+
     getActiveTile ( celsCoords, celsCopy ) {
         // Either return a tile or don't if it's a static thing...
         // Only supported for the background layer for now...
