@@ -11,7 +11,7 @@
     "image": "assets/tiles/inside.png",
     "snapshot": "assets/snapshots/old-hags-nest.png",
     "thumbnail": "assets/snapshots/old-hags-nest-thumb.png",
-    "sound": "assets/sounds/bgm-phone-booth.mp3",
+    "sound": "assets/sounds/bgm-spirit-dance.mp3",
     "spawn": [
         {
             "x": 595,

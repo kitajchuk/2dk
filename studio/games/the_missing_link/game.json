@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 871,
+    "save": 874,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -34,7 +34,8 @@
         "moveObject": "assets/sounds/sfx-move-object.mp3",
         "rupee": "assets/sounds/sfx-rupee.mp3",
         "heart": "assets/sounds/sfx-heart.mp3",
-        "death": "assets/sounds/sfx-death.mp3"
+        "death": "assets/sounds/sfx-death.mp3",
+        "damage": "assets/sounds/sfx-damage.mp3"
     },
     "intro": {
         "image": "assets/scenes/logo.png",
@@ -1867,6 +1868,9 @@
         "assets/sounds/sfx-smash.mp3",
         "assets/sounds/sfx-sword.mp3",
         "assets/sounds/sfx-throw.mp3",
+        "assets/sounds/bgm-spirit-dance.mp3",
+        "assets/sounds/bgm-misty-cave.mp3",
+        "assets/sounds/sfx-damage.mp3",
         "assets/scenes/logo.png",
         "maps/beneath-the-grave.json",
         "maps/beneath-the-moblin-hideout.json",
