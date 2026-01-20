@@ -682,11 +682,6 @@ export default class GameBox {
         // Plays the new map's music
         this.initMap();
 
-        // Handle the `dropin` effect
-        if ( this.dropin ) {
-            this.hero.position.z = -( this.camera.height / 2 );
-        }
-
         // Create a new Companion
         if ( this.companion ) {
             const newCompanionData = { ...this.hero.data.companion };
@@ -721,10 +716,21 @@ export default class GameBox {
             // New Map data
             const newMapData = Loader.cash( event.data.map );
             const newHeroPos = this.hero.getPositionForNewMap();
+            const newSpawn = Utils.def( event.data.spawn ) ? newMapData.spawn[ event.data.spawn ] : {
+                x: newHeroPos.x,
+                y: newHeroPos.y,
+            };
 
             // Set a spawn index...
-            this.hero.position.x = ( Utils.def( event.data.spawn ) ? newMapData.spawn[ event.data.spawn ].x : newHeroPos.x );
-            this.hero.position.y = ( Utils.def( event.data.spawn ) ? newMapData.spawn[ event.data.spawn ].y : newHeroPos.y );
+            this.hero.position.x = newSpawn.x;
+            this.hero.position.y = newSpawn.y;
+
+            // Handle the `dropin` effect
+            if ( newSpawn.dropin ) {
+                this.dropin = true;
+                this.hero.position.z = -( this.camera.height / 2 );
+                this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
+            }
 
             this.afterChangeMap( newMapData );
 

@@ -586,7 +586,6 @@ export default class Hero extends Sprite {
             // This wouldn't work if he event verb was anything other than FALL...
             if ( this.frameStopped ) {
                 this.frameStopped = false;
-                this.gamebox.dropin = true;
                 this.applyParkourComplete();
                 return;
             }
@@ -741,7 +740,7 @@ export default class Hero extends Sprite {
             }
 
         // Jumping needs to be captured...
-        } else if ( this.gamebox.jumping ) {
+        } else if ( this.gamebox.jumping || this.gamebox.dropin ) {
             this.cycle( Config.verbs.JUMP, this.dir );
 
         // Attack needs to be captured...
