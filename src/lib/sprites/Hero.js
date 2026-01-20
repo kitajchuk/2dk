@@ -3,6 +3,7 @@ import Config from "../Config";
 import Sprite from "./Sprite";
 import Spring from "../Spring";
 import Projectile from "./Projectile";
+import FX from "./FX";
 
 
 
@@ -13,6 +14,7 @@ import Projectile from "./Projectile";
 export default class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
+        this.onscreen = true;
         this.status = null;
         this.currency = this.data.currency || 0;
         this.itemGet = null;
@@ -94,6 +96,14 @@ export default class Hero extends Sprite {
         this.itemGet = null;
         this.stillTimer = 0;
         this.face( "down" );
+    }
+
+
+    addMaskFX ( data ) {
+        this.maskFX = new HeroMaskFX( data, this, this.map, {
+            x: this.position.x,
+            y: this.position.y,
+        });
     }
 
 
@@ -980,6 +990,22 @@ export default class Hero extends Sprite {
     }
 }
 
+
+
+/*******************************************************************************
+* Hero Mask FX
+* Used to display the mask the hero is wearing
+*******************************************************************************/
+export class HeroMaskFX extends FX {
+    constructor ( fx, hero, map, spawn ) {
+        const data = {
+            ...fx,
+            spawn,
+        };
+        super( data, map );
+        this.hero = hero;
+    }
+}
 
 
 /*******************************************************************************

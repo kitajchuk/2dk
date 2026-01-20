@@ -1065,13 +1065,7 @@ class TopView extends GameBox {
             }, "fx" );
             
             if ( maskData && !this.hero.maskFX ) {
-                this.hero.maskFX = new FX({
-                    ...maskData,
-                    spawn: {
-                        x: this.hero.position.x,
-                        y: this.hero.position.y,
-                    },
-                }, this.map );
+                this.hero.addMaskFX( maskData );
             }
 
         } else if ( ( !maskTile || maskAmount < 100 ) && this.hero.maskFX ) {

@@ -28,6 +28,15 @@ export default class ItemDrop extends Sprite {
     }
 
 
+    update () {
+        if ( !this.onscreen ) {
+            this.map.killObject( "items", this );
+        }
+
+        this.updateStack();
+    }
+
+
 /*******************************************************************************
 * Applications
 *******************************************************************************/

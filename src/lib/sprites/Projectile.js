@@ -75,7 +75,7 @@ export default class Projectile extends Sprite {
 
 
     update () {
-        if ( !this.visible() ) {
+        if ( !this.onscreen ) {
             return;
         }
 

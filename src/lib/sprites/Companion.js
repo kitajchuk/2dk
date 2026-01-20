@@ -15,6 +15,7 @@ export default class Companion extends Sprite {
         this.hero = hero;
         this.spring = new Spring( this.player, this.position.x, this.position.y, 10 );
         this.spring.bind( this );
+        this.onscreen = true;
     }
 
 
@@ -33,10 +34,6 @@ export default class Companion extends Sprite {
 * Order is: blit, update, render
 *******************************************************************************/
     blit ( elapsed ) {
-        if ( !this.visible() ) {
-            return;
-        }
-
         if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
         }

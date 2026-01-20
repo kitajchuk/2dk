@@ -28,6 +28,9 @@ export default class FX extends Sprite {
 
 
     blit ( elapsed ) {
+        // Same as base Sprite class
+        // Call visible() on blit to assign onscreen property
+        // Then update() and render() can use that rather than executing again
         if ( !this.visible() ) {
             return;
         }

@@ -114,7 +114,7 @@ export default class NPC extends QuestSprite {
 * Default behavior for a Sprite is to be static but with Physics forces
 *******************************************************************************/
     update () {
-        if ( !this.visible() ) {
+        if ( !this.onscreen ) {
             return;
         }
 

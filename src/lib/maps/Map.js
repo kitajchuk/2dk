@@ -244,6 +244,8 @@ export default class Map {
     }
 
 
+    // TODO: This could be better optimized
+    // (Sprite class is using onscreen to add/remove from allSprites array)
     sortAllSprites () {
         this.allSprites.sort( ( a, b ) => {
             return a.prio - b.prio;
@@ -251,7 +253,6 @@ export default class Map {
     }
 
 
-    // TODO: This could be better optimized...
     renderAllSprites () {
         for ( let i = 0; i < this.allSprites.length; i++ ) {
             this.gamebox.renderQueue.add( this.allSprites[ i ] );

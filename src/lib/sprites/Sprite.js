@@ -31,6 +31,7 @@ export default class Sprite {
             z: ( this.data.spawn && this.data.spawn.z || 0 ),
         };
         this.prio = this.position.y + this.height;
+        this.onscreen = false;
         this.speed = Config.physics.speed;
         this.physics = {
             vx: ( this.data.vx || 0 ),
@@ -123,11 +124,6 @@ export default class Sprite {
     }
 
 
-    visible () {
-        return Utils.collide( this.gamebox.camera, this.getFullbox() );
-    }
-
-
     hit ( power = 1, timer = 50 ) {
         this.hitTimer = timer;
         this.stillTimer = timer;
@@ -176,7 +172,25 @@ export default class Sprite {
 * Update is overridden for Sprite subclasses with different behaviors
 * Default behavior for a Sprite is to be static but with Physics forces
 *******************************************************************************/
+    visible () {
+        this.onscreen = Utils.collide( this.gamebox.camera, this.getFullbox() );
+        
+        // Don't mess with Hero sprites (e.g. mask FX or lifted tile etc...)
+        if ( !this.hero ) {
+            if ( !this.onscreen ) {
+                this.map.removeAllSprite( this );
+            } else {
+                this.map.addAllSprite( this );
+            }
+        }
+
+        return this.onscreen;
+    }
+
+
     blit ( elapsed ) {
+        // Call visible() on blit to assign onscreen property
+        // Then update() and render() can use that rather than executing again
         if ( !this.visible() ) {
             return;
         }
@@ -207,7 +221,7 @@ export default class Sprite {
 
 
     update () {
-        if ( !this.visible() ) {
+        if ( !this.onscreen ) {
             return;
         }
 
@@ -228,7 +242,7 @@ export default class Sprite {
 
 
     render () {
-        if ( !this.visible() ) {
+        if ( !this.onscreen ) {
             return;
         }
 

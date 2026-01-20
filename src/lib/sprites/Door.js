@@ -76,7 +76,7 @@ export default class Door extends QuestSprite {
 * Default behavior for a Sprite is to be static but with Physics forces
 *******************************************************************************/
     render () {
-        if ( !this.visible() ) {
+        if ( !this.onscreen ) {
             return;
         }
 
