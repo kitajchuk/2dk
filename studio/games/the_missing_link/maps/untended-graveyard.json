@@ -389,26 +389,6 @@
             }
         },
         {
-            "id": "bird-statue",
-            "spawn": {
-                "x": 1856,
-                "y": 384
-            },
-            "action": {
-                "verb": "push",
-                "sound": "moveObject"
-            },
-            "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "Here stands the flying rooster.",
-                        "His gaze watches over the cursed tomb."
-                    ]
-                }
-            }
-        },
-        {
             "id": "boarblin",
             "spawn": {
                 "x": 1370,
@@ -13492,6 +13472,10 @@
                     [
                         128,
                         448
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
