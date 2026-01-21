@@ -276,6 +276,14 @@
                                 "I wonder if this is the key they were referring to?"
                             ]
                         }
+                    },
+                    "setFlag": {
+                        "key": "like-like-killed",
+                        "value": 1
+                    },
+                    "checkFlag": {
+                        "key": "like-like-killed",
+                        "value": 1 
                     }
                 }
             }
