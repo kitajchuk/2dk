@@ -203,10 +203,10 @@ export default class Hero extends Sprite {
 
         this.items.push( item );
 
-        if ( this.data.verbs.item?.down ) {
+        if ( this.data.verbs.itemGet?.down ) {
             this.itemGet = new ItemGet( this.position, item, this.map, this );
             this.stillTimer = Infinity;
-            this.cycle( "item", "down" );
+            this.cycle( "itemGet", "down" );
             this.player.gameaudio.hitSound( "itemGet" );
         }
 
@@ -490,12 +490,16 @@ export default class Hero extends Sprite {
             if ( this.maskFX ) {
                 this.maskFX.paused = true;
             }
-            
-            if ( this.data.verbs.kill?.down ) {
-                this.cycle( "kill", "down" );
-                this.player.gameaudio.stop();
-                this.player.gameaudio.hitSound( "death" );
+
+            if ( this.gamebox.swimming ) {
+                this.cycle( Config.verbs.DIVE, "down" );
+
+            } else if ( this.data.verbs.die?.down ) {
+                this.cycle( "die", "down" );
             }
+
+            this.player.gameaudio.stop();
+            this.player.gameaudio.hitSound( "death" );
         }
     }
 

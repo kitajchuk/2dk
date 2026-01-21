@@ -503,13 +503,13 @@
                         "stepsX": 3
                     }
                 },
-                "kill": {
+                "die": {
                     "down": {
                         "offsetX": 368,
                         "offsetY": 460
                     }
                 },
-                "item": {
+                "itemGet": {
                     "down": {
                         "offsetX": 276,
                         "offsetY": 460
