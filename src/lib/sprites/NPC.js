@@ -27,6 +27,8 @@ export default class NPC extends QuestSprite {
         this.projectile = null;
         this.dirX = null;
         this.dirY = null;
+        this.lastDir = this.dir;
+        this.lastFrame = 0;
         this.stepsX = 0;
         this.stepsY = 0;
         this.pushed = null;
@@ -291,6 +293,9 @@ export default class NPC extends QuestSprite {
                 case Config.npc.ai.WANDER:
                     this.handleWander();
                     break;
+                case Config.npc.ai.STEP:
+                    this.handleStep();
+                    break;
             }
         }
     }
@@ -342,9 +347,8 @@ export default class NPC extends QuestSprite {
                 this.verb = Config.verbs.WALK;
             }
 
-            for ( let i = DIRS.length; i--; ) {
-                this.controls[ DIRS[ i ] ] = ( DIRS[ i ] === this.dir );
-            }
+            this.handleResetControls();
+            this.controls[ this.dir ] = true;
         } else {
             this.aiCounter--;
 
@@ -352,6 +356,46 @@ export default class NPC extends QuestSprite {
                 this.resetWalk();
             }
         }
+    }
+
+
+    // Designed for NPCs such as a Like-Like that only has a single verb (face) with stepsX
+    handleStep () {
+        if ( !this.aiCounter ) {
+            const lastDir = this.lastDir;
+            const newDir = DIRS[ Utils.random( 0, DIRS.length - 1 ) ];
+
+            // Always pick a new direction
+            if ( lastDir === newDir ) {
+                this.aiCounter = 0;
+                this.handleStep();
+                return;
+            }
+
+            this.lastDir = newDir;
+            this.aiCounter = Utils.random( 120, 240 );
+
+        } else {
+            this.aiCounter--;
+
+            const interval = this.data.verbs[ this.verb ].dur / this.data.verbs[ this.verb ][ this.dir ].stepsX;
+            const delta = ( this.previousElapsed  - this.lastUpdateTime );
+
+            if ( delta >= interval ) {
+                this.handleResetControls();
+            }
+
+            if ( this.frame === this.lastFrame ) {
+                return;
+            }
+
+            this.lastFrame = this.frame;
+            this.lastUpdateTime = this.previousElapsed;
+
+            this.handleResetControls();
+            this.controls[ this.lastDir ] = true;
+        }
+        
     }
 
 
@@ -378,9 +422,8 @@ export default class NPC extends QuestSprite {
             this.aiCounter--;
         }
 
-        for ( let i = DIRS.length; i--; ) {
-            this.controls[ DIRS[ i ] ] = ( DIRS[ i ] === this.dir );
-        }
+        this.handleResetControls();
+        this.controls[ this.dir ] = true;
     }
 
 

@@ -102,6 +102,7 @@ const Config = {
             ROAM: "roam",
             FLOAT: "float",
             WANDER: "wander",
+            STEP: "step",
         },
         types: {
             DOOR: "door",

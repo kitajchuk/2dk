@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 955,
+    "save": 959,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -736,8 +736,8 @@
             "image": "assets/sprites/npcs.png",
             "width": 56,
             "height": 60,
-            "offsetX": 552,
-            "offsetY": 278,
+            "offsetX": 620,
+            "offsetY": 142,
             "power": 0.5,
             "fx": "smoke",
             "sound": "smash"
@@ -1019,6 +1019,62 @@
                     "right": {
                         "offsetX": 410,
                         "offsetY": 274,
+                        "stepsX": 2
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "walk",
+                    "dir": "down"
+                }
+            ]
+        },
+        {
+            "id": "like-like",
+            "name": "Like-Like",
+            "width": 68,
+            "height": 68,
+            "image": "assets/sprites/npcs.png",
+            "verb": "walk",
+            "maxv": 0.5,
+            "controlmaxv": 0.5,
+            "hitbox": {
+                "x": 4,
+                "y": 4,
+                "width": 64,
+                "height": 64
+            },
+            "stats": {
+                "power": 1,
+                "health": 2
+            },
+            "drops": [
+                {
+                    "id": "heart",
+                    "chance": 10
+                },
+                {
+                    "id": "green-rupee",
+                    "chance": 10
+                },
+                {
+                    "id": "blue-rupee",
+                    "chance": 5
+                }
+            ],
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 544,
+                        "offsetY": 272
+                    }
+                },
+                "walk": {
+                    "dur": 1000,
+                    "down": {
+                        "offsetX": 544,
+                        "offsetY": 272,
                         "stepsX": 2
                     }
                 }

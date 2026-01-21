@@ -372,9 +372,7 @@ class TopView extends GameBox {
 * Hero Handlers...
 *******************************************************************************/
     handleResetHeroDirs () {
-        for ( let i = DIRS.length; i--; ) {
-            this.player.controls[ DIRS[ i ] ] = false;
-        }
+        this.hero.handleResetControls();
     }
 
 
@@ -766,9 +764,11 @@ class TopView extends GameBox {
         }
 
         if ( item.data.collect ) {
+            const hasItemAlready = this.hero.getItem( item.data.id );
+
             this.hero.collectItem( item.data.id );
 
-            if ( item.data.dialogue ) {
+            if ( item.data.dialogue && !hasItemAlready ) {
                 this.dialogue.play( item.data.dialogue ).then( () => {
                     this.hero.resetItemGet();
 
@@ -776,6 +776,7 @@ class TopView extends GameBox {
                     this.hero.resetItemGet();
                 });
             }
+            // TODO: Add sound here for ite pickup if it's not first time...
         }
 
         this.map.killObject( "items", item );
