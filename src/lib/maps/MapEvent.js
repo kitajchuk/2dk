@@ -1,3 +1,7 @@
+import Utils from "../Utils";
+
+
+
 /*******************************************************************************
 * MapEvent
 * A single event on the map that can be triggered by the player.
@@ -20,11 +24,46 @@ export default class MapEvent {
         this.isEdgeTile = (
             this.eventbox.x === 0 ||
             this.eventbox.y === 0 ||
-            this.eventbox.x + this.eventbox.width === this.map.width
-            // Omit y-axis since that is representative of hitbox (footbox)
+            this.eventbox.x + this.eventbox.width === this.map.width ||
+            this.eventbox.y + this.eventbox.height === this.map.height
         );
-        this.tolerance = this.isSingleTile && this.data.dir !== "down" ? 
-            10 : 
-            20;
+    }
+
+
+    isBlockedByTile () {
+        return this.isSingleTile && this.map.getActiveTileOnCoords( this.data.coords );
+    }
+
+
+    checkCollision ( poi, sprite ) {
+        const hitbox = this.isEdgeTile ? sprite.getFullbox( poi ) : sprite.getHitbox( poi );
+        const collides = Utils.collide( hitbox, this.eventbox );
+
+        switch ( sprite.dir ) {
+            case "up":
+                return collides && (
+                    this.isEdgeTile ?
+                        hitbox.y <= 0 :
+                        hitbox.y <= this.eventbox.y + this.eventbox.height / 2
+                );
+            case "down":
+                return collides && (
+                    this.isEdgeTile ?
+                        hitbox.y + hitbox.height >= this.map.height :
+                    hitbox.y + hitbox.height >= this.eventbox.y + this.eventbox.height / 2
+                );
+            case "left":
+                return collides && (
+                    this.isEdgeTile ?
+                        hitbox.x <= 0 :
+                        hitbox.x <= this.eventbox.x + this.eventbox.width / 2
+                );
+            case "right":
+                return collides && (
+                    this.isEdgeTile ?
+                        hitbox.x + hitbox.width >= this.map.width :
+                        hitbox.x + hitbox.width >= this.eventbox.x + this.eventbox.width / 2
+                );
+        }
     }
 }

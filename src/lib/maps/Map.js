@@ -262,6 +262,7 @@ export default class Map {
 
     renderDebug () {
         const visibleColliders = this.gamebox.getVisibleColliders();
+        const visibleEvents = this.gamebox.getVisibleEvents();
 
         this.gamebox.mapLayer.context.save();
         this.gamebox.mapLayer.context.globalAlpha = 0.5;
@@ -273,6 +274,16 @@ export default class Map {
                 this.offset.y + visibleColliders[ i ].y,
                 visibleColliders[ i ].width,
                 visibleColliders[ i ].height
+            );
+        }
+
+        for ( let i = visibleEvents.length; i--; ) {
+            this.gamebox.mapLayer.context.fillStyle = Config.colors.blue;
+            this.gamebox.mapLayer.context.fillRect(
+                this.offset.x + visibleEvents[ i ].eventbox.x,
+                this.offset.y + visibleEvents[ i ].eventbox.y,
+                visibleEvents[ i ].eventbox.width,
+                visibleEvents[ i ].eventbox.height
             );
         }
 

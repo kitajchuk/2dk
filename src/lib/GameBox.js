@@ -489,14 +489,16 @@ export default class GameBox {
             // An event without a "dir" can be triggered from any direction
             const hasDir = events[ i ].data.dir;
             const isDir = hasDir ? ( sprite.dir === hasDir ) : true;
-            const hitbox = events[ i ].isEdgeTile ? sprite.getFullbox( poi ) : sprite.getHitbox( poi );
-            const collides = Utils.collide( hitbox, events[ i ].eventbox, events[ i ].tolerance );
 
-            if ( collides && isDir ) {
-                if ( events[ i ].isSingleTile ) {
-                    if ( this.map.getActiveTileOnCoords( events[ i ].data.coords ) ) {
-                        return false;
-                    }
+            if ( !isDir ) {
+                continue;
+            }
+
+            const collides = events[ i ].checkCollision( poi, sprite );
+
+            if ( collides ) {
+                if ( events[ i ].isBlockedByTile() ) {
+                    return false;
                 }
                 return events[ i ];
             }
