@@ -35,9 +35,18 @@ export default class MapEvent {
     }
 
 
-    checkCollision ( poi, sprite ) {
+    checkCollision ( poi, sprite, isDir ) {
         const hitbox = this.isEdgeTile ? sprite.getFullbox( poi ) : sprite.getHitbox( poi );
-        const collides = Utils.collide( hitbox, this.eventbox );
+        const collides = Utils.collide( this.eventbox, hitbox );
+        
+
+        if ( !isDir ) {
+            const hitboxArea = hitbox.width * hitbox.height;
+            const collisionArea = collides ? collides.width * collides.height : 0;
+            const amount = collides ? collisionArea / hitboxArea * 100 : 0;
+            const meetsThreshold = isDir ? true : amount >= this.map.data.tilesize;
+            return collides && meetsThreshold;
+        }
 
         switch ( sprite.dir ) {
             case "up":
@@ -50,7 +59,7 @@ export default class MapEvent {
                 return collides && (
                     this.isEdgeTile ?
                         hitbox.y + hitbox.height >= this.map.height :
-                    hitbox.y + hitbox.height >= this.eventbox.y + this.eventbox.height / 2
+                        hitbox.y + hitbox.height >= this.eventbox.y + this.eventbox.height / 2
                 );
             case "left":
                 return collides && (
