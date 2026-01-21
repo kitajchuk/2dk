@@ -96,14 +96,6 @@
     ],
     "npcs": [
         {
-            "id": "mouse",
-            "spawn": {
-                "x": 286,
-                "y": 351
-            },
-            "ai": "wander"
-        },
-        {
             "id": "ghost",
             "spawn": {
                 "x": 1116,
@@ -118,6 +110,48 @@
                 "y": 216
             },
             "ai": "float"
+        },
+        {
+            "id": "like-like",
+            "spawn": {
+                "x": 344,
+                "y": 350
+            },
+            "ai": "step",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
+        },
+        {
+            "id": "like-like",
+            "spawn": {
+                "x": 869,
+                "y": 92
+            },
+            "ai": "step",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
+        },
+        {
+            "id": "like-like",
+            "spawn": {
+                "x": 656,
+                "y": 733
+            },
+            "ai": "step",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
         }
     ],
     "collision": [

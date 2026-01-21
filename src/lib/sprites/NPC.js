@@ -256,7 +256,7 @@ export default class NPC extends QuestSprite {
         if ( isCollision ) {
             // Let wandering NPCs cool down before moving again
             // While roaming NPCs can immediately move again
-            if ( this.data.ai === Config.npc.ai.ROAM ) {
+            if ( this.data.ai === Config.npc.ai.ROAM || this.data.ai === Config.npc.ai.STEP ) {
                 this.aiCounter = 0;
             }
 
@@ -374,6 +374,7 @@ export default class NPC extends QuestSprite {
 
             this.lastDir = newDir;
             this.aiCounter = Utils.random( 120, 240 );
+            this.handleResetControls();
 
         } else {
             this.aiCounter--;
