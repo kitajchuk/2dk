@@ -38,13 +38,16 @@ export default class MapEvent {
     checkCollision ( poi, sprite, isDir ) {
         const hitbox = this.isEdgeTile ? sprite.getFullbox( poi ) : sprite.getHitbox( poi );
         const collides = Utils.collide( this.eventbox, hitbox );
-        
+
+        if ( !collides ) {
+            return false;
+        }
 
         if ( !isDir ) {
             const hitboxArea = hitbox.width * hitbox.height;
-            const collisionArea = collides ? collides.width * collides.height : 0;
-            const amount = collides ? collisionArea / hitboxArea * 100 : 0;
-            const meetsThreshold = isDir ? true : amount >= this.map.data.tilesize;
+            const collisionArea = collides.width * collides.height;
+            const amount = collisionArea / hitboxArea * 100;
+            const meetsThreshold = amount >= this.map.data.tilesize;
             return collides && meetsThreshold;
         }
 

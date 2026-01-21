@@ -838,6 +838,7 @@ export default class Hero extends Sprite {
         return (
             !collision.map &&
             !collision.npc &&
+            !collision.door &&
             !collision.camera &&
             !( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
                 return tile.stop;
