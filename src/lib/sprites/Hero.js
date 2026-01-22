@@ -160,6 +160,10 @@ export default class Hero extends Sprite {
 
 
     fireProjectile () {
+        if ( this.projectile ) {
+            return;
+        }
+
         const item = this.items.find( ( item ) => item.projectile );
 
         if ( !item ) {
