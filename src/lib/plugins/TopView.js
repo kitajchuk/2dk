@@ -546,7 +546,6 @@ class TopView extends GameBox {
 
 
     handleHeroJump () {
-        // @check: hero-verb-check
         if ( !this.hero.can( Config.verbs.JUMP ) ) {
             return;
         }
@@ -681,7 +680,6 @@ class TopView extends GameBox {
 
 
     handleHeroPushNPC ( poi, dir, collision ) {
-        // @check: hero-verb-check
         if ( !collision.npc.canDoAction( Config.verbs.PUSH ) ) {
             return;
         }
@@ -733,7 +731,6 @@ class TopView extends GameBox {
         this.interact.push++;
 
         if ( !this.hero.is( Config.verbs.LIFT ) && this.isPushing() ) {
-            // @check: hero-verb-check
             if ( !this.hero.can( Config.verbs.PUSH ) ) {
                 return;
             }
@@ -874,7 +871,6 @@ class TopView extends GameBox {
             return;
         }
 
-        // @check: hero-verb-check
         if ( !this.hero.is( Config.verbs.WALK ) && !this.hero.can( Config.verbs.RUN ) ) {
             return;
         }
@@ -892,7 +888,6 @@ class TopView extends GameBox {
             return;
         }
 
-        // @check: hero-verb-check
         if ( !this.hero.can( Config.verbs.ATTACK ) ) {
             return;
         }

@@ -294,15 +294,14 @@ class Player extends Controller {
         });
         this.heroData = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
         this.resolution = this.getResolution( this.device ? 2 : this.data.resolution );
-        this.element.dataset.resolution = this.resolution;
         this.debug();
         this.width = this.data.width / this.resolution;
         this.height = this.data.height / this.resolution;
         this.buildScreen();
         this.onRotate();
         this.splashLoad.innerHTML = `
-            ${renderGameInfo( this.data )}
-            ${renderSplash( "Press Start" )}
+        ${renderGameInfo( this.data )}
+        ${renderSplash( "Press Start" )}
         `;
         this.gamepad = new GamePad( this );
         this.gameaudio = new GameAudio( this.device );
@@ -400,6 +399,7 @@ class Player extends Controller {
 
 
     buildScreen () {
+        this.element.dataset.resolution = this.resolution;
         this.screen = document.createElement( "div" );
         this.screen.className = "_2dk__screen";
         this.screen.style.width = `${this.width}px`;

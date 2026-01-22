@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 962,
+    "save": 963,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1047,7 +1047,7 @@
             },
             "stats": {
                 "power": 1,
-                "health": 2
+                "health": 20
             },
             "drops": [
                 {
@@ -1349,7 +1349,7 @@
                 "face": {
                     "dur": 2000,
                     "down": {
-                        "offsetX": 476,
+                        "offsetX": 480,
                         "offsetY": 136,
                         "stepsX": 2
                     }

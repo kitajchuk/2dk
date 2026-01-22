@@ -342,7 +342,6 @@ export default class NPC extends QuestSprite {
 
             this.dir = newDir;
 
-            // @check: hero-verb-check
             if ( this.can( Config.verbs.WALK ) ) {
                 this.verb = Config.verbs.WALK;
             }
@@ -376,6 +375,10 @@ export default class NPC extends QuestSprite {
             this.aiCounter = Utils.random( 120, 240 );
             this.handleResetControls();
 
+            if ( this.can( Config.verbs.WALK ) ) {
+                this.verb = Config.verbs.WALK;
+            }
+
         } else {
             this.aiCounter--;
 
@@ -387,6 +390,7 @@ export default class NPC extends QuestSprite {
             }
 
             if ( this.frame === this.lastFrame ) {
+                Utils.log( "Same frame" );
                 return;
             }
 
@@ -415,7 +419,6 @@ export default class NPC extends QuestSprite {
             this.dir = newDir;
             this.aiCounter = Utils.random( 120, 240 );
 
-            // @check: hero-verb-check
             if ( this.can( Config.verbs.WALK ) ) {
                 this.verb = Config.verbs.WALK;
             }
@@ -490,7 +493,6 @@ export default class NPC extends QuestSprite {
                 this.physics.vz = -6;
             }
 
-            // @check: hero-verb-check
             if ( this.can( Config.verbs.WALK ) ) {
                 this.verb = Config.verbs.WALK;
             }

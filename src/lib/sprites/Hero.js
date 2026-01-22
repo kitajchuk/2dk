@@ -882,7 +882,6 @@ export default class Hero extends Sprite {
             collision.tiles.action.length &&
             collision.tiles.action[ 0 ].action &&
             collision.tiles.action[ 0 ].instance.canInteract( Config.verbs.LIFT ) &&
-            // @check: hero-verb-check
             this.can( Config.verbs.LIFT ) &&
             this.can( Config.verbs.GRAB )
         );
