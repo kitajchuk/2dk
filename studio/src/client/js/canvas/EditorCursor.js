@@ -34,7 +34,7 @@ class EditorCursor {
     }
 
 
-    getCursorOffsetCoords ( coords, obj ) {
+    getCursorOffsetCoords ( coords, sprite ) {
         let x = coords[ 0 ];
         let y = coords[ 1 ];
 
@@ -46,35 +46,34 @@ class EditorCursor {
         // Support for negative object placement at the top of the canvas
         // Placing with overflow off the bottom of the canvas works by default
         if ( x === 0 && mouseX < midX ) {
-            x = x - ( ( obj.width / 2 ) / this.map.tilesize );
+            x = x - ( ( sprite.width / 2 ) / this.map.tilesize );
         }
 
         if ( y === 0 && mouseY < midY ) {
-            y = y - ( ( obj.height / 2 ) / this.map.tilesize );
+            y = y - ( ( sprite.height / 2 ) / this.map.tilesize );
         }
 
         return [ x, y ];
     }
 
 
-    showCanvasCursor ( coords, objectOrNPC ) {
+    showCanvasCursor ( coords, sprite ) {
         // Default to the tile grid
         let x = coords[ 0 ] * this.map.tilesize;
         let y = coords[ 1 ] * this.map.tilesize;
 
-        if ( objectOrNPC ) {
+        if ( sprite ) {
             const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
             
-            // NPCs don't need to be locked to the tile grid
-            if ( isNPC && !this.editorCanvas.dom.snapNPCToGrid.checked ) {
-                x = this.editorCanvas.canvasMouseCoords.x;
-                y = this.editorCanvas.canvasMouseCoords.y;
-
-            // Objects will be locked to the tile grid
-            } else {
-                const offsetCoords = this.getCursorOffsetCoords( coords, objectOrNPC );
+            // NPCs can be locked to the tile grid
+            if ( isNPC && this.editorCanvas.dom.snapNPCToGrid.checked ) {
+                const offsetCoords = this.getCursorOffsetCoords( coords, sprite );
                 x = offsetCoords[ 0 ] * this.map.tilesize;
                 y = offsetCoords[ 1 ] * this.map.tilesize;
+
+            } else {
+                x = this.editorCanvas.canvasMouseCoords.x;
+                y = this.editorCanvas.canvasMouseCoords.y;
             }
         }
 
@@ -243,18 +242,31 @@ class EditorCursor {
 
 
     applyCursorNPC () {
-        this._applyCursorNPC( this.editorCanvas.currentNPC );
+        const state = this.editorCanvas.currentNPC.states[ 0 ];
+        const offsetX = this.editorCanvas.currentNPC.verbs[ state.verb ][ state.dir ].offsetX;
+        const offsetY = this.editorCanvas.currentNPC.verbs[ state.verb ][ state.dir ].offsetY;
+
+        this._applyCursorSprite({
+            image: this.editorCanvas.currentNPC.image,
+            offsetX: offsetX,
+            offsetY: offsetY,
+            width: this.editorCanvas.currentNPC.width,
+            height: this.editorCanvas.currentNPC.height,
+        });
     }
 
 
-    _applyCursorNPC ( npc ) {
-        const ctx = this.cursors.canvas.getContext( "2d" );
-        const width = npc.width;
-        const height = npc.height;
+    applyCursorItem () {
+        this._applyCursorSprite( this.editorCanvas.currentItem );
+    }
 
-        const state = npc.states[ 0 ];
-        const offsetX = npc.verbs[ state.verb ][ state.dir ].offsetX;
-        const offsetY = npc.verbs[ state.verb ][ state.dir ].offsetY;
+
+    _applyCursorSprite ( sprite ) {
+        const ctx = this.cursors.canvas.getContext( "2d" );
+        const width = sprite.width;
+        const height = sprite.height;
+        const offsetX = sprite.offsetX;
+        const offsetY = sprite.offsetY;
 
         this.cursors.canvas.width = width;
         this.cursors.canvas.height = height;
@@ -262,7 +274,7 @@ class EditorCursor {
         this.cursors.canvas.style.height = `${height}px`;
 
         ctx.drawImage(
-            this.editorCanvas.assets[ npc.image ],
+            this.editorCanvas.assets[ sprite.image ],
             offsetX,
             offsetY,
             width,

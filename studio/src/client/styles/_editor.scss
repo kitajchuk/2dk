@@ -409,6 +409,7 @@
     }
 
     &.is-npc,
+    &.is-item,
     &.is-spawn,
     &.is-event,
     &.is-background,
@@ -433,6 +434,7 @@
     }
 
     &.is-npc,
+    &.is-item,
     &.is-spawn,
     &.is-event,
     &.is-background,
@@ -491,7 +493,8 @@
     z-index: 3;
     pointer-events: none;
 }
-.editor__npc {
+.editor__npc,
+.editor__item {
     z-index: 3;
     pointer-events: none;
 }

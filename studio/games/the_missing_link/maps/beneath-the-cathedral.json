@@ -18,6 +18,24 @@
             "y": 83
         }
     ],
+    "items": [
+        {
+            "id": "mushroom",
+            "spawn": {
+                "x": 172,
+                "y": 749
+            },
+            "payload": {
+                "dialogue": {
+                    "type": "text",
+                    "text": [
+                        "You got the cursed mushroom!",
+                        "This rare ingredient can make you sick and powerful."
+                    ]
+                }
+            }
+        }
+    ],
     "fx": [],
     "tiles": [
         {

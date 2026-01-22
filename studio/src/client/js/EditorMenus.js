@@ -1,6 +1,7 @@
 const Utils = require( "./Utils" );
 const { renderSoundMenu } = require( "./render/RenderSoundMenu" );
 const { renderNewNPCMenu } = require( "./render/RenderNewNPCMenu" );
+const { renderNewItemMenu } = require( "./render/RenderNewItemMenu" );
 const { renderNewMapMenu } = require( "./render/RenderNewMapMenu" );
 const { renderNewGameMenu } = require( "./render/RenderNewGameMenu" );
 const { renderTilesetMenu } = require( "./render/RenderTilesetMenu" );
@@ -27,6 +28,7 @@ class EditorMenus {
             "editor-addgame-menu": renderNewGameMenu,
             "editor-addmap-menu": renderNewMapMenu,
             "editor-npc-menu": renderNewNPCMenu,
+            "editor-item-menu": renderNewItemMenu,
         };
         this.isActive = false;
 

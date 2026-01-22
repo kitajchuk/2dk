@@ -28,7 +28,7 @@ const Config = {
             FOREGROUND: "foreground",
             COLLISION: "collision",
             NPC: "npc",
-            OBJ: "obj",
+            ITEM: "item",
             SPAWN: "spawn",
             EVENT: "event",
             TILES: "tiles",

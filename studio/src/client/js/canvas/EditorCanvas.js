@@ -6,6 +6,7 @@ const {
 } = require( "../Utils" );
 const {
     renderNPC,
+    renderItem,
     renderTile,
     renderSpawn,
     renderEvent,
@@ -30,6 +31,7 @@ class EditorCanvas {
         this.lastEraseCoords = null;
         this.tilesetCoords = [];
         this.currentNPC = null;
+        this.currentItem = null;
         this.isEscape = false;
         this.isMouseDownTiles = false;
         this.isMouseMovedTiles = false;
@@ -47,6 +49,7 @@ class EditorCanvas {
         this.pickers = {
             all: document.querySelectorAll( ".js-picker" ),
             npcPickerBox: document.getElementById( "editor-npc-picker-box" ),
+            itemPickerBox: document.getElementById( "editor-item-picker-box" ),
         };
         this.layers = {
             background: document.getElementById( "editor-bg" ),
@@ -54,6 +57,7 @@ class EditorCanvas {
             collision: document.getElementById( "editor-c" ),
             mapgrid: document.getElementById( "editor-mapgrid" ),
             npc: document.getElementById( "editor-npc" ),
+            item: document.getElementById( "editor-item" ),
             spawn: document.getElementById( "editor-spawn" ),
             event: document.getElementById( "editor-event" ),
             tiles: document.getElementById( "editor-tiles" ),
@@ -63,6 +67,7 @@ class EditorCanvas {
             foreground: null,
             collision: null,
             npc: null,
+            item: null,
         };
         this.canvases = {
             tilepaint: document.getElementById( "editor-tilepaint-canvas" ),
@@ -87,6 +92,7 @@ class EditorCanvas {
         this.bindCellautoEvents();
 
         this.bindNPCMenuPost();
+        this.bindItemMenuPost();
         this.bindMapEventMenuPost();
         this.bindActiveTilesMenuPost();
 
@@ -177,6 +183,7 @@ class EditorCanvas {
             this.canvasMouseCoords = null;
             this.lastEraseCoords = null;
             this.currentNPC = null;
+            this.currentItem = null;
             this.tilesetCoords = [];
             this.map = null;
             this.game = null;
@@ -245,10 +252,12 @@ class EditorCanvas {
             this.drawTextures();
             this.drawColliders();
             this.drawNPCs();
+            this.drawItems();
             this.drawSpawns();
             this.drawEvents();
             this.drawActiveTiles();
             this.renderNPCLoadout();
+            this.renderItemLoadout();
         });
     }
 
@@ -391,6 +400,29 @@ class EditorCanvas {
     }
 
 
+    drawItems () {
+        this.map.items.forEach( ( item ) => {
+            const baseItem = this.game.items.find( ( gitem ) => {
+                return item.id === gitem.id;
+            });
+
+            if ( baseItem ) {
+                this.contexts.item.context.drawImage(
+                    this.assets[ baseItem.image ],
+                    baseItem.offsetX,
+                    baseItem.offsetY,
+                    baseItem.width,
+                    baseItem.height,
+                    item.spawn.x,
+                    item.spawn.y,
+                    baseItem.width,
+                    baseItem.height
+                );
+            }
+        });
+    }
+
+
     drawSpawns () {
         this.layers.spawn.innerHTML = this.map.spawn.map( ( spawn ) => {
             return renderSpawn( spawn, this.spawn );
@@ -500,6 +532,13 @@ class EditorCanvas {
     }
 
 
+    renderItemLoadout () {
+        this.pickers.itemPickerBox.innerHTML = this.game.items.map( ( item ) => {
+            return renderItem( item, this.game );
+        }).join( "" );
+    }
+
+
     applyTile ( coord ) {
         renderTile(
             this.canvases.tilepaint.getContext( "2d" ),
@@ -513,7 +552,7 @@ class EditorCanvas {
 
     togglePickers ( layer ) {
         // background, foreground, collision all use the "tile" picker
-        const picker = ( layer === Config.EditorLayers.modes.OBJ || layer === Config.EditorLayers.modes.NPC ) ? layer : "tile";
+        const picker = ( layer === Config.EditorLayers.modes.ITEM || layer === Config.EditorLayers.modes.NPC ) ? layer : "tile";
         const element = [ ...this.pickers.all ].find( ( element ) => {
             return element.id === `editor-${picker}-picker`;
         });
@@ -565,7 +604,7 @@ class EditorCanvas {
         this.draggable.setLayer( layer );
         this.togglePickers( layer );
 
-        if ( layer === Config.EditorLayers.modes.OBJ || layer === Config.EditorLayers.modes.NPC ) {
+        if ( layer === Config.EditorLayers.modes.ITEM || layer === Config.EditorLayers.modes.NPC ) {
             this.clearTileset();
 
         // Clear NPC & Object previews (if they exist)
@@ -716,7 +755,7 @@ class EditorCanvas {
 
         this.resetPreview();
         this.cursor.reset();
-        this.resetCurrentNPCAndObject();
+        this.resetCurrentNPCAndItem();
     }
 
 
@@ -783,9 +822,9 @@ class EditorCanvas {
     }
 
 
-    resetCurrentNPCAndObject () {
+    resetCurrentNPCAndItem () {
         this.currentNPC = null;
-        this.currentObject = null;
+        this.currentItem = null;
     }
 
 
@@ -821,19 +860,32 @@ class EditorCanvas {
 
 
     applyPreviewNPC () {
-        this._applyPreviewNPC( this.currentNPC );
+        const state = this.currentNPC.states[ 0 ];
+        const offsetX = this.currentNPC.verbs[ state.verb ][ state.dir ].offsetX;
+        const offsetY = this.currentNPC.verbs[ state.verb ][ state.dir ].offsetY;
+
+        this._applyPreviewSprite({
+            image: this.currentNPC.image,
+            offsetX: offsetX,
+            offsetY: offsetY,
+            width: this.currentNPC.width,
+            height: this.currentNPC.height,
+        });
     }
 
 
-    _applyPreviewNPC ( npc ) {
+    applyPreviewItem () {
+        this._applyPreviewSprite( this.currentItem );
+    }
+
+
+    _applyPreviewSprite ( sprite ) {
         const ctx = this.canvases.preview.getContext( "2d" );
         const scale = this.map.tilesize / this.gridsize;
-        const width = npc.width;
-        const height = npc.height;
-
-        const state = npc.states[ 0 ];
-        const offsetX = npc.verbs[ state.verb ][ state.dir ].offsetX;
-        const offsetY = npc.verbs[ state.verb ][ state.dir ].offsetY;
+        const width = sprite.width;
+        const height = sprite.height;
+        const offsetX = sprite.offsetX;
+        const offsetY = sprite.offsetY;
 
         this.clearCanvas( this.canvases.preview );
         this.canvases.preview.width = width;
@@ -842,7 +894,7 @@ class EditorCanvas {
         this.canvases.preview.style.height = `${height / scale}px`;
         
         ctx.drawImage(
-            this.assets[ npc.image ],
+            this.assets[ sprite.image ],
             offsetX,
             offsetY,
             width,
@@ -1037,20 +1089,6 @@ class EditorCanvas {
     }
 
 
-    renderNPCMenu ( coords, extraData ) {
-        this.editor.menus.renderMenu( "editor-npc-menu", {
-            ais: Utils.getOptionData( window.lib2dk.Config.npc.ai ),
-            types: Utils.getOptionData( window.lib2dk.Config.npc.types ),
-            game: this.game,
-            coords,
-            actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
-            dialogue: Utils.getOptionData( window.lib2dk.Config.dialogue.types ),
-            mouseCoords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
-            ...extraData,
-        });
-    }
-
-
     applyNPC ( coords ) {
         if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             this._applyNPC( coords, this.currentNPC );
@@ -1150,6 +1188,128 @@ class EditorCanvas {
                 this.drawNPCs();
             }
         }
+    }
+
+
+    renderNPCMenu ( coords, extraData ) {
+        this.editor.menus.renderMenu( "editor-npc-menu", {
+            ais: Utils.getOptionData( window.lib2dk.Config.npc.ai ),
+            types: Utils.getOptionData( window.lib2dk.Config.npc.types ),
+            game: this.game,
+            coords,
+            actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
+            dialogue: Utils.getOptionData( window.lib2dk.Config.dialogue.types ),
+            mouseCoords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
+            ...extraData,
+        });
+    }
+
+
+    applyItem ( coords ) {
+        if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+            this._applyItem( coords, this.currentItem );
+
+        } else if ( this.editor.actions.mode === Config.EditorActions.modes.SELECT ) {
+            this._editItem( coords );
+
+        } else if ( this.currentItem && this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
+            this.renderItemMenu( coords );
+        }
+    }
+
+
+    _applyItem ( coords, item, extraData = {} ) {
+        if ( item && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
+            // Items don't need to be locked to the tile grid
+            // In the case of Items we passed the canvasMouseCoords through the menu
+            const spawnX = coords[ 0 ];
+            const spawnY = coords[ 1 ];
+            const newItem = {
+                id: item.id,
+                spawn: {
+                    x: spawnX,
+                    y: spawnY,
+                },
+                ...extraData,
+            };
+
+            this.map.items.push( newItem );
+
+            const offsetX = item.offsetX;
+            const offsetY = item.offsetY;
+
+            this.contexts.item.context.drawImage(
+                this.assets[ item.image ],
+                offsetX,
+                offsetY,
+                item.width,
+                item.height,
+                newItem.spawn.x,
+                newItem.spawn.y,
+                item.width,
+                item.height
+            );
+        } else if ( !item && this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+            const cursorPoint = this.getCursorPoint();
+            const topmostItems = this.map.items.filter( ( item ) => {
+                const baseItem = this.game.items.find( ( gobj ) => {
+                    return item.id === gobj.id;
+                });
+                
+                const itemSprite = {
+                    x: item.spawn.x,
+                    y: item.spawn.y,
+                    width: baseItem.width,
+                    height: baseItem.height,
+                };
+
+                return window.lib2dk.Utils.collide( itemSprite, cursorPoint );
+            });
+            const topmostItem = topmostItems.pop();
+
+            if ( topmostItem ) {
+                this.map.items = this.map.items.reduce( ( acc, item ) => {
+                    if ( item.spawn.x === topmostItem.spawn.x && item.spawn.y === topmostItem.spawn.y ) {
+                        return acc;
+                    }
+
+                    acc.push( item );
+
+                    return acc;
+                }, []);
+
+                this.contexts.item.clear();
+                this.drawItems();
+            }
+        }
+    }
+
+
+    _editItem ( coords ) {
+        const targetItem = this.map.items.find( ( mapItem ) => {
+            const baseItem = this.game.items.find( ( libItem ) => libItem.id === mapItem.id );
+
+            return window.lib2dk.Utils.collide( this.getCursorPoint(), {
+                x: mapItem.spawn.x,
+                y: mapItem.spawn.y,
+                width: baseItem.width,
+                height: baseItem.height,
+            });
+        });
+
+        if ( targetItem ) {
+            this.renderItemMenu( coords, { itemToEdit: targetItem } );
+        }
+    }
+
+
+    renderItemMenu ( coords, extraData ) {
+        this.editor.menus.renderMenu( "editor-item-menu", {
+            game: this.game,
+            coords,
+            mouseCoords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
+            ...extraData,
+        });
     }
 
 
@@ -1288,6 +1448,54 @@ class EditorCanvas {
                 ] : mouseCoords;
     
                 this._applyNPC( renderCoords, this.currentNPC, extraData );
+            }
+
+            this.editor.menus.removeMenus();
+        });
+    }
+
+
+    bindItemMenuPost () {
+        this.editor.menus.dom.container.addEventListener( "click", ( e ) => {
+            if ( !e.target.closest( ".js-item-post" ) ) {
+                return;
+            }
+
+            const data = Utils.parseFields( document.querySelectorAll( ".js-item-field" ) );
+            // const coords = JSON.parse( data.coords );
+            const mouseCoords = JSON.parse( data.mouseCoords );
+            const extraData = {};
+
+            if ( data.text ) {
+                extraData.payload = {
+                    dialogue: {
+                        type: window.lib2dk.Config.dialogue.types.TEXT,
+                        text: Utils.parseDialogueText( data.text ),
+                    },
+                };
+            }
+
+            if ( this.editor.actions.mode === Config.EditorActions.modes.SELECT ) {
+                this.map.items = this.map.items.reduce( ( acc, item ) => {
+                    if ( 
+                        item.spawn.x === mouseCoords[ 0 ] && 
+                        item.spawn.y === mouseCoords[ 1 ]
+                    ) {
+                        acc.push({
+                            id: item.id,
+                            spawn: item.spawn,
+                            ...extraData,
+                        });
+
+                    } else {
+                        acc.push( item );
+                    }
+
+                    return acc;
+                }, []);
+
+            } else {
+                this._applyItem( mouseCoords, this.currentItem, extraData );
             }
 
             this.editor.menus.removeMenus();
@@ -1527,6 +1735,24 @@ class EditorCanvas {
             this.applyPreviewNPC();
             this.cursor.applyCursorNPC();
         });
+
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-item-tile" );
+
+            if ( !target ) {
+                return;
+            }
+
+            const id = target.dataset.item;
+
+            this.currentItem = this.game.items.find( ( item ) => {
+                return item.id === id;
+            });
+
+            this.resetPreview();
+            this.applyPreviewItem();
+            this.cursor.applyCursorItem();
+        });
     }
 
 
@@ -1697,6 +1923,9 @@ class EditorCanvas {
                 } else if ( this.currentNPC && this.canApplyNPC() ) {
                     this.cursor.showCanvasCursor( coords, this.currentNPC );
 
+                } else if ( this.currentItem && this.canApplyItem() ) {
+                    this.cursor.showCanvasCursor( coords, this.currentItem );
+
                 } else if ( this.canApplySpawn() ) {
                     this.cursor.showSpawnCursor( coords );
 
@@ -1723,6 +1952,9 @@ class EditorCanvas {
 
                 } else if ( this.canApplyNPC() ) {
                     this.applyNPC( coords );
+
+                } else if ( this.canApplyItem() ) {
+                    this.applyItem( coords );
 
                 } else if ( this.canApplySpawn() ) {
                     this.applySpawn( coords );
@@ -1811,6 +2043,13 @@ class EditorCanvas {
     canApplyNPC () {
         return (
             this.editor.layers.mode === Config.EditorLayers.modes.NPC
+        );
+    }
+
+
+    canApplyItem () {
+        return (
+            this.editor.layers.mode === Config.EditorLayers.modes.ITEM
         );
     }
 

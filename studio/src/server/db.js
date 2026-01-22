@@ -307,7 +307,7 @@ class DB {
                 "tiles",
                 "events",
                 "npcs",
-                "objects"
+                "items"
             ];
 
             // Cellauto maps don't have saved textures

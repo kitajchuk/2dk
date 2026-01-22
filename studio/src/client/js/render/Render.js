@@ -54,6 +54,28 @@ const renderNPC = ( npc, game ) => {
     `;
 };
 
+const renderItem = ( item, game ) => {
+    const id = `item-${item.id}`;
+    const src = `./games/${game.id}/${item.image}`;
+    const offsetX = item.offsetX;
+    const offsetY = item.offsetY;
+
+    return html`
+        <div class="js-item-tile" data-item="${item.id}">
+            <style>
+                #${id} {
+                    width: ${item.width}px;
+                    height: ${item.height}px;
+                    background-image: url(${src});
+                    background-position: -${offsetX}px -${offsetY}px;
+                }
+            </style>
+            <div id="${id}"></div>
+            <div>${item.name}</div>
+        </div>
+    `;
+};
+
 const renderSpawn = ( spawn, rect ) => {
     const id = `spawn-x${spawn.x}-y${spawn.y}`;
 
@@ -130,6 +152,7 @@ module.exports = {
     html,
     renderMap,
     renderNPC,
+    renderItem,
     renderTile,
     renderGame,
     renderSpawn,
