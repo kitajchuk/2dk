@@ -37,6 +37,9 @@
             }
             ul {
                 margin-top: 32px;
+                max-width: 480px;
+                margin-left: auto;
+                margin-right: auto;
             }
             ul li {
                 margin: 16px 0;
@@ -45,6 +48,14 @@
             a {
                 color: var(--teal);
                 text-decoration: underline;
+            }
+            a.btn {
+                background-color: var(--teal);
+                color: var(--black);
+                padding: 8px 16px;
+                border-radius: 4px;
+                text-decoration: none;
+                display: inline-block;
             }
             span {
                 color: var(--teal);
@@ -109,34 +120,57 @@
             <img src="/2dk.png" />
         </header>
         <main>
-            <h1>2dk dev demo</h1>
-            <video type="video/mp4" poster="/games/the_missing_link/assets/scenes/logo.png" controls muted playsinline>
-                <source src="/img/the-missing-link-gameplay.m4v" type="video/mp4" />
+            <h1>2dk Development Demo</h1>
+            <video poster="/games/the_missing_link/assets/scenes/logo.png" controls muted playsinline>
+                <source src="/img/the-missing-link-gameplay.mp4" type="video/mp4" />
+                <source src="/img/the-missing-link-gameplay.webm" type="video/webm" />
             </video>
             <ul>
                 <li>
-                    <p><a target="_blank" href="/games/the_missing_link/">Save to your Home Screen</a>.</p>
+                    <p>
+                        <a class="btn" target="_blank" href="/games/the_missing_link/">Play The Missing Link</a>
+                    </p>
                 </li>
+                <li>
+                    <p class="meta">
+                        Save to your home screen on a mobile device for the installed mobile progressive web app experience.
+                    </p>
+                </li>
+                <li>
+                    <p class="meta">
+                        *Audio on mobile devices is temporarily disabled as I continue to explore performance and compatibility.
+                    </p>
+                </li>
+                <li>
+                    <p class="meta">
+                        Visit <a target="_blank" href="https://github.com/kitajchuk/2dk">GitHub</a> for a more in-depth breakdown of the project.
+                    </p>
+                </li>
+            </ul>
+            <ul>
                 <li>
                     <p>Mobile <span>8-point D-touchpad</span>.</p>
-                </li>
-                <li>
-                    <p>Browser <span>Keyboard</span> support.</p>
                 </li>
                 <li>
                     <p>Native <span>Gamepad</span> support.</p>
                 </li>
                 <li>
-                    <p><span>A:</span> Interact.</p>
+                    <p>Browser <span>Keyboard</span> support.</p>
                 </li>
                 <li>
-                    <p><span>B:</span> Attack.</p>
+                    <p><span>Arrow Keys:</span> Movement.</p>
                 </li>
                 <li>
-                    <p><a target="_blank" href="https://github.com/kitajchuk/2dk">github.com/kitajchuk/2dk</a></p>
+                    <p><span>X:</span> Interact.</p>
                 </li>
                 <li>
-                    <p class="meta">*Audio is currently disabled on mobile while the performance and capability is explored...</p>
+                    <p><span>Z:</span> Attack.</p>
+                </li>
+                <li>
+                    <p><span>Space:</span> Select.</p>
+                </li>
+                <li>
+                    <p><span>Enter:</span> Start.</p>
                 </li>
             </ul>
             <h2>Mobile Gameplay:</h2>
