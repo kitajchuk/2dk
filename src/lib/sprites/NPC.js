@@ -390,7 +390,6 @@ export default class NPC extends QuestSprite {
             }
 
             if ( this.frame === this.lastFrame ) {
-                Utils.log( "Same frame" );
                 return;
             }
 

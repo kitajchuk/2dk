@@ -1131,6 +1131,7 @@ export class LiftedTile extends Sprite {
         super( data, map );
         this.hero = hero;
         this.throwing = false;
+        this.onscreen = true;
         this.activeTiles = activeTiles;
     }
 

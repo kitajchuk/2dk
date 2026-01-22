@@ -462,7 +462,7 @@ export default class Sprite {
 
         if ( this.data.verbs[ this.verb ][ this.dir ].stepsX ) {
             if ( this.is( Config.verbs.LIFT ) && this.isIdle() ) {
-                Utils.log( "Static lift..." );
+                // Do nothing...
 
             } else {
                 const interval = this.data.verbs[ this.verb ].dur / this.data.verbs[ this.verb ][ this.dir ].stepsX;

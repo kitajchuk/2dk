@@ -321,8 +321,6 @@ class TopView extends GameBox {
 
 
     releaseHoldB () {
-        Utils.log( "B Hold Release" );
-
         if ( this.jumping || this.falling || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
