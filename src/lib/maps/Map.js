@@ -6,6 +6,7 @@ import Door from "../sprites/Door";
 import FX from "../sprites/FX";
 import ActiveTiles from "./ActiveTiles";
 import MapEvent from "./MapEvent";
+import KeyItem from "../sprites/KeyItem";
 
 
 
@@ -127,6 +128,16 @@ export default class Map {
                 this.npcs.push( npc );
                 this.addAllSprite( npc );
             }
+        }
+
+        // Items
+        for ( let i = this.data.items.length; i--; ) {
+            this.items.push( new KeyItem(
+                this.player.getMergedData( this.data.items[ i ], "items", true ),
+                this,
+                `item-${this.data.id}-${i}`
+            ) );
+            this.addAllSprite( this.items[ i ] );
         }
 
         // Tiles

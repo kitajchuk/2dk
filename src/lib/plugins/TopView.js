@@ -453,7 +453,7 @@ class TopView extends GameBox {
         if ( collision.item ) {
             this.handleHeroItem( poi, dir, collision.item );
 
-            if ( collision.item.data.collect ) {
+            if ( collision.item.data.collect || collision.item.mapId ) {
                 return;
             }
         }
@@ -741,9 +741,29 @@ class TopView extends GameBox {
     }
 
 
+    playItemGetDialogue ( dialogue ) {
+        this.dialogue.play( dialogue ).then( () => {
+            this.hero.resetItemGet();
+
+        }).catch( () => {
+            this.hero.resetItemGet();
+        });
+    }
+
+
     handleHeroItem ( poi, dir, item ) {
         if ( !item.canPickup() ) {
             return;
+        }
+
+        if ( this.attacking ) {
+            this.attacking = false;
+        }
+
+        // Key map items
+        if ( item.mapId ) {
+            this.hero.giveItem( item.data.id, item.mapId );
+            this.playItemGetDialogue( item.data.payload.dialogue );
         }
 
         if ( item.data.sound ) {
@@ -764,12 +784,7 @@ class TopView extends GameBox {
             this.hero.collectItem( item.data.id );
 
             if ( item.data.dialogue && !hasItemAlready ) {
-                this.dialogue.play( item.data.dialogue ).then( () => {
-                    this.hero.resetItemGet();
-
-                }).catch( () => {
-                    this.hero.resetItemGet();
-                });
+                this.playItemGetDialogue( item.data.dialogue );
             }
             // TODO: Add sound here for ite pickup if it's not first time...
         }
@@ -910,7 +925,11 @@ class TopView extends GameBox {
         }
 
         setTimeout( () => {
-            this.hero.face( this.hero.dir );
+            // TODO: Silly hack but it fixes the issue when hitting an item with a weapon
+            // e.g. attack -> itemGet -> face is fixed to be just attack -> itemGet
+            if ( this.attacking ) {
+                this.hero.face( this.hero.dir );
+            }
             
         }, this.hero.getDur( Config.verbs.ATTACK ) );
     }

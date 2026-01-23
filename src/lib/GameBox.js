@@ -9,7 +9,7 @@ import Companion from "./sprites/Companion";
 import FX from "./sprites/FX";
 import GameQuest from "./GameQuest";
 import ItemDrop from "./sprites/ItemDrop";
-import KeyItemDrop from "./sprites/KeyItemDrop";
+import { KeyItemDrop } from "./sprites/KeyItem";
 import HUD from "./HUD";
 
 

@@ -5,7 +5,7 @@ import Hero, { ItemGet, LiftedTile, HeroProjectile } from "./sprites/Hero";
 import Sprite, { QuestSprite } from "./sprites/Sprite";
 import Companion from "./sprites/Companion";
 import ItemDrop from "./sprites/ItemDrop";
-import KeyItemDrop from "./sprites/KeyItemDrop";
+import KeyItem, { KeyItemDrop } from "./sprites/KeyItem";
 import Door from "./sprites/Door";
 import Projectile from "./sprites/Projectile";
 import Config from "./Config";
@@ -19,6 +19,7 @@ import GameWorker from "./GameWorker";
 import Loader from "./Loader";
 import Map from "./maps/Map";
 import MapLayer from "./maps/MapLayer";
+import MapEvent from "./maps/MapEvent";
 import ActiveTiles from "./maps/ActiveTiles";
 import Player from "./Player";
 import Spring from "./Spring";
@@ -26,6 +27,7 @@ import Utils from "./Utils";
 import CellAuto from "./vendor/CellAuto";
 import CellAutoMap from "./maps/CellAutoMap";
 import HUD from "./HUD";
+import * as DOM from "./DOM";
 
 
 
@@ -42,7 +44,7 @@ const lib = {
     ItemDrop,
     Companion,
     Projectile,
-    KeyItemDrop,
+    KeyItem, KeyItemDrop,
 
     // ...rest
     Config,
@@ -54,12 +56,13 @@ const lib = {
     GameQuest,
     GameWorker,
     Loader,
-    Map, MapLayer, ActiveTiles,
+    Map, MapLayer, MapEvent, ActiveTiles,
     CellAutoMap,
     Player,
     Spring,
     Utils,
     HUD,
+    DOM,
 
     // vendor
     CellAuto,
