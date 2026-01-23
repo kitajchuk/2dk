@@ -709,7 +709,16 @@ export default class NPC extends QuestSprite {
 
 
     handleQuestItemUpdate ( itemId ) {
-        this.gamebox.hero.giveItem( itemId, this.mapId );
+        const item = this.gamebox.hero.getItem( itemId );
+
+        if ( item && item.collect ) {
+            this.gamebox.hero.collectItem( itemId, this.mapId );
+            this.gamebox.hero.doItemGet( item );
+
+        } else {
+            this.gamebox.hero.giveItem( itemId, this.mapId );
+        }
+
         this.gamequest.completeQuest( this.mapId );
     }
 

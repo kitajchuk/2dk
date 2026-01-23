@@ -178,7 +178,7 @@ export default class Hero extends Sprite {
     }
 
 
-    collectItem ( id ) {
+    collectItem ( id, mapId ) {
         const item = this.getItem( id );
 
         if ( item ) {
@@ -186,7 +186,7 @@ export default class Hero extends Sprite {
             return;
         }
 
-        this.giveItem( id );
+        this.giveItem( id, mapId );
     }
 
 
@@ -199,6 +199,16 @@ export default class Hero extends Sprite {
     }
 
 
+    doItemGet ( item ) {
+        if ( this.data.verbs.itemGet?.down ) {
+            this.itemGet = new ItemGet( this.position, item, this.map, this );
+            this.stillTimer = Infinity;
+            this.cycle( "itemGet", "down" );
+            this.player.gameaudio.hitSound( "itemGet" );
+        }
+    }
+
+
     giveItem ( id, mapId ) {
         const item = this.player.getMergedData({
             id,
@@ -207,12 +217,7 @@ export default class Hero extends Sprite {
 
         this.items.push( item );
 
-        if ( this.data.verbs.itemGet?.down ) {
-            this.itemGet = new ItemGet( this.position, item, this.map, this );
-            this.stillTimer = Infinity;
-            this.cycle( "itemGet", "down" );
-            this.player.gameaudio.hitSound( "itemGet" );
-        }
+        this.doItemGet( item );
 
         if ( item.equip ) {
             this.equip( item.equip );
