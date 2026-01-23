@@ -38,9 +38,9 @@ export default class NPC extends QuestSprite {
 
 
     initialize () {
-        const item = this.gamebox.hero.items.find( ( item ) => item.mapId === this.mapId );
+        const completed = this.gamequest.getCompleted( this.mapId );
         // TODO: Make this more robust for more than just two states...
-        const index = item ? 1 : 0;
+        const index = completed ? 1 : 0;
         this.setState( index );
     }
 
@@ -710,6 +710,7 @@ export default class NPC extends QuestSprite {
 
     handleQuestItemUpdate ( itemId ) {
         this.gamebox.hero.giveItem( itemId, this.mapId );
+        this.gamequest.completeQuest( this.mapId );
     }
 
 

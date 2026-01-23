@@ -21,6 +21,7 @@ export default class Map {
     constructor ( data, gamebox ) {
         this.data = data;
         this.gamebox = gamebox;
+        this.gamequest = this.gamebox.gamequest;
         this.player = this.gamebox.player;
         this.camera = this.gamebox.camera;
         this.width = this.data.width;
@@ -132,10 +133,17 @@ export default class Map {
 
         // Items
         for ( let i = this.data.items.length; i--; ) {
+            const mapId = `item-${this.data.id}-${i}`;
+
+            // Skip if the item has already been collected
+            if ( this.gamequest.getCompleted( mapId ) ) {
+                continue;
+            }
+
             this.items.push( new KeyItem(
                 this.player.getMergedData( this.data.items[ i ], "items", true ),
                 this,
-                `item-${this.data.id}-${i}`
+                mapId
             ) );
             this.addAllSprite( this.items[ i ] );
         }

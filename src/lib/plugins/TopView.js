@@ -763,6 +763,7 @@ class TopView extends GameBox {
         // Key map items
         if ( item.mapId ) {
             this.hero.giveItem( item.data.id, item.mapId );
+            this.gamequest.completeQuest( item.mapId );
             this.playItemGetDialogue( item.data.payload.dialogue );
         }
 
