@@ -617,13 +617,26 @@ export default class NPC extends QuestSprite {
 
 
     canDoPayload () {
+        // MARK: Quest takeItem
+        if ( this.data.payload.quest?.takeItem ) {
+            const { id, dialogue } = this.data.payload.quest.takeItem;
+
+            if ( !this.gamebox.hero.itemCheck( id ) ) {
+                if ( dialogue ) {
+                    // Play the dialogue as a regular dialogue
+                    this.gamebox.dialogue.play( dialogue );
+                }
+                return false;
+            }
+        }
+
         // MARK: Quest checkItem
         if ( this.data.payload.quest?.checkItem ) {
             const { id, dialogue } = this.data.payload.quest.checkItem;
 
             if ( !this.gamebox.hero.itemCheck( id ) ) {
-                // A simple message to the player...
                 if ( dialogue ) {
+                    // A simple message to the player...
                     this.gamebox.dialogue.auto( dialogue );
                 }
                 return false;
@@ -689,6 +702,12 @@ export default class NPC extends QuestSprite {
 
 
     handlePayloadQuest () {
+        // MARK: Quest takeItem
+        if ( this.data.payload.quest?.takeItem ) {
+            const { id } = this.data.payload.quest.takeItem;
+            this.gamebox.hero.takeItem( id );
+        }
+
         // Mark: Quest collectible
         // This has already been gated by the canDoPayload() method so we just need to collect the item...
         if ( this.data.payload.quest?.checkItem ) {

@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 969,
+    "save": 972,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1209,6 +1209,10 @@
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
             "status": "curse",
+            "stats": {
+                "power": 1,
+                "health": 4
+            },
             "dir": "left",
             "hitbox": {
                 "x": 4,

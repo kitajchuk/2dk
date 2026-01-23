@@ -90,8 +90,29 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "..."
+                        "This is the payload dialogue..."
                     ]
+                },
+                "quest": {
+                    "takeItem": {
+                        "id": "mushroom",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Hmph.",
+                                "Hello there young lad. What brings you around these parts? We don't get many outsiders in this awful place.",
+                                "...",
+                                "Hmm, yes I see. Are those cursed ghosts in the graveyard giving you trouble then?",
+                                "Well you won't be able to tackle them the way you are now, boy. Cursed. You must become cursed and powerful. But this is no easy task.",
+                                "...",
+                                "Mmm. There may be one way. To the north is the Cathedral of the Cursed. It is said long ago the cathedral could place the dark sign upon you as easily as it could purge you of the disease.",
+                                "If you go looking around do be careful. No one goes into the cathedral anymore. It's a dangerous and forbidden place now.",
+                                "...",
+                                "Hee hee hee!"
+                            ]
+                        }
+                    },
+                    "setItem": "potion"
                 }
             }
         },

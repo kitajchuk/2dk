@@ -280,6 +280,17 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
+                        "Eh...",
+                        "Well, hello there.",
+                        "Not many folks come wandering in here with such zest like you, lad.",
+                        "This is a dreadful cursed place. Are you so sure you should be here?",
+                        "...",
+                        "Well, if you insist. Let me give you some advice.",
+                        "You won't be getting out of here so easily the way you are now. You can't defeat everything with just a sword.",
+                        "...",
+                        "What? Did you think your weapon so powerful. Don't be so naive.",
+                        "If you wish to continue your journey you must be willing to sacrifice yourself to the curse of the Untended Graveyard.",
+                        "I imagine that's enough for you to go on for now, lad.",
                         "..."
                     ]
                 }
@@ -348,30 +359,6 @@
             "action": {
                 "verb": "attack",
                 "fx": "smoke"
-            }
-        },
-        {
-            "id": "tomb",
-            "spawn": {
-                "x": 1984,
-                "y": 1600
-            },
-            "type": "door",
-            "action": {
-                "verb": "open",
-                "fx": "smoke",
-                "sound": "smash",
-                "quest": {
-                    "checkItem": {
-                        "id": "tomb-key",
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "Locked by some contraption..."
-                            ]
-                        }
-                    }
-                }
             }
         },
         {

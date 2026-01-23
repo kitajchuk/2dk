@@ -227,6 +227,10 @@ export default class Hero extends Sprite {
             this.receive( item.currency );
         }
 
+        if ( item.status ) {
+            this.status = item.status;
+        }
+
         if ( item.collect ) {
             item.collected = 1;
         }
@@ -244,6 +248,10 @@ export default class Hero extends Sprite {
 
         if ( item.equip ) {
             this.unequip( item.equip );
+        }
+
+        if ( item.status ) {
+            this.status = null;
         }
     }
 
