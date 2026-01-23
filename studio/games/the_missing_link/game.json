@@ -324,8 +324,9 @@
                         "offsetY": 0
                     },
                     "right": {
-                        "offsetX": 276,
-                        "offsetY": 0
+                        "offsetX": 184,
+                        "offsetY": 0,
+                        "flipX": true
                     }
                 },
                 "walk": {
@@ -347,8 +348,9 @@
                     },
                     "right": {
                         "offsetX": 0,
-                        "offsetY": 368,
-                        "stepsX": 2
+                        "offsetY": 276,
+                        "stepsX": 2,
+                        "flipX": true
                     }
                 },
                 "push": {
@@ -370,8 +372,9 @@
                     },
                     "right": {
                         "offsetX": 184,
-                        "offsetY": 368,
-                        "stepsX": 2
+                        "offsetY": 276,
+                        "stepsX": 2,
+                        "flipX": true
                     }
                 },
                 "grab": {
@@ -385,11 +388,12 @@
                     },
                     "left": {
                         "offsetX": 368,
-                        "offsetY": 368
+                        "offsetY": 276
                     },
                     "right": {
                         "offsetX": 368,
-                        "offsetY": 276
+                        "offsetY": 276,
+                        "flipX": true
                     }
                 },
                 "pull": {
@@ -407,7 +411,8 @@
                     },
                     "right": {
                         "offsetX": 460,
-                        "offsetY": 368
+                        "offsetY": 276,
+                        "flipX": true
                     }
                 },
                 "lift": {
@@ -429,8 +434,9 @@
                     },
                     "right": {
                         "offsetX": 552,
-                        "offsetY": 368,
-                        "stepsX": 2
+                        "offsetY": 276,
+                        "stepsX": 2,
+                        "flipX": true
                     }
                 },
                 "jump": {
@@ -452,8 +458,9 @@
                     },
                     "right": {
                         "offsetX": 736,
-                        "offsetY": 368,
-                        "stepsX": 3
+                        "offsetY": 276,
+                        "stepsX": 3,
+                        "flipX": true
                     }
                 },
                 "attack": {
@@ -475,8 +482,9 @@
                     },
                     "right": {
                         "offsetX": 1012,
-                        "offsetY": 368,
-                        "stepsX": 3
+                        "offsetY": 276,
+                        "stepsX": 3,
+                        "flipX": true
                     }
                 },
                 "fall": {
@@ -550,12 +558,12 @@
                         "offsetY": 460,
                         "stepsX": 2
                     },
-                    "right": {
+                    "left": {
                         "offsetX": 736,
                         "offsetY": 460,
                         "stepsX": 2
                     },
-                    "left": {
+                    "right": {
                         "offsetX": 736,
                         "offsetY": 460,
                         "stepsX": 2,
@@ -585,8 +593,8 @@
                 "width": 56,
                 "height": 60,
                 "image": "assets/sprites/hero_la.png",
-                "offsetX": 478,
-                "offsetY": 472
+                "offsetX": 294,
+                "offsetY": 12
             }
         },
         "status": {
@@ -725,7 +733,16 @@
             "height": 44,
             "image": "assets/sprites/items.png",
             "offsetX": 204,
-            "offsetY": 138,
+            "offsetY": 138
+        },
+        {
+            "id": "potion",
+            "name": "Potion",
+            "width": 32,
+            "height": 60,
+            "image": "assets/sprites/items.png",
+            "offsetX": 272,
+            "offsetY": 130,
             "status": "curse"
         }
     ],
