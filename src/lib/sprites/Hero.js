@@ -50,9 +50,8 @@ export default class Hero extends Sprite {
 
         if ( !this.gamebox.swimming ) {
             this.face( this.dir );
+            this.physics.vz = -6;
         }
-
-        this.physics.vz = -6;
     }
 
 
@@ -228,7 +227,7 @@ export default class Hero extends Sprite {
         }
 
         if ( item.status ) {
-            this.status = item.status;
+            this.applyStatus( item.status );
         }
 
         if ( item.collect ) {
@@ -251,8 +250,25 @@ export default class Hero extends Sprite {
         }
 
         if ( item.status ) {
-            this.status = null;
+            this.removeStatus();
         }
+    }
+
+
+    applyStatus ( status ) {
+        this.status = status;
+
+        if ( this.data.status[ status ].maxHealth ) {
+            this.tmpMaxHealth = this.maxHealth * this.data.status[ status ].maxHealth;
+            this.stats.health = this.tmpMaxHealth;
+        }
+    }
+
+
+    removeStatus () {
+        this.status = null;
+        this.stats.health = this.maxHealth;
+        this.tmpMaxHealth = null;
     }
 
 

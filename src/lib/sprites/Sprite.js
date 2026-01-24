@@ -92,6 +92,7 @@ export default class Sprite {
         };
         // Cannot increase health beyond this value...
         this.maxHealth = this.stats.health;
+        this.tmpMaxHealth = null;
     }
 
 
@@ -158,7 +159,8 @@ export default class Sprite {
 
     updateStat ( stat, value ) {
         if ( stat === "health" ) {
-            this.stats[ stat ] = Math.min( this.stats[ stat ] + value, this.maxHealth );
+            const maxHealth = this.tmpMaxHealth || this.maxHealth;
+            this.stats[ stat ] = Math.min( this.stats[ stat ] + value, maxHealth );
             return;
         }
 

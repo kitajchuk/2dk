@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 972,
+    "save": 973,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -598,7 +598,13 @@
             }
         },
         "status": {
-            "curse": {}
+            "curse": {
+                "width": 40,
+                "height": 36,
+                "image": "assets/sprites/items.png",
+                "offsetX": 12,
+                "offsetY": 206
+            }
         }
     },
     "items": [

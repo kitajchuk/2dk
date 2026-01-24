@@ -32,6 +32,7 @@ export default class HUD {
         this.renderCurrency();
         this.renderKeys();
         this.renderItems();
+        this.renderStatus();
     }
 
 
@@ -285,6 +286,25 @@ export default class HUD {
                 50,
                 shield.width,
                 shield.height
+            );
+        }
+    }
+
+
+    renderStatus () {
+        const statusItem = this.player.data.hud.status?.[this.hero.status];
+
+        if ( statusItem ) {
+            this.gamebox.mapLayer.context.drawImage(
+                Loader.cash( statusItem.image ),
+                statusItem.offsetX,
+                statusItem.offsetY,
+                statusItem.width,
+                statusItem.height,
+                60,
+                50,
+                statusItem.width,
+                statusItem.height
             );
         }
     }
