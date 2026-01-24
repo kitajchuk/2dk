@@ -3,7 +3,7 @@ import Sprite from "./Sprite";
 
 
 export default class KeyItem extends Sprite {
-    // item: { spawn, payload: { dialogue: { type, text } } }
+    // item: { spawn, dialogue: { type, text } }
     constructor ( item, map, mapId ) {
         const data = {
             hitbox: {

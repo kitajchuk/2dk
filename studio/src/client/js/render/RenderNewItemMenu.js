@@ -4,9 +4,8 @@ const { html } = require( "./Render" );
 
 const renderNewItemMenu = ({ game, coords, mouseCoords, itemToEdit }) => {
     const mouseCoordsToUse = itemToEdit ? [ itemToEdit.spawn.x, itemToEdit.spawn.y ] : mouseCoords;
-    const hasExistingPayload = itemToEdit && itemToEdit.payload;
-    const hasExistingDialogue = hasExistingPayload && itemToEdit.payload.dialogue;
-    const existingText = hasExistingDialogue ? itemToEdit.payload.dialogue.text : "";
+    const hasExistingDialogue = itemToEdit && itemToEdit.dialogue;
+    const existingText = hasExistingDialogue ? itemToEdit.dialogue.text : "";
 
     return html`
         <div class="editor__menu js-menu is-active" id="editor-item-menu">

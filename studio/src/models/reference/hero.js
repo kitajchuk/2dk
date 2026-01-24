@@ -1,3 +1,5 @@
+const frame = require("./frame");
+
 // Weapon or shield frame reference
 const weaponFrame = {
     offsetX: 0,
@@ -8,12 +10,7 @@ const weaponFrame = {
     positionY: 0
 };
 
-const verbFrame = {
-    offsetX: 0,
-    offsetY: 0,
-    stepsX: 0
-};
-
+const verbFrame = frame;
 const verbType = {
     dur: 0,
     stop: undefined || true,

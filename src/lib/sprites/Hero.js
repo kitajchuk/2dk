@@ -884,7 +884,7 @@ export default class Hero extends Sprite {
 
 
     canEventDialogue ( collision ) {
-        return ( collision.event.data.type === Config.events.DIALOGUE && collision.event.data.payload );
+        return ( collision.event.data.type === Config.events.DIALOGUE && collision.event.data.dialogue );
     }
 
 

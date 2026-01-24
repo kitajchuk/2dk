@@ -11,6 +11,5 @@ module.exports = {
     // FX reference (game.json)
     mask: undefined || "",
     // Action reference (action.js)
-    actions: undefined ||
-        action,
+    actions: undefined || action,
 };

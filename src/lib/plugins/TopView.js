@@ -764,7 +764,7 @@ class TopView extends GameBox {
         if ( item.mapId ) {
             this.hero.giveItem( item.data.id, item.mapId );
             this.gamequest.completeQuest( item.mapId );
-            this.playItemGetDialogue( item.data.payload.dialogue );
+            this.playItemGetDialogue( item.data.dialogue );
         }
 
         if ( item.data.sound ) {
@@ -821,7 +821,7 @@ class TopView extends GameBox {
     handleHeroEventDialogue ( poi, dir, event ) {
         // TODO: Add dialogue modes so this can be "auto" or "play" (user has to press A/B to advance)
         this.dialogue.auto({
-            text: event.data.payload.dialogue.text,
+            text: event.data.dialogue.text,
         });
 
         if ( event.data.sound ) {

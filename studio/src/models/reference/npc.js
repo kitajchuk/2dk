@@ -1,5 +1,6 @@
 const action = require("./action");
 const quest = require("./quest");
+const frame = require("./frame");
 
 // Maps reference source NPC in game.json
 const npcReference = {
@@ -29,12 +30,7 @@ const npcReference = {
     action: undefined || action,
 };
 
-const verbFrame = {
-    offsetX: 0,
-    offsetY: 0,
-    stepsX: 0
-};
-
+const verbFrame = frame;
 const verbType = {
     dur: 0,
     down: {},

@@ -1,3 +1,5 @@
+const dialogue = require("./dialogue");
+
 module.exports = {
     coords: [
         0,
@@ -11,11 +13,6 @@ module.exports = {
     verb: undefined || "",
     spawn: undefined || 0,
     sound: undefined || "",
-    payload: undefined || {
-        dialogue: {
-            // Only text type is supported for dialogue event boundaries
-            type: "text",
-            text: [],
-        }
-    }
+    // Only text type is supported for dialogue event boundaries
+    dialogue: undefined || dialogue,
 };

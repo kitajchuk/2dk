@@ -1,3 +1,5 @@
+const dialogue = require("./dialogue");
+
 module.exports = {
     setFlag: undefined || {
         key: "",
@@ -10,9 +12,18 @@ module.exports = {
     setItem: undefined || "",
     checkItem: undefined || {
         id: "",
-        dialogue: undefined || {
-            type: "",
-            text: []
-        }
+        dialogue: undefined || dialogue
+    },
+    takeItem: undefined || {
+        id: "",
+        dialogue: undefined || dialogue,
+    },
+    takeItem: undefined || {
+        id: "",
+        dialogue: undefined || dialogue,
+    },
+    checkStatus: undefined || {
+        status: "",
+        dialogue: undefined || dialogue,
     },
 };

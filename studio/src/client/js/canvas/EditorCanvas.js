@@ -1279,7 +1279,7 @@ class EditorCanvas {
                 }, []);
 
                 this.contexts.item.clear();
-                this.drawItems();
+                this.drawNPCs();
             }
         }
     }
@@ -1467,11 +1467,9 @@ class EditorCanvas {
             const extraData = {};
 
             if ( data.text ) {
-                extraData.payload = {
-                    dialogue: {
-                        type: window.lib2dk.Config.dialogue.types.TEXT,
-                        text: Utils.parseDialogueText( data.text ),
-                    },
+                extraData.dialogue = {
+                    type: window.lib2dk.Config.dialogue.types.TEXT,
+                    text: Utils.parseDialogueText( data.text ),
                 };
             }
 
@@ -1530,11 +1528,9 @@ class EditorCanvas {
             }
 
             if ( data.type === window.lib2dk.Config.events.DIALOGUE ) {
-                newData.payload = {
-                    dialogue: {
-                        type: window.lib2dk.Config.dialogue.types.TEXT,
-                        text: Utils.parseDialogueText( data.dialogue ),
-                    },
+                newData.dialogue = {
+                    type: window.lib2dk.Config.dialogue.types.TEXT,
+                    text: Utils.parseDialogueText( data.dialogue ),
                 };
             }
 

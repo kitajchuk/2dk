@@ -1,4 +1,5 @@
 const quest = require("./quest");
+const dialogue = require("./dialogue");
 
 module.exports = {
     verb: "",
@@ -13,10 +14,7 @@ module.exports = {
     stat: undefined || {
         key: "",
         value: 1,
-        dialogue: undefined || {
-            type: "",
-            text: [],
-        },
+        dialogue: undefined || dialogue,
     },
     // For tile actions...
     drops: undefined || [
