@@ -93,6 +93,11 @@ export default class Map {
     }
 
 
+    getMapId ( type, index ) {
+        return `${type}-${this.data.id}-${index}`;
+    }
+
+
     initialize () {
         // FX
         for ( let i = this.data.fx.length; i--; ) {
@@ -113,7 +118,7 @@ export default class Map {
                     this,
                     // Unique map ID for the NPC
                     // This is used to identify the NPC when giving items
-                    `door-${this.data.id}-${i}`
+                    this.getMapId( "door", i )
                 )
                 this.doors.push( door );
                 this.addAllSprite( door );
@@ -124,7 +129,7 @@ export default class Map {
                     this,
                     // Unique map ID for the NPC
                     // This is used to identify the NPC when giving items
-                    `npc-${this.data.id}-${i}`
+                    this.getMapId( "npc", i )
                 );
                 this.npcs.push( npc );
                 this.addAllSprite( npc );
@@ -133,7 +138,7 @@ export default class Map {
 
         // Items
         for ( let i = this.data.items.length; i--; ) {
-            const mapId = `item-${this.data.id}-${i}`;
+            const mapId = this.getMapId( "item", i );
 
             // Skip if the item has already been collected
             if ( this.gamequest.getCompleted( mapId ) ) {

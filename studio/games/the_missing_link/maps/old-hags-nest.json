@@ -90,7 +90,8 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "..."
+                        "No more of you, boy, I'm busy!",
+                        "Hee hee hee!"
                     ]
                 },
                 "quest": {
@@ -121,6 +122,28 @@
                                 "The power you'll wield is immense but the price you pay is great.",
                                 "...",
                                 "No, those ghosts in the graveyard won't give you any more trouble, boy. Go on and see what you can do with this wonderful sickness of yours.",
+                                "Hee hee hee!"
+                            ]
+                        }
+                    },
+                    "checkItem": {
+                        "id": "potion",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Look at you now, boy. You're a real sick puppy!",
+                                "But you're going to be a force to reckon with.",
+                                "...",
+                                "Hee hee hee!"
+                            ]
+                        }
+                    },
+                    "checkStatus": {
+                        "status": "curse",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "The way you are now those ghosts won't bother you.",
                                 "Hee hee hee!"
                             ]
                         }
