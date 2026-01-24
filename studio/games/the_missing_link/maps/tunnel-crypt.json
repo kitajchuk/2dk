@@ -171,11 +171,11 @@
                     "type": "text",
                     "text": [
                         "You found the lost treasure!",
-                        "Now you can swim, but only while this map is under development..."
+                        "I guess you can have it since it was left behind..."
                     ]
                 },
                 "quest": {
-                    "setItem": "flippers"
+                    "setItem": "blue-rupee"
                 }
             }
         },
@@ -274,7 +274,7 @@
                             "type": "text",
                             "text": [
                                 "You got a small key!",
-                                "I wonder if this is the key they were referring to?"
+                                "Someone must have lost this..."
                             ]
                         }
                     },
@@ -284,7 +284,7 @@
                     },
                     "checkFlag": {
                         "key": "like-like-killed",
-                        "value": 1 
+                        "value": 1
                     }
                 }
             }
