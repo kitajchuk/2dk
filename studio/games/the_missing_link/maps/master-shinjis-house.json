@@ -94,15 +94,17 @@
                 "y": 224
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "You got Master Shinji's shield!",
-                        "Now you can block enemies!"
-                    ]
-                },
                 "quest": {
-                    "setItem": "shield"
+                    "setItem": {
+                        "id": "shield",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You got Master Shinji's shield!",
+                                "Now you can block enemies!"
+                            ]
+                        }
+                    }
                 }
             }
         },

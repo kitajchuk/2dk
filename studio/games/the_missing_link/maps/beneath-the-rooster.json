@@ -110,15 +110,17 @@
                 "y": 448
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "You got the Feather!",
-                        "Now you can jump over holes in the ground!"
-                    ]
-                },
                 "quest": {
-                    "setItem": "feather"
+                    "setItem": {
+                        "id": "feather",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You got the Feather!",
+                                "Now you can jump over holes in the ground!"
+                            ]
+                        }
+                    }
                 }
             }
         },

@@ -66,33 +66,19 @@ export default class NPC extends QuestSprite {
 
     payload () {
         if ( this.data.payload.dialogue && !this.dialogue ) {
-            // For basic text dialogue, we need to check for quests immediately...
-            if ( this.data.payload.dialogue.type === Config.dialogue.types.TEXT ) {
-                this.handlePayloadQuest();
-            }
-
             if ( this.data.ai === Config.npc.ai.WALK ) {
                 this.freezeWalk();
             }
 
-            this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
-            this.dialogue.then( () => {
-                this.stillTimer = 0;
-                this.resetDialogue();
-                this.handleAI();
-
-                if ( this.gamebox.hero.itemGet ) {
-                    this.gamebox.hero.resetItemGet();
-                }
-
-                // For prompt dialogue, we need to check for quests on resolution (e.g. pressed "a")
-                if ( this.data.payload.dialogue.type === Config.dialogue.types.PROMPT ) {
-                    this.handlePayloadQuest();
-                }
-                
-            }).catch( () => {
-                this.resetDialogue();
-            });
+            this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue )
+                .then( () => {
+                    this.stillTimer = 0;
+                    this.resetDialogue();
+                    this.handleAI();
+                    
+                }).catch( () => {
+                    this.resetDialogue();
+                });
         }
     }
 
@@ -101,6 +87,10 @@ export default class NPC extends QuestSprite {
         this.dialogue = null;
         this.dir = this.state.dir;
         this.verb = this.state.verb;
+
+        if ( this.gamebox.hero.itemGet ) {
+            this.gamebox.hero.resetItemGet();
+        }
     }
 
 
@@ -589,13 +579,15 @@ export default class NPC extends QuestSprite {
     doInteract () {
         // Handle dialogue payload
         if ( this.data.payload ) {
-            const canDoPayload = this.canDoPayload();
+            const canDoPayload = this.canDoPayloadDialogue();
 
             if ( !canDoPayload ) {
                 return;
             }
 
-            this.payload();
+            if ( this.data.payload.dialogue ) {
+                this.payload();
+            }
         }
 
         // Handle sound (skip if we're doing the item get sequence)
@@ -616,14 +608,13 @@ export default class NPC extends QuestSprite {
     }
 
 
-    canDoPayload () {
+    canDoPayloadDialogue () {
         // MARK: Quest takeItem
         if ( this.data.payload.quest?.takeItem ) {
             const { id, dialogue } = this.data.payload.quest.takeItem;
 
             if ( !this.gamebox.hero.itemCheck( id ) ) {
                 if ( dialogue ) {
-                    // Play the dialogue as a regular dialogue
                     this.gamebox.dialogue.play( dialogue );
                 }
                 return false;
@@ -636,7 +627,6 @@ export default class NPC extends QuestSprite {
 
             if ( !this.gamebox.hero.itemCheck( id ) ) {
                 if ( dialogue ) {
-                    // A simple message to the player...
                     this.gamebox.dialogue.auto( dialogue );
                 }
                 return false;
@@ -649,6 +639,11 @@ export default class NPC extends QuestSprite {
             return this.checkQuestFlag( key );
         }
 
+        // Mark: Quest setItem
+        if ( this.data.payload.quest?.setItem ) {
+            this.handlePayloadQuest();
+        }
+
         return true;
     }
 
@@ -656,6 +651,37 @@ export default class NPC extends QuestSprite {
 /*******************************************************************************
 * Quests
 *******************************************************************************/
+    handlePayloadQuest () {
+        // MARK: Quest takeItem
+        if ( this.data.payload.quest?.takeItem ) {
+            const { id } = this.data.payload.quest.takeItem;
+            this.gamebox.hero.takeItem( id );
+        }
+
+        // Mark: Quest collectible
+        // This has already been gated by the canDoPayload() method so we just need to collect the item...
+        if ( this.data.payload.quest?.checkItem ) {
+            const { id } = this.data.payload.quest.checkItem;
+            this.handleQuestItemCheck( id );
+        }
+
+        // Mark: Quest setFlag
+        if ( this.data.payload.quest?.setFlag ) {
+            this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
+        }
+
+        // Mark: Quest setItem
+        if ( this.data.payload.quest?.setItem ) {
+            const { id, dialogue } = this.data.payload.quest.setItem;
+            this.handleQuestItemUpdate( id );
+
+            if ( dialogue ) {
+                this.gamebox.playItemGetDialogue( dialogue );
+            }
+        }
+    }
+
+
     handleHealthCheck () {
         if ( !this.stats ) {
             return;
@@ -698,32 +724,6 @@ export default class NPC extends QuestSprite {
         }
 
         return false;
-    }
-
-
-    handlePayloadQuest () {
-        // MARK: Quest takeItem
-        if ( this.data.payload.quest?.takeItem ) {
-            const { id } = this.data.payload.quest.takeItem;
-            this.gamebox.hero.takeItem( id );
-        }
-
-        // Mark: Quest collectible
-        // This has already been gated by the canDoPayload() method so we just need to collect the item...
-        if ( this.data.payload.quest?.checkItem ) {
-            const { id } = this.data.payload.quest.checkItem;
-            this.handleQuestItemCheck( id );
-        }
-
-        // Mark: Quest setFlag
-        if ( this.data.payload.quest?.setFlag ) {
-            this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
-        }
-
-        // Mark: Quest setItem
-        if ( this.data.payload.quest?.setItem ) {
-            this.handleQuestItemUpdate( this.data.payload.quest.setItem );
-        }
     }
 
 

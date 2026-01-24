@@ -742,7 +742,7 @@ class TopView extends GameBox {
 
 
     playItemGetDialogue ( dialogue ) {
-        this.dialogue.play( dialogue ).then( () => {
+        return this.dialogue.play( dialogue ).then( () => {
             this.hero.resetItemGet();
 
         }).catch( () => {

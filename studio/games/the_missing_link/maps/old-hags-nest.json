@@ -90,11 +90,7 @@
                 "dialogue": {
                     "type": "text",
                     "text": [
-                        "You did well to find this, sonny.",
-                        "The power you'll wield is immense but the price you pay is great.",
-                        "...",
-                        "No, those ghosts in the graveyard won't give you any more trouble, boy. Go on and see what you can do with this wonderful sickness of yours.",
-                        "Hee hee hee!"
+                        "..."
                     ]
                 },
                 "quest": {
@@ -116,7 +112,19 @@
                             ]
                         }
                     },
-                    "setItem": "potion"
+                    "setItem": {
+                        "id": "potion",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You did well to find this, sonny.",
+                                "The power you'll wield is immense but the price you pay is great.",
+                                "...",
+                                "No, those ghosts in the graveyard won't give you any more trouble, boy. Go on and see what you can do with this wonderful sickness of yours.",
+                                "Hee hee hee!"
+                            ]
+                        }
+                    }
                 }
             }
         },

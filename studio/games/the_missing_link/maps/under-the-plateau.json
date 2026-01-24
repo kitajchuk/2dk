@@ -130,15 +130,17 @@
                 "y": 192
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "You got 20 rupees!",
-                        "Joy!"
-                    ]
-                },
                 "quest": {
-                    "setItem": "red-rupee",
+                    "setItem": {
+                        "id": "red-rupee",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You got 20 rupees!",
+                                "Joy!"
+                            ]
+                        }
+                    },
                     "checkItem": {
                         "id": "key",
                         "dialogue": {

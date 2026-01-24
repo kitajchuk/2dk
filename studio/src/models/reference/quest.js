@@ -9,7 +9,10 @@ module.exports = {
         key: "",
         value: 1,
     },
-    setItem: undefined || "",
+    setItem: undefined || {
+        id: "",
+        dialogue: undefined || dialogue,
+    },
     checkItem: undefined || {
         id: "",
         dialogue: undefined || dialogue
@@ -18,7 +21,7 @@ module.exports = {
         id: "",
         dialogue: undefined || dialogue,
     },
-    takeItem: undefined || {
+    dropItem: undefined || {
         id: "",
         dialogue: undefined || dialogue,
     },

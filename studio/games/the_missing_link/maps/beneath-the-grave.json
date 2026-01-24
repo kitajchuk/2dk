@@ -104,13 +104,6 @@
                 "y": 304
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "You got the Master Sword!",
-                        "Now you can attack enemies!"
-                    ]
-                },
                 "quest": {
                     "checkItem": {
                         "id": "shield",
@@ -121,7 +114,16 @@
                             ]
                         }
                     },
-                    "setItem": "sword"
+                    "setItem": {
+                        "id": "sword",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You got the Master Sword!",
+                                "Now you can attack enemies!"
+                            ]
+                        }
+                    }
                 }
             }
         },

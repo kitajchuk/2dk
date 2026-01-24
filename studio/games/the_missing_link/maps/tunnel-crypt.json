@@ -167,15 +167,17 @@
                 "y": 64
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "You found the lost treasure!",
-                        "I guess you can have it since it was left behind..."
-                    ]
-                },
                 "quest": {
-                    "setItem": "blue-rupee"
+                    "setItem": {
+                        "id": "blue-rupee",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You found the lost treasure!",
+                                "I guess you can have it since it was left behind..."
+                            ]
+                        }
+                    }
                 }
             }
         },
