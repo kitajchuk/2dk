@@ -95,8 +95,9 @@
                     ]
                 },
                 "quest": {
-                    "takeItem": {
-                        "id": "mushroom",
+                    "checkFlag": {
+                        "key": "cursed-mushroom",
+                        "value": 1,
                         "dialogue": {
                             "type": "text",
                             "text": [
@@ -113,16 +114,45 @@
                             ]
                         }
                     },
+                    "takeItem": {
+                        "id": "mushroom",
+                        "dialogue": {
+                            "type": "prompt",
+                            "text": [
+                                "Aha! Do you want me to make you a cursed potion with that mushroom, boy?"
+                            ],
+                            "yes": {
+                                "label": "Yes",
+                                "text": [
+                                    "Very well, hand it over.",
+                                    "...",
+                                    "Don't rush me, boy, this brew takes time.",
+                                    "...",
+                                    "Hee hee hee!",
+                                    "...",
+                                    "Here's your potion. Drink up!",
+                                    "...",
+                                    "Hee hee hee!",
+                                    "...",
+                                    "Now go and do your thing, boy.",
+                                    "Hee hee hee!"
+                                ]
+                            },
+                            "no": {
+                                "label": "No",
+                                "text": [
+                                    "Well that's a shame. I was hoping to make a fine brew today."
+                                ]
+                            }
+                        }
+                    },
                     "setItem": {
                         "id": "potion",
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You did well to find this, sonny.",
-                                "The power you'll wield is immense but the price you pay is great.",
-                                "...",
-                                "No, those ghosts in the graveyard won't give you any more trouble, boy. Go on and see what you can do with this wonderful sickness of yours.",
-                                "Hee hee hee!"
+                                "You got the cursed potion!",
+                                "You feel wicked sick but full of new power!"
                             ]
                         }
                     },

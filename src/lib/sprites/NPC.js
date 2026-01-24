@@ -620,21 +620,11 @@ export default class NPC extends QuestSprite {
 
 
     canDoPayloadDialogue () {
-        // MARK: Quest takeItem
-        if ( this.data.payload.quest?.takeItem && !this.gamequest.getCompleted( this.dialogueFlags.takeItem ) ) {
-            const { id, dialogue } = this.data.payload.quest.takeItem;
-
-            if ( !this.gamebox.hero.itemCheck( id ) ) {
-                if ( dialogue ) {
-                    this.gamebox.dialogue.play( dialogue );
-                }
-            } else {
-                const { id } = this.data.payload.quest.takeItem;
-                this.gamebox.hero.takeItem( id );
-                this.gamequest.completeQuest( this.dialogueFlags.takeItem );
-            }
-            return false;
-        }
+        const isCheckFlagSameAsSetFlag = (
+            this.data.payload.quest?.checkFlag &&
+            this.data.payload.quest?.setFlag &&
+            this.data.payload.quest?.checkFlag?.key === this.data.payload.quest?.setFlag?.key
+        );
 
         const isCheckItemSameAsSetItem = (
             this.data.payload.quest?.checkItem &&
@@ -642,38 +632,85 @@ export default class NPC extends QuestSprite {
             this.data.payload.quest?.checkItem?.id === this.data.payload.quest?.setItem?.id
         );
 
-        // MARK: Quest checkItem
-        if ( this.data.payload.quest?.checkItem && !this.gamequest.getCompleted( this.dialogueFlags.checkItem ) ) {
-            if ( isCheckItemSameAsSetItem ) {
-                if ( this.gamequest.getCompleted( this.dialogueFlags.setItem ) ) {
-                    const { dialogue } = this.data.payload.quest.checkItem;
+        // MARK: Quest checkFlag & setFlag circular dialogue
+        if ( isCheckFlagSameAsSetFlag ) {
+            const { key } = this.data.payload.quest.checkFlag;
 
-                    if ( dialogue ) {
-                        this.gamebox.dialogue.play( dialogue );
-                    }
+            if ( this.gamequest.getCompleted( key ) ) {
+                const { dialogue } = this.data.payload.quest.setFlag;
 
-                    this.gamequest.completeQuest( this.dialogueFlags.checkItem );
-                    return false;
+                if ( dialogue ) {
+                    this.gamebox.dialogue.play( dialogue );
                 }
-                // Otherwise continue and let the setItem logic handle it...
             } else {
-                const { id, dialogue } = this.data.payload.quest.checkItem;
+                const { dialogue } = this.data.payload.quest.checkFlag;
 
-                if ( !this.gamebox.hero.itemCheck( id ) ) {
-                    if ( dialogue ) {
-                        this.gamebox.dialogue.auto( dialogue );
-                    }
-                } else {
-                    const { id } = this.data.payload.quest.checkItem;
-                    this.handleQuestItemCheck( id );
-                    this.gamequest.completeQuest( this.dialogueFlags.checkItem );
+                if ( dialogue ) {
+                    this.gamebox.dialogue.play( dialogue );
+                    this.gamequest.completeQuest( key );
                 }
-                return false;
             }
+
+            return false;
+
+        // MARK: Quest checkFlag (requires something else to complete the quest flag)
+        } else if ( this.data.payload.quest?.checkFlag && !this.gamequest.getCompleted( this.data.payload.quest.checkFlag.key ) ) {
+            const { dialogue } = this.data.payload.quest.checkFlag;
+
+            if ( dialogue ) {
+                this.gamebox.dialogue.play( dialogue );
+            }
+
+            return false;
+        }
+
+        // MARK: Quest takeItem
+        if ( this.data.payload.quest?.takeItem && !this.gamequest.getCompleted( this.dialogueFlags.takeItem ) ) {
+            const { id, dialogue } = this.data.payload.quest.takeItem;
+
+            if ( this.gamebox.hero.itemCheck( id ) ) {
+                if ( dialogue ) {
+                    // Only complete on promise resolve to support PROMPT dialogue types...
+                    this.gamebox.dialogue.play( dialogue ).then(() => {
+                        const { id } = this.data.payload.quest.takeItem;
+                        this.gamebox.hero.takeItem( id );
+                        this.gamequest.completeQuest( this.dialogueFlags.takeItem );
+
+                        // Assume here that we're exchanging items...
+                        if ( isCheckItemSameAsSetItem ) {
+                            const { id, dialogue } = this.data.payload.quest.setItem;
+                            this.handleQuestItemUpdate( id );
+                            this.gamequest.completeQuest( this.dialogueFlags.setItem );
+
+                            if ( dialogue ) {
+                                this.gamebox.playItemGetDialogue( dialogue );
+                            }
+                        }
+                    }).catch(() => {
+                         // Do nothing...
+                    });
+                }
+            }
+            return false;
+        }
+
+        // MARK: Quest checkItem (auto dialogue -- not for nuanced quests but more like for locked chests)
+        if ( this.data.payload.quest?.checkItem && !this.gamequest.getCompleted( this.dialogueFlags.checkItem ) ) {
+            const { id, dialogue } = this.data.payload.quest.checkItem;
+
+            if ( !this.gamebox.hero.itemCheck( id ) ) {
+                if ( dialogue ) {
+                    this.gamebox.dialogue.auto( dialogue );
+                }
+            } else {
+                const { id } = this.data.payload.quest.checkItem;
+                this.handleQuestItemCheck( id );
+                this.gamequest.completeQuest( this.dialogueFlags.checkItem );
+            }
+            return false;
         }
 
         // Mark: Quest setItem
-        // TODO: Having checkItem first allows locking setItem behind the item check but we could be more explicit about it...
         if ( this.data.payload.quest?.setItem && !this.gamequest.getCompleted( this.dialogueFlags.setItem ) ) {
             const { id, dialogue } = this.data.payload.quest.setItem;
 
@@ -696,34 +733,6 @@ export default class NPC extends QuestSprite {
                     return false;
                 }
             }
-        }
-
-        const isCheckFlagSameAsSetFlag = (
-            this.data.payload.quest?.checkFlag &&
-            this.data.payload.quest?.setFlag &&
-            this.data.payload.quest?.checkFlag?.key === this.data.payload.quest?.setFlag?.key
-        );
-
-        // MARK: Quest checkFlag & setFlag
-        if ( isCheckFlagSameAsSetFlag ) {
-            const { key } = this.data.payload.quest.checkFlag;
-
-            if ( this.gamequest.getCompleted( key ) ) {
-                const { dialogue } = this.data.payload.quest.setFlag;
-
-                if ( dialogue ) {
-                    this.gamebox.dialogue.play( dialogue );
-                }
-            } else {
-                const { dialogue } = this.data.payload.quest.checkFlag;
-
-                if ( dialogue ) {
-                    this.gamebox.dialogue.play( dialogue );
-                    this.gamequest.completeQuest( key );
-                }
-            }
-
-            return false;
         }
 
         return true;

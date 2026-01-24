@@ -31,6 +31,12 @@
                     "You got the cursed mushroom!",
                     "This rare ingredient can make you sick and powerful."
                 ]
+            },
+            "quest": {
+                "setFlag": {
+                    "key": "cursed-mushroom",
+                    "value": 1
+                }
             }
         }
     ],
