@@ -1393,34 +1393,34 @@ class EditorCanvas {
                 extraData.action.quest = JSON.parse( data.actionQuest );
             }
 
-            if ( data.dialogue ) {
-                extraData.payload = {
-                    dialogue: {
-                        type: data.dialogue,
-                        text: Utils.parseDialogueText( data.text ),
-                    },
-                };
-
-                if ( data.payloadQuest ) {
-                    extraData.payload.quest = JSON.parse( data.payloadQuest );
-                }
-
-                if ( data.dialogue === window.lib2dk.Config.dialogue.types.PROMPT ) {
-                    if ( data.yeslabel && data.yes ) {
-                        extraData.payload.dialogue.yes = {
-                            label: data.yeslabel,
-                            text: Utils.parseDialogueText( data.yes ),
-                        };
-                    }
-
-                    if ( data.nolabel && data.no ) {
-                        extraData.payload.dialogue.no = {
-                            label: data.nolabel,
-                            text: Utils.parseDialogueText( data.no ),
-                        };
-                    }
-                }
+            if ( data.payloadQuest ) {
+                extraData.payload = JSON.parse( data.payloadQuest );
             }
+
+            // if ( data.dialogue ) {
+            //     extraData.payload = {
+            //         dialogue: {
+            //             type: data.dialogue,
+            //             text: Utils.parseDialogueText( data.text ),
+            //         },
+            //     };
+
+            //     if ( data.dialogue === window.lib2dk.Config.dialogue.types.PROMPT ) {
+            //         if ( data.yeslabel && data.yes ) {
+            //             extraData.payload.dialogue.yes = {
+            //                 label: data.yeslabel,
+            //                 text: Utils.parseDialogueText( data.yes ),
+            //             };
+            //         }
+
+            //         if ( data.nolabel && data.no ) {
+            //             extraData.payload.dialogue.no = {
+            //                 label: data.nolabel,
+            //                 text: Utils.parseDialogueText( data.no ),
+            //             };
+            //         }
+            //     }
+            // }
 
             if ( this.editor.actions.mode === Config.EditorActions.modes.SELECT ) {
                 this.map.npcs = this.map.npcs.reduce( ( acc, npc ) => {

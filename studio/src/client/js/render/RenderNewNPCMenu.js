@@ -4,18 +4,12 @@ const { html } = require( "./Render" );
 
 const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, actions, npcToEdit }) => {
     const mouseCoordsToUse = npcToEdit ? [ npcToEdit.spawn.x, npcToEdit.spawn.y ] : mouseCoords;
-    const hasExistingPayload = npcToEdit && npcToEdit.payload;
-    const hasExistingDialogue = hasExistingPayload && npcToEdit.payload.dialogue;
+    const existingPayload = npcToEdit && npcToEdit.payload ? npcToEdit.payload : "";
     const existingAI = npcToEdit ? npcToEdit.ai : "";
     const existingType = npcToEdit ? npcToEdit.type : "";
     const existingAction = npcToEdit && npcToEdit.action ? npcToEdit.action : {};
     const existingQuest = existingAction.quest ? existingAction.quest : "";
     const existingStates = npcToEdit ? npcToEdit.states : "";
-    const existingDialogueType = hasExistingDialogue ? npcToEdit.payload.dialogue.type : "";
-    const existingPayloadQuest = hasExistingPayload ? npcToEdit.payload.quest : "";
-    const existingText = hasExistingDialogue ? npcToEdit.payload.dialogue.text : "";
-    const existingYes = hasExistingDialogue && npcToEdit.payload.dialogue.yes ? npcToEdit.payload.dialogue.yes : {};
-    const existingNo = hasExistingDialogue && npcToEdit.payload.dialogue.no ? npcToEdit.payload.dialogue.no : {};
 
     // Exclude verbs that are not valid for NPCs
     const npcActions = actions.filter( ( action ) => {
@@ -132,42 +126,8 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
                 <textarea class="editor__field input textarea js-npc-field" name="actionQuest">${existingQuest ? JSON.stringify( existingQuest, null, 2 ) : ""}</textarea>
             </div>
             <div class="editor__setting">
-                <div class="editor__label">Dialogue (optional)</div>
-                <div class="select">
-                    <select class="select__field js-select js-npc-field" name="dialogue">
-                        <option value="">Dialogue</option>
-                        ${dialogue.map( ( dialogue ) => `
-                            <option value="${dialogue}" ${existingDialogueType === dialogue ? "selected" : ""}>${dialogue}</option>
-                        ` ).join( "" )}
-                    </select>
-                    <span class="select__icon">
-                        ${window.feather.icons[ "chevron-down" ].toSvg()}
-                    </span>
-                </div>
-            </div>
-            <div class="editor__setting">
-                <div class="editor__label">Dialogue Quest (raw data)</div>
-                <textarea class="editor__field input textarea js-npc-field" name="payloadQuest">${existingPayloadQuest ? JSON.stringify( existingPayloadQuest, null, 2 ) : ""}</textarea>
-            </div>
-            <div class="editor__setting">
-                <div class="editor__label">Text (required for either dialogue type)</div>
-                <textarea class="editor__field input textarea js-npc-field" name="text">${existingText ? existingText.join( "\n\n" ) : ""}</textarea>
-            </div>
-            <div class="editor__setting">
-                <div class="editor__label">Yes label (required for prompt dialogue)</div>
-                <input class="editor__field input js-npc-field" name="yeslabel" value="${existingYes.label ? existingYes.label : ""}" />
-            </div>
-            <div class="editor__setting">
-                <div class="editor__label">Yes text (required for prompt dialogue)</div>
-                <textarea class="editor__field input textarea js-npc-field" name="yes">${existingYes.text ? existingYes.text.join( "\n\n" ) : ""}</textarea>
-            </div>
-            <div class="editor__setting">
-                <div class="editor__label">No label (required for prompt dialogue)</div>
-                <input class="editor__field input js-npc-field" name="nolabel" value="${existingNo.label ? existingNo.label : ""}" />
-            </div>
-            <div class="editor__setting">
-                <div class="editor__label">No text (required for prompt dialogue)</div>
-                <textarea class="editor__field input textarea js-npc-field" name="no">${existingNo.text ? existingNo.text.join( "\n\n" ) : ""}</textarea>
+                <div class="editor__label">Payload Quest (raw data)</div>
+                <textarea class="editor__field input textarea js-npc-field" name="payloadQuest">${existingPayload ? JSON.stringify( existingPayload, null, 2 ) : ""}</textarea>
             </div>
             <div class="editor__setting">
                 <button class="button editor__button editor__upload-button js-npc-post" data-type="npc">${npcToEdit ? "Update" : "Create"}</button>
