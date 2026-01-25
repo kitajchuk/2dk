@@ -643,11 +643,17 @@ export default class NPC extends QuestSprite {
 
             if ( this.gamebox.hero.status === status ) {
                 this.playQuestDialogue( dialogue );
-                return false;
+                return;
             }
         }
 
         const questId = this.getQuestId( this.quest.type, this.questIndex );
+
+        // If the final quest is completed and it's not a noCheck then the quest line is unhandled at the end...
+        if ( this.gamequest.getCompleted( questId ) && !this.getNextQuest() && this.quest.type !== Config.quest.dialogue.NO_CHECK ) {
+            this.playQuestDialogue( UNHANDLED_QUEST_DIALOGUE );
+            return;
+        }
 
         switch ( this.quest.type ) {
             // MARK: Quest setItem
@@ -736,3 +742,12 @@ export default class NPC extends QuestSprite {
         }
     }
 }
+
+
+
+const UNHANDLED_QUEST_DIALOGUE = {
+    type: Config.dialogue.types.TEXT,
+    text: [
+        "This is an unhandled quest dialogue. If you want to properly end your quest use a NO_CHECK dialogue as the last entry in your quest array.",
+    ],
+};

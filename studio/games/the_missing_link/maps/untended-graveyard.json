@@ -282,7 +282,7 @@
                     "dialogue": {
                         "type": "text",
                         "text": [
-                            "Well now, lad, you've gone and gotten yourself mixed up in some serious business, lad."
+                            "Well now you've gone and gotten yourself mixed up in some serious business, lad."
                         ]
                     }
                 },
@@ -294,7 +294,7 @@
                             "text": [
                                 "...",
                                 "Hello there, boy, what brings you up here?",
-                                "Folks don't wander in here from your cornder of the world.",
+                                "Folks don't wander in here from your corner of the world.",
                                 "...",
                                 "Yes, well I suppose it's too late now. Here you are!",
                                 "If you continue North you'll find yourself at an impasse.",
@@ -307,7 +307,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "I trust you'll find your way"
+                                "I trust you'll find your way."
                             ]
                         }
                     }
