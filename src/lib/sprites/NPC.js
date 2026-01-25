@@ -40,6 +40,11 @@ export default class NPC extends QuestSprite {
 
 
     initialize () {
+        if ( this.states.length === 1 ) {
+            this.setState( 0 );
+            return;
+        }
+
         // Previously was checking this.mapId before we tore into quest-driven dialogue handling...
         const completed = this.gamequest.getCompleted( this.dialogueFlags.setItem );
         // TODO: Make this more robust for more than just two states...
