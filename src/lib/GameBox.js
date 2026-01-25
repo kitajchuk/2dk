@@ -385,17 +385,16 @@ export default class GameBox {
 
         for ( let i = this.map.activeTiles.length; i--; ) {
             for ( let j = this.map.activeTiles[ i ].pushed.length; j--; ) {
-                if ( activeTiles.indexOf( this.map.activeTiles[ i ] ) === -1 ) {
-                    const collides = Utils.collide( this.getRenderBox(), {
-                        width: this.map.data.tilesize,
-                        height: this.map.data.tilesize,
-                        x: this.map.activeTiles[ i ].pushed[ j ][ 0 ] * this.map.data.tilesize,
-                        y: this.map.activeTiles[ i ].pushed[ j ][ 1 ] * this.map.data.tilesize,
-                    });
+                const collides = Utils.collide( this.getRenderBox(), {
+                    width: this.map.data.tilesize,
+                    height: this.map.data.tilesize,
+                    x: this.map.activeTiles[ i ].pushed[ j ][ 0 ] * this.map.data.tilesize,
+                    y: this.map.activeTiles[ i ].pushed[ j ][ 1 ] * this.map.data.tilesize,
+                });
 
-                    if ( collides ) {
-                        activeTiles.push( this.map.activeTiles[ i ] );
-                    }
+                if ( collides ) {
+                    activeTiles.push( this.map.activeTiles[ i ] );
+                    break;
                 }
             }
         }
@@ -411,8 +410,8 @@ export default class GameBox {
             return tiles;
         }
 
-        for ( let y = 0; y < this.map.renderBox.textures[ layer ].length; y++ ) {
-            for ( let x = 0; x < this.map.renderBox.textures[ layer ][ y ].length; x++ ) {
+        for ( let y = this.map.renderBox.textures[ layer ].length; y--; ) {
+            for ( let x = this.map.renderBox.textures[ layer ][ y ].length; x--; ) {
                 const isEmpty = this.map.renderBox.textures[ layer ][ y ][ x ] === 0;
 
                 if ( isEmpty ) {
@@ -509,26 +508,25 @@ export default class GameBox {
 
 
     checkNPC ( poi, sprite, type = "npcs" ) {
-        const npcs = this.getVisibleNPCs( type ).filter( ( npc ) => {
-            if ( npc.data.ai === Config.npc.ai.FLOAT ) {
-                return npc.isEnemy();
-            }
-            return true;
-        });
-
+        const npcs = this.getVisibleNPCs( type );
+        
         // Ad-hoc "sprite" object with { x, y, width, height }
         // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
         const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
 
         for ( let i = npcs.length; i--; ) {
-            if ( 
-                // A thrown object Sprite will have a hero prop
-                !npcs[ i ].hero && 
-                npcs[ i ] !== sprite && 
-                Utils.collide( lookbox, npcs[ i ].hitbox ) &&
-                // Check if the NPC is open (e.g. a door)
-                !( type === "doors" && npcs[ i ].open )
+            // Non-enemy floating NPCs don't collide with the hero
+            // Skip if thrown object, self, or door is open
+            if (
+                npcs[ i ].data.ai === Config.npc.ai.FLOAT && type !== "enemies" ||
+                npcs[ i ].hero ||
+                npcs[ i ] === sprite ||
+                ( type === "doors" && npcs[ i ].open )
             ) {
+                continue;
+            }
+            
+            if (  Utils.collide( lookbox, npcs[ i ].hitbox ) ) {
                 return npcs[ i ];
             }
         }
@@ -539,6 +537,11 @@ export default class GameBox {
 
     checkDoor ( poi, sprite ) {
         return this.checkNPC( poi, sprite, "doors" );
+    }
+
+
+    checkEnemy ( poi, sprite ) {
+        return this.checkNPC( poi, sprite, "enemies" );
     }
 
 
@@ -583,14 +586,18 @@ export default class GameBox {
             passive: [],
         };
         const activeTiles = this.getVisibleActiveTiles();
+        const isInstance = sprite.gamebox === this;
+        const footbox = isInstance ? sprite.getFootbox( poi ) : sprite;
+        const hitbox = isInstance ? sprite.getHitbox( poi ) : sprite;
+        
+        let ret = false;
 
         for ( let i = activeTiles.length; i--; ) {
             const instance = activeTiles[ i ];
             // Ad-hoc "sprite" object with { x, y, width, height }
             // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
-            const isInstance = ( Utils.func( sprite.getFootbox ) && Utils.func( sprite.getHitbox ) );
             const isFootTile = footTiles.indexOf( instance.data.group ) !== -1;
-            const lookbox = isInstance ? isFootTile ? sprite.getFootbox( poi ) : sprite.getHitbox( poi ) : sprite;
+            const lookbox = isInstance ? isFootTile ? footbox : hitbox : sprite;
 
             for ( let j = instance.pushed.length; j--; ) {
                 const coord = instance.pushed[ j ];
@@ -602,45 +609,54 @@ export default class GameBox {
                 };
                 const collides = Utils.collide( lookbox, tilebox );
 
-                if ( collides ) {
-                    // The amount is the percentage of the lookbox that is colliding with the tilebox
-                    const amount = Utils.getCollisionAmount( collides, lookbox );
-                    const match = {
-                        jump: ( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ? true : false ),
-                        fall: ( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ? true : false ),
-                        swim: ( instance.data.actions && instance.canInteract( Config.verbs.SWIM ) ? true : false ),
-                        stop: ( instance.data.actions && instance.data.actions.find( ( action ) => {
-                            return stopVerbs.indexOf( action.verb ) !== -1;
-                        }) ? true : false ),
-                        group: instance.data.group,
-                        coord,
-                        action: ( instance.data.actions && instance.data.actions.find( ( action ) => {
-                            return actionVerbs.indexOf( action.verb ) !== -1;
-                        }) ? true : false ),
-                        attack: ( instance.data.actions && instance.canAttack() ? true : false ),
-                        camera: instance.data.friction || instance.data.mask,
-                        amount,
-                        tilebox,
-                        collides,
-                        instance,
-                    };
+                if ( !collides ) {
+                    continue;
+                }
 
-                    if ( match.action ) {
-                        tiles.action.push( match );
-                    }
+                const action = !!( instance.data.actions && instance.data.actions.some( ( action ) => {
+                    return actionVerbs.indexOf( action.verb ) !== -1;
+                }));
+                const attack = !!( instance.data.actions && instance.canAttack() );
+                const camera = !!( instance.data.friction || instance.data.mask );
 
-                    if ( match.attack ) {
-                        tiles.attack.push( match );
-                    }
+                // The amount is the percentage of the lookbox that is colliding with the tilebox
+                const amount = Utils.getCollisionAmount( collides, lookbox );
+                const match = {
+                    action,
+                    attack,
+                    camera,
+                    coord,
+                    amount,
+                    tilebox,
+                    collides,
+                    instance,
+                    group: instance.data.group,
+                    jump: !!( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ),
+                    fall: !!( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ),
+                    swim: !!( instance.data.actions && instance.canInteract( Config.verbs.SWIM ) ),
+                    stop: !!( instance.data.actions && instance.data.actions.some( ( action ) => {
+                        return stopVerbs.indexOf( action.verb ) !== -1;
+                    })),
+                };
 
-                    if ( ( !match.action && !match.attack ) || ( match.attack && match.camera ) ) {
-                        tiles.passive.push( match );
-                    }
+                if ( action ) {
+                    ret = true;
+                    tiles.action.push( match );
+                }
+
+                if ( attack ) {
+                    ret = true;
+                    tiles.attack.push( match );
+                }
+
+                if ( ( !action && !attack ) || ( attack && camera ) ) {
+                    ret = true;
+                    tiles.passive.push( match );
                 }
             }
         }
 
-        return ( tiles.action.length || tiles.attack.length || tiles.passive.length ) ? tiles : false;
+        return ret ? tiles : false;
     }
 
 
@@ -649,8 +665,8 @@ export default class GameBox {
             this.map.doors[ i ].handleQuestFlagCheck( quest );
         }
 
-        for ( let i = this.map.npcs.length; i--; ) {
-            this.map.npcs[ i ].handleQuestFlagCheck( quest );
+        for ( let i = this.map.enemies.length; i--; ) {
+            this.map.enemies[ i ].handleQuestFlagCheck( quest );
         }
     }
 

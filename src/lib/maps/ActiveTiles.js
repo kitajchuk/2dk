@@ -1,5 +1,4 @@
 import Config from "../Config";
-import Utils from "../Utils";
 
 
 
@@ -9,7 +8,7 @@ import Utils from "../Utils";
 * They work in groups based on tileset background position for rendering.
 * They can have interactions with VERB system or can be attacked with weapon.
 *******************************************************************************/
-class ActiveTiles {
+export default class ActiveTiles {
     constructor ( data, map ) {
         this.data = data;
         this.map = map;
@@ -130,7 +129,3 @@ class ActiveTiles {
         });
     }
 }
-
-
-
-export default ActiveTiles;

@@ -487,7 +487,7 @@ export default class Hero extends Sprite {
         const poi = this.getNextPoiByDir( this.dir, 1 );
         const weaponBox = this.getWeaponbox();
         const collision = {
-            npc: this.gamebox.checkNPC( poi, weaponBox ),
+            enemy: this.gamebox.checkEnemy( poi, weaponBox ),
             tiles: this.gamebox.checkTiles( poi, weaponBox ),
             item: this.gamebox.checkItems( poi, weaponBox ),
         };
@@ -496,8 +496,8 @@ export default class Hero extends Sprite {
             this.gamebox.handleHeroItem( poi, this.dir, collision.item );
         }
 
-        if ( collision.npc && collision.npc.canBeAttacked() ) {
-            collision.npc.hit( this.getStat( "power" ) );
+        if ( collision.enemy && collision.enemy.canBeAttacked() ) {
+            collision.enemy.hit( this.getStat( "power" ) );
         }
 
         if ( collision.tiles && collision.tiles.attack.length ) {
@@ -1061,6 +1061,7 @@ export class HeroProjectile extends Projectile {
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
             npc: this.gamebox.checkNPC( poi, this ),
+            enemy: this.gamebox.checkEnemy( poi, this ),
             tiles: this.gamebox.checkTiles( poi, this ),
             doors: this.gamebox.checkDoor( poi, this ),
             camera: this.gamebox.checkCamera( poi, this ),
@@ -1069,14 +1070,15 @@ export class HeroProjectile extends Projectile {
         const isCollision = (
             collision.map ||
             collision.npc ||
+            collision.enemy ||
             collision.doors ||
             collision.camera ||
             this.canTileStop( collision )
         );
         
         if ( isCollision ) {
-            if ( collision.npc && collision.npc.isEnemy() && !collision.npc.isHitOrStill() ) {
-                collision.npc.hit( this.data.power );
+            if ( collision.enemy && !collision.enemy.isHitOrStill() ) {
+                collision.enemy.hit( this.data.power );
             }
 
             this.kill();
@@ -1198,10 +1200,11 @@ export class LiftedTile extends Sprite {
         const collision = {
             map: this.gamebox.checkMap( this.position, this ),
             npc: this.gamebox.checkNPC( this.position, this ),
+            enemy: this.gamebox.checkEnemy( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),
         };
 
-        if ( collision.map || collision.npc || collision.camera ) {
+        if ( collision.map || collision.npc || collision.enemy || collision.camera ) {
             this.destroy();
             return;
 

@@ -4,12 +4,12 @@ import Sprite from "./Sprite";
 
 
 export default class Projectile extends Sprite {
-    constructor ( projectile, dir, npc, map ) {
+    constructor ( projectile, dir, sprite, map ) {
         const width = projectile.dirs ? projectile.dirs[ dir ].width : projectile.width;
         const height = projectile.dirs ? projectile.dirs[ dir ].height : projectile.height;
         const spawn = {
-            x: npc.position.x + ( npc.width / 2 ) - ( width / 2 ),
-            y: npc.position.y + ( npc.height / 2 ) - ( height / 2 ),
+            x: sprite.position.x + ( sprite.width / 2 ) - ( width / 2 ),
+            y: sprite.position.y + ( sprite.height / 2 ) - ( height / 2 ),
         }
         switch ( dir ) {
             case "left":
@@ -57,7 +57,7 @@ export default class Projectile extends Sprite {
         };
         super( data, map );
         this.hitCounter = 0;
-        this.npc = npc;
+        this.sprite = sprite;
         this.map.addObject( "sprites", this );
         this.sparks();
     }
@@ -89,7 +89,7 @@ export default class Projectile extends Sprite {
     kill () {
         this.map.killObject( "sprites", this );
         this.sparks();
-        this.npc.projectile = null;
+        this.sprite.projectile = null;
     }
 
 
@@ -98,6 +98,7 @@ export default class Projectile extends Sprite {
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
             npc: this.gamebox.checkNPC( poi, this ),
+            enemy: this.gamebox.checkEnemy( poi, this ),
             hero: this.gamebox.checkHero( poi, this ),
             tiles: this.gamebox.checkTiles( poi, this ),
             doors: this.gamebox.checkDoor( poi, this ),
@@ -109,7 +110,8 @@ export default class Projectile extends Sprite {
             collision.hero ||
             collision.doors ||
             collision.camera ||
-            ( collision.npc && collision.npc !== this.npc ) ||
+            collision.npc ||
+            ( collision.enemy && collision.enemy !== this.sprite ) ||
             this.canTileStop( collision )
         );
 

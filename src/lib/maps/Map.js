@@ -3,6 +3,7 @@ import Loader from "../Loader";
 import Config from "../Config";
 import NPC from "../sprites/NPC";
 import Door from "../sprites/Door";
+import Enemy from "../sprites/Enemy";
 import FX from "../sprites/FX";
 import ActiveTiles from "./ActiveTiles";
 import MapEvent from "./MapEvent";
@@ -37,6 +38,7 @@ export default class Map {
         this.fx = [];
         this.npcs = [];
         this.doors = [];
+        this.enemies = [];
         this.events = [];
         this.colliders = [];
 
@@ -67,6 +69,12 @@ export default class Map {
             this.doors[ i ] = null;
         }
         this.doors = null;
+
+        for ( let i = this.enemies.length; i--; ) {
+            this.enemies[ i ].destroy();
+            this.enemies[ i ] = null;
+        }
+        this.enemies = null;
 
         for ( let i = this.fx.length; i--; ) {
             this.fx[ i ].destroy();
@@ -110,27 +118,24 @@ export default class Map {
             this.addAllSprite( this.fx[ i ] );
         }
 
-        // NPCs and Doors
+        // NPCs, Doors, Enemies...
         for ( let i = this.data.npcs.length; i--; ) {
-            if ( this.data.npcs[ i ].type === Config.npc.types.DOOR ) {
-                const door = new Door(
-                    this.player.getMergedData( this.data.npcs[ i ], "npcs", true ),
-                    this,
-                    // Unique map ID for the NPC
-                    // This is used to identify the NPC when giving items
-                    this.getMapId( "door", i )
-                )
+            const data = this.player.getMergedData( this.data.npcs[ i ], "npcs", true );
+            const type = this.data.npcs[ i ].type || "npc";
+            const mapId = this.getMapId( type, i );
+
+            if ( type === Config.npc.types.ENEMY ) {
+                const enemy = new Enemy( data, this, mapId );
+                this.enemies.push( enemy );
+                this.addAllSprite( enemy );
+
+            } else if ( type === Config.npc.types.DOOR ) {
+                const door = new Door( data, this, mapId );
                 this.doors.push( door );
                 this.addAllSprite( door );
     
             } else {
-                const npc = new NPC(
-                    this.player.getMergedData( this.data.npcs[ i ], "npcs", true ),
-                    this,
-                    // Unique map ID for the NPC
-                    // This is used to identify the NPC when giving items
-                    this.getMapId( "npc", i )
-                );
+                const npc = new NPC( data, this, mapId );
                 this.npcs.push( npc );
                 this.addAllSprite( npc );
             }
@@ -189,6 +194,10 @@ export default class Map {
             this.npcs[ i ].blit( elapsed );
         }
 
+        for ( let i = this.enemies.length; i--; ) {
+            this.enemies[ i ].blit( elapsed );
+        }
+
         for ( let i = this.doors.length; i--; ) {
             this.doors[ i ].blit( elapsed );
         }
@@ -212,6 +221,10 @@ export default class Map {
 
         for ( let i = this.npcs.length; i--; ) {
             this.npcs[ i ].update();
+        }
+
+        for ( let i = this.enemies.length; i--; ) {
+            this.enemies[ i ].update();
         }
 
         for ( let i = this.doors.length; i--; ) {

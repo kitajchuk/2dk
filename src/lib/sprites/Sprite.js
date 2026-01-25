@@ -635,6 +635,7 @@ export default class Sprite {
 
 /*******************************************************************************
 * Quest interface
+* TODO: Refactor because at this point the core NPC class doesn't use this...
 *******************************************************************************/
 export class QuestSprite extends Sprite {
     constructor ( data, map ) {

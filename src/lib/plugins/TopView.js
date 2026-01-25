@@ -414,6 +414,7 @@ class TopView extends GameBox {
         const collision = {
             map: this.checkMap( poi, this.hero ),
             npc: this.checkNPC( poi, this.hero ),
+            enemy: this.checkEnemy( poi, this.hero ),
             door: this.checkDoor( poi, this.hero ),
             item: this.checkItems( poi, this.hero ),
             tiles: this.checkTiles( poi, this.hero ),
@@ -463,12 +464,15 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( collision.npc ) {
-            if ( collision.npc.canHitHero() ) {
-                this.hero.hit( collision.npc.stats.power );
-                return;
+        if ( collision.enemy ) {
+            if ( collision.enemy.canHitHero() ) {
+                this.hero.hit( collision.enemy.stats.power );
             }
 
+            return;
+        }
+
+        if ( collision.npc ) {
             this.handleHeroPush( poi, dir );
 
             if ( collision.npc.canDoAction( Config.verbs.PUSH ) ) {
