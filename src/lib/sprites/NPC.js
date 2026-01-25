@@ -596,11 +596,6 @@ export default class NPC extends QuestSprite {
             }
         }
 
-        // If there are no more states, return
-        if ( this.stateIndex === this.states.length - 1 ) {
-            return;
-        }
-
         // Handle sound (skip if we're doing the item get sequence)
         if ( this.state.action.sound && !this.gamebox.hero.itemGet ) {
             this.player.gameaudio.hitSound( this.state.action.sound );
