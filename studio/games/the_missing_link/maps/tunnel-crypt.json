@@ -167,8 +167,9 @@
                 "y": 64
             },
             "payload": {
-                "quest": {
-                    "setItem": {
+                "quest": [
+                    {
+                        "type": "setItem",
                         "id": "blue-rupee",
                         "dialogue": {
                             "type": "text",
@@ -178,7 +179,7 @@
                             ]
                         }
                     }
-                }
+                ]
             }
         },
         {

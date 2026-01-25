@@ -130,8 +130,19 @@
                 "y": 192
             },
             "payload": {
-                "quest": {
-                    "setItem": {
+                "quest": [
+                    {
+                        "type": "checkItem",
+                        "id": "key",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "The chest is locked."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "setItem",
                         "id": "red-rupee",
                         "dialogue": {
                             "type": "text",
@@ -140,17 +151,8 @@
                                 "Joy!"
                             ]
                         }
-                    },
-                    "checkItem": {
-                        "id": "key",
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "The chest is locked."
-                            ]
-                        }
                     }
-                }
+                ]
             }
         },
         {

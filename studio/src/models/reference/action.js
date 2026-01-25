@@ -1,4 +1,3 @@
-const quest = require("./quest");
 const dialogue = require("./dialogue");
 
 module.exports = {
@@ -9,7 +8,24 @@ module.exports = {
     // For NPC state...
     shift: undefined || true,
     // For NPC actions...
-    quest: undefined || quest,
+    quest: undefined || {
+        setFlag: undefined || {
+            key: "",
+            value: 1,
+        },
+        checkFlag: undefined || {
+            key: "",
+            value: 1,
+        },
+        dropItem: undefined || {
+            id: "",
+            dialogue: undefined || dialogue,
+        },
+        checkItem: undefined || {
+            id: "",
+            dialogue: undefined || dialogue,
+        },
+    },
     // For tile actions...
     stat: undefined || {
         key: "",

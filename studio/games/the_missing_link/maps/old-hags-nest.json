@@ -87,98 +87,80 @@
                 "y": 500
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "No more of you, boy, I'm busy!",
-                        "Hee hee hee!"
-                    ]
+                "checkStatus": {
+                    "status": "curse",
+                    "dialogue": {
+                        "type": "text",
+                        "text": [
+                            "You're one sick puppy now, boy."
+                        ]
+                    }
                 },
-                "quest": {
-                    "checkFlag": {
-                        "key": "cursed-mushroom",
-                        "value": 1,
+                "quest": [
+                    {
+                        "type": "checkItem",
+                        "id": "mushroom",
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "Hmph.",
-                                "Hello there young lad. What brings you around these parts? We don't get many outsiders in this awful place.",
+                                "...",
+                                "What brings you here, boy? I don't get many visitors in this shack.",
                                 "...",
                                 "Hmm, yes I see. Are those cursed ghosts in the graveyard giving you trouble then?",
-                                "Well you won't be able to tackle them the way you are now, boy. Cursed. You must become cursed and powerful. But this is no easy task.",
-                                "...",
-                                "Mmm. There may be one way. To the north is the Cathedral of the Cursed. It is said long ago the cathedral could place the dark sign upon you as easily as it could purge you of the disease.",
-                                "If you go looking around do be careful. No one goes into the cathedral anymore. It's a dangerous and forbidden place now.",
-                                "...",
+                                "You're just going to have to figure out how to deal with them.",
                                 "Hee hee hee!"
                             ]
                         }
                     },
-                    "takeItem": {
+                    {
+                        "type": "takeItem",
                         "id": "mushroom",
                         "dialogue": {
                             "type": "prompt",
                             "text": [
-                                "Aha! Do you want me to make you a cursed potion with that mushroom, boy?"
+                                "Well then, boy, you've found something unusual there.",
+                                "Give it here will you? I'll make a fine brew with it.",
+                                "What do you say?"
                             ],
                             "yes": {
                                 "label": "Yes",
                                 "text": [
-                                    "Very well, hand it over.",
+                                    "Good, boy. I'll make a fine brew with it.",
                                     "...",
-                                    "Don't rush me, boy, this brew takes time.",
+                                    "Oh patience, boy, it takes a bit of time to get it right.",
                                     "...",
-                                    "Hee hee hee!",
-                                    "...",
-                                    "Here's your potion. Drink up!",
-                                    "...",
-                                    "Hee hee hee!",
-                                    "...",
-                                    "Now go and do your thing, boy.",
-                                    "Hee hee hee!"
+                                    "There you go. A fine brew for a fine lad."
                                 ]
                             },
                             "no": {
                                 "label": "No",
                                 "text": [
-                                    "Well that's a shame. I was hoping to make a fine brew today."
+                                    "Hmph. I took you for smarter than that kid!"
                                 ]
                             }
                         }
                     },
-                    "setItem": {
+                    {
+                        "type": "setItem",
                         "id": "potion",
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got the cursed potion!",
+                                "You got the curse potion!",
                                 "You feel wicked sick but full of new power!"
                             ]
                         }
                     },
-                    "checkItem": {
-                        "id": "potion",
+                    {
+                        "type": "noCheck",
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "Look at you now, boy. You're a real sick puppy!",
-                                "But you're going to be a force to reckon with.",
-                                "...",
-                                "Hee hee hee!"
-                            ]
-                        }
-                    },
-                    "checkStatus": {
-                        "status": "curse",
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "The way you are now those ghosts won't bother you.",
-                                "Hee hee hee!"
+                                "Oh run along now, boy. I've got work to do."
                             ]
                         }
                     }
-                }
+                ]
             }
         },
         {

@@ -52,8 +52,10 @@ export default class Door extends QuestSprite {
 
     
     payload () {
-        if ( this.data.payload.dialogue && !this.dialogue ) {
-            this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue );
+        const dialogue = this.data.payload?.quest?.[ 0 ]?.dialogue;
+
+        if ( dialogue && !this.dialogue ) {
+            this.dialogue = this.gamebox.dialogue.play( dialogue );
             this.dialogue.then( () => {
                 this.resetDialogue();
                 this.handleCompleteQuest();
@@ -354,10 +356,6 @@ export default class Door extends QuestSprite {
     handleCompleteQuest () {
         this.gamequest.completeQuest( this.mapId );
         this.handleDoAction();
-
-        if ( this.data.payload?.quest?.setFlag ) {
-            this.handleQuestFlagUpdate( this.data.payload.quest.setFlag );
-        }
     }
 
 

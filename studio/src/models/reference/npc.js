@@ -1,6 +1,6 @@
 const action = require("./action");
-const quest = require("./quest");
 const frame = require("./frame");
+const payload = require("./payload");
 
 // Maps reference source NPC in game.json
 const npcReference = {
@@ -11,21 +11,8 @@ const npcReference = {
         x: 0,
         y: 0
     },
-    payload: undefined || {
-        dialogue: undefined || {
-            type: "",
-            text: [],
-            yes: undefined || {
-                label: "",
-                text: []
-            },
-            no: undefined || {
-                label: "",
-                text: []
-            }
-        },
-        quest: undefined || quest,
-    },
+    // Payload reference (payload.js)
+    payload: undefined || payload,
     // Action reference (action.js)
     action: undefined || action,
 };

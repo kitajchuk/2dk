@@ -345,12 +345,17 @@
                 "y": 1600
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "Master Shinji's House"
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Master Shinji's House"
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
@@ -372,12 +377,17 @@
                 "sound": "moveObject"
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "Here lies Master Shinji. May he rest in peace..."
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "An unmarked grave..."
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
@@ -387,16 +397,21 @@
                 "y": 1280
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "N  — Graveyard (Road Closed)",
-                        "NE — Moblin Hideout",
-                        "E  — Shinji Farm",
-                        "W  — Great Lake",
-                        "NW — Imperial City"
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "N  — Graveyard (Road Closed)",
+                                "NE — Moblin Hideout",
+                                "E  — Shinji Farm",
+                                "W  — Great Lake",
+                                "NW — Imperial City"
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
@@ -431,13 +446,18 @@
                 "y": 576
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "We're on vacation so stay out. If you don't you'll be sorry.",
-                        "— Moblin Prince"
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "We're on vacation so stay out. If you don't you'll be sorry.",
+                                "— Moblin Prince"
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
@@ -511,12 +531,17 @@
                 "sound": "moveObject"
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "The flying rooster can't be pushed around."
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "The flying rooster can't be pushed around."
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
@@ -526,14 +551,19 @@
                 "y": 384
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "Whatever you do don't go looking around our hideout for something nifty.",
-                        "We're not hiding anything around here...",
-                        "..."
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Whatever you do don't go looking around our hideout for something nifty.",
+                                "We're not hiding anything around here...",
+                                "..."
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
@@ -591,12 +621,17 @@
                 "y": 1088
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "N — Graveyard"
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "N — Graveyard"
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
@@ -650,15 +685,28 @@
                 "y": 240
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "Oh hey, Kiln. Sorry to hear about Master Shinji.",
-                        "What do you think you'll do now? I imagine you might be curious about venturing beyond our little corner of the world.",
-                        "You just need to figure out how to get across that cavern...",
-                        "..."
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Oh hey, Kiln. Sorry to hear about Master Shinji.",
+                                "What will you do now? I imagine you're curious about venturing beyond our little corner of the world.",
+                                "If you find a way to head North let me know."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "So, have you found a way to head North?"
+                            ]
+                        }
+                    }
+                ]
             }
         }
     ],

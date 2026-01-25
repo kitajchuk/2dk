@@ -1,4 +1,3 @@
-const quest = require("./quest");
 const dialogue = require("./dialogue");
 
 // Maps reference source Item in game.json
@@ -10,7 +9,6 @@ const itemReference = {
     },
     // Only text type is supported for dialogue on items
     payload: undefined || dialogue,
-    quest: undefined || quest,
 };
 
 module.exports = {

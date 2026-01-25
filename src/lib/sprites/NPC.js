@@ -14,13 +14,12 @@ export default class NPC extends QuestSprite {
         super( data, map );
         this.mapId = mapId;
         this.states = this.data.states;
+        this.stateIndex = 0;
+        this.quests = this.data.payload?.quest ? this.data.payload.quest : [];
+        this.questIndex = 0;
+        this.questStatusCheck = this.data.payload?.checkStatus || null;
         this.status = this.data.status || null;
         this.dialogue = null;
-        this.dialogueFlags = {
-            takeItem: `takeItem-${this.mapId}`,
-            setItem: `setItem-${this.mapId}`,
-            checkItem: `checkItem-${this.mapId}`,
-        };
         
         // AI things...
         // Initial cooldown period upon spawn (don't immediately move)
@@ -40,58 +39,8 @@ export default class NPC extends QuestSprite {
 
 
     initialize () {
-        if ( this.states.length === 1 ) {
-            this.setState( 0 );
-            return;
-        }
-
-        // Previously was checking this.mapId before we tore into quest-driven dialogue handling...
-        const completed = this.gamequest.getCompleted( this.dialogueFlags.setItem );
-        // TODO: Make this more robust for more than just two states...
-        const index = completed ? 1 : 0;
-        this.setState( index );
-    }
-
-
-    setState ( index ) {
-        if ( !this.states.length ) {
-            return;
-        }
-
-        this.stateIndex = index;
-        this.state = this.states[ this.stateIndex ];
-        this.dir = this.state.dir;
-        this.verb = this.state.verb;
-    }
-
-
-    payload () {
-        if ( this.data.payload.dialogue && !this.dialogue ) {
-            if ( this.data.ai === Config.npc.ai.WALK ) {
-                this.freezeWalk();
-            }
-
-            this.dialogue = this.gamebox.dialogue.play( this.data.payload.dialogue )
-                .then( () => {
-                    this.stillTimer = 0;
-                    this.resetDialogue();
-                    this.handleAI();
-                    
-                }).catch( () => {
-                    this.resetDialogue();
-                });
-        }
-    }
-
-
-    resetDialogue () {
-        this.dialogue = null;
-        this.dir = this.state.dir;
-        this.verb = this.state.verb;
-
-        if ( this.gamebox.hero.itemGet ) {
-            this.gamebox.hero.resetItemGet();
-        }
+        this.initializeState();
+        this.initializeQuest();
     }
 
 
@@ -539,19 +488,40 @@ export default class NPC extends QuestSprite {
 
 
     doInteract () {
-        // Handle dialogue payload
         if ( this.data.payload ) {
-            const canDoPayload = this.canDoPayloadDialogue();
+            this.handleQuestDialogue();
+        }
+    }
 
-            if ( !canDoPayload ) {
-                return;
-            }
 
-            if ( this.data.payload.dialogue ) {
-                this.payload();
-            }
+/*******************************************************************************
+* State
+*******************************************************************************/
+    initializeState () {
+        if ( this.states.length === 1 ) {
+            this.setState( 0 );
+        } else {
+            const completed = this.gamequest.getCompleted( this.mapId );
+            // TODO: Make this more robust for more than just two states...
+            const index = completed ? 1 : 0;
+            this.setState( index );
+        }
+    }
+
+
+    setState ( index ) {
+        if ( !this.states.length ) {
+            return;
         }
 
+        this.stateIndex = index;
+        this.state = this.states[ this.stateIndex ];
+        this.dir = this.state.dir;
+        this.verb = this.state.verb;
+    }
+
+
+    handleInteractionState () {
         // Handle sound (skip if we're doing the item get sequence)
         if ( this.state.action.sound && !this.gamebox.hero.itemGet ) {
             this.player.gameaudio.hitSound( this.state.action.sound );
@@ -570,129 +540,177 @@ export default class NPC extends QuestSprite {
     }
 
 
-    canDoPayloadDialogue () {
-        const isCheckFlagSameAsSetFlag = (
-            this.data.payload.quest?.checkFlag &&
-            this.data.payload.quest?.setFlag &&
-            this.data.payload.quest?.checkFlag?.key === this.data.payload.quest?.setFlag?.key
-        );
-
-        const isCheckItemSameAsSetItem = (
-            this.data.payload.quest?.checkItem &&
-            this.data.payload.quest?.setItem &&
-            this.data.payload.quest?.checkItem?.id === this.data.payload.quest?.setItem?.id
-        );
-
-        // MARK: Quest checkFlag & setFlag circular dialogue
-        if ( isCheckFlagSameAsSetFlag ) {
-            const { key } = this.data.payload.quest.checkFlag;
-
-            if ( this.gamequest.getCompleted( key ) ) {
-                const { dialogue } = this.data.payload.quest.setFlag;
-
-                if ( dialogue ) {
-                    this.gamebox.dialogue.play( dialogue );
-                }
-            } else {
-                const { dialogue } = this.data.payload.quest.checkFlag;
-
-                if ( dialogue ) {
-                    this.gamebox.dialogue.play( dialogue );
-                    this.gamequest.completeQuest( key );
-                }
-            }
-
-            return false;
-
-        // MARK: Quest checkFlag (requires something else to complete the quest flag)
-        } else if ( this.data.payload.quest?.checkFlag && !this.gamequest.getCompleted( this.data.payload.quest.checkFlag.key ) ) {
-            const { dialogue } = this.data.payload.quest.checkFlag;
-
-            if ( dialogue ) {
-                this.gamebox.dialogue.play( dialogue );
-            }
-
-            return false;
-        }
-
-        // MARK: Quest takeItem
-        if ( this.data.payload.quest?.takeItem && !this.gamequest.getCompleted( this.dialogueFlags.takeItem ) ) {
-            const { id, dialogue } = this.data.payload.quest.takeItem;
-
-            if ( this.gamebox.hero.itemCheck( id ) ) {
-                if ( dialogue ) {
-                    // Only complete on promise resolve to support PROMPT dialogue types...
-                    this.gamebox.dialogue.play( dialogue ).then(() => {
-                        const { id } = this.data.payload.quest.takeItem;
-                        this.gamebox.hero.takeItem( id );
-                        this.gamequest.completeQuest( this.dialogueFlags.takeItem );
-
-                        // Assume here that we're exchanging items...
-                        if ( isCheckItemSameAsSetItem ) {
-                            const { id, dialogue } = this.data.payload.quest.setItem;
-                            this.handleQuestItemUpdate( id );
-                            this.gamequest.completeQuest( this.dialogueFlags.setItem );
-
-                            if ( dialogue ) {
-                                this.gamebox.playItemGetDialogue( dialogue );
-                            }
-                        }
-                    }).catch(() => {
-                         // Do nothing...
-                    });
-                }
-            }
-            return false;
-        }
-
-        // MARK: Quest checkItem (auto dialogue -- not for nuanced quests but more like for locked chests)
-        if ( this.data.payload.quest?.checkItem && !this.gamequest.getCompleted( this.dialogueFlags.checkItem ) ) {
-            const { id, dialogue } = this.data.payload.quest.checkItem;
-
-            if ( !this.gamebox.hero.itemCheck( id ) ) {
-                if ( dialogue ) {
-                    this.gamebox.dialogue.auto( dialogue );
-                }
-            } else {
-                const { id } = this.data.payload.quest.checkItem;
-                this.handleQuestItemCheck( id );
-                this.gamequest.completeQuest( this.dialogueFlags.checkItem );
-            }
-            return false;
-        }
-
-        // Mark: Quest setItem
-        if ( this.data.payload.quest?.setItem && !this.gamequest.getCompleted( this.dialogueFlags.setItem ) ) {
-            const { id, dialogue } = this.data.payload.quest.setItem;
-
-            this.handleQuestItemUpdate( id );
-            this.gamequest.completeQuest( this.dialogueFlags.setItem );
-
-            if ( dialogue ) {
-                this.gamebox.playItemGetDialogue( dialogue );
-            }
-            return isCheckItemSameAsSetItem ? false : true;
-        }
-
-        // MARK: Quest checkStatus
-        if ( this.data.payload.quest?.checkStatus ) {
-            const { status, dialogue } = this.data.payload.quest.checkStatus;
-            if ( this.gamebox.hero.status === status ) {
-                if ( dialogue ) {
-                    this.gamebox.dialogue.play( dialogue );
-                    // No flag here. As long as you have this status we'll play this dialogue...
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-
 /*******************************************************************************
 * Quests
 *******************************************************************************/
+    initializeQuest () {
+        if ( this.quests.length === 1 ) {
+            this.setQuest( 0 );
+        } else if ( this.quests.length > 1 ) {
+            for ( let i = 0; i < this.quests.length; i++ ) {
+                const questId = this.getQuestId( this.quests[ i ].type, i );
+
+                if ( this.gamequest.getCompleted( questId ) ) {
+                    continue;
+                }
+
+                this.setQuest( i );
+                break;
+            }
+        }
+    }
+
+
+    getQuestId ( type, index ) {
+        return `${this.mapId}-${type}-${index}`;
+    }
+
+
+    setQuest ( index ) {
+        this.questIndex = index;
+        this.quest = this.quests[ this.questIndex ];
+    }
+
+
+    getNextQuest () {
+        return this.quests[ this.questIndex + 1 ];
+    }
+
+
+    advanceQuest () {
+        const nextQuest = this.getNextQuest();
+
+        if ( nextQuest ) {
+            this.setQuest( this.questIndex + 1 );
+        }
+    }
+
+
+    advanceQuestRecursive () {
+        const nextQuest = this.getNextQuest();
+
+        if ( nextQuest ) {
+            this.setQuest( this.questIndex + 1 );
+            this.handleQuestDialogue();
+        }
+    }
+
+
+    resetQuestDialogue () {
+        this.dialogue = null;
+        this.dir = this.state.dir;
+        this.verb = this.state.verb;
+
+        if ( this.gamebox.hero.itemGet ) {
+            this.gamebox.hero.resetItemGet();
+        }
+    }
+
+
+    playQuestDialogue ( dialogue, onComplete ) {
+        if ( !this.dialogue ) {
+            if ( this.data.ai === Config.npc.ai.WALK ) {
+                this.freezeWalk();
+            }
+
+            this.dialogue = this.gamebox.dialogue.play( dialogue )
+                .then( () => {
+                    this.stillTimer = 0;
+                    this.resetQuestDialogue();
+                    this.handleAI();
+
+                    if ( onComplete ) {
+                        onComplete();
+                    }
+                    
+                }).catch( () => {
+                    this.resetQuestDialogue();
+                });
+        }
+    }
+
+
+    handleQuestDialogue () {
+        // Safety check
+        if ( this.quests.length === 0 ) {
+            return;
+        }
+
+        // MARK: Quest checkStatus
+        // As long as you have this status we'll play this dialogue
+        if ( this.questStatusCheck ) {
+            const { status, dialogue } = this.questStatusCheck;
+
+            if ( this.gamebox.hero.status === status ) {
+                this.playQuestDialogue( dialogue );
+                return false;
+            }
+        }
+
+        const questId = this.getQuestId( this.quest.type, this.questIndex );
+
+        switch ( this.quest.type ) {
+            // MARK: Quest setItem
+            case Config.quest.dialogue.SET_ITEM:
+                this.handleQuestItemUpdate( this.quest.id );
+                this.gamequest.completeQuest( questId );
+                this.gamebox.playItemGetDialogue( this.quest.dialogue );
+                this.advanceQuest();
+                // Assume if we're setting an item we should attempt to update the NPC state
+                this.handleInteractionState();
+                break;
+
+            // MARK: Quest checkItem
+            case Config.quest.dialogue.CHECK_ITEM:
+                if ( !this.gamebox.hero.itemCheck( this.quest.id ) ) {
+                    this.playQuestDialogue( this.quest.dialogue );
+                } else {
+                    this.handleQuestItemCheck( this.quest.id );
+                    this.gamequest.completeQuest( questId );
+                    this.advanceQuestRecursive();
+                }
+                break;
+
+            // MARK: Quest takeItem
+            case Config.quest.dialogue.TAKE_ITEM:
+                if ( this.gamebox.hero.itemCheck( this.quest.id ) ) {
+                    // Only complete on promise resolve to support PROMPT dialogue types...
+                    this.playQuestDialogue( this.quest.dialogue, () => {
+                        this.gamebox.hero.takeItem( this.quest.id );
+                        this.gamequest.completeQuest( questId );
+                        this.advanceQuestRecursive();
+                    });
+                }
+                break;
+
+            // MARK: Quest checkFlag
+            case Config.quest.dialogue.CHECK_FLAG:
+                if ( !this.gamequest.getCompleted( this.quest.key ) ) {
+                    this.playQuestDialogue( this.quest.dialogue );
+                } else {
+                    this.gamequest.completeQuest( questId );
+                    this.advanceQuestRecursive();
+                }
+                break;
+            
+            // MARK: Quest noCheck
+            case Config.quest.dialogue.NO_CHECK:
+                this.playQuestDialogue( this.quest.dialogue );
+
+                const nextQuest = this.getNextQuest();
+                if ( nextQuest ) {
+                    this.gamequest.completeQuest( questId );
+                    this.advanceQuestRecursive();
+                // If there are no more quests, handle the interaction state and don't flag this as completed
+                // Here we assume that this should be the dialogue that plays from this point on (e.g. exhausted dialogue)
+                } else {
+                    this.handleInteractionState();
+                }
+                break;
+        }
+    }
+
+
     handleQuestItemUpdate ( itemId ) {
         const item = this.gamebox.hero.getItem( itemId );
 
@@ -703,6 +721,8 @@ export default class NPC extends QuestSprite {
         } else {
             this.gamebox.hero.giveItem( itemId, this.mapId );
         }
+
+        this.gamequest.completeQuest( this.mapId );
     }
 
 

@@ -769,12 +769,6 @@ class TopView extends GameBox {
             this.hero.giveItem( item.data.id, item.mapId );
             this.gamequest.completeQuest( item.mapId );
             this.playItemGetDialogue( item.data.dialogue );
-
-            // Key items on the map will automatically complete the quest flag if it exists...
-            if ( item.data.quest?.setFlag ) {
-                const { key } = item.data.quest.setFlag;
-                this.gamequest.completeQuest( key );
-            }
         }
 
         if ( item.data.sound ) {

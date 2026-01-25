@@ -171,13 +171,18 @@
                 "y": 701
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "This graveyard is too spooky and dangerous so we've packed up and left.",
-                        "Unfortunately we lost the key so we had to leave our treasure behind..."
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "This graveyard is too dangerous so we've packed up and left.",
+                                "We lost the key to our trunk so we had to leave our treasure behind..."
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {

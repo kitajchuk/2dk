@@ -129,6 +129,22 @@ const Config = {
             READ: "read",
         },
     },
+    quest: {
+        dialogue: {
+            NO_CHECK: "noCheck",
+            SET_ITEM: "setItem",
+            TAKE_ITEM: "takeItem",
+            CHECK_ITEM: "checkItem",
+            CHECK_FLAG: "checkFlag",
+            CHECK_STATUS: "checkStatus",
+        },
+        action: {
+            SET_FLAG: "setFlag",
+            DROP_ITEM: "dropItem",
+            CHECK_FLAG: "checkFlag",
+            CHECK_ITEM: "checkItem",
+        },
+    },
     colors: {
         red: getStyleVar( "--red" ),
         grey: getStyleVar( "--grey" ),

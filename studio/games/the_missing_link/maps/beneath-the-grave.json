@@ -104,17 +104,19 @@
                 "y": 304
             },
             "payload": {
-                "quest": {
-                    "checkItem": {
+                "quest": [
+                    {
+                        "type": "checkItem",
                         "id": "shield",
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "It won't budge..."
+                                "It's not locked but it won't open..."
                             ]
                         }
                     },
-                    "setItem": {
+                    {
+                        "type": "setItem",
                         "id": "sword",
                         "dialogue": {
                             "type": "text",
@@ -124,7 +126,7 @@
                             ]
                         }
                     }
-                }
+                ]
             }
         },
         {
@@ -134,12 +136,17 @@
                 "y": 576
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "Only the worthy shall inherit the blade."
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Only the worthy shall inherit the blade."
+                            ]
+                        }
+                    }
+                ]
             }
         }
     ],

@@ -94,8 +94,9 @@
                 "y": 224
             },
             "payload": {
-                "quest": {
-                    "setItem": {
+                "quest": [
+                    {
+                        "type": "setItem",
                         "id": "shield",
                         "dialogue": {
                             "type": "text",
@@ -105,7 +106,7 @@
                             ]
                         }
                     }
-                }
+                ]
             }
         },
         {
@@ -120,24 +121,29 @@
                 "sound": "smash"
             },
             "payload": {
-                "dialogue": {
-                    "type": "prompt",
-                    "text": [
-                        "There's a loose drawer. Do you want to push it?"
-                    ],
-                    "yes": {
-                        "label": "Yes",
-                        "text": [
-                            "It slides in easily!"
-                        ]
-                    },
-                    "no": {
-                        "label": "No",
-                        "text": [
-                            "Nothing happens..."
-                        ]
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "prompt",
+                            "text": [
+                                "There's a loose drawer. Do you want to push it?"
+                            ],
+                            "yes": {
+                                "label": "Yes",
+                                "text": [
+                                    "It slides in easily!"
+                                ]
+                            },
+                            "no": {
+                                "label": "No",
+                                "text": [
+                                    "Nothing happens..."
+                                ]
+                            }
+                        }
                     }
-                }
+                ]
             }
         },
         {
@@ -147,13 +153,18 @@
                 "y": 764
             },
             "payload": {
-                "dialogue": {
-                    "type": "text",
-                    "text": [
-                        "Hmm...",
-                        "It looks like Master Shinji was writing a letter to someone in the Imperial City before he died..."
-                    ]
-                }
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Hmm...",
+                                "It looks like Master Shinji was writing a letter to someone in the Imperial City before he died..."
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
