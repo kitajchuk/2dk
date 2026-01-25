@@ -54,7 +54,6 @@ const Config = {
         WATER: "water",
         LEDGE: "ledge",
         STAIRS: "stairs",
-        SWITCH: "switch",
     },
     keys: {
         A: "KeyX",
@@ -76,15 +75,12 @@ const Config = {
     },
     events: {
         DOOR: "door",
-        WARP: "warp",
         DIALOGUE: "dialogue",
         BOUNDARY: "boundary",
-        CUTSCENE: "cutscene",
     },
     broadcast: {
         PAUSED: "paused",
         RESUMED: "resumed",
-        MAPEVENT: "mapevent",
     },
     hero: {
         modes: {
@@ -100,13 +96,12 @@ const Config = {
         ai: {
             WALK: "walk",
             ROAM: "roam",
+            STEP: "step",
             FLOAT: "float",
             WANDER: "wander",
-            STEP: "step",
         },
         types: {
             DOOR: "door",
-            SWITCH: "switch",
             ENEMY: "enemy",
         },
     },
