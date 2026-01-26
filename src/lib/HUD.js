@@ -274,6 +274,8 @@ export default class HUD {
 
     renderItems () {
         const shield = this.hero.items.find( ( item ) => item.equip === "shield" );
+        const x = 20;
+        const y = 50;
 
         if ( shield ) {
             this.gamebox.mapLayer.context.drawImage(
@@ -282,8 +284,8 @@ export default class HUD {
                 shield.offsetY,
                 shield.width,
                 shield.height,
-                20,
-                50,
+                x,
+                y,
                 shield.width,
                 shield.height
             );
@@ -292,7 +294,10 @@ export default class HUD {
 
 
     renderStatus () {
+        const shield = this.hero.items.find( ( item ) => item.equip === "shield" );
         const statusItem = this.player.data.hud.status?.[this.hero.status];
+        const x = shield ? 60 : 20;
+        const y = 50;
 
         if ( statusItem ) {
             this.gamebox.mapLayer.context.drawImage(
@@ -301,8 +306,8 @@ export default class HUD {
                 statusItem.offsetY,
                 statusItem.width,
                 statusItem.height,
-                60,
-                50,
+                x,
+                y,
                 statusItem.width,
                 statusItem.height
             );
