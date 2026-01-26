@@ -107,7 +107,7 @@
                 "quest": [
                     {
                         "type": "checkItem",
-                        "id": "shield",
+                        "id": "sword",
                         "dialogue": {
                             "type": "text",
                             "text": [
@@ -117,32 +117,12 @@
                     },
                     {
                         "type": "setItem",
-                        "id": "sword",
+                        "id": "shield",
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got the Master Sword!",
-                                "Now you can attack enemies!"
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "id": "sign",
-            "spawn": {
-                "x": 512,
-                "y": 576
-            },
-            "payload": {
-                "quest": [
-                    {
-                        "type": "noCheck",
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "Only the worthy shall inherit the blade."
+                                "You got Master Shinji's old shield!",
+                                "Now you can block enemy attacks!"
                             ]
                         }
                     }

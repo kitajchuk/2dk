@@ -339,26 +339,6 @@
             "ai": "wander"
         },
         {
-            "id": "sign",
-            "spawn": {
-                "x": 1600,
-                "y": 1600
-            },
-            "payload": {
-                "quest": [
-                    {
-                        "type": "noCheck",
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "Master Shinji's House"
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        {
             "id": "cucco",
             "spawn": {
                 "x": 1948,
@@ -537,29 +517,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "The flying rooster can't be pushed around."
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "id": "sign",
-            "spawn": {
-                "x": 1984,
-                "y": 384
-            },
-            "payload": {
-                "quest": [
-                    {
-                        "type": "noCheck",
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "Whatever you do don't go looking around our hideout for something nifty.",
-                                "We're not hiding anything around here...",
-                                "..."
+                                "Something about a flying rooster..."
                             ]
                         }
                     }
@@ -612,26 +570,6 @@
             "type": "enemy",
             "action": {
                 "verb": "attack"
-            }
-        },
-        {
-            "id": "sign",
-            "spawn": {
-                "x": 1792,
-                "y": 1088
-            },
-            "payload": {
-                "quest": [
-                    {
-                        "type": "noCheck",
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "N — Graveyard"
-                            ]
-                        }
-                    }
-                ]
             }
         },
         {
@@ -693,7 +631,7 @@
                             "text": [
                                 "Oh hey, Kiln. Sorry to hear about Master Shinji.",
                                 "What will you do now? I imagine you're curious about venturing beyond our little corner of the world.",
-                                "If you find a way to head North let me know."
+                                "If you decide to go make sure you equip a Sword and a Shield first."
                             ]
                         }
                     },
@@ -702,7 +640,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "So, have you found a way to head North?"
+                                "So, have you decided what you're going to do yet?"
                             ]
                         }
                     }
@@ -17478,8 +17416,8 @@
                 ],
                 [
                     [
-                        448,
-                        704
+                        128,
+                        2240
                     ]
                 ],
                 [

@@ -97,12 +97,12 @@
                 "quest": [
                     {
                         "type": "setItem",
-                        "id": "shield",
+                        "id": "sword",
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got Master Shinji's shield!",
-                                "Now you can block enemies!"
+                                "You got the Master Sword!",
+                                "Now you can slay your enemies!"
                             ]
                         }
                     }
