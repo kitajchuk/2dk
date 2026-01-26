@@ -4,7 +4,7 @@ import Sprite from "./Sprite";
 
 export default class KeyItem extends Sprite {
     // item: { spawn, dialogue: { type, text } }
-    constructor ( item, map, mapId ) {
+    constructor ( { verb, ...item }, map, mapId ) {
         const data = {
             hitbox: {
                 x: 0,
@@ -46,7 +46,7 @@ export default class KeyItem extends Sprite {
 
 
 export class KeyItemDrop extends Sprite {
-    constructor ( spawn, item, map ) {
+    constructor ( spawn, { verb, ...item }, map ) {
         const data = {
             spawn,
             hitbox: {

@@ -3,7 +3,7 @@ import Sprite from "./Sprite";
 
 
 export default class ItemDrop extends Sprite {
-    constructor ( spawn, item, map ) {
+    constructor ( spawn, { verb, ...item }, map ) {
         const data = {
             spawn,
             hitbox: {

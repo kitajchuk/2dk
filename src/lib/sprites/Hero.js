@@ -569,6 +569,18 @@ export default class Hero extends Sprite {
     }
 
 
+    applyOpacity () {
+        super.applyOpacity();
+
+        // Camera animates to reset position but we omit the hero sprite visually
+        // For standard fall (e.g. empty tiles) this isn't a big deal but...
+        // For ledge jumping into water without flippers it looks odd to reset with the DIVE sprite cycle.
+        if ( this.falling && this.falling.didReset && this.falling.resetCounter === 0 ) {
+            this.gamebox.mapLayer.context.globalAlpha = 0;
+        }
+    }
+
+
     applyFalling () {
         if ( this.position.x === this.falling.reset.x && this.position.y === this.falling.reset.y ) {
             this.falling = null;

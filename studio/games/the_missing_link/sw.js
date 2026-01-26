@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v1019";
+const CACHE_NAME = "v1057";
 const CACHE_URLS = [
     "",
     "index.html",
@@ -53,6 +53,7 @@ const CACHE_URLS = [
     "maps/beneath-the-rooster.json",
     "maps/cathedral-of-the-cursed.json",
     "maps/graveyard-residence.json",
+    "maps/lakeview-mountain-pass.json",
     "maps/lost-corner-of-the-world.json",
     "maps/master-shinjis-house.json",
     "maps/old-hags-nest.json",
