@@ -1,4 +1,5 @@
 import Config from "../Config";
+import FX from "../sprites/FX";
 
 
 
@@ -13,6 +14,7 @@ export default class ActiveTiles {
         this.data = data;
         this.map = map;
         this.gamebox = this.map.gamebox;
+        this.player = this.map.player;
         this.frame = 0;
         this.pushed = [];
         this.spliced = [];
@@ -112,7 +114,31 @@ export default class ActiveTiles {
     push ( coords ) {
         if ( !this.isPushed( coords ) ) {
             this.pushed.push( coords );
+
+            // TODO: Lets see how we feel about this...
+            if ( this.data.fx ) {
+                this.addFX( coords );
+            }
         }
+    }
+
+
+    addFX ( coords ) {
+        const offsetX = this.data.fx.offsetX || 0;
+        const offsetY = this.data.fx.offsetY || 0;
+        const fx = new FX(
+            this.player.getMergedData({
+                id: this.data.fx.id,
+                dur: this.data.fx.dur,
+                type: this.data.fx.type,
+                spawn: {
+                    x: coords[ 0 ] * this.map.data.tilesize + offsetX,
+                    y: coords[ 1 ] * this.map.data.tilesize + offsetY,
+                },
+            }, "fx", true ),
+            this.map
+        );
+        this.map.addObject( "fx", fx );
     }
 
 

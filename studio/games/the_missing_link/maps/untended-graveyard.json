@@ -47,7 +47,13 @@
             "offsetX": 448,
             "offsetY": 2304,
             "stepsX": 4,
-            "dur": 2000
+            "dur": 2000,
+            "fx": {
+                "id": "smoke",
+                "dur": 3000,
+                "type": "float",
+                "offsetY": -32
+            }
         },
         {
             "group": "flowers-dirt",
