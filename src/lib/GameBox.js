@@ -233,6 +233,66 @@ export default class GameBox {
     }
 
 
+    smokeObjectBase ( obj, fx = "smoke" ) {
+        const data = this.player.getMergedData({
+            id: fx,
+            kill: true,
+        }, "fx" );
+
+        // Center
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
+            spawn: {
+                x: obj.position.x + ( obj.width / 2 ) - ( data.width / 2 ),
+                y: obj.position.y + obj.height - (data.height / 2 ),
+            },
+            vy: -Utils.random( 0, obj.height / 2 ),
+        }), this.map ) );
+
+        // Left
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
+            spawn: {
+                x: obj.position.x - ( data.width / 2 ),
+                y: obj.position.y + obj.height - (data.height / 2 ),
+            },
+            vx: -Utils.random( 0, 16 ),
+            vy: -Utils.random( 0, obj.height / 2 ),
+        }), this.map ) );
+
+        // Right
+        this.map.addObject( "fx", new FX( Utils.merge( data, {
+            spawn: {
+                x: obj.position.x + obj.width - ( data.width / 2 ),
+                y: obj.position.y + obj.height - (data.height / 2 ),
+            },
+            vx: Utils.random( 0, 16 ),
+            vy: -Utils.random( 0, obj.height / 2 ),
+        }), this.map ) );
+
+        // Add more FX if the door is wider than a tile
+        if ( obj.width > this.map.data.tilesize ) {
+            // Left center
+            this.map.addObject( "fx", new FX( Utils.merge( data, {
+                spawn: {
+                    x: obj.position.x + ( obj.width / 4 ) - ( data.width / 2 ),
+                    y: obj.position.y + obj.height - (data.height / 2 ),
+                },
+                vx: -Utils.random( 0, 16 ),
+                vy: -Utils.random( 0, obj.height / 2 ),
+            }), this.map ) );
+
+            // Right center
+            this.map.addObject( "fx", new FX( Utils.merge( data, {
+                spawn: {
+                    x: obj.position.x + obj.width - ( obj.width / 4 ) - ( data.width / 2 ),
+                    y: obj.position.y + obj.height - (data.height / 2 ),
+                },
+                vx: Utils.random( 0, 16 ),
+                vy: -Utils.random( 0, obj.height / 2 ),
+            }), this.map ) );
+        }
+    }
+
+
     itemDrop ( drops, position ) {
         const drop = drops[ Utils.random( 0, drops.length - 1 ) ];
         const chance = Utils.random( 0, 100 );
@@ -668,6 +728,8 @@ export default class GameBox {
         for ( let i = this.map.enemies.length; i--; ) {
             this.map.enemies[ i ].handleQuestFlagCheck( quest );
         }
+
+        this.map.handleQuestFlagCheck( quest );
     }
 
 

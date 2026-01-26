@@ -144,8 +144,8 @@ export default class Enemy extends NPC {
     }
 
 
-    handleQuestFlagCheck ( quest ) {
-        if ( this.checkQuestFlag( quest ) ) {
+    handleQuestFlagCheck ( checkFlag ) {
+        if ( this.checkQuestFlag( checkFlag ) ) {
             if ( this.data.action.quest.setFlag ) {
                 const { key, value } = this.data.action.quest.setFlag;
 
@@ -174,14 +174,14 @@ export default class Enemy extends NPC {
                         }
                     }
                 */
-                if ( key === quest && this.isQuestFlagComplete() ) {
+                if ( key === checkFlag && this.isQuestFlagComplete() ) {
                     return;
                 }
 
                 this.gamequest.hitQuest( key, value );
             }
 
-            this.gamequest.completeQuest( quest );
+            this.gamequest.completeQuest( checkFlag );
 
             if ( this.data.action.quest.dropItem ) {
                 this.gamebox.keyItemDrop( this.data.action.quest.dropItem, this.position );

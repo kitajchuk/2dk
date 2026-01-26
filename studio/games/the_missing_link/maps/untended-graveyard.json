@@ -345,7 +345,13 @@
             "type": "enemy",
             "action": {
                 "verb": "attack",
-                "fx": "smoke"
+                "fx": "smoke",
+                "quest": {
+                    "setFlag": {
+                        "key": "cursed-ghost-killed",
+                        "value": 1
+                    }
+                }
             }
         },
         {
@@ -358,7 +364,13 @@
             "type": "enemy",
             "action": {
                 "verb": "attack",
-                "fx": "smoke"
+                "fx": "smoke",
+                "quest": {
+                    "setFlag": {
+                        "key": "cursed-ghost-killed",
+                        "value": 1
+                    }
+                }
             }
         },
         {
@@ -371,7 +383,13 @@
             "type": "enemy",
             "action": {
                 "verb": "attack",
-                "fx": "smoke"
+                "fx": "smoke",
+                "quest": {
+                    "setFlag": {
+                        "key": "cursed-ghost-killed",
+                        "value": 1
+                    }
+                }
             }
         },
         {
@@ -384,7 +402,13 @@
             "type": "enemy",
             "action": {
                 "verb": "attack",
-                "fx": "smoke"
+                "fx": "smoke",
+                "quest": {
+                    "setFlag": {
+                        "key": "cursed-ghost-killed",
+                        "value": 1
+                    }
+                }
             }
         },
         {
@@ -397,7 +421,13 @@
             "type": "enemy",
             "action": {
                 "verb": "attack",
-                "fx": "smoke"
+                "fx": "smoke",
+                "quest": {
+                    "setFlag": {
+                        "key": "cursed-ghost-killed",
+                        "value": 1
+                    }
+                }
             }
         },
         {
@@ -491,6 +521,34 @@
                 "y": 483
             },
             "ai": "float"
+        },
+        {
+            "id": "chest",
+            "spawn": {
+                "x": 1536,
+                "y": 896,
+                "quest": {
+                    "checkFlag": {
+                        "key": "cursed-ghost-killed",
+                        "value": 5
+                    }
+                }
+            },
+            "payload": {
+                "quest": [
+                    {
+                        "type": "setItem",
+                        "id": "bracelet",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You got the bracelet!",
+                                "You feel like you could lift anything!"
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     ],
     "collision": [

@@ -174,62 +174,7 @@ export default class Door extends QuestSprite {
             return;
         }
 
-        const data = this.map.gamebox.player.getMergedData({
-            id: this.data.action.fx,
-            kill: true,
-        }, "fx" );
-
-        // Center
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: this.position.x + ( this.width / 2 ) - ( data.width / 2 ),
-                y: this.position.y + this.height - (data.height / 2 ),
-            },
-            vy: -Utils.random( 0, this.height / 2 ),
-        }), this.map ) );
-
-        // Left
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: this.position.x - ( data.width / 2 ),
-                y: this.position.y + this.height - (data.height / 2 ),
-            },
-            vx: -Utils.random( 0, 16 ),
-            vy: -Utils.random( 0, this.height / 2 ),
-        }), this.map ) );
-
-        // Right
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: this.position.x + this.width - ( data.width / 2 ),
-                y: this.position.y + this.height - (data.height / 2 ),
-            },
-            vx: Utils.random( 0, 16 ),
-            vy: -Utils.random( 0, this.height / 2 ),
-        }), this.map ) );
-
-        // Add more FX if the door is wider than a tile
-        if ( this.width > this.map.data.tilesize ) {
-            // Left center
-            this.map.addObject( "fx", new FX( Utils.merge( data, {
-                spawn: {
-                    x: this.position.x + ( this.width / 4 ) - ( data.width / 2 ),
-                    y: this.position.y + this.height - (data.height / 2 ),
-                },
-                vx: -Utils.random( 0, 16 ),
-                vy: -Utils.random( 0, this.height / 2 ),
-            }), this.map ) );
-
-            // Right center
-            this.map.addObject( "fx", new FX( Utils.merge( data, {
-                spawn: {
-                    x: this.position.x + this.width - ( this.width / 4 ) - ( data.width / 2 ),
-                    y: this.position.y + this.height - (data.height / 2 ),
-                },
-                vx: Utils.random( 0, 16 ),
-                vy: -Utils.random( 0, this.height / 2 ),
-            }), this.map ) );
-        }
+        this.gamebox.smokeObjectBase( this, this.data.action.fx );
     }
 
 

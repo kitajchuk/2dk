@@ -9,7 +9,13 @@ const npcReference = {
     type: undefined || "",
     spawn: {
         x: 0,
-        y: 0
+        y: 0,
+        quest: undefined || {
+            checkFlag: {
+                key: "",
+                value: 1,
+            }
+        },
     },
     // Payload reference (payload.js)
     payload: undefined || payload,

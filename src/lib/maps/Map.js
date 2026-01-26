@@ -45,6 +45,7 @@ export default class Map {
         // From live game state
         this.items = [];
         this.sprites = [];
+        this.spawnpool = [];
 
         // For sprite render priority
         this.allSprites = [];
@@ -98,6 +99,7 @@ export default class Map {
         this.events = null;
         this.colliders = null;
         this.allSprites = null;
+        this.spawnpool = null;
     }
 
 
@@ -123,8 +125,12 @@ export default class Map {
             const data = this.player.getMergedData( this.data.npcs[ i ], "npcs", true );
             const type = this.data.npcs[ i ].type || "npc";
             const mapId = this.getMapId( type, i );
+            const quest = data.spawn.quest;
 
-            if ( type === Config.npc.types.ENEMY ) {
+            if ( quest?.checkFlag && !this.gamequest.getCompleted( quest.checkFlag.key ) ) {
+                this.spawnpool.push({ data, type, mapId });
+
+            } else if ( type === Config.npc.types.ENEMY ) {
                 const enemy = new Enemy( data, this, mapId );
                 this.enemies.push( enemy );
                 this.addAllSprite( enemy );
@@ -588,5 +594,30 @@ export default class Map {
         this[ type ].splice( this[ type ].indexOf( obj ), 1 );
         obj.destroy();
         obj = null;
+    }
+
+
+    spawnObject ( obj, mapId ) {
+        this.spawnpool.splice( this.spawnpool.indexOf( obj ), 1 );
+        // For now just assume base NPC type...
+        const npc = new NPC( obj.data, this, mapId );
+        this.npcs.push( npc );
+        this.addAllSprite( npc );
+        this.gamebox.smokeObject( npc );
+        this.player.gameaudio.hitSound( "smash" );
+    }
+
+
+    handleQuestFlagCheck ( checkFlag ) {
+        for ( let i = this.spawnpool.length; i--; ) {
+            const { data, mapId } = this.spawnpool[ i ];
+            const { key, value } = data.spawn.quest.checkFlag;
+
+            if ( key === checkFlag && this.gamequest.checkQuest( key, value ) ) {
+                this.gamequest.completeQuest( key );
+                this.spawnObject( this.spawnpool[ i ], mapId );
+                break;
+            }
+        }
     }
 }
