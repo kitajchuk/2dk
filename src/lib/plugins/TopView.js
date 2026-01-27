@@ -565,7 +565,6 @@ class TopView extends GameBox {
 
 
     handleHeroTileJump ( poi, dir, collision ) {
-        console.log( "handleHeroTileJump", dir );
         this.handleResetHeroDirs();
 
         const jumpTiles = collision.tiles.passive.filter( ( tile ) => tile.jump );
@@ -671,10 +670,15 @@ class TopView extends GameBox {
                 break;
         }
 
+
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, dir );
         this.hero.physics.vz = -( this.map.data.tilesize / 4 );
         this.player.gameaudio.hitSound( "parkour" );
+
+        if ( this.hero.liftedTile ) {
+            this.hero.liftedTile.destroy();
+        }
 
         this.hero.parkour = {
             poi: destPos,
@@ -1000,6 +1004,10 @@ class TopView extends GameBox {
         this.hero.cycle( Config.verbs.DIVE, this.hero.dir );
         this.player.gameaudio.hitSound( "parkour" );
 
+        if ( this.hero.liftedTile ) {
+            this.hero.liftedTile.destroy();
+        }
+
         this.hero.falling = {
             to: fallToPosition,
             reset: fallResetPosition,
@@ -1054,6 +1062,10 @@ class TopView extends GameBox {
         }
 
         const { fallToPosition, fallResetPosition } = this.getFallPosition( fallCoords, dir );
+
+        if ( this.hero.liftedTile ) {
+            this.hero.liftedTile.destroy();
+        }
 
         this.falling = true;
         this.hero.cycle( Config.verbs.FALL, this.hero.dir );

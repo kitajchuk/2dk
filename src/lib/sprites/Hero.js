@@ -922,21 +922,24 @@ export default class Hero extends Sprite {
 
 
     canGrabTile ( collision ) {
-        return (
-            collision.tiles &&
-            collision.tiles.action.length &&
-            collision.tiles.action[ 0 ].action &&
-            collision.tiles.action[ 0 ].instance.canInteract( Config.verbs.LIFT ) &&
-            this.can( Config.verbs.LIFT ) &&
-            this.can( Config.verbs.GRAB )
-        );
+        if ( !collision.tiles || !collision.tiles.action.length ) {
+            return false;
+        }
+
+        if ( !this.can( Config.verbs.LIFT ) || !this.can( Config.verbs.GRAB ) ) {
+            return false;
+        }
+        
+        return collision.tiles.action.some( ( tile ) => {
+            return tile.instance.canInteract( Config.verbs.LIFT );
+        });
     }
 
 
     canTileJump ( dir, collision ) {
         const hasPassiveTiles = collision.tiles && collision.tiles.passive.length;
 
-        if ( this.is( Config.verbs.LIFT ) || !hasPassiveTiles ) {
+        if ( !hasPassiveTiles ) {
             return false;
         }
 
@@ -1195,7 +1198,10 @@ export class LiftedTile extends Sprite {
 
         // Kills THIS sprite
         this.hero.liftedTile = null;
-        this.spring.destroy();
+        
+        if ( this.spring ) {
+            this.spring.destroy();
+        }
     }
 
 
