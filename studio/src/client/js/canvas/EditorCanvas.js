@@ -84,7 +84,6 @@ class EditorCanvas {
         this.cellauto = new window.lib2dk.CellAutoMap();
 
         this.bindMenuEvents();
-        this.bindSpawnEvents();
         this.bindMapgridEvents();
         this.bindColliderEvents();
         this.bindDocumentEvents();
@@ -95,8 +94,6 @@ class EditorCanvas {
         this.bindItemMenuPost();
         this.bindMapEventMenuPost();
         this.bindActiveTilesMenuPost();
-
-        this.updateDisabledLayerMapgrid();
     }
 
 
@@ -565,19 +562,8 @@ class EditorCanvas {
     }
 
 
-    updateDisabledLayerMapgrid () {
-        if ( !this.editor.layers.mode && !this.editor.actions.mode ) {
-            this.layers.mapgrid.classList.add( "is-disabled" );
-        } else {
-            this.layers.mapgrid.classList.remove( "is-disabled" );
-        }
-    }
-
-
     setActiveTool ( tool ) {
         this.draggable.resetTool();
-
-        this.updateDisabledLayerMapgrid();
 
         if ( tool ) {
             this.draggable.setTool( tool );
@@ -593,8 +579,6 @@ class EditorCanvas {
 
     setActiveLayer ( layer ) {
         this.draggable.resetLayer();
-
-        this.updateDisabledLayerMapgrid();
 
         if ( !layer ) {
             return;
@@ -1991,36 +1975,6 @@ class EditorCanvas {
         ipcRenderer.on( "menu-contextmenu", ( e, action ) => {
             this.isMouseDownCanvas = false;
             this.contextCoords = null;
-        });
-    }
-
-
-    bindSpawnEvents () {
-        this.layers.spawn.addEventListener( "click", ( e ) => {
-            const target = e.target.closest( ".js-spawn-tile" );
-
-            if ( !target ) {
-                return;
-            }
-            
-            const dropin = target.querySelector( "input[name='dropin']" );
-            const hitSpawn = {
-                x: parseInt( target.dataset.spawnX, 10 ),
-                y: parseInt( target.dataset.spawnY, 10 ),
-            };
-
-            this.map.spawn = this.map.spawn.map(( spawn ) => {
-                if ( spawn.x === hitSpawn.x && spawn.y === hitSpawn.y ) {
-                    if ( dropin.checked ) {
-                        spawn.dropin = true;
-                    } else {
-                        delete spawn.dropin;
-                    }
-                }
-
-                return spawn;
-            });
-            
         });
     }
 
