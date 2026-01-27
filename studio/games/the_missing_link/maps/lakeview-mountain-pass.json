@@ -168,7 +168,22 @@
             "map": "maps/untended-graveyard.json"
         }
     ],
-    "npcs": [],
+    "npcs": [
+        {
+            "id": "like-like",
+            "spawn": {
+                "x": 1565,
+                "y": 477
+            },
+            "ai": "step",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
+        }
+    ],
     "items": [],
     "collision": [
         [
@@ -5655,8 +5670,12 @@
                 ],
                 [
                     [
+                        64,
+                        576
+                    ],
+                    [
                         0,
-                        2176
+                        512
                     ]
                 ],
                 [

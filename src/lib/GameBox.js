@@ -617,6 +617,8 @@ export default class GameBox {
                 return items[ i ];
             }
         }
+
+        return false;
     }
 
 

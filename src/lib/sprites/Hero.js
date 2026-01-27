@@ -42,7 +42,7 @@ export default class Hero extends Sprite {
 
 
     hit ( ...args ) {
-        if ( this.diveCounter > 0 ) {
+        if ( this.falling || this.diveCounter > 0 ) {
             return;
         }
 
@@ -1217,6 +1217,10 @@ export class LiftedTile extends Sprite {
         };
 
         if ( collision.map || collision.npc || collision.enemy || collision.camera ) {
+            if ( collision.enemy && !collision.enemy.isHitOrStill() ) {
+                collision.enemy.hit( this.hero.stats.power );
+            }
+
             this.destroy();
             return;
 

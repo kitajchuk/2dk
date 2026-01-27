@@ -398,6 +398,12 @@ class TopView extends GameBox {
             return;
         }
 
+        // Only apply if the input direction matches the parkour direction
+        // Fixes a bug in which diagonal parkour is accelerated and feels unnatural
+        if ( this.hero.parkour && dir !== this.hero.parkour.dir ) {
+            return;
+        }
+
         if ( this.hero.parkour || this.hero.falling ) {
             this.applyHero( poi, dir );
             return;
@@ -559,6 +565,7 @@ class TopView extends GameBox {
 
 
     handleHeroTileJump ( poi, dir, collision ) {
+        console.log( "handleHeroTileJump", dir );
         this.handleResetHeroDirs();
 
         const jumpTiles = collision.tiles.passive.filter( ( tile ) => tile.jump );
