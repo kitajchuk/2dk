@@ -1929,6 +1929,7 @@ class EditorCanvas {
 
                 if ( this.canApplyLayer() ) {
                     this.applyLayerWithTrashCheck( this.editor.layers.mode, coords );
+                    this.drawActiveTiles();
 
                 } else if ( this.canApplyNPC() ) {
                     this.applyNPC( coords );
