@@ -147,7 +147,7 @@ export default class Enemy extends NPC {
     handleQuestFlagCheck ( checkFlag ) {
         if ( this.checkQuestFlag( checkFlag ) ) {
             if ( this.data.action.quest.setFlag ) {
-                const { key, value } = this.data.action.quest.setFlag;
+                const { key, value, reset } = this.data.action.quest.setFlag;
 
                 // Exit out if the quest flag has been completed already...
                 // This allows combining setFlag, checkFlag and dropItem quests together
@@ -178,7 +178,7 @@ export default class Enemy extends NPC {
                     return;
                 }
 
-                this.gamequest.hitQuest( key, value );
+                this.gamequest.hitQuest( key, value, reset );
             }
 
             this.gamequest.completeQuest( checkFlag );

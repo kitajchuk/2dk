@@ -383,7 +383,8 @@
                 "quest": {
                     "setFlag": {
                         "key": "cursed-ghost-killed",
-                        "value": 1
+                        "value": 1,
+                        "reset": true
                     }
                 }
             }
@@ -402,7 +403,8 @@
                 "quest": {
                     "setFlag": {
                         "key": "cursed-ghost-killed",
-                        "value": 1
+                        "value": 1,
+                        "reset": true
                     }
                 }
             }
@@ -421,7 +423,8 @@
                 "quest": {
                     "setFlag": {
                         "key": "cursed-ghost-killed",
-                        "value": 1
+                        "value": 1,
+                        "reset": true
                     }
                 }
             }
@@ -440,7 +443,8 @@
                 "quest": {
                     "setFlag": {
                         "key": "cursed-ghost-killed",
-                        "value": 1
+                        "value": 1,
+                        "reset": true
                     }
                 }
             }
@@ -459,7 +463,8 @@
                 "quest": {
                     "setFlag": {
                         "key": "cursed-ghost-killed",
-                        "value": 1
+                        "value": 1,
+                        "reset": true
                     }
                 }
             }

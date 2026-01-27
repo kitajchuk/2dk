@@ -670,13 +670,13 @@ export class QuestSprite extends Sprite {
             return;
         }
 
-        const { key, value } = setFlag || this.data.action.quest.setFlag;
+        const { key, value, reset } = setFlag || this.data.action.quest.setFlag;
 
         if ( this.gamequest.getCompleted( key ) ) {
             return;
         }
 
-        this.gamequest.hitQuest( key, value );
+        this.gamequest.hitQuest( key, value, reset );
         this.gamebox.checkQuestFlags( key );
     }
 

@@ -784,6 +784,9 @@ export default class GameBox {
         // Clear the map change event
         this.mapChangeEvent = null;
 
+        // Reset the quests
+        this.gamequest.resetQuests();
+
         // Fade in...
         this.player.fadeIn();
 
