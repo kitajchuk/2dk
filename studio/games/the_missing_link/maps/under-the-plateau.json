@@ -16,6 +16,7 @@
         {
             "x": 275,
             "y": 714,
+            "dir": "down",
             "dropin": true
         }
     ],

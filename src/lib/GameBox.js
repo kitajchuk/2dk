@@ -808,9 +808,12 @@ export default class GameBox {
                 y: newHeroPos.y,
             };
 
-            // Set a spawn index...
+            // Set spawn position
             this.hero.position.x = newSpawn.x;
             this.hero.position.y = newSpawn.y;
+
+            // Set spawn direction
+            this.hero.dir = newSpawn.dir || "down";
 
             // Handle the `dropin` effect
             if ( newSpawn.dropin ) {
