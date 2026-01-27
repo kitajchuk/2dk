@@ -678,7 +678,7 @@ export default class Hero extends Sprite {
         // Ideally this is based on the duration of the jump verb for sprite cycle timing...
         // this.getDur( Config.verbs.JUMP )
 
-        const speed = this.parkour.elevation === 1 ? 4 : this.parkour.elevation * 3;
+        const speed = this.parkour.elevation * 2 + 2;
 
         switch ( this.parkour.dir ) {
             case "left":
