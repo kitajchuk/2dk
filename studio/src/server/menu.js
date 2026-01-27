@@ -74,8 +74,11 @@ const getGamesMenu = () => {
     };
 
     activeGames.forEach( ( game ) => {
+        const checked = (activeGame && activeGame.id === game.id) ? true : false;
         gamesLoadout.submenu.push({
             label: game.name,
+            type: "checkbox",
+            checked: checked,
             click () {
                 activeGame = game;
                 loadGame();
@@ -141,8 +144,11 @@ const getMapsMenu = () => {
     };
 
     activeMaps.forEach( ( map ) => {
+        const checked = (activeMap && activeMap.id === map.id) ? true : false;
         mapsLoadout.submenu.push({
             label: map.name,
+            type: "checkbox",
+            checked: checked,
             click () {
                 activeMap = map;
                 loadMap();
