@@ -108,6 +108,7 @@ export default class Enemy extends NPC {
             this.handleQuestFlagUpdate();
             this.gamebox.smokeObject( this, this.data.action.fx );
             this.map.killObject( "enemies", this );
+            this.gamebox.hero.enemiesKilled++;
 
             if ( this.data.action.sound ) {
                 this.player.gameaudio.hitSound( this.data.action.sound );

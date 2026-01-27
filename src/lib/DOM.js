@@ -29,8 +29,9 @@ export const renderMenu = ( player ) => {
         <div>Power: ${hero.getStat( "power" )}</div>
         <div>Strength: ${hero.getStat( "strength" )}</div>
         <div>${player.data.currency}: ${hero.currency}</div>
-        <div>Weapon: ${hero.data.equipped.weapon ? "Equipped" : "Not Equipped"}</div>
-        <div>Shield: ${hero.data.equipped.shield ? "Equipped" : "Not Equipped"}</div>
+        <div>Weapon: ${hero.data.equipped.weapon ? "Equipped" : "Unequipped"}</div>
+        <div>Shield: ${hero.data.equipped.shield ? "Equipped" : "Unequipped"}</div>
+        <div>Enemies Killed: ${hero.enemiesKilled}</div>
     `;
 }
 

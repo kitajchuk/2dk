@@ -17,6 +17,7 @@ export default class Hero extends Sprite {
         this.onscreen = true;
         this.status = null;
         this.currency = this.data.currency || 0;
+        this.enemiesKilled = 0;
         this.itemGet = null;
         this.liftedTile = null;
         this.maskFX = null;
