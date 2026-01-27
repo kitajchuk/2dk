@@ -59,6 +59,8 @@ class EditorLayers {
                 this.editor.canvas.hide( layer );
             }
 
+            this.editor.canvas.setActiveMetaLayers();
+
             target.blur();
         });
     }

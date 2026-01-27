@@ -10,6 +10,7 @@ const { renderActiveGameMenu } = require( "./render/RenderActiveGameMenu" );
 const { renderNewMapEventMenu } = require( "./render/RenderNewMapEventMenu" );
 const { renderSpritesheetMenu } = require( "./render/RenderSpritesheetMenu" );
 const { renderNewActiveTilesMenu } = require( "./render/RenderNewActiveTilesMenu" );
+const { renderNewSpawnMenu } = require( "./render/RenderNewSpawnMenu" );
 
 class EditorMenus {
     constructor ( editor ) {
@@ -29,6 +30,7 @@ class EditorMenus {
             "editor-addmap-menu": renderNewMapMenu,
             "editor-npc-menu": renderNewNPCMenu,
             "editor-item-menu": renderNewItemMenu,
+            "editor-spawn-menu": renderNewSpawnMenu,
         };
         this.isActive = false;
 

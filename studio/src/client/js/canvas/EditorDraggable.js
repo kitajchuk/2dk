@@ -39,10 +39,15 @@ class EditorDraggable {
     }
 
 
+    unsetLayer ( layer ) {
+        this.canvasPane.classList.remove( `is-${layer}` );
+    }
+
+
     resetLayer () {
         const classes = [ 
             "is-npc", 
-            "is-obj",
+            "is-item",
             "is-spawn",
             "is-event",
             "is-tiles",
@@ -56,6 +61,11 @@ class EditorDraggable {
 
     setTool ( tool ) {
         this.canvasPane.classList.add( `is-${tool}-tool` );
+    }
+
+
+    unsetTool ( tool ) {
+        this.canvasPane.classList.remove( `is-${tool}-tool` );
     }
 
 

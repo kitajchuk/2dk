@@ -94,6 +94,7 @@ class EditorCanvas {
         this.bindItemMenuPost();
         this.bindMapEventMenuPost();
         this.bindActiveTilesMenuPost();
+        this.bindSpawnMenuPost();
     }
 
 
@@ -573,6 +574,7 @@ class EditorCanvas {
             this.clearTileset();
             this.cursor.reset();
             this.editor.layers.resetLayers();
+            this.setActiveMetaLayers();
         }
     }
 
@@ -584,7 +586,6 @@ class EditorCanvas {
             return;
         }
 
-        this.layers.mapgrid.classList.remove( "is-disabled" );
         this.draggable.setLayer( layer );
         this.togglePickers( layer );
 
@@ -598,6 +599,17 @@ class EditorCanvas {
 
         if ( this.editor.actions.specialTools.includes( this.editor.actions.mode ) ) {
             this.editor.actions.resetActions();
+        }
+    }
+
+
+    setActiveMetaLayers () {
+        for ( const metaLayer in this.editor.layers.meta ) {
+            if ( this.editor.layers.meta[ metaLayer ] ) {
+                this.draggable.setLayer( metaLayer );
+            } else {
+                this.draggable.unsetLayer( metaLayer );
+            }
         }
     }
 
@@ -985,7 +997,21 @@ class EditorCanvas {
         const hitSpawn = this.getHitSpawn();
         const newSpawn = this.getNewSpawn();
 
-        if ( hitSpawn ) {
+        // Edit
+        if ( this.editor.actions.mode === Config.EditorActions.modes.SELECT ) {
+            const editSpawn = this.map.spawn.find( ( spawn ) => {
+                return spawn.x === hitSpawn.x && spawn.y === hitSpawn.y;
+            });
+            this.editor.menus.renderMenu( "editor-spawn-menu", {
+                game: this.game,
+                facing: Utils.getOptionData( window.lib2dk.Config.facing ),
+                coords,
+                mouseCoords: [ newSpawn.x, newSpawn.y ],
+                spawnToEdit: editSpawn,
+            });
+
+        // Delete
+        } else if ( hitSpawn ) {
             this.map.spawn = this.map.spawn.reduce( ( acc, spawn ) => {
                 if ( spawn.x === hitSpawn.x && spawn.y === hitSpawn.y ) {
                     return acc;
@@ -995,12 +1021,17 @@ class EditorCanvas {
 
                 return acc;
             }, []);
+            this.drawSpawns();
 
+        // Create
         } else {
-            this.map.spawn.push( newSpawn );
+            this.editor.menus.renderMenu( "editor-spawn-menu", {
+                game: this.game,
+                facing: Utils.getOptionData( window.lib2dk.Config.facing ),
+                coords,
+                mouseCoords: [ newSpawn.x, newSpawn.y ],
+            });
         }
-
-        this.drawSpawns();
     }
 
 
@@ -1670,6 +1701,49 @@ class EditorCanvas {
     }
 
 
+    bindSpawnMenuPost () {
+        this.editor.menus.dom.container.addEventListener( "click", ( e ) => {
+            if ( !e.target.closest( ".js-spawn-post" ) ) {
+                return;
+            }
+
+            const data = Utils.parseFields( document.querySelectorAll( ".js-spawn-field" ) );
+            // const coords = JSON.parse( data.coords );
+            const mouseCoords = JSON.parse( data.mouseCoords );
+            const postData = {
+                x: mouseCoords[ 0 ],
+                y: mouseCoords[ 1 ],
+            };
+
+            if ( data.dir ) {
+                postData.dir = data.dir;
+            }
+
+            if ( data.dropin ) {
+                postData.dropin = data.dropin;
+            }
+
+            if ( this.editor.actions.mode === Config.EditorActions.modes.SELECT ) {
+                this.map.spawn = this.map.spawn.reduce( ( acc, spawn ) => {
+                    if ( spawn.x === postData.x && spawn.y === postData.y ) {
+                        acc.push( postData );
+                    } else {
+                        acc.push( spawn );
+                    }
+    
+                    return acc;
+                }, []);
+
+            } else {
+                this.map.spawn.push( postData );
+                this.drawSpawns();
+            }
+
+            this.editor.menus.removeMenus();
+        });
+    }
+
+
     bindDocumentEvents () {
         document.addEventListener( "keydown", ( e ) => {
             const activeMenu = document.querySelector( ".js-menu.is-active" );
@@ -1929,6 +2003,8 @@ class EditorCanvas {
 
                 if ( this.canApplyLayer() ) {
                     this.applyLayerWithTrashCheck( this.editor.layers.mode, coords );
+
+                    // Refresh active tiles after applying new textures so they are up-to-date
                     this.drawActiveTiles();
 
                 } else if ( this.canApplyNPC() ) {
@@ -1937,7 +2013,7 @@ class EditorCanvas {
                 } else if ( this.canApplyItem() ) {
                     this.applyItem( coords );
 
-                } else if ( this.canApplySpawn() ) {
+                } else if ( this.canApplySpawn() || this.canEditSpawn() ) {
                     this.applySpawn( coords );
 
                 } else if ( this.canApplyEvent() ) {
@@ -2001,6 +2077,14 @@ class EditorCanvas {
     canApplyItem () {
         return (
             this.editor.layers.mode === Config.EditorLayers.modes.ITEM
+        );
+    }
+
+
+    canEditSpawn () {
+        return (
+            this.editor.actions.mode === Config.EditorActions.modes.SELECT &&
+            this.editor.layers.meta[ Config.EditorLayers.modes.SPAWN ]
         );
     }
 
