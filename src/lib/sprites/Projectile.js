@@ -1,4 +1,3 @@
-import Config from "../Config";
 import Sprite from "./Sprite";
 
 
@@ -69,7 +68,11 @@ export default class Projectile extends Sprite {
         }
 
         if ( this.data.sound ) {
-            this.player.gameaudio.hitSound( this.data.sound );
+            if ( this.sprite === this.gamebox.hero ) {
+                this.player.gameaudio.heroSound( this.data.sound );
+            } else {
+                this.player.gameaudio.hitSound( this.data.sound );
+            }
         }
     }
 

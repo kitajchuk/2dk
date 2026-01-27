@@ -674,7 +674,7 @@ class TopView extends GameBox {
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, dir );
         this.hero.physics.vz = -( this.map.data.tilesize / 4 );
-        this.player.gameaudio.hitSound( "parkour" );
+        this.player.gameaudio.heroSound( "parkour" );
 
         if ( this.hero.liftedTile ) {
             this.hero.liftedTile.destroy();
@@ -730,7 +730,7 @@ class TopView extends GameBox {
             };
 
             if ( collision.npc.data.action.sound ) {
-                this.player.gameaudio.hitSound( collision.npc.data.action.sound );
+                this.player.gameaudio.heroSound( collision.npc.data.action.sound );
             }
         }
     }
@@ -783,7 +783,7 @@ class TopView extends GameBox {
         }
 
         if ( item.data.sound ) {
-            this.player.gameaudio.hitSound( item.data.sound );
+            this.player.gameaudio.heroSound( item.data.sound );
         }
 
         if ( item.data.currency ) {
@@ -878,7 +878,7 @@ class TopView extends GameBox {
                 y: this.interact.tile.coord[ 1 ] * this.map.data.tilesize,
             };
 
-            this.player.gameaudio.hitSound( Config.verbs.LIFT );
+            this.player.gameaudio.heroSound( Config.verbs.LIFT );
             this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
             this.hero.liftedTile = new LiftedTile( spawn, activeTiles, this.map, this.hero );
             this.hero.cycle( Config.verbs.LIFT, this.hero.dir );
@@ -937,7 +937,7 @@ class TopView extends GameBox {
         this.hero.cycle( Config.verbs.ATTACK, this.hero.dir );
         
         if ( isWeapon ) {
-            this.player.gameaudio.hitSound( Config.verbs.ATTACK );
+            this.player.gameaudio.heroSound( Config.verbs.ATTACK );
         }
 
         setTimeout( () => {
@@ -1002,7 +1002,7 @@ class TopView extends GameBox {
 
         this.falling = true;
         this.hero.cycle( Config.verbs.DIVE, this.hero.dir );
-        this.player.gameaudio.hitSound( "parkour" );
+        this.player.gameaudio.heroSound( "parkour" );
 
         if ( this.hero.liftedTile ) {
             this.hero.liftedTile.destroy();
@@ -1069,7 +1069,7 @@ class TopView extends GameBox {
 
         this.falling = true;
         this.hero.cycle( Config.verbs.FALL, this.hero.dir );
-        this.player.gameaudio.hitSound( "parkour" );
+        this.player.gameaudio.heroSound( "parkour" );
 
         this.hero.falling = {
             to: fallToPosition,
