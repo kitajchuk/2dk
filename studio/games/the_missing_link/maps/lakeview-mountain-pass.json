@@ -275,6 +275,26 @@
                 "x": 1803,
                 "y": 1319
             }
+        },
+        {
+            "id": "grave",
+            "spawn": {
+                "x": 2304,
+                "y": 256
+            },
+            "payload": {
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "The words are nearly gone...something...Link..."
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     ],
     "items": [],
@@ -7183,7 +7203,7 @@
                 ],
                 [
                     [
-                        0,
+                        128,
                         2176
                     ]
                 ],
