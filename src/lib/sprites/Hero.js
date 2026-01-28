@@ -1191,7 +1191,8 @@ export class LiftedTile extends Sprite {
         }
 
         if ( attackAction?.sound ) {
-            this.player.gameaudio.heroSound( attackAction.sound );
+            // Don't use hero sound channel for lifted tile sounds
+            this.player.gameaudio.hitSound( attackAction.sound );
         }
         
         this.gamebox.smokeObject( this, attackAction?.fx );

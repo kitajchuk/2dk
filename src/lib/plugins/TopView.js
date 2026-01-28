@@ -771,19 +771,21 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( this.attacking ) {
-            this.attacking = false;
-        }
-
         // Key map items
         if ( item.mapId ) {
+            // Cancel attack animation for itemGet sequence
+            if ( this.attacking ) {
+                this.attacking = false;
+            }
+
             this.hero.giveItem( item.data.id, item.mapId );
             this.gamequest.completeQuest( item.mapId );
             this.playItemGetDialogue( item.data.dialogue );
         }
 
         if ( item.data.sound ) {
-            this.player.gameaudio.heroSound( item.data.sound );
+            // Don't use hero sound channel for item pickup sounds
+            this.player.gameaudio.hitSound( item.data.sound );
         }
 
         if ( item.data.currency ) {
