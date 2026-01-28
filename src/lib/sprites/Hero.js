@@ -712,12 +712,25 @@ export default class Hero extends Sprite {
         const attackAction = this.parkour.activeTiles && this.parkour.activeTiles.canAttack();
 
         if ( attackAction ) {
-                this.parkour.activeTiles.attack( [
-                    this.parkour.tile[ 0 ] / this.map.data.tilesize,
-                    this.parkour.tile[ 1 ] / this.map.data.tilesize,
-                ],
-                attackAction
-            );
+            const coords = [
+                this.parkour.tile[ 0 ] / this.map.data.tilesize,
+                this.parkour.tile[ 1 ] / this.map.data.tilesize,
+            ];
+            this.parkour.activeTiles.attack( coords, attackAction );
+
+            // Check surrounding tiles in case we technically land on multiple tiles
+            const surroundingTiles = Utils.getSurroundingTileCoords( coords );
+
+            for ( const pos in surroundingTiles ) {
+                const tileCoords = [
+                    surroundingTiles[ pos ].x,
+                    surroundingTiles[ pos ].y,
+                ];
+
+                if ( this.parkour.activeTiles.isPushed( tileCoords ) ) {
+                    this.parkour.activeTiles.attack( tileCoords, attackAction );
+                }
+            }
         }
 
         this.face( this.parkour.dir );
