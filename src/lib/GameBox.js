@@ -445,12 +445,7 @@ export default class GameBox {
 
         for ( let i = this.map.activeTiles.length; i--; ) {
             for ( let j = this.map.activeTiles[ i ].pushed.length; j--; ) {
-                const collides = Utils.collide( this.getRenderBox(), {
-                    width: this.map.data.tilesize,
-                    height: this.map.data.tilesize,
-                    x: this.map.activeTiles[ i ].pushed[ j ][ 0 ] * this.map.data.tilesize,
-                    y: this.map.activeTiles[ i ].pushed[ j ][ 1 ] * this.map.data.tilesize,
-                });
+                const collides = Utils.collide( this.getRenderBox(), this.map.activeTiles[ i ].pushed[ j ] );
 
                 if ( collides ) {
                     activeTiles.push( this.map.activeTiles[ i ] );
@@ -662,13 +657,7 @@ export default class GameBox {
             const lookbox = isInstance ? isFootTile ? footbox : hitbox : sprite;
 
             for ( let j = instance.pushed.length; j--; ) {
-                const coord = instance.pushed[ j ];
-                const tilebox = {
-                    width: this.map.data.tilesize,
-                    height: this.map.data.tilesize,
-                    x: coord[ 0 ] * this.map.data.tilesize,
-                    y: coord[ 1 ] * this.map.data.tilesize,
-                };
+                const tilebox = instance.pushed[ j ];
                 const collides = Utils.collide( lookbox, tilebox );
 
                 if ( !collides ) {
@@ -687,11 +676,11 @@ export default class GameBox {
                     action,
                     attack,
                     camera,
-                    coord,
                     amount,
                     tilebox,
                     collides,
                     instance,
+                    coord: tilebox.coords,
                     group: instance.data.group,
                     jump: !!( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ),
                     fall: !!( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ),

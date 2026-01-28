@@ -610,6 +610,7 @@ class TopView extends GameBox {
         // We can dynamically the variable axis to get the correct tile based on increment and elevation
         let destPos;
         let destTile;
+        let destCoords;
         
         // When moving horizontally, the destination tile is simply the next tile in the direction of the jump
         if ( dir === "left" || dir === "right" ) {
@@ -626,21 +627,17 @@ class TopView extends GameBox {
             ];
         }
 
+        destCoords = [
+            destTile[ 0 ] / this.map.data.tilesize,
+            destTile[ 1 ] / this.map.data.tilesize,
+        ];
+
         // Get the destination event
-        const destEvent = this.getVisibleEvents().find( ( event ) => {
-            return (
-                event.eventbox.x === destTile[ 0 ] &&
-                event.eventbox.y === destTile[ 1 ]
-            );
-        });
+        const destEvent = this.map.getEvent( destCoords );
         const isEventDoor = destEvent && destEvent.data.type === Config.events.DOOR;
 
-        const activeTiles = this.map.activeTiles.find( ( activeTiles ) => {
-            return activeTiles.isPushed([
-                destTile[ 0 ] / this.map.data.tilesize,
-                destTile[ 1 ] / this.map.data.tilesize,
-            ]);
-        });
+        // Get the destination active tiles
+        const activeTiles = this.map.getActiveTileOnCoords( destCoords );
 
         // Get the destination position
         switch ( dir ) {
@@ -685,6 +682,7 @@ class TopView extends GameBox {
             dir,
             tile: destTile,
             event: destEvent,
+            coords: destCoords,
             elevation,
             isEventDoor,
             activeTiles,

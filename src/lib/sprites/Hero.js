@@ -712,14 +712,10 @@ export default class Hero extends Sprite {
         const attackAction = this.parkour.activeTiles && this.parkour.activeTiles.canAttack();
 
         if ( attackAction ) {
-            const coords = [
-                this.parkour.tile[ 0 ] / this.map.data.tilesize,
-                this.parkour.tile[ 1 ] / this.map.data.tilesize,
-            ];
-            this.parkour.activeTiles.attack( coords, attackAction );
+            this.parkour.activeTiles.attack( this.parkour.coords, attackAction );
 
             // Check surrounding tiles in case we technically land on multiple tiles
-            const surroundingTiles = Utils.getSurroundingTileCoords( coords );
+            const surroundingTiles = Utils.getSurroundingTileCoords( this.parkour.coords );
 
             for ( const pos in surroundingTiles ) {
                 const tileCoords = [
@@ -1107,7 +1103,7 @@ export class HeroProjectile extends Projectile {
         
         if ( isCollision ) {
             if ( collision.enemy && !collision.enemy.isHitOrStill() ) {
-                collision.enemy.hit( this.data.power );
+                collision.enemy.hit( this.hero.getStat( "power" ) );
             }
 
             this.kill();
@@ -1239,7 +1235,7 @@ export class LiftedTile extends Sprite {
 
         if ( collision.map || collision.npc || collision.enemy || collision.camera ) {
             if ( collision.enemy && !collision.enemy.isHitOrStill() ) {
-                collision.enemy.hit( this.hero.stats.power );
+                collision.enemy.hit( this.hero.getStat( "power" ) );
             }
 
             this.destroy();

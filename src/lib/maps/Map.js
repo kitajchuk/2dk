@@ -506,20 +506,29 @@ export default class Map {
 
     spliceActiveTile ( group, coords ) {
         const activeTiles = this.getActiveTiles( group );
-
         activeTiles.splice( coords );
     }
 
 
     getActiveTiles ( group ) {
-        return this.activeTiles.find( ( activeTiles ) => ( activeTiles.data.group === group ) );
+        for ( let i = this.activeTiles.length; i--; ) {
+            if ( this.activeTiles[ i ].data.group === group ) {
+                return this.activeTiles[ i ];
+            }
+        }
+
+        return null;
     }
 
 
     getActiveTileOnCoords ( coords ) {
-        return this.activeTiles.find( ( activeTiles ) => {
-            return activeTiles.isPushed( coords );
-        });
+        for ( let i = this.activeTiles.length; i--; ) {
+            if ( this.activeTiles[ i ].isPushed( coords ) ) {
+                return this.activeTiles[ i ];
+            }
+        }
+
+        return null;
     }
 
 
@@ -535,10 +544,10 @@ export default class Map {
 
             if ( activeTiles.pushed.length ) {
                 for ( let j = activeTiles.pushed.length; j--; ) {
-                    const coord = activeTiles.pushed[ j ];
+                    const tilebox = activeTiles.pushed[ j ];
 
                     // Correct tile coords
-                    if ( coord[ 0 ] === celsCoords[ 0 ] && coord[ 1 ] === celsCoords[ 1 ] && isTileAnimated ) {
+                    if ( tilebox.coords[ 0 ] === celsCoords[ 0 ] && tilebox.coords[ 1 ] === celsCoords[ 1 ] && isTileAnimated ) {
                         // Make sure we don't dupe a tile match if it's NOT animated...
                         return activeTiles.getTile();
                     }
@@ -574,12 +583,13 @@ export default class Map {
 
 
     getEvent ( coords ) {
-        return this.events.find( ( event ) => {
-            return (
-                event.data.coords[ 0 ] === coords[ 0 ] && 
-                event.data.coords[ 1 ] === coords[ 1 ]
-            );
-        });
+        for ( let i = this.events.length; i--; ) {
+            if ( this.events[ i ].data.coords[ 0 ] === coords[ 0 ] && this.events[ i ].data.coords[ 1 ] === coords[ 1 ] ) {
+                return this.events[ i ];
+            }
+        }
+
+        return null;
     }
 
 
