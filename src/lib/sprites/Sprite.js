@@ -443,10 +443,13 @@ export default class Sprite {
 
 
     applyGravity () {
-        this.position.z = this.getNextZ();
+        const nextZ = this.getNextZ();
 
-        if ( this.position.z > 0 ) {
+        if ( nextZ > 0 ) {
             this.position.z = 0;
+
+        } else {
+            this.position.z = nextZ;
         }
     }
 
