@@ -2,7 +2,14 @@ const { html } = require( "./Render" );
 
 
 
-const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events }) => {
+const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events, actions }) => {
+    const eventActions = actions.filter( ( action ) => {
+        return (
+            action === window.lib2dk.Config.verbs.FALL ||
+            action === window.lib2dk.Config.verbs.DIVE
+        );
+    });
+
     return html`
         <div class="editor__menu js-menu is-active" id="editor-mapevent-menu">
             <button class="button button--grey button--box editor__close-button js-post-cancel">
@@ -66,6 +73,20 @@ const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events }) =
                         <option value="">Sound</option>
                         ${sounds.files.map( ( sound ) => `
                             <option value="${sound}">${sound}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
+                </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Verb</div>
+                <div class="select">
+                    <select class="select__field js-mapevent-field js-select" name="verb">
+                        <option value="">Verb</option>
+                        ${eventActions.map( ( verb ) => `
+                            <option value="${verb}">${verb}</option>
                         ` ).join( "" )}
                     </select>
                     <span class="select__icon">

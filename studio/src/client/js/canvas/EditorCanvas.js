@@ -1060,6 +1060,7 @@ class EditorCanvas {
                 facing: Utils.getOptionData( window.lib2dk.Config.facing ),
                 events: Utils.getOptionData( window.lib2dk.Config.events ),
                 sounds: this.editor.data.assets.sounds,
+                actions: Utils.getOptionData( window.lib2dk.Config.verbs ),
                 coords,
             });
         }
@@ -1559,6 +1560,10 @@ class EditorCanvas {
 
             if ( data.sound ) {
                 newData.sound = `assets/sounds/${data.sound}`;
+            }
+
+            if ( data.verb ) {
+                newData.verb = data.verb;
             }
 
             this.map.events.push( newData );
