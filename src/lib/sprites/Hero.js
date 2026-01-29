@@ -368,6 +368,16 @@ export default class Hero extends Sprite {
             }
         }
 
+        // We need to prevent an infinite attack loop so we force a face reset after the attack duration...
+        if ( this.gamebox.attacking ) {
+            this.gamebox.attacking.timeElapsed = elapsed - this.gamebox.attacking.timeStarted;
+
+            if ( this.gamebox.attacking.timeElapsed >= this.getDur( Config.verbs.ATTACK ) ) {
+                this.face( this.dir );
+                // Gamebox handles resetting the attacking flag...
+            }
+        }
+
         if ( this.maskFX ) {
             this.maskFX.blit( elapsed );
         }

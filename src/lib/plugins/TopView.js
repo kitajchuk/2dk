@@ -20,7 +20,7 @@ class TopView extends GameBox {
             tile: null,
             push: 0,
         };
-        this.attacking = false;
+        this.attacking = null;
         this.running = false;
         this.jumping = false;
         this.falling = false;
@@ -312,7 +312,7 @@ class TopView extends GameBox {
         }
 
         if ( this.attacking ) {
-            this.attacking = false;
+            this.attacking = null;
             this.hero.face( this.hero.dir );
         }
 
@@ -331,7 +331,7 @@ class TopView extends GameBox {
         }
 
         if ( this.attacking ) {
-            this.attacking = false;
+            this.attacking = null;
             this.hero.face( this.hero.dir );
         }
     }
@@ -385,7 +385,7 @@ class TopView extends GameBox {
         // Reset flags
         this.jumping = false;
         this.falling = false;
-        this.attacking = false;
+        this.attacking = null;
         this.running = false;
 
         // Reset speed
@@ -773,7 +773,7 @@ class TopView extends GameBox {
         if ( item.mapId ) {
             // Cancel attack animation for itemGet sequence
             if ( this.attacking ) {
-                this.attacking = false;
+                this.attacking = null;
             }
 
             this.hero.giveItem( item.data.id, item.mapId );
@@ -920,22 +920,15 @@ class TopView extends GameBox {
             this.hero.fireProjectile();
         }
         
-        this.attacking = true;
+        this.attacking = {
+            timeStarted: performance.now(),
+        };
         this.hero.resetElapsed = true;
         this.hero.cycle( Config.verbs.ATTACK, this.hero.dir );
         
         if ( isWeapon ) {
             this.player.gameaudio.heroSound( Config.verbs.ATTACK );
         }
-
-        setTimeout( () => {
-            // TODO: Silly hack but it fixes the issue when hitting an item with a weapon
-            // e.g. attack -> itemGet -> face is fixed to be just attack -> itemGet
-            if ( this.attacking ) {
-                this.hero.face( this.hero.dir );
-            }
-            
-        }, this.hero.getDur( Config.verbs.ATTACK ) );
     }
 
 
