@@ -198,9 +198,7 @@ export default class NPC extends QuestSprite {
             collision.enemy ||
             collision.hero ||
             collision.doors ||
-            this.canTileStop( collision ) ||
-            this.canTileFall( poi, collision ) ||
-            this.canTileSwim( poi, collision )
+            this.canTileStop( collision )
         );
 
         // Roaming NPCs can push the hero back...
@@ -466,23 +464,19 @@ export default class NPC extends QuestSprite {
     }
 
 
-    canTileFall ( poi, collision ) {
+    canTileStop ( collision ) {
         const { tiles, empty } = collision;
-        const fallTiles = tiles && tiles.action.filter( ( tile ) => {
-            return tile.fall;
-        });
-        const hitbox = this.getHitbox( poi );
 
-        if ( fallTiles && fallTiles.length ) {
-            return fallTiles.some( ( tile ) => {
-                return Utils.collide( tile.tilebox, hitbox );
-            });
+        if ( empty && empty.length ) {
+            return true;
         }
 
-        if ( empty ) {
-            return empty.some( ( tile ) => {
-                return Utils.collide( tile, hitbox );
-            });
+        const stopTiles = tiles && tiles.action.filter( ( tile ) => {
+            return tile.fall || tile.swim || tile.stop;
+        });
+
+        if ( stopTiles && stopTiles.length ) {
+            return true;
         }
 
         return false;

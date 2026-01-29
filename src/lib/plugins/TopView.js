@@ -513,7 +513,7 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( this.hero.canTileSwim( poi, collision, 5 ) ) {
+        if ( this.hero.canTileSwim( poi, collision ) ) {
             if ( !this.hero.hasSwim() ) {
                 this.handleHeroTileSink( poi, dir, collision );
 
