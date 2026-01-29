@@ -281,7 +281,8 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "S — Great Lake"
+                                "S — Great Lake",
+                                "Ahead — The bridge is out"
                             ]
                         }
                     }
