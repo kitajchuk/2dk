@@ -141,8 +141,6 @@ export default class HUD {
     renderHealth () {
         const x = 20, y = 20;
         const step = this.map.data.tilesize;
-        const health = this.hero.getStat( "health" );
-        const maxHealth = this.hero.maxHealth;
 
         this.gamebox.mapLayer.context.save();
         this.gamebox.mapLayer.context.globalAlpha = 0.5;
@@ -152,7 +150,7 @@ export default class HUD {
         this.gamebox.mapLayer.context.roundRect(
             x,
             y,
-            step * maxHealth,
+            step * this.hero.maxHealth,
             step / 4,
             2
         );
@@ -165,7 +163,7 @@ export default class HUD {
         this.gamebox.mapLayer.context.roundRect(
             x,
             y,
-            step * health,
+            step * this.hero.health,
             step / 4,
             2
         );
@@ -179,7 +177,7 @@ export default class HUD {
         this.gamebox.mapLayer.context.roundRect(
             x,
             y,
-            step * maxHealth,
+            step * this.hero.maxHealth,
             step / 4,
             2
         );

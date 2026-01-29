@@ -16,6 +16,7 @@ export default class Hero extends Sprite {
         super( data, map );
         this.onscreen = true;
         this.status = null;
+        this.statusEffects = {};
         this.currency = this.data.currency || 0;
         this.enemiesKilled = 0;
         this.itemGet = null;
@@ -116,14 +117,51 @@ export default class Hero extends Sprite {
 
 
     getStat ( stat ) {
-        const items = this.items.filter( ( item ) => item.stat?.key === stat );
-        return this.stats[ stat ] + items.reduce( ( acc, item ) => acc + item.stat.value, 0 );
+        const itemEffects = this.items.filter( ( item ) => item.stat?.key === stat ).reduce( ( acc, item ) => acc + item.stat.value, 0 );
+        const statusEffects = this.statusEffects[ this.status ]?.[ stat ] ?? 0;
+        return this.stats[ stat ] + itemEffects + statusEffects;
+    }
+
+
+    updateStat ( stat, value ) {
+        if ( stat === "health" ) {
+            this.health = Math.min( this.health + value, this.getMaxHealthWithModifiers() );
+            return;
+        }
+
+        this.stats[ stat ] += value;
+    }
+
+
+    getMaxHealthWithModifiers () {
+        return this.maxHealth * ( this.statusEffects.maxHealth ?? 1 );
     }
 
 
 /*******************************************************************************
 * Items
 *******************************************************************************/
+    applyStatus ( status ) {
+        this.status = status;
+
+        if ( this.data.status[ status ] ) {
+            this.statusEffects[ status ] = this.data.status[ status ];
+
+            // Max health is special because
+            if ( this.statusEffects[ status ].maxHealth ) {
+                this.health = this.maxHealth * this.statusEffects[ status ].maxHealth;
+            }
+        }
+    }
+
+
+    removeStatus () {
+        this.status = null;
+        this.statusEffects = {};
+        this.health = this.maxHealth;
+    }
+
+
     itemCheck ( id ) {
         const item = this.getItem( id );
 
@@ -253,23 +291,6 @@ export default class Hero extends Sprite {
         if ( item.status ) {
             this.removeStatus();
         }
-    }
-
-
-    applyStatus ( status ) {
-        this.status = status;
-
-        if ( this.data.status[ status ].maxHealth ) {
-            this.tmpMaxHealth = this.maxHealth * this.data.status[ status ].maxHealth;
-            this.stats.health = this.tmpMaxHealth;
-        }
-    }
-
-
-    removeStatus () {
-        this.status = null;
-        this.stats.health = this.maxHealth;
-        this.tmpMaxHealth = null;
     }
 
 
@@ -516,7 +537,7 @@ export default class Hero extends Sprite {
 
 
     handleHealthCheck () {
-        if ( this.stats.health <= 0 ) {
+        if ( this.health <= 0 ) {
             this.killed = true;
             this.stillTimer = Infinity;
             this.deathCounter = 240;

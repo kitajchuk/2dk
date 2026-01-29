@@ -59,6 +59,7 @@
         "currency": 0,
         "status": {
             "curse": {
+                "power": 1,
                 "maxHealth": 0.5
             }
         }

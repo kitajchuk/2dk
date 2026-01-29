@@ -25,7 +25,7 @@ export const renderMenu = ( player ) => {
 
     return html`
         <div>Hero: ${hero.data.name}</div>
-        <div>Health: ${hero.getStat( "health" )}</div>
+        <div>Health: ${hero.health}</div>
         <div>Power: ${hero.getStat( "power" )}</div>
         <div>Strength: ${hero.getStat( "strength" )}</div>
         <div>${player.data.currency}: ${hero.currency}</div>

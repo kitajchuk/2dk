@@ -805,7 +805,7 @@ export default class GameBox {
             this.hero.position.y = newSpawn.y;
 
             // Set spawn direction
-            this.hero.dir = newSpawn.dir || "down";
+            this.hero.dir = newSpawn.dir || this.hero.dir;
 
             // Handle the `dropin` effect
             if ( newSpawn.dropin ) {

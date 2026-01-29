@@ -85,14 +85,13 @@ export default class Sprite {
         // Used for things like NPCs, enemies, Hero etx...
         this.hitTimer = 0;
         this.stillTimer = 0;
-        this.stats = this.data.stats ? { ...this.data.stats } : {
-            power: 1,
-            health: 1,
-            strength: 0,
+        this.stats = {
+            power: this.data.stats?.power ?? 1,
+            strength: this.data.stats?.strength ?? 0,
         };
+        this.health = this.data.stats?.health ?? 1;
         // Cannot increase health beyond this value...
-        this.maxHealth = this.stats.health;
-        this.tmpMaxHealth = null;
+        this.maxHealth = this.health;
     }
 
 
@@ -129,11 +128,8 @@ export default class Sprite {
         this.hitTimer = timer;
         this.stillTimer = timer;
         this.frame = 0;
+        this.health = Math.max( this.health - power, 0 );
         this.resetPhysics();
-
-        if ( this.stats ) {
-            this.stats.health = Math.max( this.stats.health - power, 0 );
-        }
     }
 
 
@@ -149,22 +145,6 @@ export default class Sprite {
 
     isJumping () {
         return this.position.z < 0;
-    }
-
-
-    checkStat ( stat, value ) {
-        return this.stats[ stat ] >= value;
-    }
-
-
-    updateStat ( stat, value ) {
-        if ( stat === "health" ) {
-            const maxHealth = this.tmpMaxHealth || this.maxHealth;
-            this.stats[ stat ] = Math.min( this.stats[ stat ] + value, maxHealth );
-            return;
-        }
-
-        this.stats[ stat ] += value;
     }
 
 

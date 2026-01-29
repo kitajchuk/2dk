@@ -104,7 +104,7 @@ export default class Enemy extends NPC {
             return;
         }
 
-        if ( this.stats.health <= 0 ) {
+        if ( this.health <= 0 ) {
             this.handleQuestFlagUpdate();
             this.gamebox.smokeObject( this, this.data.action.fx );
             this.map.killObject( "enemies", this );
