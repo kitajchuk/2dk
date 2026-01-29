@@ -19,6 +19,8 @@ class Player extends Controller {
 
         this.loader = new Loader();
         this.Loader = Loader;
+        this.Config = Config;
+        this.Utils = Utils;
 
         this.initialize();
         this.detect();
@@ -327,6 +329,7 @@ class Player extends Controller {
         const map = this.query.get( "map" );
         const spawn = this.query.get( "spawn" );
         const resolution = this.query.get( "resolution" );
+        const companion = this.query.get( "companion" );
 
         if ( fps ) {
             this.fps = Number( fps );
@@ -344,6 +347,13 @@ class Player extends Controller {
 
         if ( spawn ) {
             this.heroData.spawn = Number( spawn );
+        }
+
+        if ( companion ) {
+            this.heroData.companion = {
+                id: companion,
+                type: Config.verbs.WALK,
+            };
         }
     }
 

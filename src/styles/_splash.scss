@@ -9,7 +9,7 @@
         height: 100%;
         overflow: hidden;
         z-index: 10;
-        transition: opacity 1000ms ease-in-out;
+        transition: opacity var( --fade-duration ) ease-in-out;
         pointer-events: none;
     
         .is-started & {

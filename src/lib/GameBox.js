@@ -706,7 +706,7 @@ export default class GameBox {
 
             this.afterChangeMap( newMapData );
 
-        }, 1000 );
+        }, Config.player.fadeDur );
     }
 }
 

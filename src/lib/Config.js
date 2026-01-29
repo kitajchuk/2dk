@@ -10,6 +10,7 @@ const getStyleVar = ( prop ) => {
 const Config = {
     player: {
         fps: 60,
+        fadeDur: parseInt( getStyleVar( "--fade-duration" ), 10 ),
     },
     physics: {
         maxv: 4,
