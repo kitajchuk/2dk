@@ -222,10 +222,6 @@ export default class NPC extends QuestSprite {
                 }
                 return;
             }
-
-            if ( this.isEnemy() && this.canHitHero() ) {
-                this.gamebox.hero.hit( this.stats.power );
-            }
         }
 
         if ( isCollision ) {

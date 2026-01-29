@@ -420,6 +420,7 @@ class TopView extends GameBox {
         const collision = {
             map: this.checkMap( poi, this.hero ),
             npc: this.checkNPC( poi, this.hero ),
+            enemy: this.checkEnemy( poi, this.hero ),
             door: this.checkDoor( poi, this.hero ),
             item: this.checkItems( poi, this.hero ),
             tiles: this.checkTiles( poi, this.hero ),
@@ -431,6 +432,11 @@ class TopView extends GameBox {
         if ( this.jumping ) {
             if ( this.hero.canMoveWhileJumping( collision ) ) {
                 this.applyHero( poi, dir );
+            }
+
+            if ( this.hero.position.z === 0 ) {
+                this.jumping = false;
+                this.hero.face( dir );
             }
 
             return;
@@ -461,6 +467,14 @@ class TopView extends GameBox {
 
         if ( collision.door ) {
             this.handleHeroPush( poi, dir );
+            return;
+        }
+
+        if ( collision.enemy ) {
+            if ( collision.enemy.canHitHero() ) {
+                this.hero.hit( collision.enemy.stats.power );
+            }
+
             return;
         }
 

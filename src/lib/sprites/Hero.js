@@ -404,12 +404,6 @@ export default class Hero extends Sprite {
         this.handleGravity();
         this.applyGravity();
 
-        // Handle jumping reset
-        if ( this.gamebox.jumping && this.position.z === 0 ) {
-            this.gamebox.jumping = false;
-            this.face( this.dir );
-        }
-
         if ( this.maskFX ) {
             this.maskFX.update();
         }
@@ -966,6 +960,7 @@ export default class Hero extends Sprite {
         return (
             !collision.map &&
             !collision.npc &&
+            !collision.enemy &&
             !collision.door &&
             !collision.camera &&
             !( collision.tiles && collision.tiles.action.length && collision.tiles.action.find( ( tile ) => {
