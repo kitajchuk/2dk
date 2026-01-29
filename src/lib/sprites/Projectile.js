@@ -64,7 +64,7 @@ export default class Projectile extends Sprite {
 
     sparks () {
         if ( this.data.fx ) {
-            this.gamebox.mapFX.smokeObject( this, this.data.fx );
+            this.map.mapFX.smokeObject( this, this.data.fx );
         }
 
         if ( this.data.sound ) {

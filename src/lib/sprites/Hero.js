@@ -1273,7 +1273,7 @@ export class LiftedTile extends Sprite {
             this.player.gameaudio.hitSound( attackAction.sound );
         }
         
-        this.gamebox.mapFX.smokeObject( this, attackAction?.fx );
+        this.map.mapFX.smokeObject( this, attackAction?.fx );
         this.gamebox.interact.tile = null;
 
         // Kills THIS sprite

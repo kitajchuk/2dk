@@ -7,6 +7,7 @@ import Enemy from "../sprites/Enemy";
 import FX from "../sprites/FX";
 import ActiveTiles from "./ActiveTiles";
 import MapEvent from "./MapEvent";
+import MapFX from "./MapFX";
 import KeyItem from "../sprites/KeyItem";
 
 
@@ -32,6 +33,9 @@ export default class Map {
             x: 0,
             y: 0,
         };
+
+        // FX utils
+        this.mapFX = new MapFX( this );
 
         // From map data
         this.activeTiles = [];
@@ -613,7 +617,7 @@ export default class Map {
         const npc = new NPC( obj.data, this, mapId );
         this.npcs.push( npc );
         this.addAllSprite( npc );
-        this.gamebox.mapFX.smokeObject( npc );
+        this.mapFX.smokeObject( npc );
         this.player.gameaudio.hitSound( "smash" );
     }
 

@@ -3,7 +3,6 @@ import Config from "./Config";
 import Loader from "./Loader";
 import Dialogue from "./Dialogue";
 import Map from "./maps/Map";
-import MapFX from "./maps/MapFX";
 import MapLayer from "./maps/MapLayer";
 import Hero from "./sprites/Hero";
 import Companion from "./sprites/Companion";
@@ -49,7 +48,6 @@ export default class GameBox {
 
         // Map
         this.map = new Map( initMapData, this );
-        this.mapFX = new MapFX( this.map );
 
         // Hero
         initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
