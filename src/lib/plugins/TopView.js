@@ -871,21 +871,9 @@ class TopView extends GameBox {
 
         this.locked = true;
         this.hero.cycle( Config.verbs.PULL, dir );
-        setTimeout( () => {
-            const activeTiles = this.map.getActiveTiles( this.interact.tile.group );
-            const spawn = {
-                x: this.interact.tile.coord[ 0 ] * this.map.data.tilesize,
-                y: this.interact.tile.coord[ 1 ] * this.map.data.tilesize,
-            };
-
-            this.player.gameaudio.heroSound( Config.verbs.LIFT );
-            this.map.spliceActiveTile( this.interact.tile.group, this.interact.tile.coord );
-            this.hero.liftedTile = new LiftedTile( spawn, activeTiles, this.map, this.hero );
-            this.hero.cycle( Config.verbs.LIFT, this.hero.dir );
-            this.hero.physics.maxv = this.hero.physics.controlmaxv / 2;
-            this.locked = false;
-
-        }, this.hero.getDur( Config.verbs.LIFT ) );
+        this.hero.lifting = {
+            timeStarted: performance.now(),
+        };
     }
 
 

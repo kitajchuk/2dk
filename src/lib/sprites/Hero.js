@@ -34,6 +34,7 @@ export default class Hero extends Sprite {
         this.interact = null;
         this.parkour = null;
         this.falling = null;
+        this.lifting = null;
         this.lastPositionOnGround = this.position;
     }
 
@@ -358,6 +359,15 @@ export default class Hero extends Sprite {
             }
         }
 
+        // We need to capture this here since during a lift the gamebox is LOCKED...
+        if ( this.lifting ) {
+            this.lifting.timeElapsed = elapsed - this.lifting.timeStarted;
+
+            if ( this.lifting.timeElapsed >= this.getDur( Config.verbs.LIFT ) ) {
+                this.applyLifting();
+            }
+        }
+
         if ( this.maskFX ) {
             this.maskFX.blit( elapsed );
         }
@@ -605,6 +615,23 @@ export default class Hero extends Sprite {
         if ( this.falling && this.falling.didReset && this.falling.resetCounter === 0 ) {
             this.gamebox.mapLayer.context.globalAlpha = 0;
         }
+    }
+
+
+    applyLifting () {
+        const activeTiles = this.map.getActiveTiles( this.gamebox.interact.tile.group );
+        const spawn = {
+            x: this.gamebox.interact.tile.coord[ 0 ] * this.map.data.tilesize,
+            y: this.gamebox.interact.tile.coord[ 1 ] * this.map.data.tilesize,
+        };
+
+        this.player.gameaudio.heroSound( Config.verbs.LIFT );
+        this.map.spliceActiveTile( this.gamebox.interact.tile.group, this.gamebox.interact.tile.coord );
+        this.liftedTile = new LiftedTile( spawn, activeTiles, this.map, this );
+        this.cycle( Config.verbs.LIFT, this.dir );
+        this.physics.maxv = this.physics.controlmaxv / 2;
+        this.gamebox.locked = false;
+        this.lifting = null;
     }
 
 
