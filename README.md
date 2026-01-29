@@ -23,7 +23,7 @@ A 2dk game is a static [PWA](https://developer.mozilla.org/en-US/docs/Web/Progre
 ## Game making
 It's basically Photoshop for 2D map painting. You can paint background and foreground layers as well has a basic map collision layer. You can add NPCs to the maps and give them various attributes like dialogue, roaming AIs, projectiles etc. You can also manage meta layers to create spawn points, map events and active tiles.
 
-I've been using my favorite game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. The developer demo is a Zelda-based game called [The Missing Link](https://2dk.kitajchuk.com/games/the_missing_link/). This game is based on some very old dabbling with the Akihabara game library from quite a long time ago. I've archived that game [here](https://github.com/kitajchuk/legacy-the-missing-link).
+I've been using my favorite game [Link's Awakening](https://www.zeldadungeon.net/wiki/The_Legend_of_Zelda:_Link%27s_Awakening) as a model for the game engine and mechanics of the `TopView` plugin for the `Player`. The developer demo is a Zelda-based game called [The Missing Link](https://2dk.kitajchuk.com/games/the_missing_link/). This game is based on some very old dabbling with the [Akihabara](https://github.com/akihabara/akihabara/) game library from quite a long time ago. I've archived that game [here](https://github.com/kitajchuk/legacy-the-missing-link).
 
 
 
@@ -78,11 +78,10 @@ I've been trying to keep track of where I've found resources online. Stuff like 
 
 #### Assets
 * Sounds for LA from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/link-s-awakening-dx)
-* Sounds for PK from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/pokemon-firered-and-leafgreen-remastered-soundtrack-gba-gamerip-2004)
 * Sprites & Tiles from [The Sprites Resource](https://www.spriters-resource.com/game_boy_gbc/thelegendofzeldalinksawakeningdx)
 
 #### Inspiration
-* I'm an OG fan of [kesiev's](https://github.com/kesiev) original [Akihabara](https://www.kesiev.com/akihabara) work
+* I'm an OG fan of [kesiev's](https://github.com/kesiev) original [Akihabara](https://github.com/akihabara/akihabara/) work
 * [Gotta Code Them All](https://www.slideshare.net/Berttimmermans/gotta-code-them-all-a-pokmon-and-html5-lovestory) got me thinking back in the day as well
 
 
