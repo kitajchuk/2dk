@@ -117,7 +117,12 @@ export default class Hero extends Sprite {
 
 
     getStat ( stat ) {
-        const itemEffects = this.items.filter( ( item ) => item.stat?.key === stat ).reduce( ( acc, item ) => acc + item.stat.value, 0 );
+        let itemEffects = 0
+        for ( let i = this.items.length; i--; ) {
+            if ( this.items[ i ].stat?.key === stat ) {
+                itemEffects += this.items[ i ].stat.value;
+            }
+        }
         const statusEffects = this.statusEffects[ this.status ]?.[ stat ] ?? 0;
         return this.stats[ stat ] + itemEffects + statusEffects;
     }
@@ -125,7 +130,7 @@ export default class Hero extends Sprite {
 
     updateStat ( stat, value ) {
         if ( stat === "health" ) {
-            this.health = Math.min( this.health + value, this.getMaxHealthWithModifiers() );
+            this.health = Math.min( this.health + value, this.getMaxHealth() );
             return;
         }
 
@@ -133,8 +138,8 @@ export default class Hero extends Sprite {
     }
 
 
-    getMaxHealthWithModifiers () {
-        return this.maxHealth * ( this.statusEffects.maxHealth ?? 1 );
+    getMaxHealth () {
+        return this.maxHealth * ( this.statusEffects[ this.status ]?.maxHealth ?? 1 );
     }
 
 
