@@ -509,30 +509,6 @@
             }
         },
         {
-            "id": "bird-statue",
-            "spawn": {
-                "x": 1920,
-                "y": 320
-            },
-            "action": {
-                "verb": "push",
-                "sound": "moveObject"
-            },
-            "payload": {
-                "quest": [
-                    {
-                        "type": "noCheck",
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "Something about a flying rooster..."
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        {
             "id": "cucco",
             "spawn": {
                 "x": 2176,
@@ -638,8 +614,8 @@
                             "type": "text",
                             "text": [
                                 "Oh hey, Kiln. Sorry to hear about Master Shinji.",
-                                "What will you do now? I imagine you're curious about venturing beyond our little corner of the world.",
-                                "If you decide to go make sure you equip a Sword and a Shield first."
+                                "What do you think you'll you do now? I bet you're curious about venturing beyond our little lost corner of the world...",
+                                "If you do decide to go on a quest, make sure you equip a Sword and a Shield first."
                             ]
                         }
                     },
@@ -648,7 +624,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "So, have you decided what you're going to do yet?"
+                                "Things have been rough around here ever since those Moblins moved in on us."
                             ]
                         }
                     }
@@ -10273,20 +10249,32 @@
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
@@ -10567,20 +10555,32 @@
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
@@ -10857,20 +10857,32 @@
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
                     [
                         128,
                         448
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
@@ -11159,20 +11171,32 @@
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
                     [
-                        192,
-                        384
+                        0,
+                        320
+                    ],
+                    [
+                        64,
+                        2240
                     ]
                 ],
                 [
