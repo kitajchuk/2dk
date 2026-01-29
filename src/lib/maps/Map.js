@@ -613,7 +613,7 @@ export default class Map {
         const npc = new NPC( obj.data, this, mapId );
         this.npcs.push( npc );
         this.addAllSprite( npc );
-        this.gamebox.smokeObject( npc );
+        this.gamebox.mapFX.smokeObject( npc );
         this.player.gameaudio.hitSound( "smash" );
     }
 

@@ -174,7 +174,7 @@ export default class Door extends QuestSprite {
             return;
         }
 
-        this.gamebox.smokeObjectBase( this, this.data.action.fx );
+        this.gamebox.mapFX.smokeObjectBase( this, this.data.action.fx );
     }
 
 

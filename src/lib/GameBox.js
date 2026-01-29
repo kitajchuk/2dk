@@ -3,10 +3,10 @@ import Config from "./Config";
 import Loader from "./Loader";
 import Dialogue from "./Dialogue";
 import Map from "./maps/Map";
+import MapFX from "./maps/MapFX";
 import MapLayer from "./maps/MapLayer";
 import Hero from "./sprites/Hero";
 import Companion from "./sprites/Companion";
-import FX from "./sprites/FX";
 import GameQuest from "./GameQuest";
 import ItemDrop from "./sprites/ItemDrop";
 import { KeyItemDrop } from "./sprites/KeyItem";
@@ -49,6 +49,7 @@ export default class GameBox {
 
         // Map
         this.map = new Map( initMapData, this );
+        this.mapFX = new MapFX( this.map );
 
         // Hero
         initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
@@ -182,117 +183,6 @@ export default class GameBox {
 /*******************************************************************************
 * Sprite utilities
 *******************************************************************************/
-    smokeObject ( obj, fx = "smoke" ) {
-        const origin = {
-            x: obj.position.x + ( obj.width / 2 ) - ( this.map.data.tilesize / 2 ),
-            y: obj.position.y + ( obj.height / 2 ) - ( this.map.data.tilesize / 2 ),
-        };
-        const data = this.player.getMergedData({
-            id: fx,
-            kill: true,
-            spawn: origin,
-        }, "fx" );
-
-        this.map.addObject( "fx", new FX( data, this.map ) );
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: origin.x - ( this.map.data.tilesize / 4 ),
-                y: origin.y - ( this.map.data.tilesize / 4 ),
-            },
-            vx: -8,
-            vy: -8,
-
-        }), this.map ) );
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: origin.x + ( this.map.data.tilesize / 4 ),
-                y: origin.y - ( this.map.data.tilesize / 4 ),
-            },
-            vx: 8,
-            vy: -8,
-
-        }), this.map ) );
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: origin.x - ( this.map.data.tilesize / 4 ),
-                y: origin.y + ( this.map.data.tilesize / 4 ),
-            },
-            vx: -8,
-            vy: 8,
-
-        }), this.map ) );
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: origin.x + ( this.map.data.tilesize / 4 ),
-                y: origin.y + ( this.map.data.tilesize / 4 ),
-            },
-            vx: 8,
-            vy: 8,
-
-        }), this.map ) );
-    }
-
-
-    smokeObjectBase ( obj, fx = "smoke" ) {
-        const data = this.player.getMergedData({
-            id: fx,
-            kill: true,
-        }, "fx" );
-
-        // Center
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: obj.position.x + ( obj.width / 2 ) - ( data.width / 2 ),
-                y: obj.position.y + obj.height - (data.height / 2 ),
-            },
-            vy: -Utils.random( 0, obj.height / 2 ),
-        }), this.map ) );
-
-        // Left
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: obj.position.x - ( data.width / 2 ),
-                y: obj.position.y + obj.height - (data.height / 2 ),
-            },
-            vx: -Utils.random( 0, 16 ),
-            vy: -Utils.random( 0, obj.height / 2 ),
-        }), this.map ) );
-
-        // Right
-        this.map.addObject( "fx", new FX( Utils.merge( data, {
-            spawn: {
-                x: obj.position.x + obj.width - ( data.width / 2 ),
-                y: obj.position.y + obj.height - (data.height / 2 ),
-            },
-            vx: Utils.random( 0, 16 ),
-            vy: -Utils.random( 0, obj.height / 2 ),
-        }), this.map ) );
-
-        // Add more FX if the door is wider than a tile
-        if ( obj.width > this.map.data.tilesize ) {
-            // Left center
-            this.map.addObject( "fx", new FX( Utils.merge( data, {
-                spawn: {
-                    x: obj.position.x + ( obj.width / 4 ) - ( data.width / 2 ),
-                    y: obj.position.y + obj.height - (data.height / 2 ),
-                },
-                vx: -Utils.random( 0, 16 ),
-                vy: -Utils.random( 0, obj.height / 2 ),
-            }), this.map ) );
-
-            // Right center
-            this.map.addObject( "fx", new FX( Utils.merge( data, {
-                spawn: {
-                    x: obj.position.x + obj.width - ( obj.width / 4 ) - ( data.width / 2 ),
-                    y: obj.position.y + obj.height - (data.height / 2 ),
-                },
-                vx: Utils.random( 0, 16 ),
-                vy: -Utils.random( 0, obj.height / 2 ),
-            }), this.map ) );
-        }
-    }
-
-
     itemDrop ( drops, position ) {
         const drop = drops[ Utils.random( 0, drops.length - 1 ) ];
         const chance = Utils.random( 0, 100 );

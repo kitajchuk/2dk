@@ -3,6 +3,7 @@ import FX from "./sprites/FX";
 import NPC from "./sprites/NPC";
 import Hero, { ItemGet, LiftedTile, HeroProjectile } from "./sprites/Hero";
 import Sprite, { QuestSprite } from "./sprites/Sprite";
+import Enemy from "./sprites/Enemy";
 import Companion from "./sprites/Companion";
 import ItemDrop from "./sprites/ItemDrop";
 import KeyItem, { KeyItemDrop } from "./sprites/KeyItem";
@@ -18,6 +19,7 @@ import GameQuest from "./GameQuest";
 import GameWorker from "./GameWorker";
 import Loader from "./Loader";
 import Map from "./maps/Map";
+import MapFX from "./maps/MapFX";
 import MapLayer from "./maps/MapLayer";
 import MapEvent from "./maps/MapEvent";
 import ActiveTiles from "./maps/ActiveTiles";
@@ -40,6 +42,7 @@ const lib = {
     NPC,
     Hero, ItemGet, LiftedTile, HeroProjectile,
     Door,
+    Enemy,
     Sprite, QuestSprite,
     ItemDrop,
     Companion,
@@ -56,7 +59,7 @@ const lib = {
     GameQuest,
     GameWorker,
     Loader,
-    Map, MapLayer, MapEvent, ActiveTiles,
+    Map, MapFX, MapLayer, MapEvent, ActiveTiles,
     CellAutoMap,
     Player,
     Spring,

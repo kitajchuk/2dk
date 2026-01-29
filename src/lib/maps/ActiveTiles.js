@@ -115,7 +115,7 @@ export default class ActiveTiles {
             this.gamebox.itemDrop( action.drops, obj.position );
         }
         
-        this.gamebox.smokeObject( obj, action.fx );
+        this.gamebox.mapFX.smokeObject( obj, action.fx );
     }
 
 
