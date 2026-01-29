@@ -404,6 +404,12 @@ export default class Hero extends Sprite {
         this.handleGravity();
         this.applyGravity();
 
+        // Handle jumping reset
+        if ( this.gamebox.jumping && this.position.z === 0 ) {
+            this.gamebox.jumping = false;
+            this.face( this.dir );
+        }
+
         if ( this.maskFX ) {
             this.maskFX.update();
         }
@@ -816,7 +822,7 @@ export default class Hero extends Sprite {
             this.maskFX.position.x = maskX;
             this.maskFX.position.y = maskY;
 
-            if ( this.isIdle() && this.maskFX.frame === this.maskFX.data.stepsX - 1 ) {
+            if ( this.isIdle() ) {
                 this.maskFX.paused = true;
             } else {
                 this.maskFX.paused = false;

@@ -204,22 +204,28 @@ export default class NPC extends QuestSprite {
         );
 
         // Roaming NPCs can push the hero back...
-        if ( collision.hero && this.gamebox.hero.canShield( this ) && this.data.ai === Config.npc.ai.ROAM ) {
-            switch ( this.dir ) {
-                case "left":
-                    this.gamebox.hero.physics.vx = -1;
-                    break;
-                case "right": 
-                    this.gamebox.hero.physics.vx = 1;
-                    break;
-                case "up":
-                    this.gamebox.hero.physics.vy = -1;
-                    break;
-                case "down":
-                    this.gamebox.hero.physics.vy = 1;
-                    break;
+        if ( collision.hero ) {
+            if ( this.gamebox.hero.canShield( this ) && this.data.ai === Config.npc.ai.ROAM ) {
+                switch ( this.dir ) {
+                    case "left":
+                        this.gamebox.hero.physics.vx = -1;
+                        break;
+                    case "right": 
+                        this.gamebox.hero.physics.vx = 1;
+                        break;
+                    case "up":
+                        this.gamebox.hero.physics.vy = -1;
+                        break;
+                    case "down":
+                        this.gamebox.hero.physics.vy = 1;
+                        break;
+                }
+                return;
             }
-            return;
+
+            if ( this.isEnemy() && this.canHitHero() ) {
+                this.gamebox.hero.hit( this.stats.power );
+            }
         }
 
         if ( isCollision ) {
