@@ -29,10 +29,6 @@ export default class Map {
         this.width = this.data.width;
         this.height = this.data.height;
         this.image = Loader.cash( data.image );
-        this.offset = {
-            x: 0,
-            y: 0,
-        };
 
         // FX utils
         this.mapFX = new MapFX( this );
@@ -226,9 +222,7 @@ export default class Map {
     }
 
 
-    update ( offset ) {
-        this.offset = offset;
-
+    update () {
         for ( let i = this.npcs.length; i--; ) {
             this.npcs[ i ].update();
         }
@@ -317,8 +311,8 @@ export default class Map {
         for ( let i = visibleColliders.length; i--; ) {
             this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
             this.gamebox.mapLayer.context.fillRect(
-                this.offset.x + visibleColliders[ i ].x,
-                this.offset.y + visibleColliders[ i ].y,
+                visibleColliders[ i ].x - this.gamebox.camera.x,
+                visibleColliders[ i ].y - this.gamebox.camera.y,
                 visibleColliders[ i ].width,
                 visibleColliders[ i ].height
             );
@@ -327,8 +321,8 @@ export default class Map {
         for ( let i = visibleEvents.length; i--; ) {
             this.gamebox.mapLayer.context.fillStyle = Config.colors.blue;
             this.gamebox.mapLayer.context.fillRect(
-                this.offset.x + visibleEvents[ i ].eventbox.x,
-                this.offset.y + visibleEvents[ i ].eventbox.y,
+                visibleEvents[ i ].eventbox.x - this.gamebox.camera.x,
+                visibleEvents[ i ].eventbox.y - this.gamebox.camera.y,
                 visibleEvents[ i ].eventbox.width,
                 visibleEvents[ i ].eventbox.height
             );

@@ -17,10 +17,6 @@ export default class GameBox {
     constructor ( player ) {
         this.player = player;
         this.dropin = false;
-        this.offset = {
-            x: 0,
-            y: 0,
-        };
         this.camera = new Camera(
             0,
             0,

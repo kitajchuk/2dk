@@ -826,30 +826,23 @@ export default class Hero extends Sprite {
 
 
     applyOffset () {
-        const absolute = {
-            x: Math.abs( this.map.offset.x ),
-            y: Math.abs( this.map.offset.y ),
-        };
-
         this.offset = {
             x: ( this.gamebox.camera.width / 2 ) - ( this.width / 2 ),
             y: ( this.gamebox.camera.height / 2 ) - ( this.height / 2 ),
         };
 
-        if ( absolute.x <= 0 ) {
+        if ( this.gamebox.camera.x <= 0 ) {
             this.offset.x = this.position.x;
+
+        } else if ( this.gamebox.camera.x >= ( this.map.width - this.gamebox.camera.width ) ) {
+            this.offset.x = this.position.x - this.gamebox.camera.x;
         }
 
-        if ( absolute.x >= ( this.map.width - this.gamebox.camera.width ) ) {
-            this.offset.x = this.position.x + this.map.offset.x;
-        }
-
-        if ( absolute.y <= 0 ) {
+        if ( this.gamebox.camera.y <= 0 ) {
             this.offset.y = this.position.y;
-        }
 
-        if ( absolute.y >= ( this.map.height - this.gamebox.camera.height ) ) {
-            this.offset.y = this.position.y + this.map.offset.y;
+        } else if ( this.gamebox.camera.y >= ( this.map.height - this.gamebox.camera.height ) ) {
+            this.offset.y = this.position.y - this.gamebox.camera.y;
         }
     }
 

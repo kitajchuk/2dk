@@ -69,38 +69,33 @@ class TopView extends GameBox {
         }
 
         // update map
-        this.map.update( this.offset );
+        this.map.update();
     }
 
 
     updateCamera () {
         const x = ( this.hero.position.x - ( ( this.camera.width / 2 ) - ( this.hero.width / 2 ) ) );
         const y = ( this.hero.position.y - ( ( this.camera.height / 2 ) - ( this.hero.height / 2 ) ) );
-        const offset = {};
 
         if ( x >= 0 && x <= ( this.map.width - this.camera.width ) ) {
-            offset.x = -x;
+            this.camera.x = x;
 
         } else if ( x >= ( this.map.width - this.camera.width ) ) {
-            offset.x = -( this.map.width - this.camera.width );
+            this.camera.x = ( this.map.width - this.camera.width );
 
         } else {
-            offset.x = 0;
+            this.camera.x = 0;
         }
 
         if ( y >= 0 && y <= ( this.map.height - this.camera.height ) ) {
-            offset.y = -y;
+            this.camera.y = y;
 
         } else if ( y >= ( this.map.height - this.camera.height ) ) {
-            offset.y = -( this.map.height - this.camera.height );
+            this.camera.y = ( this.map.height - this.camera.height );
 
         } else {
-            offset.y = 0;
+            this.camera.y = 0;
         }
-
-        this.offset = offset;
-        this.camera.x = Math.abs( offset.x );
-        this.camera.y = Math.abs( offset.y );
     }
 
 

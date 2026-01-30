@@ -45,8 +45,8 @@ export default class Sprite {
         // Hero offset is based on camera.
         // NPCs offset snaps to position.
         this.offset = {
-            x: this.gamebox.offset.x + this.position.x,
-            y: this.gamebox.offset.y + this.position.y,
+            x: this.position.x - this.gamebox.camera.x,
+            y: this.position.y - this.gamebox.camera.y,
         };
         this.idle = {
             x: true,
@@ -416,8 +416,8 @@ export default class Sprite {
 
     applyOffset () {
         this.offset = {
-            x: this.gamebox.offset.x + this.position.x,
-            y: this.gamebox.offset.y + this.position.y,
+            x: this.position.x - this.gamebox.camera.x,
+            y: this.position.y - this.gamebox.camera.y,
         };
     }
 
