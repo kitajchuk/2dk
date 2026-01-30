@@ -442,7 +442,9 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( collision.event ) {
+        const canTileSwim = this.hero.canTileSwim( poi, collision );
+
+        if ( collision.event && !( canTileSwim && !this.hero.hasSwim() ) ) {
             if ( this.hero.canEventBoundary( collision ) ) {
                 this.handleHeroEventBoundary( poi, dir, collision.event );
                 return;
@@ -513,7 +515,7 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( this.hero.canTileSwim( poi, collision ) ) {
+        if ( canTileSwim ) {
             if ( !this.hero.hasSwim() ) {
                 this.handleHeroTileSink( poi, dir, collision );
 
