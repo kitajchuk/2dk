@@ -92,7 +92,7 @@ export default class Enemy extends NPC {
 
 
     canHitHero () {
-        return !this.isHitOrStill() && !this.gamebox.hero.canShield( this );
+        return !this.isHitOrStill() && !this.gamebox.hero.isHitOrStill() && !this.gamebox.hero.canShield( this );
     }
 
 

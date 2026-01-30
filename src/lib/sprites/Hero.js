@@ -826,6 +826,11 @@ export default class Hero extends Sprite {
 
 
     applyOffset () {
+        if ( this.gamebox.panning ) {
+            super.applyOffset();
+            return;
+        }
+        
         this.offset = {
             x: ( this.gamebox.camera.width / 2 ) - ( this.width / 2 ),
             y: ( this.gamebox.camera.height / 2 ) - ( this.height / 2 ),

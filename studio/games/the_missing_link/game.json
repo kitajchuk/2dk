@@ -1258,9 +1258,9 @@
             "image": "assets/sprites/npcs.png",
             "hitbox": {
                 "x": 64,
-                "y": 0,
+                "y": 20,
                 "width": 64,
-                "height": 64
+                "height": 44
             },
             "verbs": {
                 "face": {

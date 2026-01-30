@@ -96,6 +96,11 @@ export default class Projectile extends Sprite {
     }
 
 
+    canHitHero () {
+        return !this.gamebox.hero.isHitOrStill() && !this.gamebox.hero.canShield( this );
+    }
+
+
     applyPosition () {
         const poi = this.getNextPoi();
         const collision = {
@@ -119,7 +124,7 @@ export default class Projectile extends Sprite {
         );
 
         if ( isCollision ) {
-            if ( collision.hero && !this.gamebox.hero.isHitOrStill() && !this.gamebox.hero.canShield( this ) ) {
+            if ( collision.hero && this.canHitHero() ) {
                 this.gamebox.hero.hit( this.data.power );
             }
             

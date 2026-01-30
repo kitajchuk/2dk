@@ -17,13 +17,7 @@ export default class GameBox {
     constructor ( player ) {
         this.player = player;
         this.dropin = false;
-        this.camera = new Camera(
-            0,
-            0,
-            this.player.width * this.player.resolution,
-            this.player.height * this.player.resolution,
-            this.player.resolution
-        );
+        this.panning = false;
         this.mapLayer = null;
         this.mapLayers = {
             background: null,
@@ -41,6 +35,9 @@ export default class GameBox {
 
         let initMapData = Loader.cash( this.player.heroData.map );
         let initHeroData = { ...this.player.heroData };
+
+        // Camera
+        this.camera = new Camera( this );
 
         // Map
         this.map = new Map( initMapData, this );
@@ -116,8 +113,8 @@ export default class GameBox {
             width: this.camera.width,
             height: this.camera.height,
         });
-        this.mapLayer.canvas.width = `${this.camera.width * this.camera.resolution}`;
-        this.mapLayer.canvas.height = `${this.camera.height * this.camera.resolution}`;
+        this.mapLayer.canvas.width = `${this.camera.width * this.player.resolution}`;
+        this.mapLayer.canvas.height = `${this.camera.height * this.player.resolution}`;
 
         // Offscreen canvases for each texture layer
         for ( const id in this.mapLayers ) {
@@ -129,8 +126,8 @@ export default class GameBox {
                 width: offWidth,
                 height: offHeight,
             });
-            this.mapLayers[ id ].canvas.width = `${offWidth * this.camera.resolution}`;
-            this.mapLayers[ id ].canvas.height = `${offHeight * this.camera.resolution}`;
+            this.mapLayers[ id ].canvas.width = `${offWidth * this.player.resolution}`;
+            this.mapLayers[ id ].canvas.height = `${offHeight * this.player.resolution}`;
         }
 
         this.element.appendChild( this.mapLayer.canvas );
@@ -729,12 +726,98 @@ const footTiles = [
 
 
 export class Camera {
-    constructor ( x, y, width, height, resolution ) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.resolution = resolution;
+    constructor ( gamebox ) {
+        this.gamebox = gamebox;
+        this.player = gamebox.player;
+        this.x = 0;
+        this.y = 0;
+        this.width = this.player.width * this.player.resolution;
+        this.height = this.player.height * this.player.resolution;
+        this.pan = null;
+    }
+
+
+    update () {
+        if ( this.pan ) {
+            if ( this.pan.to.x === this.x && this.pan.to.y === this.y ) {
+                this.resetPan();
+            } else {
+                this.updatePan();
+            }
+            return;
+        }
+
+        const x = ( this.gamebox.hero.position.x - ( ( this.width / 2 ) - ( this.gamebox.hero.width / 2 ) ) );
+        const y = ( this.gamebox.hero.position.y - ( ( this.height / 2 ) - ( this.gamebox.hero.height / 2 ) ) );
+
+        if ( x >= 0 && x <= ( this.gamebox.map.width - this.width ) ) {
+            this.x = x;
+
+        } else if ( x >= ( this.gamebox.map.width - this.width ) ) {
+            this.x = ( this.gamebox.map.width - this.width );
+
+        } else {
+            this.x = 0;
+        }
+
+        if ( y >= 0 && y <= ( this.gamebox.map.height - this.height ) ) {
+            this.y = y;
+
+        } else if ( y >= ( this.gamebox.map.height - this.height ) ) {
+            this.y = ( this.gamebox.map.height - this.height );
+
+        } else {
+            this.y = 0;
+        }
+    }
+
+
+    resetPan () {
+        this.pan = null;
+        this.gamebox.panning = false;
+    }
+
+
+    updatePan () {
+        const poi = {
+            x: this.x,
+            y: this.y,
+        };
+
+        const speed = 2;
+        const destination = this.pan.to;
+
+        if ( Math.abs( poi.x - destination.x ) > speed ) {
+            poi.x += poi.x < destination.x ? speed : -speed;
+
+        } else {
+            poi.x = destination.x;
+        }
+
+        if ( Math.abs( poi.y - destination.y ) > speed ) {
+            poi.y += poi.y < destination.y ? speed : -speed;
+
+        } else {
+            poi.y = destination.y;
+        }
+
+        this.x = poi.x;
+        this.y = poi.y;
+    }
+
+
+    panCamera ( x, y ) {
+        this.pan = {
+            to: {
+                x,
+                y,
+            },
+            reset: {
+                x: this.x,
+                y: this.y,
+            }
+        };
+        this.gamebox.panning = true;
     }
 }
 
