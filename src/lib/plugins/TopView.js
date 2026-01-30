@@ -310,19 +310,6 @@ class TopView extends GameBox {
 
 
 /*******************************************************************************
-* Interaction checks...
-*******************************************************************************/
-    isPushing () {
-        return this.interact.push > this.map.data.tilesize;
-    }
-
-
-    isPushingNPC () {
-        return this.interact.push > this.map.data.tilesize * 2;
-    }
-
-
-/*******************************************************************************
 * Hero apply methods...
 *******************************************************************************/
     applyHero ( poi, dir ) {
@@ -339,39 +326,13 @@ class TopView extends GameBox {
 
 
     applyHeroWhilePanning () {
-        this.hero.applyPriority();
         this.hero.applyOffset();
-        this.hero.applyHitbox();
     }
 
 
 /*******************************************************************************
 * Hero Handlers...
 *******************************************************************************/
-    handleResetHeroDirs () {
-        this.hero.handleResetControls();
-    }
-
-
-    handleCriticalReset () {
-        // Applied for parkour
-        // this.player.controls[ this.hero.dir ] = false;
-        this.handleResetHeroDirs();
-
-        // To kill any animated sprite cycling (jump etc...)
-        this.hero.face( this.hero.dir );
-
-        // Reset flags
-        this.jumping = false;
-        this.falling = false;
-        this.attacking = null;
-        this.running = false;
-
-        // Reset speed
-        this.hero.resetMaxV();
-    }
-
-
     handleHero ( poi, dir ) {
         if ( this.panning || this.hero.isHitOrStill() ) {
             return;
@@ -531,6 +492,30 @@ class TopView extends GameBox {
         }
 
         this.applyHero( poi, dir );
+    }
+
+
+    handleResetHeroDirs () {
+        this.hero.handleResetControls();
+    }
+
+
+    handleCriticalReset () {
+        // Applied for parkour
+        // this.player.controls[ this.hero.dir ] = false;
+        this.handleResetHeroDirs();
+
+        // To kill any animated sprite cycling (jump etc...)
+        this.hero.face( this.hero.dir );
+
+        // Reset flags
+        this.jumping = false;
+        this.falling = false;
+        this.attacking = null;
+        this.running = false;
+
+        // Reset speed
+        this.hero.resetMaxV();
     }
 
 
@@ -1111,6 +1096,19 @@ class TopView extends GameBox {
         if ( npc.canInteract( dir ) ) {
             npc.doInteract( dir );
         }
+    }
+
+
+/*******************************************************************************
+* Interaction checks...
+*******************************************************************************/
+    isPushing () {
+        return this.interact.push > this.map.data.tilesize;
+    }
+
+
+    isPushingNPC () {
+        return this.interact.push > this.map.data.tilesize * 2;
     }
 }
 

@@ -147,8 +147,8 @@ export default class GameBox {
 
 /*******************************************************************************
 * Rendering
-* Can all be handled in plugin GameBox
 * Order is: blit, update, render
+* Should all be handled in plugin GameBox
 *******************************************************************************/
     blit () {}
     update () {}
@@ -157,7 +157,7 @@ export default class GameBox {
 
 /*******************************************************************************
 * GamePad Inputs
-* Can all be handled in plugin GameBox
+* Should all be handled in plugin GameBox
 *******************************************************************************/
     pressD () {}
     releaseD () {}
@@ -169,6 +169,16 @@ export default class GameBox {
     holdB () {}
     releaseB () {}
     releaseHoldB () {}
+
+
+/*******************************************************************************
+* Hero logic
+* This is the main entry point for hero logic
+* Should be handled in plugin GameBox
+* Needs to apply the rest of the sprite stack after hero.update()
+* See applyHero() in plugin TopView for an example
+*******************************************************************************/
+    handleHero ( poi, dir ) {}
 
 
 /*******************************************************************************
