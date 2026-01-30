@@ -74,7 +74,7 @@ export class KeyItemDrop extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
-        if ( this.bounce > 0 && this.position.z === 0 ) {
+        if ( this.bounce > 0 && this.isOnGround() ) {
             this.physics.vz = -this.bounce;
             this.bounce--;
         }

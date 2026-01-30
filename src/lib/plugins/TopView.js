@@ -1,8 +1,6 @@
 import Utils from "../Utils";
-import Config, { DIRS } from "../Config";
+import Config from "../Config";
 import GameBox from "../GameBox";
-import FX from "../sprites/FX";
-import { LiftedTile } from "../sprites/Hero";
 
 
 
@@ -53,7 +51,7 @@ class TopView extends GameBox {
 
     update () {
         // Reset dropin flag if the hero is on the ground
-        if ( this.dropin && this.hero.position.z === 0 ) {
+        if ( this.dropin && this.hero.isOnGround() ) {
             this.dropin = false;
         }
 
@@ -61,7 +59,12 @@ class TopView extends GameBox {
         this.camera.update();
 
         // update hero
-        this.hero.update();
+        if ( this.panning ) {
+            // minimal updates during panning to keep the hero in place
+            this.applyHeroWhilePanning();
+        } else {
+            this.hero.update();
+        }
 
         // update companion
         if ( this.companion ) {
@@ -97,7 +100,7 @@ class TopView extends GameBox {
 * GamePad Inputs
 *******************************************************************************/
     pressD ( dir ) {
-        if ( this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -108,7 +111,7 @@ class TopView extends GameBox {
 
 
     releaseD () {
-        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.swimming || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.swimming || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -131,7 +134,7 @@ class TopView extends GameBox {
 
 
     pressA () {
-        if ( this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.liftLocked || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.liftLocked || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -184,7 +187,7 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -195,7 +198,7 @@ class TopView extends GameBox {
 
 
     releaseHoldA () {
-        if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -205,7 +208,7 @@ class TopView extends GameBox {
 
     // Common releaseA handler
     handleReleaseA () {
-        if ( this.jumping || this.attacking || this.dropin || this.running || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.jumping || this.attacking || this.dropin || this.running || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -232,7 +235,7 @@ class TopView extends GameBox {
 
 
     pressB () {
-        if ( this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -260,7 +263,7 @@ class TopView extends GameBox {
 
 
     holdB () {
-        if ( this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -271,7 +274,7 @@ class TopView extends GameBox {
 
 
     releaseB () {
-        if ( this.jumping || this.falling || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.jumping || this.falling || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -290,7 +293,7 @@ class TopView extends GameBox {
 
 
     releaseHoldB () {
-        if ( this.jumping || this.falling || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.jumping || this.falling || this.dropin || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -335,6 +338,13 @@ class TopView extends GameBox {
     }
 
 
+    applyHeroWhilePanning () {
+        this.hero.applyPriority();
+        this.hero.applyOffset();
+        this.hero.applyHitbox();
+    }
+
+
 /*******************************************************************************
 * Hero Handlers...
 *******************************************************************************/
@@ -363,7 +373,7 @@ class TopView extends GameBox {
 
 
     handleHero ( poi, dir ) {
-        if ( this.hero.isHitOrStill() ) {
+        if ( this.panning || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -403,7 +413,7 @@ class TopView extends GameBox {
                 this.applyHero( poi, dir );
             }
 
-            if ( this.hero.position.z === 0 ) {
+            if ( this.hero.isOnGround() ) {
                 this.jumping = false;
                 this.hero.face( dir );
             }

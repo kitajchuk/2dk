@@ -49,7 +49,7 @@ export default class ItemDrop extends Sprite {
             }
         }
 
-        if ( this.bounce > 0 && this.position.z === 0 ) {
+        if ( this.bounce > 0 && this.isOnGround() ) {
             this.physics.vz = -this.bounce;
             this.bounce--;
         }

@@ -74,11 +74,12 @@ export default class Companion extends Sprite {
         // Hero IS idle but companion is within a threshold distance...
         if (
             (
-                ( !this.hero.idle.x || !this.hero.idle.y ) ||
-                ( this.hero.idle.x && this.hero.idle.y && distance > ( this.map.data.tilesize / 2 ) )
+                ( !this.hero.isIdle() ) ||
+                ( this.hero.isIdle() && distance > ( this.map.data.tilesize / 2 ) )
             ) &&
             this.data.bounce &&
-            this.position.z === 0
+            this.isOnGround() &&
+            !this.gamebox.panning
         ) {
             // Bounce condition is TRUE
             // Position Z is zero, so bounce a bit...

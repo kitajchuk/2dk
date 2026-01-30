@@ -818,6 +818,7 @@ export class Camera {
             }
         };
         this.gamebox.panning = true;
+        this.gamebox.handleCriticalReset();
     }
 }
 

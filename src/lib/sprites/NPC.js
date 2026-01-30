@@ -440,7 +440,7 @@ export default class NPC extends QuestSprite {
             this.controls = {};
 
         } else {
-            if ( this.data.bounce && this.position.z === 0 ) {
+            if ( this.data.bounce && this.isOnGround() ) {
                 this.physics.vz = -6;
             }
 

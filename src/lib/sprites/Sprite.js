@@ -138,6 +138,11 @@ export default class Sprite {
     }
 
 
+    isOnGround () {
+        return this.position.z === 0;
+    }
+
+
     isHitOrStill () {
         return this.hitTimer > 0 || this.stillTimer > 0;
     }
