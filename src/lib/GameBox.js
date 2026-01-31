@@ -384,7 +384,7 @@ export default class GameBox {
         for ( let y = tileBox.y; y < tileBox.y + tileBox.height; y++ ) {
             for ( let x = tileBox.x; x < tileBox.x + tileBox.width; x++ ) {
                 // Using optional chaining to check if the tile exists so we don't have to handle "in map bounds" type logic
-                const isEmpty = this.map.data.textures[ layer ]?.[ y ]?.[ x ] === 0;
+                const isEmpty = this.map.data.textures[ layer ][ y ]?.[ x ] === 0;
 
                 if ( isEmpty ) {
                     tiles.push({
