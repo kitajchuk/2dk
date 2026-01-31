@@ -132,7 +132,7 @@ class TopView extends GameBox {
 
 
     pressA () {
-        if ( this.panning || this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.liftLocked || this.hero.isHitOrStill() ) {
+        if ( this.canBlockAPress() ) {
             return;
         }
 
@@ -178,24 +178,29 @@ class TopView extends GameBox {
     holdA () {}
 
 
+    // Common pressA methods
+    canBlockAPress () {
+        return this.panning || this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.liftLocked || this.hero.isHitOrStill();
+    }
+
+
     releaseA () {
+        if ( this.canBlockReleaseA() ) {
+            return;
+        }
+
         if ( this.hero.itemGet ) {
             this.dialogue.check( true, false );
             return;
         }
 
-        if ( this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
-            return;
-        }
-
         this.dialogue.check( true, false );
-
         this.handleReleaseA();
     }
 
 
     releaseHoldA () {
-        if ( this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.canBlockReleaseA() ) {
             return;
         }
 
@@ -203,12 +208,13 @@ class TopView extends GameBox {
     }
 
 
-    // Common releaseA handler
-    handleReleaseA () {
-        if ( this.panning || this.jumping || this.attacking || this.dropin || this.running || this.hero.isHitOrStill() ) {
-            return;
-        }
+    // Common releaseA methods
+    canBlockReleaseA () {
+        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.running || this.hero.isHitOrStill();
+    }
 
+
+    handleReleaseA () {
         if ( this.liftLocked ) {
             this.liftLocked = false;
         }
@@ -232,7 +238,7 @@ class TopView extends GameBox {
 
 
     pressB () {
-        if ( this.panning || this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill() ) {
+        if ( this.canBlockPressB() ) {
             return;
         }
 
@@ -246,7 +252,7 @@ class TopView extends GameBox {
         }
 
         // There will be extra blocking checks wrapped around this action
-        if ( !this.jumping && !this.hero.is( Config.verbs.LIFT ) ) {
+        if ( !this.hero.is( Config.verbs.LIFT ) ) {
             switch ( this.player.data.bButton ) {
                 case Config.verbs.RUN:
                     this.handleHeroRun();
@@ -260,7 +266,7 @@ class TopView extends GameBox {
 
 
     holdB () {
-        if ( this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.canBlockPressB() ) {
             return;
         }
 
@@ -270,38 +276,41 @@ class TopView extends GameBox {
     }
 
 
+    // Common pressB methods
+    canBlockPressB () {
+        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill();
+    }
+
+
     releaseB () {
-        if ( this.panning || this.jumping || this.falling || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.canBlockReleaseB() ) {
             return;
         }
 
-        if ( this.running ) {
-            this.running = false;
-            this.hero.resetMaxV();
-        }
-
-        if ( this.attacking ) {
-            this.attacking = null;
-            this.hero.face( this.hero.dir );
-        }
-
+        this.handleReleaseB();
         this.dialogue.check( false, true );
     }
 
 
     releaseHoldB () {
-        if ( this.panning || this.jumping || this.falling || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.canBlockReleaseB() ) {
             return;
         }
 
+        this.handleReleaseB();
+    }
+
+
+    // Common releaseB methods
+    canBlockReleaseB () {
+        return this.panning || this.jumping || this.falling || this.dropin || this.hero.isHitOrStill();
+    }
+
+
+    handleReleaseB () {
         if ( this.running ) {
             this.running = false;
             this.hero.resetMaxV();
-        }
-
-        if ( this.attacking ) {
-            this.attacking = null;
-            this.hero.face( this.hero.dir );
         }
     }
 

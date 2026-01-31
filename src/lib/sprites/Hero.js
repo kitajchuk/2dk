@@ -374,7 +374,7 @@ export default class Hero extends Sprite {
 
             if ( this.gamebox.attacking.timeElapsed >= this.getDur( Config.verbs.ATTACK ) ) {
                 this.face( this.dir );
-                // Gamebox handles resetting the attacking flag...
+                this.gamebox.attacking = null;
             }
         }
 
