@@ -47,13 +47,12 @@ class Player extends Controller {
             bRelease: false,
             // D-Pad
             left: false,
-            leftRelease: false,
             right: false,
-            rightRelease: false,
             up: false,
-            upRelease: false,
             down: false,
-            downRelease: false,
+            // Internal flags
+            _pressedA: false,
+            _pressedB: false,
         };
 
         // Controller properties
@@ -181,6 +180,7 @@ class Player extends Controller {
             if ( this.controls.aRelease ) {
                 this.controls.aHold = false;
                 this.controls.aRelease = false;
+                this.controls._pressedA = false;
                 this.gamebox.releaseHoldA();
 
             } else {
@@ -189,9 +189,11 @@ class Player extends Controller {
 
         } else if ( this.controls.aRelease ) {
             this.controls.aRelease = false;
+            this.controls._pressedA = false;
             this.gamebox.releaseA();
 
-        } else if ( this.controls.a ) {
+        } else if ( this.controls.a && !this.controls._pressedA ) {
+            this.controls._pressedA = true;
             this.gamebox.pressA();
         }
 
@@ -199,6 +201,7 @@ class Player extends Controller {
             if ( this.controls.bRelease ) {
                 this.controls.bHold = false;
                 this.controls.bRelease = false;
+                this.controls._pressedB = false;
                 this.gamebox.releaseHoldB();
 
             } else {
@@ -207,9 +210,11 @@ class Player extends Controller {
 
         } else if ( this.controls.bRelease ) {
             this.controls.bRelease = false;
+            this.controls._pressedB = false;
             this.gamebox.releaseB();
 
-        } else if ( this.controls.b ) {
+        } else if ( this.controls.b && !this.controls._pressedB ) {
+            this.controls._pressedB = true;
             this.gamebox.pressB();
         }
     }

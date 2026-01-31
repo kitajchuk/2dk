@@ -104,9 +104,7 @@ class TopView extends GameBox {
             return;
         }
 
-        const poi = this.hero.getNextPoiByDir( dir );
-
-        this.handleHero( poi, dir );
+        this.handleHero( this.hero.getNextPoiByDir( dir ), dir );
     }
 
 
@@ -149,7 +147,10 @@ class TopView extends GameBox {
             tiles: this.checkTiles( poi, this.hero ),
         };
 
-        if ( collision.door ) {
+        if ( this.swimming ) {
+            this.hero.swimKick();
+
+        } else if ( collision.door ) {
             this.handleHeroDoorAction( poi, this.hero.dir, collision.door );
 
         } else if ( collision.npc ) {
@@ -163,11 +164,7 @@ class TopView extends GameBox {
             this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
 
         } else {
-            if ( this.swimming ) {
-                this.hero.swimKick();
-                return;
-            }
-
+            // This is the default case for all other actions
             const notLifting = !this.hero.is( Config.verbs.LIFT ) && !this.hero.is( Config.verbs.GRAB );
             
             // Jump...
