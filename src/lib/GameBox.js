@@ -202,7 +202,7 @@ export default class GameBox {
     }
 
 
-    keyItemDrop ( dropItem, position ) {
+    keyItemDrop ( dropItem, position, checkFlag ) {
         const data = this.player.getMergedData({
             id: dropItem.id,
             dialogue: dropItem.dialogue,
@@ -211,7 +211,7 @@ export default class GameBox {
             x: position.x + ( this.map.data.tilesize / 2 ) - ( data.width / 2 ),
             y: position.y + ( this.map.data.tilesize / 2 ) - ( data.height / 2 ),
         };
-        this.map.addObject( "items", new KeyItemDrop( spawn, data, this.map ) );
+        this.map.addObject( "items", new KeyItemDrop( spawn, data, this.map, checkFlag ) );
     }
 
 

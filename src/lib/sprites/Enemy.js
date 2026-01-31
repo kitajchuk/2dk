@@ -185,7 +185,7 @@ export default class Enemy extends NPC {
             this.gamequest.completeQuest( checkFlag );
 
             if ( this.data.action.quest.dropItem ) {
-                this.gamebox.keyItemDrop( this.data.action.quest.dropItem, this.position );
+                this.gamebox.keyItemDrop( this.data.action.quest.dropItem, this.position, checkFlag );
             }
         }
     }

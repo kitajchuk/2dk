@@ -776,6 +776,13 @@ class TopView extends GameBox {
 
             this.hero.collectItem( item.data.id );
 
+            // If the item is picked up remove it's quest flag connection.
+            // Otherwise the items destroy method will reset the flag (e.g. exit map without picking up the item)
+            // This will allow the quest to be done again and the item will be dropped again until it's picked up.
+            if ( item.checkFlag ) {
+                delete item.checkFlag;
+            }
+
             if ( item.data.dialogue && !hasItemAlready ) {
                 this.playItemGetDialogue( item.data.dialogue );
             }

@@ -24,6 +24,11 @@ class GameQuest {
     }
 
 
+    removeCompleted ( quest ) {
+        delete this.completed[ quest ];
+    }
+
+
     hitQuest ( quest, value, reset ) {
         if ( this.completed[ quest ] ) {
             return;
