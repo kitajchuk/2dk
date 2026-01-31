@@ -104,6 +104,36 @@ const Utils = {
         }, null );
     },
 
+    getPerceptionBox ( position, width, height, tileSize ) {
+        const topLeft = {
+            x: Math.floor( position.x / tileSize ),
+            y: Math.floor( position.y / tileSize ),
+        };
+        const bottomRight = {
+            x: Math.floor( ( position.x + width ) / tileSize ),
+            y: Math.floor( ( position.y + height ) / tileSize ),
+        };
+
+        // Tilebox is so we can narrow the scope of texture checks with getVisibleEmptyTiles()
+        const tileBox = {
+            x: topLeft.x - 1,
+            y: topLeft.y - 1,
+            width: bottomRight.x - topLeft.x + 3,
+            height: bottomRight.y - topLeft.y + 3,
+        };
+
+        // Hitbox is so we can narrow the scope of collision checks for everything else
+        // Also the hitbox is a consistent area around the sprite whereas the tilebox shifts slightly depending on how position snaps to tiles
+        const hitBox = {
+            x: position.x - tileSize,
+            y: position.y - tileSize,
+            width: width + tileSize * 2,
+            height: height + tileSize * 2,
+        };
+
+        return { tileBox, hitBox };
+    },
+
 
     /*
     ctx.drawImage(

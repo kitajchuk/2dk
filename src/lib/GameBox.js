@@ -270,11 +270,30 @@ export default class GameBox {
     }
 
 
-    getVisibleColliders () {
+    getPerceptionBox ( sprite ) {
+        // Map calls getVisibleColliders() & getVisibleEvents() for its renderDebug() method
+        // No sprite is passed through so we just use the render box instead
+        if ( !sprite ) {
+            return { hitBox: this.getRenderBox() };
+        }
+
+        // Ad-hoc "sprite" object with { x, y, width, height }
+        // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
+        return sprite.perceptionBox ?? Utils.getPerceptionBox(
+            { x: sprite.x, y: sprite.y },
+            sprite.width,
+            sprite.height,
+            this.map.data.tilesize
+        );
+    }
+
+
+    getVisibleColliders ( sprite ) {
         const colliders = [];
+        const { hitBox } = this.getPerceptionBox( sprite );
 
         for ( let i = this.map.colliders.length; i--; ) {
-            const collides = Utils.collide( this.getRenderBox(), this.map.colliders[ i ] );
+            const collides = Utils.collide( hitBox, this.map.colliders[ i ] );
 
             if ( collides ) {
                 colliders.push( this.map.colliders[ i ] );
@@ -285,11 +304,12 @@ export default class GameBox {
     }
 
 
-    getVisibleEvents () {
+    getVisibleEvents ( sprite ) {
         const events = [];
+        const { hitBox } = this.getPerceptionBox( sprite );
 
         for ( let i = this.map.events.length; i--; ) {
-            const collides = Utils.collide( this.getRenderBox(), this.map.events[ i ].eventbox );
+            const collides = Utils.collide( hitBox, this.map.events[ i ].eventbox );
 
             if ( collides ) {
                 events.push( this.map.events[ i ] );
@@ -301,11 +321,12 @@ export default class GameBox {
 
 
     // "npcs" or "doors"
-    getVisibleNPCs ( type = "npcs" ) {
+    getVisibleNPCs ( type = "npcs", sprite ) {
         const npcs = [];
+        const { hitBox } = this.getPerceptionBox( sprite );
 
         for ( let i = this.map[ type ].length; i--; ) {
-            const collides = Utils.collide( this.getRenderBox(), this.map[ type ][ i ].getFullbox() );
+            const collides = Utils.collide( hitBox, this.map[ type ][ i ].getFullbox() );
 
             if ( collides ) {
                 npcs.push( this.map[ type ][ i ] );
@@ -316,11 +337,12 @@ export default class GameBox {
     }
 
 
-    getVisibleItems () {
+    getVisibleItems ( sprite ) {
         const items = [];
+        const { hitBox } = this.getPerceptionBox( sprite );
 
         for ( let i = this.map.items.length; i--; ) {
-            const collides = Utils.collide( this.getRenderBox(), this.map.items[ i ].getFullbox() );
+            const collides = Utils.collide( hitBox, this.map.items[ i ].getFullbox() );
 
             if ( collides ) {
                 items.push( this.map.items[ i ] );
@@ -331,12 +353,13 @@ export default class GameBox {
     }
 
 
-    getVisibleActiveTiles () {
+    getVisibleActiveTiles ( sprite ) {
         const activeTiles = [];
+        const { hitBox } = this.getPerceptionBox( sprite );
 
         for ( let i = this.map.activeTiles.length; i--; ) {
             for ( let j = this.map.activeTiles[ i ].pushed.length; j--; ) {
-                const collides = Utils.collide( this.getRenderBox(), this.map.activeTiles[ i ].pushed[ j ] );
+                const collides = Utils.collide( hitBox, this.map.activeTiles[ i ].pushed[ j ] );
 
                 if ( collides ) {
                     activeTiles.push( this.map.activeTiles[ i ] );
@@ -349,29 +372,27 @@ export default class GameBox {
     }
 
 
-    getVisibleEmptyTiles ( layer = "background" ) {
+    getVisibleEmptyTiles ( layer = "background", sprite ) {
         const tiles = [];
 
         if ( !this.map.renderBox ) {
             return tiles;
         }
 
-        for ( let y = this.map.renderBox.textures[ layer ].length; y--; ) {
-            for ( let x = this.map.renderBox.textures[ layer ][ y ].length; x--; ) {
-                const isEmpty = this.map.renderBox.textures[ layer ][ y ][ x ] === 0;
+        const { tileBox } = this.getPerceptionBox( sprite );
+
+        for ( let y = tileBox.y; y < tileBox.y + tileBox.height; y++ ) {
+            for ( let x = tileBox.x; x < tileBox.x + tileBox.width; x++ ) {
+                // Using optional chaining to check if the tile exists so we don't have to handle "in map bounds" type logic
+                const isEmpty = this.map.data.textures[ layer ]?.[ y ]?.[ x ] === 0;
 
                 if ( isEmpty ) {
-                    const tile = {
-                        x: ( this.map.renderBox.x + x ) * this.map.data.tilesize,
-                        y: ( this.map.renderBox.y + y ) * this.map.data.tilesize,
+                    tiles.push({
+                        x: x * this.map.data.tilesize,
+                        y: y * this.map.data.tilesize,
                         width: this.map.data.tilesize,
                         height: this.map.data.tilesize,
-                    };
-                    const collides = Utils.collide( this.getRenderBox(), tile );
-
-                    if ( collides ) {
-                        tiles.push( tile );
-                    }
+                    });
                 }
             }
         }
@@ -415,7 +436,7 @@ export default class GameBox {
 
     checkMap ( poi, sprite ) {
         const hitbox = sprite.getHitbox( poi );
-        const colliders = this.getVisibleColliders();
+        const colliders = this.getVisibleColliders( sprite );
 
         for ( let i = colliders.length; i--; ) {
             if ( Utils.collide( hitbox, colliders[ i ] ) ) {
@@ -428,7 +449,7 @@ export default class GameBox {
 
 
     checkEvents ( poi, sprite ) {
-        const events = this.getVisibleEvents();
+        const events = this.getVisibleEvents( sprite );
 
         for ( let i = events.length; i--; ) {
             // An event without a "dir" can be triggered from any direction
@@ -454,7 +475,7 @@ export default class GameBox {
 
 
     checkNPC ( poi, sprite, type = "npcs" ) {
-        const npcs = this.getVisibleNPCs( type );
+        const npcs = this.getVisibleNPCs( type, sprite );
         
         // Ad-hoc "sprite" object with { x, y, width, height }
         // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
@@ -492,7 +513,7 @@ export default class GameBox {
 
 
     checkItems ( poi, sprite ) {
-        const items = this.getVisibleItems();
+        const items = this.getVisibleItems( sprite );
 
         // Ad-hoc "sprite" object with { x, y, width, height }
         // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
@@ -509,7 +530,7 @@ export default class GameBox {
 
 
     checkEmpty ( poi, sprite, layer = "background" ) {
-        const emptyTiles = this.getVisibleEmptyTiles( layer );
+        const emptyTiles = this.getVisibleEmptyTiles( layer, sprite );
         const touchedTiles = [];
 
         for ( let i = emptyTiles.length; i--; ) {
@@ -533,7 +554,7 @@ export default class GameBox {
             attack: [],
             passive: [],
         };
-        const activeTiles = this.getVisibleActiveTiles();
+        const activeTiles = this.getVisibleActiveTiles( sprite );
         const isInstance = sprite.gamebox === this;
         const footbox = isInstance ? sprite.getFootbox( poi ) : sprite;
         const hitbox = isInstance ? sprite.getHitbox( poi ) : sprite;

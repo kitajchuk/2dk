@@ -71,6 +71,12 @@ export default class Sprite {
             width: this.hitbox.width,
             height: this.hitbox.height / 2,
         };
+        this.perceptionBox = Utils.getPerceptionBox(
+            this.position,
+            this.width,
+            this.height,
+            this.map.data.tilesize
+        );
         this.spritecel = this.getCel();
         this.previousElapsed = null;
         this.resetElapsed = false;
@@ -297,6 +303,8 @@ export default class Sprite {
 
     renderDebug () {
         this.gamebox.mapLayer.context.save();
+        
+        // Full sprite box
         this.gamebox.mapLayer.context.globalAlpha = 0.25;
         this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
         this.gamebox.mapLayer.context.fillRect(
@@ -305,6 +313,8 @@ export default class Sprite {
             this.width,
             this.height
         );
+
+        // Hitbox
         this.gamebox.mapLayer.context.globalAlpha = 0.5;
         this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
         this.gamebox.mapLayer.context.fillRect(
@@ -313,6 +323,8 @@ export default class Sprite {
             this.hitbox.width,
             this.hitbox.height
         );
+
+        // Footbox
         this.gamebox.mapLayer.context.fillStyle = Config.colors.green;
         this.gamebox.mapLayer.context.fillRect(
             this.offset.x + ( this.data.hitbox.x / this.scale ),
@@ -320,6 +332,17 @@ export default class Sprite {
             this.footbox.width,
             this.footbox.height
         );
+
+        // Perception box
+        this.gamebox.mapLayer.context.globalAlpha = 0.25;
+        this.gamebox.mapLayer.context.fillStyle = Config.colors.yellow;
+        this.gamebox.mapLayer.context.fillRect(
+            this.perceptionBox.hitBox.x - this.gamebox.camera.x,
+            this.perceptionBox.hitBox.y - this.gamebox.camera.y,
+            this.perceptionBox.hitBox.width,
+            this.perceptionBox.hitBox.height
+        );
+
         this.gamebox.mapLayer.context.restore();
     }
 
@@ -416,6 +439,12 @@ export default class Sprite {
         this.hitbox.y = this.position.y + ( this.data.hitbox.y / this.scale );
         this.footbox.x = this.hitbox.x;
         this.footbox.y = this.hitbox.y + ( this.hitbox.height / 2 );
+        this.perceptionBox = Utils.getPerceptionBox(
+            this.position,
+            this.width,
+            this.height,
+            this.map.data.tilesize
+        );
     }
 
 
