@@ -185,16 +185,16 @@ class TopView extends GameBox {
 
 
     releaseA () {
+        if ( this.hero.itemGet ) {
+            this.dialogue.check( "A" );
+            return;
+        }
+
         if ( this.canBlockReleaseA() ) {
             return;
         }
 
-        if ( this.hero.itemGet ) {
-            this.dialogue.check( true, false );
-            return;
-        }
-
-        this.dialogue.check( true, false );
+        this.dialogue.check( "A" );
         this.handleReleaseA();
     }
 
@@ -283,12 +283,17 @@ class TopView extends GameBox {
 
 
     releaseB () {
+        if ( this.hero.itemGet ) {
+            this.dialogue.check( "B" );
+            return;
+        }
+
         if ( this.canBlockReleaseB() ) {
             return;
         }
 
         this.handleReleaseB();
-        this.dialogue.check( false, true );
+        this.dialogue.check( "B" );
     }
 
 

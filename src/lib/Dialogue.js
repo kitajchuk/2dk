@@ -1,8 +1,9 @@
 import Config from "./Config";
+import { renderDialogueText, renderDialoguePrompt } from "./DOM";
 
 
 
-class Dialogue {
+export default class Dialogue {
     constructor ( gamebox ) {
         this.gamebox = gamebox;
         this.player = this.gamebox.player;
@@ -35,14 +36,12 @@ class Dialogue {
 
 
     writeText ( text ) {
-        this.element.innerHTML = `<div class="_2dk__dialogue__text">${text}</div>`;
+        this.element.innerHTML = renderDialogueText( text );
     }
 
 
     writePrompt ( text ) {
-        text.push( `<span class="a">A: ${this.data.yes.label}</span>`);
-        text.push( `<span>,&nbsp;</span>`);
-        text.push( `<span class="b">B: ${this.data.no.label}</span>`);
+        this.writeText( renderDialoguePrompt( text, this.data ) );
     }
 
 
@@ -89,13 +88,14 @@ class Dialogue {
             this.reject = reject;
             this.element.classList.add( "is-texting" );
 
-            const text = [ `<div>${this.data.text.shift()}</div>` ];
+            const text = this.data.text.shift();
             
             if ( !this.data.text.length && this.data.type === Config.dialogue.types.PROMPT ) {
                 this.writePrompt( text );
-            }
 
-            this.writeText( text.join( "" ) );
+            } else {
+                this.writeText( text );
+            }
 
             this.timeout = setTimeout( () => {
                 this.ready = true;
@@ -105,7 +105,7 @@ class Dialogue {
     }
 
 
-    check ( a, b ) {
+    check ( btn ) {
         // Inactive dialogue: No ones talking...
         // Active dialogue: Button was press to advance...
         if ( !this.active || !this.ready || ( this.active && this.pressed ) ) {
@@ -119,9 +119,9 @@ class Dialogue {
             case Config.dialogue.types.TEXT:
                 this.handleText();
                 break;
-            // Prompt-based (a:confirm, b: decline)
+            // Prompt-based (A:Confirm, B:Decline)
             case Config.dialogue.types.PROMPT:
-                this.handlePrompt( a, b );
+                this.handlePrompt( btn );
                 break;
         }
     }
@@ -148,45 +148,52 @@ class Dialogue {
     }
 
 
-    handlePrompt ( a, b ) {
+    handlePrompt ( btn ) {
         // A-button OR B-button will advance as long as there is text...
         if ( this.data.text.length ) {
-            const text = [
-                `<div>${this.data.text.shift()}</div>`
-            ];
+            const text = this.data.text.shift();
 
             // No more text so show prompts...
             if ( !this.data.text.length ) {
                 this.writePrompt( text );
+
+            } else {
+                this.writeText( text );
             }
 
-            this.writeText( text.join( "" ) );
             this.timeout = setTimeout( () => {
                 this.pressed = false;
 
             }, this.duration );
 
-        // A-button will confirm if there is no more text...
-        } else if ( a ) {
-            this.isResolve = true;
-            this.data.type = Config.dialogue.types.TEXT;
-            this.data.text = this.data.yes.text;
-            this.timeout = setTimeout( () => {
-                this.pressed = false;
-                this.check( true, false );
+            return;
+        }
+        
+        switch ( btn ) {
+            // A-button will confirm if there is no more text...
+            case "A":
+                this.isResolve = true;
+                this.data.type = Config.dialogue.types.TEXT;
+                this.data.text = this.data.yes.text;
+                this.timeout = setTimeout( () => {
+                    this.pressed = false;
+                    // Send it back through the check() -> handleText() -> teardown()
+                    this.check( "A" );
 
-            }, this.duration );
+                }, this.duration );
+                break;
+            // B-button will cancel if there is no more text...
+            case "B":
+                this.isResolve = false;
+                this.data.type = Config.dialogue.types.TEXT;
+                this.data.text = this.data.no.text;
+                this.timeout = setTimeout( () => {
+                    this.pressed = false;
+                    // Send it back through the check() -> handleText() -> teardown()
+                    this.check( "B" );
 
-        // B-button will cancel if there is no more text...
-        } else if ( b ) {
-            this.isResolve = false;
-            this.data.type = Config.dialogue.types.TEXT;
-            this.data.text = this.data.no.text;
-            this.timeout = setTimeout( () => {
-                this.pressed = false;
-                this.check( false, true );
-
-            }, this.duration );
+                }, this.duration );
+                break;
         }
     }
 
@@ -214,7 +221,3 @@ class Dialogue {
         }, this.duration );
     }
 }
-
-
-
-export default Dialogue;
