@@ -1367,16 +1367,16 @@ export class LiftedTile extends Sprite {
 
         switch ( this.hero.dir ) {
             case "left":
-                throwX = this.position.x - dist;
+                throwX = this.position.x - dist - this.width;
                 throwY = this.hero.footbox.y - ( this.height - this.hero.footbox.height );
                 break;
             case "right":
-                throwX = this.position.x + dist;
+                throwX = this.position.x + dist + this.width;
                 throwY = this.hero.footbox.y - ( this.height - this.hero.footbox.height );
                 break;
             case "up":
                 throwX = this.position.x;
-                throwY = this.position.y - dist;
+                throwY = this.position.y - dist - this.height;
                 break;
             case "down":
                 throwX = this.position.x;
