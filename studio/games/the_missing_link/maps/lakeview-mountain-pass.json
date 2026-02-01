@@ -284,6 +284,30 @@
             "height": 64,
             "map": "maps/hero-s-tomb.json",
             "spawn": 0
+        },
+        {
+            "coords": [
+                13,
+                27
+            ],
+            "type": "door",
+            "width": 64,
+            "height": 64,
+            "dir": "up",
+            "map": "maps/lakeside-residence.json",
+            "spawn": 0
+        },
+        {
+            "coords": [
+                11,
+                27
+            ],
+            "type": "door",
+            "width": 64,
+            "height": 64,
+            "dir": "up",
+            "map": "maps/lakeside-residence.json",
+            "spawn": 1
         }
     ],
     "npcs": [
