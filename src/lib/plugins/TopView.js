@@ -29,69 +29,6 @@ class TopView extends GameBox {
 
 
 /*******************************************************************************
-* Rendering
-* Order is: blit, update, render
-*******************************************************************************/
-    blit ( elapsed ) {
-        // blit hero
-        this.hero.blit( elapsed );
-
-        // blit HUD
-        this.hud.blit( elapsed );
-
-        // blit companion
-        if ( this.companion ) {
-            this.companion.blit( elapsed );
-        }
-
-        // blit map
-        this.map.blit( elapsed );
-    }
-
-
-    update () {
-        // Reset dropin flag if the hero is on the ground
-        if ( this.dropin && this.hero.isOnGround() ) {
-            this.dropin = false;
-        }
-
-        // update gamebox (camera)
-        this.camera.update();
-
-        // update hero
-        this.hero.update();
-
-        // update companion
-        if ( this.companion ) {
-            this.companion.update();
-        }
-
-        // update map
-        this.map.update();
-    }
-
-
-    render () {
-        // Clear canvas and render queue
-        this.clear();
-
-        // render map
-        this.map.render();
-
-        // render render queue
-        this.renderQueue.render();
-
-        // Visual event debugging....
-        if ( this.player.query.get( "debug" ) ) {
-            this.map.renderDebug();
-        }
-
-        // render HUD
-        this.hud.render();
-    }
-
-
-/*******************************************************************************
 * GamePad Inputs
 *******************************************************************************/
     pressD ( dir ) {

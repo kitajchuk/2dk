@@ -333,14 +333,14 @@ export default class Sprite {
             this.footbox.height
         );
 
-        // Perception box
+        // Nearest tiles within perception box
         this.gamebox.mapLayer.context.globalAlpha = 0.25;
         this.gamebox.mapLayer.context.fillStyle = Config.colors.yellow;
         this.gamebox.mapLayer.context.fillRect(
-            this.perceptionBox.hitBox.x - this.gamebox.camera.x,
-            this.perceptionBox.hitBox.y - this.gamebox.camera.y,
-            this.perceptionBox.hitBox.width,
-            this.perceptionBox.hitBox.height
+            this.perceptionBox.tileBox.x * this.map.data.tilesize - this.gamebox.camera.x,
+            this.perceptionBox.tileBox.y * this.map.data.tilesize - this.gamebox.camera.y,
+            this.perceptionBox.tileBox.width * this.map.data.tilesize,
+            this.perceptionBox.tileBox.height * this.map.data.tilesize
         );
 
         this.gamebox.mapLayer.context.restore();

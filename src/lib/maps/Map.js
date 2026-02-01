@@ -591,6 +591,11 @@ export default class Map {
     }
 
 
+    getEmptyTile ( coords, layer = "background" ) {
+        return this.data.textures[ layer ][ coords[ 1 ] ][ coords[ 0 ] ];
+    }
+
+
     addObject ( type, obj ) {
         this[ type ].push( obj );
         this.addAllSprite( obj );

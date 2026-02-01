@@ -1103,7 +1103,7 @@ export default class Hero extends Sprite {
                 return false;
             }
 
-            const fgTile = this.gamebox.getEmptyTile( tileCoords, "foreground" );
+            const fgTile = this.map.getEmptyTile( tileCoords, "foreground" );
 
             if ( fgTile !== 0 ) {
                 return false;
