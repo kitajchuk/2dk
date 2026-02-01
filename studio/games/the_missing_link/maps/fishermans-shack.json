@@ -1,6 +1,6 @@
 {
-    "id": "fishermans-house",
-    "name": "Fishermans House",
+    "id": "fishermans-shack",
+    "name": "Fishermans Shack",
     "type": "indoor",
     "tilesize": 64,
     "width": 1280,
@@ -9,8 +9,8 @@
     "tileheight": 16,
     "collider": 16,
     "image": "assets/tiles/inside.png",
-    "snapshot": "assets/snapshots/fishermans-house.png",
-    "thumbnail": "assets/snapshots/fishermans-house-thumb.png",
+    "snapshot": "assets/snapshots/fishermans-shack.png",
+    "thumbnail": "assets/snapshots/fishermans-shack-thumb.png",
     "sound": "assets/sounds/bgm-house.mp3",
     "spawn": [
         {

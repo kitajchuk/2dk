@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1233,
+    "save": 1247,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1400,6 +1400,113 @@
             ]
         },
         {
+            "id": "woman-and-baby",
+            "name": "Woman and Baby",
+            "width": 76,
+            "height": 64,
+            "image": "assets/sprites/npcs.png",
+            "hitbox": {
+                "x": 0,
+                "y": 16,
+                "width": 76,
+                "height": 48
+            },
+            "verbs": {
+                "face": {
+                    "dur": 1000,
+                    "down": {
+                        "offsetX": 1000,
+                        "offsetY": 4,
+                        "stepsX": 2
+                    }
+                },
+                "talk": {
+                    "down": {
+                        "offsetX": 1000,
+                        "offsetY": 4
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "talk"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "woman",
+            "name": "Woman",
+            "width": 64,
+            "height": 64,
+            "image": "assets/sprites/npcs.png",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "hitbox": {
+                "x": 0,
+                "y": 16,
+                "width": 64,
+                "height": 48
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 744,
+                        "offsetY": 4
+                    },
+                    "up": {
+                        "offsetX": 872,
+                        "offsetY": 4
+                    },
+                    "left": {
+                        "offsetX": 616,
+                        "offsetY": 4
+                    },
+                    "right": {
+                        "offsetX": 616,
+                        "offsetY": 4,
+                        "flipX": true
+                    }
+                },
+                "walk": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": 744,
+                        "offsetY": 4,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 872,
+                        "offsetY": 4,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 616,
+                        "offsetY": 4,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 616,
+                        "offsetY": 4,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "talk"
+                    }
+                }
+            ]
+        },
+        {
             "id": "old-man",
             "name": "Old Man",
             "width": 68,
@@ -2001,7 +2108,7 @@
         "maps/beneath-the-rooster.json",
         "maps/bottom-of-the-well.json",
         "maps/cathedral-of-the-cursed.json",
-        "maps/fishermans-house.json",
+        "maps/fishermans-shack.json",
         "maps/graveyard-residence.json",
         "maps/hero-s-tomb.json",
         "maps/lakeside-residence.json",
