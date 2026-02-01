@@ -784,6 +784,11 @@ class TopView extends GameBox {
             }
 
             if ( item.data.dialogue && !hasItemAlready ) {
+                // Cancel attack animation for itemGet sequence
+                if ( this.attacking ) {
+                    this.attacking = null;
+                }
+
                 this.playItemGetDialogue( item.data.dialogue );
             }
             // TODO: Add sound here for ite pickup if it's not first time...
