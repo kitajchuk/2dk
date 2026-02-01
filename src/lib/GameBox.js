@@ -380,9 +380,7 @@ export default class GameBox {
         const npcs = [];
 
         for ( let i = this.map[ type ].length; i--; ) {
-            const collides = Utils.collide( this.renderBox, this.map[ type ][ i ].getFullbox() );
-
-            if ( collides ) {
+            if ( this.map[ type ][ i ].onscreen ) {
                 npcs.push( this.map[ type ][ i ] );
             }
         }
