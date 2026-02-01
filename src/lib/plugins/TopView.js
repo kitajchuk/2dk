@@ -59,12 +59,7 @@ class TopView extends GameBox {
         this.camera.update();
 
         // update hero
-        if ( this.panning ) {
-            // minimal updates during panning to keep the hero in place
-            this.applyHeroWhilePanning();
-        } else {
-            this.hero.update();
-        }
+        this.hero.update();
 
         // update companion
         if ( this.companion ) {
@@ -333,11 +328,6 @@ class TopView extends GameBox {
 
         // Apply the sprite animation cycle
         this.hero.applyCycle();
-    }
-
-
-    applyHeroWhilePanning () {
-        this.hero.applyOffset();
     }
 
 

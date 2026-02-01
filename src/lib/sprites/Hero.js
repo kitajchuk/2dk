@@ -393,6 +393,11 @@ export default class Hero extends Sprite {
 
 
     update () {
+        if ( this.gamebox.panning ) {
+            this.updateWhilePanning();
+            return;
+        }
+
         // Handle player controls
         this.handleControls();
 
@@ -414,6 +419,15 @@ export default class Hero extends Sprite {
 
         if ( this.liftedTile ) {
             this.liftedTile.update();
+        }
+    }
+
+
+    updateWhilePanning () {
+        this.applyOffset();
+
+        if ( this.maskFX ) {
+            this.maskFX.applyOffset();
         }
     }
 
