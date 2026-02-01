@@ -163,7 +163,7 @@ class Player extends Controller {
         if ( !dpad.length ) {
             this.gamebox.releaseD();
             this.gamebox.handleHero(
-                this.gamebox.hero.getNextPoi(),
+                this.gamebox.hero.position,
                 this.gamebox.hero.dir
             );
 
