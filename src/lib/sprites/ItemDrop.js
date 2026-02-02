@@ -61,7 +61,7 @@ export default class ItemDrop extends Sprite {
     applyOpacity () {
         if ( this.killCounter <= 60 * 2 ) {
             if ( this.killCounter % 5 === 0 ) {
-                this.player.renderLayers.gamebox.context.globalAlpha = 0.25;
+                this.player.renderLayer.context.globalAlpha = 0.25;
             }
         }
     }

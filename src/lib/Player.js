@@ -18,10 +18,7 @@ class Player extends Controller {
         this.frame = 0;
         this.interval = 1000 / this.fps;
 
-        this.renderLayers = {
-            gamebox: null,
-            textures: null,
-        };
+        this.renderLayer = null;;
 
         this.loader = new Loader();
         this.Loader = Loader;
@@ -260,8 +257,7 @@ class Player extends Controller {
 
 
     clear () {
-        this.renderLayers.gamebox.clear();
-        this.renderLayers.textures.clear();
+        this.renderLayer.clear();
     }
 
 
@@ -456,26 +452,15 @@ class Player extends Controller {
         // Main canvas visible on screen
         const cameraWidth = this.width * this.resolution;
         const cameraHeight = this.height * this.resolution;
-        this.renderLayers.gamebox = new MapLayer({
+        this.renderLayer = new MapLayer({
             id: "gamebox",
             width: cameraWidth,
             height: cameraHeight,
         });
-        this.renderLayers.gamebox.canvas.width = cameraWidth * this.resolution;
-        this.renderLayers.gamebox.canvas.height = cameraHeight * this.resolution;
-    
-        // Offscreen canvas for each texture layer
-        const offWidth = cameraWidth + ( this.data.tilesize * 2 );
-        const offHeight = cameraHeight + ( this.data.tilesize * 2 );
-        this.renderLayers.textures = new MapLayer({
-            id: "textures",
-            width: offWidth,
-            height: offHeight,
-        });
-        this.renderLayers.textures.canvas.width = offWidth * this.resolution;
-        this.renderLayers.textures.canvas.height = offHeight * this.resolution;
+        this.renderLayer.canvas.width = cameraWidth * this.resolution;
+        this.renderLayer.canvas.height = cameraHeight * this.resolution;
 
-        this.gbox.appendChild( this.renderLayers.gamebox.canvas );
+        this.gbox.appendChild( this.renderLayer.canvas );
         this.screen.appendChild( this.gbox );
     }
 

@@ -272,28 +272,14 @@ export default class Map {
 
 
     renderTextures ( id ) {
-        this.player.renderLayers.textures.clear();
-
         // Draw textures to background / foreground
         Utils.drawMapTiles(
-            this.player.renderLayers.textures.context,
+            this.player.renderLayer.context,
             this.image,
             this.renderBox.textures[ id ],
             this.data.tilesize,
-            this.data.tilesize
-        );
-
-        // Draw offscreen Map canvases to the onscreen World canvases
-        this.gamebox.draw(
-            this.player.renderLayers.textures.canvas,
-            0,
-            0,
-            this.player.renderLayers.textures.canvas.width,
-            this.player.renderLayers.textures.canvas.height,
-            this.renderBox.bleed.x,
-            this.renderBox.bleed.y,
-            this.player.renderLayers.textures.canvas.width,
-            this.player.renderLayers.textures.canvas.height
+            this.data.tilesize,
+            this.renderBox.bleed
         );
     }
 
@@ -309,12 +295,12 @@ export default class Map {
         const visibleColliders = this.gamebox.getVisibleColliders();
         const visibleEvents = this.gamebox.getVisibleEvents();
 
-        this.player.renderLayers.gamebox.context.save();
-        this.player.renderLayers.gamebox.context.globalAlpha = 0.5;
+        this.player.renderLayer.context.save();
+        this.player.renderLayer.context.globalAlpha = 0.5;
 
         for ( let i = visibleColliders.length; i--; ) {
-            this.player.renderLayers.gamebox.context.fillStyle = Config.colors.red;
-            this.player.renderLayers.gamebox.context.fillRect(
+            this.player.renderLayer.context.fillStyle = Config.colors.red;
+            this.player.renderLayer.context.fillRect(
                 visibleColliders[ i ].x - this.gamebox.camera.x,
                 visibleColliders[ i ].y - this.gamebox.camera.y,
                 visibleColliders[ i ].width,
@@ -323,8 +309,8 @@ export default class Map {
         }
 
         for ( let i = visibleEvents.length; i--; ) {
-            this.player.renderLayers.gamebox.context.fillStyle = Config.colors.blue;
-            this.player.renderLayers.gamebox.context.fillRect(
+            this.player.renderLayer.context.fillStyle = Config.colors.blue;
+            this.player.renderLayer.context.fillRect(
                 visibleEvents[ i ].eventbox.x - this.gamebox.camera.x,
                 visibleEvents[ i ].eventbox.y - this.gamebox.camera.y,
                 visibleEvents[ i ].eventbox.width,
@@ -332,7 +318,7 @@ export default class Map {
             );
         }
 
-        this.player.renderLayers.gamebox.context.restore();
+        this.player.renderLayer.context.restore();
     }
 
 
@@ -361,10 +347,13 @@ export default class Map {
 
     getRenderbox () {
         const renderBox = {
-            x: Math.floor( this.camera.x / this.data.tilesize ) - 1,
-            y: Math.floor( this.camera.y / this.data.tilesize ) - 1,
-            width: this.camera.width + ( this.data.tilesize * 2 ),
-            height: this.camera.height + ( this.data.tilesize * 2 ),
+            // Floor the camera position to snap to the tile grid (top-left corner)
+            x: Math.floor( this.camera.x / this.data.tilesize ),
+            y: Math.floor( this.camera.y / this.data.tilesize ),
+            // Add one tile size to the width and height to ensure we capture all tiles
+            // in the camera view (including the top-left corner)
+            width: this.camera.width + this.data.tilesize,
+            height: this.camera.height + this.data.tilesize,
             bleed: {},
             textures: {},
         };
@@ -378,8 +367,8 @@ export default class Map {
 
     getBleed ( renderBox ) {
         return {
-            x: -( this.camera.x - ( renderBox.x * this.data.tilesize ) ),
-            y: -( this.camera.y - ( renderBox.y * this.data.tilesize ) ),
+            x: -Math.floor( this.camera.x - ( renderBox.x * this.data.tilesize ) ),
+            y: -Math.floor( this.camera.y - ( renderBox.y * this.data.tilesize ) ),
         };
     }
 

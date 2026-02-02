@@ -487,13 +487,13 @@ export default class Hero extends Sprite {
 
     
     renderAfterDebug () {
-        this.player.renderLayers.gamebox.context.globalAlpha = 0.5;
-        this.player.renderLayers.gamebox.context.fillStyle = Config.colors.teal;
+        this.player.renderLayer.context.globalAlpha = 0.5;
+        this.player.renderLayer.context.fillStyle = Config.colors.teal;
 
         if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) ) {
             const weaponbox = this.getWeaponbox( "offset" );
 
-            this.player.renderLayers.gamebox.context.fillRect(
+            this.player.renderLayer.context.fillRect(
                 weaponbox.x,
                 weaponbox.y,
                 weaponbox.width,
@@ -504,7 +504,7 @@ export default class Hero extends Sprite {
         if ( this.hasShield() ) {
             const shieldbox = this.getShieldbox( "offset" );
 
-            this.player.renderLayers.gamebox.context.fillRect(
+            this.player.renderLayer.context.fillRect(
                 shieldbox.x,
                 shieldbox.y,
                 shieldbox.width,
@@ -637,7 +637,7 @@ export default class Hero extends Sprite {
         // For standard fall (e.g. empty tiles) this isn't a big deal but...
         // For ledge jumping into water without flippers it looks odd to reset with the DIVE sprite cycle.
         if ( this.falling && this.falling.didReset && this.falling.resetCounter === 0 ) {
-            this.player.renderLayers.gamebox.context.globalAlpha = 0;
+            this.player.renderLayer.context.globalAlpha = 0;
         }
     }
 

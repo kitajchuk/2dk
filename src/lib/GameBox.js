@@ -91,7 +91,7 @@ export default class GameBox {
 
 
     draw ( ...args ) {
-        this.player.renderLayers.gamebox.context.drawImage( ...args );
+        this.player.renderLayer.context.drawImage( ...args );
     }
 
 
@@ -894,8 +894,8 @@ export class RenderQueue {
 
 
     safeRender ( sprite ) {
-        this.player.renderLayers.gamebox.context.save();
+        this.player.renderLayer.context.save();
         sprite.render();
-        this.player.renderLayers.gamebox.context.restore();
+        this.player.renderLayer.context.restore();
     }
 }

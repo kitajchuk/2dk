@@ -149,22 +149,25 @@ const Utils = {
         height
     )
     */
-    drawTileCel ( context, image, tileSize, gridSize, mx, my, px, py ) {
+    drawTileCel ( context, image, tileSize, gridSize, mx, my, px, py, bleed = null ) {
+        const bleedX = bleed?.x ?? 0;
+        const bleedY = bleed?.y ?? 0;
+
         context.drawImage(
             image,
             mx,
             my,
             tileSize,
             tileSize,
-            ( px * gridSize ),
-            ( py * gridSize ),
+            ( px * gridSize ) + bleedX,
+            ( py * gridSize ) + bleedY,
             gridSize,
             gridSize
         );
     },
 
 
-    drawMapTile ( context, image, tile, tileSize, gridSize, x, y ) {
+    drawMapTile ( context, image, tile, tileSize, gridSize, x, y, bleed = null ) {
         // Position has tiles: Array[Array[x, y], Array[x, y]]
         if ( Array.isArray( tile ) ) {
             for ( let i = 0, len = tile.length; i < len; i++ ) {
@@ -176,12 +179,13 @@ const Utils = {
                     tile[ i ][ 0 ],
                     tile[ i ][ 1 ],
                     x,
-                    y
+                    y,
+                    bleed
                 );
             }
 
         // Position has no tile: 0
-        } else {
+        } else if ( bleed === null ) {
             context.clearRect(
                 ( x * gridSize ),
                 ( y * gridSize ),
@@ -192,14 +196,14 @@ const Utils = {
     },
 
 
-    drawMapTiles ( context, image, textures, tileSize, gridSize ) {
+    drawMapTiles ( context, image, textures, tileSize, gridSize, bleed = null ) {
         for ( let y = textures.length; y--; ) {
             const row = textures[ y ];
 
             for ( let x = row.length; x--; ) {
                 const tile = row[ x ];
 
-                this.drawMapTile( context, image, tile, tileSize, gridSize, x, y );
+                this.drawMapTile( context, image, tile, tileSize, gridSize, x, y, bleed );
             }
         }
     },
