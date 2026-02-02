@@ -498,12 +498,18 @@ class Player extends Controller {
     }
 
     fadeOut () {
-        this.element.classList.add( "is-fader" );
+        return new Promise( ( resolve ) => {
+            this.element.classList.add( "is-fader" );
+            setTimeout( resolve, Config.player.fadeDur );
+        });
     }
 
 
     fadeIn () {
-        this.element.classList.remove( "is-fader" );
+        return new Promise( ( resolve ) => {
+            this.element.classList.remove( "is-fader" );
+            setTimeout( resolve, Config.player.fadeDur );
+        });
     }
 
 

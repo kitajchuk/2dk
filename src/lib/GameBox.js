@@ -681,17 +681,11 @@ export default class GameBox {
             this.map.addAllSprite( this.companion );
         }
 
-        // Clear the map change event
-        this.mapChangeEvent = null;
-
-        // Reset the quests
-        this.gamequest.resetQuests();
+        // Resume game blit cycle...
+        this.player.resume();
 
         // Fade in...
         this.player.fadeIn();
-
-        // Resume game blit cycle...
-        this.player.resume();
     }
 
 
@@ -699,13 +693,20 @@ export default class GameBox {
         // Pause the Player so no game buttons dispatch
         this.player.hardStop();
 
-        // Fade out...
-        this.player.fadeOut();
-
         // Reset collision groups
         this.collision = {};
 
-        setTimeout( () => {
+        // Fade out...
+        this.player.fadeOut().then(() => {
+            // Clear render layers and queue (after fade out)
+            this.clear();
+
+            // Clear the map change event
+            this.mapChangeEvent = null;
+
+            // Reset the quests
+            this.gamequest.resetQuests();
+
             // New Map data
             const newMapData = Loader.cash( event.data.map );
             const newHeroPos = this.hero.getPositionForNewMap();
@@ -729,8 +730,7 @@ export default class GameBox {
             }
 
             this.afterChangeMap( newMapData );
-
-        }, Config.player.fadeDur );
+        });
     }
 }
 
