@@ -3,7 +3,6 @@ import Config from "./Config";
 import Loader from "./Loader";
 import Dialogue from "./Dialogue";
 import Map from "./maps/Map";
-import MapLayer from "./maps/MapLayer";
 import Hero from "./sprites/Hero";
 import Companion from "./sprites/Companion";
 import GameQuest from "./GameQuest";
@@ -18,11 +17,6 @@ export default class GameBox {
         this.player = player;
         this.dropin = false;
         this.panning = false;
-        this.mapLayer = null;
-        this.mapLayers = {
-            background: null,
-            foreground: null,
-        };
         this.mapChangeEvent = null;
         this.gamequest = new GameQuest( this );
         this.renderQueue = new RenderQueue( this );
@@ -76,66 +70,28 @@ export default class GameBox {
             this.map.addAllSprite( this.companion );
         }
 
-        this.build();
         this.initMap();
     }
 
 
     destroy () {
+        this.clear();
         this.hud.reset();
         this.hero.destroy();
         this.companion?.destroy();
         this.map.destroy();
-        this.mapLayer.destroy();
         this.dialogue.destroy();
-        this.element.remove();
     }
 
 
     clear () {
-        this.mapLayer.clear();
         this.renderQueue.clear();
-
-        for ( const id in this.mapLayers ) {
-            this.mapLayers[ id ].clear();
-        }
+        this.player.clear();
     }
 
 
     draw ( ...args ) {
-        this.mapLayer.context.drawImage( ...args );
-    }
-
-
-    build () {
-        this.element = document.createElement( "div" );
-        this.element.className = "_2dk__gamebox";
-
-        // Main canvas visible on screen
-        this.mapLayer = new MapLayer({
-            id: "gameground",
-            width: this.camera.width,
-            height: this.camera.height,
-        });
-        this.mapLayer.canvas.width = `${this.camera.width * this.player.resolution}`;
-        this.mapLayer.canvas.height = `${this.camera.height * this.player.resolution}`;
-
-        // Offscreen canvases for each texture layer
-        for ( const id in this.mapLayers ) {
-            const offWidth = this.camera.width + ( this.map.data.tilesize * 2 );
-            const offHeight = this.camera.height + ( this.map.data.tilesize * 2 );
-
-            this.mapLayers[ id ] = new MapLayer({
-                id,
-                width: offWidth,
-                height: offHeight,
-            });
-            this.mapLayers[ id ].canvas.width = `${offWidth * this.player.resolution}`;
-            this.mapLayers[ id ].canvas.height = `${offHeight * this.player.resolution}`;
-        }
-
-        this.element.appendChild( this.mapLayer.canvas );
-        this.player.screen.appendChild( this.element );
+        this.player.renderLayers.gamebox.context.drawImage( ...args );
     }
 
 
@@ -805,7 +761,7 @@ const footTiles = [
 export class Camera {
     constructor ( gamebox ) {
         this.gamebox = gamebox;
-        this.player = gamebox.player;
+        this.player = this.gamebox.player;
         this.x = 0;
         this.y = 0;
         this.width = this.player.width * this.player.resolution;
@@ -904,6 +860,7 @@ export class Camera {
 export class RenderQueue {
     constructor ( gamebox ) {
         this.gamebox = gamebox;
+        this.player = this.gamebox.player;
         this.clear();
     }
 
@@ -937,8 +894,8 @@ export class RenderQueue {
 
 
     safeRender ( sprite ) {
-        this.gamebox.mapLayer.context.save();
+        this.player.renderLayers.gamebox.context.save();
         sprite.render();
-        this.gamebox.mapLayer.context.restore();
+        this.player.renderLayers.gamebox.context.restore();
     }
 }

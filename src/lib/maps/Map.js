@@ -271,6 +271,71 @@ export default class Map {
     }
 
 
+    renderTextures ( id ) {
+        this.player.renderLayers.textures.clear();
+
+        // Draw textures to background / foreground
+        Utils.drawMapTiles(
+            this.player.renderLayers.textures.context,
+            this.image,
+            this.renderBox.textures[ id ],
+            this.data.tilesize,
+            this.data.tilesize
+        );
+
+        // Draw offscreen Map canvases to the onscreen World canvases
+        this.gamebox.draw(
+            this.player.renderLayers.textures.canvas,
+            0,
+            0,
+            this.player.renderLayers.textures.canvas.width,
+            this.player.renderLayers.textures.canvas.height,
+            this.renderBox.bleed.x,
+            this.renderBox.bleed.y,
+            this.player.renderLayers.textures.canvas.width,
+            this.player.renderLayers.textures.canvas.height
+        );
+    }
+
+
+    renderAllSprites () {
+        for ( let i = 0; i < this.allSprites.length; i++ ) {
+            this.gamebox.renderQueue.add( this.allSprites[ i ] );
+        }
+    }
+
+
+    renderDebug () {
+        const visibleColliders = this.gamebox.getVisibleColliders();
+        const visibleEvents = this.gamebox.getVisibleEvents();
+
+        this.player.renderLayers.gamebox.context.save();
+        this.player.renderLayers.gamebox.context.globalAlpha = 0.5;
+
+        for ( let i = visibleColliders.length; i--; ) {
+            this.player.renderLayers.gamebox.context.fillStyle = Config.colors.red;
+            this.player.renderLayers.gamebox.context.fillRect(
+                visibleColliders[ i ].x - this.gamebox.camera.x,
+                visibleColliders[ i ].y - this.gamebox.camera.y,
+                visibleColliders[ i ].width,
+                visibleColliders[ i ].height
+            );
+        }
+
+        for ( let i = visibleEvents.length; i--; ) {
+            this.player.renderLayers.gamebox.context.fillStyle = Config.colors.blue;
+            this.player.renderLayers.gamebox.context.fillRect(
+                visibleEvents[ i ].eventbox.x - this.gamebox.camera.x,
+                visibleEvents[ i ].eventbox.y - this.gamebox.camera.y,
+                visibleEvents[ i ].eventbox.width,
+                visibleEvents[ i ].eventbox.height
+            );
+        }
+
+        this.player.renderLayers.gamebox.context.restore();
+    }
+
+
     addAllSprite ( sprite ) {
         if ( sprite && this.allSprites.indexOf( sprite ) === -1 ) {
             this.allSprites.push( sprite );
@@ -291,69 +356,6 @@ export default class Map {
         this.allSprites.sort( ( a, b ) => {
             return a.prio - b.prio;
         });
-    }
-
-
-    renderAllSprites () {
-        for ( let i = 0; i < this.allSprites.length; i++ ) {
-            this.gamebox.renderQueue.add( this.allSprites[ i ] );
-        }
-    }
-
-
-    renderDebug () {
-        const visibleColliders = this.gamebox.getVisibleColliders();
-        const visibleEvents = this.gamebox.getVisibleEvents();
-
-        this.gamebox.mapLayer.context.save();
-        this.gamebox.mapLayer.context.globalAlpha = 0.5;
-
-        for ( let i = visibleColliders.length; i--; ) {
-            this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
-            this.gamebox.mapLayer.context.fillRect(
-                visibleColliders[ i ].x - this.gamebox.camera.x,
-                visibleColliders[ i ].y - this.gamebox.camera.y,
-                visibleColliders[ i ].width,
-                visibleColliders[ i ].height
-            );
-        }
-
-        for ( let i = visibleEvents.length; i--; ) {
-            this.gamebox.mapLayer.context.fillStyle = Config.colors.blue;
-            this.gamebox.mapLayer.context.fillRect(
-                visibleEvents[ i ].eventbox.x - this.gamebox.camera.x,
-                visibleEvents[ i ].eventbox.y - this.gamebox.camera.y,
-                visibleEvents[ i ].eventbox.width,
-                visibleEvents[ i ].eventbox.height
-            );
-        }
-
-        this.gamebox.mapLayer.context.restore();
-    }
-
-
-    renderTextures ( id ) {
-        // Draw textures to background / foreground
-        Utils.drawMapTiles(
-            this.gamebox.mapLayers[ id ].context,
-            this.image,
-            this.renderBox.textures[ id ],
-            this.data.tilesize,
-            this.data.tilesize
-        );
-
-        // Draw offscreen Map canvases to the onscreen World canvases
-        this.gamebox.draw(
-            this.gamebox.mapLayers[ id ].canvas,
-            0,
-            0,
-            this.gamebox.mapLayers[ id ].canvas.width,
-            this.gamebox.mapLayers[ id ].canvas.height,
-            this.renderBox.bleed.x,
-            this.renderBox.bleed.y,
-            this.gamebox.mapLayers[ id ].canvas.width,
-            this.gamebox.mapLayers[ id ].canvas.height
-        );
     }
 
 

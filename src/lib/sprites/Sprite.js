@@ -267,12 +267,12 @@ export default class Sprite {
         const flipX = this.data.verbs[ this.verb ][ this.dir ].flipX;
         const flipY = this.data.verbs[ this.verb ][ this.dir ].flipY;
 
-        this.gamebox.mapLayer.context.save();
-        this.gamebox.mapLayer.context.translate(
+        this.player.renderLayers.gamebox.context.save();
+        this.player.renderLayers.gamebox.context.translate(
             flipX ? this.width : 0,
             flipY ? this.height : 0
         );
-        this.gamebox.mapLayer.context.scale(
+        this.player.renderLayers.gamebox.context.scale(
             flipX ? -1 : 1,
             flipY ? -1 : 1
         );
@@ -289,7 +289,7 @@ export default class Sprite {
             this.height
         );
 
-        this.gamebox.mapLayer.context.restore();
+        this.player.renderLayers.gamebox.context.restore();
 
         if ( Utils.func( this.renderAfter ) ) {
             this.renderAfter();
@@ -302,12 +302,12 @@ export default class Sprite {
 
 
     renderDebug () {
-        this.gamebox.mapLayer.context.save();
+        this.player.renderLayers.gamebox.context.save();
         
         // Full sprite box
-        this.gamebox.mapLayer.context.globalAlpha = 0.25;
-        this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
-        this.gamebox.mapLayer.context.fillRect(
+        this.player.renderLayers.gamebox.context.globalAlpha = 0.25;
+        this.player.renderLayers.gamebox.context.fillStyle = Config.colors.white;
+        this.player.renderLayers.gamebox.context.fillRect(
             this.offset.x,
             this.offset.y,
             this.width,
@@ -315,9 +315,9 @@ export default class Sprite {
         );
 
         // Hitbox
-        this.gamebox.mapLayer.context.globalAlpha = 0.5;
-        this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
-        this.gamebox.mapLayer.context.fillRect(
+        this.player.renderLayers.gamebox.context.globalAlpha = 0.5;
+        this.player.renderLayers.gamebox.context.fillStyle = Config.colors.red;
+        this.player.renderLayers.gamebox.context.fillRect(
             this.offset.x + ( this.data.hitbox.x / this.scale ),
             this.offset.y + ( this.data.hitbox.y / this.scale ),
             this.hitbox.width,
@@ -325,8 +325,8 @@ export default class Sprite {
         );
 
         // Footbox
-        this.gamebox.mapLayer.context.fillStyle = Config.colors.green;
-        this.gamebox.mapLayer.context.fillRect(
+        this.player.renderLayers.gamebox.context.fillStyle = Config.colors.green;
+        this.player.renderLayers.gamebox.context.fillRect(
             this.offset.x + ( this.data.hitbox.x / this.scale ),
             this.offset.y + ( this.data.hitbox.y / this.scale ) + ( this.hitbox.height / 2 ),
             this.footbox.width,
@@ -334,16 +334,16 @@ export default class Sprite {
         );
 
         // Nearest tiles within perception box
-        this.gamebox.mapLayer.context.globalAlpha = 0.25;
-        this.gamebox.mapLayer.context.fillStyle = Config.colors.yellow;
-        this.gamebox.mapLayer.context.fillRect(
+        this.player.renderLayers.gamebox.context.globalAlpha = 0.25;
+        this.player.renderLayers.gamebox.context.fillStyle = Config.colors.yellow;
+        this.player.renderLayers.gamebox.context.fillRect(
             this.perceptionBox.tileBox.x * this.map.data.tilesize - this.gamebox.camera.x,
             this.perceptionBox.tileBox.y * this.map.data.tilesize - this.gamebox.camera.y,
             this.perceptionBox.tileBox.width * this.map.data.tilesize,
             this.perceptionBox.tileBox.height * this.map.data.tilesize
         );
 
-        this.gamebox.mapLayer.context.restore();
+        this.player.renderLayers.gamebox.context.restore();
     }
 
 
@@ -413,12 +413,12 @@ export default class Sprite {
 *******************************************************************************/
     applyOpacity () {
         if ( this.opacity ) {
-            this.gamebox.mapLayer.context.globalAlpha = this.opacity;
+            this.player.renderLayers.gamebox.context.globalAlpha = this.opacity;
         }
 
         if ( this.hitTimer > 0 ) {
             if ( this.hitTimer % 5 === 0 ) {
-                this.gamebox.mapLayer.context.globalAlpha = 0.25;
+                this.player.renderLayers.gamebox.context.globalAlpha = 0.25;
             }
         }
     }

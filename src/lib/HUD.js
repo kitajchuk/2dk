@@ -50,19 +50,19 @@ export default class HUD {
         const fpsString = `FPS: ${fps}`;
         const x = 230, y = 20;
 
-        this.gamebox.mapLayer.context.save();
+        this.player.renderLayers.gamebox.context.save();
         
-        this.gamebox.mapLayer.context.font = "16px Calamity-Bold";
-        this.gamebox.mapLayer.context.fillStyle = color;
-        this.gamebox.mapLayer.context.textAlign = "left";
-        this.gamebox.mapLayer.context.textBaseline = "top";
-        this.gamebox.mapLayer.context.fillText(
+        this.player.renderLayers.gamebox.context.font = "16px Calamity-Bold";
+        this.player.renderLayers.gamebox.context.fillStyle = color;
+        this.player.renderLayers.gamebox.context.textAlign = "left";
+        this.player.renderLayers.gamebox.context.textBaseline = "top";
+        this.player.renderLayers.gamebox.context.fillText(
             fpsString,
             x,
             y
         );
 
-        this.gamebox.mapLayer.context.restore();
+        this.player.renderLayers.gamebox.context.restore();
     }
 
 
@@ -142,48 +142,48 @@ export default class HUD {
         const x = 20, y = 20;
         const step = this.map.data.tilesize;
 
-        this.gamebox.mapLayer.context.save();
-        this.gamebox.mapLayer.context.globalAlpha = 0.5;
-        this.gamebox.mapLayer.context.fillStyle = Config.colors.yellow;
-        this.gamebox.mapLayer.context.beginPath();
+        this.player.renderLayers.gamebox.context.save();
+        this.player.renderLayers.gamebox.context.globalAlpha = 0.5;
+        this.player.renderLayers.gamebox.context.fillStyle = Config.colors.yellow;
+        this.player.renderLayers.gamebox.context.beginPath();
         // TODO: roundRect throws error in Firefox...
-        this.gamebox.mapLayer.context.roundRect(
+        this.player.renderLayers.gamebox.context.roundRect(
             x,
             y,
             step * this.hero.maxHealth,
             step / 4,
             2
         );
-        this.gamebox.mapLayer.context.fill();
-        this.gamebox.mapLayer.context.closePath();
-        this.gamebox.mapLayer.context.globalAlpha = 1;
+        this.player.renderLayers.gamebox.context.fill();
+        this.player.renderLayers.gamebox.context.closePath();
+        this.player.renderLayers.gamebox.context.globalAlpha = 1;
 
-        this.gamebox.mapLayer.context.fillStyle = Config.colors.red;
-        this.gamebox.mapLayer.context.beginPath();
-        this.gamebox.mapLayer.context.roundRect(
+        this.player.renderLayers.gamebox.context.fillStyle = Config.colors.red;
+        this.player.renderLayers.gamebox.context.beginPath();
+        this.player.renderLayers.gamebox.context.roundRect(
             x,
             y,
             step * this.hero.health,
             step / 4,
             2
         );
-        this.gamebox.mapLayer.context.fill();
-        this.gamebox.mapLayer.context.closePath();
+        this.player.renderLayers.gamebox.context.fill();
+        this.player.renderLayers.gamebox.context.closePath();
 
-        this.gamebox.mapLayer.context.fillStyle = "transparent";
-        this.gamebox.mapLayer.context.strokeStyle = Config.colors.white;
-        this.gamebox.mapLayer.context.lineWidth = 2;
-        this.gamebox.mapLayer.context.beginPath();
-        this.gamebox.mapLayer.context.roundRect(
+        this.player.renderLayers.gamebox.context.fillStyle = "transparent";
+        this.player.renderLayers.gamebox.context.strokeStyle = Config.colors.white;
+        this.player.renderLayers.gamebox.context.lineWidth = 2;
+        this.player.renderLayers.gamebox.context.beginPath();
+        this.player.renderLayers.gamebox.context.roundRect(
             x,
             y,
             step * this.hero.maxHealth,
             step / 4,
             2
         );
-        this.gamebox.mapLayer.context.stroke();
-        this.gamebox.mapLayer.context.closePath();
-        this.gamebox.mapLayer.context.restore();
+        this.player.renderLayers.gamebox.context.stroke();
+        this.player.renderLayers.gamebox.context.closePath();
+        this.player.renderLayers.gamebox.context.restore();
     }
 
 
@@ -192,7 +192,7 @@ export default class HUD {
         const currency = this.hero.currency;
         const currString = `x${currency}`;
 
-        this.gamebox.mapLayer.context.save();
+        this.player.renderLayers.gamebox.context.save();
 
         if ( this.player.data.hud.currency ) {
             const width = this.player.data.hud.currency.width;
@@ -201,30 +201,30 @@ export default class HUD {
             const offsetX = x + width + currString.length * 16;
             const offsetY = y - diff / 2;
 
-            this.gamebox.mapLayer.context.drawImage(
+            this.player.renderLayers.gamebox.context.drawImage(
                 Loader.cash( this.player.data.hud.currency.image ),
                 this.player.data.hud.currency.offsetX,
                 this.player.data.hud.currency.offsetY,
                 width,
                 height,
-                this.gamebox.mapLayer.data.width - offsetX,
+                this.player.renderLayers.gamebox.data.width - offsetX,
                 offsetY,
                 width,
                 height
             );
 
-            this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
-            this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
-            this.gamebox.mapLayer.context.textAlign = "right";
-            this.gamebox.mapLayer.context.textBaseline = "top";
-            this.gamebox.mapLayer.context.fillText(
+            this.player.renderLayers.gamebox.context.font = "24px Calamity-Bold";
+            this.player.renderLayers.gamebox.context.fillStyle = Config.colors.white;
+            this.player.renderLayers.gamebox.context.textAlign = "right";
+            this.player.renderLayers.gamebox.context.textBaseline = "top";
+            this.player.renderLayers.gamebox.context.fillText(
                 currString,
-                this.gamebox.mapLayer.data.width - x,
+                this.player.renderLayers.gamebox.data.width - x,
                 y
             );
         }
 
-        this.gamebox.mapLayer.context.restore();
+        this.player.renderLayers.gamebox.context.restore();
     }
 
 
@@ -234,7 +234,7 @@ export default class HUD {
         const collected = item ? item.collected : 0;
         const collectString = `x${collected}`;
 
-        this.gamebox.mapLayer.context.save();
+        this.player.renderLayers.gamebox.context.save();
 
         if ( this.player.data.hud.keys ) {
             const width = this.player.data.hud.keys.width;
@@ -243,30 +243,30 @@ export default class HUD {
             const offsetX = x + width + collectString.length * 16;
             const offsetY = y - diff / 2;
 
-            this.gamebox.mapLayer.context.drawImage(
+            this.player.renderLayers.gamebox.context.drawImage(
                 Loader.cash( this.player.data.hud.keys.image ),
                 this.player.data.hud.keys.offsetX,
                 this.player.data.hud.keys.offsetY,
                 width,
                 height,
-                this.gamebox.mapLayer.data.width - offsetX,
+                this.player.renderLayers.gamebox.data.width - offsetX,
                 offsetY,
                 width,
                 height
             );
 
-            this.gamebox.mapLayer.context.font = "24px Calamity-Bold";
-            this.gamebox.mapLayer.context.fillStyle = Config.colors.white;
-            this.gamebox.mapLayer.context.textAlign = "right";
-            this.gamebox.mapLayer.context.textBaseline = "top";
-            this.gamebox.mapLayer.context.fillText(
+            this.player.renderLayers.gamebox.context.font = "24px Calamity-Bold";
+            this.player.renderLayers.gamebox.context.fillStyle = Config.colors.white;
+            this.player.renderLayers.gamebox.context.textAlign = "right";
+            this.player.renderLayers.gamebox.context.textBaseline = "top";
+            this.player.renderLayers.gamebox.context.fillText(
                 collectString,
-                this.gamebox.mapLayer.data.width - x,
+                this.player.renderLayers.gamebox.data.width - x,
                 y
             );
         }
 
-        this.gamebox.mapLayer.context.restore();
+        this.player.renderLayers.gamebox.context.restore();
     }
 
 
@@ -276,7 +276,7 @@ export default class HUD {
         const y = 50;
 
         if ( shield ) {
-            this.gamebox.mapLayer.context.drawImage(
+            this.player.renderLayers.gamebox.context.drawImage(
                 Loader.cash( shield.image ),
                 shield.offsetX,
                 shield.offsetY,
@@ -298,7 +298,7 @@ export default class HUD {
         const y = 50;
 
         if ( statusItem ) {
-            this.gamebox.mapLayer.context.drawImage(
+            this.player.renderLayers.gamebox.context.drawImage(
                 Loader.cash( statusItem.image ),
                 statusItem.offsetX,
                 statusItem.offsetY,

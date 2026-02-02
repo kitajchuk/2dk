@@ -5,6 +5,7 @@ import GameAudio from "./GameAudio";
 import Loader from "./Loader";
 import Controller from "./Controller";
 import TopView from "./plugins/TopView";
+import MapLayer from "./maps/MapLayer";
 import { renderMenu, renderSplash, renderGameInfo, renderSplashInfo } from "./DOM";
 
 
@@ -16,6 +17,11 @@ class Player extends Controller {
         this.fps = Config.player.fps;
         this.frame = 0;
         this.interval = 1000 / this.fps;
+
+        this.renderLayers = {
+            gamebox: null,
+            textures: null,
+        };
 
         this.loader = new Loader();
         this.Loader = Loader;
@@ -95,7 +101,7 @@ class Player extends Controller {
 
         this.frame = 0;
         this.started = true;
-        this.currentFPS = this.currentFPS || this.fps;
+        this.currentFPS = this.fps;
         this.previousTime = performance.now();
         this.previousFrameTime = this.previousTime;
         this.animate = ( currentTime ) => {
@@ -253,6 +259,12 @@ class Player extends Controller {
     }
 
 
+    clear () {
+        this.renderLayers.gamebox.clear();
+        this.renderLayers.textures.clear();
+    }
+
+
     reset () {
         // Stop the RAF loop
         this.hardStop();
@@ -282,12 +294,25 @@ class Player extends Controller {
     }
 
 
-    // Resumes playable state, not paused and not stopped
+    pause () {
+        this.hardStop();
+        this.showMenu();
+        this.emit( Config.broadcast.PAUSED );
+
+        // Start the idle game loop ONLY if a gamepad is connected
+        if ( this.gamepad.gamepadConnected ) {
+            this.idleGo();
+        }
+    }
+
+
     resume () {
-        this.go();
         this.paused = false;
         this.stopped = false;
         this.gamebox.pause( false );
+        this.hideMenu();
+        this.emit( Config.broadcast.RESUMED );
+        this.go();
     }
 
 
@@ -305,6 +330,7 @@ class Player extends Controller {
         this.width = this.data.width / this.resolution;
         this.height = this.data.height / this.resolution;
         this.buildScreen();
+        this.buildGamebox();
         this.onRotate();
         this.splashLoad.innerHTML = `
         ${renderGameInfo( this.data )}
@@ -423,6 +449,37 @@ class Player extends Controller {
     }
 
 
+    buildGamebox () {
+        this.gbox = document.createElement( "div" );
+        this.gbox.className = "_2dk__gamebox";
+
+        // Main canvas visible on screen
+        const cameraWidth = this.width * this.resolution;
+        const cameraHeight = this.height * this.resolution;
+        this.renderLayers.gamebox = new MapLayer({
+            id: "gamebox",
+            width: cameraWidth,
+            height: cameraHeight,
+        });
+        this.renderLayers.gamebox.canvas.width = cameraWidth * this.resolution;
+        this.renderLayers.gamebox.canvas.height = cameraHeight * this.resolution;
+    
+        // Offscreen canvas for each texture layer
+        const offWidth = cameraWidth + ( this.data.tilesize * 2 );
+        const offHeight = cameraHeight + ( this.data.tilesize * 2 );
+        this.renderLayers.textures = new MapLayer({
+            id: "textures",
+            width: offWidth,
+            height: offHeight,
+        });
+        this.renderLayers.textures.canvas.width = offWidth * this.resolution;
+        this.renderLayers.textures.canvas.height = offHeight * this.resolution;
+
+        this.gbox.appendChild( this.renderLayers.gamebox.canvas );
+        this.screen.appendChild( this.gbox );
+    }
+
+
 
 /*******************************************************************************
 * Presentation
@@ -464,7 +521,7 @@ class Player extends Controller {
             this.resume();
 
         } else if ( this.ready ) {
-            this.hardStop();
+            this.pause();
         }
     }
 
@@ -501,18 +558,9 @@ class Player extends Controller {
 
         if ( this.paused ) {
             this.resume();
-            this.hideMenu();
-            this.emit( Config.broadcast.RESUMED );
 
         } else {
-            this.hardStop();
-            this.showMenu();
-            this.emit( Config.broadcast.PAUSED );
-
-            // Start the idle game loop ONLY if a gamepad is connected
-            if ( this.gamepad.gamepadConnected ) {
-                this.idleGo();
-            }
+            this.pause();
         }
     }
 
