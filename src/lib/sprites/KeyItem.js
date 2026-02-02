@@ -99,6 +99,6 @@ export class KeyItemDrop extends Sprite {
 * Checks
 *******************************************************************************/
     canPickup () {
-        return this.bounce === 0;
+        return this.bounce === 0 && this.isOnGround();
     }
 }

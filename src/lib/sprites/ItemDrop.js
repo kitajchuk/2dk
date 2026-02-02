@@ -70,6 +70,6 @@ export default class ItemDrop extends Sprite {
 * Checks
 *******************************************************************************/
     canPickup () {
-        return this.bounce === 0;
+        return this.bounce === 0 && this.isOnGround();
     }
 }
