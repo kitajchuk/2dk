@@ -324,7 +324,8 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "S — Great Lake",
+                                "South — Small Fishing Hamlet",
+                                "Further South — Great Lake",
                                 "Ahead — The bridge is out"
                             ]
                         }
@@ -346,7 +347,7 @@
                             "type": "text",
                             "text": [
                                 "Oh hey little buddy. Normally I'd be out fishing down at the Great Lake where the catch is good...but ever since the road south has been blocked I've had to make do with what I can catch up here.",
-                                "Honestly I think the catch is starting to dry up a bit. Normally we'd have fresh stock flowing in from the River but the nothing seems to be as it was these days.",
+                                "Honestly I think the catch is starting to dry up a bit, too. Normally we'd have fresh stock flowing in from the River but things seem different lately...",
                                 "Oh well, these aren't your problems, are they? My wife and kids are across the way in the town square there. If you stop by feel free to say hello."
                             ]
                         }
@@ -414,7 +415,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "Learn to crow"
+                                "A true Hero learns to Crow"
                             ]
                         }
                     }
@@ -1929,54 +1930,6 @@
             35
         ],
         [
-            18,
-            35
-        ],
-        [
-            17,
-            35
-        ],
-        [
-            16,
-            35
-        ],
-        [
-            15,
-            35
-        ],
-        [
-            14,
-            35
-        ],
-        [
-            13,
-            35
-        ],
-        [
-            12,
-            35
-        ],
-        [
-            11,
-            35
-        ],
-        [
-            10,
-            35
-        ],
-        [
-            9,
-            35
-        ],
-        [
-            8,
-            35
-        ],
-        [
-            7,
-            35
-        ],
-        [
             159,
             41
         ],
@@ -4042,10 +3995,6 @@
         ],
         [
             7,
-            36
-        ],
-        [
-            7,
             37
         ],
         [
@@ -5222,18 +5171,6 @@
         ],
         [
             12,
-            36
-        ],
-        [
-            12,
-            37
-        ],
-        [
-            12,
-            38
-        ],
-        [
-            12,
             39
         ],
         [
@@ -5247,26 +5184,6 @@
         [
             15,
             39
-        ],
-        [
-            15,
-            38
-        ],
-        [
-            15,
-            37
-        ],
-        [
-            15,
-            36
-        ],
-        [
-            14,
-            36
-        ],
-        [
-            13,
-            36
         ],
         [
             40,
@@ -6467,6 +6384,58 @@
         [
             27,
             18
+        ],
+        [
+            11,
+            39
+        ],
+        [
+            10,
+            39
+        ],
+        [
+            9,
+            39
+        ],
+        [
+            8,
+            39
+        ],
+        [
+            8,
+            38
+        ],
+        [
+            19,
+            38
+        ],
+        [
+            19,
+            39
+        ],
+        [
+            18,
+            39
+        ],
+        [
+            17,
+            39
+        ],
+        [
+            16,
+            39
+        ],
+        [
+            8,
+            37
+        ],
+        [
+            19,
+            36
+        ],
+        [
+            19,
+            37
         ]
     ],
     "textures": {

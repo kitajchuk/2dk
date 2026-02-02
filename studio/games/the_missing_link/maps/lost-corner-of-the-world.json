@@ -388,11 +388,11 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "N  — Graveyard (Road Closed)",
-                                "NE — Moblin Hideout",
-                                "E  — Shinji Farm",
-                                "W  — Great Lake",
-                                "NW — Imperial City"
+                                "North  — Graveyard (Road Closed)",
+                                "North East — Moblin Hideout",
+                                "East  — Shinji Farm",
+                                "West  — Great Lake",
+                                "North West — Imperial City"
                             ]
                         }
                     }
