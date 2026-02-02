@@ -530,17 +530,17 @@ export default class Sprite {
 
 
     getNextX () {
-        return this.position.x + Utils.limit( this.physics.vx, -this.physics.maxv, this.physics.maxv );
+        return Math.round( this.position.x + Utils.limit( this.physics.vx, -this.physics.maxv, this.physics.maxv ) );
     }
 
 
     getNextY () {
-        return this.position.y + Utils.limit( this.physics.vy, -this.physics.maxv, this.physics.maxv );
+        return Math.round( this.position.y + Utils.limit( this.physics.vy, -this.physics.maxv, this.physics.maxv ) );
     }
 
 
     getNextZ () {
-        return this.position.z + Utils.limit( this.physics.vz, -this.physics.maxv, this.physics.maxv );
+        return Math.round( this.position.z + Utils.limit( this.physics.vz, -this.physics.maxv, this.physics.maxv ) );
     }
 
 
