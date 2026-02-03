@@ -336,14 +336,14 @@ export default class Sprite {
         );
 
         // Nearest tiles within perception box
-        this.player.renderLayer.context.globalAlpha = 0.25;
-        this.player.renderLayer.context.fillStyle = Config.colors.yellow;
-        this.player.renderLayer.context.fillRect(
-            this.perceptionBox.tileBox.x * this.map.data.tilesize - this.gamebox.camera.x,
-            this.perceptionBox.tileBox.y * this.map.data.tilesize - this.gamebox.camera.y,
-            this.perceptionBox.tileBox.width * this.map.data.tilesize,
-            this.perceptionBox.tileBox.height * this.map.data.tilesize
-        );
+        // this.player.renderLayer.context.globalAlpha = 0.25;
+        // this.player.renderLayer.context.fillStyle = Config.colors.yellow;
+        // this.player.renderLayer.context.fillRect(
+        //     this.perceptionBox.tileBox.x * this.map.data.tilesize - this.gamebox.camera.x,
+        //     this.perceptionBox.tileBox.y * this.map.data.tilesize - this.gamebox.camera.y,
+        //     this.perceptionBox.tileBox.width * this.map.data.tilesize,
+        //     this.perceptionBox.tileBox.height * this.map.data.tilesize
+        // );
 
         this.player.renderLayer.context.restore();
     }

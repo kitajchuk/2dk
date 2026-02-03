@@ -93,6 +93,46 @@
                 "y": 361
             },
             "ai": "float"
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 502,
+                "y": 345
+            },
+            "ai": "float"
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 807,
+                "y": 494
+            },
+            "ai": "float"
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 269,
+                "y": 458
+            },
+            "ai": "float"
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 463,
+                "y": 683
+            },
+            "ai": "float"
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 810,
+                "y": 665
+            },
+            "ai": "float"
         }
     ],
     "items": [],

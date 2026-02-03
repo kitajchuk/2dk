@@ -33,6 +33,9 @@ export default class NPC extends QuestSprite {
         this.stepsX = 0;
         this.stepsY = 0;
         this.pushed = null;
+        this.floatCounter = 0;
+        this.floatCounter2 = 0;
+        this.floatOffset = -( this.map.data.tilesize / 2 );
 
         this.initialize();
     }
@@ -160,24 +163,31 @@ export default class NPC extends QuestSprite {
 
 
     applyFloatPosition () {
-        const z = this.isEnemy() ? 0 : -( this.map.data.tilesize * 0.75 );
+        const z = this.isEnemy() ? 0 : this.floatOffset;
         const poi = this.getNextPoi();
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
             doors: this.gamebox.checkDoor( poi, this ),
         };
+
+        if ( this.data.bounce ) {
+            this.physics.vz = -Utils.upAndDown( this.floatCounter2, 60 );
+            this.floatCounter++;
+
+            if ( this.floatCounter % 2 === 0 ) {
+                this.floatCounter2++;
+            }
+        }
             
         if ( collision.map || collision.doors ) {
-            this.position.z = z;
+            this.position.z = z + this.physics.vz;
             this.handleAI();
             return;
         }
 
-        this.position = {
-            x: poi.x,
-            y: poi.y,
-            z,
-        };
+        this.position.x = poi.x;
+        this.position.y = poi.y;
+        this.position.z = z + this.physics.vz;
     }
 
 
@@ -395,9 +405,12 @@ export default class NPC extends QuestSprite {
                 return;
             }
 
+            const min = this.data.ai === Config.npc.ai.FLOAT ? 90 : 30;
+            const max = this.data.ai === Config.npc.ai.FLOAT ? 180 : 60;
+
             this.aiCounter = Utils.random( 60, 120 );
-            this.stepsX = Utils.random( 30, 60 );
-            this.stepsY = Utils.random( 30, 60 );
+            this.stepsX = Utils.random( min, max );
+            this.stepsY = Utils.random( min, max );
             this.dirX = newDirX;
             this.dirY = newDirY;
 
@@ -440,6 +453,7 @@ export default class NPC extends QuestSprite {
             this.controls = {};
 
         } else {
+            // This is skipped by FLOAT NPCs because they are not on the ground...
             if ( this.data.bounce && this.isOnGround() ) {
                 this.physics.vz = -6;
             }

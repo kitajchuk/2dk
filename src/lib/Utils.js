@@ -288,17 +288,20 @@ const Utils = {
         return ( v ? v - ( v / Math.abs( v ) ) : 0 );
     },
 
+    // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L95
+	upAndDown ( counter, max ) {
+		if ( ( counter % max ) > ( max / 2 ) ) {
+			return max - ( counter % max );
+		} else {
+			return ( counter % max );
+		}
+	},
+
 
     // From Akihabara trigo:
 
 
-    /**
-     * Gets the distance between two points.
-     * 
-     * @param {object} p1 This is an object containing x and y params for the first point.
-     * @param {object} p2 This is an object containing x and y params for the second point.
-     * @returns {number} The distance between p1 and p2.
-     */
+    // https://github.com/Akihabara/akihabara/blob/master/src/trigo.js#L34
     getDistance ( p1, p2 ) {
         return Math.sqrt( Math.pow( p2.x - p1.x, 2 ) + Math.pow( p2.y - p1.y, 2 ) );
     },

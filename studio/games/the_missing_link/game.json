@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1266,
+    "save": 1267,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1259,6 +1259,7 @@
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
             "dir": "right",
+            "bounce": true,
             "hitbox": {
                 "x": 0,
                 "y": 0,
@@ -1267,13 +1268,16 @@
             },
             "verbs": {
                 "face": {
+                    "dur": 500,
                     "right": {
-                        "offsetX": 632,
-                        "offsetY": 78
+                        "offsetX": 616,
+                        "offsetY": 78,
+                        "stepsX": 2
                     },
                     "left": {
-                        "offsetX": 632,
+                        "offsetX": 616,
                         "offsetY": 78,
+                        "stepsX": 2,
                         "flipX": true
                     }
                 }
