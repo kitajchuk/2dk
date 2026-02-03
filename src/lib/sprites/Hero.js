@@ -480,7 +480,7 @@ export default class Hero extends Sprite {
             );
         }
 
-        if ( this.player.query.get( "debug" ) ) {
+        if ( this.player.query.debug ) {
             this.renderAfterDebug();
         }
     }

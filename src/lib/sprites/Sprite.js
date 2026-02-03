@@ -297,7 +297,7 @@ export default class Sprite {
             this.renderAfter();
         }
 
-        if ( this.player.query.get( "debug" ) ) {
+        if ( this.player.query.debug ) {
             this.renderDebug();
         }
     }

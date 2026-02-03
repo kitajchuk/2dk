@@ -138,7 +138,7 @@ export default class GamePad {
 
         this.player.element.appendChild( this.element );
 
-        if ( !this.player.device && !this.player.query.get( "gamepad" ) ) {
+        if ( !this.player.device && !this.player.query.gamepad ) {
             this.element.style.display = "none";
         }
     }

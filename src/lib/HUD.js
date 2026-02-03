@@ -45,6 +45,10 @@ export default class HUD {
 
 
     renderFPS () {
+        if ( !this.player.query.fps ) {
+            return;
+        }
+
         const fps = this.player.currentFPS;
         const color = fps >= 55 ? Config.colors.green : Config.colors.red;
         const fpsString = `FPS: ${fps}`;

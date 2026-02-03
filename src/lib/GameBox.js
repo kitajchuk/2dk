@@ -40,7 +40,7 @@ export default class GameBox {
         initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
         this.hero = new Hero( initHeroData, this.map );
         this.map.addAllSprite( this.hero );
-        this.seedItems();
+        this.seed();
 
         // HUD
         this.hud = new HUD( this );
@@ -162,7 +162,7 @@ export default class GameBox {
         this.renderQueue.render();
 
         // Visual event debugging....
-        if ( this.player.query.get( "debug" ) ) {
+        if ( this.player.query.debug ) {
             this.map.renderDebug();
         }
 
@@ -247,11 +247,13 @@ export default class GameBox {
     }
 
 
-    seedItems () {
-        const param = this.player.query.get( "items" );
+    seed () {
+        if ( this.player.query.status ) {
+            this.hero.applyStatus( this.player.query.status );
+        }
 
-        if ( param ) {
-            const items = param.split( "," );
+        if ( this.player.query.items ) {
+            const items = this.player.query.items.split( "," );
 
             for ( let i = items.length; i--; ) {
                 const item = items[ i ];
@@ -269,7 +271,7 @@ export default class GameBox {
     }
 
 
-    seedItemLive ( id ) {
+    seedItem ( id ) {
         this.hero.giveItem( id );
         this.hero.stillTimer = 0;
         this.hero.itemGet = null;

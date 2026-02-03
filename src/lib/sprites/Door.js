@@ -94,7 +94,7 @@ export default class Door extends QuestSprite {
             this.height - this.counter
         );
 
-        if ( this.player.query.get( "debug" ) ) {
+        if ( this.player.query.debug ) {
             this.renderDebug();
         }
     }

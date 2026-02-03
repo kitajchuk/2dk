@@ -350,37 +350,38 @@ class Player extends Controller {
 
     // Debugging and feature flagging...
     debug () {
-        this.query = new URLSearchParams( window.location.search );
+        const query = new URLSearchParams( window.location.search );
 
-        const fps = this.query.get( "fps" );
-        const map = this.query.get( "map" );
-        const spawn = this.query.get( "spawn" );
-        const resolution = this.query.get( "resolution" );
-        const companion = this.query.get( "companion" );
+        this.query = {
+            fps: query.get( "fps" ),
+            map: query.get( "map" ),
+            items: query.get( "items" ),
+            spawn: query.get( "spawn" ),
+            debug: query.get( "debug" ),
+            status: query.get( "status" ),
+            gamepad: query.get( "gamepad" ),
+            companion: query.get( "companion" ),
+            resolution: query.get( "resolution" ),
+        };
 
-        if ( fps ) {
-            this.fps = Number( fps );
-            this.interval = 1000 / this.fps;
-        }
-
-        if ( map ) {
-            this.heroData.map = `maps/${map}`;
+        if ( this.query.map ) {
+            this.heroData.map = `maps/${this.query.map}`;
             this.heroData.spawn = 0; // Can be overriden with below query string
         }
 
-        if ( resolution ) {
-            this.resolution = this.getResolution( Number( resolution ) );
+        if ( this.query.spawn ) {
+            this.heroData.spawn = Number( this.query.spawn );
         }
 
-        if ( spawn ) {
-            this.heroData.spawn = Number( spawn );
-        }
-
-        if ( companion ) {
+        if ( this.query.companion ) {
             this.heroData.companion = {
-                id: companion,
+                id: this.query.companion,
                 type: Config.verbs.WALK,
             };
+        }
+
+        if ( this.query.resolution ) {
+            this.resolution = this.getResolution( Number( this.query.resolution ) );
         }
     }
 
