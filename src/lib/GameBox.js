@@ -640,8 +640,6 @@ export default class GameBox {
 *******************************************************************************/
     initMap () {
         this.map.initialize();
-        this.update();
-        this.hero.applyOffset();
         this.player.gameaudio.addSound({
             id: this.map.data.id,
             src: this.map.data.sound,
