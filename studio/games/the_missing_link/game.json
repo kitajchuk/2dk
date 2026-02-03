@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1263,
+    "save": 1265,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1057,15 +1057,15 @@
         {
             "id": "like-like",
             "name": "Like-Like",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "verb": "walk",
             "maxv": 0.5,
             "controlmaxv": 0.5,
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
@@ -1090,16 +1090,17 @@
             "verbs": {
                 "face": {
                     "down": {
-                        "offsetX": 544,
-                        "offsetY": 272
+                        "offsetX": 548,
+                        "offsetY": 276
                     }
                 },
                 "walk": {
                     "dur": 1000,
                     "down": {
-                        "offsetX": 544,
-                        "offsetY": 272,
-                        "stepsX": 2
+                        "offsetX": 548,
+                        "offsetY": 276,
+                        "stepsX": 2,
+                        "gapX": 4
                     }
                 }
             },
@@ -1239,6 +1240,40 @@
                         "offsetX": 476,
                         "offsetY": 0,
                         "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "left"
+                }
+            ]
+        },
+        {
+            "id": "fairy",
+            "name": "Fairy",
+            "width": 32,
+            "height": 52,
+            "image": "assets/sprites/npcs.png",
+            "maxv": 1,
+            "dir": "right",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 32,
+                "height": 52
+            },
+            "verbs": {
+                "face": {
+                    "right": {
+                        "offsetX": 632,
+                        "offsetY": 78
+                    },
+                    "left": {
+                        "offsetX": 632,
+                        "offsetY": 78,
                         "flipX": true
                     }
                 }
