@@ -320,14 +320,13 @@ class Player extends Controller {
         this.data = await this.loader.loadBundle( "game.json", this.device, ( counter, length ) => {
             this.splashLoad.innerHTML = renderSplash( `Loaded ${counter} of ${length} game resources...` );
         });
-        this.heroData = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
-        this.resolution = this.getResolution( this.device ? 2 : this.data.resolution );
         this.debug();
+        this.heroData = this.getHeroData();
+        this.resolution = this.getResolution();
         this.width = this.data.width / this.resolution;
         this.height = this.data.height / this.resolution;
         this.buildScreen();
         this.buildGamebox();
-        this.onRotate();
         this.splashLoad.innerHTML = `
         ${renderGameInfo( this.data )}
         ${renderSplash( "Press Start" )}
@@ -363,30 +362,38 @@ class Player extends Controller {
             companion: query.get( "companion" ),
             resolution: query.get( "resolution" ),
         };
+    }
+
+
+    getHeroData () {
+        const heroData = Utils.merge( this.data.heroes[ this.data.hero.sprite ], this.data.hero );
 
         if ( this.query.map ) {
-            this.heroData.map = `maps/${this.query.map}`;
-            this.heroData.spawn = 0; // Can be overriden with below query string
+            heroData.map = `maps/${this.query.map}`;
+            heroData.spawn = 0; // Can be overriden with below query string
         }
 
         if ( this.query.spawn ) {
-            this.heroData.spawn = Number( this.query.spawn );
+            heroData.spawn = Number( this.query.spawn );
         }
 
         if ( this.query.companion ) {
-            this.heroData.companion = {
+            heroData.companion = {
                 id: this.query.companion,
                 type: Config.verbs.WALK,
             };
         }
 
-        if ( this.query.resolution ) {
-            this.resolution = this.getResolution( Number( this.query.resolution ) );
-        }
+        return heroData;
     }
 
 
-    getResolution ( res ) {
+    getResolution () {
+        const res = this.query.resolution ?
+            Number( this.query.resolution ) :
+            this.device ?
+                Config.player.deviceResolution :
+                this.data.resolution;
         return res > this.data.maxresolution ? this.data.maxresolution : res;
     }
 
@@ -509,10 +516,13 @@ class Player extends Controller {
 
 
     onRotate () {
-        if ( window.screen.orientation.type.includes( "landscape" ) && this.ready ) {
-            this.resume();
+        if ( !this.ready ) {
+            return;
+        }
 
-        } else if ( this.ready ) {
+        if ( window.screen.orientation.type.includes( "landscape" ) ) {
+            this.resume();
+        } else {
             this.pause();
         }
     }

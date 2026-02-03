@@ -11,6 +11,7 @@ const Config = {
     player: {
         fps: 60,
         fadeDur: parseInt( getStyleVar( "--fade-duration" ), 10 ),
+        deviceResolution: 2,
     },
     physics: {
         maxv: 4,
