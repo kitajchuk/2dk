@@ -529,18 +529,28 @@ export default class Sprite {
     }
 
 
+    // TODO: Why does collision cause floating point positions?
+    //       We always want the positions to be whole integers (pixel values).
+    //       Rounding here at the source works but seems like a hack...
+    // NOTE: Why is this important?
+    //       - The Hero's position is used to calculate the camera position.
+    //       - The camera is used to calculate sprite offsets for rendering.
+    // FACT: Turns out the issue had to do with uneven math with friction tiles (e.g. grass dividing by 1.5)
+    //       Removed frition from grass (stairs still use 2 which works find) and it feels better not to slow down in the grass.
+
+
     getNextX () {
-        return Math.round( this.position.x + Utils.limit( this.physics.vx, -this.physics.maxv, this.physics.maxv ) );
+        return ( this.position.x + Utils.limit( this.physics.vx, -this.physics.maxv, this.physics.maxv ) );
     }
 
 
     getNextY () {
-        return Math.round( this.position.y + Utils.limit( this.physics.vy, -this.physics.maxv, this.physics.maxv ) );
+        return ( this.position.y + Utils.limit( this.physics.vy, -this.physics.maxv, this.physics.maxv ) );
     }
 
 
     getNextZ () {
-        return Math.round( this.position.z + Utils.limit( this.physics.vz, -this.physics.maxv, this.physics.maxv ) );
+        return ( this.position.z + Utils.limit( this.physics.vz, -this.physics.maxv, this.physics.maxv ) );
     }
 
 
@@ -581,11 +591,13 @@ export default class Sprite {
             ahead = 0;
         }
 
-        return {
+        const poi = {
             x: ( dir === "left" || dir === "right" ) ? ( this.getNextX() + ahead ) : this.position.x,
             y: ( dir === "up" || dir === "down" ) ? ( this.getNextY() + ahead ) : this.position.y,
             z: this.position.z,
-        }
+        };
+
+        return poi;
     }
 
 

@@ -810,8 +810,8 @@ class TopView extends GameBox {
 
         this.running = true;
         this.hero.cycle( Config.verbs.RUN, this.hero.dir );
-        this.hero.physics.maxv = this.hero.physics.controlmaxvstatic * 1.75;
-        this.hero.physics.controlmaxv = this.hero.physics.controlmaxvstatic * 1.75;
+        this.hero.physics.maxv = this.hero.physics.controlmaxvstatic * 2;
+        this.hero.physics.controlmaxv = this.hero.physics.controlmaxvstatic * 2;
     }
 
 

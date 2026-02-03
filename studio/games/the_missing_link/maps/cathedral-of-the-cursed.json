@@ -48,7 +48,6 @@
             "offsetX": 64,
             "offsetY": 2240,
             "mask": "grass-dead",
-            "friction": 1.5,
             "actions": [
                 {
                     "verb": "attack",
