@@ -267,7 +267,7 @@ export default class Sprite {
         const flipX = this.data.verbs[ this.verb ][ this.dir ].flipX;
         const flipY = this.data.verbs[ this.verb ][ this.dir ].flipY;
         let gapX = this.data.verbs[ this.verb ][ this.dir ].gapX;
-            gapX = this.frame > 0 && gapX ? gapX : 0;
+            gapX = gapX ? gapX * this.frame : 0;
 
         this.player.renderLayer.context.save();
         this.player.renderLayer.context.translate(

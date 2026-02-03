@@ -805,16 +805,16 @@
         {
             "id": "moblin",
             "name": "Moblin",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "verb": "walk",
             "maxv": 1,
             "controlmaxv": 1,
             "projectile": "arrow",
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
@@ -839,43 +839,49 @@
             "verbs": {
                 "face": {
                     "left": {
-                        "offsetX": 204,
+                        "offsetX": 208,
                         "offsetY": 408
                     },
                     "down": {
-                        "offsetX": 340,
+                        "offsetX": 344,
                         "offsetY": 408
                     },
                     "up": {
-                        "offsetX": 476,
+                        "offsetX": 480,
                         "offsetY": 408
                     },
                     "right": {
-                        "offsetX": 544,
-                        "offsetY": 408
+                        "offsetX": 208,
+                        "offsetY": 408,
+                        "flipX": true
                     }
                 },
                 "walk": {
                     "dur": 500,
                     "left": {
-                        "offsetX": 136,
-                        "offsetY": 408,
-                        "stepsX": 2
+                        "offsetX": 140,
+                        "offsetY": 412,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "down": {
-                        "offsetX": 272,
-                        "offsetY": 408,
-                        "stepsX": 2
+                        "offsetX": 276,
+                        "offsetY": 412,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "up": {
-                        "offsetX": 408,
-                        "offsetY": 408,
-                        "stepsX": 2
+                        "offsetX": 412,
+                        "offsetY": 412,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "right": {
-                        "offsetX": 544,
-                        "offsetY": 408,
-                        "stepsX": 2
+                        "offsetX": 140,
+                        "offsetY": 412,
+                        "stepsX": 2,
+                        "gapX": 4,
+                        "flipX": true
                     }
                 }
             },
@@ -889,16 +895,16 @@
         {
             "id": "boarblin",
             "name": "Boarblin",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "verb": "walk",
             "maxv": 1,
             "controlmaxv": 1,
             "projectile": "arrow",
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
@@ -923,43 +929,49 @@
             "verbs": {
                 "face": {
                     "left": {
-                        "offsetX": 204,
-                        "offsetY": 340
+                        "offsetX": 208,
+                        "offsetY": 344
                     },
                     "down": {
-                        "offsetX": 340,
-                        "offsetY": 340
+                        "offsetX": 344,
+                        "offsetY": 344
                     },
                     "up": {
-                        "offsetX": 476,
-                        "offsetY": 340
+                        "offsetX": 480,
+                        "offsetY": 344
                     },
                     "right": {
-                        "offsetX": 544,
-                        "offsetY": 340
+                        "offsetX": 208,
+                        "offsetY": 344,
+                        "flipX": true
                     }
                 },
                 "walk": {
                     "dur": 500,
                     "left": {
-                        "offsetX": 136,
-                        "offsetY": 340,
-                        "stepsX": 2
+                        "offsetX": 140,
+                        "offsetY": 344,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "down": {
-                        "offsetX": 272,
-                        "offsetY": 340,
-                        "stepsX": 2
+                        "offsetX": 276,
+                        "offsetY": 344,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "up": {
-                        "offsetX": 408,
-                        "offsetY": 340,
-                        "stepsX": 2
+                        "offsetX": 412,
+                        "offsetY": 344,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "right": {
-                        "offsetX": 544,
-                        "offsetY": 340,
-                        "stepsX": 2
+                        "offsetX": 140,
+                        "offsetY": 344,
+                        "stepsX": 2,
+                        "gapX": 4,
+                        "flipX": true
                     }
                 }
             },
@@ -973,16 +985,16 @@
         {
             "id": "octorok",
             "name": "Octorok",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "verb": "walk",
             "maxv": 1,
             "controlmaxv": 1,
             "projectile": "bullet",
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
@@ -1007,43 +1019,49 @@
             "verbs": {
                 "face": {
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": 274
+                        "offsetX": 4,
+                        "offsetY": 276
                     },
                     "down": {
-                        "offsetX": 138,
-                        "offsetY": 274
+                        "offsetX": 140,
+                        "offsetY": 276
                     },
                     "up": {
-                        "offsetX": 274,
-                        "offsetY": 274
+                        "offsetX": 276,
+                        "offsetY": 276
                     },
                     "right": {
-                        "offsetX": 410,
-                        "offsetY": 274
+                        "offsetX": 4,
+                        "offsetY": 276,
+                        "flipX": true
                     }
                 },
                 "walk": {
                     "dur": 500,
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": 274,
-                        "stepsX": 2
+                        "offsetX": 4,
+                        "offsetY": 276,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "down": {
-                        "offsetX": 138,
-                        "offsetY": 274,
-                        "stepsX": 2
+                        "offsetX": 140,
+                        "offsetY": 276,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "up": {
-                        "offsetX": 274,
-                        "offsetY": 274,
-                        "stepsX": 2
+                        "offsetX": 276,
+                        "offsetY": 276,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "right": {
-                        "offsetX": 410,
-                        "offsetY": 274,
-                        "stepsX": 2
+                        "offsetX": 4,
+                        "offsetY": 276,
+                        "stepsX": 2,
+                        "gapX": 4,
+                        "flipX": true
                     }
                 }
             },
@@ -1090,14 +1108,14 @@
             "verbs": {
                 "face": {
                     "down": {
-                        "offsetX": 548,
+                        "offsetX": 412,
                         "offsetY": 276
                     }
                 },
                 "walk": {
                     "dur": 1000,
                     "down": {
-                        "offsetX": 548,
+                        "offsetX": 412,
                         "offsetY": 276,
                         "stepsX": 2,
                         "gapX": 4
@@ -1114,8 +1132,8 @@
         {
             "id": "ghost",
             "name": "Ghost",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
             "opacity": 0.75,
@@ -1123,32 +1141,36 @@
             "hitbox": {
                 "x": 0,
                 "y": 0,
-                "width": 68,
-                "height": 68
+                "width": 64,
+                "height": 64
             },
             "verbs": {
                 "face": {
                     "dur": 1000,
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": 206,
-                        "stepsX": 2
+                        "offsetX": 4,
+                        "offsetY": 208,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "right": {
-                        "offsetX": 0,
-                        "offsetY": 206,
+                        "offsetX": 4,
+                        "offsetY": 208,
                         "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     },
                     "up-left": {
-                        "offsetX": 138,
-                        "offsetY": 206,
-                        "stepsX": 2
+                        "offsetX": 140,
+                        "offsetY": 208,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "up-right": {
-                        "offsetX": 138,
-                        "offsetY": 206,
+                        "offsetX": 140,
+                        "offsetY": 208,
                         "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     }
                 }
@@ -1163,8 +1185,8 @@
         {
             "id": "ghost-white",
             "name": "White Ghost",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
             "opacity": 0.75,
@@ -1172,32 +1194,36 @@
             "hitbox": {
                 "x": 0,
                 "y": 0,
-                "width": 68,
-                "height": 68
+                "width": 64,
+                "height": 64
             },
             "verbs": {
                 "face": {
                     "dur": 1000,
                     "right": {
-                        "offsetX": 274,
-                        "offsetY": 206,
-                        "stepsX": 2
+                        "offsetX": 276,
+                        "offsetY": 208,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "left": {
-                        "offsetX": 274,
-                        "offsetY": 206,
+                        "offsetX": 276,
+                        "offsetY": 208,
                         "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     },
                     "up-right": {
-                        "offsetX": 408,
-                        "offsetY": 206,
-                        "stepsX": 2
+                        "offsetX": 412,
+                        "offsetY": 208,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "up-left": {
-                        "offsetX": 408,
-                        "offsetY": 206,
+                        "offsetX": 412,
+                        "offsetY": 208,
                         "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     }
                 }
@@ -1212,8 +1238,8 @@
         {
             "id": "cursed-ghost",
             "name": "Cursed Ghost",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
             "status": "curse",
@@ -1223,8 +1249,8 @@
             },
             "dir": "left",
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
@@ -1232,14 +1258,16 @@
                 "face": {
                     "dur": 1000,
                     "left": {
-                        "offsetX": 476,
-                        "offsetY": 0,
-                        "stepsX": 2
+                        "offsetX": 480,
+                        "offsetY": 4,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "right": {
-                        "offsetX": 476,
-                        "offsetY": 0,
+                        "offsetX": 480,
+                        "offsetY": 4,
                         "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     }
                 }
@@ -1292,38 +1320,51 @@
         {
             "id": "fisherman",
             "name": "Fisherman",
-            "width": 128,
+            "width": 120,
             "height": 64,
             "image": "assets/sprites/npcs.png",
+            "dir": "left",
             "hitbox": {
-                "x": 64,
-                "y": 20,
-                "width": 64,
-                "height": 44
+                "x": 68,
+                "y": 24,
+                "width": 52,
+                "height": 40
             },
             "verbs": {
                 "face": {
                     "dur": 500,
-                    "down": {
-                        "offsetX": 0,
+                    "left": {
+                        "offsetX": 4,
                         "offsetY": 140,
-                        "stepsX": 2
+                        "stepsX": 2,
+                        "gapX": 4
+                    },
+                    "right": {
+                        "offsetX": 4,
+                        "offsetY": 140,
+                        "stepsX": 2,
+                        "gapX": 4,
+                        "flipX": true
                     }
                 },
                 "talk": {
-                    "down": {
-                        "offsetX": 256,
+                    "left": {
+                        "offsetX": 252,
                         "offsetY": 140
+                    },
+                    "right": {
+                        "offsetX": 252,
+                        "offsetY": 140,
+                        "flipX": true
                     }
                 }
             },
             "states": [
                 {
                     "verb": "face",
-                    "dir": "down",
+                    "dir": "left",
                     "action": {
-                        "verb": "talk",
-                        "dir": "up"
+                        "verb": "talk"
                     }
                 }
             ]
@@ -1331,22 +1372,23 @@
         {
             "id": "witch",
             "name": "Witch",
-            "width": 68,
-            "height": 136,
+            "width": 64,
+            "height": 120,
             "image": "assets/sprites/npcs.png",
             "hitbox": {
-                "x": 4,
-                "y": 68,
+                "x": 0,
+                "y": 56,
                 "width": 64,
-                "height": 68
+                "height": 64
             },
             "verbs": {
                 "face": {
                     "dur": 1000,
                     "down": {
-                        "offsetX": 272,
-                        "offsetY": 0,
-                        "stepsX": 3
+                        "offsetX": 276,
+                        "offsetY": 16,
+                        "stepsX": 3,
+                        "gapX": 4
                     }
                 }
             },
@@ -1364,16 +1406,16 @@
         {
             "id": "mouse",
             "name": "Mouse",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "bounce": true,
             "dir": "right",
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
@@ -1382,13 +1424,15 @@
                     "dur": 350,
                     "right": {
                         "offsetX": 480,
-                        "offsetY": 68,
-                        "stepsX": 2
+                        "offsetY": 72,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "left": {
                         "offsetX": 480,
-                        "offsetY": 68,
+                        "offsetY": 72,
                         "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     }
                 }
@@ -1403,12 +1447,12 @@
         {
             "id": "dude",
             "name": "Dude",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
@@ -1417,14 +1461,15 @@
                     "dur": 2000,
                     "down": {
                         "offsetX": 480,
-                        "offsetY": 136,
-                        "stepsX": 2
+                        "offsetY": 140,
+                        "stepsX": 2,
+                        "gapX": 4
                     }
                 },
                 "talk": {
                     "down": {
                         "offsetX": 480,
-                        "offsetY": 136
+                        "offsetY": 140
                     }
                 }
             },
@@ -1548,13 +1593,13 @@
         {
             "id": "old-man",
             "name": "Old Man",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
             "controlmaxv": 1,
             "hitbox": {
-                "x": 4,
+                "x": 0,
                 "y": 20,
                 "width": 64,
                 "height": 44
@@ -1562,19 +1607,19 @@
             "verbs": {
                 "face": {
                     "down": {
-                        "offsetX": 272,
+                        "offsetX": 276,
                         "offsetY": 480
                     },
                     "up": {
-                        "offsetX": 408,
+                        "offsetX": 412,
                         "offsetY": 480
                     },
                     "left": {
-                        "offsetX": 544,
+                        "offsetX": 548,
                         "offsetY": 480
                     },
                     "right": {
-                        "offsetX": 544,
+                        "offsetX": 548,
                         "offsetY": 480,
                         "flipX": true
                     }
@@ -1582,24 +1627,28 @@
                 "walk": {
                     "dur": 500,
                     "down": {
-                        "offsetX": 272,
-                        "offsetY": 480,
-                        "stepsX": 2
-                    },
-                    "up": {
-                        "offsetX": 408,
-                        "offsetY": 480,
-                        "stepsX": 2
-                    },
-                    "left": {
-                        "offsetX": 544,
-                        "offsetY": 480,
-                        "stepsX": 2
-                    },
-                    "right": {
-                        "offsetX": 544,
+                        "offsetX": 276,
                         "offsetY": 480,
                         "stepsX": 2,
+                        "gapX": 4
+                    },
+                    "up": {
+                        "offsetX": 412,
+                        "offsetY": 480,
+                        "stepsX": 2,
+                        "gapX": 4
+                    },
+                    "left": {
+                        "offsetX": 548,
+                        "offsetY": 480,
+                        "stepsX": 2,
+                        "gapX": 4
+                    },
+                    "right": {
+                        "offsetX": 548,
+                        "offsetY": 480,
+                        "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     }
                 }
@@ -1617,27 +1666,27 @@
         {
             "id": "cucco",
             "name": "Cucco",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "bounce": true,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
             "verbs": {
                 "face": {
                     "left": {
-                        "offsetX": 0,
+                        "offsetX": 4,
                         "offsetY": 70
                     },
                     "right": {
-                        "offsetX": 0,
+                        "offsetX": 4,
                         "offsetY": 70,
                         "flipX": true
                     }
@@ -1645,14 +1694,16 @@
                 "walk": {
                     "dur": 250,
                     "left": {
-                        "offsetX": 0,
-                        "offsetY": 70,
-                        "stepsX": 2
+                        "offsetX": 4,
+                        "offsetY": 72,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "right": {
-                        "offsetX": 0,
-                        "offsetY": 70,
+                        "offsetX": 4,
+                        "offsetY": 72,
                         "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     }
                 }
@@ -1667,41 +1718,43 @@
         {
             "id": "cucco-red",
             "name": "Red Cucco",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "bounce": true,
             "dir": "right",
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
             "verbs": {
                 "face": {
                     "right": {
-                        "offsetX": 136,
-                        "offsetY": 70
+                        "offsetX": 140,
+                        "offsetY": 72
                     },
                     "left": {
-                        "offsetX": 136,
-                        "offsetY": 70,
+                        "offsetX": 140,
+                        "offsetY": 72,
                         "flipX": true
                     }
                 },
                 "walk": {
                     "dur": 250,
                     "right": {
-                        "offsetX": 136,
-                        "offsetY": 70,
+                        "offsetX": 140,
+                        "offsetY": 72,
+                        "gapX": 4,
                         "stepsX": 2
                     },
                     "left": {
-                        "offsetX": 136,
-                        "offsetY": 70,
+                        "offsetX": 140,
+                        "offsetY": 72,
+                        "gapX": 4,
                         "stepsX": 2,
                         "flipX": true
                     }
@@ -1717,16 +1770,16 @@
         {
             "id": "dog",
             "name": "Dog",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "bounce": true,
             "dir": "left",
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
@@ -1734,14 +1787,16 @@
                 "face": {
                     "dur": 500,
                     "left": {
-                        "offsetX": 2,
-                        "offsetY": 2,
-                        "stepsX": 2
+                        "offsetX": 4,
+                        "offsetY": 4,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "right": {
-                        "offsetX": 2,
-                        "offsetY": 2,
+                        "offsetX": 4,
+                        "offsetY": 4,
                         "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     }
                 }
@@ -1756,16 +1811,16 @@
         {
             "id": "dog-black",
             "name": "Black Dog",
-            "width": 68,
-            "height": 68,
+            "width": 64,
+            "height": 64,
             "image": "assets/sprites/npcs.png",
             "bounce": true,
             "dir": "right",
             "maxv": 2,
             "controlmaxv": 2,
             "hitbox": {
-                "x": 4,
-                "y": 4,
+                "x": 0,
+                "y": 0,
                 "width": 64,
                 "height": 64
             },
@@ -1773,14 +1828,16 @@
                 "face": {
                     "dur": 500,
                     "right": {
-                        "offsetX": 138,
-                        "offsetY": 2,
-                        "stepsX": 2
+                        "offsetX": 140,
+                        "offsetY": 4,
+                        "stepsX": 2,
+                        "gapX": 4
                     },
                     "left": {
-                        "offsetX": 138,
-                        "offsetY": 2,
+                        "offsetX": 140,
+                        "offsetY": 4,
                         "stepsX": 2,
+                        "gapX": 4,
                         "flipX": true
                     }
                 }
