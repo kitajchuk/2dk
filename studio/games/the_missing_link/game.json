@@ -840,19 +840,19 @@
                 "face": {
                     "left": {
                         "offsetX": 208,
-                        "offsetY": 408
+                        "offsetY": 412
                     },
                     "down": {
                         "offsetX": 344,
-                        "offsetY": 408
+                        "offsetY": 412
                     },
                     "up": {
                         "offsetX": 480,
-                        "offsetY": 408
+                        "offsetY": 412
                     },
                     "right": {
                         "offsetX": 208,
-                        "offsetY": 408,
+                        "offsetY": 412,
                         "flipX": true
                     }
                 },
