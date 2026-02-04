@@ -214,9 +214,22 @@ export default class GameBox {
 * This is the main entry point for hero logic
 * Should be handled in plugin GameBox
 * Needs to apply the rest of the sprite stack after hero.update()
-* See applyHero() in plugin TopView for an example
+* See applyHero() below to see what that does
 *******************************************************************************/
     handleHero ( poi, dir ) {}
+
+
+    applyHero ( poi, dir ) {
+        // Apply position
+        this.hero.applyPosition( poi, dir );
+        this.hero.applyPriority();
+
+        // Applly offset
+        this.hero.applyOffset();
+
+        // Apply the sprite animation cycle
+        this.hero.applyCycle();
+    }
 
 
 /*******************************************************************************
@@ -655,6 +668,8 @@ export default class GameBox {
 *******************************************************************************/
     initMap () {
         this.map.initialize();
+        this.update();
+        this.applyHero( this.hero.position, this.hero.dir );
         this.player.gameaudio.addSound({
             id: this.map.data.id,
             src: this.map.data.sound,

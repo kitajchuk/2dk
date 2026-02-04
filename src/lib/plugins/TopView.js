@@ -253,22 +253,6 @@ class TopView extends GameBox {
 
 
 /*******************************************************************************
-* Hero apply methods...
-*******************************************************************************/
-    applyHero ( poi, dir ) {
-        // Apply position
-        this.hero.applyPosition( poi, dir );
-        this.hero.applyPriority();
-
-        // Applly offset
-        this.hero.applyOffset();
-
-        // Apply the sprite animation cycle
-        this.hero.applyCycle();
-    }
-
-
-/*******************************************************************************
 * Hero Handlers...
 *******************************************************************************/
     handleHero ( poi, dir ) {
