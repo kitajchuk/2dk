@@ -7,6 +7,7 @@ const npcReference = {
     id: "",
     ai: undefined || "",
     type: undefined || "",
+    aggro: undefined || true,
     spawn: {
         x: 0,
         y: 0,

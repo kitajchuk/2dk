@@ -10,6 +10,7 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
     const existingAction = npcToEdit && npcToEdit.action ? npcToEdit.action : {};
     const existingQuest = existingAction.quest ? existingAction.quest : "";
     const existingStates = npcToEdit ? npcToEdit.states : "";
+    const existingAggro = npcToEdit ? npcToEdit.aggro : false;
 
     // Exclude verbs that are not valid for NPCs
     const npcActions = actions.filter( ( action ) => {
@@ -106,6 +107,14 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
             <div class="editor__setting">
                 <div class="editor__label">State overrides (raw data)</div>
                 <textarea class="editor__field input textarea js-npc-field" name="states">${existingStates ? JSON.stringify( existingStates, null, 2 ) : ""}</textarea>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-npc-field" type="checkbox" name="aggro" ${existingAggro ? "checked" : ""} />
+                        <span class="label">Aggro (optional to engage with the hero)</span>
+                    </label>
+                </div>
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Action (optional)</div>
