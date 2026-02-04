@@ -1,46 +1,45 @@
 @layer gamepad {
     ._2dk__gamepad {
-        user-select: none;
-        pointer-events: none;
-        position: fixed;
         left: 0px;
-        left: 0px;
-        display: block;
         width: 100%;
         height: 100%;
         z-index: 10;
+        display: block;
+        position: fixed;
+        user-select: none;
+        pointer-events: none;
     }
     ._2dk__gamepad__dpad div,
     ._2dk__gamepad__btns div,
     ._2dk__gamepad__menu div {
-        pointer-events: auto;
-        display: block;
-        text-align: center;
         color: rgba( 0, 0, 0, 0.25 );
-        -webkit-text-stroke: 1px rgba( 0, 0, 0, 0.25 );
-        line-height: 1;
-        background: rgba( 255, 255, 255, 0.25 );
         border: 1px solid rgba( 0, 0, 0, 0.25 );
+        display: block;
+        background: rgba( 255, 255, 255, 0.25 );
+        text-align: center;
+        line-height: 1;
+        pointer-events: auto;
+        -webkit-text-stroke: 1px rgba( 0, 0, 0, 0.25 );
     
         &.is-active {
-            background: rgba( 255, 255, 255, 0.5 );
             color: rgba( 0, 0, 0, 0.5 );
+            background: rgba( 255, 255, 255, 0.5 );
         }
     }
     ._2dk__gamepad__menu {
-        position: fixed;
-        bottom: 0;
-        left: 50%;
-        transform: translateX( -50% );
-        display: flex;
         gap: 16px;
+        left: 50%;
+        bottom: 0;
+        display: flex;
+        position: fixed;
+        transform: translateX( -50% );
     }
     ._2dk__gamepad__btns,
     ._2dk__gamepad__menu {
         div {
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
         }
 
         span {
@@ -48,26 +47,26 @@
         }
     }
     ._2dk__gamepad__btns {
-        position: fixed;
         right: 20px;
         bottom: 40px;
         display: flex;
+        position: fixed;
         flex-direction: column;
     }
     ._2dk__gamepad__dpad {
-        height: 176px;
-        width: 176px;
-        position: fixed;
         left: 20px;
+        width: 176px;
+        height: 176px;
         bottom: 40px;
         display: flex;
-        justify-content: flex-start;
-        align-items: center;
+        position: fixed;
         flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
     
         div {
-            border-radius: 10px;
             position: relative;
+            border-radius: 10px;
     
             &[data-off="true"] {
                 visibility: hidden;
@@ -82,12 +81,12 @@
     }
     ._2dk__gamepad__right,
     ._2dk__gamepad__left {
-        height: 52px;
         width: 62px;
+        height: 52px;
     }
     ._2dk__gamepad__neutral {
-        height: 52px;
         width: 52px;
+        height: 52px;
     }
     ._2dk__gamepad__up-right,
     ._2dk__gamepad__up-left,
@@ -95,14 +94,14 @@
     ._2dk__gamepad__down-left {
         width: 62px;
         height: 62px;
-        background: none !important;
         border: none !important;
+        background: none !important;
     
         &:after {
-            content: "";
-            position: absolute;
             width: 0;
             height: 0;
+            content: "";
+            position: absolute;
             border-left: 32px solid transparent;
             border-right: 32px solid transparent;
             border-top: 40px solid rgba( 255, 255, 255, 0.25 );
@@ -115,15 +114,15 @@
     }
     ._2dk__gamepad__up-left {
         &:after {
-            bottom: 17px;
             right: 5px;
+            bottom: 17px;
             transform: rotate( -45deg ) translate3d( 0, 16px, 0 );
         }
     }
     ._2dk__gamepad__up-right {
         &:after {
-            bottom: 17px;
             left: 5px;
+            bottom: 17px;
             transform: rotate( 45deg ) translate3d( 0, 16px, 0 );
         }
     }
@@ -142,19 +141,19 @@
         }
     }
     ._2dk__gamepad__a {
-        position: relative;
         width: 64px;
         height: 64px;
-        border-radius: 64px;
+        position: relative;
         font-size: 24px;
+        border-radius: 64px;
         transform: translateY( 4px );
     }
     ._2dk__gamepad__b {
-        position: relative;
         width: 64px;
         height: 64px;
-        border-radius: 64px;
+        position: relative;
         font-size: 24px;
+        border-radius: 64px;
         transform: translateX( calc( -100% + 4px ) );
     }
     ._2dk__gamepad__start {
@@ -178,14 +177,12 @@
         }
     }
 
+    // Hide the gamepad when the menu is active
     ._2dk__menu {
         &.is-active ~ ._2dk__gamepad {
-            ._2dk__gamepad__sprite {
+            ._2dk__gamepad__dpad,
+            ._2dk__gamepad__btns {
                 display: none;
-
-                & + span {
-                    display: block;
-                }
             }
         }
     }

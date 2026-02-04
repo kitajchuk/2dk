@@ -17,13 +17,14 @@ import GameBox, { Camera, RenderQueue } from "./GameBox";
 import GamePad from "./GamePad";
 import GameQuest from "./GameQuest";
 import GameWorker from "./GameWorker";
+import GameStorage from "./GameStorage";
 import Loader from "./Loader";
 import Map from "./maps/Map";
 import MapFX from "./maps/MapFX";
 import MapLayer from "./maps/MapLayer";
 import MapEvent from "./maps/MapEvent";
 import ActiveTiles from "./maps/ActiveTiles";
-import Player from "./Player";
+import Player, { PlayerMenu } from "./Player";
 import Spring from "./Spring";
 import Utils from "./Utils";
 import CellAuto from "./vendor/CellAuto";
@@ -58,10 +59,11 @@ const lib = {
     GamePad,
     GameQuest,
     GameWorker,
+    GameStorage,
     Loader,
     Map, MapFX, MapLayer, MapEvent, ActiveTiles,
     CellAutoMap,
-    Player,
+    Player, PlayerMenu,
     Spring,
     Utils,
     HUD,

@@ -1,16 +1,16 @@
-@layer player {
+@layer splash {
     ._2dk__splash {
-        color: white;
-        background-color: var( --black );
-        position: fixed;
-        left: 0;
         top: 0;
+        left: 0;
+        color: var( --white );
         width: 100%;
         height: 100%;
-        overflow: hidden;
         z-index: 10;
+        position: fixed;
+        overflow: hidden;
         transition: opacity var( --fade-duration ) ease-in-out;
         pointer-events: none;
+        background-color: var( --black );
     
         .is-started & {
             opacity: 0;
@@ -22,16 +22,16 @@
     }
 
     ._2dk__splash__load {
-        display: none;
-        position: fixed;
-        left: 0;
+        gap: 16px;
         top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        justify-content: center;
+        display: none;
+        position: fixed;
         align-items: center;
         flex-direction: column;
-        gap: 16px;
+        justify-content: center;
 
         .is-started & {
             display: none;
@@ -39,24 +39,24 @@
     }
 
     ._2dk__splash__info {
-        display: none;
-        position: fixed;
-        left: 0;
         top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        justify-content: center;
+        display: none;
+        position: fixed;
         align-items: center;
+        justify-content: center;
     
         .is-started & {
             display: none;
         }
     
         > div:first-child {
-            padding-left: 36px;
-            padding-right: 36px;
             z-index: 12;
             text-align: center;
+            padding-left: 36px;
+            padding-right: 36px;
     
             @media ( max-width: 640px ) {
                 padding-left: 20px;
@@ -65,23 +65,23 @@
         }
 
         > div:last-child {
-            padding-left: 36px;
-            padding-right: 36px;
-            background-repeat: no-repeat;
-            background-size: 64px 64px;
-            background-position: 50% calc( 100% - 65px - 36px );
-            position: fixed;
             left: 0;
-            bottom: 0;
             width: 100%;
             height: 100%;
-            background-color: transparent;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
+            bottom: 0;
             z-index: 13;
+            display: flex;
+            position: fixed;
             text-align: center;
+            align-items: flex-end;
+            padding-left: 36px;
+            padding-right: 36px;
             padding-bottom: 65px;
+            justify-content: center;
+            background-size: 64px 64px;
+            background-color: transparent;
+            background-repeat: no-repeat;
+            background-position: 50% calc( 100% - 65px - 36px );
     
             @media ( max-width: 640px ) {
                 padding-left: 20px;
@@ -95,26 +95,18 @@
     }
 
     ._2dk__splash__update {
-        position: fixed;
-        left: 20px;
         top: 20px;
+        left: 20px;
         right: 20px;
         z-index: 13;
-        text-align: center;
-        background-color: var( --grey );
-        padding: 12px 24px;
-        border-radius: 10px;
-        color: var( --black );
-        font-size: 14px;
         display: none;
+        position: fixed;
         pointer-events: auto;
 
         &.has-update {
             display: block;
         }
     }
-    
-    
     
     @media ( orientation: portrait ) {
         ._2dk__splash {
@@ -135,13 +127,11 @@
     
             > div:last-child {
                 animation: bounce 480ms infinite;
-                transition: all 240ms ease;
                 transform: translate3d( 0, 0, 0 );
+                transition: all 240ms ease;
             }
         }
     }
-    
-    
     
     @media ( orientation: landscape ) {
         ._2dk__splash__load {
@@ -149,13 +139,21 @@
         }
     }
     
-    
-    
     @keyframes bounce {
-        0% { background-position: 50% calc( 100% - 65px - 36px - 4px ); }
-        49.99999% { background-position: 50% calc( 100% - 65px - 36px - 8px ); }
-        50% { background-position: 50% calc( 100% - 65px - 36px - 8px ); }
-        99.99999% { background-position: 50% calc( 100% - 65px - 36px - 4px ); }
-        100% { background-position: 50% calc( 100% - 65px - 36px ); }
+        0% {
+            background-position: 50% calc( 100% - 65px - 36px - 4px );
+        }
+        49.99999% {
+            background-position: 50% calc( 100% - 65px - 36px - 8px );
+        }
+        50% {
+            background-position: 50% calc( 100% - 65px - 36px - 8px );
+        }
+        99.99999% {
+            background-position: 50% calc( 100% - 65px - 36px - 4px );
+        }
+        100% {
+            background-position: 50% calc( 100% - 65px - 36px );
+        }
     }
 }

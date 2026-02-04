@@ -2,6 +2,7 @@ import Utils from "./Utils";
 import Config from "./Config";
 import GamePad from "./GamePad";
 import GameAudio from "./GameAudio";
+import GameStorage from "./GameStorage";
 import Loader from "./Loader";
 import Controller from "./Controller";
 import TopView from "./plugins/TopView";
@@ -10,9 +11,14 @@ import { renderMenu, renderSplash, renderGameInfo, renderSplashInfo } from "./DO
 
 
 
-class Player extends Controller {
+export default class Player extends Controller {
     constructor () {
         super();
+
+        this.build();
+
+        this.menu = new PlayerMenu( this );
+        this.gamestorage = new GameStorage( this );
 
         this.fps = Config.player.fps;
         this.frame = 0;
@@ -27,8 +33,6 @@ class Player extends Controller {
 
         this.initialize();
         this.detect();
-        this.build();
-        this.buildMenu();
         this.buildSplash();
     }
 
@@ -272,7 +276,7 @@ class Player extends Controller {
         this.gameaudio.stop();
 
         // Player cleanup and reset state
-        this.hideMenu();
+        this.menu.hide();
         this.initialize();
         this.element.classList.remove( "is-started", "is-fader" );
 
@@ -292,7 +296,7 @@ class Player extends Controller {
 
     pause () {
         this.hardStop();
-        this.showMenu();
+        this.menu.show();
         this.emit( Config.broadcast.PAUSED );
 
         // Start the idle game loop ONLY if a gamepad is connected
@@ -306,7 +310,7 @@ class Player extends Controller {
         this.paused = false;
         this.stopped = false;
         this.gamebox.pause( false );
-        this.hideMenu();
+        this.menu.hide();
         this.emit( Config.broadcast.RESUMED );
         this.go();
     }
@@ -417,13 +421,6 @@ class Player extends Controller {
     }
 
 
-    buildMenu () {
-        this.menu = document.createElement( "div" );
-        this.menu.className = "_2dk__menu";
-        this.element.appendChild( this.menu );
-    }
-
-
     buildSplash () {
         this.splash = document.createElement( "div" );
         this.splash.className = "_2dk__splash";
@@ -434,7 +431,7 @@ class Player extends Controller {
         this.splashLoad.className = "_2dk__splash__load";
         this.splashLoad.innerHTML = renderSplash( "Loading game bundle..." );
         this.splashUpdate = document.createElement( "div" );
-        this.splashUpdate.className = "_2dk__splash__update";
+        this.splashUpdate.className = "_2dk__splash__update btn";
         this.splashUpdate.innerHTML = "<div>Update Available</div>";
         this.splash.appendChild( this.splashInfo );
         this.splash.appendChild( this.splashLoad );
@@ -477,19 +474,6 @@ class Player extends Controller {
 /*******************************************************************************
 * Presentation
 *******************************************************************************/
-    showMenu () {
-        // TODO: This is a stub temp menu so we can see the hero stats...
-        if ( this.gamebox.hero ) {
-            this.menu.innerHTML = renderMenu( this );
-        }
-        this.menu.classList.add( "is-active" );
-    }
-
-
-    hideMenu () {
-        this.menu.classList.remove( "is-active" );
-    }
-
     fadeOut () {
         return new Promise( ( resolve ) => {
             this.element.classList.add( "is-fader" );
@@ -588,5 +572,65 @@ class Player extends Controller {
 }
 
 
+export class PlayerMenu {
+    constructor ( player ) {
+        this.player = player;
+        this.build();
+        this.bind();
+    }
 
-export default Player;
+
+    build () {
+        this.element = document.createElement( "div" );
+        this.element.className = "_2dk__menu";
+        this.player.element.appendChild( this.element );
+    }
+
+
+    show () {
+        if ( this.player.gamebox.hero ) {
+            this.element.innerHTML = renderMenu( this.player );
+        }
+
+        this.element.classList.add( "is-active" );
+    }
+
+
+    hide () {
+        this.element.classList.remove( "is-active" );
+    }
+
+
+    bind () {
+        this.element.addEventListener( "click", ( e ) => {
+            const tab = e.target.closest( "[data-tab]" );
+
+            if ( tab ) {
+                const content = this.element.querySelector( `[data-content="${tab.dataset.tab}"]` );
+
+                this.element.querySelectorAll( ".is-active" ).forEach( ( el ) => {
+                    el.classList.remove( "is-active" );
+                });
+                tab.classList.add( "is-active" );
+                content.classList.add( "is-active" );
+                return;
+            }
+
+            const save = e.target.closest( "[data-save]" );
+            
+            if ( save ) {
+                this.player.gamestorage.persist( this.player.gamebox );
+                this.player.reset();
+                return;
+            }
+            
+            const reset = e.target.closest( "[data-reset]" );
+
+            if ( reset ) {
+                this.player.gamestorage.reset();
+                this.player.reset();
+                return;
+            }
+        });
+    }
+}

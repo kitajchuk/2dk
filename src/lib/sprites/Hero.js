@@ -18,6 +18,10 @@ export default class Hero extends Sprite {
         this.status = null;
         this.statusEffects = {};
         this.currency = this.data.currency || 0;
+        this.equipped = this.data.equipped || {
+            weapon: false,
+            shield: false,
+        };
         this.enemiesKilled = 0;
         this.itemGet = null;
         this.liftedTile = null;
@@ -317,27 +321,27 @@ export default class Hero extends Sprite {
 * Equipped
 *******************************************************************************/
     equip ( eq ) {
-        this.data.equipped[ eq ] = true;
+        this.equipped[ eq ] = true;
     }
 
 
     unequip ( eq ) {
-        this.data.equipped[ eq ] = false;
+        this.equipped[ eq ] = false;
     }
 
 
     isEquipped ( eq ) {
-        return this.data.equipped[ eq ] || false;
+        return this.equipped[ eq ] || false;
     }
 
 
     hasWeapon () {
-        return this.data.equipped.weapon && this.data.weapon?.[ this.dir ]?.length;
+        return this.equipped.weapon && this.data.weapon?.[ this.dir ]?.length;
     }
 
 
     hasShield () {
-        return this.data.equipped.shield && this.data.shield?.[ this.verb ]?.[ this.dir ]?.length;
+        return this.equipped.shield && this.data.shield?.[ this.verb ]?.[ this.dir ]?.length;
     }
 
 

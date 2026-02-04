@@ -1,0 +1,48 @@
+@layer dialogue {
+    ._2dk__dialogue {
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        border: 1px solid var( --black );
+        opacity: 0;
+        z-index: 10;
+        position: fixed;
+        overflow: hidden;
+        box-shadow: var( --box-shadow );
+        text-align: left;
+        transition: opacity 240ms ease;
+        line-height: 1.5;
+        border-radius: 10px;
+        background-color: rgba( 0, 0, 0, 0.75 );
+
+        [data-resolution="1"] & {
+            padding: 36px 72px;
+        }
+    
+        [data-resolution="2"] & {
+            padding: 24px 48px;
+        }
+
+        &__text {
+            [data-resolution="1"] & {
+                font-size: 18px;
+            }
+        
+            [data-resolution="2"] & {
+                font-size: 12px;
+            }
+
+            .a {
+                color: var( --teal );
+            }
+
+            .b {
+                color: var( --blue );
+            }
+        }
+    
+        &.is-texting {
+            opacity: 1;
+        }
+    }
+}

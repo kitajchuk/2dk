@@ -6,6 +6,7 @@ import Map from "./maps/Map";
 import Hero from "./sprites/Hero";
 import Companion from "./sprites/Companion";
 import GameQuest from "./GameQuest";
+import GameStorage from "./GameStorage";
 import ItemDrop from "./sprites/ItemDrop";
 import { KeyItemDrop } from "./sprites/KeyItem";
 import HUD from "./HUD";
@@ -18,7 +19,9 @@ export default class GameBox {
         this.dropin = false;
         this.panning = false;
         this.mapChangeEvent = null;
-        this.gamequest = new GameQuest( this );
+
+        // Quest, render queue
+        this.gamequest = new GameQuest( this, this.player.gamestorage.get( "quests" ) );
         this.renderQueue = new RenderQueue( this );
 
         // Dialogues
@@ -26,9 +29,11 @@ export default class GameBox {
 
         // Sounds
         this.currentMusic = null;
-
-        let initMapData = Loader.cash( this.player.heroData.map );
-        let initHeroData = structuredClone( this.player.heroData );
+        
+        // GameStorage map needs to be handled up front to load the correct data
+        const mapId = this.player.gamestorage.get( "map" ) || this.player.heroData.map;
+        const initMapData = Loader.cash( mapId );
+        const initHeroData = structuredClone( this.player.heroData );
 
         // Camera
         this.camera = new Camera( this );
@@ -40,7 +45,8 @@ export default class GameBox {
         initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
         this.hero = new Hero( initHeroData, this.map );
         this.map.addAllSprite( this.hero );
-        this.seed();
+        this.seedStorage();
+        this.seedQuery();
 
         // HUD
         this.hud = new HUD( this );
@@ -247,19 +253,19 @@ export default class GameBox {
     }
 
 
-    seed () {
+    seedQuery () {
         if ( this.player.query.status ) {
             this.hero.applyStatus( this.player.query.status );
         }
 
         if ( this.player.query.items ) {
             const items = this.player.query.items.split( "," );
-
+            
             for ( let i = items.length; i--; ) {
                 const item = items[ i ];
                 const data = this.player.getMergedData({
                     id: item,
-                    // Doesn't support mapId which is defined by NPCs so this is PURELY for debugging / testing
+                // Doesn't support mapId which is defined by NPCs so this is PURELY for debugging / testing
                 }, "items" );
                 this.hero.items.push( data );
     
@@ -276,6 +282,13 @@ export default class GameBox {
         this.hero.stillTimer = 0;
         this.hero.itemGet = null;
         this.hero.face( this.hero.dir );
+    }
+
+
+    seedStorage () {
+        for ( const prop of GameStorage.heroProps ) {
+            this.hero[ prop ] = this.player.gamestorage.get( prop ) || this.hero[ prop ];
+        }
     }
 
 
@@ -651,6 +664,7 @@ export default class GameBox {
         this.dialogue.auto({
             text: [this.map.data.name],
         });
+        this.player.gamestorage.persist( this );
     }
 
 

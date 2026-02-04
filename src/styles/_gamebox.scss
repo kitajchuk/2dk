@@ -1,0 +1,15 @@
+@layer gamebox {
+    ._2dk__layer,
+    ._2dk__gamebox {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+    }
+
+    ._2dk__layer {
+        z-index: 1;
+    }
+    
+}

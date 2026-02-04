@@ -1,5 +1,5 @@
 class GameQuest {
-    constructor ( gamebox ) {
+    constructor ( gamebox, seedCompleted = undefined ) {
         this.gamebox = gamebox;
         this.quests = {
             // [key string]: [value number]
@@ -7,7 +7,7 @@ class GameQuest {
         this.reset = [
             // [key string]
         ];
-        this.completed = {
+        this.completed = seedCompleted || {
             // [key string]: [value boolean]
         };
     }
