@@ -60,12 +60,13 @@ export const renderButtonSprite = ( item, btn, rotate = 30 ) => {
 
 export const renderMenu = ( player ) => {
     const hero = player.gamebox.hero;
+    const quests = Object.keys( player.gamebox.gamequest.completed );
 
     return html`
         <div class="_2dk__menu__tabs">
             <div class="_2dk__menu__tab is-active" data-tab="stats">Stats</div>
             <div class="_2dk__menu__tab" data-tab="items">Items</div>
-            <div class="_2dk__menu__tab" data-tab="map">Map</div>
+            <div class="_2dk__menu__tab" data-tab="quests">Quests</div>
             <div class="_2dk__menu__tab" data-tab="save">Save & Quit</div>
         </div>
         <div class="_2dk__menu__contents">
@@ -78,7 +79,11 @@ export const renderMenu = ( player ) => {
                 <div>Enemies Killed: ${hero.enemiesKilled}</div>
             </div>
             <div class="_2dk__menu__content" data-content="items">...</div>
-            <div class="_2dk__menu__content" data-content="map">...</div>
+            <div class="_2dk__menu__content" data-content="quests">
+                ${quests.map( ( quest ) => html`
+                    <div>${quest}</div>
+                `).join( "" )}
+            </div>
             <div class="_2dk__menu__content" data-content="save">
                 <div class="btns">
                     <div class="_2dk__menu__save btn" data-save="true">Save & Quit</div>

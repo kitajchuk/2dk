@@ -50,9 +50,8 @@
     }
 
     ._2dk__menu__contents {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        flex: 1;
+        overflow-y: auto;
     }
 
     ._2dk__menu__content {
@@ -63,8 +62,18 @@
         text-align: center;
         line-height: 1.5;
         align-items: center;
-        justify-content: center;
         flex-direction: column;
+        justify-content: center;
+
+        &[data-content="stats"],
+        &[data-content="items"],
+        &[data-content="save"] {
+            height: 100%;
+        }
+
+        &[data-content="quests"] {
+            padding: 64px 0;
+        }
 
         &.is-active {
             display: flex;

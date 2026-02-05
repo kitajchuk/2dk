@@ -252,6 +252,7 @@ export default class Player extends Controller {
         }
 
         if ( this.gamebox.hero.killed && this.gamebox.hero.deathCounter === 0 ) {
+            // this.player.gamestorage.persist( this.player.gamebox );
             this.reset();
             return;
         }
