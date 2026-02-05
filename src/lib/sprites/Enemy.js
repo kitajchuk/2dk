@@ -106,6 +106,16 @@ export default class Enemy extends NPC {
             const angle = Math.atan2( toBackoffY, toBackoffX );
             poi.x = this.position.x + ( this.aggroSpeed * Math.cos( angle ) );
             poi.y = this.position.y + ( this.aggroSpeed * Math.sin( angle ) );
+
+            const { isCollision } = this.getCollision( poi );
+
+            if ( isCollision ) {
+                // TODO: Implement pathfinding logic to get around stuff like other aggroed enemies when backing off...
+                // Right now this can cause an enemy to ping-pong between collision and the hero in short bursts causing rapid death...
+                this.backoffPosition = null;
+                return;
+            }
+
             this.position = poi;
 
             if ( Math.abs( this.center.x - this.backoffPosition.x ) < 1 && Math.abs( this.center.y - this.backoffPosition.y ) < 1 ) {
@@ -126,11 +136,7 @@ export default class Enemy extends NPC {
         poi.x = this.position.x + ( this.aggroSpeed * Math.cos( angle ) );
         poi.y = this.position.y + ( this.aggroSpeed * Math.sin( angle ) );
 
-        const collision = {
-            map: this.gamebox.checkMap( poi, this ),
-            // Handle collision on current position so we can HIT the hero
-            hero: this.gamebox.checkHero( this.position, this ),
-        };
+        const { collision, isCollision } = this.getCollision( poi );
 
         if ( collision.hero && !this.backoffPosition ) {
             const angleFromHero = angle + Math.PI;
@@ -141,12 +147,36 @@ export default class Enemy extends NPC {
             return;
         }
 
-        if ( collision.map ) {
+        if ( isCollision ) {
             // TODO: Implement pathfinding logic to get around walls etc...
             return;
         }
 
         this.position = poi;
+    }
+
+
+    getCollision ( poi ) {
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
+            enemy: this.gamebox.checkEnemy( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
+            empty: this.gamebox.checkEmpty( poi, this ),
+            // Handle collision on current position so we can HIT the hero
+            hero: this.gamebox.checkHero( this.position, this ),
+        };
+
+        const isCollision = (
+            collision.map ||
+            collision.npc ||
+            collision.enemy ||
+            collision.doors ||
+            this.canTileStop( collision )
+        );
+
+        return { collision, isCollision };
     }
 
 

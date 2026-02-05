@@ -200,7 +200,23 @@ export default class NPC extends QuestSprite {
 
     applyNormalPosition () {
         const poi = this.getNextPoi();
-        const { isCollision } = this.getCollision( poi );
+        const collision = {
+            map: this.gamebox.checkMap( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
+            enemy: this.gamebox.checkEnemy( poi, this ),
+            hero: this.gamebox.checkHero( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+            doors: this.gamebox.checkDoor( poi, this ),
+            empty: this.gamebox.checkEmpty( poi, this ),
+        };
+        const isCollision = (
+            collision.map ||
+            collision.npc ||
+            collision.enemy ||
+            collision.hero ||
+            collision.doors ||
+            this.canTileStop( collision )
+        );
 
         // Removing this because NPCs in general should avoid hero collisions...
         // Enemies should handle hero collisions themselves!
@@ -241,29 +257,6 @@ export default class NPC extends QuestSprite {
         }
 
         this.position = poi;
-    }
-
-
-    getCollision ( poi ) {
-        const collision = {
-            map: this.gamebox.checkMap( poi, this ),
-            npc: this.gamebox.checkNPC( poi, this ),
-            enemy: this.gamebox.checkEnemy( poi, this ),
-            hero: this.gamebox.checkHero( poi, this ),
-            tiles: this.gamebox.checkTiles( poi, this ),
-            doors: this.gamebox.checkDoor( poi, this ),
-            empty: this.gamebox.checkEmpty( poi, this ),
-        };
-        const isCollision = (
-            collision.map ||
-            collision.npc ||
-            collision.enemy ||
-            collision.hero ||
-            collision.doors ||
-            this.canTileStop( collision )
-        );
-
-        return { collision, isCollision };
     }
 
 
