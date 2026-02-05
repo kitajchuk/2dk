@@ -1191,12 +1191,12 @@ export class HeroProjectile extends Projectile {
     applyPosition () {
         const poi = this.getNextPoi();
         const collision = {
-            map: this.gamebox.checkMap( poi, this ),
-            npc: this.gamebox.checkNPC( poi, this ),
-            enemy: this.gamebox.checkEnemy( poi, this ),
-            tiles: this.gamebox.checkTiles( poi, this ),
-            doors: this.gamebox.checkDoor( poi, this ),
-            camera: this.gamebox.checkCamera( poi, this ),
+            map: this.gamebox.checkMap( this.position, this ),
+            npc: this.gamebox.checkNPC( this.position, this ),
+            enemy: this.gamebox.checkEnemy( this.position, this ),
+            tiles: this.gamebox.checkTiles( this.position, this ),
+            doors: this.gamebox.checkDoor( this.position, this ),
+            camera: this.gamebox.checkCamera( this.position, this ),
         };
 
         const isCollision = (
