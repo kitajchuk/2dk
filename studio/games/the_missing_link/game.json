@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1284,
+    "save": 1286,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -751,6 +751,16 @@
             "offsetX": 272,
             "offsetY": 130,
             "status": "curse"
+        },
+        {
+            "id": "purging-stone",
+            "name": "Purging Stone",
+            "width": 48,
+            "height": 52,
+            "image": "assets/sprites/items.png",
+            "offsetX": 72,
+            "offsetY": 198,
+            "cure": "curse"
         }
     ],
     "projectiles": [
