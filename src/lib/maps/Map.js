@@ -4,6 +4,7 @@ import Config from "../Config";
 import NPC from "../sprites/NPC";
 import Door from "../sprites/Door";
 import Enemy from "../sprites/Enemy";
+import EnemyAggro from "../sprites/EnemyAggro";
 import FX from "../sprites/FX";
 import ActiveTiles from "./ActiveTiles";
 import MapEvent from "./MapEvent";
@@ -131,7 +132,9 @@ export default class Map {
                 this.spawnpool.push({ data, type, mapId });
 
             } else if ( type === Config.npc.types.ENEMY ) {
-                const enemy = new Enemy( data, this, mapId );
+                const enemy = data.aggro 
+                    ? new EnemyAggro( data, this, mapId )
+                    : new Enemy( data, this, mapId );
                 this.enemies.push( enemy );
                 this.addAllSprite( enemy );
 

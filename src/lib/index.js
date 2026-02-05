@@ -4,6 +4,7 @@ import NPC from "./sprites/NPC";
 import Hero, { ItemGet, LiftedTile, HeroProjectile } from "./sprites/Hero";
 import Sprite, { QuestSprite } from "./sprites/Sprite";
 import Enemy from "./sprites/Enemy";
+import EnemyAggro from "./sprites/EnemyAggro";
 import Companion from "./sprites/Companion";
 import ItemDrop from "./sprites/ItemDrop";
 import KeyItem, { KeyItemDrop } from "./sprites/KeyItem";
@@ -43,7 +44,7 @@ const lib = {
     NPC,
     Hero, ItemGet, LiftedTile, HeroProjectile,
     Door,
-    Enemy,
+    Enemy, EnemyAggro,
     Sprite, QuestSprite,
     ItemDrop,
     Companion,
