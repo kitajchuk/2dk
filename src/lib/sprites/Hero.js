@@ -1152,6 +1152,11 @@ export default class Hero extends Sprite {
 
         return false;
     }
+
+
+    canAggroEnemy ( enemy ) {
+        return !this.gamebox.dropin && !this.isDead();
+    }
 }
 
 

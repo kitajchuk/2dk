@@ -69,18 +69,19 @@ export default class Enemy extends NPC {
 
 
     handleDetection () {
-        if ( !this.data.aggro || this.isHitOrStill() || this.gamebox.hero.isDead() ) {
+        if ( !this.data.aggro || this.isHitOrStill() || !this.gamebox.hero.canAggroEnemy( this ) ) {
             this.aggroActive = false;
             return;
         }
 
         const distX = this.gamebox.hero.center.x - this.center.x;
         const distY = this.gamebox.hero.center.y - this.center.y;
+        const canAggro = Math.pow( distX, 2 ) + Math.pow( distY, 2 ) <= Math.pow( this.aggroRadius, 2 );
 
         // TODO: Raycast to the hero and check if there is a wall in the way...
         //       Figure out map collision layer first then apply to other collision layers...
         
-        if ( Math.pow( distX, 2 ) + Math.pow( distY, 2 ) <= Math.pow( this.aggroRadius, 2 ) ) {
+        if ( canAggro ) {
             this.aggroActive = true;
 
         } else {

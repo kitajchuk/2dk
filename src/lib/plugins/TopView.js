@@ -256,26 +256,27 @@ class TopView extends GameBox {
 * Hero Handlers...
 *******************************************************************************/
     handleHero ( poi, dir ) {
-        if ( this.panning || this.hero.isHitOrStill() ) {
-            return;
-        }
-
-        // Only apply if the input direction matches the parkour direction
-        // Fixes a bug in which diagonal parkour is accelerated and feels unnatural
-        if ( this.hero.parkour && dir !== this.hero.parkour.dir ) {
-            return;
-        }
-
-        if ( this.hero.parkour || this.hero.falling ) {
-            this.applyHero( poi, dir );
-            return;
-        }
-
+        // Reset push under certain conditions
         if ( this.locked || this.jumping || this.falling || this.dropin ) {
             this.interact.push = 0;
         }
 
-        if ( this.locked || this.falling || this.attacking || this.liftLocked ) {
+        if (
+            this.locked ||
+            this.panning ||
+            this.falling ||
+            this.attacking ||
+            this.liftLocked ||
+            this.hero.isHitOrStill() ||
+            // Only apply if the input direction matches the parkour direction
+            // Fixes a bug in which diagonal parkour is accelerated and feels unnatural
+            ( this.hero.parkour && dir !== this.hero.parkour.dir )
+        ) {
+            return;
+        }
+
+        if ( this.hero.parkour || this.hero.falling || this.dropin ) {
+            this.applyHero( poi, dir );
             return;
         }
 
