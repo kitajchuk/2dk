@@ -42,23 +42,6 @@ const Utils = {
     },
 
 
-
-    contains ( box1, box2 ) {
-        let ret = false;
-
-        if (
-            ( box2.x + box2.width ) <= ( box1.x + box1.width ) &&
-            box2.x >= box1.x &&
-            ( box2.y + box2.height ) <= ( box1.y + box1.height ) &&
-            box2.y >= box1.y
-        ) {
-            ret = true;
-        }
-
-        return ret;
-    },
-
-
     collide ( box1, box2, tolerance = 0 ) {
         if (
             (box1.x + tolerance) < (box2.x + box2.width - tolerance) &&
@@ -261,6 +244,19 @@ const Utils = {
 
     random  ( min, max ) {
         return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+    },
+
+
+    getDirectionFromAngle ( angle ) {
+        if (angle >= -Math.PI / 4 && angle < Math.PI / 4) {
+            return "right";
+        } else if (angle >= Math.PI / 4 && angle < 3 * Math.PI / 4) {
+            return "down";
+        } else if (angle >= -3 * Math.PI / 4 && angle < -Math.PI / 4) {
+            return "up";
+        } else {
+            return "left";
+        }
     },
 
 

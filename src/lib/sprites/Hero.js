@@ -62,6 +62,11 @@ export default class Hero extends Sprite {
     }
 
 
+    isDead () {
+        return this.deathCounter > 0 || this.killed;
+    }
+
+
     jump () {
         this.maskFX = null;
         this.resetMaxV();
@@ -1120,7 +1125,7 @@ export default class Hero extends Sprite {
     }
 
 
-    canShield ( npc ) {
+    canShield ( npc, tolerance = 5 ) {
         if ( !this.hasShield() ) {
             return false;
         }
@@ -1129,19 +1134,19 @@ export default class Hero extends Sprite {
             return false;
         }
 
-        if ( this.dir === "left" && npc.hitbox.x + npc.hitbox.width <= this.hitbox.x ) {
+        if ( this.dir === "left" && npc.hitbox.x + npc.hitbox.width <= this.hitbox.x + tolerance ) {
             return true;
         }
 
-        if ( this.dir === "right" && npc.hitbox.x >= this.hitbox.x + this.hitbox.width ) {
+        if ( this.dir === "right" && npc.hitbox.x >= this.hitbox.x + this.hitbox.width - tolerance ) {
             return true;
         }
 
-        if ( this.dir === "up" && npc.hitbox.y + npc.hitbox.height <= this.hitbox.y ) {
+        if ( this.dir === "up" && npc.hitbox.y + npc.hitbox.height <= this.hitbox.y + tolerance ) {
             return true;
         }
 
-        if ( this.dir === "down" && npc.hitbox.y >= this.hitbox.y + this.hitbox.height ) {
+        if ( this.dir === "down" && npc.hitbox.y >= this.hitbox.y + this.hitbox.height - tolerance ) {
             return true;
         }
 

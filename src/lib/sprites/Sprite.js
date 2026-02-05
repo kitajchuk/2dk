@@ -71,6 +71,10 @@ export default class Sprite {
             width: this.hitbox.width,
             height: this.hitbox.height / 2,
         };
+        this.center = {
+            x: this.position.x + ( this.width / 2 ),
+            y: this.position.y + ( this.height / 2 ),
+        };
         this.perceptionBox = Utils.getPerceptionBox(
             this.position,
             this.width,
@@ -441,6 +445,8 @@ export default class Sprite {
         this.hitbox.y = this.position.y + ( this.data.hitbox.y / this.scale );
         this.footbox.x = this.hitbox.x;
         this.footbox.y = this.hitbox.y + ( this.hitbox.height / 2 );
+        this.center.x = this.hitbox.x + ( this.hitbox.width / 2 );
+        this.center.y = this.hitbox.y + ( this.hitbox.height / 2 );
         this.perceptionBox = Utils.getPerceptionBox(
             this.position,
             this.width,

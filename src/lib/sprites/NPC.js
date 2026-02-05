@@ -23,16 +23,23 @@ export default class NPC extends QuestSprite {
         
         // AI things...
         // Initial cooldown period upon spawn (don't immediately move)
-        // requestAnimationFrame runs 60fps so we use (60 * seconds)
         this.aiCounter = this.data.ai ? 60 : 0;
         this.aiCoolDown = this.data.ai === Config.npc.ai.WALK ? 240 : 0;
+
+        // For wander AI (e.g. a dog, cucco etc...)
         this.dirX = null;
         this.dirY = null;
-        this.lastDir = this.dir;
-        this.lastFrame = 0;
         this.stepsX = 0;
         this.stepsY = 0;
+
+        // For step AI (e.g. a like-like)
+        this.lastDir = this.dir;
+        this.lastFrame = 0;
+
+        // Things that can be pushed (e.g. a grave, statue etc...)
         this.pushed = null;
+
+        // This stuff is rough but trying to make fairy's feel more natural...
         this.floatCounter = 0;
         this.floatCounter2 = 0;
         this.floatOffset = -( this.map.data.tilesize / 2 );
@@ -193,6 +200,51 @@ export default class NPC extends QuestSprite {
 
     applyNormalPosition () {
         const poi = this.getNextPoi();
+        const { isCollision } = this.getCollision( poi );
+
+        // Removing this because NPCs in general should avoid hero collisions...
+        // Enemies should handle hero collisions themselves!
+        // Roaming NPCs can push the hero back...
+        // if ( collision.hero ) {
+        //     if ( this.gamebox.hero.canShield( this ) && this.data.ai === Config.npc.ai.ROAM ) {
+        //         switch ( this.dir ) {
+        //             case "left":
+        //                 this.gamebox.hero.physics.vx = -1;
+        //                 break;
+        //             case "right": 
+        //                 this.gamebox.hero.physics.vx = 1;
+        //                 break;
+        //             case "up":
+        //                 this.gamebox.hero.physics.vy = -1;
+        //                 break;
+        //             case "down":
+        //                 this.gamebox.hero.physics.vy = 1;
+        //                 break;
+        //         }
+        //         return;
+        //     }
+        // }
+
+        if ( isCollision ) {
+            // Let wandering NPCs cool down before moving again
+            // While roaming NPCs can immediately move again
+            if ( this.data.ai === Config.npc.ai.ROAM || this.data.ai === Config.npc.ai.STEP ) {
+                this.aiCounter = 0;
+            }
+
+            if ( this.data.ai === Config.npc.ai.WALK ) {
+                this.resetWalk();
+            }
+            
+            this.handleAI();
+            return;
+        }
+
+        this.position = poi;
+    }
+
+
+    getCollision ( poi ) {
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
             npc: this.gamebox.checkNPC( poi, this ),
@@ -211,43 +263,7 @@ export default class NPC extends QuestSprite {
             this.canTileStop( collision )
         );
 
-        // Roaming NPCs can push the hero back...
-        if ( collision.hero ) {
-            if ( this.gamebox.hero.canShield( this ) && this.data.ai === Config.npc.ai.ROAM ) {
-                switch ( this.dir ) {
-                    case "left":
-                        this.gamebox.hero.physics.vx = -1;
-                        break;
-                    case "right": 
-                        this.gamebox.hero.physics.vx = 1;
-                        break;
-                    case "up":
-                        this.gamebox.hero.physics.vy = -1;
-                        break;
-                    case "down":
-                        this.gamebox.hero.physics.vy = 1;
-                        break;
-                }
-                return;
-            }
-        }
-
-        if ( isCollision ) {
-            // Let wandering NPCs cool down before moving again
-            // While roaming NPCs can immediately move again
-            if ( this.data.ai === Config.npc.ai.ROAM || this.data.ai === Config.npc.ai.STEP ) {
-                this.aiCounter = 0;
-            }
-
-            if ( this.data.ai === Config.npc.ai.WALK ) {
-                this.resetWalk();
-            }
-            
-            this.handleAI();
-            return;
-        }
-
-        this.position = poi;
+        return { collision, isCollision };
     }
 
 

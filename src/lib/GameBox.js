@@ -276,14 +276,18 @@ export default class GameBox {
             
             for ( let i = items.length; i--; ) {
                 const item = items[ i ];
-                const data = this.player.getMergedData({
-                    id: item,
-                // Doesn't support mapId which is defined by NPCs so this is PURELY for debugging / testing
-                }, "items" );
-                this.hero.items.push( data );
-    
-                if ( data.equip ) {
-                    this.hero.equip( data.equip );
+                
+                // We seed storage before we seed the query so make sure we don't duplicate items...
+                if ( !this.hero.getItem( item ) ) {
+                    const data = this.player.getMergedData({
+                        id: item,
+                    // Doesn't support mapId which is defined by NPCs so this is PURELY for debugging / testing
+                    }, "items" );
+                    this.hero.items.push( data );
+        
+                    if ( data.equip ) {
+                        this.hero.equip( data.equip );
+                    }
                 }
             }
         }
