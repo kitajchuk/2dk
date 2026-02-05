@@ -261,6 +261,11 @@ class TopView extends GameBox {
             this.interact.push = 0;
         }
 
+        if ( this.hero.parkour || this.hero.falling || this.dropin ) {
+            this.applyHero( poi, dir );
+            return;
+        }
+
         if (
             this.locked ||
             this.panning ||
@@ -272,11 +277,6 @@ class TopView extends GameBox {
             // Fixes a bug in which diagonal parkour is accelerated and feels unnatural
             ( this.hero.parkour && dir !== this.hero.parkour.dir )
         ) {
-            return;
-        }
-
-        if ( this.hero.parkour || this.hero.falling || this.dropin ) {
-            this.applyHero( poi, dir );
             return;
         }
 
