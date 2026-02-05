@@ -43,7 +43,7 @@ export default class GameBox {
 
         // Hero
         initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
-        this.dropin = initHeroData.spawn.dropin ?? false;
+        this.dropin = initHeroData.spawn?.dropin ?? false;
         this.hero = new Hero( initHeroData, this.map );
         this.map.addAllSprite( this.hero );
         this.seedStorage();

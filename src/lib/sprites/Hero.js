@@ -268,7 +268,9 @@ export default class Hero extends Sprite {
             mapId,
         }, "items" );
 
-        this.items.push( item );
+        if ( !this.getItem( id ) ) {
+            this.items.push( item );
+        }
 
         this.doItemGet( item );
 
@@ -282,6 +284,10 @@ export default class Hero extends Sprite {
 
         if ( item.status ) {
             this.applyStatus( item.status );
+        }
+
+        if ( item.cure ) {
+            this.removeStatus( item.cure );
         }
 
         if ( item.collect ) {

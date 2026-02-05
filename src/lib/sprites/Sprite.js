@@ -20,7 +20,7 @@ export default class Sprite {
         this.scale = ( this.data.scale || 1 );
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
-        this.dir = ( this.data.dir || this.data.spawn.dir || "down" );
+        this.dir = ( this.data.dir || this.data.spawn?.dir || "down" );
         this.verb = ( this.data.verb || Config.verbs.FACE );
         this.image = Loader.cash( this.data.image );
         this.frame = 0;
