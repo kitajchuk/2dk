@@ -261,6 +261,12 @@ class TopView extends GameBox {
             this.interact.push = 0;
         }
 
+        // Only apply if the input direction matches the parkour direction
+        // Fixes a bug in which diagonal parkour is accelerated and feels unnatural
+        if ( this.hero.parkour && dir !== this.hero.parkour.dir ) {
+            return;
+        }
+
         if ( this.hero.parkour || this.hero.falling || this.dropin ) {
             this.applyHero( poi, dir );
             return;
@@ -272,10 +278,7 @@ class TopView extends GameBox {
             this.falling ||
             this.attacking ||
             this.liftLocked ||
-            this.hero.isHitOrStill() ||
-            // Only apply if the input direction matches the parkour direction
-            // Fixes a bug in which diagonal parkour is accelerated and feels unnatural
-            ( this.hero.parkour && dir !== this.hero.parkour.dir )
+            this.hero.isHitOrStill()
         ) {
             return;
         }
