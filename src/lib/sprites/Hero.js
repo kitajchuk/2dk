@@ -1131,7 +1131,7 @@ export default class Hero extends Sprite {
     }
 
 
-    canShield ( npc, tolerance = 5 ) {
+    canShield ( npc, tolerance = 10 ) {
         if ( !this.hasShield() ) {
             return false;
         }
