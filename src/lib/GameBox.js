@@ -682,7 +682,7 @@ export default class GameBox {
         });
         this.currentMusic = this.map.data.id;
         this.dialogue.auto({
-            text: [this.map.data.name],
+            text: [ this.map.data.name ],
         });
 
         // Persist the game state on initialization and after map change
@@ -692,30 +692,20 @@ export default class GameBox {
 
 
     afterChangeMap ( newMapData ) {
-        // Destroy old Map
-        this.map.destroy();
-
         // Update the Map
+        this.map.destroy();
         this.map.initMap( newMapData );
-        this.hero.map = this.map;
         this.map.addAllSprite( this.hero );
+
+        // Update the Companion
+        if ( this.companion ) {
+            this.map.addAllSprite( this.companion );
+        }
 
         // Initialize the new Map
         // Applies new hero offset!
         // Plays the new map's music
         this.initMap();
-
-        // Create a new Companion
-        if ( this.companion ) {
-            const newCompanionData = structuredClone( this.hero.data.companion );
-            newCompanionData.spawn = {
-                x: this.hero.position.x,
-                y: this.hero.position.y,
-            };
-            this.companion.destroy();
-            this.companion = new Companion( newCompanionData, this.hero );
-            this.map.addAllSprite( this.companion );
-        }
 
         // Resume game blit cycle...
         this.player.resume();
@@ -763,6 +753,10 @@ export default class GameBox {
                 this.dropin = true;
                 this.hero.position.z = -( this.camera.height / 2 );
                 this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
+            }
+
+            if ( this.companion ) {
+                this.companion.reset();
             }
 
             this.afterChangeMap( newMapData );
