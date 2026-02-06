@@ -1693,11 +1693,11 @@
                 "face": {
                     "left": {
                         "offsetX": 4,
-                        "offsetY": 70
+                        "offsetY": 72
                     },
                     "right": {
                         "offsetX": 4,
-                        "offsetY": 70,
+                        "offsetY": 72,
                         "flipX": true
                     }
                 },
