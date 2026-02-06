@@ -672,7 +672,7 @@ export default class GameBox {
 * Map Switching
 *******************************************************************************/
     initMap () {
-        this.map.initialize();
+        this.map.initSprites();
         this.update();
         this.applyHero( this.hero.position, this.hero.dir );
         this.player.gameaudio.addSound({
@@ -684,6 +684,9 @@ export default class GameBox {
         this.dialogue.auto({
             text: [this.map.data.name],
         });
+
+        // Persist the game state on initialization and after map change
+        // The game loop isn't running when we do this synchronous write to localStorage
         this.player.gamestorage.persist( this );
     }
 
@@ -691,10 +694,9 @@ export default class GameBox {
     afterChangeMap ( newMapData ) {
         // Destroy old Map
         this.map.destroy();
-        delete this.map;
 
-        // Create new Map
-        this.map = new Map( newMapData, this );
+        // Update the Map
+        this.map.initMap( newMapData );
         this.hero.map = this.map;
         this.map.addAllSprite( this.hero );
 

@@ -22,34 +22,11 @@ import KeyItem from "../sprites/KeyItem";
 *******************************************************************************/
 export default class Map {
     constructor ( data, gamebox ) {
-        this.data = data;
         this.gamebox = gamebox;
         this.gamequest = this.gamebox.gamequest;
         this.player = this.gamebox.player;
         this.camera = this.gamebox.camera;
-        this.width = this.data.width;
-        this.height = this.data.height;
-        this.image = Loader.cash( data.image );
-
-        // FX utils
-        this.mapFX = new MapFX( this );
-
-        // From map data
-        this.activeTiles = [];
-        this.fx = [];
-        this.npcs = [];
-        this.doors = [];
-        this.enemies = [];
-        this.events = [];
-        this.colliders = [];
-
-        // From live game state
-        this.items = [];
-        this.sprites = [];
-        this.spawnpool = [];
-
-        // For sprite render priority
-        this.allSprites = [];
+        this.initMap( data );
     }
 
 
@@ -104,12 +81,35 @@ export default class Map {
     }
 
 
-    getMapId ( type, index ) {
-        return `${type}-${this.data.id}-${index}`;
+    initMap ( data ) {
+        this.data = data;
+        this.width = this.data.width;
+        this.height = this.data.height;
+        this.image = Loader.cash( this.data.image );
+
+        // FX utils
+        this.mapFX = new MapFX( this );
+
+        // From map data
+        this.activeTiles = [];
+        this.fx = [];
+        this.npcs = [];
+        this.doors = [];
+        this.enemies = [];
+        this.events = [];
+        this.colliders = [];
+
+        // From live game state
+        this.items = [];
+        this.sprites = [];
+        this.spawnpool = [];
+
+        // For sprite render priority
+        this.allSprites = [];
     }
 
 
-    initialize () {
+    initSprites () {
         // FX
         for ( let i = this.data.fx.length; i--; ) {
             this.fx.push(
@@ -345,6 +345,11 @@ export default class Map {
         this.allSprites.sort( ( a, b ) => {
             return a.prio - b.prio;
         });
+    }
+
+
+    getMapId ( type, index ) {
+        return `${type}-${this.data.id}-${index}`;
     }
 
 
