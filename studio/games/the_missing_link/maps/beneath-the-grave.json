@@ -28,7 +28,7 @@
             "offsetX": 0,
             "offsetY": 2112,
             "stepsX": 4,
-            "dur": 1500,
+            "dur": 2000,
             "actions": [
                 {
                     "verb": "swim"
