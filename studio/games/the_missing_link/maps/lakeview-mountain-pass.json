@@ -47,6 +47,11 @@
             "x": 816,
             "y": 1763,
             "dir": "down"
+        },
+        {
+            "x": 306,
+            "y": 293,
+            "dir": "down"
         }
     ],
     "fx": [
@@ -65,6 +70,15 @@
             "spawn": {
                 "x": 832,
                 "y": 1600
+            },
+            "type": "float"
+        },
+        {
+            "id": "smoke",
+            "dur": 2000,
+            "spawn": {
+                "x": 320,
+                "y": 128
             },
             "type": "float"
         }
@@ -307,6 +321,18 @@
             "dir": "up",
             "map": "maps/lakeside-residence.json",
             "spawn": 1
+        },
+        {
+            "coords": [
+                5,
+                4
+            ],
+            "type": "door",
+            "width": 64,
+            "height": 64,
+            "dir": "up",
+            "map": "maps/hillside-residence.json",
+            "spawn": 0
         }
     ],
     "npcs": [
@@ -378,30 +404,6 @@
             }
         },
         {
-            "id": "cucco",
-            "spawn": {
-                "x": 1116,
-                "y": 1696
-            },
-            "ai": "wander"
-        },
-        {
-            "id": "cucco-red",
-            "spawn": {
-                "x": 667,
-                "y": 1443
-            },
-            "ai": "wander"
-        },
-        {
-            "id": "dog",
-            "spawn": {
-                "x": 990,
-                "y": 1496
-            },
-            "ai": "wander"
-        },
-        {
             "id": "bird-statue",
             "spawn": {
                 "x": 960,
@@ -420,14 +422,6 @@
                     }
                 ]
             }
-        },
-        {
-            "id": "cucco",
-            "spawn": {
-                "x": 790,
-                "y": 1115
-            },
-            "ai": "wander"
         },
         {
             "id": "moblin",
@@ -498,6 +492,38 @@
             "spawn": {
                 "x": 544,
                 "y": 675
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "red-kid",
+            "spawn": {
+                "x": 669,
+                "y": 1371
+            },
+            "ai": "walk"
+        },
+        {
+            "id": "green-kid",
+            "spawn": {
+                "x": 1115,
+                "y": 1632
+            },
+            "ai": "walk"
+        },
+        {
+            "id": "cucco",
+            "spawn": {
+                "x": 1183,
+                "y": 1249
+            },
+            "ai": "wander"
+        },
+        {
+            "id": "dog",
+            "spawn": {
+                "x": 800,
+                "y": 1057
             },
             "ai": "wander"
         }

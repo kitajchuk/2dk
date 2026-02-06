@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1295,
+    "save": 1318,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1601,6 +1601,144 @@
             ]
         },
         {
+            "id": "red-kid",
+            "name": "Red Kid",
+            "width": 64,
+            "height": 64,
+            "image": "assets/sprites/npcs.png",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "hitbox": {
+                "x": 0,
+                "y": 40,
+                "width": 64,
+                "height": 20
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 680,
+                        "offsetY": 72
+                    },
+                    "up": {
+                        "offsetX": 808,
+                        "offsetY": 72
+                    },
+                    "left": {
+                        "offsetX": 936,
+                        "offsetY": 72
+                    },
+                    "right": {
+                        "offsetX": 936,
+                        "offsetY": 72,
+                        "flipX": true
+                    }
+                },
+                "walk": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": 680,
+                        "offsetY": 72,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 808,
+                        "offsetY": 72,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 936,
+                        "offsetY": 72,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 936,
+                        "offsetY": 72,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "talk"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "green-kid",
+            "name": "Green Kid",
+            "width": 64,
+            "height": 64,
+            "image": "assets/sprites/npcs.png",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "hitbox": {
+                "x": 0,
+                "y": 40,
+                "width": 64,
+                "height": 20
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 680,
+                        "offsetY": 140
+                    },
+                    "up": {
+                        "offsetX": 808,
+                        "offsetY": 140
+                    },
+                    "left": {
+                        "offsetX": 936,
+                        "offsetY": 140
+                    },
+                    "right": {
+                        "offsetX": 936,
+                        "offsetY": 140,
+                        "flipX": true
+                    }
+                },
+                "walk": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": 680,
+                        "offsetY": 140,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 808,
+                        "offsetY": 140,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 936,
+                        "offsetY": 140,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 936,
+                        "offsetY": 140,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "talk"
+                    }
+                }
+            ]
+        },
+        {
             "id": "old-man",
             "name": "Old Man",
             "width": 64,
@@ -2217,6 +2355,7 @@
         "maps/fishermans-shack.json",
         "maps/graveyard-residence.json",
         "maps/hero-s-tomb.json",
+        "maps/hillside-residence.json",
         "maps/lakeside-residence.json",
         "maps/lakeview-mountain-pass.json",
         "maps/lost-corner-of-the-world.json",

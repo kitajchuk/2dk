@@ -24,7 +24,7 @@ export default class NPC extends QuestSprite {
         // AI things...
         // Initial cooldown period upon spawn (don't immediately move)
         this.aiCounter = this.data.ai ? 60 : 0;
-        this.aiCoolDown = this.data.ai === Config.npc.ai.WALK ? 240 : 0;
+        this.aiCoolDown = this.data.ai === Config.npc.ai.WALK ? 60 : 0;
 
         // For wander AI (e.g. a dog, cucco etc...)
         this.dirX = null;
@@ -56,7 +56,7 @@ export default class NPC extends QuestSprite {
 
     resetWalk () {
         this.aiCounter = 0;
-        this.aiCoolDown = 240;
+        this.aiCoolDown = 60;
         this.face( this.dir );
         this.handleResetControls();
     }
@@ -65,7 +65,7 @@ export default class NPC extends QuestSprite {
     freezeWalk () {
         this.stillTimer = Infinity;
         this.aiCounter = 0;
-        this.aiCoolDown = 240;
+        this.aiCoolDown = 60;
         this.handleResetControls();
         this.face( Config.opposites[ this.gamebox.hero.dir ] );
     }

@@ -109,8 +109,8 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "My husband is just across the way there fishing.",
-                                "Hopefully he catches something substantial today.",
+                                "My husband is fishing just across the bridge on that little island.",
+                                "Hopefully he catches something today.",
                                 "If you're just passing through, the road south to the Lake is mysteriously blocked.",
                                 "We've had to survive on what we can gather up here... If you find a way down to the lake please, let my husband know."
                             ]
@@ -2646,19 +2646,13 @@
                 ],
                 [
                     [
-                        192,
-                        192
+                        320,
+                        320
                     ]
                 ],
                 [
                     [
-                        256,
-                        192
-                    ]
-                ],
-                [
-                    [
-                        64,
+                        384,
                         320
                     ]
                 ],
@@ -2706,14 +2700,20 @@
                 ],
                 [
                     [
-                        192,
-                        192
+                        64,
+                        320
                     ]
                 ],
                 [
                     [
-                        256,
-                        192
+                        320,
+                        320
+                    ]
+                ],
+                [
+                    [
+                        384,
+                        320
                     ]
                 ],
                 [
