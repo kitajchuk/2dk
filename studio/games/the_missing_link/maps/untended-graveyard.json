@@ -476,7 +476,6 @@
             },
             "ai": "roam",
             "type": "enemy",
-            "aggro": true,
             "action": {
                 "verb": "attack",
                 "fx": "smoke",
@@ -531,7 +530,6 @@
             },
             "ai": "roam",
             "type": "enemy",
-            "aggro": true,
             "action": {
                 "verb": "attack",
                 "fx": "smoke",

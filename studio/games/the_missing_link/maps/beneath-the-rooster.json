@@ -134,7 +134,6 @@
             },
             "ai": "roam",
             "type": "enemy",
-            "aggro": true,
             "action": {
                 "verb": "attack"
             }
