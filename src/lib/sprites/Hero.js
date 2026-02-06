@@ -57,6 +57,8 @@ export default class Hero extends Sprite {
 
         super.hit( ...args );
 
+        this.destroyLiftedTile();
+
         if ( !this.gamebox.swimming ) {
             this.face( this.dir );
             this.physics.vz = -6;
@@ -288,7 +290,7 @@ export default class Hero extends Sprite {
             this.applyStatus( item.status );
         }
 
-        if ( item.cure ) {
+        if ( item.cure && item.cure === this.status ) {
             this.removeStatus( item.cure );
         }
 
@@ -664,6 +666,13 @@ export default class Hero extends Sprite {
         // For ledge jumping into water without flippers it looks odd to reset with the DIVE sprite cycle.
         if ( this.falling && this.falling.didReset && this.falling.resetCounter === 0 ) {
             this.player.renderLayer.context.globalAlpha = 0;
+        }
+    }
+
+
+    destroyLiftedTile () {
+        if ( this.liftedTile ) {
+            this.liftedTile.destroy();
         }
     }
 

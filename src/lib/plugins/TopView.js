@@ -458,6 +458,7 @@ class TopView extends GameBox {
 
     handleHeroTileJump ( poi, dir, collision ) {
         this.handleResetHeroDirs();
+        this.hero.destroyLiftedTile();
 
         const jumpTiles = collision.tiles.passive.filter( ( tile ) => tile.jump );
 
@@ -564,10 +565,6 @@ class TopView extends GameBox {
         this.hero.cycle( Config.verbs.JUMP, dir );
         this.hero.physics.vz = -( this.map.data.tilesize / 4 );
         this.player.gameaudio.heroSound( "parkour" );
-
-        if ( this.hero.liftedTile ) {
-            this.hero.liftedTile.destroy();
-        }
 
         this.hero.parkour = {
             poi: destPos,
@@ -876,6 +873,7 @@ class TopView extends GameBox {
 
     handleHeroTileSink ( poi, dir, collision ) {
         this.handleResetHeroDirs();
+        this.hero.destroyLiftedTile();
 
         const diveTiles = collision.tiles.action.filter( ( tile ) => {
             return tile.swim;
@@ -889,10 +887,6 @@ class TopView extends GameBox {
         this.hero.cycle( Config.verbs.DIVE, this.hero.dir );
         this.player.gameaudio.heroSound( "parkour" );
 
-        if ( this.hero.liftedTile ) {
-            this.hero.liftedTile.destroy();
-        }
-
         this.hero.falling = {
             to: fallToPosition,
             reset: fallResetPosition,
@@ -901,6 +895,8 @@ class TopView extends GameBox {
 
 
     handleHeroTileSwim ( poi, dir, collision ) {
+        this.hero.destroyLiftedTile();
+
         this.swimming = true;
 
         if ( !this.hero.kickCounter ) {
@@ -928,6 +924,7 @@ class TopView extends GameBox {
 
     handleHeroFall ( poi, dir, collision ) {
         this.handleResetHeroDirs();
+        this.hero.destroyLiftedTile();
 
         let fallCoords = [];
 
@@ -947,10 +944,6 @@ class TopView extends GameBox {
         }
 
         const { fallToPosition, fallResetPosition } = this.getFallPosition( fallCoords, dir );
-
-        if ( this.hero.liftedTile ) {
-            this.hero.liftedTile.destroy();
-        }
 
         this.falling = true;
         this.hero.cycle( Config.verbs.FALL, this.hero.dir );
