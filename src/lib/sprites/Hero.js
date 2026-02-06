@@ -1235,7 +1235,7 @@ export class HeroProjectile extends Projectile {
         );
         
         if ( isCollision ) {
-            if ( collision.enemy && !collision.enemy.isHitOrStill() ) {
+            if ( collision.enemy && collision.enemy.canBeAttacked() ) {
                 collision.enemy.hit( this.hero.getStat( "power" ) );
             }
 
