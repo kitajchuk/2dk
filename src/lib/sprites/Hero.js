@@ -23,13 +23,13 @@ export default class Hero extends Sprite {
             shield: false,
         };
         this.enemiesKilled = 0;
+        this.totalDeaths = 0;
         this.itemGet = null;
         this.liftedTile = null;
         this.maskFX = null;
         this.items = [];
         // Hero controls are defined by the Player
         this.controls = this.player.controls;
-        this.killed = false;
         this.deathCounter = 0;
         this.kickCounter = 0;
         this.diveCounter = 0;
@@ -605,9 +605,9 @@ export default class Hero extends Sprite {
 
     handleHealthCheck () {
         if ( this.health <= 0 ) {
-            this.killed = true;
             this.stillTimer = Infinity;
             this.deathCounter = 240;
+            this.totalDeaths++;
 
             if ( this.maskFX ) {
                 this.maskFX.paused = true;

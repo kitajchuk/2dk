@@ -3,7 +3,7 @@ export default class GameStorage {
 
 
     // Hero properties that are direct Sprite properties
-    // Handled separately: map, items, quests
+    // Handled separately: map, quests etc...
     static heroProps = [
         "dir",
         "items",
@@ -16,6 +16,7 @@ export default class GameStorage {
         "health",
         "statusEffects",
         "enemiesKilled",
+        "totalDeaths",
     ];
 
 

@@ -77,6 +77,7 @@ export const renderMenu = ( player ) => {
                 <div>Weapon: ${hero.equipped.weapon ? "Equipped" : "Unequipped"}</div>
                 <div>Shield: ${hero.equipped.shield ? "Equipped" : "Unequipped"}</div>
                 <div>Enemies Killed: ${hero.enemiesKilled}</div>
+                <div>Total Deaths: ${hero.totalDeaths}</div>
             </div>
             <div class="_2dk__menu__content" data-content="items">...</div>
             <div class="_2dk__menu__content" data-content="quests">

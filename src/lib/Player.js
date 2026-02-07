@@ -249,12 +249,11 @@ export default class Player extends Controller {
         // Safely handle hero death so we exit the blit loop and reset the player cleanly
         if ( this.gamebox.hero.deathCounter > 0 ) {
             this.gamebox.hero.deathCounter--;
-        }
 
-        if ( this.gamebox.hero.killed && this.gamebox.hero.deathCounter === 0 ) {
-            // this.player.gamestorage.persist( this.player.gamebox );
-            this.reset();
-            return;
+            if ( this.gamebox.hero.deathCounter === 0 ) {
+                this.reset( true );
+                return;
+            }
         }
 
         this.gamebox.render();
@@ -266,9 +265,13 @@ export default class Player extends Controller {
     }
 
 
-    reset () {
+    reset ( persist = false) {
         // Stop the RAF loop
         this.hardStop();
+
+        if ( persist ) {
+            this.gamestorage.persist( this.gamebox );
+        }
 
         // Destroy the gamebox
         this.gamebox.destroy();
