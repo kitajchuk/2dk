@@ -251,7 +251,7 @@ export default class Player extends Controller {
             this.gamebox.hero.deathCounter--;
 
             if ( this.gamebox.hero.deathCounter === 0 ) {
-                this.reset( true );
+                this.reset({ persist: true });
                 return;
             }
         }
@@ -265,7 +265,7 @@ export default class Player extends Controller {
     }
 
 
-    reset ( persist = false) {
+    reset ({ persist = false } = {}) {
         // Stop the RAF loop
         this.hardStop();
 
