@@ -17,31 +17,6 @@ export default class HUD {
             b: null,
         };
         this.gap = 8;
-
-        // Initialize offsets
-        this.blit();
-    }
-
-
-    blit () {
-        this.offsets = {
-            topLeft: {
-                x: 20,
-                y: 20,
-            },
-        };
-    }
-
-
-    render () {
-        this.renderHealth();
-        this.renderMagic();
-        this.renderItems();
-        this.renderStatus();
-        this.renderButtons();
-        this.renderCurrency();
-        this.renderKeys();
-        this.renderFPS();
     }
 
 
@@ -50,6 +25,25 @@ export default class HUD {
         this.gamepad.renderButtonText( "b" );
         this.buttons.a = null;
         this.buttons.b = null;
+    }
+
+
+    render () {
+        this.offsets = {
+            topLeft: {
+                x: 20,
+                y: 20,
+            },
+        };
+
+        this.renderHealth();
+        this.renderMagic();
+        this.renderItems();
+        this.renderStatus();
+        this.renderButtons();
+        this.renderCurrency();
+        this.renderKeys();
+        this.renderFPS();
     }
 
 
