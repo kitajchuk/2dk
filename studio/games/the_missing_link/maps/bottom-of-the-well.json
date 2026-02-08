@@ -193,6 +193,19 @@
                     "You got the Bracelet!"
                 ]
             }
+        },
+        {
+            "id": "magic-powder",
+            "spawn": {
+                "x": 752,
+                "y": 550
+            },
+            "dialogue": {
+                "type": "text",
+                "text": [
+                    "You found the magic powder!"
+                ]
+            }
         }
     ],
     "collision": [
