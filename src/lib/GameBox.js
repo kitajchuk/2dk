@@ -120,9 +120,6 @@ export default class GameBox {
         // blit hero
         this.hero.blit( elapsed );
 
-        // blit HUD
-        this.hud.blit( elapsed );
-
         // blit companion
         if ( this.companion ) {
             this.companion.blit( elapsed );
