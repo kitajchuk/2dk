@@ -237,7 +237,16 @@ export default class GameBox {
 * Sprite utilities
 *******************************************************************************/
     itemDrop ( id, position ) {
-        const drops = this.player.data.drops[ id ];
+        let drops = structuredClone( this.player.data.drops[ id ] );
+
+        // Only drop magic if the hero has the magic powder
+        if ( !this.hero.hasMagic() ) {
+            drops = drops.filter( ( drop ) => {
+                const item = this.player.data.items.find( ( item ) => item.id === drop.id );
+                return item.stat ? item.stat.key !== "magic" : true;
+            });
+        }
+
         const drop = drops[ Utils.random( 0, drops.length - 1 ) ];
         const chance = Utils.random( 0, 100 );
 

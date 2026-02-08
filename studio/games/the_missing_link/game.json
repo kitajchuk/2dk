@@ -636,6 +636,10 @@
             {
                 "id": "blue-rupee",
                 "chance": 10
+            },
+            {
+                "id": "magic-powder",
+                "chance": 10
             }
         ],
         "grass": [
@@ -649,6 +653,10 @@
             },
             {
                 "id": "blue-rupee",
+                "chance": 5
+            },
+            {
+                "id": "magic-powder",
                 "chance": 5
             }
         ],

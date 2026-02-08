@@ -146,12 +146,17 @@ export default class Hero extends Sprite {
 
 
     updateStat ( stat, value ) {
-        if ( stat === "health" ) {
-            this.health = Math.min( this.health + value, this.getMaxHealth() );
-            return;
+        switch ( stat ) {
+            case "health":
+                this.health = Math.min( this.health + value, this.getMaxHealth() );
+                break;
+            case "magic":
+                this.magic = Math.min( this.magic + value, this.maxMagic );
+                break;
+            default:
+                this.stats[ stat ] += value;
+                break;
         }
-
-        this.stats[ stat ] += value;
     }
 
 
