@@ -49,6 +49,8 @@ module.exports = {
     },
     // Hero library
     heroes: [],
+    // Drop library
+    drops: {},
     // Item library
     items: [],
     // NPC library

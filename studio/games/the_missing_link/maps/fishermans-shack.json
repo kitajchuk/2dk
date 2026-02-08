@@ -35,16 +35,7 @@
                 },
                 {
                     "verb": "attack",
-                    "drops": [
-                        {
-                            "id": "heart",
-                            "chance": 15
-                        },
-                        {
-                            "id": "green-rupee",
-                            "chance": 15
-                        }
-                    ]
+                    "drops": "pots"
                 }
             ]
         }

@@ -45,20 +45,7 @@
                 {
                     "verb": "attack",
                     "fx": "leaves",
-                    "drops": [
-                        {
-                            "id": "heart",
-                            "chance": 20
-                        },
-                        {
-                            "id": "green-rupee",
-                            "chance": 20
-                        },
-                        {
-                            "id": "blue-rupee",
-                            "chance": 10
-                        }
-                    ]
+                    "drops": "shrubs"
                 }
             ]
         },
@@ -92,20 +79,7 @@
                 {
                     "verb": "attack",
                     "fx": "smoke",
-                    "drops": [
-                        {
-                            "id": "heart",
-                            "chance": 20
-                        },
-                        {
-                            "id": "green-rupee",
-                            "chance": 20
-                        },
-                        {
-                            "id": "blue-rupee",
-                            "chance": 10
-                        }
-                    ]
+                    "drops": "pots"
                 }
             ]
         }

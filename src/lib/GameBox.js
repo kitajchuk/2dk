@@ -236,7 +236,8 @@ export default class GameBox {
 /*******************************************************************************
 * Sprite utilities
 *******************************************************************************/
-    itemDrop ( drops, position ) {
+    itemDrop ( id, position ) {
+        const drops = this.player.data.drops[ id ];
         const drop = drops[ Utils.random( 0, drops.length - 1 ) ];
         const chance = Utils.random( 0, 100 );
 

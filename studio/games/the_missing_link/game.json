@@ -609,6 +609,60 @@
             }
         }
     },
+    "drops": {
+        "enemy": [
+            {
+                "id": "heart",
+                "chance": 10
+            },
+            {
+                "id": "green-rupee",
+                "chance": 10
+            },
+            {
+                "id": "blue-rupee",
+                "chance": 5
+            }
+        ],
+        "shrubs": [
+            {
+                "id": "heart",
+                "chance": 20
+            },
+            {
+                "id": "green-rupee",
+                "chance": 20
+            },
+            {
+                "id": "blue-rupee",
+                "chance": 10
+            }
+        ],
+        "grass": [
+            {
+                "id": "heart",
+                "chance": 10
+            },
+            {
+                "id": "green-rupee",
+                "chance": 10
+            },
+            {
+                "id": "blue-rupee",
+                "chance": 5
+            }
+        ],
+        "pots": [
+            {
+                "id": "heart",
+                "chance": 15
+            },
+            {
+                "id": "green-rupee",
+                "chance": 15
+            }
+        ]
+    },
     "items": [
         {
             "id": "sword",
@@ -846,20 +900,7 @@
                 "power": 1,
                 "health": 3
             },
-            "drops": [
-                {
-                    "id": "heart",
-                    "chance": 10
-                },
-                {
-                    "id": "green-rupee",
-                    "chance": 10
-                },
-                {
-                    "id": "blue-rupee",
-                    "chance": 5
-                }
-            ],
+            "drops": "enemy",
             "verbs": {
                 "face": {
                     "left": {
@@ -936,20 +977,7 @@
                 "power": 1,
                 "health": 3
             },
-            "drops": [
-                {
-                    "id": "heart",
-                    "chance": 10
-                },
-                {
-                    "id": "green-rupee",
-                    "chance": 10
-                },
-                {
-                    "id": "blue-rupee",
-                    "chance": 5
-                }
-            ],
+            "drops": "enemy",
             "verbs": {
                 "face": {
                     "left": {
@@ -1026,20 +1054,7 @@
                 "power": 0.25,
                 "health": 1
             },
-            "drops": [
-                {
-                    "id": "heart",
-                    "chance": 10
-                },
-                {
-                    "id": "green-rupee",
-                    "chance": 10
-                },
-                {
-                    "id": "blue-rupee",
-                    "chance": 5
-                }
-            ],
+            "drops": "enemy",
             "verbs": {
                 "face": {
                     "left": {
@@ -1115,20 +1130,7 @@
                 "power": 1,
                 "health": 2
             },
-            "drops": [
-                {
-                    "id": "heart",
-                    "chance": 10
-                },
-                {
-                    "id": "green-rupee",
-                    "chance": 10
-                },
-                {
-                    "id": "blue-rupee",
-                    "chance": 5
-                }
-            ],
+            "drops": "enemy",
             "verbs": {
                 "face": {
                     "down": {
