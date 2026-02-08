@@ -12,27 +12,36 @@ export default class HUD {
         this.player = this.gamebox.player;
         this.gamepad = this.player.gamepad;
         this.hero = this.gamebox.hero;
-
         this.buttons = {
             a: null,
             b: null,
         };
+        this.gap = 8;
+
+        // Initialize offsets
+        this.blit();
     }
 
 
-    blit ( elapsed ) {
-        // TODO: Implement HUD blit
+    blit () {
+        this.offsets = {
+            topLeft: {
+                x: 20,
+                y: 20,
+            },
+        };
     }
 
 
     render () {
-        this.renderFPS();
-        this.renderButtons();
         this.renderHealth();
-        this.renderCurrency();
-        this.renderKeys();
+        this.renderMagic();
         this.renderItems();
         this.renderStatus();
+        this.renderButtons();
+        this.renderCurrency();
+        this.renderKeys();
+        this.renderFPS();
     }
 
 
@@ -43,6 +52,55 @@ export default class HUD {
         this.buttons.b = null;
     }
 
+
+    renderHealth () {
+        const { x, y } = this.offsets.topLeft;
+        const step = this.player.data.tilesize;
+        const height = step / 4;
+        const width = step * this.hero.health;
+        const fullWidth = step * this.hero.maxHealth;
+
+        this._renderFillBar({
+            x,
+            y,
+            width,
+            height,
+            fullWidth,
+            bgColor: Config.colors.yellow,
+            fillColor: Config.colors.red,
+            borderColor: Config.colors.white,
+        });
+
+        // Update offsets for subsequent HUD elements...
+        this.offsets.topLeft.y += height + this.gap;
+    }
+
+
+    renderMagic () {
+        if ( !this.hero.hasMagic() ) {
+            return;
+        }
+
+        const { x, y } = this.offsets.topLeft;
+        const step = this.player.data.tilesize / 8;
+        const height = this.player.data.tilesize / 4;
+        const width = step * this.hero.magic;
+        const fullWidth = step * this.hero.maxMagic;
+
+        this._renderFillBar({
+            x,
+            y,
+            width,
+            height,
+            fullWidth,
+            bgColor: Config.colors.teal,
+            fillColor: Config.colors.blue,
+            borderColor: Config.colors.white,
+        });
+
+        // Update offsets for subsequent HUD elements...
+        this.offsets.topLeft.y += height + this.gap;
+    }
 
     renderFPS () {
         if ( !this.player.query.fps ) {
@@ -65,6 +123,125 @@ export default class HUD {
             x,
             y
         );
+
+        this.player.renderLayer.context.restore();
+    }
+
+
+    renderItems () {
+        const shield = this.hero.items.find( ( item ) => item.equip === "shield" );
+        const { x, y } = this.offsets.topLeft;
+
+        if ( shield ) {
+            this.player.renderLayer.context.drawImage(
+                Loader.cash( shield.image ),
+                shield.offsetX,
+                shield.offsetY,
+                shield.width,
+                shield.height,
+                x,
+                y,
+                shield.width,
+                shield.height
+            );
+        }
+    }
+
+
+    renderStatus () {
+        const shield = this.hero.items.find( ( item ) => item.equip === "shield" );
+        const statusItem = this.player.data.hud.status?.[this.hero.status];
+        const x = shield ? 60 : 20;
+        const { y } = this.offsets.topLeft;
+
+        if ( statusItem ) {
+            this.player.renderLayer.context.drawImage(
+                Loader.cash( statusItem.image ),
+                statusItem.offsetX,
+                statusItem.offsetY,
+                statusItem.width,
+                statusItem.height,
+                x,
+                y,
+                statusItem.width,
+                statusItem.height
+            );
+        }
+    }
+
+
+    renderCurrency () {
+        const x = 20, y = 20;
+        const currency = this.hero.currency;
+        const currString = `x${currency}`;
+
+        this.player.renderLayer.context.save();
+
+        if ( this.player.data.hud.currency ) {
+            const width = this.player.data.hud.currency.width;
+            const height = this.player.data.hud.currency.height;
+            const diff = ( height - 16 ) / 2;
+            const offsetX = x + width + currString.length * 16;
+            const offsetY = y - diff / 2;
+
+            this.player.renderLayer.context.drawImage(
+                Loader.cash( this.player.data.hud.currency.image ),
+                this.player.data.hud.currency.offsetX,
+                this.player.data.hud.currency.offsetY,
+                width,
+                height,
+                this.player.renderLayer.data.width - offsetX,
+                offsetY,
+                width,
+                height
+            );
+
+            this._renderText({
+                x,
+                y,
+                text: currString,
+                size: 24,
+            });
+        }
+
+        this.player.renderLayer.context.restore();
+    }
+
+
+    renderKeys () {
+        const x = 20, y = 60;
+        const item = this.hero.items.find( ( item ) => item.id === "key" );
+        const collected = item ? item.collected : 0;
+        const collectString = `x${collected}`;
+
+        this.player.renderLayer.context.save();
+
+        if ( this.player.data.hud.keys ) {
+            const width = this.player.data.hud.keys.width;
+            const height = this.player.data.hud.keys.height;
+            const diff = ( height - 16 ) / 2;
+            const offsetX = x + width + collectString.length * 16;
+            const offsetY = y - diff / 2;
+
+            this.player.renderLayer.context.drawImage(
+                Loader.cash( this.player.data.hud.keys.image ),
+                this.player.data.hud.keys.offsetX,
+                this.player.data.hud.keys.offsetY,
+                width,
+                height,
+                this.player.renderLayer.data.width - offsetX,
+                offsetY,
+                width,
+                height
+            );
+
+            this._renderText({
+                x,
+                y,
+                text: collectString,
+                size: 24,
+            });
+        }
 
         this.player.renderLayer.context.restore();
     }
@@ -142,47 +319,43 @@ export default class HUD {
     }
 
 
-    renderHealth () {
-        const x = 20, y = 20;
-        const step = this.map.data.tilesize;
-
+    _renderFillBar ({ x, y, width, height, fullWidth, bgColor, fillColor, borderColor }) {
         this.player.renderLayer.context.save();
         this.player.renderLayer.context.globalAlpha = 0.5;
-        this.player.renderLayer.context.fillStyle = Config.colors.yellow;
+        this.player.renderLayer.context.fillStyle = bgColor;
         this.player.renderLayer.context.beginPath();
-        // TODO: roundRect throws error in Firefox...
         this.player.renderLayer.context.roundRect(
             x,
             y,
-            step * this.hero.maxHealth,
-            step / 4,
+            fullWidth,
+            height,
             2
         );
         this.player.renderLayer.context.fill();
         this.player.renderLayer.context.closePath();
         this.player.renderLayer.context.globalAlpha = 1;
 
-        this.player.renderLayer.context.fillStyle = Config.colors.red;
+        this.player.renderLayer.context.fillStyle = fillColor;
         this.player.renderLayer.context.beginPath();
         this.player.renderLayer.context.roundRect(
             x,
             y,
-            step * this.hero.health,
-            step / 4,
+            width,
+            height,
             2
         );
         this.player.renderLayer.context.fill();
         this.player.renderLayer.context.closePath();
 
         this.player.renderLayer.context.fillStyle = "transparent";
-        this.player.renderLayer.context.strokeStyle = Config.colors.white;
+        this.player.renderLayer.context.strokeStyle = borderColor;
         this.player.renderLayer.context.lineWidth = 2;
         this.player.renderLayer.context.beginPath();
         this.player.renderLayer.context.roundRect(
             x,
             y,
-            step * this.hero.maxHealth,
-            step / 4,
+            fullWidth,
+            height,
             2
         );
         this.player.renderLayer.context.stroke();
@@ -191,128 +364,15 @@ export default class HUD {
     }
 
 
-    renderCurrency () {
-        const x = 20, y = 20;
-        const currency = this.hero.currency;
-        const currString = `x${currency}`;
-
-        this.player.renderLayer.context.save();
-
-        if ( this.player.data.hud.currency ) {
-            const width = this.player.data.hud.currency.width;
-            const height = this.player.data.hud.currency.height;
-            const diff = ( height - 16 ) / 2;
-            const offsetX = x + width + currString.length * 16;
-            const offsetY = y - diff / 2;
-
-            this.player.renderLayer.context.drawImage(
-                Loader.cash( this.player.data.hud.currency.image ),
-                this.player.data.hud.currency.offsetX,
-                this.player.data.hud.currency.offsetY,
-                width,
-                height,
-                this.player.renderLayer.data.width - offsetX,
-                offsetY,
-                width,
-                height
-            );
-
-            this.player.renderLayer.context.font = "24px Calamity-Bold";
-            this.player.renderLayer.context.fillStyle = Config.colors.white;
-            this.player.renderLayer.context.textAlign = "right";
-            this.player.renderLayer.context.textBaseline = "top";
-            this.player.renderLayer.context.fillText(
-                currString,
-                this.player.renderLayer.data.width - x,
-                y
-            );
-        }
-
-        this.player.renderLayer.context.restore();
-    }
-
-
-    renderKeys () {
-        const x = 20, y = 60;
-        const item = this.hero.items.find( ( item ) => item.id === "key" );
-        const collected = item ? item.collected : 0;
-        const collectString = `x${collected}`;
-
-        this.player.renderLayer.context.save();
-
-        if ( this.player.data.hud.keys ) {
-            const width = this.player.data.hud.keys.width;
-            const height = this.player.data.hud.keys.height;
-            const diff = ( height - 16 ) / 2;
-            const offsetX = x + width + collectString.length * 16;
-            const offsetY = y - diff / 2;
-
-            this.player.renderLayer.context.drawImage(
-                Loader.cash( this.player.data.hud.keys.image ),
-                this.player.data.hud.keys.offsetX,
-                this.player.data.hud.keys.offsetY,
-                width,
-                height,
-                this.player.renderLayer.data.width - offsetX,
-                offsetY,
-                width,
-                height
-            );
-
-            this.player.renderLayer.context.font = "24px Calamity-Bold";
-            this.player.renderLayer.context.fillStyle = Config.colors.white;
-            this.player.renderLayer.context.textAlign = "right";
-            this.player.renderLayer.context.textBaseline = "top";
-            this.player.renderLayer.context.fillText(
-                collectString,
-                this.player.renderLayer.data.width - x,
-                y
-            );
-        }
-
-        this.player.renderLayer.context.restore();
-    }
-
-
-    renderItems () {
-        const shield = this.hero.items.find( ( item ) => item.equip === "shield" );
-        const x = 20;
-        const y = 50;
-
-        if ( shield ) {
-            this.player.renderLayer.context.drawImage(
-                Loader.cash( shield.image ),
-                shield.offsetX,
-                shield.offsetY,
-                shield.width,
-                shield.height,
-                x,
-                y,
-                shield.width,
-                shield.height
-            );
-        }
-    }
-
-
-    renderStatus () {
-        const shield = this.hero.items.find( ( item ) => item.equip === "shield" );
-        const statusItem = this.player.data.hud.status?.[this.hero.status];
-        const x = shield ? 60 : 20;
-        const y = 50;
-
-        if ( statusItem ) {
-            this.player.renderLayer.context.drawImage(
-                Loader.cash( statusItem.image ),
-                statusItem.offsetX,
-                statusItem.offsetY,
-                statusItem.width,
-                statusItem.height,
-                x,
-                y,
-                statusItem.width,
-                statusItem.height
-            );
-        }
+    _renderText ({ x, y, text, size, align = "right" }) {
+        this.player.renderLayer.context.font = `${size}px Calamity-Bold`;
+        this.player.renderLayer.context.fillStyle = Config.colors.white;
+        this.player.renderLayer.context.textAlign = align;
+        this.player.renderLayer.context.textBaseline = "top";
+        this.player.renderLayer.context.fillText(
+            text,
+            this.player.renderLayer.data.width - x,
+            y
+        );
     }
 }

@@ -79,6 +79,7 @@
             },
             "stats": {
                 "power": 0,
+                "magic": 20,
                 "health": 3,
                 "strength": 0
             },
@@ -761,6 +762,19 @@
             "offsetX": 72,
             "offsetY": 198,
             "cure": "curse"
+        },
+        {
+            "id": "magic-powder",
+            "name": "Magic Powder",
+            "width": 32,
+            "height": 56,
+            "image": "assets/sprites/items.png",
+            "offsetX": 144,
+            "offsetY": 196,
+            "stat": {
+                "key": "magic",
+                "value": 1
+            }
         }
     ],
     "projectiles": [

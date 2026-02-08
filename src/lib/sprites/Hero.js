@@ -15,6 +15,9 @@ export default class Hero extends Sprite {
     constructor ( data, map ) {
         super( data, map );
         this.onscreen = true;
+        this.magic = this.data.stats?.magic ?? 20;
+        // Cannot increase magic beyond this value...
+        this.maxMagic = this.magic;
         this.status = null;
         this.statusEffects = {};
         this.currency = this.data.currency || 0;
@@ -208,6 +211,11 @@ export default class Hero extends Sprite {
 
     hasSwim () {
         return this.items.some( ( item ) => item.verb === Config.verbs.SWIM );
+    }
+
+
+    hasMagic () {
+        return this.items.some( ( item ) => item.stat?.key === "magic" );
     }
 
 
