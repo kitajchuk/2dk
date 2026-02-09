@@ -19,7 +19,6 @@ class TopView extends GameBox {
             push: 0,
         };
         this.attacking = null;
-        this.running = false;
         this.jumping = false;
         this.falling = false;
         this.locked = false;
@@ -43,11 +42,6 @@ class TopView extends GameBox {
     releaseD () {
         if ( this.panning || this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.swimming || this.hero.isHitOrStill() ) {
             return;
-        }
-
-        if ( this.running ) {
-            this.running = false;
-            this.hero.resetMaxV();
         }
 
         if ( this.interact.push ) {
@@ -142,7 +136,7 @@ class TopView extends GameBox {
 
     // Common releaseA methods
     canBlockReleaseA () {
-        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.running || this.hero.isHitOrStill();
+        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill();
     }
 
 
@@ -185,14 +179,7 @@ class TopView extends GameBox {
 
         // There will be extra blocking checks wrapped around this action
         if ( !this.hero.is( Config.verbs.LIFT ) ) {
-            switch ( this.player.data.bButton ) {
-                case Config.verbs.RUN:
-                    this.handleHeroRun();
-                    break;
-                case Config.verbs.ATTACK:
-                    this.handleHeroAttack();
-                    break;
-            }
+            this.handleHeroAttack();
         }
     }
 
@@ -200,10 +187,6 @@ class TopView extends GameBox {
     holdB () {
         if ( this.canBlockPressB() ) {
             return;
-        }
-
-        if ( this.player.data.bButton === Config.verbs.RUN ) {
-            this.handleHeroRun();
         }
     }
 
@@ -245,9 +228,14 @@ class TopView extends GameBox {
 
 
     handleReleaseB () {
-        if ( this.running ) {
-            this.running = false;
-            this.hero.resetMaxV();
+        if ( this.hero.spinLocked ) {
+            this.hero.spinLocked = false;
+        }
+
+        if ( this.hero.spinCharged ) {
+            this.hero.spinCharged = false;
+            this.hero.updateStat( "magic", -5 );
+            // TODO: SPIN-ATTACK SEQUENCE HERE...
         }
     }
 
@@ -276,9 +264,10 @@ class TopView extends GameBox {
             this.locked ||
             this.panning ||
             this.falling ||
-            this.attacking ||
             this.liftLocked ||
-            this.hero.isHitOrStill()
+            this.hero.isHitOrStill() ||
+            // Hero can move around while spinLocked (e.g. get into position for spin attack)
+            ( this.attacking && !this.hero.spinLocked )
         ) {
             return;
         }
@@ -290,7 +279,8 @@ class TopView extends GameBox {
             door: this.checkDoor( poi, this.hero ),
             item: this.checkItems( poi, this.hero ),
             tiles: this.checkTiles( poi, this.hero ),
-            event: this.checkEvents( poi, this.hero ),
+            // Skip dir check for events while spinLocked (e.g. we do an early return below so events don't trigger)
+            event: this.checkEvents( poi, this.hero, { dirCheck: !this.hero.spinLocked } ),
             empty: this.checkEmpty( poi, this.hero ),
             camera: this.checkCamera( poi, this.hero ) && !this.panning,
         };
@@ -311,6 +301,11 @@ class TopView extends GameBox {
         const canTileSwim = this.hero.canTileSwim( poi, collision );
 
         if ( collision.event && !( canTileSwim && !this.hero.hasSwim() ) ) {
+            // Just don't allow this to happen while spinLocked...
+            if ( this.hero.spinLocked ) {
+                return;
+            }
+
             if ( this.hero.canEventBoundary( collision ) ) {
                 this.handleHeroEventBoundary( poi, dir, collision.event );
                 return;
@@ -438,7 +433,6 @@ class TopView extends GameBox {
         this.jumping = false;
         this.falling = false;
         this.attacking = null;
-        this.running = false;
 
         // Reset speed
         this.hero.resetMaxV();
@@ -457,6 +451,10 @@ class TopView extends GameBox {
 
 
     handleHeroTileJump ( poi, dir, collision ) {
+        if ( this.hero.spinLocked ) {
+            this.hero.resetSpin();
+        }
+
         this.handleResetHeroDirs();
         this.hero.destroyLiftedTile();
 
@@ -624,7 +622,7 @@ class TopView extends GameBox {
 
 
     handleHeroPush ( poi, dir ) {
-        if ( this.swimming ) {
+        if ( this.swimming || this.hero.spinLocked ) {
             return;
         }
 
@@ -778,28 +776,6 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroRun () {
-        const dpad = this.player.gamepad.checkDpad();
-
-        if ( !dpad.length ) {
-            return;
-        }
-
-        if ( this.running ) {
-            return;
-        }
-
-        if ( !this.hero.is( Config.verbs.WALK ) && !this.hero.can( Config.verbs.RUN ) ) {
-            return;
-        }
-
-        this.running = true;
-        this.hero.cycle( Config.verbs.RUN, this.hero.dir );
-        this.hero.physics.maxv = this.hero.physics.controlmaxvstatic * 2;
-        this.hero.physics.controlmaxv = this.hero.physics.controlmaxvstatic * 2;
-    }
-
-
     // Initializes the attach verb as an "action"
     handleHeroAttack () {
         if ( this.attacking ) {
@@ -872,6 +848,10 @@ class TopView extends GameBox {
 
 
     handleHeroTileSink ( poi, dir, collision ) {
+        if ( this.hero.spinLocked ) {
+            this.hero.resetSpin();
+        }
+
         this.handleResetHeroDirs();
         this.hero.destroyLiftedTile();
 
@@ -895,6 +875,10 @@ class TopView extends GameBox {
 
 
     handleHeroTileSwim ( poi, dir, collision ) {
+        if ( this.hero.spinLocked ) {
+            this.hero.resetSpin();
+        }
+
         this.hero.destroyLiftedTile();
 
         this.swimming = true;
@@ -923,6 +907,10 @@ class TopView extends GameBox {
 
 
     handleHeroFall ( poi, dir, collision ) {
+        if ( this.hero.spinLocked ) {
+            this.hero.resetSpin();
+        }
+
         this.handleResetHeroDirs();
         this.hero.destroyLiftedTile();
 

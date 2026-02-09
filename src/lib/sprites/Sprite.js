@@ -39,8 +39,6 @@ export default class Sprite {
             vz: ( this.data.vz || 0 ),
             maxv: ( this.data.maxv || Config.physics.maxv ),
             controlmaxv: ( this.data.controlmaxv || Config.physics.maxv ),
-            maxvstatic: ( this.data.maxv || Config.physics.maxv ),
-            controlmaxvstatic: ( this.data.controlmaxv || Config.physics.maxv ),
         };
         // Hero offset is based on camera.
         // NPCs offset snaps to position.

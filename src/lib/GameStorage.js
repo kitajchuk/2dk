@@ -7,16 +7,18 @@ export default class GameStorage {
     static heroProps = [
         "dir",
         "items",
+        "stats",
+        "magic",
+        "status",
+        "health",
+        "maxMagic",
         "position",
         "currency",
         "equipped",
-        "status",
-        "stats",
         "maxHealth",
-        "health",
+        "totalDeaths",
         "statusEffects",
         "enemiesKilled",
-        "totalDeaths",
     ];
 
 

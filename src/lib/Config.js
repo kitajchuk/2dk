@@ -26,7 +26,6 @@ const Config = {
     // be moved to the game.json config. This way the game creator defines
     // the TILES presets and associates them to VERBS on maps.
     verbs: {
-        RUN: "run",
         PUSH: "push",
         PULL: "pull",
         GRAB: "grab",

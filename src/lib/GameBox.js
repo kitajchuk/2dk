@@ -492,11 +492,11 @@ export default class GameBox {
     }
 
 
-    checkEvents ( poi, sprite ) {
+    checkEvents ( poi, sprite, { dirCheck = true } = {} ) {
         for ( let i = this.collision.events.length; i--; ) {
             // An event without a "dir" can be triggered from any direction
             const dir = this.collision.events[ i ].data.dir;
-            const isDir = dir ? ( sprite.dir === dir ) : true;
+            const isDir = dir && dirCheck ? ( sprite.dir === dir ) : true;
 
             if ( !isDir ) {
                 continue;

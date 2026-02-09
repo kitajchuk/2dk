@@ -36,6 +36,9 @@ export default class Hero extends Sprite {
         this.deathCounter = 0;
         this.kickCounter = 0;
         this.diveCounter = 0;
+        this.spinCounter = 0;
+        this.spinLocked = false;
+        this.spinCharged = false;
         this.projectile = null;
         this.mode = Config.hero.modes.WEAPON;
         this.interact = null;
@@ -97,15 +100,11 @@ export default class Hero extends Sprite {
 
 
     resetMaxV () {
-        // Resume running speed...
-        if ( this.gamebox.running ) {
-            this.physics.maxv = this.physics.controlmaxvstatic * 1.75;
-            this.physics.controlmaxv = this.physics.controlmaxvstatic * 1.75;
+        if ( this.spinLocked ) {
+            this.physics.maxv = this.physics.controlmaxv / 2;
 
-        // Resume normal speed...
         } else {
-            this.physics.maxv = this.physics.maxvstatic;
-            this.physics.controlmaxv = this.physics.controlmaxvstatic;
+            this.physics.maxv = this.physics.controlmaxv;
         }
     }
 
@@ -148,10 +147,10 @@ export default class Hero extends Sprite {
     updateStat ( stat, value ) {
         switch ( stat ) {
             case "health":
-                this.health = Math.min( this.health + value, this.getMaxHealth() );
+                this.health = Math.max( 0, Math.min( this.health + value, this.getMaxHealth() ) );
                 break;
             case "magic":
-                this.magic = Math.min( this.magic + value, this.maxMagic );
+                this.magic = Math.max( 0, Math.min( this.magic + value, this.maxMagic ) );
                 break;
             default:
                 this.stats[ stat ] += value;
@@ -221,6 +220,11 @@ export default class Hero extends Sprite {
 
     hasMagic () {
         return this.items.some( ( item ) => item.stat?.key === "magic" );
+    }
+
+
+    canUseMagic () {
+        return this.hasMagic() && this.magic > 0;
     }
 
 
@@ -393,21 +397,12 @@ export default class Hero extends Sprite {
 
         // We need to capture this here since during a lift the gamebox is LOCKED...
         if ( this.lifting ) {
-            this.lifting.timeElapsed = elapsed - this.lifting.timeStarted;
-
-            if ( this.lifting.timeElapsed >= this.getDur( Config.verbs.LIFT ) ) {
-                this.applyLifting();
-            }
+            this.blitLifting( elapsed );
         }
 
         // We need to prevent an infinite attack loop so we force a face reset after the attack duration...
         if ( this.gamebox.attacking ) {
-            this.gamebox.attacking.timeElapsed = elapsed - this.gamebox.attacking.timeStarted;
-
-            if ( this.gamebox.attacking.timeElapsed >= this.getDur( Config.verbs.ATTACK ) ) {
-                this.face( this.dir );
-                this.gamebox.attacking = null;
-            }
+            this.blitAttacking( elapsed );
         }
 
         if ( this.maskFX ) {
@@ -424,6 +419,69 @@ export default class Hero extends Sprite {
 
         // Handle passive interaction
         this.handlePassiveInteraction( elapsed );
+    }
+
+
+    blitLifting ( elapsed ) {
+        this.lifting.timeElapsed = elapsed - this.lifting.timeStarted;
+
+        if ( this.lifting.timeElapsed >= this.getDur( Config.verbs.LIFT ) ) {
+            this.applyLifting();
+        }
+    }
+
+
+    blitAttacking ( elapsed ) {
+        this.gamebox.attacking.timeElapsed = elapsed - this.gamebox.attacking.timeStarted;
+
+        if ( this.gamebox.attacking.timeElapsed < this.getDur( Config.verbs.ATTACK ) ) {
+            return;
+        }
+
+        if ( !this.canUseMagic() ) {
+            this.resetAttacking();
+            return;
+        }
+
+        if ( this.controls.b ) {
+            if ( this.controls.bHold ) {
+                this.spinCharged = true;
+                this.spinCounter++;
+
+            } else {
+                this.spinLocked = true;
+
+                // Force the final frame of the attack sprite cycle to "charge" up the spin
+                this.frameStopped = true;
+                this.frame = this.data.verbs[ this.verb ][ this.dir ].stepsX - 1;
+                this.spritecel = this.getCel();
+                this.physics.maxv = this.physics.controlmaxv / 2;
+            }
+
+            if ( !this.isIdle() && this.isOnGround() ) {
+                this.physics.vz = -3;
+            }
+
+            return;
+        }
+
+        this.resetAttacking();
+    }
+
+
+    resetAttacking () {
+        this.face( this.dir );
+        this.spinCounter = 0;
+        this.frameStopped = false;
+        this.gamebox.attacking = null;
+    }
+
+
+    // This is to hard cancel out of the spin attack sequence (e.g. from a tile fall)
+    resetSpin () {
+        this.spinLocked = false;
+        this.spinCharged = false;
+        this.resetAttacking();
     }
 
 
@@ -477,44 +535,64 @@ export default class Hero extends Sprite {
             this.liftedTile.render();
         }
 
-        if ( this.hasWeapon() && this.is( Config.verbs.ATTACK ) && this.mode === Config.hero.modes.WEAPON ) {
-            this.gamebox.draw(
-                this.image,
-                this.data.weapon[ this.dir ][ this.frame ].offsetX,
-                this.data.weapon[ this.dir ][ this.frame ].offsetY,
-                this.data.weapon[ this.dir ][ this.frame ].width,
-                this.data.weapon[ this.dir ][ this.frame ].height,
-                this.offset.x + this.data.weapon[ this.dir ][ this.frame ].positionX,
-                this.offset.y + this.data.weapon[ this.dir ][ this.frame ].positionY,
-                this.data.weapon[ this.dir ][ this.frame ].width / this.scale,
-                this.data.weapon[ this.dir ][ this.frame ].height / this.scale
-            );
-            
-            // Don't handle attack collision on the "windup" frame
-            // Can always provide more control over which frames are checked
-            if ( this.frame > 0 ) {
-                this.handleAttackFrame();
-            }
-
-        }
-        
-        if ( this.hasShield() && !this.gamebox.attacking ) {
-            this.gamebox.draw(
-                this.image,
-                this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetX,
-                this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetY,
-                this.data.shield[ this.verb ][ this.dir ][ this.frame ].width,
-                this.data.shield[ this.verb ][ this.dir ][ this.frame ].height,
-                this.offset.x + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionX,
-                this.offset.y + this.position.z + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionY,
-                this.data.shield[ this.verb ][ this.dir ][ this.frame ].width / this.scale,
-                this.data.shield[ this.verb ][ this.dir ][ this.frame ].height / this.scale
-            );
-        }
+        this.renderWeapon();
+        this.renderShield();
 
         if ( this.player.query.debug ) {
             this.renderAfterDebug();
         }
+    }
+
+
+    renderWeapon () {
+        if ( !( this.hasWeapon() && this.is( Config.verbs.ATTACK ) && this.mode === Config.hero.modes.WEAPON ) ) {
+            return;
+        }
+        
+        if ( this.spinCharged && this.spinCounter % 5 === 0 ) {
+            this.player.renderLayer.context.save();
+            this.player.renderLayer.context.globalAlpha = 0.25;
+        }
+
+        this.gamebox.draw(
+            this.image,
+            this.data.weapon[ this.dir ][ this.frame ].offsetX,
+            this.data.weapon[ this.dir ][ this.frame ].offsetY,
+            this.data.weapon[ this.dir ][ this.frame ].width,
+            this.data.weapon[ this.dir ][ this.frame ].height,
+            this.offset.x + this.data.weapon[ this.dir ][ this.frame ].positionX,
+            this.offset.y + this.data.weapon[ this.dir ][ this.frame ].positionY,
+            this.data.weapon[ this.dir ][ this.frame ].width / this.scale,
+            this.data.weapon[ this.dir ][ this.frame ].height / this.scale
+        );
+
+        this.player.renderLayer.context.restore();
+        
+        // Don't handle attack collision on the "windup" frame
+        // Can always provide more control over which frames are checked
+        // TODO: This needs to handle the spin attack on EVERY frame...
+        if ( this.frame > 0 ) {
+            this.handleAttackFrame();
+        }
+    }
+
+
+    renderShield () {
+        if ( !( this.hasShield() && !this.gamebox.attacking ) ) {
+            return;
+        }
+
+        this.gamebox.draw(
+            this.image,
+            this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetX,
+            this.data.shield[ this.verb ][ this.dir ][ this.frame ].offsetY,
+            this.data.shield[ this.verb ][ this.dir ][ this.frame ].width,
+            this.data.shield[ this.verb ][ this.dir ][ this.frame ].height,
+            this.offset.x + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionX,
+            this.offset.y + this.position.z + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionY,
+            this.data.shield[ this.verb ][ this.dir ][ this.frame ].width / this.scale,
+            this.data.shield[ this.verb ][ this.dir ][ this.frame ].height / this.scale
+        );
     }
 
     
@@ -586,23 +664,23 @@ export default class Hero extends Sprite {
 
     // Needs to be called for every frame of attack animation
     handleAttackFrame () {
-        const poi = this.getNextPoiByDir( this.dir, 1 );
         const weaponBox = this.getWeaponbox();
         const collision = {
-            enemy: this.gamebox.checkEnemy( poi, weaponBox ),
-            tiles: this.gamebox.checkTiles( poi, weaponBox ),
-            item: this.gamebox.checkItems( poi, weaponBox ),
+            enemy: this.gamebox.checkEnemy( this.position, weaponBox ),
+            tiles: this.gamebox.checkTiles( this.position, weaponBox ),
+            item: this.gamebox.checkItems( this.position, weaponBox ),
         };
 
         if ( collision.item ) {
-            this.gamebox.handleHeroItem( poi, this.dir, collision.item );
+            this.gamebox.handleHeroItem( this.position, this.dir, collision.item );
         }
 
         if ( collision.enemy && collision.enemy.canBeAttacked() ) {
             collision.enemy.hit( this.getStat( "power" ) );
         }
 
-        if ( collision.tiles && collision.tiles.attack.length ) {
+        // TODO: When we implement the spin attack sequence, we need to fix this so THOSE frames CAN trigger tile attacks...
+        if ( collision.tiles && collision.tiles.attack.length && !this.spinLocked ) {
             for ( let i = collision.tiles.attack.length; i--; ) {
                 if ( collision.tiles.attack[ i ].attack ) {
                     const attackAction = collision.tiles.attack[ i ].instance.canAttack();
@@ -663,7 +741,12 @@ export default class Hero extends Sprite {
             };
         }
 
-        this.dir = dir;
+        // Don't allow the hero to change direction visually while spinLocked
+        // The gamebox still allows the hero to move around while spinLocked
+        if ( !this.spinLocked ) {
+            this.dir = dir;
+        }
+
         this.position.x = poi.x;
         this.position.y = poi.y;
         this.applyHitbox();
@@ -915,7 +998,7 @@ export default class Hero extends Sprite {
 
 
     applyCycle () {
-        if ( this.parkour || this.falling ) {
+        if ( this.parkour || this.falling || this.spinLocked ) {
             return;
         }
 
@@ -938,10 +1021,6 @@ export default class Hero extends Sprite {
         // Attack needs to be captured...
         } else if ( this.gamebox.attacking ) {
             this.cycle( Config.verbs.ATTACK, this.dir );
-
-        // Running comes next...
-        } else if ( this.gamebox.running ) {
-            this.cycle( Config.verbs.RUN, this.dir );
 
         // Idle comes next...LIFT has it's own idle face...
         } else if ( this.idle.x && this.idle.y ) {
