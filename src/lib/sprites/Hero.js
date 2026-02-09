@@ -46,8 +46,6 @@ export default class Hero extends Sprite {
         this.falling = null;
         this.lifting = null;
         this.lastPositionOnGround = this.position;
-        this.passiveInterval = 500;
-        this.lastPassiveTime = null;
     }
 
 
@@ -627,18 +625,7 @@ export default class Hero extends Sprite {
 /*******************************************************************************
 * Handlers
 *******************************************************************************/
-    handlePassiveInteraction ( elapsed ) {
-        // Throttle the passive interaction check so it's not called every frame...
-        if ( !this.lastPassiveTime ) {
-            this.lastPassiveTime = elapsed;
-        }
-
-        if ( elapsed - this.lastPassiveTime < this.passiveInterval ) {
-            return;
-        }
-
-        this.lastPassiveTime = null;
-
+    handlePassiveInteraction () {
         const poi = this.getNextPoiByDir( this.dir, 1 );
         const collision = {
             npc: this.gamebox.checkNPC( poi, this ),
