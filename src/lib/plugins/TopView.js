@@ -776,7 +776,7 @@ class TopView extends GameBox {
     }
 
 
-    // Initializes the attach verb as an "action"
+    // Initializes the attack verb as an "action"
     handleHeroAttack () {
         if ( this.attacking ) {
             return;
@@ -786,8 +786,8 @@ class TopView extends GameBox {
             return;
         }
 
-        const isWeapon = this.hero.hasWeapon() && this.hero.mode === Config.hero.modes.WEAPON;
-        const isProjectile = this.hero.hasProjectile() && this.hero.mode === Config.hero.modes.PROJECTILE;
+        const isWeapon = this.hero.isWeaponMode();
+        const isProjectile = this.hero.isProjectileMode();
 
         if ( !isWeapon && !isProjectile ) {
             return;

@@ -64,7 +64,7 @@ export default class Hero extends Sprite {
         this.destroyLiftedTile();
 
         if ( !this.gamebox.swimming ) {
-            this.face( this.dir );
+            this.resetSpin(); // Will call face( this.dir );
             this.physics.vz = -6;
         }
     }
@@ -226,30 +226,6 @@ export default class Hero extends Sprite {
     }
 
 
-    hasProjectile () {
-        return this.items.some( ( item ) => item.projectile );
-    }
-
-
-    fireProjectile () {
-        if ( this.projectile ) {
-            return;
-        }
-
-        const item = this.items.find( ( item ) => item.projectile );
-
-        if ( !item ) {
-            return;
-        }
-
-        const data = this.gamebox.player.getMergedData({
-            id: item.projectile,
-        }, "projectiles" );
-
-        this.projectile = new HeroProjectile( data, this.dir, this, this.map );
-    }
-
-
     collectItem ( id, mapId ) {
         const item = this.getItem( id );
 
@@ -348,7 +324,7 @@ export default class Hero extends Sprite {
 
 
 /*******************************************************************************
-* Equipped
+* Equipped (weapon, shield, projectile etc...)
 *******************************************************************************/
     equip ( eq ) {
         this.equipped[ eq ] = true;
@@ -372,6 +348,40 @@ export default class Hero extends Sprite {
 
     hasShield () {
         return this.equipped.shield && this.data.shield?.[ this.verb ]?.[ this.dir ]?.length;
+    }
+
+
+    hasProjectile () {
+        return this.items.some( ( item ) => item.projectile );
+    }
+
+
+    fireProjectile () {
+        if ( this.projectile ) {
+            return;
+        }
+
+        const item = this.items.find( ( item ) => item.projectile );
+
+        if ( !item ) {
+            return;
+        }
+
+        const data = this.gamebox.player.getMergedData({
+            id: item.projectile,
+        }, "projectiles" );
+
+        this.projectile = new HeroProjectile( data, this.dir, this, this.map );
+    }
+
+
+    isWeaponMode () {
+        return this.hasWeapon() && this.mode === Config.hero.modes.WEAPON;
+    }
+
+
+    isProjectileMode () {
+        return this.hasProjectile() && this.mode === Config.hero.modes.PROJECTILE;
     }
 
 
@@ -436,7 +446,7 @@ export default class Hero extends Sprite {
             return;
         }
 
-        if ( !this.canUseMagic() ) {
+        if ( !this.canUseMagic() || !this.isWeaponMode() ) {
             this.resetAttacking();
             return;
         }
