@@ -29,7 +29,7 @@ export default class ItemDrop extends Sprite {
 
 
     update () {
-        if ( !this.onscreen ) {
+        if ( this.canPickup() && !this.onscreen ) {
             this.map.killObject( "items", this );
         }
 

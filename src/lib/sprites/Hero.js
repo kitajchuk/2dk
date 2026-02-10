@@ -692,9 +692,14 @@ export default class Hero extends Sprite {
         }
 
         // TODO: When we implement the spin attack sequence, we need to fix this so THOSE frames CAN trigger tile attacks...
+        this.handleAttackTiles({ collision });
+    }
+
+
+    handleAttackTiles ({ collision, checkStop = false }) {
         if ( collision.tiles && collision.tiles.attack.length && !this.spinLocked ) {
             for ( let i = collision.tiles.attack.length; i--; ) {
-                if ( collision.tiles.attack[ i ].attack ) {
+                if ( collision.tiles.attack[ i ].attack && ( !checkStop || collision.tiles.attack[ i ].stop ) ) {
                     const attackAction = collision.tiles.attack[ i ].instance.canAttack();
 
                     if ( attackAction ) {
@@ -1337,6 +1342,10 @@ export class HeroProjectile extends Projectile {
             collision.camera ||
             this.canTileStop( collision )
         );
+
+        if ( collision.tiles && this.data.spin ) {
+            this.hero.handleAttackTiles({ collision, checkStop: true });
+        }
         
         if ( isCollision ) {
             if ( collision.enemy && collision.enemy.canBeAttacked() ) {
