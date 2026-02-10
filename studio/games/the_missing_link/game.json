@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1324,
+    "save": 1337,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -740,6 +740,16 @@
             "projectile": "arrow"
         },
         {
+            "id": "boomerang",
+            "name": "Boomerang",
+            "width": 32,
+            "height": 48,
+            "image": "assets/sprites/items.png",
+            "offsetX": 208,
+            "offsetY": 200,
+            "projectile": "boomerang"
+        },
+        {
             "id": "green-rupee",
             "name": "Green Rupee",
             "width": 28,
@@ -859,6 +869,8 @@
             "power": 1,
             "fx": "smoke",
             "sound": "smash",
+            "maxv": 6,
+            "controlmaxv": 6,
             "dirs": {
                 "left": {
                     "offsetX": 548,
@@ -883,6 +895,45 @@
                     "offsetY": 240,
                     "width": 64,
                     "height": 32
+                }
+            }
+        },
+        {
+            "id": "boomerang",
+            "name": "Boomerang",
+            "image": "assets/sprites/hero_la.png",
+            "power": 1,
+            "fx": "smoke",
+            "sound": "smash",
+            "spin": true,
+            "maxv": 8,
+            "controlmaxv": 8,
+            "dirs": {
+                "left": {
+                    "offsetX": 0,
+                    "offsetY": 368,
+                    "width": 48,
+                    "height": 48
+                },
+                "up": {
+                    "offsetX": 44,
+                    "offsetY": 412,
+                    "width": 48,
+                    "height": 48
+                },
+                "down": {
+                    "offsetX": 44,
+                    "offsetY": 412,
+                    "flipY": true,
+                    "width": 48,
+                    "height": 48
+                },
+                "right": {
+                    "offsetX": 0,
+                    "offsetY": 368,
+                    "flipX": true,
+                    "width": 48,
+                    "height": 48
                 }
             }
         }
@@ -1170,6 +1221,7 @@
             "height": 64,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
+            "controlmaxv": 1,
             "opacity": 0.75,
             "dir": "left",
             "hitbox": {
@@ -1223,6 +1275,7 @@
             "height": 64,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
+            "controlmaxv": 1,
             "opacity": 0.75,
             "dir": "right",
             "hitbox": {
@@ -1276,6 +1329,7 @@
             "height": 64,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
+            "controlmaxv": 1,
             "status": "curse",
             "stats": {
                 "power": 1,
@@ -1320,6 +1374,7 @@
             "height": 52,
             "image": "assets/sprites/npcs.png",
             "maxv": 1,
+            "controlmaxv": 1,
             "dir": "right",
             "bounce": true,
             "hitbox": {

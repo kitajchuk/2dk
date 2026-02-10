@@ -206,6 +206,32 @@
                     "You found the magic powder!"
                 ]
             }
+        },
+        {
+            "id": "bommerang",
+            "spawn": {
+                "x": 880,
+                "y": 554
+            },
+            "dialogue": {
+                "type": "text",
+                "text": [
+                    "You got the boomerang!"
+                ]
+            }
+        },
+        {
+            "id": "boomerang",
+            "spawn": {
+                "x": 432,
+                "y": 556
+            },
+            "dialogue": {
+                "type": "text",
+                "text": [
+                    "You got the boomerang!"
+                ]
+            }
         }
     ],
     "collision": [
@@ -3119,8 +3145,8 @@
                 ],
                 [
                     [
-                        192,
-                        448
+                        256,
+                        704
                     ]
                 ],
                 [
