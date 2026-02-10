@@ -252,6 +252,7 @@ class Editor {
         const layers = [
             "background",       
             "foreground",
+            "item",
             "npc",
         ];
 
