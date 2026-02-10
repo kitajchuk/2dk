@@ -55,6 +55,8 @@ export default class Projectile extends Sprite {
             ...projectile,
         };
         super( data, map );
+        this.flightDir = dir;
+        this.flightCounter = 0;
         this.hitCounter = 0;
         this.sprite = sprite;
         this.map.addObject( "sprites", this );
@@ -82,10 +84,32 @@ export default class Projectile extends Sprite {
             return;
         }
 
-        this.controls[ this.dir ] = true;
+        this.controls[ this.flightDir ] = true;
 
+        this.handleFlight();
         this.handleControls();
         this.updateStack();
+    }
+
+
+    handleFlight () {
+        if ( !this.data.spin ) {
+            return;
+        }
+
+        this.flightCounter++;
+
+        if ( this.flightCounter % 5 === 0 ) {
+            if ( this.dir === "left" ) {
+                this.dir = "down";
+            } else if ( this.dir === "down" ) {
+                this.dir = "right";
+            } else if ( this.dir === "right" ) {
+                this.dir = "up";
+            } else if ( this.dir === "up" ) {
+                this.dir = "left";
+            }
+        } 
     }
 
 

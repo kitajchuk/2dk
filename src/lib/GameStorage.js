@@ -6,18 +6,18 @@ export default class GameStorage {
     // Handled separately: map, quests etc...
     static heroProps = [
         "dir",
-        "items",
         "stats",
-        "magic",
-        "status",
-        "health",
-        "maxMagic",
         "position",
         "currency",
         "equipped",
+        "items",
+        "health",
         "maxHealth",
-        "totalDeaths",
+        "magic",
+        "maxMagic",
+        "status",
         "statusEffects",
+        "totalDeaths",
         "enemiesKilled",
     ];
 

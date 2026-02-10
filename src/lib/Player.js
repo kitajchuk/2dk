@@ -567,9 +567,17 @@ export default class Player extends Controller {
         switch ( this.gamebox.hero.mode ) {
             case Config.hero.modes.WEAPON:
                 this.gamebox.hero.mode = Config.hero.modes.PROJECTILE;
+                this.gamebox.hero.updateProjectileItem();
                 break;
             case Config.hero.modes.PROJECTILE:
-                this.gamebox.hero.mode = Config.hero.modes.WEAPON;
+                if ( this.gamebox.hero.canCycleProjectile() ) {
+                    this.gamebox.hero.updateProjectileItem();
+                    // HACK: Need to force a HUD button sprite update when cycling projectiles
+                    // This is okay so long as we have this low-brow projectile cycling method
+                    this.gamebox.hud.buttons.b = null;
+                } else {
+                    this.gamebox.hero.mode = Config.hero.modes.WEAPON;
+                }
                 break;
         }
     }

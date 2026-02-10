@@ -40,6 +40,8 @@ export default class Hero extends Sprite {
         this.spinLocked = false;
         this.spinCharged = false;
         this.projectile = null;
+        this.projectileIndex = -1;
+        this.projectileItem = null;
         this.mode = Config.hero.modes.WEAPON;
         this.interact = null;
         this.parkour = null;
@@ -171,7 +173,7 @@ export default class Hero extends Sprite {
         if ( this.data.status[ status ] ) {
             this.statusEffects[ status ] = this.data.status[ status ];
 
-            // Max health is special because
+            // Max health is special (e.g. curse caps at 1/2 health)
             if ( this.statusEffects[ status ].maxHealth ) {
                 this.health = this.maxHealth * this.statusEffects[ status ].maxHealth;
             }
@@ -356,19 +358,32 @@ export default class Hero extends Sprite {
     }
 
 
-    fireProjectile () {
-        if ( this.projectile ) {
-            return;
+    canCycleProjectile () {
+        const projectiles = this.items.filter( ( item ) => item.projectile );
+        return projectiles.length > 1 && this.projectileIndex < projectiles.length - 1;
+    }
+
+
+    updateProjectileItem () {
+        const projectiles = this.items.filter( ( item ) => item.projectile );
+        
+        if ( this.projectileIndex >= projectiles.length - 1 ) {
+            this.projectileIndex = 0;
+        } else {
+            this.projectileIndex++;
         }
 
-        const item = this.items.find( ( item ) => item.projectile );
+        this.projectileItem = projectiles[ this.projectileIndex ];
+    }
 
-        if ( !item ) {
+
+    fireProjectile () {
+        if ( this.projectile || !this.projectileItem ) {
             return;
         }
 
         const data = this.gamebox.player.getMergedData({
-            id: item.projectile,
+            id: this.projectileItem.projectile,
         }, "projectiles" );
 
         this.projectile = new HeroProjectile( data, this.dir, this, this.map );

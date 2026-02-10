@@ -313,6 +313,11 @@ export default class GameBox {
     seedStorage () {
         for ( const prop of GameStorage.heroProps ) {
             this.hero[ prop ] = this.player.gamestorage.get( prop ) || this.hero[ prop ];
+
+            // Apply status present so it will apply the status effects correctly
+            if ( prop === "status" && this.hero.status ) {
+                this.hero.applyStatus( this.hero.status );
+            }
         }
     }
 

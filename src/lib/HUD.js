@@ -302,9 +302,8 @@ export default class HUD {
                     }
                     break;
                 case Config.hero.modes.PROJECTILE:
-                    const projectileItem = this.hero.items.find( ( item ) => item.projectile );
-                    if ( projectileItem ) {
-                        touchControls.b.elem.innerHTML = renderButtonSprite( projectileItem, "B" );
+                    if ( this.hero.projectileItem ) {
+                        touchControls.b.elem.innerHTML = renderButtonSprite( this.hero.projectileItem, "B" );
                         this.buttons.b = Config.hero.modes.PROJECTILE;
                     }
                     break;
