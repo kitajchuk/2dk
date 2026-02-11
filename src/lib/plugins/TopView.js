@@ -656,6 +656,15 @@ class TopView extends GameBox {
             return;
         }
 
+        // Skip if the item is not in the map -- e.g. "stale item bug"
+        // This is possible because the gamebox calls scan() from update() to pre-determine collision groups
+        // An item drop can "kill itself" if it times out but the hero can collide with the stale reference
+        // This was resulting in a second call to killObject() in which we'd call splice(-1, 1) because it was already removed from the array
+        // So we also added a safeguard in the killObject() method so we don't try to remove it again if it's already been removed
+        if ( this.map.items.indexOf( item ) === -1 ) {
+            return;
+        }
+
         // Key map items
         if ( item.mapId ) {
             // Cancel attack animation for itemGet sequence

@@ -1,5 +1,3 @@
-import Utils from "../Utils";
-import FX from "./FX";
 import { QuestSprite } from "./Sprite";
 import Config from "../Config";
 

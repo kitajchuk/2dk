@@ -287,6 +287,15 @@ export default class Map {
     }
 
 
+    // TODO: This could be better optimized
+    // (Sprite class is using onscreen to add/remove from allSprites array)
+    sortAllSprites () {
+        this.allSprites.sort( ( a, b ) => {
+            return a.prio - b.prio;
+        });
+    }
+
+
     renderAllSprites () {
         for ( let i = 0; i < this.allSprites.length; i++ ) {
             this.gamebox.renderQueue.add( this.allSprites[ i ] );
@@ -322,29 +331,6 @@ export default class Map {
         }
 
         this.player.renderLayer.context.restore();
-    }
-
-
-    addAllSprite ( sprite ) {
-        if ( sprite && this.allSprites.indexOf( sprite ) === -1 ) {
-            this.allSprites.push( sprite );
-        }
-    }
-
-
-    removeAllSprite ( sprite ) {
-        if ( sprite && this.allSprites.indexOf( sprite ) !== -1 ) {
-            this.allSprites.splice( this.allSprites.indexOf( sprite ), 1 );
-        }
-    }
-
-
-    // TODO: This could be better optimized
-    // (Sprite class is using onscreen to add/remove from allSprites array)
-    sortAllSprites () {
-        this.allSprites.sort( ( a, b ) => {
-            return a.prio - b.prio;
-        });
     }
 
 
@@ -595,6 +581,20 @@ export default class Map {
     }
 
 
+    addAllSprite ( sprite ) {
+        if ( sprite && this.allSprites.indexOf( sprite ) === -1 ) {
+            this.allSprites.push( sprite );
+        }
+    }
+
+
+    removeAllSprite ( sprite ) {
+        if ( sprite && this.allSprites.indexOf( sprite ) !== -1 ) {
+            this.allSprites.splice( this.allSprites.indexOf( sprite ), 1 );
+        }
+    }
+
+
     addObject ( type, obj ) {
         this[ type ].push( obj );
         this.addAllSprite( obj );
@@ -602,10 +602,12 @@ export default class Map {
 
 
     killObject ( type, obj ) {
-        this.removeAllSprite( obj );
-        this[ type ].splice( this[ type ].indexOf( obj ), 1 );
-        obj.destroy();
-        obj = null;
+        if ( this[ type ].indexOf( obj ) !== -1 ) {
+            this[ type ].splice( this[ type ].indexOf( obj ), 1 );
+            this.removeAllSprite( obj );
+            obj.destroy();
+            obj = null;
+        }
     }
 
 
