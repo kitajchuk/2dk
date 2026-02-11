@@ -605,6 +605,7 @@ export default class Map {
         if ( this[ type ].indexOf( obj ) !== -1 ) {
             this[ type ].splice( this[ type ].indexOf( obj ), 1 );
             this.removeAllSprite( obj );
+            this.gamebox.removeCollision( type, obj );
             obj.destroy();
             obj = null;
         }

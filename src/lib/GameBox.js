@@ -183,12 +183,24 @@ export default class GameBox {
         // Update collision groups for use in collision checks
         this.collision.colliders = this.getVisibleColliders();
         this.collision.events = this.getVisibleEvents();
-        // WARNING: Items can technically be "stale" on THIS frame -- see TopView's handleHeroItem() for more details
-        this.collision.items = this.getVisibleItems();
         this.collision.activeTiles = this.getVisibleActiveTiles();
+        this.collision.items = this.getVisibleItems();
         this.collision.npcs = this.getVisibleNPCs();
         this.collision.doors = this.getVisibleNPCs( "doors" );
         this.collision.enemies = this.getVisibleNPCs( "enemies" );
+    }
+
+
+    // Remove if the object is not in the map -- e.g. "stale object reference bug"
+    // This is possible because the gamebox calls scan() from update() to pre-determine collision groups
+    // Example: An item drop can "kill itself" if it times out but the hero can collide with the stale reference (TopView.handleHeroItem())
+    // This was resulting in a second call to Map.killObject() in which we'd call splice(-1, 1) because it was already removed from the array
+    // So we also added a safeguard in the Map.killObject() method so we don't try to remove it again if it's already been removed
+    // And Map.killObject() also removes the object from the collision array so we don't need to do that here (e.g. calls THIS method)
+    removeCollision ( type, obj ) {
+        if ( this.collision[ type ] && this.collision[ type ].indexOf( obj ) !== -1 ) {
+            this.collision[ type ].splice( this.collision[ type ].indexOf( obj ), 1 );
+        }
     }
 
 
