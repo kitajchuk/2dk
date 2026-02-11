@@ -128,6 +128,12 @@ export default class Map {
             const mapId = this.getMapId( type, i );
             const quest = data.spawn.quest;
 
+            // This is a "de-spawn" flag check for when we want to remove an NPC from the map after a quest is completed
+            if ( quest?.checkSpawn && this.gamequest.getCompleted( quest.checkSpawn.key ) ) {
+                continue;
+            }
+
+            // This is a "spawn" flag check for when we want to add an NPC to the map after a quest is completed (e.g. handleQuestFlagCheck())
             if ( quest?.checkFlag && !this.gamequest.getCompleted( quest.checkFlag.key ) ) {
                 this.spawnpool.push({ data, type, mapId });
 

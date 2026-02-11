@@ -25,6 +25,10 @@ module.exports = {
             id: "",
             dialogue: undefined || dialogue,
         },
+        setCompanion: undefined || {
+            id: "",
+            type: "",
+        },
     },
     // For tile actions...
     stat: undefined || {
@@ -33,10 +37,5 @@ module.exports = {
         dialogue: undefined || dialogue,
     },
     // For tile actions...
-    drops: undefined || [
-        {
-            id: "",
-            chance: 0,
-        },
-    ],
+    drops: undefined || "",
 };

@@ -28,8 +28,18 @@ module.exports = {
             dialogue: undefined || dialogue,
         },
         {
+            type: "setFlag",
+            key: "",
+            dialogue: undefined || dialogue,
+        },
+        {
             type: "checkFlag",
             key: "",
+            dialogue: undefined || dialogue,
+        },
+        {
+            type: "checkCompanion",
+            id: "",
             dialogue: undefined || dialogue,
         },
     ],

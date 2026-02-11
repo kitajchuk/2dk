@@ -11,11 +11,11 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
     const existingQuest = existingAction.quest ? existingAction.quest : "";
     const existingStates = npcToEdit ? npcToEdit.states : "";
     const existingAggro = npcToEdit ? npcToEdit.aggro : false;
+    const existingSpawnQuest = npcToEdit && npcToEdit.spawn ? npcToEdit.spawn.quest : "";
 
     // Exclude verbs that are not valid for NPCs
     const npcActions = actions.filter( ( action ) => {
         return (
-            action !== window.lib2dk.Config.verbs.RUN &&
             action !== window.lib2dk.Config.verbs.WALK &&
             action !== window.lib2dk.Config.verbs.FACE &&
             action !== window.lib2dk.Config.verbs.THROW &&
@@ -129,6 +129,10 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
                         ${window.feather.icons[ "chevron-down" ].toSvg()}
                     </span>
                 </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Spawn Quest (raw data)</div>
+                <textarea class="editor__field input textarea js-npc-field" name="spawnQuest">${existingSpawnQuest ? JSON.stringify( existingSpawnQuest, null, 2 ) : ""}</textarea>
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Action Quest (raw data)</div>

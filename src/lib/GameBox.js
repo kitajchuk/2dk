@@ -21,7 +21,10 @@ export default class GameBox {
         this.mapChangeEvent = null;
 
         // Quest, render queue
-        this.gamequest = new GameQuest( this, this.player.gamestorage.get( "quests" ) );
+        const quests = this.player.query.nostorage ?
+            undefined :
+            this.player.gamestorage.get( "quests" );
+        this.gamequest = new GameQuest( this, quests );
         this.renderQueue = new RenderQueue( this );
 
         // Dialogues
@@ -31,7 +34,9 @@ export default class GameBox {
         this.currentMusic = null;
         
         // GameStorage map needs to be handled up front to load the correct data
-        const mapId = this.player.gamestorage.get( "map" ) || this.player.heroData.map;
+        const mapId = this.player.query.nostorage ?
+            this.player.heroData.map :
+            this.player.gamestorage.get( "map" ) || this.player.heroData.map;
         const initMapData = Loader.cash( mapId );
         const initHeroData = structuredClone( this.player.heroData );
 
@@ -324,6 +329,10 @@ export default class GameBox {
 
 
     seedStorage () {
+        if ( this.player.query.nostorage ) {
+            return;
+        }
+
         for ( const prop of GameStorage.heroProps ) {
             this.hero[ prop ] = this.player.gamestorage.get( prop ) || this.hero[ prop ];
 

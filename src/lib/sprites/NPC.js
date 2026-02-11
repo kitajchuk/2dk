@@ -685,6 +685,14 @@ export default class NPC extends QuestSprite {
                 this.handleInteractionState();
                 break;
 
+            // MARK: Quest setFlag
+            case Config.quest.dialogue.SET_FLAG:
+                // Assume that the quest flag should automatically be completed for this check
+                this.gamequest.completeQuest( this.quest.key );
+                this.gamequest.completeQuest( questId );
+                this.advanceQuest();
+                break;
+
             // MARK: Quest checkItem
             case Config.quest.dialogue.CHECK_ITEM:
                 if ( !this.gamebox.hero.itemCheck( this.quest.id ) ) {
@@ -711,6 +719,16 @@ export default class NPC extends QuestSprite {
             // MARK: Quest checkFlag
             case Config.quest.dialogue.CHECK_FLAG:
                 if ( !this.gamequest.getCompleted( this.quest.key ) ) {
+                    this.playQuestDialogue( this.quest.dialogue );
+                } else {
+                    this.gamequest.completeQuest( questId );
+                    this.advanceQuestRecursive();
+                }
+                break;
+
+            // MARK: Quest checkCompanion
+            case Config.quest.dialogue.CHECK_COMPANION:
+                if ( !this.gamebox.hero.checkCompanion( this.quest.id ) ) {
                     this.playQuestDialogue( this.quest.dialogue );
                 } else {
                     this.gamequest.completeQuest( questId );

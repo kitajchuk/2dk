@@ -1448,9 +1448,15 @@ class EditorCanvas {
                         npc.spawn.x === mouseCoords[ 0 ] && 
                         npc.spawn.y === mouseCoords[ 1 ]
                     ) {
+                        const spawn = npc.spawn;
+
+                        if ( data.spawnQuest ) {
+                            spawn.quest = JSON.parse( data.spawnQuest );
+                        }
+
                         acc.push({
                             id: npc.id,
-                            spawn: npc.spawn,
+                            spawn,
                             ...extraData,
                         });
 

@@ -124,6 +124,11 @@ export default class Hero extends Sprite {
     }
 
 
+    checkCompanion ( id ) {
+        return this.gamebox.companion && this.gamebox.companion.id === id;
+    }
+
+
 /*******************************************************************************
 * Stats
 *******************************************************************************/

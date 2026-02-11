@@ -76,16 +76,50 @@
                         }
                     },
                     {
-                        "type": "noCheck",
+                        "type": "checkCompanion",
+                        "id": "dog-black",
                         "dialogue": {
                             "type": "text",
                             "text": [
                                 "If you find my dog and bring him home there's something in it for you."
                             ]
                         }
+                    },
+                    {
+                        "type": "setFlag",
+                        "key": "dog-black-delivered",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Oh my dear boy! You've found my sweet poochie! Thank you so much. I don't know how to repay you for this."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "It's so nice to have my sweet little poochie home again."
+                            ]
+                        }
                     }
                 ]
             }
+        },
+        {
+            "id": "dog-black",
+            "spawn": {
+                "x": 483,
+                "y": 479,
+                "quest": {
+                    "checkFlag": {
+                        "key": "dog-black-delivered",
+                        "value": 1
+                    }
+                }
+            },
+            "ai": "wander"
         }
     ],
     "items": [],

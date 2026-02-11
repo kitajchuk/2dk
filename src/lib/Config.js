@@ -42,6 +42,7 @@ const Config = {
         READ: "read",
         SWIM: "swim",
         DIVE: "dive",
+        ATTRACT: "attract",
     },
     map: {
         types: {
@@ -134,16 +135,19 @@ const Config = {
         dialogue: {
             NO_CHECK: "noCheck",
             SET_ITEM: "setItem",
+            SET_FLAG: "setFlag",
             TAKE_ITEM: "takeItem",
             CHECK_ITEM: "checkItem",
             CHECK_FLAG: "checkFlag",
             CHECK_STATUS: "checkStatus",
+            CHECK_COMPANION: "checkCompanion",
         },
         action: {
             SET_FLAG: "setFlag",
             DROP_ITEM: "dropItem",
             CHECK_FLAG: "checkFlag",
             CHECK_ITEM: "checkItem",
+            SET_COMPANION: "setCompanion",
         },
     },
     colors: {

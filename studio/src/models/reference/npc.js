@@ -12,10 +12,14 @@ const npcReference = {
         x: 0,
         y: 0,
         quest: undefined || {
-            checkFlag: {
+            checkFlag: undefined || {
                 key: "",
                 value: 1,
-            }
+            },
+            checkSpawn: undefined || {
+                key: "",
+                value: 1,
+            },
         },
     },
     // Payload reference (payload.js)

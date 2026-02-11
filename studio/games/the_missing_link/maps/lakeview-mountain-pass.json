@@ -450,9 +450,24 @@
             "id": "dog-black",
             "spawn": {
                 "x": 219,
-                "y": 863
+                "y": 863,
+                "quest": {
+                    "checkSpawn": {
+                        "key": "dog-black-found",
+                        "value": 1
+                    }
+                }
             },
-            "ai": "wander"
+            "ai": "wander",
+            "action": {
+                "verb": "attract",
+                "quest": {
+                    "setCompanion": {
+                        "id": "dog-black",
+                        "type": "walk"
+                    }
+                }
+            }
         },
         {
             "id": "octorok",

@@ -369,6 +369,8 @@ export default class Player extends Controller {
             gamepad: query.get( "gamepad" ),
             companion: query.get( "companion" ),
             resolution: query.get( "resolution" ),
+            // Skip loading from game storage (for development purposes)
+            nostorage: query.get( "nostorage" ),
         };
     }
 
