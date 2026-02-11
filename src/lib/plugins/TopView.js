@@ -661,6 +661,7 @@ class TopView extends GameBox {
         // An item drop can "kill itself" if it times out but the hero can collide with the stale reference
         // This was resulting in a second call to killObject() in which we'd call splice(-1, 1) because it was already removed from the array
         // So we also added a safeguard in the killObject() method so we don't try to remove it again if it's already been removed
+        // NOTE: This check could just be added to canPickup() if we wanted to be more strict there instead of here...
         if ( this.map.items.indexOf( item ) === -1 ) {
             return;
         }

@@ -183,6 +183,7 @@ export default class GameBox {
         // Update collision groups for use in collision checks
         this.collision.colliders = this.getVisibleColliders();
         this.collision.events = this.getVisibleEvents();
+        // WARNING: Items can technically be "stale" on THIS frame -- see TopView's handleHeroItem() for more details
         this.collision.items = this.getVisibleItems();
         this.collision.activeTiles = this.getVisibleActiveTiles();
         this.collision.npcs = this.getVisibleNPCs();
