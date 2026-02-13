@@ -71,7 +71,7 @@
                             "text": [
                                 "Hello. You look new.",
                                 "My dog has run off somewhere outside. I'm too scared to go out looking for him with all the Moblins roaming around.",
-                                "You look like a brave kid. If you find my dog and bring him home there's something in it for you."
+                                "You look like a brave kid. If you find my dog please bring him home where he belongs."
                             ]
                         }
                     },
@@ -81,7 +81,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "If you find my dog and bring him home there's something in it for you."
+                                "If you find my dog please bring him home where he belongs."
                             ]
                         }
                     },
@@ -91,7 +91,8 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "Oh my dear boy! You've found my sweet poochie! Thank you so much. I don't know how to repay you for this."
+                                "Oh my dear boy! You've found my sweet poochie! Thank you so much.",
+                                "My husband, rest his soul, was once a great diver in these parts. His old gear is still in the Chest back there. You look like you could make use of it. Why don't you go ahead and have it."
                             ]
                         }
                     },
@@ -120,6 +121,38 @@
                 }
             },
             "ai": "wander"
+        },
+        {
+            "id": "chest",
+            "spawn": {
+                "x": 609,
+                "y": 223
+            },
+            "payload": {
+                "quest": [
+                    {
+                        "type": "checkFlag",
+                        "key": "dog-black-delivered",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Seems stuck..."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "setItem",
+                        "id": "flippers",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You got some Flippers!",
+                                "Now you can swim in deep water!"
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     ],
     "items": [],

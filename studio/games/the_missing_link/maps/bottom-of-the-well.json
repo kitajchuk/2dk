@@ -142,19 +142,6 @@
     ],
     "items": [
         {
-            "id": "flippers",
-            "spawn": {
-                "x": 110,
-                "y": 102
-            },
-            "dialogue": {
-                "type": "text",
-                "text": [
-                    "You got some flippers!"
-                ]
-            }
-        },
-        {
             "id": "bow",
             "spawn": {
                 "x": 626,
@@ -169,67 +156,28 @@
             }
         },
         {
-            "id": "feather",
+            "id": "boomerang",
             "spawn": {
-                "x": 1142,
-                "y": 98
+                "x": 111,
+                "y": 106
             },
             "dialogue": {
                 "type": "text",
                 "text": [
-                    "You got the Feather!"
-                ]
-            }
-        },
-        {
-            "id": "bracelet",
-            "spawn": {
-                "x": 623,
-                "y": 298
-            },
-            "dialogue": {
-                "type": "text",
-                "text": [
-                    "You got the Bracelet!"
+                    "You got the Boomerang!"
                 ]
             }
         },
         {
             "id": "magic-powder",
             "spawn": {
-                "x": 752,
-                "y": 550
+                "x": 1139,
+                "y": 105
             },
             "dialogue": {
                 "type": "text",
                 "text": [
-                    "You found the magic powder!"
-                ]
-            }
-        },
-        {
-            "id": "bommerang",
-            "spawn": {
-                "x": 880,
-                "y": 554
-            },
-            "dialogue": {
-                "type": "text",
-                "text": [
-                    "You got the boomerang!"
-                ]
-            }
-        },
-        {
-            "id": "boomerang",
-            "spawn": {
-                "x": 432,
-                "y": 556
-            },
-            "dialogue": {
-                "type": "text",
-                "text": [
-                    "You got the boomerang!"
+                    "You got the Magic Powder!"
                 ]
             }
         }

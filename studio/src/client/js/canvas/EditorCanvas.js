@@ -1295,7 +1295,7 @@ class EditorCanvas {
                 }, []);
 
                 this.contexts.item.clear();
-                this.drawNPCs();
+                this.drawItems();
             }
         }
     }
