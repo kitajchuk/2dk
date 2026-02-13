@@ -19,7 +19,7 @@ export default class Companion extends Sprite {
         this.spring.bind( this );
         this.despawn = false;
         this.despawnQuest = null;
-        this.despawnSpeed = this.physics.maxv * 2;
+        this.despawnSpeed = 2;
     }
 
 
@@ -212,12 +212,19 @@ export default class Companion extends Sprite {
     }
 
 
-    applyDespawnPosition ( poi ) {
-        this.spring.hiJacked = true;
+    // This is pretty much the same as how we apply falling position for the Hero...
+    applyDespawnPosition () {
+        if ( !this.spring.hiJacked ) {
+            this.spring.hiJacked = true;
+            this.position.x = Math.round( this.position.x );
+            this.position.y = Math.round( this.position.y );
+        }
+
+        const poi = this.getNextPoi();
 
         if (
-            Math.abs( this.position.x - this.despawnQuest.position.x ) < 1 &&
-            Math.abs( this.position.y - this.despawnQuest.position.y ) < 1
+            this.position.x === this.despawnQuest.position.x &&
+            this.position.y === this.despawnQuest.position.y
         ) {
             if ( this.isOnGround() ) {
                 this.stillTimer = Infinity;
@@ -226,12 +233,19 @@ export default class Companion extends Sprite {
             return;
         }
 
-        const toDespawnX = this.despawnQuest.position.x - this.position.x;
-        const toDespawnY = this.despawnQuest.position.y - this.position.y;
-        const angle = Math.atan2( toDespawnY, toDespawnX );
+        if ( Math.abs( poi.x - this.despawnQuest.position.x ) > this.despawnSpeed ) {
+            poi.x += poi.x < this.despawnQuest.position.x ? this.despawnSpeed : -this.despawnSpeed;
 
-        poi.x = this.position.x + ( this.despawnSpeed * Math.cos( angle ) );
-        poi.y = this.position.y + ( this.despawnSpeed * Math.sin( angle ) );
+        } else {
+            poi.x = this.despawnQuest.position.x;
+        }
+
+        if ( Math.abs( poi.y - this.despawnQuest.position.y ) > this.despawnSpeed ) {
+            poi.y += poi.y < this.despawnQuest.position.y ? this.despawnSpeed : -this.despawnSpeed;
+
+        } else {
+            poi.y = this.despawnQuest.position.y;
+        }
 
         this.position.x = poi.x;
         this.position.y = poi.y;
