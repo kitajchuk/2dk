@@ -14,8 +14,12 @@ export default class Companion extends Sprite {
         super( data, hero.map );
         this.hero = hero;
         this.onscreen = true;
+        this.bounceHeight = -8;
         this.spring = new Spring( this.player, this.position.x, this.position.y, 10 );
         this.spring.bind( this );
+        this.despawn = false;
+        this.despawnQuest = null;
+        this.despawnSpeed = this.physics.maxv * 2;
     }
 
 
@@ -86,9 +90,8 @@ export default class Companion extends Sprite {
             this.isOnGround() &&
             !this.gamebox.panning
         ) {
-            // Bounce condition is TRUE
-            // Position Z is zero, so bounce a bit...
-            this.physics.vz = -8;
+            // Bounce condition is TRUE, so bounce a bit...
+            this.physics.vz = this.bounceHeight;
         }
 
         if ( this.hero.isIdle() ) {
@@ -113,10 +116,29 @@ export default class Companion extends Sprite {
     }
 
 
+    render () {
+        super.render();
+
+        if ( this.despawn ) {
+            this.gamebox.despawnCompanion();
+            this.map.handleQuestFlagCheck( this.despawnQuest.questKey, {
+                fx: false,
+                dir: this.dir,
+                verb: this.verb,
+            });
+        }
+
+    }
+
+
 /*******************************************************************************
 * Applications
 *******************************************************************************/
     applyPosition () {
+        if ( this.stillTimer > 0 ) {
+            return;
+        }
+
         if ( this.data.type === Config.npc.ai.WALK ) {
             this.applyWalkPosition();
         }
@@ -159,6 +181,11 @@ export default class Companion extends Sprite {
     applyWalkPosition () {
         const poi = {};
 
+        if ( this.despawnQuest ) {
+            this.applyDespawnPosition( poi );
+            return;
+        }
+
         if ( this.hero.dir === "right" && this.hero.position.x > this.position.x ) {
             poi.x = this.hero.position.x - ( this.width / 2 );
             poi.y = this.hero.footbox.y - ( this.height - this.hero.footbox.height );
@@ -181,6 +208,36 @@ export default class Companion extends Sprite {
 
         if ( poi.x && poi.y ) {
             this.spring.poi = poi;
+        }
+    }
+
+
+    applyDespawnPosition ( poi ) {
+        this.spring.hiJacked = true;
+
+        if (
+            Math.abs( this.position.x - this.despawnQuest.position.x ) < 1 &&
+            Math.abs( this.position.y - this.despawnQuest.position.y ) < 1
+        ) {
+            if ( this.isOnGround() ) {
+                this.stillTimer = Infinity;
+                this.despawn = true;
+            }
+            return;
+        }
+
+        const toDespawnX = this.despawnQuest.position.x - this.position.x;
+        const toDespawnY = this.despawnQuest.position.y - this.position.y;
+        const angle = Math.atan2( toDespawnY, toDespawnX );
+
+        poi.x = this.position.x + ( this.despawnSpeed * Math.cos( angle ) );
+        poi.y = this.position.y + ( this.despawnSpeed * Math.sin( angle ) );
+
+        this.position.x = poi.x;
+        this.position.y = poi.y;
+
+        if ( this.data.bounce && this.isOnGround() ) {
+            this.physics.vz = this.bounceHeight;
         }
     }
 }

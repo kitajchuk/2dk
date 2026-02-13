@@ -71,15 +71,14 @@ export default class GameBox {
         }
 
         // Companion?
-        if ( initHeroData.companion ) {
-            initHeroData.companion = this.player.getMergedData( initHeroData.companion, "npcs" );
-            initHeroData.companion.spawn = {
+        const companionData = this.player.query.nostorage ?
+            undefined :
+            this.player.gamestorage.get( "companion" );
+        if ( companionData ) {
+            this.spawnCompanion( companionData, {
                 x: this.hero.position.x,
                 y: this.hero.position.y,
-            };
-
-            this.companion = new Companion( initHeroData.companion, this.hero );
-            this.map.addAllSprite( this.companion );
+            } );
         }
 
         this.initMap();
@@ -251,6 +250,29 @@ export default class GameBox {
 /*******************************************************************************
 * Sprite utilities
 *******************************************************************************/
+    spawnCompanion ( data, spawn ) {
+        const companionData = this.player.getMergedData({
+            ...data,
+            spawn,
+        }, "npcs" );
+
+        this.companion = new Companion( companionData, this.hero );
+        this.map.addAllSprite( this.companion );
+    }
+
+
+    despawnCompanion () {
+        this.companion.destroy();
+        this.map.removeAllSprite( this.companion );
+        this.companion = null;
+    }
+
+
+    checkCompanion ( id ) {
+        return this.companion && this.companion.data.id === id;
+    }
+
+
     itemDrop ( id, position ) {
         let drops = structuredClone( this.player.data.drops[ id ] );
 
@@ -479,7 +501,10 @@ export default class GameBox {
 
 
     checkHero ( poi, sprite ) {
-        return Utils.collide( sprite.getHitbox( poi ), this.hero.hitbox );
+        // Ad-hoc "sprite" object with { x, y, width, height }
+        // See NPC.handleAttract() for an example where we pass the perceptionBox.tileBox directly...
+        const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
+        return Utils.collide( lookbox, this.hero.hitbox );
     }
 
 
@@ -547,7 +572,7 @@ export default class GameBox {
         const npcs = this.collision[ type ]
         
         // Ad-hoc "sprite" object with { x, y, width, height }
-        // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
+        // See Hero.handleAttackFrame() for an example where we pass the weaponBox directly...
         const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
 
         for ( let i = npcs.length; i--; ) {
@@ -583,7 +608,7 @@ export default class GameBox {
 
     checkItems ( poi, sprite ) {
         // Ad-hoc "sprite" object with { x, y, width, height }
-        // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
+        // See Hero.handleAttackFrame() for an example where we pass the weaponBox directly...
         const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
 
         for ( let i = this.collision.items.length; i--; ) {
@@ -630,7 +655,7 @@ export default class GameBox {
         for ( let i = this.collision.activeTiles.length; i--; ) {
             const instance = this.collision.activeTiles[ i ];
             // Ad-hoc "sprite" object with { x, y, width, height }
-            // See handleHeroAttackFrame() for an example where we pass the weaponBox directly...
+            // See Hero.handleAttackFrame() for an example where we pass the weaponBox directly...
             const isFootTile = footTiles.indexOf( instance.data.group ) !== -1;
             const lookbox = isInstance ? isFootTile ? footbox : hitbox : sprite;
 

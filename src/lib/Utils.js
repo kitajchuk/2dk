@@ -207,36 +207,36 @@ const Utils = {
     getSurroundingTileCoords ( coords ) {
         return {
             topLeft: {
-                x: (coords[0] - 1),
-                y: (coords[1] - 1)
+                x: coords[ 0 ] - 1,
+                y: coords[ 1 ] - 1,
             },
             top: {
-                x: coords[0],
-                y: (coords[1] - 1)
+                x: coords[ 0 ],
+                y: coords[ 1 ] - 1,
             },
             topRight: {
-                x: (coords[0] + 1),
-                y: (coords[1] - 1)
+                x: coords[ 0 ] + 1,
+                y: coords[ 1 ] - 1,
             },
             left: {
-                x: (coords[0] - 1),
-                y: coords[1]
+                x: coords[ 0 ] - 1,
+                y: coords[ 1 ],
             },
             right: {
-                x: (coords[0] + 1),
-                y: coords[1]
+                x: coords[ 0 ] + 1,
+                y: coords[ 1 ],
             },
             bottomLeft: {
-                x: (coords[0] - 1),
-                y: (coords[1] + 1)
+                x: coords[ 0 ] - 1,
+                y: coords[ 1 ] + 1,
             },
             bottom: {
-                x: coords[0],
-                y: (coords[1] + 1)
+                x: coords[ 0 ],
+                y: coords[ 1 ] + 1,
             },
             bottomRight: {
-                x: (coords[0] + 1),
-                y: (coords[1] + 1)
+                x: coords[ 0 ] + 1,
+                y: coords[ 1 ] + 1,
             }
         };
     },
@@ -248,15 +248,23 @@ const Utils = {
 
 
     getDirectionFromAngle ( angle ) {
-        if (angle >= -Math.PI / 4 && angle < Math.PI / 4) {
+        if ( angle >= -Math.PI / 4 && angle < Math.PI / 4 ) {
             return "right";
-        } else if (angle >= Math.PI / 4 && angle < 3 * Math.PI / 4) {
+
+        } else if ( angle >= Math.PI / 4 && angle < 3 * Math.PI / 4 ) {
             return "down";
-        } else if (angle >= -3 * Math.PI / 4 && angle < -Math.PI / 4) {
+
+        } else if ( angle >= -3 * Math.PI / 4 && angle < -Math.PI / 4 ) {
             return "up";
+
         } else {
             return "left";
         }
+    },
+
+
+    areSpritesInRange ( sprite1, sprite2, range ) {
+        return this.getDistance( sprite1.center, sprite2.center ) <= range;
     },
 
 

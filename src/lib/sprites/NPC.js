@@ -44,6 +44,11 @@ export default class NPC extends QuestSprite {
         this.floatCounter2 = 0;
         this.floatOffset = -( this.map.data.tilesize / 2 );
 
+        // For attract AI (e.g. a companion or fairy)
+        this.attractRange = this.map.data.tilesize * 3;
+        this.attractCounter = 0;
+        this.attractDuration = 128;
+
         this.initialize();
     }
 
@@ -218,8 +223,7 @@ export default class NPC extends QuestSprite {
             this.canTileStop( collision )
         );
 
-        // Removing this because NPCs in general should avoid hero collisions...
-        // Enemies should handle hero collisions themselves!
+        // Removing this because NPCs in general should avoid hero collisions and Enemies should handle hero collisions themselves!
         // Roaming NPCs can push the hero back...
         // if ( collision.hero ) {
         //     if ( this.gamebox.hero.canShield( this ) && this.data.ai === Config.npc.ai.ROAM ) {
@@ -241,15 +245,21 @@ export default class NPC extends QuestSprite {
         //     }
         // }
 
+        if ( this.data.action?.verb === Config.verbs.ATTRACT ) {
+            this.handleAttract( poi );
+        }
+
         if ( isCollision ) {
             // Let wandering NPCs cool down before moving again
             // While roaming NPCs can immediately move again
-            if ( this.data.ai === Config.npc.ai.ROAM || this.data.ai === Config.npc.ai.STEP ) {
-                this.aiCounter = 0;
-            }
-
-            if ( this.data.ai === Config.npc.ai.WALK ) {
-                this.resetWalk();
+            switch ( this.data.ai ) {
+                case Config.npc.ai.ROAM:
+                case Config.npc.ai.STEP:
+                    this.aiCounter = 0;
+                    break;
+                case Config.npc.ai.WALK:
+                    this.resetWalk();
+                    break;
             }
             
             this.handleAI();
@@ -474,6 +484,40 @@ export default class NPC extends QuestSprite {
     }
 
 
+    handleAttract ( poi ) {
+        if ( !this.data.action?.quest?.setCompanion || this.stillTimer > 0 ) {
+            return;
+        }
+
+        const collision = Utils.areSpritesInRange( this, this.gamebox.hero, this.attractRange );
+
+        if ( collision ) {
+            this.attractCounter++;
+
+            if ( this.attractCounter >= this.attractDuration ) {
+                if ( this.isOnGround() ) {
+                    this.stillTimer = Infinity;
+
+                    if ( this.data.spawn.quest.checkSpawn ) {
+                        this.gamequest.completeQuest( this.data.spawn.quest.checkSpawn.key );
+                    }
+
+                    this.gamebox.spawnCompanion({
+                        ...this.data.action.quest.setCompanion,
+                        dir: this.dir,
+                        verb: this.verb,
+                    }, this.position );
+
+                    this.map.killObject( "npcs", this );
+                }
+
+            }
+        } else {
+            this.attractCounter = 0;
+        }
+    }
+
+
 /*******************************************************************************
 * Interactions
 *******************************************************************************/
@@ -596,6 +640,11 @@ export default class NPC extends QuestSprite {
     }
 
 
+    getPreviousQuest () {
+        return this.quests[ this.questIndex - 1 ];
+    }
+
+
     advanceQuest () {
         const nextQuest = this.getNextQuest();
 
@@ -687,10 +736,11 @@ export default class NPC extends QuestSprite {
 
             // MARK: Quest setFlag
             case Config.quest.dialogue.SET_FLAG:
-                // Assume that the quest flag should automatically be completed for this check
-                this.gamequest.completeQuest( this.quest.key );
-                this.gamequest.completeQuest( questId );
-                this.advanceQuest();
+                this.playQuestDialogue( this.quest.dialogue, () => {
+                    this.gamequest.completeQuest( questId );
+                    this.handlePreviousQuest();
+                    this.advanceQuest();
+                });
                 break;
 
             // MARK: Quest checkItem
@@ -728,7 +778,7 @@ export default class NPC extends QuestSprite {
 
             // MARK: Quest checkCompanion
             case Config.quest.dialogue.CHECK_COMPANION:
-                if ( !this.gamebox.hero.checkCompanion( this.quest.id ) ) {
+                if ( !this.gamebox.checkCompanion( this.quest.id ) ) {
                     this.playQuestDialogue( this.quest.dialogue );
                 } else {
                     this.gamequest.completeQuest( questId );
@@ -750,6 +800,28 @@ export default class NPC extends QuestSprite {
                     this.handleInteractionState();
                 }
                 break;
+        }
+    }
+
+
+    handlePreviousQuest () {
+        const prevQuest = this.getPreviousQuest();
+
+        if ( prevQuest && prevQuest.type === Config.quest.dialogue.CHECK_COMPANION ) {
+            // The Map.handleQuestFlagCheck() will check the quest and complete it if it is successful
+            // so here we just nee to hit it so that check will pass
+            this.gamequest.hitQuest( this.quest.key, 1 );
+            const object = this.map.getSpawnpoolObject( this.quest.key );
+            this.gamebox.companion.despawnQuest = {
+                questKey: this.quest.key,
+                position: {
+                    x: object.data.spawn.x,
+                    y: object.data.spawn.y,
+                },
+            };
+        } else {
+            // Otherwise assume that the quest flag should automatically be completed for this check
+            this.gamequest.completeQuest( this.quest.key );
         }
     }
 

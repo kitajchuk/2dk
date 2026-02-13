@@ -9,7 +9,7 @@ export default class EnemyAggro extends Enemy {
 
         this.aggroActive = false;
         this.aggroRadius = this.map.data.tilesize * 4;
-        this.aggroInterval = 3000; // 3 seconds
+        this.aggroInterval = 1000; // 1 second
         this.lastAggroTime = null;
         this.aggroSpeed = this.physics.maxv * 2;
         this.backoffPosition = null;
@@ -89,9 +89,7 @@ export default class EnemyAggro extends Enemy {
 
         this.lastAggroTime = null;
 
-        const distX = this.gamebox.hero.center.x - this.center.x;
-        const distY = this.gamebox.hero.center.y - this.center.y;
-        const canAggro = Math.pow( distX, 2 ) + Math.pow( distY, 2 ) <= Math.pow( this.aggroRadius, 2 );
+        const canAggro = Utils.areSpritesInRange( this, this.gamebox.hero, this.aggroRadius );
 
         // TODO: Raycast to the hero and check if there is a wall in the way...
         //       Figure out map collision layer first then apply to other collision layers...
@@ -133,7 +131,10 @@ export default class EnemyAggro extends Enemy {
 
             this.position = poi;
 
-            if ( Math.abs( this.center.x - this.backoffPosition.x ) < 1 && Math.abs( this.center.y - this.backoffPosition.y ) < 1 ) {
+            if (
+                Math.abs( this.center.x - this.backoffPosition.x ) < 1 &&
+                Math.abs( this.center.y - this.backoffPosition.y ) < 1
+            ) {
                 this.backoffPosition = null;
             }
 

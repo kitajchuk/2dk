@@ -24,6 +24,7 @@ class Spring {
         this.isResting = false;
         this.sprite = null;
         this.previousElapsed = null;
+        this.hiJacked = false;
 
         this.onPaused = this.handlePaused.bind( this );
         this.player.on( Config.broadcast.PAUSED, this.onPaused );
@@ -46,6 +47,10 @@ class Spring {
 
 
     blit ( elapsed ) {
+        if ( this.hiJacked ) {
+            return;
+        }
+
         if ( this.previousElapsed === null ) {
             this.previousElapsed = elapsed;
         }

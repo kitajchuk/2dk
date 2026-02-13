@@ -3,7 +3,7 @@ export default class GameStorage {
 
 
     // Hero properties that are direct Sprite properties
-    // Handled separately: map, quests etc...
+    // Handled separately: map, quests, companion, etc...
     static heroProps = [
         "dir",
         "stats",
@@ -65,7 +65,13 @@ export default class GameStorage {
     persist ( gamebox ) {
         this.set( "map", `maps/${gamebox.map.data.id}.json` );
         this.set( "quests", gamebox.gamequest.completed );
-        // TODO: companion...
+        
+        if ( gamebox.companion ) {
+            this.set( "companion", {
+                id: gamebox.companion.data.id,
+                type: gamebox.companion.data.type,
+            });
+        }
 
         for ( const prop of GameStorage.heroProps ) {
             this.set( prop, gamebox.hero[ prop ] );

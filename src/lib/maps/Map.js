@@ -618,25 +618,47 @@ export default class Map {
     }
 
 
-    spawnObject ( obj, mapId ) {
+    spawnObject ( obj, mapId, { fx = true, ...props } = {} ) {
         this.spawnpool.splice( this.spawnpool.indexOf( obj ), 1 );
+
+        if ( props ) {
+            for ( const key in props ) {
+                obj.data[ key ] = props[ key ];
+            }
+        }
+
         // For now just assume base NPC type...
         const npc = new NPC( obj.data, this, mapId );
+
         this.npcs.push( npc );
         this.addAllSprite( npc );
-        this.mapFX.smokeObject( npc );
-        this.player.gameaudio.hitSound( "smash" );
+
+        if ( fx ) {
+            this.mapFX.smokeObject( npc );
+            this.player.gameaudio.hitSound( "smash" );
+        }
     }
 
 
-    handleQuestFlagCheck ( checkFlag ) {
+    getSpawnpoolObject ( checkFlag ) {
+        for ( let i = this.spawnpool.length; i--; ) {
+            if ( this.spawnpool[ i ].data.spawn.quest.checkFlag.key === checkFlag ) {
+                return this.spawnpool[ i ];
+            }
+        }
+
+        return null;
+    }
+
+
+    handleQuestFlagCheck ( checkFlag, options = undefined ) {
         for ( let i = this.spawnpool.length; i--; ) {
             const { data, mapId } = this.spawnpool[ i ];
             const { key, value } = data.spawn.quest.checkFlag;
 
             if ( key === checkFlag && this.gamequest.checkQuest( key, value ) ) {
                 this.gamequest.completeQuest( key );
-                this.spawnObject( this.spawnpool[ i ], mapId );
+                this.spawnObject( this.spawnpool[ i ], mapId, options );
                 break;
             }
         }
