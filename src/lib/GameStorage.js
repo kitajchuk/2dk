@@ -48,6 +48,11 @@ export default class GameStorage {
     }
 
 
+    remove ( key ) {
+        delete this.storage[ key ];
+    }
+
+
     save () {
         localStorage.setItem(
             GameStorage.storageKey,
@@ -71,6 +76,9 @@ export default class GameStorage {
                 id: gamebox.companion.data.id,
                 type: gamebox.companion.data.type,
             });
+
+        } else {
+            this.remove( "companion" );
         }
 
         for ( const prop of GameStorage.heroProps ) {
