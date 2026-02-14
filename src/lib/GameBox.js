@@ -568,6 +568,20 @@ export default class GameBox {
     }
 
 
+    // NPCs just need to avoid event boxes entirely...
+    checkEventsNPC ( poi, sprite ) {
+        for ( let i = this.collision.events.length; i--; ) {
+            const collides = Utils.collide( sprite.getHitbox( poi ), this.collision.events[ i ].eventbox );
+
+            if ( collides ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     checkNPC ( poi, sprite, type = "npcs" ) {
         const npcs = this.collision[ type ]
         
@@ -579,7 +593,7 @@ export default class GameBox {
             // Non-enemy floating NPCs don't collide with the hero
             // Skip if thrown object, self, or door is open
             if (
-                npcs[ i ].data.ai === Config.npc.ai.FLOAT && type !== "enemies" ||
+                ( npcs[ i ].data.ai === Config.npc.ai.FLOAT && type !== "enemies" ) ||
                 npcs[ i ].hero ||
                 npcs[ i ] === sprite ||
                 ( type === "doors" && npcs[ i ].open )

@@ -213,6 +213,7 @@ export default class NPC extends QuestSprite {
             tiles: this.gamebox.checkTiles( poi, this ),
             doors: this.gamebox.checkDoor( poi, this ),
             empty: this.gamebox.checkEmpty( poi, this ),
+            event: this.gamebox.checkEventsNPC( poi, this ),
         };
         const isCollision = (
             collision.map ||
@@ -220,6 +221,7 @@ export default class NPC extends QuestSprite {
             collision.enemy ||
             collision.hero ||
             collision.doors ||
+            collision.event ||
             this.canTileStop( collision )
         );
 
