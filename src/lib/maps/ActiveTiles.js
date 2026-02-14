@@ -16,6 +16,7 @@ export default class ActiveTiles {
         this.gamebox = this.map.gamebox;
         this.player = this.map.player;
         this.frame = 0;
+        this.isAnimated = !!this.data.stepsX;
         this.pushed = [
             // Array of "tilebox" objects
             // { x, y, width, height, coords }
@@ -25,10 +26,31 @@ export default class ActiveTiles {
             // { x, y, width, height, coords }
         ];
         this.previousElapsed = null;
+
+        this.initialize();
     }
 
 
     destroy () {}
+
+
+    initialize () {
+        for ( let y = this.map.data.textures[ this.data.layer ].length; y--; ) {    
+            for ( let x = this.map.data.textures[ this.data.layer ][ y ].length; x--; ) {
+                const cel = this.map.data.textures[ this.data.layer ][ y ][ x ];
+
+                if ( !Array.isArray( cel ) ) {
+                    continue;
+                }
+
+                const topCel = cel[ cel.length - 1 ];
+
+                if ( topCel[ 0 ] === this.data.offsetX && topCel[ 1 ] === this.data.offsetY ) {
+                    this.push( [ x, y ] );
+                }
+            }
+        }
+    }
 
 
     blit ( elapsed ) {
@@ -149,6 +171,7 @@ export default class ActiveTiles {
             if ( this.pushed[ i ].coords[ 0 ] === coords[ 0 ] && this.pushed[ i ].coords[ 1 ] === coords[ 1 ] ) {
                 this.spliced.push( this.pushed[ i ] );
                 this.pushed.splice( i, 1 );
+                this.map.data.textures[ this.data.layer ][ coords[ 1 ] ][ coords[ 0 ] ].pop();
                 break;
             }
         }

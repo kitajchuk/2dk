@@ -36,6 +36,7 @@ export default class Map {
             this.activeTiles[ i ] = null;
         }
         this.activeTiles = null;
+        this.animatedTiles = null;
 
         for ( let i = this.npcs.length; i--; ) {
             this.npcs[ i ].destroy();
@@ -82,7 +83,7 @@ export default class Map {
 
 
     initMap ( data ) {
-        this.data = data;
+        this.data = structuredClone( data );
         this.width = this.data.width;
         this.height = this.data.height;
         this.image = Loader.cash( this.data.image );
@@ -92,6 +93,7 @@ export default class Map {
 
         // From map data
         this.activeTiles = [];
+        this.animatedTiles = []; // Just references to ActiveTiles instances that are animated...
         this.fx = [];
         this.npcs = [];
         this.doors = [];
@@ -172,10 +174,20 @@ export default class Map {
             ) );
             this.addAllSprite( this.items[ i ] );
         }
+    }
 
+
+    initTiles () {
         // Tiles
         for ( let i = this.data.tiles.length; i--; ) {
-            this.activeTiles.push( new ActiveTiles( this.data.tiles[ i ], this ) );
+            const activeTiles = new ActiveTiles( this.data.tiles[ i ], this );
+
+            this.activeTiles.push( activeTiles );
+
+            // Track animated tiles for rendering the correct frame...
+            if ( activeTiles.isAnimated ) {
+                this.animatedTiles.push( activeTiles );
+            }
         }
 
         // Events
@@ -394,26 +406,16 @@ export default class Map {
                             const celsCopy = [ ...this.data.textures[ id ][ lookupY ][ lookupX ] ];
 
                             if ( id === "background" ) {
-                                const activeTile = this.getActiveTile( [ lookupX, lookupY ], celsCopy );
-
-                                ret[ id ][ y ][ x ] = celsCopy;
-
-                                // Push any ActiveTiles to the cel stack
-                                if ( activeTile ) {
-                                    ret[ id ][ y ][ x ].push( activeTile );
-                                }
+                                ret[ id ][ y ][ x ] = this.getActiveTile( [ lookupX, lookupY ], celsCopy );
 
                             // Foreground...
                             } else {
                                 const isShiftableForeground = this.checkShiftableForeground( lookupY, lookupX, celsCopy );
 
                                 // Shift foreground behind hero render if textures and hero position determine so
-                                if ( isShiftableForeground ) {
-                                    ret.background[ y ][ x ] = ret.background[ y ][ x ].concat( celsCopy );
-
-                                } else {
-                                    ret[ id ][ y ][ x ] = celsCopy;
-                                }
+                                // This is only supported if the background texture matches the foreground texture
+                                // so we can just set the foreground tile to 0 and let the background tile render instead
+                                ret[ id ][ y ][ x ] = isShiftableForeground ? 0 : celsCopy;
                             }
                             
                         // Empty textures are represented as 0 in the texture matrix (data)
@@ -522,52 +524,16 @@ export default class Map {
 
 
     getActiveTile ( celsCoords, celsCopy ) {
-        // Either return a tile or don't if it's a static thing...
-        // Only supported for the background layer for now...
-
-        for ( let i = this.data.tiles.length; i--; ) {
-            const tiles = this.data.tiles[ i ];
-            const topCel = celsCopy[ celsCopy.length - 1 ];
-            const activeTiles = this.getActiveTiles( tiles.group );
-            const isTileAnimated = tiles.stepsX;
-
-            if ( activeTiles.pushed.length ) {
-                for ( let j = activeTiles.pushed.length; j--; ) {
-                    const tilebox = activeTiles.pushed[ j ];
-
-                    // Correct tile coords
-                    if ( tilebox.coords[ 0 ] === celsCoords[ 0 ] && tilebox.coords[ 1 ] === celsCoords[ 1 ] && isTileAnimated ) {
-                        // Make sure we don't dupe a tile match if it's NOT animated...
-                        return activeTiles.getTile();
-                    }
-                }
-            }
-
-            if ( tiles.offsetX === topCel[ 0 ] && tiles.offsetY === topCel[ 1 ] ) {
-                const isTilePushed = activeTiles.isPushed( celsCoords );
-                const isTileSpliced = activeTiles.isSpliced( celsCoords );
-
-                // Push the tile to the coords Array...
-                // This lets us generate ActiveTile groups that will
-                // find their coordinates in real-time using spritesheet background-position...
-                if ( !isTilePushed && !isTileSpliced ) {
-                    // Really we should have a ActiveTiles.prototype.coords
-                    // Then this should find ActiveTiles instance and push there...
-                    activeTiles.push( celsCoords );
-                    return true;
-                }
-
-                // An ActiveTiles coord can be spliced during interaction.
-                // Example: Hero picks up an action tile and throws it.
-                // The original tile cel still exists in the textures data,
-                // but we can capture this condition and make sure we pop
-                // if off and no longer render it to the texture map.
-                if ( isTileSpliced ) {
-                    celsCopy.pop();
-                    return celsCopy;
-                }
+        for ( let i = this.animatedTiles.length; i--; ) {
+            if ( this.animatedTiles[ i ].isPushed( celsCoords ) ) {
+                // The first frame of the animated tile will always at the end of the celsCopy array
+                // Here we push the current frame of the animated tile to the end of the celsCopy array
+                return [ ...celsCopy, this.animatedTiles[ i ].getTile() ];
             }
         }
+
+        // No animated tile found, return the original celsCopy
+        return celsCopy;
     }
 
 

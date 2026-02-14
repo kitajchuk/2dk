@@ -746,6 +746,7 @@ export default class GameBox {
 *******************************************************************************/
     initMap () {
         this.map.initSprites();
+        this.map.initTiles();
         this.update();
         this.applyHero( this.hero.position, this.hero.dir );
         this.player.gameaudio.addSound({
