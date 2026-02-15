@@ -101,9 +101,9 @@
                 9,
                 0
             ],
+            "type": "door",
             "width": 128,
             "height": 64,
-            "type": "door",
             "dir": "up",
             "map": "maps/untended-graveyard.json",
             "spawn": 0

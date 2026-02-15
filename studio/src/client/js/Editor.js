@@ -695,12 +695,14 @@ class Editor {
             const baseUrl = `./games/${this.data.game.id}/index.html`;
             const params = new URLSearchParams();
 
+            params.set( "nostorage", "1" );
+
             if ( this.canMapFunction() ) {
                 params.set( "map", `${this.data.map.id}.json` );
             }
 
             if ( debug ) {
-                params.set( "debug", "true" );
+                params.set( "debug", "1" );
             }
 
             const query = params.toString();
