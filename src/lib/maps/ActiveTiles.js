@@ -21,10 +21,6 @@ export default class ActiveTiles {
             // Array of "tilebox" objects
             // { x, y, width, height, coords }
         ];
-        this.spliced = [
-            // Array of "tilebox" objects
-            // { x, y, width, height, coords }
-        ];
         this.previousElapsed = null;
 
         this.initialize();
@@ -142,10 +138,6 @@ export default class ActiveTiles {
 
 
     push ( coords ) {
-        if ( this.isPushed( coords ) ) {
-            return;
-        }
-
         const tilebox = {
             x: coords[ 0 ] * this.map.data.tilesize,
             y: coords[ 1 ] * this.map.data.tilesize,
@@ -163,14 +155,16 @@ export default class ActiveTiles {
 
 
     splice ( coords ) {
-        if ( this.isSpliced( coords ) ) {
+        if ( !this.isPushed( coords ) ) {
             return;
         }
 
         for ( let i = this.pushed.length; i--; ) {
             if ( this.pushed[ i ].coords[ 0 ] === coords[ 0 ] && this.pushed[ i ].coords[ 1 ] === coords[ 1 ] ) {
-                this.spliced.push( this.pushed[ i ] );
                 this.pushed.splice( i, 1 );
+                // Remove the tile from the texture map (direct mutation since we use a cloned data object)
+                // This greatly simplifies the logic for rendering the map after we've interacted with the tile
+                // since on the next frame the texture will be updated to show the new tile state
                 this.map.data.textures[ this.data.layer ][ coords[ 1 ] ][ coords[ 0 ] ].pop();
                 break;
             }
@@ -210,10 +204,5 @@ export default class ActiveTiles {
 
     isPushed ( testCoords ) {
         return this.isInArray( this.pushed, testCoords );
-    }
-
-
-    isSpliced ( testCoords ) {
-        return this.isInArray( this.spliced, testCoords );
     }
 }

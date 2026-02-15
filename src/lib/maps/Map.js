@@ -496,8 +496,7 @@ export default class Map {
 
 
     spliceActiveTile ( group, coords ) {
-        const activeTiles = this.getActiveTiles( group );
-        activeTiles.splice( coords );
+        this.getActiveTiles( group ).splice( coords );
     }
 
 
