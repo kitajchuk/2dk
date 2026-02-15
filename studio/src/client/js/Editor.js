@@ -696,6 +696,9 @@ class Editor {
             const params = new URLSearchParams();
 
             params.set( "nostorage", "1" );
+            params.set( "gamepad", "1" );
+            params.set( "fps", "1" );
+            params.set( "items", "feather,bracelet,flippers,bow,shield,sword,boomerang" );
 
             if ( this.canMapFunction() ) {
                 params.set( "map", `${this.data.map.id}.json` );

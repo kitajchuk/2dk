@@ -52,6 +52,11 @@
             "x": 306,
             "y": 293,
             "dir": "down"
+        },
+        {
+            "x": 2259,
+            "y": 1883,
+            "dir": "down"
         }
     ],
     "fx": [
@@ -334,6 +339,28 @@
             "height": 64,
             "dir": "up",
             "map": "maps/hillside-residence.json",
+            "spawn": 0
+        },
+        {
+            "coords": [
+                3,
+                31
+            ],
+            "type": "boundary",
+            "width": 320,
+            "height": 64,
+            "dir": "down",
+            "map": "maps/great-lake.json"
+        },
+        {
+            "coords": [
+                37,
+                30
+            ],
+            "type": "door",
+            "width": 64,
+            "height": 64,
+            "map": "maps/plateau-cavern.json",
             "spawn": 0
         }
     ],
@@ -7091,7 +7118,7 @@
                         768
                     ],
                     [
-                        128,
+                        384,
                         1088
                     ],
                     [
@@ -7105,7 +7132,7 @@
                         2240
                     ],
                     [
-                        64,
+                        448,
                         1088
                     ],
                     [
