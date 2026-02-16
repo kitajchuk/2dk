@@ -17,7 +17,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1493,
+    "save": 1498,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -2328,6 +2328,36 @@
                 {
                     "verb": "face",
                     "dir": "down"
+                }
+            ]
+        },
+        {
+            "id": "link-sleeping",
+            "name": "Link Sleeping",
+            "width": 64,
+            "height": 128,
+            "image": "assets/sprites/npcs.png",
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 128
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 1064,
+                        "offsetY": 72
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "read"
+                    }
                 }
             ]
         }

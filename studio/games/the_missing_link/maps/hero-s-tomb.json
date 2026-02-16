@@ -73,46 +73,6 @@
         {
             "id": "fairy",
             "spawn": {
-                "x": 935,
-                "y": 620
-            },
-            "ai": "float"
-        },
-        {
-            "id": "fairy",
-            "spawn": {
-                "x": 942,
-                "y": 354
-            },
-            "ai": "float"
-        },
-        {
-            "id": "fairy",
-            "spawn": {
-                "x": 691,
-                "y": 361
-            },
-            "ai": "float"
-        },
-        {
-            "id": "fairy",
-            "spawn": {
-                "x": 502,
-                "y": 345
-            },
-            "ai": "float"
-        },
-        {
-            "id": "fairy",
-            "spawn": {
-                "x": 807,
-                "y": 494
-            },
-            "ai": "float"
-        },
-        {
-            "id": "fairy",
-            "spawn": {
                 "x": 269,
                 "y": 458
             },
@@ -127,26 +87,39 @@
             "ai": "float"
         },
         {
-            "id": "fairy",
+            "id": "link-sleeping",
             "spawn": {
-                "x": 810,
-                "y": 665
+                "x": 768,
+                "y": 384
             },
-            "ai": "float"
+            "payload": {
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Zzz...zzzz....",
+                                "No signs of waking up..."
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     ],
     "items": [
         {
             "id": "purging-stone",
             "spawn": {
-                "x": 744,
-                "y": 371
+                "x": 680,
+                "y": 396
             },
             "dialogue": {
                 "type": "text",
                 "text": [
-                    "You found the purging stone!",
-                    "Your curse is lifted!"
+                    "You found a purging stone!",
+                    "Your curse has been lifted!"
                 ]
             }
         }
@@ -2181,27 +2154,19 @@
                     ],
                     [
                         384,
-                        960
+                        896
                     ]
                 ],
                 [
                     [
-                        256,
-                        2112
-                    ],
-                    [
                         448,
-                        960
+                        896
                     ]
                 ],
                 [
                     [
-                        256,
-                        2112
-                    ],
-                    [
                         448,
-                        960
+                        896
                     ]
                 ],
                 [
@@ -2211,7 +2176,7 @@
                     ],
                     [
                         512,
-                        960
+                        896
                     ]
                 ],
                 [
@@ -2332,24 +2297,40 @@
                     [
                         256,
                         2112
+                    ],
+                    [
+                        384,
+                        960
                     ]
                 ],
                 [
                     [
                         256,
                         2112
+                    ],
+                    [
+                        448,
+                        960
                     ]
                 ],
                 [
                     [
                         256,
                         2112
+                    ],
+                    [
+                        448,
+                        960
                     ]
                 ],
                 [
                     [
                         256,
                         2112
+                    ],
+                    [
+                        512,
+                        960
                     ]
                 ],
                 [
