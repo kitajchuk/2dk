@@ -194,6 +194,19 @@
             ]
         },
         {
+            "group": "grass-dead",
+            "layer": "background",
+            "offsetX": 64,
+            "offsetY": 2240,
+            "mask": "grass-dead",
+            "actions": [
+                {
+                    "verb": "attack",
+                    "drops": "grass"
+                }
+            ]
+        },
+        {
             "group": "stones",
             "layer": "background",
             "offsetX": 192,
