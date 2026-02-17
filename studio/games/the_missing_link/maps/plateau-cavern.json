@@ -79,7 +79,36 @@
             "spawn": 8
         }
     ],
-    "npcs": [],
+    "npcs": [
+        {
+            "id": "octorok",
+            "spawn": {
+                "x": 192,
+                "y": 448
+            },
+            "ai": "roam",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
+        },
+        {
+            "id": "like-like",
+            "spawn": {
+                "x": 1057,
+                "y": 423
+            },
+            "ai": "roam",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
+        }
+    ],
     "items": [],
     "collision": [
         [

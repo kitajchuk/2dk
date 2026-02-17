@@ -140,48 +140,7 @@
             }
         }
     ],
-    "items": [
-        {
-            "id": "bow",
-            "spawn": {
-                "x": 626,
-                "y": 102
-            },
-            "dialogue": {
-                "type": "text",
-                "text": [
-                    "You got a bow!",
-                    "Press Select to toggle your weapon."
-                ]
-            }
-        },
-        {
-            "id": "boomerang",
-            "spawn": {
-                "x": 111,
-                "y": 106
-            },
-            "dialogue": {
-                "type": "text",
-                "text": [
-                    "You got the Boomerang!"
-                ]
-            }
-        },
-        {
-            "id": "magic-powder",
-            "spawn": {
-                "x": 1139,
-                "y": 105
-            },
-            "dialogue": {
-                "type": "text",
-                "text": [
-                    "You got the Magic Powder!"
-                ]
-            }
-        }
-    ],
+    "items": [],
     "collision": [
         [
             76,
