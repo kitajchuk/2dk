@@ -285,8 +285,18 @@ class TopView extends GameBox {
             camera: this.checkCamera( poi, this.hero ) && !this.panning,
         };
 
+        const canTileSwim = this.hero.canTileSwim( poi, collision );
+        const isElevationEvent = collision.event && collision.event.isElevation && !this.swimming;
+        const isElevationCollider = (
+            collision.map &&
+            isElevationEvent &&
+            Utils.collide( collision.map, collision.event.eventbox )
+        );
+
+        this.hero.layer = isElevationEvent ? "elevation" : "sprites";
+
         if ( this.jumping ) {
-            if ( this.hero.canMoveWhileJumping( collision ) ) {
+            if ( this.hero.canMoveWhileJumping( collision, isElevationCollider ) ) {
                 this.applyHero( poi, dir );
             }
 
@@ -298,9 +308,7 @@ class TopView extends GameBox {
             return;
         }
 
-        const canTileSwim = this.hero.canTileSwim( poi, collision );
-
-        if ( collision.event && !( canTileSwim && !this.hero.hasSwim() ) ) {
+        if ( collision.event && !( canTileSwim && !this.hero.hasSwim() ) && !isElevationEvent ) {
             // Just don't allow this to happen while spinLocked...
             if ( this.hero.spinLocked ) {
                 return;
@@ -351,7 +359,7 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( collision.map ) {
+        if ( collision.map && !isElevationCollider ) {
             this.handleHeroPush( poi, dir );
             return;
         }
@@ -376,7 +384,7 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( canTileSwim ) {
+        if ( canTileSwim && !isElevationEvent ) {
             if ( !this.hero.hasSwim() ) {
                 this.handleHeroTileSink( poi, dir, collision );
 

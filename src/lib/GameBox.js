@@ -536,7 +536,7 @@ export default class GameBox {
 
         for ( let i = this.collision.colliders.length; i--; ) {
             if ( Utils.collide( hitbox, this.collision.colliders[ i ] ) ) {
-                return true;
+                return this.collision.colliders[ i ];
             }
         }
 
@@ -971,8 +971,9 @@ export class RenderQueue {
 
     clear () {
         this.background = [];
-        this.heroground = [];
+        this.sprites = [];
         this.foreground = [];
+        this.elevation = [];
     }
 
 
@@ -987,12 +988,16 @@ export class RenderQueue {
             this.safeRender( this.background[ i ] );
         }
 
-        for ( let i = 0; i < this.heroground.length; i++ ) {
-            this.safeRender( this.heroground[ i ] );
+        for ( let i = 0; i < this.sprites.length; i++ ) {
+            this.safeRender( this.sprites[ i ] );
         }
 
         for ( let i = this.foreground.length; i--; ) {
             this.safeRender( this.foreground[ i ] );
+        }
+
+        for ( let i = this.elevation.length; i--; ) {
+            this.safeRender( this.elevation[ i ] );
         }
     }
 

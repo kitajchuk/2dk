@@ -79,6 +79,7 @@ const Config = {
         DOOR: "door",
         DIALOGUE: "dialogue",
         BOUNDARY: "boundary",
+        ELEVATION: "elevation",
     },
     broadcast: {
         PAUSED: "paused",

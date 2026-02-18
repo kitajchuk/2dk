@@ -1,4 +1,5 @@
 import Utils from "../Utils";
+import Config from "../Config";
 
 
 
@@ -27,6 +28,7 @@ export default class MapEvent {
             this.eventbox.x + this.eventbox.width === this.map.width ||
             this.eventbox.y + this.eventbox.height === this.map.height
         );
+        this.isElevation = this.data.type === Config.events.ELEVATION;
     }
 
 
@@ -41,6 +43,10 @@ export default class MapEvent {
 
         if ( !collides ) {
             return false;
+        }
+
+        if ( this.isElevation ) {
+            return true;
         }
 
         if ( !isDir ) {

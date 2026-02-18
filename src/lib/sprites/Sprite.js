@@ -16,7 +16,7 @@ export default class Sprite {
         this.gamebox = this.map.gamebox;
         this.player = this.gamebox.player;
         this.gamequest = this.gamebox.gamequest;
-        this.layer = (data.layer || "heroground");
+        this.layer = (data.layer || "sprites");
         this.scale = ( this.data.scale || 1 );
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;

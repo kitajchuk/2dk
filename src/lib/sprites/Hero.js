@@ -1112,9 +1112,9 @@ export default class Hero extends Sprite {
 /*******************************************************************************
 * Checks
 *******************************************************************************/
-    canMoveWhileJumping ( collision ) {
+    canMoveWhileJumping ( collision, isElevationCollider = false ) {
         return (
-            !collision.map &&
+            !( collision.map && !isElevationCollider ) &&
             !collision.npc &&
             !collision.enemy &&
             !collision.door &&
