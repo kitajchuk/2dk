@@ -58,13 +58,16 @@ export default class Projectile extends Sprite {
             ...projectile,
         };
         super( data, map );
-        // Inherit the elevation from the sprite that fired the projectile
-        this.elevation = sprite.elevation;
-        this.lockElevation = this.elevation ? true : false;
         this.flightDir = dir;
         this.flightCounter = 0;
         this.hitCounter = 0;
         this.sprite = sprite;
+        // Inherit the elevation from the sprite that fired the projectile
+        this.elevation = this.sprite.elevation;
+        this.lockElevation = this.elevation ? (
+            ( this.elevation.event.isHorizontal && ( this.flightDir === "up" || this.flightDir === "down" ) ) ||
+            ( !this.elevation.event.isHorizontal && ( this.flightDir === "left" || this.flightDir === "right" ) )
+        ) : false;
         this.map.addObject( "sprites", this );
         this.sparks();
     }
@@ -72,7 +75,9 @@ export default class Projectile extends Sprite {
 
     sparks () {
         if ( this.data.fx ) {
-            this.map.mapFX.smokeObject( this, this.data.fx );
+            this.map.mapFX.smokeObject( this, this.data.fx, {
+                layer: this.layer,
+            });
         }
 
         if ( this.data.sound ) {
@@ -139,19 +144,21 @@ export default class Projectile extends Sprite {
             doors: this.gamebox.checkDoor( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),
             event: this.gamebox.checkEvents( poi, this, { dirCheck: false } ),
-            // Skip npc, enemy, tiles check for elevation layer
-            npc: this.elevation ? false : this.gamebox.checkNPC( this.position, this ),
-            enemy: this.elevation ? false : this.gamebox.checkEnemy( this.position, this ),
+            npc: this.gamebox.checkNPC( this.position, this ),
+            enemy: this.gamebox.checkEnemy( this.position, this ),
+            // Skip tiles check for elevation layer
             tiles: this.elevation ? false : this.gamebox.checkTiles( this.position, this ),
         };
 
         const { isElevationCollider } = this.handleElevation( poi, collision );
 
         const isCollision = (
-            ( collision.map && !isElevationCollider ) ||
-            collision.hero ||
             collision.doors ||
             collision.camera ||
+            // Skip map check if we're on the elevation layer and so is the collider
+            ( collision.map && !isElevationCollider ) ||
+            // Layer checks handled in collision checks above
+            collision.hero ||
             collision.npc ||
             ( collision.enemy && collision.enemy !== this.sprite ) ||
             this.canTileStop( collision )

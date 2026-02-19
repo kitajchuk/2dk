@@ -679,15 +679,15 @@ export default class Hero extends Sprite {
         const weaponBox = this.getWeaponbox();
         const collision = {
             enemy: this.gamebox.checkEnemy( this.position, weaponBox ),
-            tiles: this.gamebox.checkTiles( this.position, weaponBox ),
             item: this.gamebox.checkItems( this.position, weaponBox ),
+            tiles: this.gamebox.checkTiles( this.position, weaponBox ),
         };
 
         if ( collision.item ) {
             this.gamebox.handleHeroItem( this.position, this.dir, collision.item );
         }
 
-        if ( collision.enemy && collision.enemy.canBeAttacked() ) {
+        if ( collision.enemy && collision.enemy.canBeAttacked( this ) ) {
             collision.enemy.hit( this.getStat( "power" ) );
         }
 
@@ -1330,16 +1330,18 @@ export class HeroProjectile extends Projectile {
             doors: this.gamebox.checkDoor( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),
             event: this.gamebox.checkEvents( poi, this, { dirCheck: false } ),
-            // Skip npc, enemy, tiles check for elevation layer
-            npc: this.elevation ? false : this.gamebox.checkNPC( this.position, this ),
-            enemy: this.elevation ? false : this.gamebox.checkEnemy( this.position, this ),
+            npc: this.gamebox.checkNPC( this.position, this ),
+            enemy: this.gamebox.checkEnemy( this.position, this ),
+            // Skip tiles check for elevation layer
             tiles: this.elevation ? false : this.gamebox.checkTiles( this.position, this ),
         };
 
         const { isElevationCollider } = this.handleElevation( poi, collision );
 
         const isCollision = (
+            // Skip map check if we're on the elevation layer and so is the collider
             ( collision.map && !isElevationCollider ) ||
+            // Layer checks handled in collision checks above
             collision.npc ||
             collision.enemy ||
             collision.doors ||
@@ -1352,7 +1354,7 @@ export class HeroProjectile extends Projectile {
         }
         
         if ( isCollision ) {
-            if ( collision.enemy && collision.enemy.canBeAttacked() ) {
+            if ( collision.enemy && collision.enemy.canBeAttacked( this ) ) {
                 collision.enemy.hit( this.hero.getStat( "power" ) );
             }
 

@@ -207,21 +207,29 @@ export default class NPC extends QuestSprite {
         const poi = this.getNextPoi();
         const collision = {
             map: this.gamebox.checkMap( poi, this ),
-            npc: this.gamebox.checkNPC( poi, this ),
-            enemy: this.gamebox.checkEnemy( poi, this ),
-            hero: this.gamebox.checkHero( poi, this ),
-            tiles: this.gamebox.checkTiles( poi, this ),
             doors: this.gamebox.checkDoor( poi, this ),
             empty: this.gamebox.checkEmpty( poi, this ),
             event: this.gamebox.checkEventsNPC( poi, this ),
+            hero: this.gamebox.checkHero( poi, this ),
+            npc: this.gamebox.checkNPC( poi, this ),
+            enemy: this.gamebox.checkEnemy( poi, this ),
+            // Skip tiles check for elevation layer
+            tiles: this.elevation ? false : this.gamebox.checkTiles( poi, this ),
         };
+
+        // For now don't let NPCs / Enemies access elevation layer
+        const { isElevationCollider } = this.handleElevation( poi, collision, { disableAccessCheck: true } );
+
         const isCollision = (
-            collision.map ||
+            collision.doors ||
+            // Skip map check if we're on the elevation layer and so is the collider
+            ( collision.map && !isElevationCollider ) ||
+            // Layer checks handled in collision checks above
             collision.npc ||
             collision.enemy ||
             collision.hero ||
-            collision.doors ||
-            collision.event ||
+            // Skip event check if it's an elevation event
+            ( collision.event && !collision.event.isElevation ) ||
             this.canTileStop( collision )
         );
 

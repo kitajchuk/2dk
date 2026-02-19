@@ -10,7 +10,7 @@ export default class MapFX {
     }
 
 
-    smokeObject ( obj, fx = "smoke" ) {
+    smokeObject ( obj, fx = "smoke", props = {} ) {
         const origin = {
             x: obj.position.x + ( obj.width / 2 ) - ( this.map.data.tilesize / 2 ),
             y: obj.position.y + ( obj.height / 2 ) - ( this.map.data.tilesize / 2 ),
@@ -19,6 +19,7 @@ export default class MapFX {
             id: fx,
             kill: true,
             spawn: origin,
+            ...props,
         }, "fx" );
 
         this.map.addObject( "fx", new FX( data, this.map ) );

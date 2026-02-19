@@ -501,6 +501,10 @@ export default class GameBox {
 
 
     checkHero ( poi, sprite ) {
+        if ( sprite.layer && sprite.layer !== this.hero.layer ) {
+            return false;
+        }
+
         // Ad-hoc "sprite" object with { x, y, width, height }
         // See NPC.handleAttract() for an example where we pass the perceptionBox.tileBox directly...
         const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
@@ -574,7 +578,10 @@ export default class GameBox {
             const collides = Utils.collide( sprite.getHitbox( poi ), this.collision.events[ i ].eventbox );
 
             if ( collides ) {
-                return true;
+                if ( this.collision.events[ i ].isBlockedByTile() ) {
+                    return false;
+                }
+                return this.collision.events[ i ];
             }
         }
 
@@ -591,11 +598,12 @@ export default class GameBox {
 
         for ( let i = npcs.length; i--; ) {
             // Non-enemy floating NPCs don't collide with the hero
-            // Skip if thrown object, self, or door is open
+            // Skip if thrown object, self, layers don't match or door is open
             if (
                 ( npcs[ i ].data.ai === Config.npc.ai.FLOAT && type !== "enemies" ) ||
                 npcs[ i ].hero ||
                 npcs[ i ] === sprite ||
+                npcs[ i ].layer !== sprite.layer ||
                 ( type === "doors" && npcs[ i ].open )
             ) {
                 continue;

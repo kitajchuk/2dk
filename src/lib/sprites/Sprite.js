@@ -415,11 +415,11 @@ export default class Sprite {
     }
 
 
-    handleElevation ( poi, collision ) {
+    handleElevation ( poi, collision, { disableAccessCheck = false } = {} ) {
         let wasElevationEvent = false;
         const isElevationEvent = collision.event && collision.event.isElevation;
 
-        if ( isElevationEvent && !this.elevation && collision.event.checkElevationAccess( poi, this ) ) {
+        if ( isElevationEvent && !this.elevation && !disableAccessCheck && collision.event.checkElevationAccess( poi, this ) ) {
             this.elevation = {
                 event: collision.event,
             };

@@ -278,9 +278,9 @@ class TopView extends GameBox {
             item: this.checkItems( poi, this.hero ),
             empty: this.checkEmpty( poi, this.hero ),
             camera: this.checkCamera( poi, this.hero ) && !this.panning,
-            // Skip tiles, npcs, enemies check for elevation layer
-            npc: this.hero.elevation ? false : this.checkNPC( poi, this.hero ),
-            enemy: this.hero.elevation ? false : this.checkEnemy( poi, this.hero ),
+            enemy: this.checkEnemy( poi, this.hero ),
+            npc: this.checkNPC( poi, this.hero ),
+            // Skip tiles check for elevation layer
             tiles: this.hero.elevation ? false : this.checkTiles( poi, this.hero ),
             // Skip dir check for events while spinLocked (e.g. we do an early return below so events don't trigger)
             event: this.checkEvents( poi, this.hero, { dirCheck: !this.hero.spinLocked } ),
@@ -337,6 +337,7 @@ class TopView extends GameBox {
             return;
         }
 
+        // Layer checks handled in collision checks above
         if ( collision.enemy ) {
             if ( collision.enemy.canHitHero() ) {
                 this.hero.hit( collision.enemy.stats.power );
@@ -345,6 +346,7 @@ class TopView extends GameBox {
             return;
         }
 
+        // Layer checks handled in collision checks above
         if ( collision.npc ) {
             this.handleHeroPush( poi, dir );
 
