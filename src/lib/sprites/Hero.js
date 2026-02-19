@@ -1327,15 +1327,19 @@ export class HeroProjectile extends Projectile {
         const poi = this.getNextPoi();
         const collision = {
             map: this.gamebox.checkMap( this.position, this ),
-            npc: this.gamebox.checkNPC( this.position, this ),
-            enemy: this.gamebox.checkEnemy( this.position, this ),
-            tiles: this.gamebox.checkTiles( this.position, this ),
             doors: this.gamebox.checkDoor( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),
+            event: this.gamebox.checkEvents( poi, this, { dirCheck: false } ),
+            // Skip npc, enemy, tiles check for elevation layer
+            npc: this.elevation ? false : this.gamebox.checkNPC( this.position, this ),
+            enemy: this.elevation ? false : this.gamebox.checkEnemy( this.position, this ),
+            tiles: this.elevation ? false : this.gamebox.checkTiles( this.position, this ),
         };
 
+        const { isElevationCollider } = this.handleElevation( poi, collision );
+
         const isCollision = (
-            collision.map ||
+            ( collision.map && !isElevationCollider ) ||
             collision.npc ||
             collision.enemy ||
             collision.doors ||

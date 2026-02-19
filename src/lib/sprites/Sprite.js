@@ -100,6 +100,9 @@ export default class Sprite {
         this.health = this.data.stats?.health ?? 1;
         // Cannot increase health beyond this value...
         this.maxHealth = this.health;
+        // Used for elevation layer
+        this.elevation = null;
+        this.lockElevation = false;
     }
 
 
@@ -409,6 +412,37 @@ export default class Sprite {
         } else {
             this.idle.y = true;
         }
+    }
+
+
+    handleElevation ( poi, collision ) {
+        let wasElevationEvent = false;
+        const isElevationEvent = collision.event && collision.event.isElevation;
+
+        if ( isElevationEvent && !this.elevation && collision.event.checkElevationAccess( poi, this ) ) {
+            this.elevation = {
+                event: collision.event,
+            };
+            this.layer = "elevation";
+        }
+
+        // Omit this check while jumping (e.g. allow jumping across a gap from one bridge to another)
+        if ( !isElevationEvent && this.elevation && !this.lockElevation && !this.isJumping() ) {
+            this.elevation = null;
+            this.layer = "sprites";
+
+            // Can be used to handle logic about whether you should consider the sprite to have "fallen off" the edge of the elevation layer
+            wasElevationEvent = true;
+        }
+
+        const isElevationCollider = (
+            collision.map &&
+            collision.event &&
+            this.elevation &&
+            Utils.collide( collision.map, collision.event.eventbox )
+        );
+
+        return { isElevationEvent, isElevationCollider, wasElevationEvent };
     }
 
 

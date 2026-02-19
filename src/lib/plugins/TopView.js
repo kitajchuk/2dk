@@ -274,26 +274,19 @@ class TopView extends GameBox {
 
         const collision = {
             map: this.checkMap( poi, this.hero ),
-            npc: this.checkNPC( poi, this.hero ),
-            enemy: this.checkEnemy( poi, this.hero ),
             door: this.checkDoor( poi, this.hero ),
             item: this.checkItems( poi, this.hero ),
-            tiles: this.checkTiles( poi, this.hero ),
-            // Skip dir check for events while spinLocked (e.g. we do an early return below so events don't trigger)
-            event: this.checkEvents( poi, this.hero, { dirCheck: !this.hero.spinLocked } ),
             empty: this.checkEmpty( poi, this.hero ),
             camera: this.checkCamera( poi, this.hero ) && !this.panning,
+            // Skip tiles, npcs, enemies check for elevation layer
+            npc: this.hero.elevation ? false : this.checkNPC( poi, this.hero ),
+            enemy: this.hero.elevation ? false : this.checkEnemy( poi, this.hero ),
+            tiles: this.hero.elevation ? false : this.checkTiles( poi, this.hero ),
+            // Skip dir check for events while spinLocked (e.g. we do an early return below so events don't trigger)
+            event: this.checkEvents( poi, this.hero, { dirCheck: !this.hero.spinLocked } ),
         };
 
-        const canTileSwim = this.hero.canTileSwim( poi, collision );
-        const isElevationEvent = collision.event && collision.event.isElevation && !this.swimming;
-        const isElevationCollider = (
-            collision.map &&
-            isElevationEvent &&
-            Utils.collide( collision.map, collision.event.eventbox )
-        );
-
-        this.hero.layer = isElevationEvent ? "elevation" : "sprites";
+        const { isElevationCollider } = this.hero.handleElevation( poi, collision );
 
         if ( this.jumping ) {
             if ( this.hero.canMoveWhileJumping( collision, isElevationCollider ) ) {
@@ -308,7 +301,10 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( collision.event && !( canTileSwim && !this.hero.hasSwim() ) && !isElevationEvent ) {
+        const canTileSwim = this.hero.canTileSwim( poi, collision );
+        const canTileSink = canTileSwim && !this.hero.hasSwim();
+
+        if ( collision.event && !canTileSink && !this.hero.elevation ) {
             // Just don't allow this to happen while spinLocked...
             if ( this.hero.spinLocked ) {
                 return;
@@ -384,7 +380,7 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( canTileSwim && !isElevationEvent ) {
+        if ( canTileSwim ) {
             if ( !this.hero.hasSwim() ) {
                 this.handleHeroTileSink( poi, dir, collision );
 

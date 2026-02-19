@@ -45,6 +45,8 @@ export default class Projectile extends Sprite {
                 },
             },
         }
+        // Inherit the layer from the sprite that fired the projectile
+        const layer = sprite.layer;
         const data = {
             dir,
             spawn,
@@ -52,9 +54,13 @@ export default class Projectile extends Sprite {
             height,
             hitbox,
             verbs,
+            layer,
             ...projectile,
         };
         super( data, map );
+        // Inherit the elevation from the sprite that fired the projectile
+        this.elevation = sprite.elevation;
+        this.lockElevation = this.elevation ? true : false;
         this.flightDir = dir;
         this.flightCounter = 0;
         this.hitCounter = 0;
@@ -129,16 +135,20 @@ export default class Projectile extends Sprite {
         const poi = this.getNextPoi();
         const collision = {
             map: this.gamebox.checkMap( this.position, this ),
-            npc: this.gamebox.checkNPC( this.position, this ),
-            enemy: this.gamebox.checkEnemy( this.position, this ),
             hero: this.gamebox.checkHero( this.position, this ),
-            tiles: this.gamebox.checkTiles( this.position, this ),
             doors: this.gamebox.checkDoor( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),
+            event: this.gamebox.checkEvents( poi, this, { dirCheck: false } ),
+            // Skip npc, enemy, tiles check for elevation layer
+            npc: this.elevation ? false : this.gamebox.checkNPC( this.position, this ),
+            enemy: this.elevation ? false : this.gamebox.checkEnemy( this.position, this ),
+            tiles: this.elevation ? false : this.gamebox.checkTiles( this.position, this ),
         };
 
+        const { isElevationCollider } = this.handleElevation( poi, collision );
+
         const isCollision = (
-            collision.map ||
+            ( collision.map && !isElevationCollider ) ||
             collision.hero ||
             collision.doors ||
             collision.camera ||

@@ -29,11 +29,29 @@ export default class MapEvent {
             this.eventbox.y + this.eventbox.height === this.map.height
         );
         this.isElevation = this.data.type === Config.events.ELEVATION;
+        this.isHorizontal = this.eventbox.width > this.eventbox.height;
     }
 
 
     isBlockedByTile () {
         return this.isSingleTile && this.map.getActiveTileOnCoords( this.data.coords );
+    }
+
+
+    checkElevationAccess ( poi, sprite ) {
+        // Gate access to the elevation event based on the sprite's position
+        if ( this.isHorizontal ) {
+            return (
+                sprite.hitbox.x + sprite.hitbox.width <= this.eventbox.x ||
+                sprite.hitbox.x >= this.eventbox.x + this.eventbox.width
+            );
+
+        } else {
+            return (
+                sprite.hitbox.y + sprite.hitbox.height <= this.eventbox.y ||
+                sprite.hitbox.y >= this.eventbox.y + this.eventbox.height
+            );
+        }
     }
 
 
