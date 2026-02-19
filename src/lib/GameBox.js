@@ -597,13 +597,17 @@ export default class GameBox {
         const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
 
         for ( let i = npcs.length; i--; ) {
-            // Non-enemy floating NPCs don't collide with the hero
-            // Skip if thrown object, self, layers don't match or door is open
             if (
+                // Non-enemy floating NPCs don't collide with the hero
                 ( npcs[ i ].data.ai === Config.npc.ai.FLOAT && type !== "enemies" ) ||
+                // Skip if thrown object
                 npcs[ i ].hero ||
+                // Skip if self
                 npcs[ i ] === sprite ||
-                npcs[ i ].layer !== sprite.layer ||
+                // Skip if layers don't match
+                // Also things like weaponBox will skip this check but that is handled properly via Enemy.canBeAttacked()
+                ( sprite.layer && npcs[ i ].layer !== sprite.layer ) ||
+                // Skip if door is open
                 ( type === "doors" && npcs[ i ].open )
             ) {
                 continue;
