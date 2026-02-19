@@ -279,20 +279,6 @@
         {
             "id": "moblin",
             "spawn": {
-                "x": 98,
-                "y": 1063
-            },
-            "ai": "roam",
-            "type": "enemy",
-            "action": {
-                "verb": "attack",
-                "fx": "smoke",
-                "sound": "smash"
-            }
-        },
-        {
-            "id": "moblin",
-            "spawn": {
                 "x": 1706,
                 "y": 1890
             },
@@ -361,6 +347,34 @@
             "spawn": {
                 "x": 517,
                 "y": 869
+            },
+            "ai": "roam",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
+        },
+        {
+            "id": "octorok",
+            "spawn": {
+                "x": 95,
+                "y": 615
+            },
+            "ai": "roam",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
+        },
+        {
+            "id": "octorok",
+            "spawn": {
+                "x": 96,
+                "y": 1318
             },
             "ai": "roam",
             "type": "enemy",
