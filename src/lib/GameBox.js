@@ -501,12 +501,10 @@ export default class GameBox {
 
 
     checkHero ( poi, sprite ) {
-        if ( sprite.layer && sprite.layer !== this.hero.layer ) {
+        if ( sprite.layer !== this.hero.layer ) {
             return false;
         }
 
-        // Ad-hoc "sprite" object with { x, y, width, height }
-        // See NPC.handleAttract() for an example where we pass the perceptionBox.tileBox directly...
         const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
         return Utils.collide( lookbox, this.hero.hitbox );
     }
@@ -605,8 +603,7 @@ export default class GameBox {
                 // Skip if self
                 npcs[ i ] === sprite ||
                 // Skip if layers don't match
-                // Also things like weaponBox will skip this check but that is handled properly via Enemy.canBeAttacked()
-                ( sprite.layer && npcs[ i ].layer !== sprite.layer ) ||
+                npcs[ i ].layer !== sprite.layer ||
                 // Skip if door is open
                 ( type === "doors" && npcs[ i ].open )
             ) {

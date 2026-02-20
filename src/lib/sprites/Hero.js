@@ -1058,7 +1058,9 @@ export default class Hero extends Sprite {
             x: this[ prop ].x + this.data.weapon[ this.dir ][ this.frame ].positionX,
             y: this[ prop ].y + this.data.weapon[ this.dir ][ this.frame ].positionY,
             width: this.data.weapon[ this.dir ][ this.frame ].width,
-            height: this.data.weapon[ this.dir ][ this.frame ].height
+            height: this.data.weapon[ this.dir ][ this.frame ].height,
+            // Can be used for collision checks with other sprites etc...
+            layer: this.layer,
         };
     }
 
@@ -1069,7 +1071,8 @@ export default class Hero extends Sprite {
             x: this[ prop ].x + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionX,
             y: this[ prop ].y + this.data.shield[ this.verb ][ this.dir ][ this.frame ].positionY,
             width: this.data.shield[ this.verb ][ this.dir ][ this.frame ].width,
-            height: this.data.shield[ this.verb ][ this.dir ][ this.frame ].height
+            height: this.data.shield[ this.verb ][ this.dir ][ this.frame ].height,
+            layer: this.layer,
         };
     }
 
