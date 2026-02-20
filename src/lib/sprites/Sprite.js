@@ -16,7 +16,7 @@ export default class Sprite {
         this.gamebox = this.map.gamebox;
         this.player = this.gamebox.player;
         this.gamequest = this.gamebox.gamequest;
-        this.layer = (data.layer || Config.sprites.layers.SPRITES);
+        this.layer = (data.layer || Config.layers.SPRITES);
         this.scale = ( this.data.scale || 1 );
         this.width = this.data.width / this.scale;
         this.height = this.data.height / this.scale;
@@ -423,13 +423,13 @@ export default class Sprite {
             this.elevation = {
                 event: collision.event,
             };
-            this.layer = Config.sprites.layers.ELEVATION;
+            this.layer = Config.layers.ELEVATION;
         }
 
         // Omit this check while jumping (e.g. allow jumping across a gap from one bridge to another)
         if ( !isElevationEvent && this.elevation && !this.lockElevation && !this.isJumping() ) {
             this.elevation = null;
-            this.layer = Config.sprites.layers.SPRITES;
+            this.layer = Config.layers.SPRITES;
 
             // Can be used to handle logic about whether you should consider the sprite to have "fallen off" the edge of the elevation layer
             wasElevationEvent = true;

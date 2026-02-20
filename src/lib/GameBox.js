@@ -359,7 +359,7 @@ export default class GameBox {
             this.hero[ prop ] = this.player.gamestorage.get( prop ) ?? this.hero[ prop ];
 
             // Apply elevation flag if we're on that layer
-            if ( prop === "layer" && this.hero.layer === Config.sprites.layers.ELEVATION ) {
+            if ( prop === "layer" && this.hero.layer === Config.layers.ELEVATION ) {
                 // This should be safe since the hero layer cannot be "elevation" unless ON an elevation event
                 this.collision.events = this.getVisibleEvents();
                 this.hero.elevation = {

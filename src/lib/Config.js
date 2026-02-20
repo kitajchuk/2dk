@@ -85,11 +85,11 @@ const Config = {
         PAUSED: "paused",
         RESUMED: "resumed",
     },
-    sprites: {
-        layers: {
-            SPRITES: "sprites",
-            ELEVATION: "elevation",
-        },
+    layers: {
+        BACKGROUND: "background",
+        SPRITES: "sprites",
+        FOREGROUND: "foreground",
+        ELEVATION: "elevation",
     },
     hero: {
         modes: {
