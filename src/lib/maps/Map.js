@@ -27,6 +27,7 @@ export default class Map {
         this.player = this.gamebox.player;
         this.camera = this.gamebox.camera;
         this.initMap( data );
+        this.initMeta();
     }
 
 
@@ -111,6 +112,24 @@ export default class Map {
     }
 
 
+    initMeta () {
+        // Events
+        for ( let i = this.data.events.length; i--; ) {
+            this.events.push( new MapEvent( this.data.events[ i ], this ) );
+        }
+
+        // Colliders
+        for ( let i = this.data.collision.length; i--; ) {
+            this.colliders.push({
+                x: this.data.collision[ i ][ 0 ] * this.data.collider,
+                y: this.data.collision[ i ][ 1 ] * this.data.collider,
+                width: this.data.collider,
+                height: this.data.collider,
+            });
+        }
+    }
+
+
     initSprites () {
         // FX
         for ( let i = this.data.fx.length; i--; ) {
@@ -188,21 +207,6 @@ export default class Map {
             if ( activeTiles.isAnimated ) {
                 this.animatedTiles.push( activeTiles );
             }
-        }
-
-        // Events
-        for ( let i = this.data.events.length; i--; ) {
-            this.events.push( new MapEvent( this.data.events[ i ], this ) );
-        }
-
-        // Colliders
-        for ( let i = this.data.collision.length; i--; ) {
-            this.colliders.push({
-                x: this.data.collision[ i ][ 0 ] * this.data.collider,
-                y: this.data.collision[ i ][ 1 ] * this.data.collider,
-                width: this.data.collider,
-                height: this.data.collider,
-            });
         }
     }
 

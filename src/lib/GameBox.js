@@ -32,6 +32,9 @@ export default class GameBox {
 
         // Sounds
         this.currentMusic = null;
+
+        // Camera
+        this.camera = new Camera( this );
         
         // GameStorage map needs to be handled up front to load the correct data
         const mapId = this.player.query.nostorage ?
@@ -40,11 +43,12 @@ export default class GameBox {
         const initMapData = Loader.cash( mapId );
         const initHeroData = structuredClone( this.player.heroData );
 
-        // Camera
-        this.camera = new Camera( this );
-
         // Map
         this.map = new Map( initMapData, this );
+
+        // Collision groups
+        this.collision = {};
+        this.renderBox = this.getRenderBox();
 
         // Hero
         initHeroData.spawn = initMapData.spawn[ initHeroData.spawn ];
@@ -56,10 +60,6 @@ export default class GameBox {
 
         // HUD
         this.hud = new HUD( this );
-
-        // Collision groups
-        this.collision = {};
-        this.renderBox = this.getRenderBox();
 
         // Sounds
         for ( const id in this.player.data.sounds ) {
@@ -356,7 +356,16 @@ export default class GameBox {
         }
 
         for ( const prop of GameStorage.heroProps ) {
-            this.hero[ prop ] = this.player.gamestorage.get( prop ) || this.hero[ prop ];
+            this.hero[ prop ] = this.player.gamestorage.get( prop ) ?? this.hero[ prop ];
+
+            // Apply elevation flag if we're on that layer
+            if ( prop === "layer" && this.hero.layer === Config.sprites.layers.ELEVATION ) {
+                // This should be safe since the hero layer cannot be "elevation" unless ON an elevation event
+                this.collision.events = this.getVisibleEvents();
+                this.hero.elevation = {
+                    event: this.checkEvents( this.hero.position, this.hero ),
+                };
+            }
 
             // Apply status present so it will apply the status effects correctly
             if ( prop === "status" && this.hero.status ) {
