@@ -513,19 +513,21 @@ export default class GameBox {
     checkCamera ( poi, sprite ) {
         let ret = false;
 
-        if ( poi.x <= this.camera.x ) {
+        const hitbox = sprite.getHitbox( poi );
+
+        if ( hitbox.x <= this.camera.x ) {
             ret = "left";
         }
 
-        if ( poi.x >= ( this.camera.x + this.camera.width - sprite.width ) ) {
+        if ( hitbox.x >= ( this.camera.x + this.camera.width - hitbox.width ) ) {
             ret = "right";
         }
 
-        if ( poi.y <= this.camera.y ) {
+        if ( hitbox.y <= this.camera.y ) {
             ret = "up";
         }
 
-        if ( poi.y >= ( this.camera.y + this.camera.height - sprite.height ) ) {
+        if ( hitbox.y >= ( this.camera.y + this.camera.height - hitbox.height ) ) {
             ret = "down";
         }
 
