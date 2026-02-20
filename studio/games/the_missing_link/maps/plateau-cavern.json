@@ -57,6 +57,17 @@
     "events": [
         {
             "coords": [
+                8,
+                1
+            ],
+            "type": "door",
+            "width": 64,
+            "height": 64,
+            "map": "maps/lakeview-mountain-pass.json",
+            "spawn": 8
+        },
+        {
+            "coords": [
                 9,
                 15
             ],
@@ -66,17 +77,6 @@
             "dir": "down",
             "map": "maps/great-lake.json",
             "spawn": 0
-        },
-        {
-            "coords": [
-                8,
-                1
-            ],
-            "type": "door",
-            "width": 64,
-            "height": 64,
-            "map": "maps/lakeview-mountain-pass.json",
-            "spawn": 8
         }
     ],
     "npcs": [
@@ -100,7 +100,7 @@
                 "x": 1057,
                 "y": 423
             },
-            "ai": "roam",
+            "ai": "step",
             "type": "enemy",
             "action": {
                 "verb": "attack",

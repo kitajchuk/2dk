@@ -29,6 +29,17 @@
     "events": [
         {
             "coords": [
+                15,
+                6
+            ],
+            "type": "door",
+            "width": 64,
+            "height": 64,
+            "map": "maps/great-lake.json",
+            "spawn": 2
+        },
+        {
+            "coords": [
                 9,
                 15
             ],
@@ -38,17 +49,6 @@
             "dir": "down",
             "map": "maps/great-lake.json",
             "spawn": 1
-        },
-        {
-            "coords": [
-                15,
-                6
-            ],
-            "type": "door",
-            "width": 64,
-            "height": 64,
-            "map": "maps/great-lake.json",
-            "spawn": 2
         }
     ],
     "npcs": [],

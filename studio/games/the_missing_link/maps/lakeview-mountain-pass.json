@@ -409,13 +409,24 @@
             "payload": {
                 "quest": [
                     {
-                        "type": "noCheck",
+                        "type": "checkItem",
+                        "id": "flippers",
                         "dialogue": {
                             "type": "text",
                             "text": [
                                 "Oh hey little buddy. Normally I'd be out fishing down at the Great Lake where the catch is good...but ever since the bridge was mysteriously dismantled I've had to make do with what I can catch up here.",
                                 "Honestly I think the catch is starting to dry up a bit, too. Normally we'd have fresh stock flowing in from the River but things seem different lately...",
                                 "Oh well, these aren't your problems, are they? My wife and kids are across the way in the town square there. If you stop by feel free to say hello."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Those are some nice flippers. If you make it down to the Great Lake my brother runs a fishing shop in the area.",
+                                "Stop by and let him know I sent you!"
                             ]
                         }
                     }
@@ -15937,8 +15948,8 @@
                         2240
                     ],
                     [
-                        256,
-                        832
+                        64,
+                        640
                     ]
                 ],
                 [
@@ -15947,8 +15958,12 @@
                         2240
                     ],
                     [
-                        256,
-                        832
+                        64,
+                        640
+                    ],
+                    [
+                        128,
+                        1024
                     ]
                 ],
                 [
@@ -15957,8 +15972,12 @@
                         2240
                     ],
                     [
-                        256,
-                        832
+                        64,
+                        640
+                    ],
+                    [
+                        192,
+                        1024
                     ]
                 ],
                 [
@@ -16215,32 +16234,40 @@
             [
                 [
                     [
-                        256,
-                        896
+                        0,
+                        2176
                     ],
                     [
-                        0,
-                        512
+                        192,
+                        1024
                     ]
                 ],
                 [
                     [
-                        256,
-                        896
+                        0,
+                        2176
                     ],
                     [
-                        0,
-                        512
+                        128,
+                        1088
+                    ],
+                    [
+                        128,
+                        1024
                     ]
                 ],
                 [
                     [
-                        256,
-                        896
+                        0,
+                        2176
                     ],
                     [
-                        0,
-                        512
+                        192,
+                        1088
+                    ],
+                    [
+                        192,
+                        1024
                     ]
                 ],
                 [
@@ -16493,32 +16520,40 @@
             [
                 [
                     [
-                        256,
-                        896
+                        0,
+                        2176
                     ],
                     [
-                        0,
-                        512
+                        192,
+                        1088
+                    ],
+                    [
+                        128,
+                        1024
                     ]
                 ],
                 [
                     [
-                        256,
-                        896
+                        0,
+                        2176
                     ],
                     [
-                        0,
-                        512
+                        128,
+                        1088
+                    ],
+                    [
+                        192,
+                        1024
                     ]
                 ],
                 [
                     [
-                        256,
-                        896
+                        0,
+                        2176
                     ],
                     [
-                        0,
-                        512
+                        192,
+                        1088
                     ]
                 ],
                 [
