@@ -30,11 +30,48 @@ export default class MapEvent {
         );
         this.isElevation = this.data.type === Config.events.ELEVATION;
         this.isHorizontal = this.eventbox.width > this.eventbox.height;
+
+        if ( this.isElevation ) {
+            this.setAccessTiles();
+        }
     }
 
 
     isBlockedByTile () {
         return this.isSingleTile && this.map.getActiveTileOnCoords( this.data.coords );
+    }
+
+
+    setAccessTiles () {
+        this.accessTiles = [];
+        this.cornerTiles = {
+            topLeft: {
+                x: this.eventbox.x,
+                y: this.eventbox.y,
+            },
+            topRight: {
+                x: this.eventbox.x + this.eventbox.width,
+                y: this.eventbox.y,
+            },
+            bottomLeft: {
+                x: this.eventbox.x,
+                y: this.eventbox.y + this.eventbox.height,
+            },
+            bottomRight: {
+                x: this.eventbox.x + this.eventbox.width,
+                y: this.eventbox.y + this.eventbox.height,
+            },
+        };
+
+        // TODO: Set access tiles for all tiles that span the access edges based on layout
+        // For horizontal events, access tiles are those that span vertically between topLeft+bottomLeft and topRight+bottomRight
+        // For vertical events, access tiles are those that span horizontally between topLeft+topRight and bottomLeft+bottomRight
+
+        if ( this.isHorizontal ) {
+            // ...
+        } else {
+            // ...
+        }
     }
 
 

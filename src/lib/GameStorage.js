@@ -7,8 +7,8 @@ export default class GameStorage {
     static heroProps = [
         "dir",
         "stats",
-        "layer",
         "position",
+        "layer",
         "currency",
         "equipped",
         "items",

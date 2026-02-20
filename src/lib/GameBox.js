@@ -3,6 +3,7 @@ import Config from "./Config";
 import Loader from "./Loader";
 import Dialogue from "./Dialogue";
 import Map from "./maps/Map";
+import MapEvent from "./maps/MapEvent";
 import Hero from "./sprites/Hero";
 import Companion from "./sprites/Companion";
 import GameQuest from "./GameQuest";
@@ -360,16 +361,30 @@ export default class GameBox {
 
             // Apply elevation flag if we're on that layer
             if ( prop === "layer" && this.hero.layer === Config.layers.ELEVATION ) {
-                // This should be safe since the hero layer cannot be "elevation" unless ON an elevation event
-                this.collision.events = this.getVisibleEvents();
-                this.hero.elevation = {
-                    event: this.checkEvents( this.hero.position, this.hero ),
-                };
+                this.seedElevation();
             }
 
             // Apply status present so it will apply the status effects correctly
             if ( prop === "status" && this.hero.status ) {
                 this.hero.applyStatus( this.hero.status );
+            }
+        }
+    }
+
+
+    seedElevation () {
+        // This should be safe since the hero layer cannot be "elevation" unless ON an elevation event
+        for ( let i = this.map.data.events.length; i--; ) {
+            if ( this.map.data.events[ i ].type !== Config.events.ELEVATION ) {
+                continue;
+            }
+
+            const event = new MapEvent( this.map.data.events[ i ], this.map );
+
+            if ( event.checkCollision( this.hero.position, this.hero, false ) ) {
+                this.hero.elevation = {
+                    event,
+                };
             }
         }
     }
