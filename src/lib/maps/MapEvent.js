@@ -32,63 +32,13 @@ export default class MapEvent {
         this.isHorizontal = this.eventbox.width > this.eventbox.height;
 
         if ( this.isElevation ) {
-            this.setAccessTiles();
+            this.extendElevationEventbox();
         }
     }
 
 
     isBlockedByTile () {
         return this.isSingleTile && this.map.getActiveTileOnCoords( this.data.coords );
-    }
-
-
-    setAccessTiles () {
-        this.accessTiles = [];
-        this.cornerTiles = {
-            topLeft: {
-                x: this.eventbox.x,
-                y: this.eventbox.y,
-            },
-            topRight: {
-                x: this.eventbox.x + this.eventbox.width,
-                y: this.eventbox.y,
-            },
-            bottomLeft: {
-                x: this.eventbox.x,
-                y: this.eventbox.y + this.eventbox.height,
-            },
-            bottomRight: {
-                x: this.eventbox.x + this.eventbox.width,
-                y: this.eventbox.y + this.eventbox.height,
-            },
-        };
-
-        // TODO: Set access tiles for all tiles that span the access edges based on layout
-        // For horizontal events, access tiles are those that span vertically between topLeft+bottomLeft and topRight+bottomRight
-        // For vertical events, access tiles are those that span horizontally between topLeft+topRight and bottomLeft+bottomRight
-
-        if ( this.isHorizontal ) {
-            // ...
-        } else {
-            // ...
-        }
-    }
-
-
-    checkElevationAccess ( poi, sprite ) {
-        // Gate access to the elevation event based on the sprite's position
-        if ( this.isHorizontal ) {
-            return (
-                sprite.hitbox.x + sprite.hitbox.width <= this.eventbox.x ||
-                sprite.hitbox.x >= this.eventbox.x + this.eventbox.width
-            );
-
-        } else {
-            return (
-                sprite.hitbox.y + sprite.hitbox.height <= this.eventbox.y ||
-                sprite.hitbox.y >= this.eventbox.y + this.eventbox.height
-            );
-        }
     }
 
 
@@ -137,6 +87,53 @@ export default class MapEvent {
                         hitbox.x + hitbox.width >= this.map.width :
                         hitbox.x + hitbox.width >= this.eventbox.x + this.eventbox.width / 2
                 );
+        }
+    }
+
+
+    // Gate access to the elevation event based on the sprite's position
+    checkElevationAccess ( poi, sprite ) {
+        return (
+            Utils.collide( this.spacerOne, sprite.hitbox ) ||
+            Utils.collide( this.spacerTwo, sprite.hitbox )
+        );
+    }
+
+
+    extendElevationEventbox () {
+        if ( this.isHorizontal ) {
+            this.eventbox.width += this.map.data.tilesize * 2;
+            this.eventbox.x -= this.map.data.tilesize;
+
+            this.spacerOne = {
+                x: this.eventbox.x,
+                y: this.eventbox.y,
+                width: this.map.data.tilesize,
+                height: this.eventbox.height,
+            };
+            this.spacerTwo = {
+                x: this.eventbox.x + this.eventbox.width,
+                y: this.eventbox.y,
+                width: this.map.data.tilesize,
+                height: this.eventbox.height,
+            };
+
+        } else {
+            this.eventbox.height += this.map.data.tilesize * 2;
+            this.eventbox.y -= this.map.data.tilesize;
+
+            this.spacerOne = {
+                x: this.eventbox.x,
+                y: this.eventbox.y,
+                width: this.eventbox.width,
+                height: this.map.data.tilesize,
+            };
+            this.spacerTwo = {
+                x: this.eventbox.x,
+                y: this.eventbox.y + this.eventbox.height,
+                width: this.eventbox.width,
+                height: this.map.data.tilesize,
+            };
         }
     }
 }
