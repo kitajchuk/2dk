@@ -93,19 +93,6 @@ const renderActiveGameMenu = ( game ) => {
                 </div>
             </div>
             <div class="editor__setting">
-                <div class="editor__label">B Button</div>
-                <div class="editor__checkbox">
-                    <label class="checkbox">
-                        <input class="check js-addgame-field" value="${window.lib2dk.Config.verbs.ATTACK}" type="radio" name="bButton" ${game.bButton === window.lib2dk.Config.verbs.ATTACK ? "checked" : ""} readonly disabled />
-                        <span class="label">Attack</span>
-                    </label>
-                    <label class="checkbox">
-                        <input class="check js-addgame-field" value="${window.lib2dk.Config.verbs.RUN}" type="radio" name="bButton" ${game.bButton === window.lib2dk.Config.verbs.RUN ? "checked" : ""} readonly disabled />
-                        <span class="label">Run</span>
-                    </label>
-                </div>
-            </div>
-            <div class="editor__setting">
                 <div class="editor__label">Resolution (${game.maxresolution}x)</div>
                 <div class="editor__checkbox">
                     <label class="checkbox">

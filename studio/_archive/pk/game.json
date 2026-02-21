@@ -12,7 +12,6 @@
         "tilewidth": 20,
         "tileheight": 16
     },
-    "bButton": "run",
     "resolution": 1,
     "maxresolution": 1,
     "diagonaldpad": false,

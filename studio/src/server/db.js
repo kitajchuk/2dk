@@ -622,7 +622,6 @@ class DB {
                     tilewidth: Number( data.indoortilewidth ) || gameModel.indoormapsize.tilewidth,
                     tileheight: Number( data.indoortileheight ) || gameModel.indoormapsize.tileheight,
                 };
-                newGame.bButton = data.bButton || gameModel.bButton;
                 newGame.resolution = Number( data.resolution ) || gameModel.resolution;
                 newGame.maxresolution = Number( data.maxresolution ) || gameModel.maxresolution;
                 newGame.diagonaldpad = data.diagonaldpad === false ? data.diagonaldpad : gameModel.diagonaldpad;

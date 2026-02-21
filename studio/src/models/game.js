@@ -17,7 +17,6 @@ module.exports = {
         tilewidth: 20,
         tileheight: 16,
     },
-    bButton: "attack",
     resolution: 1,
     maxresolution: 2,
     diagonaldpad: true,
