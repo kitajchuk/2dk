@@ -242,6 +242,7 @@ class DB {
             map.width = map.tilewidth * map.tilesize;
             map.image = `assets/tiles/${data.image}`;
             map.sound = data.sound ? `assets/sounds/${data.sound}` : map.sound;
+            map.dialogue = data.dialogue || map.dialogue;
 
             // map.cellauto is omitted by default and it must be saved on update in the studio editor
 

@@ -80,6 +80,14 @@ const renderActiveMapMenu = ( { map, types, assets } ) => {
                 </div>
             </div>
             <div class="editor__setting">
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-addmap-field" type="checkbox" name="dialogue" ${map.dialogue ? "checked" : ""} readonly disabled />
+                        <span class="label">Dialogue (${map.dialogue ? "enabled" : "disabled"})</span>
+                    </label>
+                </div>
+            </div>
+            <div class="editor__setting">
                 <button class="button button--red editor__button editor__delete-button js-delete-map">Delete map</button>
             </div>
         </div>

@@ -817,9 +817,12 @@ export default class GameBox {
             channel: "bgm",
         });
         this.currentMusic = this.map.data.id;
-        this.dialogue.auto({
-            text: [ this.map.data.name ],
-        });
+        
+        if ( this.map.data.dialogue ) {
+            this.dialogue.auto({
+                text: [ this.map.data.name ],
+            });
+        }
 
         // Persist the game state on initialization and after map change
         // The game loop isn't running when we do this synchronous write to localStorage

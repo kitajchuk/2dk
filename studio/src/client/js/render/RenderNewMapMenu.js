@@ -68,6 +68,14 @@ const renderNewMapMenu = ({ types, tiles, sounds }) => {
                 </div>
             </div>
             <div class="editor__setting">
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-addmap-field" type="checkbox" name="dialogue" />
+                        <span class="label">Dialogue (display auto dialogue)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="editor__setting">
                 <button class="button editor__button editor__upload-button js-post-save" data-type="map">Create</button>
             </div>
         </div>

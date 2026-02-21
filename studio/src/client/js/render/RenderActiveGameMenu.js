@@ -87,7 +87,7 @@ const renderActiveGameMenu = ( game ) => {
             <div class="editor__setting">
                 <div class="editor__checkbox">
                     <label class="checkbox">
-                        <input class="check js-addgame-field" type="checkbox" name="diagonaldpad"${game.diagonaldpad ? " checked" : ""} readonly disabled />
+                        <input class="check js-addgame-field" type="checkbox" name="diagonaldpad" ${game.diagonaldpad ? " checked" : ""} readonly disabled />
                         <span class="label">Diagonal D-Pad (${game.diagonaldpad ? "enabled" : "disabled"})</span>
                     </label>
                 </div>

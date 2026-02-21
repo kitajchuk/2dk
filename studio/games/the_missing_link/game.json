@@ -16,7 +16,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1669,
+    "save": 1688,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1458,6 +1458,53 @@
             ]
         },
         {
+            "id": "shopkeeper",
+            "name": "Shopkeeper",
+            "width": 64,
+            "height": 64,
+            "image": "assets/sprites/npcs.png",
+            "dir": "left",
+            "hitbox": {
+                "x": 0,
+                "y": 24,
+                "width": 64,
+                "height": 40
+            },
+            "verbs": {
+                "face": {
+                    "left": {
+                        "offsetX": 680,
+                        "offsetY": 208
+                    },
+                    "right": {
+                        "offsetX": 680,
+                        "offsetY": 208,
+                        "flipX": true
+                    }
+                },
+                "talk": {
+                    "left": {
+                        "offsetX": 744,
+                        "offsetY": 208
+                    },
+                    "right": {
+                        "offsetX": 744,
+                        "offsetY": 208,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "left",
+                    "action": {
+                        "verb": "talk"
+                    }
+                }
+            ]
+        },
+        {
             "id": "witch",
             "name": "Witch",
             "width": 64,
@@ -2473,6 +2520,7 @@
         "maps/old-hags-nest.json",
         "maps/plateau-cavern.json",
         "maps/plateau-residence.json",
+        "maps/sport-fishing-shop.json",
         "maps/tunnel-crypt.json",
         "maps/under-the-plateau.json",
         "maps/untended-graveyard.json"

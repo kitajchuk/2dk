@@ -18,6 +18,7 @@ module.exports = {
     tilewidth: 40,
     tileheight: 32,
     collider: 16,
+    dialogue: undefined || true,
     image: "",
     snapshot: "",
     thumbnail: "",

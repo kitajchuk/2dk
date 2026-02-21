@@ -65,7 +65,7 @@ const renderNewGameMenu = () => {
                 <div class="editor__checkbox">
                     <label class="checkbox">
                         <input class="check js-addgame-field" type="checkbox" name="diagonaldpad" checked />
-                        <span class="label">Diagonal D-Pad (for diagonal movement)</span>
+                        <span class="label">Diagonal D-Pad (diagonal movement)</span>
                     </label>
                 </div>
             </div>
