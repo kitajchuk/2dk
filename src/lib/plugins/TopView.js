@@ -272,7 +272,7 @@ class TopView extends GameBox {
             return;
         }
 
-        const { collision, isMapCollision, isElevationCollider } = this.checkElevationCollision( poi, this.hero, {
+        const { collision, isMapCollision, isElevationEvent, isElevationCollider } = this.checkElevationCollision( poi, this.hero, {
             door: this.checkDoor( poi, this.hero ),
             item: this.checkItems( poi, this.hero ),
             empty: this.checkEmpty( poi, this.hero ),
@@ -300,7 +300,7 @@ class TopView extends GameBox {
         const canTileSwim = this.hero.canTileSwim( poi, collision );
         const canTileSink = canTileSwim && !this.hero.hasSwim();
 
-        if ( collision.event && !canTileSink && !this.hero.elevation ) {
+        if ( collision.event && !canTileSink && !isElevationEvent ) {
             // Just don't allow this to happen while spinLocked...
             if ( this.hero.spinLocked ) {
                 return;

@@ -620,6 +620,7 @@ export default class Hero extends Sprite {
 
     
     renderAfterDebug () {
+        this.player.renderLayer.context.save();
         this.player.renderLayer.context.globalAlpha = 0.5;
         this.player.renderLayer.context.fillStyle = Config.colors.teal;
 
@@ -644,6 +645,8 @@ export default class Hero extends Sprite {
                 shieldbox.height
             );
         }
+
+        this.player.renderLayer.context.restore();
     }
 
 
