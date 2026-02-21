@@ -78,7 +78,7 @@ export default class Enemy extends NPC {
     canBeAttacked ( sprite ) {
         return (
             !this.hitTimer &&
-            this.layer === sprite.layer &&
+            Utils.canSpriteInteractWithNPCByLayer( sprite, this ) &&
             this.canDoAction( Config.verbs.ATTACK ) &&
             (
                 !this.status ||

@@ -1,3 +1,7 @@
+import Config from "./Config";
+
+
+
 const Utils = {
     dev () {
         return /^file:|^http:\/\/(localhost|127\.0\.0\.1)/.test( window.location.href );
@@ -86,6 +90,7 @@ const Utils = {
             return tile.amount > acc.amount ? tile : acc;
         }, null );
     },
+
 
     getPerceptionBox ( position, width, height, tileSize ) {
         const topLeft = {
@@ -265,6 +270,19 @@ const Utils = {
 
     areSpritesInRange ( sprite1, sprite2, range ) {
         return this.getDistance( sprite1.center, sprite2.center ) <= range;
+    },
+
+
+    canSpriteInteractWithNPCByLayer ( sprite, npc ) {
+        return (
+            npc.layer === sprite.layer ||
+            (
+                sprite.layer === Config.layers.ELEVATION &&
+                sprite.elevation &&
+                sprite.elevation.event &&
+                sprite.elevation.event.checkElevationAccess( npc.position, npc )
+            )
+        );
     },
 
 

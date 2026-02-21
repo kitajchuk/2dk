@@ -629,7 +629,7 @@ export default class GameBox {
                 // Skip if self
                 npcs[ i ] === sprite ||
                 // Skip if layers don't match
-                npcs[ i ].layer !== sprite.layer ||
+                !Utils.canSpriteInteractWithNPCByLayer( sprite, npcs[ i ] ) ||
                 // Skip if door is open
                 ( type === "doors" && npcs[ i ].open )
             ) {

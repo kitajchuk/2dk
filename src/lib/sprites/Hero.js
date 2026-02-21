@@ -1061,6 +1061,7 @@ export default class Hero extends Sprite {
             height: this.data.weapon[ this.dir ][ this.frame ].height,
             // Can be used for collision checks with other sprites etc...
             layer: this.layer,
+            elevation: this.elevation,
         };
     }
 
@@ -1073,6 +1074,7 @@ export default class Hero extends Sprite {
             width: this.data.shield[ this.verb ][ this.dir ][ this.frame ].width,
             height: this.data.shield[ this.verb ][ this.dir ][ this.frame ].height,
             layer: this.layer,
+            elevation: this.elevation,
         };
     }
 
