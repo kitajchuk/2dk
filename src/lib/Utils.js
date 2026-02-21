@@ -280,7 +280,7 @@ const Utils = {
                 sprite.layer === Config.layers.ELEVATION &&
                 sprite.elevation &&
                 sprite.elevation.event &&
-                sprite.elevation.event.checkElevationAccess( npc.position, npc )
+                sprite.elevation.event.checkElevationAccessToSprite( npc.position, npc )
             )
         );
     },

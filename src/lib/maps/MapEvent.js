@@ -100,7 +100,27 @@ export default class MapEvent {
     }
 
 
+    // Check if another sprite / NPC can be interacted with from this elevation event
+    checkElevationAccessToSprite ( poi, sprite ) {
+        if ( this.isHorizontal ) {
+            return (
+                sprite.hitbox.x + sprite.hitbox.width <= this._eventbox.x ||
+                sprite.hitbox.x >= this._eventbox.x + this._eventbox.width
+            );
+
+        } else {
+            return (
+                sprite.hitbox.y + sprite.hitbox.height <= this._eventbox.y ||
+                sprite.hitbox.y >= this._eventbox.y + this._eventbox.height
+            );
+        }
+    }
+
+
     extendElevationEventbox () {
+        // Store the original eventbox for later use
+        this._eventbox = { ...this.eventbox };
+
         if ( this.isHorizontal ) {
             this.eventbox.width += this.map.data.tilesize * 2;
             this.eventbox.x -= this.map.data.tilesize;
