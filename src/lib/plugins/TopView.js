@@ -300,9 +300,9 @@ class TopView extends GameBox {
         const canTileSwim = this.hero.canTileSwim( poi, collision );
         const canTileSink = canTileSwim && !this.hero.hasSwim();
 
-        if ( collision.event && !canTileSink && !isElevationEvent ) {
+        if ( collision.event && !canTileSink ) {
             // Just don't allow this to happen while spinLocked...
-            if ( this.hero.spinLocked ) {
+            if ( this.hero.spinLocked && !isElevationEvent ) {
                 return;
             }
 
