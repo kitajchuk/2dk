@@ -138,25 +138,21 @@ export default class Projectile extends Sprite {
 
     applyPosition () {
         const poi = this.getNextPoi();
-        const collision = {
-            map: this.gamebox.checkMap( this.position, this ),
+        const { collision, isMapCollision } = this.gamebox.checkElevationCollision( this.position, this, {
             hero: this.gamebox.checkHero( this.position, this ),
             doors: this.gamebox.checkDoor( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),
-            event: this.gamebox.checkEvents( poi, this, { dirCheck: false } ),
             npc: this.gamebox.checkNPC( this.position, this ),
             enemy: this.gamebox.checkEnemy( this.position, this ),
             // Skip tiles check for elevation layer
             tiles: this.elevation ? false : this.gamebox.checkTiles( this.position, this ),
-        };
-
-        const { isElevationCollider } = this.handleElevation( poi, collision );
+        });
 
         const isCollision = (
             collision.doors ||
             collision.camera ||
             // Skip map check if we're on the elevation layer and so is the collider
-            ( collision.map && !isElevationCollider ) ||
+            isMapCollision ||
             // Layer checks handled in collision checks above
             collision.hero ||
             collision.npc ||

@@ -272,8 +272,7 @@ class TopView extends GameBox {
             return;
         }
 
-        const collision = {
-            map: this.checkMap( poi, this.hero ),
+        const { collision, isMapCollision, isElevationCollider } = this.checkElevationCollision( poi, this.hero, {
             door: this.checkDoor( poi, this.hero ),
             item: this.checkItems( poi, this.hero ),
             empty: this.checkEmpty( poi, this.hero ),
@@ -283,10 +282,7 @@ class TopView extends GameBox {
             // Skip tiles check for elevation layer
             tiles: this.hero.elevation ? false : this.checkTiles( poi, this.hero ),
             // Skip dir check for events while spinLocked (e.g. we do an early return below so events don't trigger)
-            event: this.checkEvents( poi, this.hero, { dirCheck: !this.hero.spinLocked } ),
-        };
-
-        const { isElevationCollider } = this.hero.handleElevation( poi, collision );
+        }, { dirCheck: !this.hero.spinLocked });
 
         if ( this.jumping ) {
             if ( this.hero.canMoveWhileJumping( collision, isElevationCollider ) ) {
@@ -357,7 +353,7 @@ class TopView extends GameBox {
             return;
         }
 
-        if ( collision.map && !isElevationCollider ) {
+        if ( isMapCollision ) {
             this.handleHeroPush( poi, dir );
             return;
         }

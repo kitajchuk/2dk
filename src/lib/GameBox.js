@@ -209,6 +209,31 @@ export default class GameBox {
     }
 
 
+    checkElevationCollision ( poi, sprite, collisions = {}, eventOpts = { dirCheck: false }, elevationOpts = undefined ) {
+        const collision = {
+            map: this.checkMap( poi, sprite ),
+            event: this.checkEvents( poi, sprite, eventOpts ),
+        };
+        const { 
+            isElevationEvent,
+            wasElevationEvent,
+            isElevationCollider,
+        } = sprite.handleElevation( poi, collision, elevationOpts );
+
+        for ( const key in collisions ) {
+            collision[ key ] = collisions[ key ];
+        }
+
+        return {
+            collision,
+            isMapCollision: collision.map && !isElevationCollider,
+            isElevationEvent,
+            wasElevationEvent,
+            isElevationCollider,
+        };
+    }
+
+
 /*******************************************************************************
 * GamePad Inputs
 * Should all be handled in plugin GameBox

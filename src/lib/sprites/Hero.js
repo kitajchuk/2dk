@@ -1330,22 +1330,18 @@ export class HeroProjectile extends Projectile {
 
     applyPosition () {
         const poi = this.getNextPoi();
-        const collision = {
-            map: this.gamebox.checkMap( this.position, this ),
+        const { collision, isMapCollision } = this.gamebox.checkElevationCollision( this.position, this, {
             doors: this.gamebox.checkDoor( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),
-            event: this.gamebox.checkEvents( poi, this, { dirCheck: false } ),
             npc: this.gamebox.checkNPC( this.position, this ),
             enemy: this.gamebox.checkEnemy( this.position, this ),
             // Skip tiles check for elevation layer
             tiles: this.elevation ? false : this.gamebox.checkTiles( this.position, this ),
-        };
-
-        const { isElevationCollider } = this.handleElevation( poi, collision );
+        });
 
         const isCollision = (
             // Skip map check if we're on the elevation layer and so is the collider
-            ( collision.map && !isElevationCollider ) ||
+            isMapCollision ||
             // Layer checks handled in collision checks above
             collision.npc ||
             collision.enemy ||
@@ -1487,16 +1483,13 @@ export class LiftedTile extends Sprite {
             return;
         }
 
-        const collision = {
-            map: this.gamebox.checkMap( this.position, this ),
-            event: this.gamebox.checkEvents( this.position, this, { dirCheck: false } ),
+        const { collision, isMapCollision } = this.gamebox.checkElevationCollision( this.position, this, {
             npc: this.gamebox.checkNPC( this.position, this ),
             enemy: this.gamebox.checkEnemy( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),
-        };
-        const { isElevationCollider } = this.handleElevation( this.position, collision );
+        });
 
-        if ( ( collision.map && !isElevationCollider ) || collision.npc || collision.enemy || collision.camera ) {
+        if ( isMapCollision || collision.npc || collision.enemy || collision.camera ) {
             if ( collision.enemy && !collision.enemy.isHitOrStill() ) {
                 collision.enemy.hit( this.hero.getStat( "power" ) );
             }
@@ -1512,11 +1505,7 @@ export class LiftedTile extends Sprite {
 
     applyPosition () {
         if ( !this.throwing ) {
-            const collision = {
-                map: this.gamebox.checkMap( this.position, this ),
-                event: this.gamebox.checkEvents( this.position, this, { dirCheck: false } ),
-            };
-            this.handleElevation( this.position, collision );
+            this.gamebox.checkElevationCollision( this.position, this );
             this.position = {
                 x: this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 ),
                 y: this.hero.hitbox.y - this.height,
