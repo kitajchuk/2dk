@@ -395,17 +395,17 @@ class TopView extends GameBox {
         }
 
         if ( collision.tiles ) {
-            // Tile will allow leaping from it's edge, like a ledge...
+            // E.g. a ledge (parkour jump)
             if ( this.hero.canTileJump( dir, collision ) ) {
                 this.handleHeroTileJump( poi, dir, collision );
 
-            // Tile is behaves like a WALL, or Object you cannot walk on
+            // E.g. a stone, bush etc...
             } else if ( this.hero.canTileStop( collision ) ) {
                 this.handleHeroPush( poi, dir );
                 return;
             }
 
-            // Handle any other tiles
+            // Handle passive tiles (e.g. mask, friction)
             this.handleHeroTiles( poi, dir, collision.tiles );
 
         // Reset speed when not on a tile

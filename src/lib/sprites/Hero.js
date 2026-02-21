@@ -1453,7 +1453,9 @@ export class LiftedTile extends Sprite {
         const attackAction = this.activeTiles.canAttack();
 
         if ( attackAction?.drops ) {
-            this.gamebox.itemDrop( attackAction.drops, this.position );
+            this.gamebox.itemDrop( attackAction.drops, this.position, {
+                layer: this.layer,
+            });
         }
 
         if ( attackAction?.sound ) {
@@ -1461,7 +1463,9 @@ export class LiftedTile extends Sprite {
             this.player.gameaudio.hitSound( attackAction.sound );
         }
         
-        this.map.mapFX.smokeObject( this, attackAction?.fx );
+        this.map.mapFX.smokeObject( this, attackAction?.fx, {
+            layer: this.layer,
+        });
         this.gamebox.interact.tile = null;
 
         // Kills THIS sprite
@@ -1485,12 +1489,14 @@ export class LiftedTile extends Sprite {
 
         const collision = {
             map: this.gamebox.checkMap( this.position, this ),
+            event: this.gamebox.checkEvents( this.position, this, { dirCheck: false } ),
             npc: this.gamebox.checkNPC( this.position, this ),
             enemy: this.gamebox.checkEnemy( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),
         };
+        const { isElevationCollider } = this.handleElevation( this.position, collision );
 
-        if ( collision.map || collision.npc || collision.enemy || collision.camera ) {
+        if ( ( collision.map && !isElevationCollider ) || collision.npc || collision.enemy || collision.camera ) {
             if ( collision.enemy && !collision.enemy.isHitOrStill() ) {
                 collision.enemy.hit( this.hero.getStat( "power" ) );
             }
@@ -1506,10 +1512,15 @@ export class LiftedTile extends Sprite {
 
     applyPosition () {
         if ( !this.throwing ) {
+            const collision = {
+                map: this.gamebox.checkMap( this.position, this ),
+                event: this.gamebox.checkEvents( this.position, this, { dirCheck: false } ),
+            };
+            this.handleElevation( this.position, collision );
             this.position = {
                 x: this.hero.position.x + ( this.hero.width / 2 ) - ( this.width / 2 ),
-                y: this.hero.hitbox.y,
-                z: -this.height,
+                y: this.hero.hitbox.y - this.height,
+                z: 0,
             };
             return;
         }

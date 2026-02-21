@@ -274,7 +274,7 @@ export default class GameBox {
     }
 
 
-    itemDrop ( id, position ) {
+    itemDrop ( id, position, props = {} ) {
         let drops = structuredClone( this.player.data.drops[ id ] );
 
         // Only drop magic if the hero has the magic powder
@@ -291,6 +291,7 @@ export default class GameBox {
         if ( !Utils.def( drop.chance ) || chance <= drop.chance ) {
             const data = this.player.getMergedData({
                 id: drop.id,
+                ...props,
             }, "items" );
             const spawn = {
                 x: position.x + ( this.map.data.tilesize / 2 ) - ( data.width / 2 ),
@@ -302,10 +303,11 @@ export default class GameBox {
     }
 
 
-    keyItemDrop ( dropItem, position, checkFlag ) {
+    keyItemDrop ( dropItem, position, checkFlag, props = {} ) {
         const data = this.player.getMergedData({
             id: dropItem.id,
             dialogue: dropItem.dialogue,
+            ...props,
         }, "items" );
         const spawn = {
             x: position.x + ( this.map.data.tilesize / 2 ) - ( data.width / 2 ),

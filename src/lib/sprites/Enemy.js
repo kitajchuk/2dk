@@ -112,7 +112,9 @@ export default class Enemy extends NPC {
             }
 
             if ( this.data.drops && !this.circularCheckQuestFlag() ) {
-                this.gamebox.itemDrop( this.data.drops, this.position );
+                this.gamebox.itemDrop( this.data.drops, this.position, {
+                    layer: this.layer,
+                });
             }
         }
     }
@@ -182,7 +184,9 @@ export default class Enemy extends NPC {
             this.gamequest.completeQuest( checkFlag );
 
             if ( this.data.action.quest.dropItem ) {
-                this.gamebox.keyItemDrop( this.data.action.quest.dropItem, this.position, checkFlag );
+                this.gamebox.keyItemDrop( this.data.action.quest.dropItem, this.position, checkFlag, {
+                    layer: this.layer,
+                });
             }
         }
     }
