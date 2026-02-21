@@ -589,6 +589,7 @@ export default class Player extends Controller {
 export class PlayerMenu {
     constructor ( player ) {
         this.player = player;
+        this.timeout = null;
         this.build();
         this.bind();
     }
@@ -602,6 +603,11 @@ export class PlayerMenu {
 
 
     show () {
+        if ( this.timeout ) {
+            clearTimeout( this.timeout );
+            this.timeout = null;
+        }
+
         if ( this.player.gamebox.hero ) {
             this.element.innerHTML = renderMenu( this.player );
         }
@@ -612,6 +618,10 @@ export class PlayerMenu {
 
     hide () {
         this.element.classList.remove( "is-active" );
+        this.timeout = setTimeout(() => {
+            this.element.innerHTML = "";
+
+        }, Config.player.hideDur );
     }
 
 

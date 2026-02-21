@@ -10,7 +10,7 @@
         overflow: hidden;
         box-shadow: var( --box-shadow );
         text-align: left;
-        transition: opacity 240ms ease;
+        transition: opacity var( --hide-duration ) ease;
         line-height: 1.5;
         border-radius: 10px;
         background-color: rgba( 0, 0, 0, 0.75 );

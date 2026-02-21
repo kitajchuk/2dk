@@ -8,7 +8,7 @@
         opacity: 0;
         display: grid;
         position: fixed;
-        transition: opacity 240ms ease;
+        transition: opacity var( --hide-duration ) ease;
         background-color: rgba( 0, 0, 0, 0.9 );
         grid-template-rows: auto 1fr;
         
