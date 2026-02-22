@@ -59,6 +59,30 @@
             "dir": "down",
             "map": "maps/great-lake.json",
             "spawn": 3
+        },
+        {
+            "coords": [
+                10,
+                11
+            ],
+            "type": "dialogue",
+            "width": 128,
+            "height": 64,
+            "dir": "up",
+            "npc": "shopkeeper",
+            "verb": "talk"
+        },
+        {
+            "coords": [
+                9,
+                9
+            ],
+            "type": "dialogue",
+            "width": 64,
+            "height": 128,
+            "dir": "right",
+            "npc": "shopkeeper",
+            "verb": "talk"
         }
     ],
     "npcs": [

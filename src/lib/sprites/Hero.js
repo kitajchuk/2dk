@@ -659,13 +659,15 @@ export default class Hero extends Sprite {
             npc: this.gamebox.checkNPC( poi, this ),
             door: this.gamebox.checkDoor( poi, this ),
             tiles: this.gamebox.checkTiles( poi, this ),
+            event: this.gamebox.checkEvents( poi, this ),
         };
         const notLifting = !this.is( Config.verbs.LIFT ) && !this.is( Config.verbs.GRAB ) && !this.is( Config.verbs.PULL );
         const isDoorRead = collision.door && ( collision.door.canInteract( this.dir ) || collision.door.canInteractQuest() );
         const isNPCRead = collision.npc && collision.npc.canInteract( this.dir );
+        const isEventTalk = collision.event && collision.event.data.type === Config.events.DIALOGUE && collision.event.data.verb === Config.verbs.TALK;
         const isGrabTile = this.canGrabTile( collision ) || !notLifting;
 
-        if ( this.gamebox.dialogue.active || isDoorRead || isNPCRead ) {
+        if ( this.gamebox.dialogue.active || isDoorRead || isNPCRead || isEventTalk ) {
             this.interact = Config.hero.interact.READ;
 
         } else if ( isGrabTile ) {

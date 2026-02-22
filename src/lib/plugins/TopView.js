@@ -71,10 +71,19 @@ class TopView extends GameBox {
             npc: this.checkNPC( poi, this.hero ),
             door: this.checkDoor( poi, this.hero ),
             tiles: this.checkTiles( poi, this.hero ),
+            event: this.checkEvents( poi, this.hero ),
         };
+        const isEventTalk = (
+            collision.event &&
+            collision.event.data.type === Config.events.DIALOGUE &&
+            collision.event.data.verb === Config.verbs.TALK
+        );
 
         if ( this.swimming ) {
             this.hero.swimKick();
+
+        } else if ( isEventTalk ) {
+            this.handleHeroEventTalk( poi, this.hero.dir, collision.event );
 
         } else if ( collision.door ) {
             this.handleHeroDoorAction( poi, this.hero.dir, collision.door );
@@ -1028,6 +1037,21 @@ class TopView extends GameBox {
         if ( npc.canInteract( dir ) ) {
             npc.doInteract( dir );
         }
+    }
+
+
+    handleHeroEventTalk ( poi, dir, event ) {
+        if ( !event.data.npc ) {
+            return;
+        }
+
+        const npc = this.map.npcs.find( ( npc ) => npc.data.id === event.data.npc );
+
+        if ( !npc ) {
+            return;
+        }
+
+        this.handleHeroNPCAction( poi, dir, npc );
     }
 
 

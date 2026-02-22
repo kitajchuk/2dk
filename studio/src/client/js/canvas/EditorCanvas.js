@@ -1056,6 +1056,7 @@ class EditorCanvas {
                 maps: Utils.getOptionData( this.editor.data.maps ).filter( ( map ) => {
                     return map.id !== this.map.id;
                 }),
+                npcs: Utils.getOptionData( this.map.npcs ),
                 game: this.game,     
                 facing: Utils.getOptionData( window.lib2dk.Config.facing ),
                 events: Utils.getOptionData( window.lib2dk.Config.events ),
@@ -1554,17 +1555,22 @@ class EditorCanvas {
             }
 
             if ( data.type === window.lib2dk.Config.events.DIALOGUE ) {
-                newData.dialogue = {
-                    type: window.lib2dk.Config.dialogue.types.TEXT,
-                    text: Utils.parseDialogueText( data.dialogue ),
-                };
+                if ( data.dialogue ) {
+                    newData.dialogue = {
+                        type: window.lib2dk.Config.dialogue.types.TEXT,
+                        text: Utils.parseDialogueText( data.dialogue ),
+                    };
+
+                } else if ( data.npc ) {
+                    newData.npc = data.npc;
+                }
             }
 
             if ( data.map ) {
                 newData.map = `maps/${data.map}.json`;
             }
 
-            if ( data.spawn && ( data.type === window.lib2dk.Config.events.DOOR || data.type === window.lib2dk.Config.events.DIVE ) ) {
+            if ( data.spawn && data.type === window.lib2dk.Config.events.DOOR ) {
                 newData.spawn = parseInt( data.spawn, 10 );
             }
 

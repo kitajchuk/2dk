@@ -56,6 +56,18 @@
             "height": 64,
             "map": "maps/great-lake.json",
             "spawn": 4
+        },
+        {
+            "coords": [
+                9,
+                6
+            ],
+            "type": "dialogue",
+            "width": 128,
+            "height": 64,
+            "dir": "up",
+            "npc": "great-fairy",
+            "verb": "talk"
         }
     ],
     "npcs": [
@@ -64,6 +76,39 @@
             "spawn": {
                 "x": 597,
                 "y": 195
+            },
+            "payload": {
+                "quest": [
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You look weary from your travels, young one.",
+                                "Although you are not the one I was expecting I'll bestow upon you a great item."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "setItem",
+                        "id": "magic-powder",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "With this magic power you can charge your weapon and unleash a powerful spin attack that will terrorize your foes."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Don't lose hope, young one, your journey has yet to begin."
+                            ]
+                        }
+                    }
+                ]
             }
         }
     ],

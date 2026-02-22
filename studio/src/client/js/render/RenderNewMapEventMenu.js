@@ -2,11 +2,12 @@ const { html } = require( "./Render" );
 
 
 
-const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events, actions }) => {
+const renderNewMapEventMenu = ({ maps, game, npcs, sounds, coords, facing, events, actions }) => {
     const eventActions = actions.filter( ( action ) => {
         return (
             action === window.lib2dk.Config.verbs.FALL ||
-            action === window.lib2dk.Config.verbs.DIVE
+            action === window.lib2dk.Config.verbs.DIVE ||
+            action === window.lib2dk.Config.verbs.TALK
         );
     });
 
@@ -87,6 +88,20 @@ const renderNewMapEventMenu = ({ maps, game, sounds, coords, facing, events, act
                         <option value="">Verb</option>
                         ${eventActions.map( ( verb ) => `
                             <option value="${verb}">${verb}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
+                </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">NPC Target (optional)</div>
+                <div class="select">
+                    <select class="select__field js-mapevent-field js-select" name="npc">
+                        <option value="">NPC Target</option>
+                        ${npcs.map( ( npc ) => `
+                            <option value="${npc.id}">${npc.id}</option>
                         ` ).join( "" )}
                     </select>
                     <span class="select__icon">

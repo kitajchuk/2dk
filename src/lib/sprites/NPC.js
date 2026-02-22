@@ -800,7 +800,7 @@ export default class NPC extends QuestSprite {
                 const nextQuest = this.getNextQuest();
                 if ( nextQuest ) {
                     this.gamequest.completeQuest( questId );
-                    this.advanceQuestRecursive();
+                    this.advanceQuest();
                 // If there are no more quests, handle the interaction state and don't flag this as completed
                 // Here we assume that this should be the dialogue that plays from this point on (e.g. exhausted dialogue)
                 } else {
