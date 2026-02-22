@@ -1140,12 +1140,17 @@ export default class Hero extends Sprite {
 
 
     canEventDoor ( collision ) {
-        return ( collision.event.data.type === Config.events.DOOR );
+        return ( collision.event.data.type === Config.events.DOOR && !collision.event.data.verb );
     }
 
 
     canEventDive ( collision ) {
-        return ( collision.event.data.type === Config.events.DIVE && this.diveCounter > 0 && this.diveCounter <= 60 );
+        return (
+            collision.event.data.type === Config.events.DOOR &&
+            collision.event.data.verb === Config.verbs.DIVE &&
+            this.diveCounter > 0 &&
+            this.diveCounter <= 60
+        );
     }
 
 

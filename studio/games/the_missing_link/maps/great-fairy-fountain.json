@@ -50,7 +50,8 @@
                 8,
                 15
             ],
-            "type": "dive",
+            "type": "door",
+            "verb": "dive",
             "width": 256,
             "height": 64,
             "map": "maps/great-lake.json",

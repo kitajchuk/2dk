@@ -326,7 +326,8 @@
                 23,
                 3
             ],
-            "type": "dive",
+            "type": "door",
+            "verb": "dive",
             "width": 384,
             "height": 64,
             "map": "maps/great-fairy-fountain.json",
