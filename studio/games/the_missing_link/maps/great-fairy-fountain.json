@@ -77,6 +77,7 @@
                 "x": 597,
                 "y": 195
             },
+            "ai": "static-float",
             "payload": {
                 "quest": [
                     {
@@ -110,6 +111,46 @@
                     }
                 ]
             }
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 239,
+                "y": 621
+            },
+            "ai": "float"
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 1009,
+                "y": 553
+            },
+            "ai": "float"
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 366,
+                "y": 424
+            },
+            "ai": "float"
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 816,
+                "y": 620
+            },
+            "ai": "float"
+        },
+        {
+            "id": "fairy",
+            "spawn": {
+                "x": 428,
+                "y": 620
+            },
+            "ai": "float"
         }
     ],
     "items": [],

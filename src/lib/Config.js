@@ -109,6 +109,7 @@ const Config = {
             STEP: "step",
             FLOAT: "float",
             WANDER: "wander",
+            STATIC_FLOAT: "static-float",
         },
         types: {
             DOOR: "door",

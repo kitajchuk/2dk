@@ -113,6 +113,9 @@ export default class NPC extends QuestSprite {
         } else if ( this.data.ai === Config.npc.ai.FLOAT ) {
             this.applyFloatPosition();
 
+        } else if ( this.data.ai === Config.npc.ai.STATIC_FLOAT ) {
+            this.applyStaticFloatPosition();
+
         } else {
             this.applyNormalPosition();
         }
@@ -171,6 +174,22 @@ export default class NPC extends QuestSprite {
             this.pushed = null;
             this.gamebox.locked = false;
         }
+    }
+
+
+    applyStaticFloatPosition () {
+        const z = this.floatOffset;
+
+        if ( this.data.bounce ) {
+            this.physics.vz = -Utils.upAndDown( this.floatCounter2, 40 );
+            this.floatCounter++;
+
+            if ( this.floatCounter % 2 === 0 ) {
+                this.floatCounter2++;
+            }
+        }
+
+        this.position.z = z + this.physics.vz;
     }
 
 
