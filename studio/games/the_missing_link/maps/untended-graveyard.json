@@ -42,6 +42,11 @@
             "x": 433,
             "y": 329,
             "dir": "down"
+        },
+        {
+            "x": 307,
+            "y": 1938,
+            "dir": "up"
         }
     ],
     "items": [],
@@ -281,6 +286,18 @@
             "height": 64,
             "dir": "down",
             "map": "maps/beneath-the-moblin-hideout.json",
+            "spawn": 1
+        },
+        {
+            "coords": [
+                4,
+                31
+            ],
+            "type": "door",
+            "width": 192,
+            "height": 64,
+            "dir": "down",
+            "map": "maps/wooded-passage.json",
             "spawn": 1
         }
     ],
