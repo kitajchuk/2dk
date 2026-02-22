@@ -16,7 +16,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1688,
+    "save": 1703,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -1406,6 +1406,39 @@
             ]
         },
         {
+            "id": "great-fairy",
+            "name": "Great Fairy",
+            "width": 88,
+            "height": 100,
+            "image": "assets/sprites/npcs.png",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "dir": "down",
+            "bounce": true,
+            "hitbox": {
+                "x": 0,
+                "y": 0,
+                "width": 88,
+                "height": 100
+            },
+            "verbs": {
+                "face": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": 548,
+                        "offsetY": 276,
+                        "stepsX": 2
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down"
+                }
+            ]
+        },
+        {
             "id": "fisherman",
             "name": "Fisherman",
             "width": 120,
@@ -2351,33 +2384,6 @@
             ]
         },
         {
-            "id": "tomb",
-            "name": "Tomb",
-            "width": 192,
-            "height": 128,
-            "image": "assets/tiles/tiles.png",
-            "hitbox": {
-                "x": 0,
-                "y": 64,
-                "width": 192,
-                "height": 64
-            },
-            "verbs": {
-                "face": {
-                    "down": {
-                        "offsetX": 0,
-                        "offsetY": 1984
-                    }
-                }
-            },
-            "states": [
-                {
-                    "verb": "face",
-                    "dir": "down"
-                }
-            ]
-        },
-        {
             "id": "link-sleeping",
             "name": "Link Sleeping",
             "width": 64,
@@ -2509,6 +2515,7 @@
         "maps/cathedral-of-the-cursed.json",
         "maps/fishermans-shack.json",
         "maps/graveyard-residence.json",
+        "maps/great-fairy-fountain.json",
         "maps/great-lake-temple.json",
         "maps/great-lake.json",
         "maps/hero-s-tomb.json",

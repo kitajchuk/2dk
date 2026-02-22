@@ -32,6 +32,11 @@
             "x": 369,
             "y": 1891,
             "dir": "down"
+        },
+        {
+            "x": 1618,
+            "y": 182,
+            "dir": "down"
         }
     ],
     "fx": [],
@@ -315,31 +320,20 @@
             "dir": "up",
             "map": "maps/sport-fishing-shop.json",
             "spawn": 0
+        },
+        {
+            "coords": [
+                23,
+                3
+            ],
+            "type": "dive",
+            "width": 384,
+            "height": 64,
+            "map": "maps/great-fairy-fountain.json",
+            "spawn": 0
         }
     ],
     "npcs": [
-        {
-            "id": "chest",
-            "spawn": {
-                "x": 2432,
-                "y": 832
-            },
-            "payload": {
-                "quest": [
-                    {
-                        "type": "setItem",
-                        "id": "magic-powder",
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "You got the Magic Powder!",
-                                "Now you can charge a spin attack with your sword!"
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
         {
             "id": "octorok",
             "spawn": {
@@ -438,6 +432,20 @@
             "spawn": {
                 "x": 98,
                 "y": 1187
+            },
+            "ai": "roam",
+            "type": "enemy",
+            "action": {
+                "verb": "attack",
+                "fx": "smoke",
+                "sound": "smash"
+            }
+        },
+        {
+            "id": "octorok",
+            "spawn": {
+                "x": 2209,
+                "y": 936
             },
             "ai": "roam",
             "type": "enemy",

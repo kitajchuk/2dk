@@ -310,6 +310,10 @@ class TopView extends GameBox {
                 this.handleHeroEventBoundary( poi, dir, collision.event );
                 return;
 
+            } else if ( this.hero.canEventDive( collision ) ) {
+                this.handleHeroEventDive( poi, dir, collision.event );
+                return;
+
             } else if ( this.hero.canEventDoor( collision ) ) {
                 this.handleHeroEventDoor( poi, dir, collision.event );
                 return;
@@ -723,6 +727,12 @@ class TopView extends GameBox {
 
 
     handleHeroEventDoor ( poi, dir, event ) {
+        this.handleHeroEventCleanup();
+        this.mapChangeEvent = event;
+    }
+
+
+    handleHeroEventDive ( poi, dir, event ) {
         this.handleHeroEventCleanup();
         this.mapChangeEvent = event;
     }

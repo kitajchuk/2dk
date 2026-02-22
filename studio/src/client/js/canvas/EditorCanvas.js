@@ -1564,7 +1564,7 @@ class EditorCanvas {
                 newData.map = `maps/${data.map}.json`;
             }
 
-            if ( data.spawn && data.type === window.lib2dk.Config.events.DOOR ) {
+            if ( data.spawn && ( data.type === window.lib2dk.Config.events.DOOR || data.type === window.lib2dk.Config.events.DIVE ) ) {
                 newData.spawn = parseInt( data.spawn, 10 );
             }
 

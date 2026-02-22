@@ -78,6 +78,7 @@ const Config = {
     },
     events: {
         DOOR: "door",
+        DIVE: "dive",
         DIALOGUE: "dialogue",
         BOUNDARY: "boundary",
         ELEVATION: "elevation",

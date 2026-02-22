@@ -1144,6 +1144,11 @@ export default class Hero extends Sprite {
     }
 
 
+    canEventDive ( collision ) {
+        return ( collision.event.data.type === Config.events.DIVE && this.diveCounter > 0 && this.diveCounter <= 60 );
+    }
+
+
     canEventBoundary ( collision ) {
         return ( collision.event.data.type === Config.events.BOUNDARY && collision.camera );
     }

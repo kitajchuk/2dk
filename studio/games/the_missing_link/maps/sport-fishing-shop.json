@@ -8,11 +8,10 @@
     "tilewidth": 20,
     "tileheight": 16,
     "collider": 16,
-    "dialogue": true,
     "image": "assets/tiles/inside.png",
     "snapshot": "assets/snapshots/sport-fishing-shop.png",
     "thumbnail": "assets/snapshots/sport-fishing-shop-thumb.png",
-    "sound": "assets/sounds/bgm-world-theme.mp3",
+    "sound": "assets/sounds/bgm-shop.mp3",
     "spawn": [
         {
             "x": 978,
