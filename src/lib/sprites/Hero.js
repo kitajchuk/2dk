@@ -1343,6 +1343,10 @@ export class HeroProjectile extends Projectile {
     }
 
 
+    // No sparks!
+    init () {}
+
+
     applyPosition () {
         const poi = this.getNextPoi();
         const { collision, isMapCollision } = this.gamebox.checkElevationCollision( this.position, this, {

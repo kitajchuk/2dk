@@ -46,6 +46,20 @@ const Utils = {
     },
 
 
+    contains ( box1, box2 ) {
+        if (
+            ( box2.x + box2.width ) <= ( box1.x + box1.width ) &&
+            box2.x >= box1.x &&
+            ( box2.y + box2.height ) <= ( box1.y + box1.height ) &&
+            box2.y >= box1.y
+        ) {
+            return true;
+        }
+
+        return false;
+    },
+
+
     collide ( box1, box2, tolerance = 0 ) {
         if (
             (box1.x + tolerance) < (box2.x + box2.width - tolerance) &&

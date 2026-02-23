@@ -570,7 +570,7 @@ export default class GameBox {
             ret = "left";
         }
 
-        if ( hitbox.x >= ( this.camera.x + this.camera.width - hitbox.width ) ) {
+        if ( hitbox.x + hitbox.width >= ( this.camera.x + this.camera.width ) ) {
             ret = "right";
         }
 
@@ -578,7 +578,7 @@ export default class GameBox {
             ret = "up";
         }
 
-        if ( hitbox.y >= ( this.camera.y + this.camera.height - hitbox.height ) ) {
+        if ( hitbox.y + hitbox.height >= ( this.camera.y + this.camera.height ) ) {
             ret = "down";
         }
 

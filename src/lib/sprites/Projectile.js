@@ -69,6 +69,11 @@ export default class Projectile extends Sprite {
             ( !this.elevation.event.isHorizontal && ( this.flightDir === "left" || this.flightDir === "right" ) )
         ) : false;
         this.map.addObject( "sprites", this );
+        this.init();
+    }
+
+
+    init () {
         this.sparks();
     }
 

@@ -230,6 +230,7 @@ export default class NPC extends QuestSprite {
             hero: this.gamebox.checkHero( poi, this ),
             npc: this.gamebox.checkNPC( poi, this ),
             enemy: this.gamebox.checkEnemy( poi, this ),
+            camera: this.gamebox.checkCamera( poi, this ),
             // Skip tiles check for elevation layer
             tiles: this.elevation ? false : this.gamebox.checkTiles( poi, this ),
             // For now don't let NPCs / Enemies access elevation layer
@@ -237,13 +238,14 @@ export default class NPC extends QuestSprite {
 
 
         const isCollision = (
-            collision.doors ||
             // Skip map check if we're on the elevation layer and so is the collider
             isMapCollision ||
             // Layer checks handled in collision checks above
             collision.npc ||
+            collision.doors ||
             collision.enemy ||
             collision.hero ||
+            this.canCameraStop( collision ) ||
             // Skip event check if it's an elevation event
             ( collision.event && !collision.event.isElevation ) ||
             this.canTileStop( collision )
@@ -573,6 +575,15 @@ export default class NPC extends QuestSprite {
         }
 
         return false;
+    }
+
+
+    canCameraStop ( collision ) {
+        return (
+            collision.camera &&
+            this.gamebox.hero.isIdle() &&
+            Utils.contains( this.gamebox.camera, this.hitbox )
+        );
     }
 
 
