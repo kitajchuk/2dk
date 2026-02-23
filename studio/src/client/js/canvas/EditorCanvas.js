@@ -1139,7 +1139,7 @@ class EditorCanvas {
     }
 
 
-    _applyNPC ( coords, npc, extraData = {} ) {
+    _applyNPC ( coords, npc, { spawnQuest, ...extraData } = {} ) {
         if ( npc && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
             // NPCs don't need to be locked to the tile grid
             // In the case of NPCs we passed the canvasMouseCoords through the menu
@@ -1154,6 +1154,10 @@ class EditorCanvas {
                 // Extra data should be for NPCs only right now
                 ...extraData,
             };
+
+            if ( spawnQuest ) {
+                newNPC.spawn.quest = spawnQuest;
+            }
 
             this.map.npcs.push( newNPC );
 
@@ -1235,7 +1239,7 @@ class EditorCanvas {
     }
 
 
-    _applyItem ( coords, item, extraData = {} ) {
+    _applyItem ( coords, item, { spawnQuest, ...extraData } = {} ) {
         if ( item && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
             // Items don't need to be locked to the tile grid
             // In the case of Items we passed the canvasMouseCoords through the menu
@@ -1249,6 +1253,10 @@ class EditorCanvas {
                 },
                 ...extraData,
             };
+
+            if ( spawnQuest ) {
+                newItem.spawn.quest = spawnQuest;
+            }
 
             this.map.items.push( newItem );
 
@@ -1474,7 +1482,10 @@ class EditorCanvas {
                     coords[ 1 ] * this.map.tilesize,
                 ] : mouseCoords;
     
-                this._applyNPC( renderCoords, this.currentNPC, extraData );
+                this._applyNPC( renderCoords, this.currentNPC, {
+                    ...extraData,
+                    spawnQuest: data.spawnQuest ? JSON.parse( data.spawnQuest ) : undefined,
+                });
             }
 
             this.editor.menus.removeMenus();
@@ -1500,15 +1511,25 @@ class EditorCanvas {
                 };
             }
 
+            if ( data.dropin ) {
+                extraData.dropin = true;
+            }
+
             if ( this.editor.actions.mode === Config.EditorActions.modes.SELECT ) {
                 this.map.items = this.map.items.reduce( ( acc, item ) => {
                     if ( 
                         item.spawn.x === mouseCoords[ 0 ] && 
                         item.spawn.y === mouseCoords[ 1 ]
                     ) {
+                        const spawn = item.spawn;
+
+                        if ( data.spawnQuest ) {
+                            spawn.quest = JSON.parse( data.spawnQuest );
+                        }
+
                         acc.push({
                             id: item.id,
-                            spawn: item.spawn,
+                            spawn,
                             ...extraData,
                         });
 
@@ -1520,7 +1541,10 @@ class EditorCanvas {
                 }, []);
 
             } else {
-                this._applyItem( mouseCoords, this.currentItem, extraData );
+                this._applyItem( mouseCoords, this.currentItem, {
+                    ...extraData,
+                    spawnQuest: data.spawnQuest ? JSON.parse( data.spawnQuest ) : undefined,
+                });
             }
 
             this.editor.menus.removeMenus();
@@ -1644,6 +1668,7 @@ class EditorCanvas {
                 layer: data.layer,
             };
             const isJump = data.action === window.lib2dk.Config.verbs.JUMP;
+            const isOpen = data.action === window.lib2dk.Config.verbs.OPEN;
             const isAttack = data.action === window.lib2dk.Config.verbs.ATTACK;
 
             // Coord X & Y are a position on the tileset
@@ -1681,6 +1706,10 @@ class EditorCanvas {
 
                 if ( isJump && data.elevation ) {
                     newData.elevation = data.elevation;
+                }
+
+                if ( isOpen && data.fx ) {
+                    firstAction.fx = data.fx;
                 }
 
                 if ( data.actionStat ) {

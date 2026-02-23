@@ -908,6 +908,7 @@ export default class GameBox {
 const stopVerbs = [
     Config.verbs.GRAB,
     Config.verbs.LIFT,
+    Config.verbs.OPEN,
 ];
 const actionVerbs = [
     Config.verbs.LIFT,
@@ -915,6 +916,7 @@ const actionVerbs = [
     Config.verbs.PUSH,
     Config.verbs.FALL,
     Config.verbs.SWIM,
+    Config.verbs.OPEN,
     Config.verbs.ATTACK,
 ];
 // @see notes in ./Config.js as these are related to that line of thought...

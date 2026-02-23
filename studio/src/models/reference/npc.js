@@ -1,5 +1,6 @@
 const action = require("./action");
 const frame = require("./frame");
+const spawn = require("./spawn");
 const payload = require("./payload");
 
 // Maps reference source NPC in game.json
@@ -8,20 +9,7 @@ const npcReference = {
     ai: undefined || "",
     type: undefined || "",
     aggro: undefined || true,
-    spawn: {
-        x: 0,
-        y: 0,
-        quest: undefined || {
-            checkFlag: undefined || {
-                key: "",
-                value: 1,
-            },
-            checkSpawn: undefined || {
-                key: "",
-                value: 1,
-            },
-        },
-    },
+    spawn,
     // Payload reference (payload.js)
     payload: undefined || payload,
     // Action reference (action.js)

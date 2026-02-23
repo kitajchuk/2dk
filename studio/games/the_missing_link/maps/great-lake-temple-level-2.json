@@ -18,6 +18,11 @@
             "x": 1059,
             "y": 127,
             "dir": "down"
+        },
+        {
+            "x": 130,
+            "y": 803,
+            "dir": "up"
         }
     ],
     "fx": [],
@@ -53,6 +58,21 @@
                     "drops": "shrubs"
                 }
             ]
+        },
+        {
+            "group": "key-stone",
+            "layer": "background",
+            "offsetX": 256,
+            "offsetY": 640,
+            "actions": [
+                {
+                    "verb": "open",
+                    "fx": "smoke",
+                    "quest": {
+                        "checkItem": "key"
+                    }
+                }
+            ]
         }
     ],
     "events": [
@@ -80,7 +100,14 @@
             "action": {
                 "verb": "attack",
                 "fx": "smoke",
-                "sound": "smash"
+                "sound": "smash",
+                "quest": {
+                    "setFlag": {
+                        "key": "great-lake-temple-key-level-2",
+                        "value": 1,
+                        "reset": true
+                    }
+                }
             }
         },
         {
@@ -94,7 +121,14 @@
             "action": {
                 "verb": "attack",
                 "fx": "smoke",
-                "sound": "smash"
+                "sound": "smash",
+                "quest": {
+                    "setFlag": {
+                        "key": "great-lake-temple-key-level-2",
+                        "value": 1,
+                        "reset": true
+                    }
+                }
             }
         },
         {
@@ -108,25 +142,60 @@
             "action": {
                 "verb": "attack",
                 "fx": "smoke",
-                "sound": "smash"
+                "sound": "smash",
+                "quest": {
+                    "setFlag": {
+                        "key": "great-lake-temple-key-level-2",
+                        "value": 1,
+                        "reset": true
+                    }
+                }
             }
         },
         {
             "id": "like-like",
             "spawn": {
-                "x": 879,
-                "y": 481
+                "x": 865,
+                "y": 356
             },
             "ai": "step",
             "type": "enemy",
             "action": {
                 "verb": "attack",
                 "fx": "smoke",
-                "sound": "smash"
+                "sound": "smash",
+                "quest": {
+                    "setFlag": {
+                        "key": "great-lake-temple-key-level-2",
+                        "value": 1,
+                        "reset": true
+                    }
+                }
             }
         }
     ],
-    "items": [],
+    "items": [
+        {
+            "id": "key",
+            "spawn": {
+                "x": 849,
+                "y": 519,
+                "quest": {
+                    "checkFlag": {
+                        "key": "great-lake-temple-key-level-2",
+                        "value": 4
+                    }
+                }
+            },
+            "dropin": true,
+            "dialogue": {
+                "type": "text",
+                "text": [
+                    "You got a small key!"
+                ]
+            }
+        }
+    ],
     "collision": [
         [
             52,
@@ -2356,8 +2425,8 @@
                 ],
                 [
                     [
-                        256,
-                        896
+                        704,
+                        384
                     ]
                 ],
                 [
@@ -2858,11 +2927,11 @@
                 [
                     [
                         256,
-                        896
+                        704
                     ],
                     [
-                        0,
-                        576
+                        256,
+                        640
                     ]
                 ],
                 [

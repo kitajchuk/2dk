@@ -1,14 +1,13 @@
 const dialogue = require("./dialogue");
+const spawn = require("./spawn");
 
 // Maps reference source Item in game.json
 const itemReference = {
     id: "",
-    spawn: {
-        x: 0,
-        y: 0
-    },
+    spawn,
+    dropin: undefined || false,
     // Only text type is supported for dialogue on items
-    payload: undefined || dialogue,
+    dialogue: undefined || dialogue,
 };
 
 module.exports = {

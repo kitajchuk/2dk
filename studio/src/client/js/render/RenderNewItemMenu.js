@@ -6,6 +6,8 @@ const renderNewItemMenu = ({ game, coords, mouseCoords, itemToEdit }) => {
     const mouseCoordsToUse = itemToEdit ? [ itemToEdit.spawn.x, itemToEdit.spawn.y ] : mouseCoords;
     const hasExistingDialogue = itemToEdit && itemToEdit.dialogue;
     const existingText = hasExistingDialogue ? itemToEdit.dialogue.text : "";
+    const existingSpawnQuest = itemToEdit && itemToEdit.spawn ? itemToEdit.spawn.quest : "";
+    const existingDropin = itemToEdit?.dropin ?? false;
 
     return html`
         <div class="editor__menu js-menu is-active" id="editor-item-menu">
@@ -27,8 +29,20 @@ const renderNewItemMenu = ({ game, coords, mouseCoords, itemToEdit }) => {
             <input class="js-item-field" type="hidden" name="coords" value="${JSON.stringify( coords )}" />
             <input class="js-item-field" type="hidden" name="mouseCoords" value="${JSON.stringify( mouseCoordsToUse )}" />
             <div class="editor__setting">
+                <div class="editor__checkbox">
+                    <label class="checkbox">
+                        <input class="check js-item-field" type="checkbox" name="dropin" ${existingDropin ? "checked" : ""} />
+                        <span class="label">Dropin</span>
+                    </label>
+                </div>
+            </div>
+            <div class="editor__setting">
                 <div class="editor__label">Text (required for itemGet dialogue)</div>
                 <textarea class="editor__field input textarea js-item-field" name="text">${existingText ? existingText.join( "\n\n" ) : ""}</textarea>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Spawn Quest (raw data)</div>
+                <textarea class="editor__field input textarea js-item-field" name="spawnQuest">${existingSpawnQuest ? JSON.stringify( existingSpawnQuest, null, 2 ) : ""}</textarea>
             </div>
             <div class="editor__setting">
                 <button class="button editor__button editor__upload-button js-item-post" data-type="item">${itemToEdit ? "Update" : "Create"}</button>
