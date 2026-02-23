@@ -16,7 +16,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1784,
+    "save": 1785,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -2522,6 +2522,7 @@
         "maps/fishermans-shack.json",
         "maps/graveyard-residence.json",
         "maps/great-fairy-fountain.json",
+        "maps/great-lake-temple-level-2.json",
         "maps/great-lake-temple.json",
         "maps/great-lake.json",
         "maps/hero-s-tomb.json",
@@ -2537,7 +2538,6 @@
         "maps/tunnel-crypt.json",
         "maps/under-the-plateau.json",
         "maps/untended-graveyard.json",
-        "maps/wooded-passage.json",
-        "maps/great-lake-temple-level-2.json"
+        "maps/wooded-passage.json"
     ]
 }

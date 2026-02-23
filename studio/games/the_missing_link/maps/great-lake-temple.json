@@ -80,8 +80,8 @@
             "type": "door",
             "width": 64,
             "height": 64,
-            "map": "maps/great-lake.json",
-            "spawn": 2
+            "map": "maps/great-lake-temple-level-2.json",
+            "spawn": 0
         }
     ],
     "npcs": [
