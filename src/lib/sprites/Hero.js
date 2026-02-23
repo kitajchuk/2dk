@@ -42,6 +42,7 @@ export default class Hero extends Sprite {
         this.projectile = null;
         this.projectileIndex = -1;
         this.projectileItem = null;
+        this.projectileControlLocked = false;
         this.mode = Config.hero.modes.WEAPON;
         this.interact = null;
         this.parkour = null;
@@ -1352,7 +1353,6 @@ export class HeroProjectile extends Projectile {
         this.hero = hero;
         this.angle = null;
         this.dpadCheck = null;
-        this.controlLocked = false;
     }
 
 
@@ -1367,7 +1367,7 @@ export class HeroProjectile extends Projectile {
 
         if ( this.hero.isProjectileLocked() ) {
             for ( let i = DIRS.length; i--; ) {
-                if ( !this.controlLocked && DIRS[ i ] === this.flightDir ) {
+                if ( !this.hero.projectileControlLocked && DIRS[ i ] === this.flightDir ) {
                     this.controls[ DIRS[ i ] ] = true;
 
                 } else {
@@ -1378,7 +1378,7 @@ export class HeroProjectile extends Projectile {
             this.dpadCheck = this.player.gamepad.checkDpad();
 
             if ( this.dpadCheck.length ) {
-                this.controlLocked = true;
+                this.hero.projectileControlLocked = true;
             }
 
         } else {
@@ -1396,7 +1396,7 @@ export class HeroProjectile extends Projectile {
     applyPosition () {
         let poi = this.getNextPoi();
 
-        if ( this.controlLocked ) {
+        if ( this.hero.projectileControlLocked ) {
             if ( !this.dpadCheck.length && this.angle !== null ) {
                 poi = this.getNextPoiByAngle( this.angle );
 

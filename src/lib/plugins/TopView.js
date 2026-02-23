@@ -31,7 +31,7 @@ class TopView extends GameBox {
 * GamePad Inputs
 *******************************************************************************/
     pressD ( dir ) {
-        if ( this.panning || this.dropin || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.dropin || this.hero.projectileControlLocked || this.hero.isHitOrStill() ) {
             return;
         }
 
@@ -239,6 +239,10 @@ class TopView extends GameBox {
     handleReleaseB () {
         if ( this.hero.spinLocked ) {
             this.hero.spinLocked = false;
+        }
+
+        if ( this.hero.projectileControlLocked ) {
+            this.hero.projectileControlLocked = false;
         }
 
         if ( this.hero.spinCharged ) {
