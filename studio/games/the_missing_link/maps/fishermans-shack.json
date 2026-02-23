@@ -31,9 +31,6 @@
                     "verb": "lift"
                 },
                 {
-                    "verb": "push"
-                },
-                {
                     "verb": "attack",
                     "drops": "pots"
                 }

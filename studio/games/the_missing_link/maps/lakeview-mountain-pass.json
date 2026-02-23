@@ -145,17 +145,7 @@
             "offsetY": 512,
             "actions": [
                 {
-                    "verb": "lift",
-                    "stat": {
-                        "key": "strength",
-                        "value": 1,
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "This is too heavy for you!"
-                            ]
-                        }
-                    }
+                    "verb": "lift"
                 },
                 {
                     "verb": "attack",
@@ -213,17 +203,7 @@
             "offsetY": 640,
             "actions": [
                 {
-                    "verb": "lift",
-                    "stat": {
-                        "key": "strength",
-                        "value": 1,
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "This is too heavy for you!"
-                            ]
-                        }
-                    }
+                    "verb": "lift"
                 }
             ]
         },

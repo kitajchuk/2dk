@@ -581,6 +581,25 @@
                                 "Things have been rough around here ever since those Moblins moved in on us."
                             ]
                         }
+                    },
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "Between you and me, the passage behind my house that leads to the graveyard is littered with boarblins.",
+                                "I can't even step foot out there these days. Face it pal, we're stuck here..."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "noCheck",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "I'm afraid the way things are we might be stuck here..."
+                            ]
+                        }
                     }
                 ]
             }
@@ -9795,8 +9814,12 @@
                 ],
                 [
                     [
-                        192,
-                        704
+                        64,
+                        1792
+                    ],
+                    [
+                        576,
+                        640
                     ]
                 ],
                 [

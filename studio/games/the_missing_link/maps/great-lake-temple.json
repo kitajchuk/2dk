@@ -20,8 +20,8 @@
             "dir": "up"
         },
         {
-            "x": 1042,
-            "y": 149,
+            "x": 1062,
+            "y": 126,
             "dir": "down"
         }
     ],
@@ -34,17 +34,7 @@
             "offsetY": 512,
             "actions": [
                 {
-                    "verb": "lift",
-                    "stat": {
-                        "key": "strength",
-                        "value": 1,
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "This is too heavy for you!"
-                            ]
-                        }
-                    }
+                    "verb": "lift"
                 },
                 {
                     "verb": "attack",
@@ -61,9 +51,6 @@
             "actions": [
                 {
                     "verb": "lift"
-                },
-                {
-                    "verb": "push"
                 },
                 {
                     "verb": "attack",

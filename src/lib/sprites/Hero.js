@@ -1396,8 +1396,8 @@ export class HeroProjectile extends Projectile {
     applyPosition () {
         let poi = this.getNextPoi();
 
-        if ( this.hero.isProjectileLocked() ) {
-            if ( !this.dpadCheck.length && this.controlLocked && this.angle !== null ) {
+        if ( this.controlLocked ) {
+            if ( !this.dpadCheck.length && this.angle !== null ) {
                 poi = this.getNextPoiByAngle( this.angle );
 
             } else {
