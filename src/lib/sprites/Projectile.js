@@ -118,14 +118,17 @@ export default class Projectile extends Sprite {
         if ( this.flightCounter % 5 === 0 ) {
             if ( this.dir === "left" ) {
                 this.dir = "down";
+
             } else if ( this.dir === "down" ) {
                 this.dir = "right";
+
             } else if ( this.dir === "right" ) {
                 this.dir = "up";
+
             } else if ( this.dir === "up" ) {
                 this.dir = "left";
             }
-        } 
+        }
     }
 
 

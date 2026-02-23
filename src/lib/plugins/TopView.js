@@ -202,7 +202,7 @@ class TopView extends GameBox {
 
     // Common pressB methods
     canBlockPressB () {
-        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isHitOrStill();
+        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isAttackBlocked() || this.hero.isHitOrStill();
     }
 
 
@@ -275,6 +275,7 @@ class TopView extends GameBox {
             this.falling ||
             this.liftLocked ||
             this.hero.isHitOrStill() ||
+            this.hero.isProjectileLocked() ||
             // Hero can move around while spinLocked (e.g. get into position for spin attack)
             ( this.attacking && !this.hero.spinLocked )
         ) {

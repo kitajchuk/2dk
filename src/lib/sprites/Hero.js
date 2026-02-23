@@ -1,5 +1,5 @@
 import Utils from "../Utils";
-import Config from "../Config";
+import Config, { DIRS } from "../Config";
 import Sprite from "./Sprite";
 import Spring from "../Spring";
 import Projectile from "./Projectile";
@@ -387,6 +387,16 @@ export default class Hero extends Sprite {
         }, "projectiles" );
 
         this.projectile = new HeroProjectile( data, this.dir, this, this.map );
+    }
+
+
+    isProjectileLocked () {
+        return this.isAttackBlocked() && this.projectile.data.spin && this.controls.b;
+    }
+
+
+    isAttackBlocked () {
+        return this.projectile && this.isProjectileMode();
     }
 
 
@@ -1340,6 +1350,9 @@ export class HeroProjectile extends Projectile {
     constructor ( projectile, dir, hero, map ) {
         super( projectile, dir, hero, map );
         this.hero = hero;
+        this.angle = null;
+        this.dpadCheck = null;
+        this.controlLocked = false;
     }
 
 
@@ -1347,8 +1360,53 @@ export class HeroProjectile extends Projectile {
     init () {}
 
 
+    update () {
+        if ( !this.onscreen ) {
+            return;
+        }
+
+        if ( this.hero.isProjectileLocked() ) {
+            for ( let i = DIRS.length; i--; ) {
+                if ( !this.controlLocked && DIRS[ i ] === this.flightDir ) {
+                    this.controls[ DIRS[ i ] ] = true;
+
+                } else {
+                    this.controls[ DIRS[ i ] ] = this.hero.controls[ DIRS[ i ] ];
+                }
+            }
+
+            this.dpadCheck = this.player.gamepad.checkDpad();
+
+            if ( this.dpadCheck.length ) {
+                this.controlLocked = true;
+            }
+
+        } else {
+            for ( let i = DIRS.length; i--; ) {
+                this.controls[ DIRS[ i ] ] = DIRS[ i ] === this.flightDir ? true : false;
+            }
+        }
+
+        this.handleFlight();
+        this.handleControls();
+        this.updateStack();
+    }
+
+
     applyPosition () {
-        const poi = this.getNextPoi();
+        let poi = this.getNextPoi();
+
+        if ( this.hero.isProjectileLocked() ) {
+            if ( !this.dpadCheck.length && this.controlLocked && this.angle !== null ) {
+                poi = this.getNextPoiByAngle( this.angle );
+
+            } else {
+                const toNextX = poi.x - this.position.x;
+                const toNextY = poi.y - this.position.y;
+                this.angle = Math.atan2( toNextY, toNextX );
+            }
+        }
+
         const { collision, isMapCollision } = this.gamebox.checkElevationCollision( this.position, this, {
             doors: this.gamebox.checkDoor( this.position, this ),
             camera: this.gamebox.checkCamera( this.position, this ),

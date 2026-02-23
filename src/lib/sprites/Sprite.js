@@ -610,6 +610,15 @@ export default class Sprite {
     }
 
 
+    getNextPoiByAngle ( angle ) {
+        return {
+            x: this.position.x + ( Math.cos( angle ) * ( this.physics.maxv * 2 ) ),
+            y: this.position.y + ( Math.sin( angle ) * ( this.physics.maxv * 2 ) ),
+            z: this.position.z,
+        };
+    }
+
+
     getNextPoiByDir ( dir, ahead ) {
         if ( ahead && dir === "left" ) {
             ahead = -this.physics.maxv;
