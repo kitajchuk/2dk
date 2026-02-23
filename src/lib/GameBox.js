@@ -890,7 +890,7 @@ export default class GameBox {
             // Handle the `dropin` effect
             if ( newSpawn.dropin ) {
                 this.dropin = true;
-                this.hero.position.z = -( this.camera.height / 2 );
+                this.hero.position.z = -( ( this.hero.position.y - this.camera.y ) + this.hero.height );
                 this.hero.cycle( Config.verbs.JUMP, this.hero.dir );
             }
 

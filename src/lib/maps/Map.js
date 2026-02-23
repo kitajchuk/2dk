@@ -143,36 +143,37 @@ export default class Map {
                 const enemy = data.aggro 
                     ? new EnemyAggro( data, this, mapId )
                     : new Enemy( data, this, mapId );
-                this.enemies.push( enemy );
-                this.addAllSprite( enemy );
+                this.addObject( "enemies", enemy );
 
             } else if ( type === Config.npc.types.DOOR ) {
                 const door = new Door( data, this, mapId );
-                this.doors.push( door );
-                this.addAllSprite( door );
+                this.addObject( "doors", door );
     
             } else {
                 const npc = new NPC( data, this, mapId );
-                this.npcs.push( npc );
-                this.addAllSprite( npc );
+                this.addObject( "npcs", npc );
             }
         }
 
         // Items
         for ( let i = this.data.items.length; i--; ) {
             const mapId = this.getMapId( "item", i );
+            const data = this.player.getMergedData( this.data.items[ i ], "items", true );
+            const quest = data.spawn.quest;
 
-            // Skip if the item has already been collected
-            if ( this.gamequest.getCompleted( mapId ) ) {
+            // This is a "de-spawn" flag check for when we want to remove an NPC from the map after a quest is completed
+            if ( this.gamequest.getCompleted( mapId ) || ( quest?.checkSpawn && this.gamequest.getCompleted( quest.checkSpawn.key ) ) ) {
                 continue;
             }
 
-            this.items.push( new KeyItem(
-                this.player.getMergedData( this.data.items[ i ], "items", true ),
-                this,
-                mapId
-            ) );
-            this.addAllSprite( this.items[ i ] );
+            // This is a "spawn" flag check for when we want to add an NPC to the map after a quest is completed (e.g. handleQuestFlagCheck())
+            if ( quest?.checkFlag && !this.gamequest.getCompleted( quest.checkFlag.key ) ) {
+                this.spawnpool.push({ data, type: "item", mapId });
+
+            } else {
+                const item = new KeyItem( data, this, mapId );
+                this.addObject( "items", item );
+            }
         }
     }
 
@@ -583,23 +584,32 @@ export default class Map {
     }
 
 
-    spawnObject ( obj, mapId, { fx = true, ...props } = {} ) {
-        this.spawnpool.splice( this.spawnpool.indexOf( obj ), 1 );
+    spawnObject ( ref, mapId, { fx = true, ...props } = {} ) {
+        this.spawnpool.splice( this.spawnpool.indexOf( ref ), 1 );
 
         if ( props ) {
             for ( const key in props ) {
-                obj.data[ key ] = props[ key ];
+                ref.data[ key ] = props[ key ];
             }
         }
 
-        // For now just assume base NPC type...
-        const npc = new NPC( obj.data, this, mapId );
+        let obj = null;
 
-        this.npcs.push( npc );
-        this.addAllSprite( npc );
+        // TODO: Support enemies, doors etc...
+
+        switch ( ref.type ) {
+            case "npc":
+                obj = new NPC( ref.data, this, mapId );
+                this.addObject( "npcs", obj );
+                break;
+            case "item":
+                obj = new KeyItem( ref.data, this, mapId );
+                this.addObject( "items", obj );
+                break;
+        }
 
         if ( fx ) {
-            this.mapFX.smokeObject( npc );
+            this.mapFX.smokeObject( obj );
             this.player.gameaudio.hitSound( "smash" );
         }
     }

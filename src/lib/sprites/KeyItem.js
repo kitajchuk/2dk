@@ -24,6 +24,12 @@ export default class KeyItem extends Sprite {
         };
         super( data, map );
         this.mapId = mapId;
+        this.bounce = null;
+        this.dropin = item.dropin ?? false;
+
+        if ( this.dropin ) {
+            this.position.z = -( ( this.position.y - this.gamebox.camera.y ) + this.height );
+        }
     }
 
 
@@ -31,6 +37,17 @@ export default class KeyItem extends Sprite {
 * Applications
 *******************************************************************************/
     applyPosition () {
+        if ( this.dropin ) {
+            if ( this.bounce === null && this.isOnGround() ) {
+                this.bounce = 9;
+            }
+
+            if ( this.bounce > 0 && this.isOnGround() ) {
+                this.physics.vz = -this.bounce;
+                this.bounce--;
+            }
+        }
+
         this.position = this.getNextPoi();
     }
 
@@ -39,7 +56,7 @@ export default class KeyItem extends Sprite {
 * Checks
 *******************************************************************************/
     canPickup () {
-        return true;
+        return this.dropin ? ( this.bounce === 0 && this.isOnGround() ) : true;
     }
 }
 

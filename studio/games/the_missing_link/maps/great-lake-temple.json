@@ -18,6 +18,11 @@
             "x": 594,
             "y": 875,
             "dir": "up"
+        },
+        {
+            "x": 1042,
+            "y": 149,
+            "dir": "down"
         }
     ],
     "fx": [],
@@ -98,6 +103,41 @@
             "spawn": {
                 "x": 609,
                 "y": 468
+            },
+            "payload": {
+                "quest": [
+                    {
+                        "type": "checkFlag",
+                        "key": "great-lake-temple-key-level-1",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "..."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "checkItem",
+                        "id": "key",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "..."
+                            ]
+                        }
+                    },
+                    {
+                        "type": "setItem",
+                        "id": "boomerang",
+                        "dialogue": {
+                            "type": "text",
+                            "text": [
+                                "You got a Boomerang!",
+                                "It has a magical flight path!"
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
@@ -111,7 +151,14 @@
             "action": {
                 "verb": "attack",
                 "fx": "smoke",
-                "sound": "smash"
+                "sound": "smash",
+                "quest": {
+                    "setFlag": {
+                        "key": "great-lake-temple-key-level-1",
+                        "value": 1,
+                        "reset": true
+                    }
+                }
             }
         },
         {
@@ -125,7 +172,14 @@
             "action": {
                 "verb": "attack",
                 "fx": "smoke",
-                "sound": "smash"
+                "sound": "smash",
+                "quest": {
+                    "setFlag": {
+                        "key": "great-lake-temple-key-level-1",
+                        "value": 1,
+                        "reset": true
+                    }
+                }
             }
         },
         {
@@ -139,7 +193,14 @@
             "action": {
                 "verb": "attack",
                 "fx": "smoke",
-                "sound": "smash"
+                "sound": "smash",
+                "quest": {
+                    "setFlag": {
+                        "key": "great-lake-temple-key-level-1",
+                        "value": 1,
+                        "reset": true
+                    }
+                }
             }
         },
         {
@@ -153,11 +214,39 @@
             "action": {
                 "verb": "attack",
                 "fx": "smoke",
-                "sound": "smash"
+                "sound": "smash",
+                "quest": {
+                    "setFlag": {
+                        "key": "great-lake-temple-key-level-1",
+                        "value": 1,
+                        "reset": true
+                    }
+                }
             }
         }
     ],
-    "items": [],
+    "items": [
+        {
+            "id": "key",
+            "spawn": {
+                "x": 850,
+                "y": 390,
+                "quest": {
+                    "checkFlag": {
+                        "key": "great-lake-temple-key-level-1",
+                        "value": 4
+                    }
+                }
+            },
+            "dropin": true,
+            "dialogue": {
+                "type": "text",
+                "text": [
+                    "You got a small key!"
+                ]
+            }
+        }
+    ],
     "collision": [
         [
             44,
@@ -3019,8 +3108,8 @@
                 ],
                 [
                     [
-                        256,
-                        2112
+                        704,
+                        384
                     ]
                 ],
                 [
