@@ -39,7 +39,7 @@ export default class KeyItem extends Sprite {
     applyPosition () {
         if ( this.dropin ) {
             if ( this.bounce === null && this.isOnGround() ) {
-                this.bounce = 9;
+                this.bounce = 6;
             }
 
             if ( this.bounce > 0 && this.isOnGround() ) {
