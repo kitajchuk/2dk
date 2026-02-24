@@ -941,19 +941,20 @@ class TopView extends GameBox {
 
         let fallCoords = [];
 
-        if ( collision.tiles ) {
+        if ( collision.empty ) {
+            const emptyTile = collision.empty[ 0 ];
+            fallCoords = [
+                emptyTile.x / this.map.data.tilesize,
+                emptyTile.y / this.map.data.tilesize,
+            ];
+
+        } else if ( collision.tiles ) {
             const fallTiles = collision.tiles.action.filter( ( tile ) => {
                 return tile.fall;
             });
             const fallTile = Utils.getMostCollidingTile( fallTiles );
             fallCoords = fallTile.coord;
 
-        } else if ( collision.empty ) {
-            const emptyTile = collision.empty[ 0 ];
-            fallCoords = [
-                emptyTile.x / this.map.data.tilesize,
-                emptyTile.y / this.map.data.tilesize,
-            ];
         }
 
         const { fallToPosition, fallResetPosition } = this.getFallPosition( fallCoords, dir );
