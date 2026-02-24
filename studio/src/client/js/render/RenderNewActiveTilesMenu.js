@@ -134,13 +134,37 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
-                    <div class="editor__label">Action Stat Data (raw data)</div>
-                    <textarea class="editor__field input textarea js-activetile-field" name="actionStat"></textarea>
+                    <div class="editor__label">Action Stat</div>
+                    <div class="select">
+                        <select class="select__field js-activetile-field js-select" name="actionStat">
+                            <option value="">Action Stat</option>
+                            ${Object.keys( game.stats ).map( ( stat ) => `
+                                <option value="${stat}">${stat}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
+                    </div>
                 </div>
                 <div>
-                    <div class="editor__label">Action Drops Data (raw data)</div>
-                    <textarea class="editor__field input textarea js-activetile-field" name="actionDrops"></textarea>
+                    <div class="editor__label">Action Drops</div>
+                    <div class="select">
+                        <select class="select__field js-activetile-field js-select" name="actionDrops">
+                            <option value="">Action Drops</option>
+                            ${Object.keys( game.drops ).map( ( drop ) => `
+                                <option value="${drop}">${drop}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
+                    </div>
                 </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Action Quest (raw data)</div>
+                <textarea class="editor__field input textarea js-activetile-field" name="actionQuest"></textarea>
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
@@ -168,13 +192,37 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
-                    <div class="editor__label">Attack Stat Data (raw data)</div>
-                    <textarea class="editor__field input textarea js-activetile-field" name="attackStat"></textarea>
+                    <div class="editor__label">Attack Stat</div>
+                    <div class="select">
+                        <select class="select__field js-activetile-field js-select" name="attackStat">
+                            <option value="">Attack Stat</option>
+                            ${Object.keys( game.stats ).map( ( stat ) => `
+                                <option value="${stat}">${stat}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
+                    </div>
                 </div>
                 <div>
-                    <div class="editor__label">Attack Drops Data (raw data)</div>
-                    <textarea class="editor__field input textarea js-activetile-field" name="attackDrops"></textarea>
+                    <div class="editor__label">Attack Drops</div>
+                    <div class="select">
+                        <select class="select__field js-activetile-field js-select" name="attackDrops">
+                            <option value="">Attack Drops</option>
+                            ${Object.keys( game.drops ).map( ( drop ) => `
+                                <option value="${drop}">${drop}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
+                    </div>
                 </div>
+            </div>
+            <div class="editor__setting">
+                <div class="editor__label">Attack Quest (raw data)</div>
+                <textarea class="editor__field input textarea js-activetile-field" name="attackQuest"></textarea>
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Friction (for passive tiles, e.g. grass or stairs to slow down movement)</div>

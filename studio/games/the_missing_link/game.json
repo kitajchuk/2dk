@@ -16,7 +16,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1827,
+    "save": 1829,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -669,6 +669,18 @@
                 "chance": 15
             }
         ]
+    },
+    "stats": {
+        "strength-1": {
+            "key": "strength",
+            "value": 1,
+            "dialogue": {
+                "type": "text",
+                "text": [
+                    "This is too heavy for you!"
+                ]
+            }
+        }
     },
     "items": [
         {

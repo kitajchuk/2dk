@@ -1713,11 +1713,15 @@ class EditorCanvas {
                 }
 
                 if ( data.actionStat ) {
-                    firstAction.stat = JSON.parse( data.actionStat );
+                    firstAction.stat = data.actionStat;
                 }
 
                 if ( data.actionDrops ) {
-                    firstAction.drops = JSON.parse( data.actionDrops );
+                    firstAction.drops = data.actionDrops;
+                }
+
+                if ( data.actionQuest ) {
+                    firstAction.quest = JSON.parse( data.actionQuest );
                 }
 
                 newData.actions.push( firstAction );
@@ -1733,11 +1737,15 @@ class EditorCanvas {
                     }
 
                     if ( data.attackStat ) {
-                        secondAction.stat = JSON.parse( data.attackStat );
+                        secondAction.stat = data.attackStat;
                     }
 
                     if ( data.attackDrops ) {
-                        secondAction.drops = JSON.parse( data.attackDrops );
+                        secondAction.drops = data.attackDrops;
+                    }
+
+                    if ( data.attackQuest ) {
+                        secondAction.quest = JSON.parse( data.attackQuest );
                     }
 
                     newData.actions.push( secondAction );

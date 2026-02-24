@@ -60,16 +60,7 @@
             "actions": [
                 {
                     "verb": "lift",
-                    "stat": {
-                        "key": "strength",
-                        "value": 1,
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "This is too heavy for you!"
-                            ]
-                        }
-                    }
+                    "stat": "strength-1"
                 },
                 {
                     "verb": "attack",
@@ -139,16 +130,7 @@
             "actions": [
                 {
                     "verb": "lift",
-                    "stat": {
-                        "key": "strength",
-                        "value": 1,
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "This is too heavy for you!"
-                            ]
-                        }
-                    }
+                    "stat": "strength-1"
                 },
                 {
                     "verb": "attack",
@@ -173,16 +155,7 @@
             "actions": [
                 {
                     "verb": "lift",
-                    "stat": {
-                        "key": "strength",
-                        "value": 1,
-                        "dialogue": {
-                            "type": "text",
-                            "text": [
-                                "This is too heavy for you!"
-                            ]
-                        }
-                    }
+                    "stat": "strength-1"
                 },
                 {
                     "verb": "attack",
