@@ -1360,6 +1360,12 @@ export class HeroProjectile extends Projectile {
     init () {}
 
 
+    kill () {
+        super.kill();
+        this.hero.projectileControlLocked = false;
+    }
+
+
     update () {
         if ( !this.onscreen ) {
             return;
@@ -1367,7 +1373,7 @@ export class HeroProjectile extends Projectile {
 
         // TODO: This control handling could probably be improved...
 
-        if ( this.hero.isProjectileLocked() ) {
+        if ( this.hero.isProjectileLocked() || this.hero.projectileControlLocked ) {
             for ( let i = DIRS.length; i--; ) {
                 if ( !this.hero.projectileControlLocked && DIRS[ i ] === this.flightDir ) {
                     this.controls[ DIRS[ i ] ] = true;
@@ -1401,12 +1407,11 @@ export class HeroProjectile extends Projectile {
         if ( this.hero.projectileControlLocked ) {
             if ( !this.dpadCheck.length && this.angle !== null ) {
                 poi = this.getNextPoiByAngle( this.angle );
-
-            } else {
-                const toNextX = poi.x - this.position.x;
-                const toNextY = poi.y - this.position.y;
-                this.angle = Math.atan2( toNextY, toNextX );
             }
+
+            const toNextX = poi.x - this.position.x;
+            const toNextY = poi.y - this.position.y;
+            this.angle = Math.atan2( toNextY, toNextX );
         }
 
         const { collision, isMapCollision } = this.gamebox.checkElevationCollision( this.position, this, {

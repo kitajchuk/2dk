@@ -241,10 +241,6 @@ class TopView extends GameBox {
             this.hero.spinLocked = false;
         }
 
-        if ( this.hero.projectileControlLocked && !this.hero.projectile ) {
-            this.hero.projectileControlLocked = false;
-        }
-
         if ( this.hero.spinCharged ) {
             this.hero.spinCharged = false;
             this.hero.updateStat( "magic", -5 );
