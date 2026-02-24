@@ -785,11 +785,12 @@ class TopView extends GameBox {
         });
 
         if ( action?.stat ) {
-            const { key, value } = action.stat;
+            const data = this.player.data.stats[ action.stat ];
+            const { key, value, dialogue } = data;
 
             if ( !this.hero.checkStat( key, value ) ) {
                 this.liftLocked = true;
-                this.dialogue.auto( action.stat.dialogue );
+                this.dialogue.auto( dialogue );
                 this.hero.cycle( Config.verbs.PULL, dir );
                 return;
             }
