@@ -237,18 +237,6 @@
         },
         {
             "coords": [
-                23,
-                11
-            ],
-            "type": "door",
-            "width": 64,
-            "height": 64,
-            "dir": "up",
-            "map": "maps/great-lake-temple.json",
-            "spawn": 1
-        },
-        {
-            "coords": [
                 5,
                 11
             ],
@@ -312,6 +300,18 @@
             "height": 64,
             "map": "maps/great-fairy-fountain.json",
             "spawn": 0
+        },
+        {
+            "coords": [
+                23,
+                11
+            ],
+            "type": "door",
+            "width": 64,
+            "height": 64,
+            "dir": "up",
+            "map": "maps/great-lake-temple-level-2.json",
+            "spawn": 1
         }
     ],
     "npcs": [
