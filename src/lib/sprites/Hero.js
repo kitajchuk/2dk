@@ -1365,6 +1365,8 @@ export class HeroProjectile extends Projectile {
             return;
         }
 
+        // TODO: This control handling could probably be improved...
+
         if ( this.hero.isProjectileLocked() ) {
             for ( let i = DIRS.length; i--; ) {
                 if ( !this.hero.projectileControlLocked && DIRS[ i ] === this.flightDir ) {
