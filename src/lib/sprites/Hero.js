@@ -260,7 +260,7 @@ export default class Hero extends Sprite {
     }
 
 
-    giveItem ( id, mapId ) {
+    giveItem ( id, mapId, { skipItemGet = false } = {} ) {
         const item = this.player.getMergedData({
             id,
             mapId,
@@ -270,7 +270,9 @@ export default class Hero extends Sprite {
             this.items.push( item );
         }
 
-        this.doItemGet( item );
+        if ( !skipItemGet ) {
+            this.doItemGet( item );
+        }
 
         if ( item.equip ) {
             this.equip( item.equip );
@@ -677,12 +679,17 @@ export default class Hero extends Sprite {
         const isNPCRead = collision.npc && collision.npc.canInteract( this.dir );
         const isEventTalk = collision.event && collision.event.data.type === Config.events.DIALOGUE && collision.event.data.verb === Config.verbs.TALK;
         const isGrabTile = this.canGrabTile( collision ) || !notLifting;
+        const openTile = this.canOpenTile( collision );
+        const keyQuest = openTile && openTile.instance.getQuest( Config.verbs.OPEN )?.checkItem === "key";
 
         if ( this.gamebox.dialogue.active || isDoorRead || isNPCRead || isEventTalk ) {
             this.interact = Config.hero.interact.READ;
 
         } else if ( isGrabTile ) {
             this.interact = Config.hero.interact.GRAB;
+
+        } else if ( openTile && keyQuest ) {
+            this.interact = Config.hero.interact.OPEN;
 
         } else if ( notLifting ) {
             this.interact = null;
@@ -1191,9 +1198,32 @@ export default class Hero extends Sprite {
             return false;
         }
         
-        return collision.tiles.action.some( ( tile ) => {
+        const liftTiles = collision.tiles.action.filter( ( tile ) => {
             return tile.instance.canInteract( Config.verbs.LIFT );
         });
+
+        if ( !liftTiles.length ) {
+            return false;
+        }
+
+        return Utils.getMostCollidingTile( liftTiles );
+    }
+
+
+    canOpenTile ( collision ) {
+        if ( !collision.tiles || !collision.tiles.action.length ) {
+            return false;
+        }
+
+        const openTiles = collision.tiles.action.filter( ( tile ) => {
+            return tile.instance.canInteract( Config.verbs.OPEN );
+        });
+
+        if ( !openTiles.length ) {
+            return false;
+        }
+
+        return Utils.getMostCollidingTile( openTiles );
     }
 
 

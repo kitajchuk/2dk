@@ -78,6 +78,8 @@ class TopView extends GameBox {
             collision.event.data.type === Config.events.DIALOGUE &&
             collision.event.data.verb === Config.verbs.TALK
         );
+        const grabTile = this.hero.canGrabTile( collision );
+        const openTile = this.hero.canOpenTile( collision );
 
         if ( this.swimming ) {
             this.hero.swimKick();
@@ -91,11 +93,11 @@ class TopView extends GameBox {
         } else if ( collision.npc ) {
             this.handleHeroNPCAction( poi, this.hero.dir, collision.npc );
 
-        } else if ( this.hero.canGrabTile( collision ) && !this.interact.tile ) {
-            const liftTiles = collision.tiles.action.filter( ( tile ) => {
-                return tile.instance.canInteract( Config.verbs.LIFT );
-            });
-            this.interact.tile = Utils.getMostCollidingTile( liftTiles );
+        } else if ( openTile ) {
+            this.handleHeroOpenTile( poi, this.hero.dir, openTile );
+
+        } else if ( grabTile && !this.interact.tile ) {
+            this.interact.tile = grabTile;
             this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
 
         } else {
@@ -1015,6 +1017,30 @@ class TopView extends GameBox {
         } else if ( this.hero.canResetMaxV() ) {
             this.hero.resetMaxV();
         }
+    }
+
+
+    handleHeroOpenTile ( poi, dir, tile ) {
+        const quest = tile.instance.getQuest( Config.verbs.OPEN );
+
+        if ( quest?.checkItem ) {
+            if ( this.hero.itemCheck( quest.checkItem ) ) {
+                const item = this.hero.getItem( quest.checkItem );
+
+                if ( item && item.collect ) {
+                    this.hero.takeCollectible( quest.checkItem );
+                }
+
+            } else {
+                this.dialogue.auto({
+                    text: [ "..." ],
+                });
+                return;
+            }
+        }
+
+        // For now assuming that a quest tile only has one action...
+        tile.instance.attack( tile.coord, tile.instance.data.actions[ 0 ] );
     }
 
 

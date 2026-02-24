@@ -100,6 +100,7 @@ const Config = {
         interact: {
             READ: "read",
             GRAB: "grab",
+            OPEN: "open",
         }
     },
     npc: {

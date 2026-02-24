@@ -261,6 +261,14 @@ export default class HUD {
                             this.gamepad.renderButtonText( "a" );
                         }
                         break;
+                    case Config.hero.interact.OPEN:
+                        const openItem = this.hero.items.find( ( item ) => item.id === "key" );
+                        if ( openItem ) {
+                            touchControls.a.elem.innerHTML = renderButtonSprite( openItem, "A" );
+                        } else {
+                            this.gamepad.renderButtonText( "a" );
+                        }
+                        break;
                 }
                 this.buttons.a = this.gamebox.hero.interact;
             }

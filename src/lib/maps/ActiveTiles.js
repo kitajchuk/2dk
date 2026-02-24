@@ -39,10 +39,18 @@ export default class ActiveTiles {
                     continue;
                 }
 
+                const coords = [ x, y ];
+
+                // De-spawn the tile if the quest has been completed
+                if ( this.gamebox.gamequest.getCompleted( this.getQuestId( coords ) ) ) {
+                    this.spliceTexture( coords );
+                    continue;
+                }
+
                 const topCel = cel[ cel.length - 1 ];
 
                 if ( topCel[ 0 ] === this.data.offsetX && topCel[ 1 ] === this.data.offsetY ) {
-                    this.push( [ x, y ] );
+                    this.push( coords );
                 }
             }
         }
@@ -84,6 +92,22 @@ export default class ActiveTiles {
             ( this.data.offsetX + ( this.frame * this.map.data.tilesize ) ),
             this.data.offsetY,
         ];
+    }
+
+
+    getQuest ( verb ) {
+        const action = this.canInteract( verb );
+
+        if ( action ) {
+            return action.quest;
+        }
+
+        return null;
+    }
+
+
+    getQuestId ( coords ) {
+        return `${this.map.data.id}-${this.data.group}-${coords[ 0 ]}-${coords[ 1 ]}`;
     }
 
 
@@ -132,6 +156,10 @@ export default class ActiveTiles {
         if ( action.drops ) {
             this.gamebox.itemDrop( action.drops, obj.position );
         }
+
+        if ( action.quest ) {
+            this.gamebox.gamequest.completeQuest( this.getQuestId( coords ) );
+        }
         
         this.map.mapFX.smokeObject( obj, action.fx );
     }
@@ -162,13 +190,18 @@ export default class ActiveTiles {
         for ( let i = this.pushed.length; i--; ) {
             if ( this.pushed[ i ].coords[ 0 ] === coords[ 0 ] && this.pushed[ i ].coords[ 1 ] === coords[ 1 ] ) {
                 this.pushed.splice( i, 1 );
-                // Remove the tile from the texture map (direct mutation since we use a cloned data object)
-                // This greatly simplifies the logic for rendering the map after we've interacted with the tile
-                // since on the next frame the texture will be updated to show the new tile state
-                this.map.data.textures[ this.data.layer ][ coords[ 1 ] ][ coords[ 0 ] ].pop();
+                this.spliceTexture( coords );
                 break;
             }
         }
+    }
+
+
+    spliceTexture ( coords ) {
+        // Remove the tile from the texture map (direct mutation since we use a cloned data object)
+        // This greatly simplifies the logic for rendering the map after we've interacted with the tile
+        // since on the next frame the texture will be updated to show the new tile state
+        this.map.data.textures[ this.data.layer ][ coords[ 1 ] ][ coords[ 0 ] ].pop();
     }
 
 
