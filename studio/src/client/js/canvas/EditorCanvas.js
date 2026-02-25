@@ -44,7 +44,7 @@ class EditorCanvas {
             tileset: document.getElementById( "editor-tileset-image" ),
             tilebox: document.getElementById( "editor-tileset-box" ),
             snapNPCToGrid: document.getElementById( "editor-npc-snap" ),
-            cellauto: document.getElementById( "editor-cellauto" ),
+            // cellauto: document.getElementById( "editor-cellauto" ),
         };
         this.pickers = {
             all: document.querySelectorAll( ".js-picker" ),
@@ -88,7 +88,7 @@ class EditorCanvas {
         this.bindColliderEvents();
         this.bindDocumentEvents();
         this.bindTilepaintEvents();
-        this.bindCellautoEvents();
+        // this.bindCellautoEvents();
 
         this.bindNPCMenuPost();
         this.bindItemMenuPost();

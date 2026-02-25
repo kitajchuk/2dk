@@ -34,60 +34,60 @@ const renderActiveGameMenu = ( game ) => {
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Game name</div>
-                <input class="input editor__field" type="text" name="name" value="${game.name}" readonly disabled />
+                <input class="input editor__field" type="text" name="name" value="${game.name}" readonly />
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Currency</div>
-                <input class="input editor__field" type="text" name="currency" value="${game.currency}" readonly disabled />
+                <input class="input editor__field" type="text" name="currency" value="${game.currency}" readonly />
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">Save version</div>
-                    <input class="input editor__field" type="text" name="save" value="${game.save}" readonly disabled />
+                    <input class="input editor__field" type="text" name="save" value="${game.save}" readonly />
                 </div>
                 <div>
                     <div class="editor__label">Release version</div>
-                    <input class="input editor__field" type="text" name="release" value="${game.release}" readonly disabled />
+                    <input class="input editor__field" type="text" name="release" value="${game.release}" readonly />
                 </div>
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">Screen width</div>
-                    <input class="input editor__field" type="number" name="width" value="${game.width}" readonly disabled />
+                    <input class="input editor__field" type="number" name="width" value="${game.width}" readonly />
                 </div>
                 <div>
                     <div class="editor__label">Screen height</div>
-                    <input class="input editor__field" type="number" name="height" value="${game.height}" readonly disabled />
+                    <input class="input editor__field" type="number" name="height" value="${game.height}" readonly />
                 </div>
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Tilesize</div>
-                <input class="input editor__field" type="number" name="tilesize" value="${game.tilesize}" readonly disabled />
+                <input class="input editor__field" type="number" name="tilesize" value="${game.tilesize}" readonly />
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">World Map Tile width</div>
-                    <input class="input editor__field" type="number" name="worldtilewidth" value="${game.worldmapsize.tilewidth}" readonly disabled />
+                    <input class="input editor__field" type="number" name="worldtilewidth" value="${game.worldmapsize.tilewidth}" readonly />
                 </div>
                 <div>
                     <div class="editor__label">World Map Tile height</div>
-                    <input class="input editor__field" type="number" name="worldtileheight" value="${game.worldmapsize.tileheight}" readonly disabled />
+                    <input class="input editor__field" type="number" name="worldtileheight" value="${game.worldmapsize.tileheight}" readonly />
                 </div>
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">Indoor Map Tile width</div>
-                    <input class="input editor__field" type="number" name="indoorwidth" value="${game.indoormapsize.tilewidth}" readonly disabled />
+                    <input class="input editor__field" type="number" name="indoorwidth" value="${game.indoormapsize.tilewidth}" readonly />
                 </div>
                 <div>
                     <div class="editor__label">Indoor Map Tile height</div>
-                    <input class="input editor__field" type="number" name="indoorheight" value="${game.indoormapsize.tileheight}" readonly disabled />
+                    <input class="input editor__field" type="number" name="indoorheight" value="${game.indoormapsize.tileheight}" readonly />
                 </div>
             </div>
             <div class="editor__setting">
                 <div class="editor__checkbox">
                     <label class="checkbox">
-                        <input class="check js-addgame-field" type="checkbox" name="diagonaldpad" ${game.diagonaldpad ? " checked" : ""} readonly disabled />
+                        <input class="check js-addgame-field" type="checkbox" name="diagonaldpad" ${game.diagonaldpad ? " checked" : ""} disabled />
                         <span class="label">Diagonal D-Pad (${game.diagonaldpad ? "enabled" : "disabled"})</span>
                     </label>
                 </div>
@@ -96,11 +96,11 @@ const renderActiveGameMenu = ( game ) => {
                 <div class="editor__label">Resolution (${game.maxresolution}x)</div>
                 <div class="editor__checkbox">
                     <label class="checkbox">
-                        <input class="check js-addgame-field" value="2" type="radio" name="maxresolution" ${game.maxresolution === 2 ? "checked" : ""} readonly disabled />
+                        <input class="check js-addgame-field" value="2" type="radio" name="maxresolution" ${game.maxresolution === 2 ? "checked" : ""} disabled />
                         <span class="label">2x</span>
                     </label>
                     <label class="checkbox">
-                        <input class="check js-addgame-field" value="1" type="radio" name="maxresolution" ${game.maxresolution === 1 ? "checked" : ""} readonly disabled />
+                        <input class="check js-addgame-field" value="1" type="radio" name="maxresolution" ${game.maxresolution === 1 ? "checked" : ""} disabled />
                         <span class="label">1x</span>
                     </label>
                 </div>

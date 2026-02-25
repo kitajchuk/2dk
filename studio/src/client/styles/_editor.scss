@@ -192,7 +192,7 @@
 .editor__layout {
     display: grid;
     grid-template-columns: 44px 1fr 417px;
-    grid-template-rows: 50px 1fr;
+    grid-template-rows: 47px 1fr;
 
     .editor__panel,
     .editor__toolbar,
@@ -211,14 +211,12 @@
     }
 
     .editor__content,
-    .editor__sidebar,
-    .editor__toolbar,
-    .editor__sidebar__layers {
-        height: calc( 100vh - 50px );
+    .editor__toolbar {
+        height: calc( 100vh - 47px );
     }
 
     .editor__panel {
-        grid-column: 1 / 4;
+        grid-column: 1 / span 2;
         grid-row: 1;
     }
     .editor__toolbar {
@@ -231,7 +229,7 @@
     }
     .editor__sidebar {
         grid-column: 3;
-        grid-row: 2;
+        grid-row: 1 / span 2;
     }
 }
 

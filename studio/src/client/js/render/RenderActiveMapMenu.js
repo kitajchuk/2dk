@@ -21,7 +21,7 @@ const renderActiveMapMenu = ( { map, types, assets } ) => {
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Map name</div>
-                <input value="${map.name}" class="input editor__field" type="text" name="name" readonly disabled />
+                <input value="${map.name}" class="input editor__field" type="text" name="name" readonly />
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Map type</div>
@@ -39,16 +39,16 @@ const renderActiveMapMenu = ( { map, types, assets } ) => {
             </div>
             <div class="editor__setting">
                 <div class="editor__label">Tilesize</div>
-                <input value="${map.tilesize}" class="input editor__field" type="number" name="tilesize" readonly disabled />
+                <input value="${map.tilesize}" class="input editor__field" type="number" name="tilesize" readonly />
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
                     <div class="editor__label">Tile width</div>
-                    <input value="${map.tilewidth}" class="input editor__field" type="number" name="tilewidth" readonly disabled />
+                    <input value="${map.tilewidth}" class="input editor__field" type="number" name="tilewidth" readonly />
                 </div>
                 <div>
                     <div class="editor__label">Tile height</div>
-                    <input value="${map.tileheight}" class="input editor__field" type="number" name="tileheight" readonly disabled />
+                    <input value="${map.tileheight}" class="input editor__field" type="number" name="tileheight" readonly />
                 </div>
             </div>
             <div class="editor__setting">
@@ -82,7 +82,7 @@ const renderActiveMapMenu = ( { map, types, assets } ) => {
             <div class="editor__setting">
                 <div class="editor__checkbox">
                     <label class="checkbox">
-                        <input class="check js-addmap-field" type="checkbox" name="dialogue" ${map.dialogue ? "checked" : ""} readonly disabled />
+                        <input class="check js-addmap-field" type="checkbox" name="dialogue" ${map.dialogue ? "checked" : ""} disabled />
                         <span class="label">Dialogue (${map.dialogue ? "enabled" : "disabled"})</span>
                     </label>
                 </div>
