@@ -64,9 +64,10 @@ class EditorCursor {
 
         if ( sprite ) {
             const isNPC = this.editor.layers.mode === Config.EditorLayers.modes.NPC;
+            const isFX = this.editor.layers.mode === Config.EditorLayers.modes.FX;
             
             // NPCs can be locked to the tile grid
-            if ( isNPC && this.editorCanvas.dom.snapNPCToGrid.checked ) {
+            if ( isFX || ( isNPC && this.editorCanvas.dom.snapNPCToGrid.checked ) ) {
                 const offsetCoords = this.getCursorOffsetCoords( coords, sprite );
                 x = offsetCoords[ 0 ] * this.map.tilesize;
                 y = offsetCoords[ 1 ] * this.map.tilesize;
@@ -258,6 +259,11 @@ class EditorCursor {
 
     applyCursorItem () {
         this._applyCursorSprite( this.editorCanvas.currentItem );
+    }
+
+
+    applyCursorFX () {
+        this._applyCursorSprite( this.editorCanvas.currentFX );
     }
 
 

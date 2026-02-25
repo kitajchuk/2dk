@@ -109,6 +109,7 @@
                             <div class="editor__canvas__layer editor__npc" id="editor-npc"></div>
                             <div class="editor__canvas__layer editor__item" id="editor-item"></div>
                             <div class="editor__canvas__layer editor__foreground" id="editor-fg"></div>
+                            <div class="editor__canvas__layer editor__fx" id="editor-fx"></div>
                             <div class="editor__canvas__layer editor__collision" id="editor-c"></div>
                             <div class="editor__canvas__layer editor__event is-hidden" id="editor-event"></div>
                             <div class="editor__canvas__layer editor__spawn is-hidden" id="editor-spawn"></div>
@@ -127,6 +128,16 @@
                 <!-- Sidebar -->
                 <div class="editor__sidebar">
                     <div class="editor__sidebar__layers">
+                        <div class="editor__layer js-edit-layer" data-layer="collision">
+                            <span class="icon">
+                                <i data-feather="layers"></i>
+                            </span>
+                            <span>Collision</span>
+                            <span class="editor__layer__hide icon js-hide-layer" data-layer="collision">
+                                <i data-feather="eye"></i>
+                                <i data-feather="eye-off"></i>
+                            </span>
+                        </div>
                         <div class="editor__layer js-edit-layer" data-layer="npc">
                             <span class="icon">
                                 <i data-feather="layers"></i>
@@ -153,12 +164,12 @@
                                 <i data-feather="eye-off"></i>
                             </span>
                         </div>
-                        <div class="editor__layer js-edit-layer" data-layer="collision">
+                        <div class="editor__layer js-edit-layer" data-layer="fx">
                             <span class="icon">
                                 <i data-feather="layers"></i>
                             </span>
-                            <span>Collision</span>
-                            <span class="editor__layer__hide icon js-hide-layer" data-layer="collision">
+                            <span>FX</span>
+                            <span class="editor__layer__hide icon js-hide-layer" data-layer="fx">
                                 <i data-feather="eye"></i>
                                 <i data-feather="eye-off"></i>
                             </span>
@@ -273,6 +284,21 @@
                             <div class="editor__layer">
                                 <div id="" class="editor__picker__box">
                                     <div id="editor-item-picker-box" class="editor__picker__overflow editor__picker__sprite__grid is-padded"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="editor-fx-picker" class="editor__picker js-picker is-hidden">
+                            <div class="editor__layer -merge-down">
+                                <div class="editor__layer__label">
+                                    <span class="icon">
+                                        <i data-feather="grid"></i>
+                                    </span>
+                                    <span>FX Picker</span>
+                                </div>
+                            </div>
+                            <div class="editor__layer">
+                                <div id="" class="editor__picker__box">
+                                    <div id="editor-fx-picker-box" class="editor__picker__overflow editor__picker__sprite__grid is-padded"></div>
                                 </div>
                             </div>
                         </div>

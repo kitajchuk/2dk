@@ -6,7 +6,7 @@ const {
 } = require( "../Utils" );
 const {
     renderNPC,
-    renderItem,
+    renderSprite,
     renderTile,
     renderSpawn,
     renderEvent,
@@ -32,6 +32,7 @@ class EditorCanvas {
         this.tilesetCoords = [];
         this.currentNPC = null;
         this.currentItem = null;
+        this.currentFX = null;
         this.isEscape = false;
         this.isMouseDownTiles = false;
         this.isMouseMovedTiles = false;
@@ -50,12 +51,19 @@ class EditorCanvas {
             all: document.querySelectorAll( ".js-picker" ),
             npcPickerBox: document.getElementById( "editor-npc-picker-box" ),
             itemPickerBox: document.getElementById( "editor-item-picker-box" ),
+            fxPickerBox: document.getElementById( "editor-fx-picker-box" ),
         };
+        this.pickerLayers = [
+            Config.EditorLayers.modes.NPC,
+            Config.EditorLayers.modes.ITEM,
+            Config.EditorLayers.modes.FX,
+        ];
         this.layers = {
             background: document.getElementById( "editor-bg" ),
             foreground: document.getElementById( "editor-fg" ),
             collision: document.getElementById( "editor-c" ),
             mapgrid: document.getElementById( "editor-mapgrid" ),
+            fx: document.getElementById( "editor-fx" ),
             npc: document.getElementById( "editor-npc" ),
             item: document.getElementById( "editor-item" ),
             spawn: document.getElementById( "editor-spawn" ),
@@ -66,6 +74,7 @@ class EditorCanvas {
             background: null,
             foreground: null,
             collision: null,
+            fx: null,
             npc: null,
             item: null,
         };
@@ -92,6 +101,7 @@ class EditorCanvas {
 
         this.bindNPCMenuPost();
         this.bindItemMenuPost();
+        this.bindFXMenuPost();
         this.bindMapEventMenuPost();
         this.bindActiveTilesMenuPost();
         this.bindSpawnMenuPost();
@@ -251,11 +261,13 @@ class EditorCanvas {
             this.drawColliders();
             this.drawNPCs();
             this.drawItems();
+            this.drawFX();
             this.drawSpawns();
             this.drawEvents();
             this.drawActiveTiles();
             this.renderNPCLoadout();
             this.renderItemLoadout();
+            this.renderFXLoadout();
         });
     }
 
@@ -421,6 +433,29 @@ class EditorCanvas {
     }
 
 
+    drawFX () {
+        this.map.fx.forEach( ( fx ) => {
+            const baseFX = this.game.fx.find( ( gitem ) => {
+                return fx.id === gitem.id;
+            });
+
+            if ( baseFX ) {
+                this.contexts.fx.context.drawImage(
+                    this.assets[ baseFX.image ],
+                    baseFX.offsetX,
+                    baseFX.offsetY,
+                    baseFX.width,
+                    baseFX.height,
+                    fx.spawn.x,
+                    fx.spawn.y,
+                    baseFX.width,
+                    baseFX.height
+                );
+            }
+        });
+    }
+
+
     drawSpawns () {
         this.layers.spawn.innerHTML = this.map.spawn.map( ( spawn ) => {
             return renderSpawn( spawn, this.spawn );
@@ -532,7 +567,14 @@ class EditorCanvas {
 
     renderItemLoadout () {
         this.pickers.itemPickerBox.innerHTML = this.game.items.map( ( item ) => {
-            return renderItem( item, this.game );
+            return renderSprite( item, this.game, "item" );
+        }).join( "" );
+    }
+
+
+    renderFXLoadout () {
+        this.pickers.fxPickerBox.innerHTML = this.game.fx.map( ( fx ) => {
+            return renderSprite( fx, this.game, "fx" );
         }).join( "" );
     }
 
@@ -550,7 +592,7 @@ class EditorCanvas {
 
     togglePickers ( layer ) {
         // background, foreground, collision all use the "tile" picker
-        const picker = ( layer === Config.EditorLayers.modes.ITEM || layer === Config.EditorLayers.modes.NPC ) ? layer : "tile";
+        const picker = this.pickerLayers.includes( layer ) ? layer : "tile";
         const element = [ ...this.pickers.all ].find( ( element ) => {
             return element.id === `editor-${picker}-picker`;
         });
@@ -875,6 +917,11 @@ class EditorCanvas {
     }
 
 
+    applyPreviewFX () {
+        this._applyPreviewSprite( this.currentFX );
+    }
+
+
     _applyPreviewSprite ( sprite ) {
         const ctx = this.canvases.preview.getContext( "2d" );
         const scale = this.map.tilesize / this.gridsize;
@@ -1176,7 +1223,7 @@ class EditorCanvas {
                 npc.width,
                 npc.height
             );
-        } else if ( !npc && this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+        } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             const cursorPoint = this.getCursorPoint();
             const topmostNPCs = this.map.npcs.filter( ( npc ) => {
                 const baseNPC = this.game.npcs.find( ( gobj ) => {
@@ -1274,7 +1321,7 @@ class EditorCanvas {
                 item.width,
                 item.height
             );
-        } else if ( !item && this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+        } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
             const cursorPoint = this.getCursorPoint();
             const topmostItems = this.map.items.filter( ( item ) => {
                 const baseItem = this.game.items.find( ( gobj ) => {
@@ -1330,6 +1377,93 @@ class EditorCanvas {
 
     renderItemMenu ( coords, extraData ) {
         this.editor.menus.renderMenu( "editor-item-menu", {
+            game: this.game,
+            coords,
+            mouseCoords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
+            ...extraData,
+        });
+    }
+
+
+    applyFX ( coords ) {
+        if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+            this._applyFX( coords, this.currentFX );
+
+        } else if ( this.currentFX && this.editor.actions.mode === Config.EditorActions.modes.BRUSH ) {
+            this.renderFXMenu( coords );
+        }
+    }
+
+
+    _applyFX ( coords, fx, extraData = {} ) {
+        if ( fx && this.editor.actions.mode == Config.EditorActions.modes.BRUSH ) {
+            // Items don't need to be locked to the tile grid
+            // In the case of Items we passed the canvasMouseCoords through the menu
+            const spawnX = coords[ 0 ];
+            const spawnY = coords[ 1 ];
+            const newFX = {
+                id: fx.id,
+                spawn: {
+                    x: spawnX,
+                    y: spawnY,
+                },
+                ...extraData,
+            };
+
+            this.map.fx.push( newFX );
+
+            const offsetX = fx.offsetX;
+            const offsetY = fx.offsetY;
+
+            this.contexts.fx.context.drawImage(
+                this.assets[ fx.image ],
+                offsetX,
+                offsetY,
+                fx.width,
+                fx.height,
+                newFX.spawn.x,
+                newFX.spawn.y,
+                fx.width,
+                fx.height
+            );
+        } else if ( this.editor.actions.mode === Config.EditorActions.modes.ERASE ) {
+            const cursorPoint = this.getCursorPoint();
+            const topmostFXs = this.map.fx.filter( ( fx ) => {
+                const baseFX = this.game.fx.find( ( gobj ) => {
+                    return fx.id === gobj.id;
+                });
+                
+                const fxSprite = {
+                    x: fx.spawn.x,
+                    y: fx.spawn.y,
+                    width: baseFX.width,
+                    height: baseFX.height,
+                };
+
+                return window.lib2dk.Utils.collide( fxSprite, cursorPoint );
+            });
+            const topmostFX = topmostFXs.pop();
+
+            if ( topmostFX ) {
+                this.map.fx = this.map.fx.reduce( ( acc, fx ) => {
+                    if ( fx.spawn.x === topmostFX.spawn.x && fx.spawn.y === topmostFX.spawn.y ) {
+                        return acc;
+                    }
+
+                    acc.push( fx );
+
+                    return acc;
+                }, []);
+
+                this.contexts.fx.clear();
+                this.drawFX();
+            }
+        }
+    }
+
+
+    renderFXMenu ( coords, extraData ) {
+        this.editor.menus.renderMenu( "editor-fx-menu", {
             game: this.game,
             coords,
             mouseCoords: [ this.canvasMouseCoords.x, this.canvasMouseCoords.y ],
@@ -1546,6 +1680,35 @@ class EditorCanvas {
                     spawnQuest: data.spawnQuest ? JSON.parse( data.spawnQuest ) : undefined,
                 });
             }
+
+            this.editor.menus.removeMenus();
+        });
+    }
+
+
+    bindFXMenuPost () {
+        this.editor.menus.dom.container.addEventListener( "click", ( e ) => {
+            if ( !e.target.closest( ".js-fx-post" ) ) {
+                return;
+            }
+
+            const data = Utils.parseFields( document.querySelectorAll( ".js-fx-field" ) );
+            const coords = JSON.parse( data.coords );
+            // const mouseCoords = JSON.parse( data.mouseCoords );
+            const extraData = {};
+
+            if ( data.float ) {
+                extraData.type = window.lib2dk.Config.npc.ai.FLOAT;
+            }
+
+            if ( data.dur ) {
+                extraData.dur = parseInt( data.dur, 10 );
+            }
+
+            this._applyFX([
+                coords[ 0 ] * this.map.tilesize,
+                coords[ 1 ] * this.map.tilesize,
+            ], this.currentFX, extraData );
 
             this.editor.menus.removeMenus();
         });
@@ -1865,6 +2028,24 @@ class EditorCanvas {
             this.applyPreviewItem();
             this.cursor.applyCursorItem();
         });
+
+        document.addEventListener( "click", ( e ) => {
+            const target = e.target.closest( ".js-fx-tile" );
+
+            if ( !target ) {
+                return;
+            }
+
+            const id = target.dataset.fx;
+
+            this.currentFX = this.game.fx.find( ( fx ) => {
+                return fx.id === id;
+            });
+
+            this.resetPreview();
+            this.applyPreviewFX();
+            this.cursor.applyCursorFX();
+        });
     }
 
 
@@ -2038,6 +2219,9 @@ class EditorCanvas {
                 } else if ( this.currentItem && this.canApplyItem() ) {
                     this.cursor.showCanvasCursor( coords, this.currentItem );
 
+                } else if ( this.currentFX && this.canApplyFX() ) {
+                    this.cursor.showCanvasCursor( coords, this.currentFX );
+
                 } else if ( this.canApplySpawn() ) {
                     this.cursor.showSpawnCursor( coords );
 
@@ -2070,6 +2254,9 @@ class EditorCanvas {
 
                 } else if ( this.canApplyItem() ) {
                     this.applyItem( coords );
+
+                } else if ( this.canApplyFX() ) {
+                    this.applyFX( coords );
 
                 } else if ( this.canApplySpawn() || this.canEditSpawn() ) {
                     this.applySpawn( coords );
@@ -2135,6 +2322,13 @@ class EditorCanvas {
     canApplyItem () {
         return (
             this.editor.layers.mode === Config.EditorLayers.modes.ITEM
+        );
+    }
+
+
+    canApplyFX () {
+        return (
+            this.editor.layers.mode === Config.EditorLayers.modes.FX
         );
     }
 

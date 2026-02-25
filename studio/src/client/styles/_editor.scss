@@ -408,6 +408,7 @@
 
     &.is-npc,
     &.is-item,
+    &.is-fx,
     &.is-spawn,
     &.is-event,
     &.is-background,
@@ -433,6 +434,7 @@
 
     &.is-npc,
     &.is-item,
+    &.is-fx,
     &.is-spawn,
     &.is-event,
     &.is-background,
@@ -487,6 +489,7 @@
     z-index: 3;
     pointer-events: none;
 }
+.editor__fx,
 .editor__npc,
 .editor__item {
     z-index: 3;

@@ -29,6 +29,7 @@ const Config = {
             COLLISION: "collision",
             NPC: "npc",
             ITEM: "item",
+            FX: "fx",
             SPAWN: "spawn",
             EVENT: "event",
             TILES: "tiles",
