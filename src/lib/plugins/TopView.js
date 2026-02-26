@@ -66,20 +66,8 @@ class TopView extends GameBox {
             return;
         }
 
-        const poi = this.hero.getNextPoiByDir( this.hero.dir, 1 );
-        const collision = {
-            npc: this.checkNPC( poi, this.hero ),
-            door: this.checkDoor( poi, this.hero ),
-            tiles: this.checkTiles( poi, this.hero ),
-            event: this.checkEvents( poi, this.hero ),
-        };
-        const isEventTalk = (
-            collision.event &&
-            collision.event.data.type === Config.events.DIALOGUE &&
-            collision.event.data.verb === Config.verbs.TALK
-        );
-        const grabTile = this.hero.canGrabTile( collision );
-        const openTile = this.hero.canOpenTile( collision );
+        // Reuse the values from the hero's blitPassiveInteraction method which runs before the controls blit on each frame
+        const { poi, collision, grabTile, openTile, notLifting, isEventTalk } = this.hero.interact;
 
         if ( this.swimming ) {
             this.hero.swimKick();
@@ -101,10 +89,6 @@ class TopView extends GameBox {
             this.hero.cycle( Config.verbs.GRAB, this.hero.dir );
 
         } else {
-            // This is the default case for all other actions
-            const notLifting = !this.hero.is( Config.verbs.LIFT ) && !this.hero.is( Config.verbs.GRAB );
-            
-            // Jump...
             if ( notLifting && this.hero.hasJump() ) {
                 this.handleHeroJump( poi, this.hero.dir );
             }

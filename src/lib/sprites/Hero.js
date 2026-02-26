@@ -44,7 +44,7 @@ export default class Hero extends Sprite {
         this.projectileItem = null;
         this.projectileControlLocked = false;
         this.mode = Config.hero.modes.WEAPON;
-        this.interact = null;
+        this.interact = {};
         this.parkour = null;
         this.falling = null;
         this.lifting = null;
@@ -454,7 +454,49 @@ export default class Hero extends Sprite {
         }
 
         // Handle passive interaction
-        this.handlePassiveInteraction( elapsed );
+        this.blitPassiveInteraction( elapsed );
+    }
+
+
+    blitPassiveInteraction () {
+        const poi = this.getNextPoiByDir( this.dir, 1 );
+        const collision = {
+            npc: this.gamebox.checkNPC( poi, this ),
+            door: this.gamebox.checkDoor( poi, this ),
+            tiles: this.gamebox.checkTiles( poi, this ),
+            event: this.gamebox.checkEvents( poi, this ),
+        };
+        const grabTile = this.canGrabTile( collision );
+        const openTile = this.canOpenTile( collision );
+        const keyQuest = openTile && openTile.instance.getQuest( Config.verbs.OPEN )?.checkItem === "key";
+        const notLifting = !this.is( Config.verbs.LIFT ) && !this.is( Config.verbs.GRAB ) && !this.is( Config.verbs.PULL );
+        const isOpenTile = openTile && keyQuest;
+        const isGrabTile = grabTile || !notLifting;
+        const isNPCRead = collision.npc && collision.npc.canInteract( this.dir );
+        const isDoorRead = collision.door && ( collision.door.canInteract( this.dir ) || collision.door.canInteractQuest() );
+        const isEventTalk = collision.event && collision.event.data.type === Config.events.DIALOGUE && collision.event.data.verb === Config.verbs.TALK;
+        const isDialogue = this.gamebox.dialogue.active || isDoorRead || isNPCRead || isEventTalk;
+
+        // Store anything we can reuse in the gamebox pressA function since this blit runs before the controls blit on each frame
+        this.interact.poi = poi;
+        this.interact.collision = collision;
+        this.interact.grabTile = grabTile;
+        this.interact.openTile = openTile;
+        this.interact.notLifting = notLifting;
+        this.interact.isEventTalk = isEventTalk;
+
+        if ( isDialogue ) {
+            this.interact.mode = Config.hero.interact.READ;
+
+        } else if ( isGrabTile ) {
+            this.interact.mode = Config.hero.interact.GRAB;
+
+        } else if ( isOpenTile ) {
+            this.interact.mode = Config.hero.interact.OPEN;
+
+        } else if ( notLifting ) {
+            this.interact.mode = null;
+        }
     }
 
 
@@ -666,37 +708,6 @@ export default class Hero extends Sprite {
 /*******************************************************************************
 * Handlers
 *******************************************************************************/
-    handlePassiveInteraction () {
-        const poi = this.getNextPoiByDir( this.dir, 1 );
-        const collision = {
-            npc: this.gamebox.checkNPC( poi, this ),
-            door: this.gamebox.checkDoor( poi, this ),
-            tiles: this.gamebox.checkTiles( poi, this ),
-            event: this.gamebox.checkEvents( poi, this ),
-        };
-        const notLifting = !this.is( Config.verbs.LIFT ) && !this.is( Config.verbs.GRAB ) && !this.is( Config.verbs.PULL );
-        const isDoorRead = collision.door && ( collision.door.canInteract( this.dir ) || collision.door.canInteractQuest() );
-        const isNPCRead = collision.npc && collision.npc.canInteract( this.dir );
-        const isEventTalk = collision.event && collision.event.data.type === Config.events.DIALOGUE && collision.event.data.verb === Config.verbs.TALK;
-        const isGrabTile = this.canGrabTile( collision ) || !notLifting;
-        const openTile = this.canOpenTile( collision );
-        const keyQuest = openTile && openTile.instance.getQuest( Config.verbs.OPEN )?.checkItem === "key";
-
-        if ( this.gamebox.dialogue.active || isDoorRead || isNPCRead || isEventTalk ) {
-            this.interact = Config.hero.interact.READ;
-
-        } else if ( isGrabTile ) {
-            this.interact = Config.hero.interact.GRAB;
-
-        } else if ( openTile && keyQuest ) {
-            this.interact = Config.hero.interact.OPEN;
-
-        } else if ( notLifting ) {
-            this.interact = null;
-        }
-    }
-
-
     // Needs to be called for every frame of attack animation
     handleAttackFrame () {
         const weaponBox = this.getWeaponbox();
@@ -1636,7 +1647,6 @@ export class LiftedTile extends Sprite {
         this.hero.face( this.hero.dir );
         this.player.gameaudio.heroSound( Config.verbs.THROW );
         this.hero.physics.maxv = this.hero.physics.controlmaxv;
-        this.hero.interact = null;
         this.throwing = true;
 
         let throwX;

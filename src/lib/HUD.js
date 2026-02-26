@@ -242,9 +242,9 @@ export default class HUD {
 
 
     renderButtons () {
-        if ( this.gamebox.hero.interact ) {
-            if ( this.buttons.a !== this.gamebox.hero.interact ) {
-                switch ( this.gamebox.hero.interact ) {
+        if ( this.gamebox.hero.interact.mode ) {
+            if ( this.buttons.a !== this.gamebox.hero.interact.mode ) {
+                switch ( this.gamebox.hero.interact.mode ) {
                     case Config.hero.interact.READ:
                         const readItem = this.player.data.hud.interact?.read;
                         if ( readItem ) {
@@ -270,7 +270,7 @@ export default class HUD {
                         }
                         break;
                 }
-                this.buttons.a = this.gamebox.hero.interact;
+                this.buttons.a = this.gamebox.hero.interact.mode;
             }
 
         } else if ( this.gamebox.swimming ) {
