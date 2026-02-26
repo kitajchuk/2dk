@@ -251,9 +251,10 @@ class Editor {
 
         const layers = [
             "background",       
-            "foreground",
             "item",
             "npc",
+            "foreground",
+            "fx",
         ];
 
         layers.forEach(( layer ) => {

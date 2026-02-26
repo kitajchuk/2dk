@@ -65,8 +65,11 @@
         flex-direction: column;
         justify-content: center;
 
+        &.is-active {
+            display: flex;
+        }
+
         &[data-content="stats"],
-        &[data-content="items"],
         &[data-content="save"] {
             height: 100%;
         }
@@ -75,8 +78,23 @@
             padding: 64px 0;
         }
 
-        &.is-active {
-            display: flex;
+        &[data-content="items"] {
+            gap: 8px;
+            grid-template-columns: repeat( 4, 1fr );
+
+            > div {
+                gap: 8px;
+                border: 1px solid var( --grey-dark );
+                display: flex;
+                align-items: center;
+                aspect-ratio: 1 / 1;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            &.is-active {
+                display: grid;
+            }
         }
     }
 

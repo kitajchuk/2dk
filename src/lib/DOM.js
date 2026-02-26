@@ -43,7 +43,7 @@ export const renderDialoguePrompt = ( text, data ) => {
 export const renderButtonSprite = ( item, btn, rotate = 30 ) => {
     return html`
         <style>
-            #${item.id} {
+            #btn-${item.id} {
                 width: ${item.width}px;
                 height: ${item.height}px;
                 background-image: url(${item.image});
@@ -52,7 +52,7 @@ export const renderButtonSprite = ( item, btn, rotate = 30 ) => {
                 transform-origin: center center;
             }
         </style>
-        <span class="_2dk__gamepad__sprite" id="${item.id}"></span>
+        <span class="_2dk__gamepad__sprite" id="btn-${item.id}"></span>
         <span>${btn}</span>
     `;
 };
@@ -79,7 +79,22 @@ export const renderMenu = ( player ) => {
                 <div>Enemies Killed: ${hero.enemiesKilled}</div>
                 <div>Total Deaths: ${hero.totalDeaths}</div>
             </div>
-            <div class="_2dk__menu__content" data-content="items">...</div>
+            <div class="_2dk__menu__content" data-content="items">
+                ${hero.items.map( ( item ) => html`
+                    <div>
+                        <style>
+                            #menu-${item.id} {
+                                width: ${item.width}px;
+                                height: ${item.height}px;
+                                background-image: url(${item.image});
+                                background-position: -${item.offsetX}px -${item.offsetY}px;
+                            }
+                        </style>
+                        <div class="_2dk__menu__item" id="menu-${item.id}"></div>
+                        <div>${item.name}${item.collect ? ` x${item.collected}` : ""}</div>
+                    </div>
+                `).join( "" )}
+            </div>
             <div class="_2dk__menu__content" data-content="quests">
                 ${quests.map( ( quest ) => html`
                     <div>${quest}</div>

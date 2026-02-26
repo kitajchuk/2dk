@@ -675,15 +675,17 @@ class TopView extends GameBox {
             this.player.gameaudio.hitSound( item.data.sound );
         }
 
-        if ( item.data.currency ) {
-            this.hero.receive( item.data.currency );
-        }
-
         if ( item.data.stat ) {
             this.hero.updateStat( item.data.stat.key, item.data.stat.value );
         }
 
-        if ( item.data.collect ) {
+        // We handle currency in Hero.giveItem() so don't double collect if a map item
+        if ( item.data.currency && !item.mapId ) {
+            this.hero.receive( item.data.currency );
+        }
+
+        // A KeyItemDrop won't have a mapId (don't double collect if a map item)
+        if ( item.data.collect && !item.mapId ) {
             const hasItemAlready = this.hero.getItem( item.data.id );
 
             this.hero.collectItem( item.data.id );
