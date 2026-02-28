@@ -19,15 +19,17 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
     const offsetX = tile[ 0 ];
     const offsetY = tile[ 1 ];
 
-    // Exclude verbs that are not valid for Active Tiles
-    const tileActions = actions.filter( ( action ) => {
-        return (
-            action !== window.lib2dk.Config.verbs.RUN &&
-            action !== window.lib2dk.Config.verbs.WALK &&
-            action !== window.lib2dk.Config.verbs.FACE &&
-            action !== window.lib2dk.Config.verbs.THROW
-        );
-    });
+    const tileActions = [
+        window.lib2dk.Config.verbs.LIFT,
+        window.lib2dk.Config.verbs.PUSH,
+        window.lib2dk.Config.verbs.PULL,
+        window.lib2dk.Config.verbs.FALL,
+        window.lib2dk.Config.verbs.OPEN,
+        window.lib2dk.Config.verbs.SWIM,
+        window.lib2dk.Config.verbs.JUMP,
+        window.lib2dk.Config.verbs.ATTACK,
+        window.lib2dk.Config.verbs.SWITCH,
+    ];
 
     return html`
         <div class="editor__menu js-menu is-active" id="editor-activetiles-menu">

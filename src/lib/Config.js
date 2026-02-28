@@ -44,6 +44,7 @@ const Config = {
         SWIM: "swim",
         DIVE: "dive",
         ATTRACT: "attract",
+        SWITCH: "switch",
     },
     map: {
         types: {

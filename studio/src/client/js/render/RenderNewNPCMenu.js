@@ -13,17 +13,13 @@ const renderNewNPCMenu = ({ game, coords, mouseCoords, ais, types, dialogue, act
     const existingAggro = npcToEdit ? npcToEdit.aggro : false;
     const existingSpawnQuest = npcToEdit && npcToEdit.spawn ? npcToEdit.spawn.quest : "";
 
-    // Exclude verbs that are not valid for NPCs
-    const npcActions = actions.filter( ( action ) => {
-        return (
-            action !== window.lib2dk.Config.verbs.WALK &&
-            action !== window.lib2dk.Config.verbs.FACE &&
-            action !== window.lib2dk.Config.verbs.THROW &&
-            action !== window.lib2dk.Config.verbs.JUMP &&
-            action !== window.lib2dk.Config.verbs.FALL &&
-            action !== window.lib2dk.Config.verbs.GRAB
-        );
-    });
+    const npcActions = [
+        window.lib2dk.Config.verbs.PUSH,
+        window.lib2dk.Config.verbs.PULL,
+        window.lib2dk.Config.verbs.OPEN,
+        window.lib2dk.Config.verbs.ATTACK,
+        window.lib2dk.Config.verbs.ATTRACT,
+    ];
 
     return html`
         <div class="editor__menu js-menu is-active" id="editor-npc-menu">

@@ -3,13 +3,11 @@ const { html } = require( "./Render" );
 
 
 const renderNewMapEventMenu = ({ maps, game, npcs, sounds, coords, facing, events, actions }) => {
-    const eventActions = actions.filter( ( action ) => {
-        return (
-            action === window.lib2dk.Config.verbs.FALL ||
-            action === window.lib2dk.Config.verbs.DIVE ||
-            action === window.lib2dk.Config.verbs.TALK
-        );
-    });
+    const eventActions = [
+        window.lib2dk.Config.verbs.FALL,
+        window.lib2dk.Config.verbs.DIVE,
+        window.lib2dk.Config.verbs.TALK,
+    ];
 
     return html`
         <div class="editor__menu js-menu is-active" id="editor-mapevent-menu">
