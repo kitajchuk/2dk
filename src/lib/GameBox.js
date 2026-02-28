@@ -738,6 +738,10 @@ export default class GameBox {
                 }));
                 const attack = !!( instance.data.actions && instance.canAttack() );
                 const camera = !!( instance.data.friction || instance.data.mask );
+                const switch_ = !!( instance.data.actions && instance.canInteract( Config.verbs.SWITCH ) );
+                const stoppable = !!( instance.data.actions && instance.data.actions.some( ( action ) => {
+                    return stopVerbs.indexOf( action.verb ) !== -1;
+                }));
 
                 // The amount is the percentage of the lookbox that is colliding with the tilebox
                 const amount = Utils.getCollisionAmount( collides, lookbox );
@@ -754,9 +758,8 @@ export default class GameBox {
                     jump: !!( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ),
                     fall: !!( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ),
                     swim: !!( instance.data.actions && instance.canInteract( Config.verbs.SWIM ) ),
-                    stop: !!( instance.data.actions && instance.data.actions.some( ( action ) => {
-                        return stopVerbs.indexOf( action.verb ) !== -1;
-                    })),
+                    switch: switch_,
+                    stop: stoppable || ( switch_ && attack ),
                 };
 
                 if ( action ) {
@@ -899,6 +902,7 @@ const stopVerbs = [
     Config.verbs.GRAB,
     Config.verbs.LIFT,
     Config.verbs.OPEN,
+    Config.verbs.PUSH,
 ];
 const actionVerbs = [
     Config.verbs.LIFT,
@@ -908,6 +912,7 @@ const actionVerbs = [
     Config.verbs.SWIM,
     Config.verbs.OPEN,
     Config.verbs.ATTACK,
+    Config.verbs.SWITCH,
 ];
 // @see notes in ./Config.js as these are related to that line of thought...
 const footTiles = [

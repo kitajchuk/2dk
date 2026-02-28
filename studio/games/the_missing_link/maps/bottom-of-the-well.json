@@ -62,6 +62,42 @@
                     "verb": "swim"
                 }
             ]
+        },
+        {
+            "group": "blocks",
+            "layer": "background",
+            "offsetX": 0,
+            "offsetY": 1856,
+            "actions": [
+                {
+                    "verb": "push"
+                }
+            ]
+        },
+        {
+            "group": "crystal-switch",
+            "layer": "background",
+            "offsetX": 0,
+            "offsetY": 1984,
+            "actions": [
+                {
+                    "verb": "switch"
+                },
+                {
+                    "verb": "attack"
+                }
+            ]
+        },
+        {
+            "group": "floor-switch",
+            "layer": "background",
+            "offsetX": 0,
+            "offsetY": 1920,
+            "actions": [
+                {
+                    "verb": "switch"
+                }
+            ]
         }
     ],
     "events": [
@@ -2671,12 +2707,12 @@
                 ],
                 [
                     [
-                        64,
-                        512
+                        0,
+                        2240
                     ],
                     [
                         0,
-                        512
+                        1984
                     ]
                 ],
                 [
@@ -2943,6 +2979,10 @@
                     [
                         0,
                         2240
+                    ],
+                    [
+                        0,
+                        1856
                     ]
                 ],
                 [
@@ -2966,7 +3006,7 @@
                 [
                     [
                         0,
-                        2240
+                        1920
                     ]
                 ],
                 [

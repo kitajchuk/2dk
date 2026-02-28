@@ -127,17 +127,7 @@ export default class ActiveTiles {
 
 
     canAttack () {
-        if ( !this.data.actions ) {
-            return null;
-        }
-
-        for ( let i = this.data.actions.length; i--; ) {
-            if ( this.data.actions[ i ].verb === Config.verbs.ATTACK ) {
-                return this.data.actions[ i ];
-            }
-        }
-
-        return null;
+        return this.canInteract( Config.verbs.ATTACK );
     }
 
 

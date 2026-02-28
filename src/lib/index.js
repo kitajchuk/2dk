@@ -1,7 +1,8 @@
 import TopView from "./plugins/TopView";
 import FX from "./sprites/FX";
 import NPC from "./sprites/NPC";
-import Hero, { ItemGet, LiftedTile, HeroProjectile } from "./sprites/Hero";
+import Hero, { ItemGet, HeroProjectile } from "./sprites/Hero";
+import TileSprite, { LiftedTile, PushedTile } from "./sprites/Tile";
 import Sprite, { QuestSprite } from "./sprites/Sprite";
 import Enemy from "./sprites/Enemy";
 import EnemyAggro from "./sprites/EnemyAggro";
@@ -42,7 +43,8 @@ const lib = {
     // sprites
     FX,
     NPC,
-    Hero, ItemGet, LiftedTile, HeroProjectile,
+    Hero, ItemGet, HeroProjectile,
+    TileSprite, LiftedTile, PushedTile,
     Door,
     Enemy, EnemyAggro,
     Sprite, QuestSprite,
