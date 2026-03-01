@@ -70,7 +70,8 @@
             "offsetY": 1856,
             "actions": [
                 {
-                    "verb": "push"
+                    "verb": "push",
+                    "sound": "moveObject"
                 }
             ]
         },
