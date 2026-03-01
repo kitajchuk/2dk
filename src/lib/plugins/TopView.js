@@ -1,7 +1,7 @@
 import Utils from "../Utils";
 import Config from "../Config";
 import GameBox from "../GameBox";
-
+import { PushedTile } from "../sprites/Tile";
 
 
 class TopView extends GameBox {
@@ -293,7 +293,7 @@ class TopView extends GameBox {
             return;
         }
 
-        const canTileSwim = this.hero.canTileSwim( poi, collision );
+        const canTileSwim = this.hero.canTileSwim( collision );
         const canTileSink = canTileSwim && !this.hero.hasSwim();
 
         if ( collision.event && !canTileSink ) {
@@ -373,7 +373,7 @@ class TopView extends GameBox {
 
         // When you fall down, you gotta get back up again...
         // Handles collision.tiles and collision.empty checks!
-        if ( this.hero.canTileFall( poi, collision ) ) {
+        if ( this.hero.canTileFall( collision ) ) {
             this.handleHeroFall( poi, dir, collision );
             return;
         }
@@ -398,6 +398,13 @@ class TopView extends GameBox {
             // E.g. a stone, bush etc...
             } else if ( this.hero.canTileStop( collision ) ) {
                 this.handleHeroPush( poi, dir );
+
+                const pushTile = this.hero.canTilePush( collision );
+
+                if ( pushTile ) {
+                    this.handleHeroTilePush( poi, dir, pushTile );
+                }
+
                 return;
             }
 
@@ -579,65 +586,79 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroPushNPC ( poi, dir, collision ) {
-        if ( !collision.npc.canDoAction( Config.verbs.PUSH ) ) {
+    handleHeroTilePush ( poi, dir, pushTile ) {
+        if ( !this.isPushing() ) {
             return;
         }
 
-        if ( this.isPushingNPC() ) {
-            this.locked = true;
+        // Transition from an ActiveTile to an NPC that can be pushed
+        // Storing the tile reference so we can splice it later when the NPC is pushed
+        // This avoids a render glitch if the tile is spliced when the NPC is added to the map
+        this.interact.tile = pushTile;
+        this.map.addObject( "npcs", new PushedTile( pushTile, this.map ) );
+    }
 
-            this.hero.face( dir );
 
-            const position = {};
-            const distance = this.map.data.tilesize;
+    handleHeroPushNPC ( poi, dir, collision ) {
+        if ( !this.isPushingObject() ) {
+            return;
+        }
 
-            switch ( dir ) {
-                case "left":
-                    position.x = collision.npc.position.x - distance;
-                    position.y = collision.npc.position.y;
-                    break;
-                case "right":
-                    position.x = collision.npc.position.x + distance;
-                    position.y = collision.npc.position.y;
-                    break;
-                case "up":
-                    position.x = collision.npc.position.x;
-                    position.y = collision.npc.position.y - distance;
-                    break;
-                case "down":
-                    position.x = collision.npc.position.x;
-                    position.y = collision.npc.position.y + distance;
-                    break;
-            }
+        // Splicing the tile reference so we can remove the tile from the map render
+        // It's safe to assume this tile is a reference to the source tile to push for now
+        // since the only other usage of this is for lifting tiles in which case pushing is not handled
+        if ( this.interact.tile ) {
+            this.interact.tile.instance.splice( this.interact.tile.coord );
+            this.interact.tile = null;
+        }
 
-            collision.npc.pushed = {
-                poi: position,
-                dir,
-            };
+        this.locked = true;
+        this.hero.face( dir );
 
-            if ( collision.npc.data.action.sound ) {
-                this.player.gameaudio.heroSound( collision.npc.data.action.sound );
-            }
+        const position = {};
+        const distance = this.map.data.tilesize;
+
+        switch ( dir ) {
+            case "left":
+                position.x = collision.npc.position.x - distance;
+                position.y = collision.npc.position.y;
+                break;
+            case "right":
+                position.x = collision.npc.position.x + distance;
+                position.y = collision.npc.position.y;
+                break;
+            case "up":
+                position.x = collision.npc.position.x;
+                position.y = collision.npc.position.y - distance;
+                break;
+            case "down":
+                position.x = collision.npc.position.x;
+                position.y = collision.npc.position.y + distance;
+                break;
+        }
+
+        collision.npc.pushed = {
+            poi: position,
+            dir,
+        };
+
+        if ( collision.npc.data.action.sound ) {
+            this.player.gameaudio.heroSound( collision.npc.data.action.sound );
         }
     }
 
 
     handleHeroPush ( poi, dir ) {
-        if ( this.swimming || this.hero.spinLocked ) {
+        if ( this.swimming || this.hero.spinLocked || this.hero.is( Config.verbs.LIFT ) ) {
             return;
         }
 
         this.interact.push++;
 
-        if ( !this.hero.is( Config.verbs.LIFT ) && this.isPushing() ) {
-            if ( !this.hero.can( Config.verbs.PUSH ) ) {
-                return;
-            }
-
+        if ( this.isPushing() && this.hero.can( Config.verbs.PUSH ) ) {
             this.hero.cycle( Config.verbs.PUSH, dir );
 
-        } else if ( !this.hero.is( Config.verbs.LIFT ) ) {
+        } else {
             this.hero.cycle( Config.verbs.WALK, dir );
         }
     }
@@ -1085,7 +1106,7 @@ class TopView extends GameBox {
     }
 
 
-    isPushingNPC () {
+    isPushingObject () {
         return this.interact.push > this.map.data.tilesize * 2;
     }
 }

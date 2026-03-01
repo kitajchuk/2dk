@@ -1238,7 +1238,7 @@ export default class Hero extends Sprite {
     }
 
 
-    canTileSwim ( poi, collision ) {
+    canTileSwim ( collision ) {
         const { tiles } = collision;
         const swimTiles = tiles && tiles.action.filter( ( tile ) => {
             return tile.swim;
@@ -1249,6 +1249,20 @@ export default class Hero extends Sprite {
             return swimTiles.some( ( tile ) => {
                 return Utils.collide( tile.tilebox, this.footbox, tolerance );
             });
+        }
+
+        return false;
+    }
+
+
+    canTilePush ( collision ) {
+        const { tiles } = collision;
+        const pushTiles = tiles && tiles.action.filter( ( tile ) => {
+            return tile.push;
+        });
+
+        if ( pushTiles && pushTiles.length ) {
+            return Utils.getMostCollidingTile( pushTiles );
         }
 
         return false;
@@ -1286,7 +1300,7 @@ export default class Hero extends Sprite {
     }
 
 
-    canTileFall ( poi, collision ) {
+    canTileFall ( collision ) {
         const { tiles, empty } = collision;
         const fallTiles = tiles && tiles.action.filter( ( tile ) => {
             return tile.fall;

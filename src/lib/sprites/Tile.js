@@ -1,10 +1,73 @@
+import NPC from "./NPC";
 import Config from "../Config";
 import Sprite from "./Sprite";
 import Spring from "../Spring";
 
 
 
-export default class TileSprite extends Sprite {
+/*******************************************************************************
+* Pushed Tile
+* Since we already made NPCs pushable the easiest way to handle pushable
+* ActiveTiles is to just turn them into pushable NPCs on the fly...
+* This also works nicely with how collision is handled in the TopView plugin
+* since we can spawn the NPC on the frame the checks for the tile are handled
+* and then the NPC collision takes precedence over the tile collision and when
+* the NPC is pushed the tile is spliced from the map and the NPC remains.
+*
+* Admittedly I don't totally love this and it would be cleaner to have a more
+* narrow class here since a pushed tile doesn't need ANY of the other robust
+* NPC functionality...but like I said it ends up working quite nicely...
+*******************************************************************************/
+export class PushedTile extends NPC {
+    constructor ( tile, map ) {
+        const action = tile.instance.canInteract( Config.verbs.PUSH );
+        const mapId = tile.instance.getQuestId( tile.coord );
+        const data = {
+            id: tile.instance.data.group,
+            name: tile.instance.data.group,
+            image: map.data.image,
+            spawn: {
+                x: tile.tilebox.x,
+                y: tile.tilebox.y,
+            },
+            width: tile.tilebox.width,
+            height: tile.tilebox.height,
+            hitbox: {
+                x: 0,
+                y: 0,
+                width: tile.tilebox.width,
+                height: tile.tilebox.height,
+            },
+            verbs: {
+                face: {
+                    down: {
+                        offsetX: tile.instance.data.offsetX,
+                        offsetY: tile.instance.data.offsetY,
+                    },
+                },
+            },
+            action: {
+                verb: Config.verbs.PUSH,
+                sound: action?.sound ?? "",
+            },
+            states: [
+                {
+                    verb: Config.verbs.FACE,
+                    dir: "down",
+                },
+            ],
+        };
+        super( data, map, mapId );
+    }
+}
+
+
+
+/*******************************************************************************
+* Lifted Tile
+* There can be only one at a time
+*******************************************************************************/
+export class LiftedTile extends Sprite {
     constructor ( spawn, activeTiles, map, hero ) {
         const tile = activeTiles.getTile();
         const data = {
@@ -31,31 +94,6 @@ export default class TileSprite extends Sprite {
         this.hero = hero;
         this.onscreen = true;
         this.activeTiles = activeTiles;
-    }
-}
-
-
-
-/*******************************************************************************
-* Pushed Tile
-* There can be only one at a time
-*******************************************************************************/
-export class PushedTile extends TileSprite {
-    constructor ( ...args ) {
-        super( ...args );
-    }
-}
-
-
-
-/*******************************************************************************
-* Lifted Tile
-* There can be only one at a time
-*******************************************************************************/
-export class LiftedTile extends TileSprite {
-    constructor ( ...args ) {
-        super( ...args );
-        this.throwing = false;
     }
 
 

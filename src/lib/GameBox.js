@@ -758,6 +758,7 @@ export default class GameBox {
                     jump: !!( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ),
                     fall: !!( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ),
                     swim: !!( instance.data.actions && instance.canInteract( Config.verbs.SWIM ) ),
+                    push: !!( instance.data.actions && instance.canInteract( Config.verbs.PUSH ) ),
                     switch: switch_,
                     stop: stoppable || ( switch_ && attack ),
                 };
