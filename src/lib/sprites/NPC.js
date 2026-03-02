@@ -123,26 +123,7 @@ export default class NPC extends QuestSprite {
 
 
     applyPushedPosition () {
-        const poi = {
-            x: this.position.x,
-            y: this.position.y,
-            z: this.position.z,
-        };
-
-        switch ( this.pushed.dir ) {
-            case "left":
-                poi.x -= 1;
-                break;
-            case "right":
-                poi.x += 1;
-                break;
-            case "up":
-                poi.y -= 1;
-                break;
-            case "down":
-                poi.y += 1;
-                break;
-        }
+        const poi = Utils.getNextPushPosition( this.pushed.dir, this.position );
 
         const collision = {
             map: this.gamebox.checkMap( poi, this ),

@@ -742,6 +742,10 @@ export default class GameBox {
                 const stoppable = !!( instance.data.actions && instance.data.actions.some( ( action ) => {
                     return stopVerbs.indexOf( action.verb ) !== -1;
                 }));
+                const pushable = !!( instance.data.actions && instance.canInteract( Config.verbs.PUSH ) );
+                // We support one verb plus an additional attack verb for tiles so we're making a rule that
+                // if the tile is pushable and attackable then it is ALSO liftable...
+                const liftable = !!( instance.data.actions && instance.canInteract( Config.verbs.LIFT ) ) || ( pushable && attack );
 
                 // The amount is the percentage of the lookbox that is colliding with the tilebox
                 const amount = Utils.getCollisionAmount( collides, lookbox );
@@ -758,7 +762,8 @@ export default class GameBox {
                     jump: !!( instance.data.actions && instance.canInteract( Config.verbs.JUMP ) ),
                     fall: !!( instance.data.actions && instance.canInteract( Config.verbs.FALL ) ),
                     swim: !!( instance.data.actions && instance.canInteract( Config.verbs.SWIM ) ),
-                    push: !!( instance.data.actions && instance.canInteract( Config.verbs.PUSH ) ),
+                    push: pushable,
+                    lift: liftable,
                     switch: switch_,
                     stop: stoppable || ( switch_ && attack ),
                 };
@@ -1047,7 +1052,7 @@ export class RenderQueue {
 
 
     render () {
-        for ( let i = this.background.length; i--; ) {
+        for ( let i = 0; i < this.background.length; i++ ) {
             this.safeRender( this.background[ i ] );
         }
 
@@ -1055,11 +1060,11 @@ export class RenderQueue {
             this.safeRender( this.sprites[ i ] );
         }
 
-        for ( let i = this.foreground.length; i--; ) {
+        for ( let i = 0; i < this.foreground.length; i++ ) {
             this.safeRender( this.foreground[ i ] );
         }
 
-        for ( let i = this.elevation.length; i--; ) {
+        for ( let i = 0; i < this.elevation.length; i++ ) {
             this.safeRender( this.elevation[ i ] );
         }
     }

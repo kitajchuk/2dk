@@ -1,7 +1,6 @@
 import Utils from "../Utils";
 import Config from "../Config";
 import GameBox from "../GameBox";
-import { PushedTile } from "../sprites/Tile";
 
 
 class TopView extends GameBox {
@@ -587,15 +586,19 @@ class TopView extends GameBox {
 
 
     handleHeroTilePush ( poi, dir, pushTile ) {
-        if ( !this.isPushing() ) {
+        if ( !this.isPushingObject() ) {
             return;
         }
 
-        // Transition from an ActiveTile to an NPC that can be pushed
-        // Storing the tile reference so we can splice it later when the NPC is pushed
-        // This avoids a render glitch if the tile is spliced when the NPC is added to the map
-        this.interact.tile = pushTile;
-        this.map.addObject( "npcs", new PushedTile( pushTile, this.map ) );
+        this.locked = true;
+        this.hero.face( dir );
+
+        pushTile.tilebox.pushed = {
+            poi: Utils.getPushDestination( dir, pushTile.tilebox, this.map.data.tilesize ),
+            dir,
+        };
+
+        this.map.addOffgridTile( pushTile );
     }
 
 
@@ -604,41 +607,11 @@ class TopView extends GameBox {
             return;
         }
 
-        // Splicing the tile reference so we can remove the tile from the map render
-        // It's safe to assume this tile is a reference to the source tile to push for now
-        // since the only other usage of this is for lifting tiles in which case pushing is not handled
-        if ( this.interact.tile ) {
-            this.interact.tile.instance.splice( this.interact.tile.coord );
-            this.interact.tile = null;
-        }
-
         this.locked = true;
         this.hero.face( dir );
 
-        const position = {};
-        const distance = this.map.data.tilesize;
-
-        switch ( dir ) {
-            case "left":
-                position.x = collision.npc.position.x - distance;
-                position.y = collision.npc.position.y;
-                break;
-            case "right":
-                position.x = collision.npc.position.x + distance;
-                position.y = collision.npc.position.y;
-                break;
-            case "up":
-                position.x = collision.npc.position.x;
-                position.y = collision.npc.position.y - distance;
-                break;
-            case "down":
-                position.x = collision.npc.position.x;
-                position.y = collision.npc.position.y + distance;
-                break;
-        }
-
         collision.npc.pushed = {
-            poi: position,
+            poi: Utils.getPushDestination( dir, collision.npc.position, this.map.data.tilesize ),
             dir,
         };
 
@@ -844,6 +817,7 @@ class TopView extends GameBox {
     }
 
 
+    // TODO: This could be moved to Utils...
     getFallPosition ( fallCoords, dir ) {
         // Center the hero's sprite on the fall tile as the animation's final destination
         const coordX = fallCoords[ 0 ] * this.map.data.tilesize;

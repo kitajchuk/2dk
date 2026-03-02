@@ -138,6 +138,58 @@ const Utils = {
     },
 
 
+    getPushDestination ( dir, pos, distance ) {
+        const destination = {};
+
+        switch ( dir ) {
+            case "left":
+                destination.x = pos.x - distance;
+                destination.y = pos.y;
+                break;
+            case "right":
+                destination.x = pos.x + distance;
+                destination.y = pos.y;
+                break;
+            case "up":
+                destination.x = pos.x;
+                destination.y = pos.y - distance;
+                break;
+            case "down":
+                destination.x = pos.x;
+                destination.y = pos.y + distance;
+                break;
+        }
+
+        return destination;
+    },
+
+
+    getNextPushPosition ( dir, pos ) {
+        const poi = {
+            x: pos.x,
+            y: pos.y,
+            z: pos.z ?? 0,
+        };
+
+        switch ( dir ) {
+            case "left":
+                poi.x -= 1;
+                break;
+            case "right":
+                poi.x += 1;
+                break;
+            case "up":
+                poi.y -= 1;
+                break;
+            case "down":
+                poi.y += 1;
+                break;
+        }
+
+        return poi;
+    },
+
+
     /*
     ctx.drawImage(
         img/cvs,

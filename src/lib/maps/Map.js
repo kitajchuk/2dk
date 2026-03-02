@@ -108,6 +108,9 @@ export default class Map {
 
         // For sprite render priority
         this.allSprites = [];
+
+        // Offgrid tiles
+        this.offgridTiles = {};
     }
 
 
@@ -269,7 +272,35 @@ export default class Map {
             this.items[ i ].update();
         }
 
+        this.updateOffgridTiles();
         this.sortAllSprites();
+    }
+
+
+    updateOffgridTiles () {
+        for ( const mapId in this.offgridTiles ) {
+            if ( !this.offgridTiles[ mapId ].pushed ) {
+                continue;
+            }
+
+            const poi = Utils.getNextPushPosition( this.offgridTiles[ mapId ].pushed.dir, {
+                x: this.offgridTiles[ mapId ].x,
+                y: this.offgridTiles[ mapId ].y,
+            });
+
+            // TODO: Handle collision detection here...
+
+            this.offgridTiles[ mapId ].x = poi.x;
+            this.offgridTiles[ mapId ].y = poi.y;
+
+            if (
+                this.offgridTiles[ mapId ].x === this.offgridTiles[ mapId ].pushed.poi.x &&
+                this.offgridTiles[ mapId ].y === this.offgridTiles[ mapId ].pushed.poi.y
+            ) {
+                this.offgridTiles[ mapId ].pushed = null;
+                this.gamebox.locked = false;
+            }
+        }
     }
 
 
@@ -282,6 +313,12 @@ export default class Map {
             layer: "background",
         });
 
+        // Draw offgrid tiles
+        this.gamebox.renderQueue.add({
+            render: this.renderOffgridTiles.bind( this ),
+            layer: "background",
+        });
+
         // Merge all sprites into a single array and sort by (y position + height) ascending
         this.renderAllSprites();
 
@@ -290,6 +327,25 @@ export default class Map {
             render: this.renderTextures.bind( this, "foreground" ),
             layer: "foreground",
         });
+    }
+
+
+    renderOffgridTiles () {
+        for ( const mapId in this.offgridTiles ) {
+            const tile = this.offgridTiles[ mapId ];
+
+            this.gamebox.draw(
+                this.image,
+                tile.spritecel[ 0 ],
+                tile.spritecel[ 1 ],
+                tile.width,
+                tile.height,
+                tile.x - this.gamebox.camera.x,
+                tile.y - this.gamebox.camera.y,
+                tile.width,
+                tile.height
+            );
+        }
     }
 
 
@@ -532,6 +588,16 @@ export default class Map {
             }
         }
 
+        const activeTiles = this.getActiveTileOnCoords( celsCoords );
+
+        if ( activeTiles ) {
+            const mapId = activeTiles.getQuestId( celsCoords );
+
+            if ( this.offgridTiles[ mapId ] ) {
+                celsCopy.pop();
+            }
+        }
+
         // No animated tile found, return the original celsCopy
         return celsCopy;
     }
@@ -563,6 +629,23 @@ export default class Map {
     removeAllSprite ( sprite ) {
         if ( sprite && this.allSprites.indexOf( sprite ) !== -1 ) {
             this.allSprites.splice( this.allSprites.indexOf( sprite ), 1 );
+        }
+    }
+
+
+    addOffgridTile ( tile ) {
+        const mapId = tile.instance.getQuestId( tile.coord );
+
+        if ( !this.offgridTiles[ mapId ] ) {
+            tile.tilebox.spritecel = tile.instance.getTile();
+            this.offgridTiles[ mapId ] = tile.tilebox;
+        }
+    }
+
+
+    removeOffgridTile ( mapId ) {
+        if ( this.offgridTiles[ mapId ] ) {
+            delete this.offgridTiles[ mapId ];
         }
     }
 

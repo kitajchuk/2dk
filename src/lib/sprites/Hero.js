@@ -1210,7 +1210,7 @@ export default class Hero extends Sprite {
         }
         
         const liftTiles = collision.tiles.action.filter( ( tile ) => {
-            return tile.instance.canInteract( Config.verbs.LIFT );
+            return tile.lift;
         });
 
         if ( !liftTiles.length ) {

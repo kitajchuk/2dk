@@ -132,15 +132,14 @@ export default class ActiveTiles {
 
 
     attack ( coords, action ) {
-        this.splice( coords );
-
+        const tilebox = this.getPushed( coords );
         const obj = {
             position: {
-                x: coords[ 0 ] * this.map.data.tilesize,
-                y: coords[ 1 ] * this.map.data.tilesize,
+                x: tilebox.x,
+                y: tilebox.y,
             },
-            width: this.map.data.tilesize,
-            height: this.map.data.tilesize,
+            width: tilebox.width,
+            height: tilebox.height,
         };
 
         if ( action.drops ) {
@@ -152,6 +151,8 @@ export default class ActiveTiles {
         }
         
         this.map.mapFX.smokeObject( obj, action.fx );
+        this.map.removeOffgridTile( this.getQuestId( coords ) );
+        this.splice( coords );
     }
 
 
@@ -169,6 +170,17 @@ export default class ActiveTiles {
         if ( this.data.fx ) {
             this.addFX( tilebox );
         }
+    }
+
+
+    getPushed ( coords ) {
+        for ( let i = this.pushed.length; i--; ) {
+            if ( this.pushed[ i ].coords[ 0 ] === coords[ 0 ] && this.pushed[ i ].coords[ 1 ] === coords[ 1 ] ) {
+                return this.pushed[ i ];
+            }
+        }
+
+        return null;
     }
 
 
@@ -192,6 +204,7 @@ export default class ActiveTiles {
         // This greatly simplifies the logic for rendering the map after we've interacted with the tile
         // since on the next frame the texture will be updated to show the new tile state
         this.map.data.textures[ this.data.layer ][ coords[ 1 ] ][ coords[ 0 ] ].pop();
+        this.map.removeOffgridTile( this.getQuestId( coords ) );
     }
 
 

@@ -2,7 +2,7 @@ import TopView from "./plugins/TopView";
 import FX from "./sprites/FX";
 import NPC from "./sprites/NPC";
 import Hero, { ItemGet, HeroProjectile } from "./sprites/Hero";
-import { LiftedTile, PushedTile } from "./sprites/Tile";
+import { LiftedTile } from "./sprites/Tile";
 import Sprite, { QuestSprite } from "./sprites/Sprite";
 import Enemy from "./sprites/Enemy";
 import EnemyAggro from "./sprites/EnemyAggro";
@@ -44,7 +44,7 @@ const lib = {
     FX,
     NPC,
     Hero, ItemGet, HeroProjectile,
-    LiftedTile, PushedTile,
+    LiftedTile,
     Door,
     Enemy, EnemyAggro,
     Sprite, QuestSprite,
