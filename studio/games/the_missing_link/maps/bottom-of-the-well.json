@@ -99,6 +99,23 @@
                     "verb": "switch"
                 }
             ]
+        },
+        {
+            "group": "pots",
+            "layer": "background",
+            "offsetX": 640,
+            "offsetY": 384,
+            "actions": [
+                {
+                    "verb": "push",
+                    "drops": "pots"
+                },
+                {
+                    "verb": "attack",
+                    "fx": "smoke",
+                    "drops": "pots"
+                }
+            ]
         }
     ],
     "events": [
@@ -2454,6 +2471,10 @@
                     [
                         0,
                         2240
+                    ],
+                    [
+                        640,
+                        384
                     ]
                 ],
                 [
