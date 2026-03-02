@@ -278,6 +278,7 @@ export default class Map {
 
 
     updateOffgridTiles () {
+        // Handles very similarly to NPC.applyPushedPosition()...
         for ( const mapId in this.offgridTiles ) {
             if ( !this.offgridTiles[ mapId ].pushed ) {
                 continue;
@@ -291,7 +292,7 @@ export default class Map {
             const { isCollision } = Utils.getPushedCollision( this.gamebox, poi, this.offgridTiles[ mapId ] );
 
             if ( isCollision ) {
-                this.pushed = null;
+                this.offgridTiles[ mapId ].pushed = null;
                 this.gamebox.locked = false;
                 continue;
             }
