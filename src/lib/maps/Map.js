@@ -288,7 +288,13 @@ export default class Map {
                 y: this.offgridTiles[ mapId ].y,
             });
 
-            // TODO: Handle collision detection here...
+            const { isCollision } = Utils.getPushedCollision( this.gamebox, poi, this.offgridTiles[ mapId ] );
+
+            if ( isCollision ) {
+                this.pushed = null;
+                this.gamebox.locked = false;
+                continue;
+            }
 
             this.offgridTiles[ mapId ].x = poi.x;
             this.offgridTiles[ mapId ].y = poi.y;

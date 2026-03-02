@@ -190,6 +190,49 @@ const Utils = {
     },
 
 
+    getPushedCollision ( gamebox, poi, sprite ) {
+        const collision = {
+            map: gamebox.checkMap( poi, sprite ),
+            npc: gamebox.checkNPC( poi, sprite ),
+            enemy: gamebox.checkEnemy( poi, sprite ),
+            tiles: gamebox.checkTiles( poi, sprite ),
+            doors: gamebox.checkDoor( poi, sprite ),
+            camera: gamebox.checkCamera( poi, sprite ),
+        };
+
+        const isCollision = (
+            collision.map ||
+            collision.npc ||
+            collision.enemy ||
+            collision.doors ||
+            collision.camera ||
+            this.canTileStop( collision )
+        );
+
+        return { collision, isCollision };
+    },
+
+
+    // Common non-hero tile stop logic
+    canTileStop ( collision ) {
+        const { tiles, empty } = collision;
+
+        if ( empty && empty.length ) {
+            return true;
+        }
+
+        const stopTiles = tiles && tiles.action.filter( ( tile ) => {
+            return tile.fall || tile.swim || tile.stop;
+        });
+
+        if ( stopTiles && stopTiles.length ) {
+            return true;
+        }
+
+        return false;
+    },
+
+
     /*
     ctx.drawImage(
         img/cvs,

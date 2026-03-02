@@ -541,6 +541,14 @@ export default class GameBox {
     }
 
 
+    getNormalizedLookbox ( poi, sprite ) {
+        // Ad-hoc "sprite" object with { x, y, width, height }
+        // See Hero.handleAttackFrame() for an example where we pass the weaponBox directly...
+        // See Map.updateOffgridTiles() for an example where we pass the tilebox directly...
+        return Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
+    }
+
+
     checkHero ( poi, sprite ) {
         if ( sprite.layer !== this.hero.layer ) {
             return false;
@@ -554,21 +562,21 @@ export default class GameBox {
     checkCamera ( poi, sprite ) {
         let ret = false;
 
-        const hitbox = sprite.getHitbox( poi );
+        const lookbox = this.getNormalizedLookbox( poi, sprite );
 
-        if ( hitbox.x <= this.camera.x ) {
+        if ( lookbox.x <= this.camera.x ) {
             ret = "left";
         }
 
-        if ( hitbox.x + hitbox.width >= ( this.camera.x + this.camera.width ) ) {
+        if ( lookbox.x + lookbox.width >= ( this.camera.x + this.camera.width ) ) {
             ret = "right";
         }
 
-        if ( hitbox.y <= this.camera.y ) {
+        if ( lookbox.y <= this.camera.y ) {
             ret = "up";
         }
 
-        if ( hitbox.y + hitbox.height >= ( this.camera.y + this.camera.height ) ) {
+        if ( lookbox.y + lookbox.height >= ( this.camera.y + this.camera.height ) ) {
             ret = "down";
         }
 
@@ -577,10 +585,10 @@ export default class GameBox {
 
 
     checkMap ( poi, sprite ) {
-        const hitbox = sprite.getHitbox( poi );
+        const lookbox = this.getNormalizedLookbox( poi, sprite );
 
         for ( let i = this.collision.colliders.length; i--; ) {
-            if ( Utils.collide( hitbox, this.collision.colliders[ i ] ) ) {
+            if ( Utils.collide( lookbox, this.collision.colliders[ i ] ) ) {
                 return this.collision.colliders[ i ];
             }
         }
@@ -632,10 +640,7 @@ export default class GameBox {
 
     checkNPC ( poi, sprite, type = "npcs" ) {
         const npcs = this.collision[ type ]
-        
-        // Ad-hoc "sprite" object with { x, y, width, height }
-        // See Hero.handleAttackFrame() for an example where we pass the weaponBox directly...
-        const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
+        const lookbox = this.getNormalizedLookbox( poi, sprite );
 
         for ( let i = npcs.length; i--; ) {
             if (
@@ -673,9 +678,7 @@ export default class GameBox {
 
 
     checkItems ( poi, sprite ) {
-        // Ad-hoc "sprite" object with { x, y, width, height }
-        // See Hero.handleAttackFrame() for an example where we pass the weaponBox directly...
-        const lookbox = Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
+        const lookbox = this.getNormalizedLookbox( poi, sprite );
 
         for ( let i = this.collision.items.length; i--; ) {
             if ( Utils.collide( lookbox, this.collision.items[ i ].hitbox ) ) {
@@ -721,13 +724,29 @@ export default class GameBox {
         for ( let i = this.collision.activeTiles.length; i--; ) {
             const instance = this.collision.activeTiles[ i ];
             // Ad-hoc "sprite" object with { x, y, width, height }
+            // This is a more complicated check than standard collision using this.getNormalizedLookbox()
             // See Hero.handleAttackFrame() for an example where we pass the weaponBox directly...
+            // See Map.updateOffgridTiles() for an example where we pass the tilebox directly...
             const isFootTile = footTiles.indexOf( instance.data.group ) !== -1;
             const lookbox = isInstance ? isFootTile ? footbox : hitbox : sprite;
 
             for ( let j = instance.pushed.length; j--; ) {
                 const tilebox = instance.pushed[ j ];
-                const collides = Utils.collide( lookbox, tilebox );
+
+                // Avoid self collision for things like pushed ActiveTiles tilebox (which has coords)...
+                if ( lookbox.coords && lookbox === tilebox ) {
+                    continue;
+                }
+
+                // Things like ActiveTiles tilebox needs to use poi for the check to avoid moving 1px into a collision
+                const checkbox = isInstance || !lookbox.coords ? lookbox : {
+                    x: poi.x,
+                    y: poi.y,
+                    width: lookbox.width,
+                    height: lookbox.height,
+                };
+
+                const collides = Utils.collide( tilebox, checkbox );
 
                 if ( !collides ) {
                     continue;

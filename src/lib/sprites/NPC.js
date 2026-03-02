@@ -125,23 +125,7 @@ export default class NPC extends QuestSprite {
     applyPushedPosition () {
         const poi = Utils.getNextPushPosition( this.pushed.dir, this.position );
 
-        const collision = {
-            map: this.gamebox.checkMap( poi, this ),
-            npc: this.gamebox.checkNPC( poi, this ),
-            enemy: this.gamebox.checkEnemy( poi, this ),
-            tiles: this.gamebox.checkTiles( poi, this ),
-            doors: this.gamebox.checkDoor( poi, this ),
-            camera: this.gamebox.checkCamera( poi, this ),
-        };
-
-        const isCollision = (
-            collision.map ||
-            collision.npc ||
-            collision.enemy ||
-            collision.doors ||
-            collision.camera ||
-            this.canTileStop( collision )
-        );
+        const { isCollision } = Utils.getPushedCollision( this.gamebox, poi, this );
 
         if ( isCollision ) {
             this.pushed = null;
@@ -541,21 +525,7 @@ export default class NPC extends QuestSprite {
 
 
     canTileStop ( collision ) {
-        const { tiles, empty } = collision;
-
-        if ( empty && empty.length ) {
-            return true;
-        }
-
-        const stopTiles = tiles && tiles.action.filter( ( tile ) => {
-            return tile.fall || tile.swim || tile.stop;
-        });
-
-        if ( stopTiles && stopTiles.length ) {
-            return true;
-        }
-
-        return false;
+        return Utils.canTileStop( collision );
     }
 
 
