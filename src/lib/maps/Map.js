@@ -79,6 +79,7 @@ export default class Map {
         this.colliders = null;
         this.allSprites = null;
         this.spawnpool = null;
+        this.offgridTiles = null;
     }
 
 
@@ -110,7 +111,7 @@ export default class Map {
         this.allSprites = [];
 
         // Offgrid tiles
-        this.offgridTiles = {};
+        this.offgridTiles = [];
     }
 
 
@@ -272,42 +273,11 @@ export default class Map {
             this.items[ i ].update();
         }
 
-        this.updateOffgridTiles();
-        this.sortAllSprites();
-    }
-
-
-    updateOffgridTiles () {
-        // Handles very similarly to NPC.applyPushedPosition()...
-        for ( const mapId in this.offgridTiles ) {
-            if ( !this.offgridTiles[ mapId ].pushed ) {
-                continue;
-            }
-
-            const poi = Utils.getNextPushPosition( this.offgridTiles[ mapId ].pushed.dir, {
-                x: this.offgridTiles[ mapId ].x,
-                y: this.offgridTiles[ mapId ].y,
-            });
-
-            const { isCollision } = Utils.getPushedCollision( this.gamebox, poi, this.offgridTiles[ mapId ] );
-
-            if ( isCollision ) {
-                this.offgridTiles[ mapId ].pushed = null;
-                this.gamebox.locked = false;
-                continue;
-            }
-
-            this.offgridTiles[ mapId ].x = poi.x;
-            this.offgridTiles[ mapId ].y = poi.y;
-
-            if (
-                this.offgridTiles[ mapId ].x === this.offgridTiles[ mapId ].pushed.poi.x &&
-                this.offgridTiles[ mapId ].y === this.offgridTiles[ mapId ].pushed.poi.y
-            ) {
-                this.offgridTiles[ mapId ].pushed = null;
-                this.gamebox.locked = false;
-            }
+        for ( let i = this.offgridTiles.length; i--; ) {
+            this.offgridTiles[ i ].update();
         }
+
+        this.sortAllSprites();
     }
 
 
@@ -326,7 +296,10 @@ export default class Map {
             layer: "background",
         });
 
-        // Merge all sprites into a single array and sort by (y position + height) ascending
+        // Draw offgrid tiles
+        this.renderOffgridTiles();
+
+        // Draw all sprites
         this.renderAllSprites();
 
         // Draw foreground textures
@@ -338,20 +311,8 @@ export default class Map {
 
 
     renderOffgridTiles () {
-        for ( const mapId in this.offgridTiles ) {
-            const tile = this.offgridTiles[ mapId ];
-
-            this.gamebox.draw(
-                this.image,
-                tile.spritecel[ 0 ],
-                tile.spritecel[ 1 ],
-                tile.width,
-                tile.height,
-                tile.x - this.gamebox.camera.x,
-                tile.y - this.gamebox.camera.y,
-                tile.width,
-                tile.height
-            );
+        for ( let i = this.offgridTiles.length; i--; ) {
+            this.offgridTiles[ i ].render();
         }
     }
 
@@ -372,6 +333,7 @@ export default class Map {
     // TODO: This could be better optimized
     // (Sprite class is using onscreen to add/remove from allSprites array)
     sortAllSprites () {
+        // Sort by (y position + height) ascending to ensure correct render order
         this.allSprites.sort( ( a, b ) => {
             return a.prio - b.prio;
         });
@@ -595,16 +557,6 @@ export default class Map {
             }
         }
 
-        const activeTiles = this.getActiveTileOnCoords( celsCoords );
-
-        if ( activeTiles ) {
-            const mapId = activeTiles.getQuestId( celsCoords );
-
-            if ( this.offgridTiles[ mapId ] ) {
-                celsCopy.pop();
-            }
-        }
-
         // No animated tile found, return the original celsCopy
         return celsCopy;
     }
@@ -640,19 +592,17 @@ export default class Map {
     }
 
 
-    addOffgridTile ( tile ) {
-        const mapId = tile.instance.getQuestId( tile.coord );
-
-        if ( !this.offgridTiles[ mapId ] ) {
-            tile.tilebox.spritecel = tile.instance.getTile();
-            this.offgridTiles[ mapId ] = tile.tilebox;
+    addOffgridTile ( tilebox ) {
+        if ( tilebox && this.offgridTiles.indexOf( tilebox ) === -1 ) {
+            tilebox.goOffGrid();;
+            this.offgridTiles.push( tilebox );
         }
     }
 
 
-    removeOffgridTile ( mapId ) {
-        if ( this.offgridTiles[ mapId ] ) {
-            delete this.offgridTiles[ mapId ];
+    removeOffgridTile ( tilebox ) {
+        if ( tilebox && this.offgridTiles.indexOf( tilebox ) !== -1 ) {
+            this.offgridTiles.splice( this.offgridTiles.indexOf( tilebox ), 1 );
         }
     }
 

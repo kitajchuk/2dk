@@ -1,5 +1,6 @@
 import Config from "../Config";
 import FX from "../sprites/FX";
+import Utils from "../Utils";
 
 
 
@@ -18,8 +19,7 @@ export default class ActiveTiles {
         this.frame = 0;
         this.isAnimated = !!this.data.stepsX;
         this.pushed = [
-            // Array of "tilebox" objects
-            // { x, y, width, height, coords }
+            // Array of TileBox objects
         ];
         this.previousElapsed = null;
 
@@ -42,7 +42,7 @@ export default class ActiveTiles {
                 const coords = [ x, y ];
 
                 // De-spawn the tile if the quest has been completed
-                if ( this.gamebox.gamequest.getCompleted( this.getQuestId( coords ) ) ) {
+                if ( this.gamebox.gamequest.getCompleted( this.getMapId( coords ) ) ) {
                     this.spliceTexture( coords );
                     continue;
                 }
@@ -106,7 +106,7 @@ export default class ActiveTiles {
     }
 
 
-    getQuestId ( coords ) {
+    getMapId ( coords ) {
         return `${this.map.data.id}-${this.data.group}-${coords[ 0 ]}-${coords[ 1 ]}`;
     }
 
@@ -147,17 +147,17 @@ export default class ActiveTiles {
         }
 
         if ( action.quest ) {
-            this.gamebox.gamequest.completeQuest( this.getQuestId( coords ) );
+            this.gamebox.gamequest.completeQuest( this.getMapId( coords ) );
         }
         
         this.map.mapFX.smokeObject( obj, action.fx );
-        this.map.removeOffgridTile( this.getQuestId( coords ) );
+        // this.map.removeOffgridTile( this.getPushed( coords ) );
         this.splice( coords );
     }
 
 
     push ( coords ) {
-        const tilebox = {
+        const data = {
             x: coords[ 0 ] * this.map.data.tilesize,
             y: coords[ 1 ] * this.map.data.tilesize,
             width: this.map.data.tilesize,
@@ -165,17 +165,17 @@ export default class ActiveTiles {
             coords,
         };
 
-        this.pushed.push( tilebox );
+        this.pushed.push( new TileBox( data, this ) );
 
         if ( this.data.fx ) {
-            this.addFX( tilebox );
+            this.addFX( data );
         }
     }
 
 
     getPushed ( coords ) {
         for ( let i = this.pushed.length; i--; ) {
-            if ( this.pushed[ i ].coords[ 0 ] === coords[ 0 ] && this.pushed[ i ].coords[ 1 ] === coords[ 1 ] ) {
+            if ( this.pushed[ i ].isCoords( coords ) ) {
                 return this.pushed[ i ];
             }
         }
@@ -191,8 +191,13 @@ export default class ActiveTiles {
 
         for ( let i = this.pushed.length; i--; ) {
             if ( this.pushed[ i ].coords[ 0 ] === coords[ 0 ] && this.pushed[ i ].coords[ 1 ] === coords[ 1 ] ) {
+                // Texture is spliced when the tilebox goes offgrid so skip that or else we'll splice it twice
+                if ( this.pushed[ i ].offgrid ) {
+                    this.map.removeOffgridTile( this.pushed[ i ] );
+                } else {
+                    this.spliceTexture( coords );
+                }
                 this.pushed.splice( i, 1 );
-                this.spliceTexture( coords );
                 break;
             }
         }
@@ -204,7 +209,6 @@ export default class ActiveTiles {
         // This greatly simplifies the logic for rendering the map after we've interacted with the tile
         // since on the next frame the texture will be updated to show the new tile state
         this.map.data.textures[ this.data.layer ][ coords[ 1 ] ][ coords[ 0 ] ].pop();
-        this.map.removeOffgridTile( this.getQuestId( coords ) );
     }
 
 
@@ -240,5 +244,79 @@ export default class ActiveTiles {
 
     isPushed ( testCoords ) {
         return this.isInArray( this.pushed, testCoords );
+    }
+}
+
+
+
+export class TileBox {
+    constructor ( data, activeTiles ) {
+        this.data = data;
+        this.activeTiles = activeTiles;
+        this.gamebox = this.activeTiles.gamebox;
+        this.player = this.gamebox.player;
+        this.map = this.activeTiles.map;
+        this.x = data.x;
+        this.y = data.y;
+        this.width = data.width;
+        this.height = data.height;
+        this.coords = data.coords;
+        this.offgrid = false;
+        this.mapId = this.activeTiles.getMapId( this.coords );
+        this.pushed = null;
+    }
+
+
+    goOffGrid () {
+        this.offgrid = true;
+        this.activeTiles.spliceTexture( this.coords );
+    }
+
+
+    update () {
+        if ( !this.pushed ) {
+            return;
+        }
+
+        const poi = Utils.getNextPushPosition( this.pushed.dir, {
+            x: this.x,
+            y: this.y,
+        });
+        const { isCollision } = Utils.getPushedCollision( this.gamebox, poi, this );
+
+        if ( isCollision ) {
+            this.pushed = null;
+            this.gamebox.locked = false;
+            return;
+        }
+
+        this.x = poi.x;
+        this.y = poi.y;
+
+        if ( this.x === this.pushed.poi.x && this.y === this.pushed.poi.y ) {
+            this.pushed = null;
+            this.gamebox.locked = false;
+        }
+    }
+
+
+    render () {
+        this.spritecel = this.activeTiles.getTile();
+        this.gamebox.draw(
+            this.map.image,
+            this.spritecel[ 0 ],
+            this.spritecel[ 1 ],
+            this.width,
+            this.height,
+            this.x - this.gamebox.camera.x,
+            this.y - this.gamebox.camera.y,
+            this.width,
+            this.height
+        );
+    }
+
+
+    isCoords ( coords ) {
+        return this.coords[ 0 ] === coords[ 0 ] && this.coords[ 1 ] === coords[ 1 ];
     }
 }

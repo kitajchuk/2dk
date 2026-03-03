@@ -164,7 +164,7 @@ const Utils = {
     },
 
 
-    getNextPushPosition ( dir, pos ) {
+    getNextPushPosition ( dir, pos, speed = 2 ) {
         const poi = {
             x: pos.x,
             y: pos.y,
@@ -173,16 +173,16 @@ const Utils = {
 
         switch ( dir ) {
             case "left":
-                poi.x -= 1;
+                poi.x -= speed;
                 break;
             case "right":
-                poi.x += 1;
+                poi.x += speed;
                 break;
             case "up":
-                poi.y -= 1;
+                poi.y -= speed;
                 break;
             case "down":
-                poi.y += 1;
+                poi.y += speed;
                 break;
         }
 

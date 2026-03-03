@@ -598,7 +598,7 @@ class TopView extends GameBox {
             dir,
         };
 
-        this.map.addOffgridTile( pushTile );
+        this.map.addOffgridTile( pushTile.tilebox );
     }
 
 
@@ -1081,7 +1081,7 @@ class TopView extends GameBox {
 
 
     isPushingObject () {
-        return this.interact.push > this.map.data.tilesize * 2;
+        return this.interact.push > this.map.data.tilesize * 1.5;
     }
 }
 

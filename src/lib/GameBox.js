@@ -715,7 +715,7 @@ export default class GameBox {
             attack: [],
             passive: [],
         };
-        const isInstance = sprite.gamebox === this;
+        const isInstance = !!( sprite.hitbox && sprite.footbox );
         const footbox = isInstance ? sprite.getFootbox( poi ) : sprite;
         const hitbox = isInstance ? sprite.getHitbox( poi ) : sprite;
         
@@ -734,12 +734,12 @@ export default class GameBox {
                 const tilebox = instance.pushed[ j ];
 
                 // Avoid self collision for things like pushed ActiveTiles tilebox (which has coords)...
-                if ( lookbox.coords && lookbox === tilebox ) {
+                if ( lookbox === tilebox ) {
                     continue;
                 }
 
-                // Things like ActiveTiles tilebox needs to use poi for the check to avoid moving 1px into a collision
-                const checkbox = isInstance || !lookbox.coords ? lookbox : {
+                // Things like ActiveTiles TileBox needs to use poi for the check to avoid moving 1px into a collision
+                const checkbox = isInstance || !lookbox.offgrid ? lookbox : {
                     x: poi.x,
                     y: poi.y,
                     width: lookbox.width,
