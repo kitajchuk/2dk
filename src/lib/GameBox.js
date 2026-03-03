@@ -544,7 +544,6 @@ export default class GameBox {
     getNormalizedLookbox ( poi, sprite ) {
         // Ad-hoc "sprite" object with { x, y, width, height }
         // See Hero.handleAttackFrame() for an example where we pass the weaponBox directly...
-        // See Map.updateOffgridTiles() for an example where we pass the tilebox directly...
         return Utils.func( sprite.getHitbox ) ? sprite.getHitbox( poi ) : sprite;
     }
 

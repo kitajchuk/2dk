@@ -264,6 +264,14 @@ export class TileBox {
         this.offgrid = false;
         this.mapId = this.activeTiles.getMapId( this.coords );
         this.pushed = null;
+
+        // Apply initial perceptionBox
+        this.applyHitbox();
+    }
+
+
+    isCoords ( coords ) {
+        return this.coords[ 0 ] === coords[ 0 ] && this.coords[ 1 ] === coords[ 1 ];
     }
 
 
@@ -274,6 +282,31 @@ export class TileBox {
 
 
     update () {
+        this.applyHitbox();
+        this.applyPosition();
+    }
+
+
+    render () {
+        this.spritecel = this.activeTiles.getTile();
+        this.gamebox.draw(
+            this.map.image,
+            this.spritecel[ 0 ],
+            this.spritecel[ 1 ],
+            this.width,
+            this.height,
+            this.x - this.gamebox.camera.x,
+            this.y - this.gamebox.camera.y,
+            this.width,
+            this.height
+        );
+    }
+
+
+    // A bit of "sprite"-ness here helps a lot with rendering and collision detection...
+
+
+    applyPosition () {
         if ( !this.pushed ) {
             return;
         }
@@ -300,23 +333,28 @@ export class TileBox {
     }
 
 
-    render () {
-        this.spritecel = this.activeTiles.getTile();
-        this.gamebox.draw(
-            this.map.image,
-            this.spritecel[ 0 ],
-            this.spritecel[ 1 ],
+    applyHitbox () {
+        this.hitbox = {
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height,
+        };
+        this.perceptionBox = Utils.getPerceptionBox(
+            this, // { x, y, ... }
             this.width,
             this.height,
-            this.x - this.gamebox.camera.x,
-            this.y - this.gamebox.camera.y,
-            this.width,
-            this.height
+            this.map.data.tilesize
         );
     }
 
 
-    isCoords ( coords ) {
-        return this.coords[ 0 ] === coords[ 0 ] && this.coords[ 1 ] === coords[ 1 ];
+    getHitbox ( poi ) {
+        return {
+            x: poi.x,
+            y: poi.y,
+            width: this.hitbox.width,
+            height: this.hitbox.height,
+        };
     }
 }

@@ -198,6 +198,7 @@ const Utils = {
             tiles: gamebox.checkTiles( poi, sprite ),
             doors: gamebox.checkDoor( poi, sprite ),
             camera: gamebox.checkCamera( poi, sprite ),
+            empty: gamebox.checkEmpty( poi, sprite ),
         };
 
         const isCollision = (
