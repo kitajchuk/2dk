@@ -1831,8 +1831,6 @@ class EditorCanvas {
                 layer: data.layer,
             };
             const isJump = data.action === window.lib2dk.Config.verbs.JUMP;
-            const isOpen = data.action === window.lib2dk.Config.verbs.OPEN;
-            const isAttack = data.action === window.lib2dk.Config.verbs.ATTACK;
 
             // Coord X & Y are a position on the tileset
             // Could try using the currentTileCoord for now..
@@ -1856,6 +1854,10 @@ class EditorCanvas {
                 newData.friction = data.friction;
             }
 
+            if ( data.elevation && isJump ) {
+                newData.elevation = data.elevation;
+            }
+
             if ( data.action ) {
                 newData.actions = [];
 
@@ -1867,12 +1869,12 @@ class EditorCanvas {
                     firstAction.dir = data.direction;
                 }
 
-                if ( isJump && data.elevation ) {
-                    newData.elevation = data.elevation;
+                if ( data.actionFX ) {
+                    firstAction.fx = data.actionFX;
                 }
 
-                if ( isOpen && data.fx ) {
-                    firstAction.fx = data.fx;
+                if ( data.actionSound ) {
+                    firstAction.sound = data.actionSound;
                 }
 
                 if ( data.actionStat ) {
@@ -1889,26 +1891,30 @@ class EditorCanvas {
 
                 newData.actions.push( firstAction );
 
-                // Secondary action for attack
-                if ( data.attack && !isAttack && !isJump ) {
+                // Secondary action
+                if ( data.action2 && !isJump ) {
                     const secondAction = {
-                        verb: window.lib2dk.Config.verbs.ATTACK,
+                        verb: data.action2,
                     };
 
-                    if ( data.fx ) {
-                        secondAction.fx = data.fx;
+                    if ( data.action2FX ) {
+                        secondAction.fx = data.action2FX;
                     }
 
-                    if ( data.attackStat ) {
-                        secondAction.stat = data.attackStat;
+                    if ( data.action2Sound ) {
+                        secondAction.sound = data.action2Sound;
                     }
 
-                    if ( data.attackDrops ) {
-                        secondAction.drops = data.attackDrops;
+                    if ( data.action2Stat ) {
+                        secondAction.stat = data.action2Stat;
                     }
 
-                    if ( data.attackQuest ) {
-                        secondAction.quest = JSON.parse( data.attackQuest );
+                    if ( data.action2Drops ) {
+                        secondAction.drops = data.action2Drops;
+                    }
+
+                    if ( data.action2Quest ) {
+                        secondAction.quest = JSON.parse( data.action2Quest );
                     }
 
                     newData.actions.push( secondAction );

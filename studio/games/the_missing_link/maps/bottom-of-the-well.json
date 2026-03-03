@@ -34,6 +34,7 @@
                 {
                     "verb": "attack",
                     "fx": "leaves",
+                    "sound": "smash",
                     "drops": "shrubs"
                 }
             ]
@@ -96,12 +97,31 @@
             "actions": [
                 {
                     "verb": "push",
-                    "drops": "pots"
+                    "sound": "moveObject"
                 },
                 {
                     "verb": "attack",
                     "fx": "smoke",
+                    "sound": "smash",
                     "drops": "pots"
+                }
+            ]
+        },
+        {
+            "group": "stones",
+            "layer": "background",
+            "offsetX": 192,
+            "offsetY": 640,
+            "actions": [
+                {
+                    "verb": "lift",
+                    "fx": "smoke",
+                    "sound": "smash",
+                    "drops": "pots"
+                },
+                {
+                    "verb": "push",
+                    "sound": "moveObject"
                 }
             ]
         }

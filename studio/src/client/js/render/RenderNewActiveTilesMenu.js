@@ -89,29 +89,14 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                     </div>
                 </div>
             </div>
-            <div class="editor__setting">
-                <div class="editor__label">Mask (Can mask the hero sprite)</div>
-                <div class="select">
-                    <select class="select__field js-activetile-field js-select" name="mask">
-                        <option value="">Mask FX</option>
-                        ${game.fx.map( ( fx ) => `
-                            <option value="${fx.id}">${fx.id}</option>
-                        ` ).join( "" )}
-                    </select>
-                    <span class="select__icon">
-                        ${window.feather.icons[ "chevron-down" ].toSvg()}
-                    </span>
-                </div>
-            </div>
-            <!-- Attack is an internalized VERB object -->
             <div class="editor__setting editor__setting--multi">
                 <div>
-                    <div class="editor__label">Action (omit if tile is passive, e.g. grass)</div>
+                    <div class="editor__label">Mask (Can mask the hero sprite)</div>
                     <div class="select">
-                        <select class="select__field js-activetile-field js-select" name="action">
-                            <option value="">Action</option>
-                            ${tileActions.map( ( action ) => `
-                                <option value="${action}">${action}</option>
+                        <select class="select__field js-activetile-field js-select" name="mask">
+                            <option value="">Mask FX</option>
+                            ${game.fx.map( ( fx ) => `
+                                <option value="${fx.id}">${fx.id}</option>
                             ` ).join( "" )}
                         </select>
                         <span class="select__icon">
@@ -126,6 +111,51 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                             <option value="">Direction</option>
                             ${facing.map( ( facing ) => `
                                 <option value="${facing}">${facing}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="editor__setting">
+                <div class="editor__label">Action (omit if tile is passive, e.g. grass)</div>
+                <div class="select">
+                    <select class="select__field js-activetile-field js-select" name="action">
+                        <option value="">Action</option>
+                        ${tileActions.map( ( action ) => `
+                            <option value="${action}">${action}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
+                </div>
+            </div>
+            <div class="editor__setting editor__setting--multi">
+                <div>
+                    <div class="editor__label">Action Sound (optional)</div>
+                    <div class="select">
+                        <select class="select__field js-select js-activetile-field" name="actionSound">
+                            <option value="">Action Sound</option>
+                            ${Object.keys( game.sounds ).map( ( sound ) => `
+                                <option value="${sound}">${sound}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <div class="editor__label">Action FX (optional)</div>
+                    <div class="select">
+                        <select class="select__field js-activetile-field js-select" name="actionFX">
+                            <option value="">Action FX</option>
+                            ${game.fx.map( ( fx ) => `
+                                <option value="${fx.id}">${fx.id}</option>
                             ` ).join( "" )}
                         </select>
                         <span class="select__icon">
@@ -168,22 +198,43 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 <div class="editor__label">Action Quest (raw data)</div>
                 <textarea class="editor__field input textarea js-activetile-field" name="actionQuest"></textarea>
             </div>
+            <hr />
+            <div class="editor__setting">
+                <div class="editor__label">Secondary Action (optional, e.g. attack)</div>
+                <div class="select">
+                    <select class="select__field js-activetile-field js-select" name="action2">
+                        <option value="">Action</option>
+                        ${tileActions.map( ( action ) => `
+                            <option value="${action}">${action}</option>
+                        ` ).join( "" )}
+                    </select>
+                    <span class="select__icon">
+                        ${window.feather.icons[ "chevron-down" ].toSvg()}
+                    </span>
+                </div>
+            </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
-                    <div class="editor__checkbox">
-                        <label class="checkbox">
-                            <input class="check js-activetile-field" type="checkbox" name="attack" />
-                            <span class="label">Attack (for secondary "attack" action)</span>
-                        </label>
+                    <div class="editor__label">Secondary Action Sound (optional)</div>
+                    <div class="select">
+                        <select class="select__field js-select js-activetile-field" name="action2Sound">
+                            <option value="">Secondary Action Sound</option>
+                            ${Object.keys( game.sounds ).map( ( sound ) => `
+                                <option value="${sound}">${sound}</option>
+                            ` ).join( "" )}
+                        </select>
+                        <span class="select__icon">
+                            ${window.feather.icons[ "chevron-down" ].toSvg()}
+                        </span>
                     </div>
                 </div>
                 <div>
-                    <div class="editor__label">FX (for attack action)</div>
+                    <div class="editor__label">Secondary Action FX (optional)</div>
                     <div class="select">
-                        <select class="select__field js-activetile-field js-select" name="fx">
-                            <option value="">Attack FX</option>
+                        <select class="select__field js-activetile-field js-select" name="action2FX">
+                            <option value="">Secondary Action FX</option>
                             ${game.fx.map( ( fx ) => `
-                                <option value="${fx.id}">${fx.name}</option>
+                                <option value="${fx.id}">${fx.id}</option>
                             ` ).join( "" )}
                         </select>
                         <span class="select__icon">
@@ -194,10 +245,10 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
             </div>
             <div class="editor__setting editor__setting--multi">
                 <div>
-                    <div class="editor__label">Attack Stat</div>
+                    <div class="editor__label">Secondary Action Stat</div>
                     <div class="select">
-                        <select class="select__field js-activetile-field js-select" name="attackStat">
-                            <option value="">Attack Stat</option>
+                        <select class="select__field js-activetile-field js-select" name="action2Stat">
+                            <option value="">Secondary Action Stat</option>
                             ${Object.keys( game.stats ).map( ( stat ) => `
                                 <option value="${stat}">${stat}</option>
                             ` ).join( "" )}
@@ -208,10 +259,10 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                     </div>
                 </div>
                 <div>
-                    <div class="editor__label">Attack Drops</div>
+                    <div class="editor__label">Secondary Action Drops</div>
                     <div class="select">
-                        <select class="select__field js-activetile-field js-select" name="attackDrops">
-                            <option value="">Attack Drops</option>
+                        <select class="select__field js-activetile-field js-select" name="action2Drops">
+                            <option value="">Secondary Action Drops</option>
                             ${Object.keys( game.drops ).map( ( drop ) => `
                                 <option value="${drop}">${drop}</option>
                             ` ).join( "" )}
@@ -223,9 +274,10 @@ const renderNewActiveTilesMenu = ({ map, game, coords, facing, actions, layers }
                 </div>
             </div>
             <div class="editor__setting">
-                <div class="editor__label">Attack Quest (raw data)</div>
-                <textarea class="editor__field input textarea js-activetile-field" name="attackQuest"></textarea>
+                <div class="editor__label">Secondary Action Quest (raw data)</div>
+                <textarea class="editor__field input textarea js-activetile-field" name="action2Quest"></textarea>
             </div>
+            <hr />
             <div class="editor__setting">
                 <div class="editor__label">Friction (for passive tiles, e.g. grass or stairs to slow down movement)</div>
                 <input class="range editor__field js-activetile-field js-range" value="0" type="range" min="0" max="2" step="0.5" list="friction-list" name="friction" />

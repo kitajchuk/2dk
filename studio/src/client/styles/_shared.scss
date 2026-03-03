@@ -21,6 +21,13 @@ a {
     vertical-align: middle;
     text-decoration: none;
 }
+hr {
+    width: 100%;
+    height: 1px;
+    background-color: var( --grey-dark );
+    border: none;
+    margin: 32px 0;
+}
 
 
 
