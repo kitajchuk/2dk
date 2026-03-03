@@ -40,19 +40,21 @@ export class LiftedTile extends Sprite {
 
     destroy () {
         const attackAction = this.activeTiles.canAttack();
+        const liftAction = this.activeTiles.canInteract( Config.verbs.LIFT );
+        const actionToUse = attackAction || liftAction;
 
-        if ( attackAction?.drops ) {
-            this.gamebox.itemDrop( attackAction.drops, this.position, {
+        if ( actionToUse?.drops ) {
+            this.gamebox.itemDrop( actionToUse.drops, this.position, {
                 layer: this.layer,
             });
         }
 
-        if ( attackAction?.sound ) {
+        if ( actionToUse?.sound ) {
             // Don't use hero sound channel for lifted tile sounds
-            this.player.gameaudio.hitSound( attackAction.sound );
+            this.player.gameaudio.hitSound( actionToUse.sound );
         }
         
-        this.map.mapFX.smokeObject( this, attackAction?.fx, {
+        this.map.mapFX.smokeObject( this, actionToUse?.fx, {
             layer: this.layer,
         });
         this.gamebox.interact.tile = null;

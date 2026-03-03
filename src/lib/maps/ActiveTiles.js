@@ -149,9 +149,12 @@ export default class ActiveTiles {
         if ( action.quest ) {
             this.gamebox.gamequest.completeQuest( this.getMapId( coords ) );
         }
-        
+
+        if ( action.sound ) {
+            this.player.gameaudio.hitSound( action.sound );
+        }
+
         this.map.mapFX.smokeObject( obj, action.fx );
-        // this.map.removeOffgridTile( this.getPushed( coords ) );
         this.splice( coords );
     }
 

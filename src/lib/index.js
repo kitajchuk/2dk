@@ -25,7 +25,7 @@ import Map from "./maps/Map";
 import MapFX from "./maps/MapFX";
 import MapLayer from "./maps/MapLayer";
 import MapEvent from "./maps/MapEvent";
-import ActiveTiles from "./maps/ActiveTiles";
+import ActiveTiles, { TileBox } from "./maps/ActiveTiles";
 import Player, { PlayerMenu } from "./Player";
 import Spring from "./Spring";
 import Utils from "./Utils";
@@ -64,7 +64,7 @@ const lib = {
     GameWorker,
     GameStorage,
     Loader,
-    Map, MapFX, MapLayer, MapEvent, ActiveTiles,
+    Map, MapFX, MapLayer, MapEvent, ActiveTiles, TileBox,
     CellAutoMap,
     Player, PlayerMenu,
     Spring,

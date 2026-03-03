@@ -599,6 +599,12 @@ class TopView extends GameBox {
         };
 
         this.map.addOffgridTile( pushTile.tilebox );
+
+        const pushAction = pushTile.instance.canInteract( Config.verbs.PUSH );
+
+        if ( pushAction?.sound ) {
+            this.player.gameaudio.heroSound( pushAction.sound );
+        }
     }
 
 
