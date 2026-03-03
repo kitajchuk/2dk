@@ -111,6 +111,16 @@ const getGamesMenu = () => {
                 },
                 enabled: activeGame ? true : false,
             },
+            {
+                label: "Bump Game Version",
+                click () {
+                    if ( dBase ) {
+                        dBase.updateWorker();
+                        mainWindow.webContents.send( "menu-bumpgameversion", null );
+                    }
+                },
+                enabled: activeGame ? true : false,
+            },
             { type: "separator" },
             {
                 label: "Manage Sprites",

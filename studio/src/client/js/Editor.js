@@ -303,6 +303,14 @@ class Editor {
     }
 
 
+    _bumpGameVersion () {
+        this.mode = Config.Editor.modes.SAVING;
+        this.dom.root.classList.add( "is-saving-game" );
+        this.menus.removeMenus();
+        this.done();
+    }
+
+
     _onSettingsClick ( target ) {
         const settings = target.closest( ".js-settings" );
 
@@ -389,6 +397,10 @@ class Editor {
 
         ipcRenderer.on( "menu-savemap", () => {
             this._saveMap();
+        });
+
+        ipcRenderer.on( "menu-bumpgameversion", () => {
+            this._bumpGameVersion();
         });
 
         ipcRenderer.on( "menu-gamesettings", () => {
