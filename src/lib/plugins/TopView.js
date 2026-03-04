@@ -1022,7 +1022,6 @@ class TopView extends GameBox {
 
                     if ( item && item.collect ) {
                         this.hero.takeCollectible( quest.checkItem );
-                        success = true;
                     }
 
             } else {

@@ -675,7 +675,8 @@ export default class Sprite {
 
         return {
             x: position.x,
-            y: position.y,
+            // Keep an eye on the use of position.z here...
+            y: position.y + position.z,
             width: this.width,
             height: this.height,
         };
