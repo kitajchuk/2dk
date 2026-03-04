@@ -465,6 +465,7 @@ class TopView extends GameBox {
 
         this.handleResetHeroDirs();
         this.hero.destroyLiftedTile();
+        this.hero.maskFX = null;
 
         const jumpTiles = collision.tiles.passive.filter( ( tile ) => tile.jump );
 
@@ -718,11 +719,11 @@ class TopView extends GameBox {
 
 
     handleHeroEventCleanup () {
+        this.interact.tile = null;
         this.hero.maskFX = null;
-        this.hero.liftedTile = null;
         this.hero.projectile = null;
         this.hero.diveCounter = 0;
-        this.interact.tile = null;
+        this.hero.liftedTile.destroy();
         this.dialogue.teardown();
     }
 
