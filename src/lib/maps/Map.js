@@ -466,12 +466,13 @@ export default class Map {
             height: this.data.tilesize,
         };
 
-        const collides = {
+        const collision = {
             hero: Utils.collide( tile, this.gamebox.hero.getFullbox() ),
             companion: this.gamebox.companion ? Utils.collide( tile, this.gamebox.companion.getFullbox() ) : false,
+            liftedTile: this.gamebox.hero.liftedTile ? Utils.collide( tile, this.gamebox.hero.liftedTile.getFullbox() ) : false,
         };
 
-        if ( !collides.hero && !collides.companion ) {
+        if ( !collision.hero && !collision.companion && !collision.liftedTile ) {
             return false;
         }
 
