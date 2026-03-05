@@ -274,8 +274,6 @@ class TopView extends GameBox {
             camera: this.checkCamera( poi, this.hero ) && !this.panning,
             enemy: this.checkEnemy( poi, this.hero ),
             npc: this.checkNPC( poi, this.hero ),
-            // Skip tiles check for elevation layer
-            tiles: this.hero.elevation ? false : this.checkTiles( poi, this.hero ),
             // Skip dir check for events while spinLocked (e.g. we do an early return below so events don't trigger)
         }, { dirCheck: !this.hero.spinLocked } );
 

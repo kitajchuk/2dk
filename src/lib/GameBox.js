@@ -213,6 +213,7 @@ export default class GameBox {
         const collision = {
             map: this.checkMap( poi, sprite ),
             event: this.checkEvents( poi, sprite, eventOpts ),
+
         };
         const { 
             isElevationEvent,
@@ -223,6 +224,11 @@ export default class GameBox {
         for ( const key in collisions ) {
             collision[ key ] = collisions[ key ];
         }
+
+        // This check allows the sprite to handle tile collsion IF they are actively on the spacer boxes for the elevation event
+        collision.tiles = !sprite.elevation || sprite.elevation && sprite.elevation.event.checkElevationAccess( poi, sprite )
+            ? this.checkTiles( poi, sprite )
+            : false;
 
         return {
             collision,

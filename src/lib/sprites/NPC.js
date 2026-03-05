@@ -196,8 +196,6 @@ export default class NPC extends QuestSprite {
             npc: this.gamebox.checkNPC( poi, this ),
             enemy: this.gamebox.checkEnemy( poi, this ),
             camera: this.gamebox.checkCamera( poi, this ),
-            // Skip tiles check for elevation layer
-            tiles: this.elevation ? false : this.gamebox.checkTiles( poi, this ),
             // For now don't let NPCs / Enemies access elevation layer
         }, undefined, { disableAccessCheck: true } );
 

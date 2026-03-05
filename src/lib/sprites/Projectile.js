@@ -152,8 +152,6 @@ export default class Projectile extends Sprite {
             camera: this.gamebox.checkCamera( this.position, this ),
             npc: this.gamebox.checkNPC( this.position, this ),
             enemy: this.gamebox.checkEnemy( this.position, this ),
-            // Skip tiles check for elevation layer
-            tiles: this.elevation ? false : this.gamebox.checkTiles( this.position, this ),
         });
 
         const isCollision = (

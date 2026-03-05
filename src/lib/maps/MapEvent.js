@@ -132,7 +132,7 @@ export default class MapEvent {
                 height: this.eventbox.height,
             };
             this.spacerTwo = {
-                x: this.eventbox.x + this.eventbox.width,
+                x: this.eventbox.x + this.eventbox.width - this.map.data.tilesize,
                 y: this.eventbox.y,
                 width: this.map.data.tilesize,
                 height: this.eventbox.height,
@@ -150,7 +150,7 @@ export default class MapEvent {
             };
             this.spacerTwo = {
                 x: this.eventbox.x,
-                y: this.eventbox.y + this.eventbox.height,
+                y: this.eventbox.y + this.eventbox.height - this.map.data.tilesize,
                 width: this.eventbox.width,
                 height: this.map.data.tilesize,
             };

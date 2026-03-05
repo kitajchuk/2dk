@@ -372,6 +372,22 @@ export default class Map {
                 visibleEvents[ i ].eventbox.width,
                 visibleEvents[ i ].eventbox.height
             );
+
+            if ( visibleEvents[ i ].isElevation ) {
+                this.player.renderLayer.context.fillStyle = Config.colors.blueDark;
+                this.player.renderLayer.context.fillRect(
+                    visibleEvents[ i ].spacerOne.x - this.gamebox.camera.x,
+                    visibleEvents[ i ].spacerOne.y - this.gamebox.camera.y,
+                    visibleEvents[ i ].spacerOne.width,
+                    visibleEvents[ i ].spacerOne.height
+                );
+                this.player.renderLayer.context.fillRect(
+                    visibleEvents[ i ].spacerTwo.x - this.gamebox.camera.x,
+                    visibleEvents[ i ].spacerTwo.y - this.gamebox.camera.y,
+                    visibleEvents[ i ].spacerTwo.width,
+                    visibleEvents[ i ].spacerTwo.height
+                );
+            }
         }
 
         this.player.renderLayer.context.restore();
