@@ -721,7 +721,7 @@ class TopView extends GameBox {
         this.hero.maskFX = null;
         this.hero.projectile = null;
         this.hero.diveCounter = 0;
-        this.hero.liftedTile.destroy();
+        this.hero.destroyLiftedTile();
         this.dialogue.teardown();
     }
 
