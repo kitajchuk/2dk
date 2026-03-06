@@ -218,7 +218,7 @@
                         {
                             "width": 20,
                             "height": 32,
-                            "offsetX": 552,
+                            "offsetX": 532,
                             "offsetY": 0,
                             "positionX": 14,
                             "positionY": 52
@@ -228,7 +228,7 @@
                         {
                             "width": 20,
                             "height": 32,
-                            "offsetX": 624,
+                            "offsetX": 460,
                             "offsetY": 60,
                             "positionX": 54,
                             "positionY": 52
@@ -276,7 +276,7 @@
                         {
                             "width": 20,
                             "height": 32,
-                            "offsetX": 552,
+                            "offsetX": 532,
                             "offsetY": 0,
                             "positionX": 16,
                             "positionY": 52
@@ -284,7 +284,7 @@
                         {
                             "width": 20,
                             "height": 32,
-                            "offsetX": 552,
+                            "offsetX": 532,
                             "offsetY": 0,
                             "positionX": 14,
                             "positionY": 52
@@ -294,7 +294,7 @@
                         {
                             "width": 20,
                             "height": 32,
-                            "offsetX": 624,
+                            "offsetX": 460,
                             "offsetY": 60,
                             "positionX": 56,
                             "positionY": 52
@@ -302,13 +302,84 @@
                         {
                             "width": 20,
                             "height": 32,
-                            "offsetX": 624,
+                            "offsetX": 460,
                             "offsetY": 60,
                             "positionX": 54,
                             "positionY": 52
                         }
                     ]
                 }
+            },
+            "spin": {
+                "offsetX": 92,
+                "offsetY": 368,
+                "stepsX": 8,
+                "weapon": [
+                    {
+                        "offsetX": 862,
+                        "offsetY": 16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 50,
+                        "positionY": 84
+                    },
+                    {
+                        "offsetX": 940,
+                        "offsetY": 20,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": -20,
+                        "positionY": 68
+                    },
+                    {
+                        "offsetX": 1028,
+                        "offsetY": 34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": -44,
+                        "positionY": 56
+                    },
+                    {
+                        "offsetX": 1216,
+                        "offsetY": 16,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": -30,
+                        "positionY": -4
+                    },
+                    {
+                        "offsetX": 678,
+                        "offsetY": 16,
+                        "width": 24,
+                        "height": 60,
+                        "positionX": 14,
+                        "positionY": -40
+                    },
+                    {
+                        "offsetX": 756,
+                        "offsetY": 20,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": 70,
+                        "positionY": -4
+                    },
+                    {
+                        "offsetX": 1120,
+                        "offsetY": 34,
+                        "width": 60,
+                        "height": 24,
+                        "positionX": 76,
+                        "positionY": 56
+                    },
+                    {
+                        "offsetX": 572,
+                        "offsetY": 20,
+                        "width": 52,
+                        "height": 52,
+                        "positionX": 60,
+                        "positionY": 64
+                    }
+                ]
             },
             "verbs": {
                 "face": {

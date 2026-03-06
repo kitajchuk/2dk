@@ -36,9 +36,6 @@ export default class Hero extends Sprite {
         this.deathCounter = 0;
         this.kickCounter = 0;
         this.diveCounter = 0;
-        this.spinCounter = 0;
-        this.spinLocked = false;
-        this.spinCharged = false;
         this.projectile = null;
         this.projectileIndex = -1;
         this.projectileItem = null;
@@ -49,6 +46,12 @@ export default class Hero extends Sprite {
         this.falling = null;
         this.lifting = null;
         this.lastPositionOnGround = this.position;
+        // Spin properties for managing the spin-attack sequence
+        this.spinCounter = 0;
+        this.spinLocked = false;
+        this.spinCharged = false;
+        this.spinFrame = 0;
+        this.buildSpinFrames();
     }
 
 
@@ -148,7 +151,8 @@ export default class Hero extends Sprite {
             }
         }
         const statusEffects = this.statusEffects[ this.status ]?.[ stat ] ?? 0;
-        return this.stats[ stat ] + itemEffects + statusEffects;
+        const spinEffects = stat === "power" && this.isSpinAttack() ? 1 : 0;
+        return this.stats[ stat ] + itemEffects + statusEffects + spinEffects;
     }
 
 
@@ -421,6 +425,89 @@ export default class Hero extends Sprite {
 
 
 /*******************************************************************************
+* Spin attack handling
+*******************************************************************************/
+    hasSpin () {
+        return this.data.spin;
+    }
+
+
+    isSpinAttack () {
+        return this.spinCharged && this.frameJacked;
+    }
+
+
+    buildSpinFrames () {
+        if ( this.hasSpin() ) {
+            this.spinFrames = [];
+
+            for ( let i = 0; i < this.data.spin.stepsX; i++ ) {
+                this.spinFrames.push( this.data.spin.offsetX * ( i + 1 ) );
+            }
+        }
+    }
+
+
+    // Sequence is down, left, up, right for counter-clockwise spin (true to form)
+    getSpinStartFrame () {
+        const dirStep = this.data.spin.stepsX / 4; // Four cardinal directions
+
+        switch ( this.dir ) {
+            case "down":
+                return 0;
+            case "left":
+                return dirStep;
+            case "up":
+                return dirStep * 2;
+            case "right":
+                return dirStep * 3;
+        }
+    }
+
+
+    spinAttack () {
+        const offsetY = this.data.spin.offsetY;
+        const offsetX = this.spinFrames[ this.spinFrame ];
+
+        this.spritecel = [ offsetX, offsetY ];
+        this.spinCounter++;
+        this.frameJacked = true;
+
+        if ( this.spinCounter % 2 === 0 ) {
+            const startFrame = this.getSpinStartFrame();
+            const nextFrame = this.spinFrame + 1 === this.data.spin.stepsX ? 0 : this.spinFrame + 1;
+
+            // Know when to stop!
+            if ( nextFrame === startFrame ) {
+                this.resetSpin();
+                this.updateStat( "magic", -2 );
+                return;
+            }
+
+            this.spinFrame = nextFrame;
+        }
+    }
+
+
+    resetAttacking () {
+        this.face( this.dir );
+        this.spinCounter = 0;
+        this.spinFrame = 0;
+        this.frameJacked = false;
+        this.frameStopped = false;
+        this.gamebox.attacking = null;
+    }
+
+
+    // This is to hard cancel out of the spin attack sequence (e.g. from a tile fall)
+    resetSpin () {
+        this.spinLocked = false;
+        this.spinCharged = false;
+        this.resetAttacking();
+    }
+
+
+/*******************************************************************************
 * Rendering
 * Order is: blit, update, render
 *******************************************************************************/
@@ -523,7 +610,7 @@ export default class Hero extends Sprite {
             return;
         }
 
-        if ( !this.canUseMagic() || !this.isWeaponMode() ) {
+        if ( !this.canUseMagic() || !this.isWeaponMode() || !this.hasSpin() ) {
             this.resetAttacking();
             return;
         }
@@ -535,6 +622,9 @@ export default class Hero extends Sprite {
 
             } else {
                 this.spinLocked = true;
+                
+                // Set the start frame for the spin attack
+                this.spinFrame = this.getSpinStartFrame();
 
                 // Force the final frame of the attack sprite cycle to "charge" up the spin
                 this.frameStopped = true;
@@ -550,23 +640,12 @@ export default class Hero extends Sprite {
             return;
         }
 
-        this.resetAttacking();
-    }
+        if ( this.spinCharged ) {
+            this.spinAttack();
 
-
-    resetAttacking () {
-        this.face( this.dir );
-        this.spinCounter = 0;
-        this.frameStopped = false;
-        this.gamebox.attacking = null;
-    }
-
-
-    // This is to hard cancel out of the spin attack sequence (e.g. from a tile fall)
-    resetSpin () {
-        this.spinLocked = false;
-        this.spinCharged = false;
-        this.resetAttacking();
+        } else {
+            this.resetAttacking();
+        }
     }
 
 
@@ -634,29 +713,31 @@ export default class Hero extends Sprite {
             return;
         }
         
-        if ( this.spinCharged && this.spinCounter % 5 === 0 ) {
+        if ( this.spinCharged && this.spinCounter % 5 === 0 && !this.isSpinAttack() ) {
             this.player.renderLayer.context.save();
             this.player.renderLayer.context.globalAlpha = 0.25;
         }
 
+        const frame = this.getWeaponFrame();
+
         this.gamebox.draw(
             this.image,
-            this.data.weapon[ this.dir ][ this.frame ].offsetX,
-            this.data.weapon[ this.dir ][ this.frame ].offsetY,
-            this.data.weapon[ this.dir ][ this.frame ].width,
-            this.data.weapon[ this.dir ][ this.frame ].height,
-            this.offset.x + this.data.weapon[ this.dir ][ this.frame ].positionX,
-            this.offset.y + this.data.weapon[ this.dir ][ this.frame ].positionY,
-            this.data.weapon[ this.dir ][ this.frame ].width / this.scale,
-            this.data.weapon[ this.dir ][ this.frame ].height / this.scale
+            frame.offsetX,
+            frame.offsetY,
+            frame.width,
+            frame.height,
+            this.offset.x + frame.positionX,
+            this.offset.y + frame.positionY,
+            frame.width / this.scale,
+            frame.height / this.scale
         );
 
         this.player.renderLayer.context.restore();
         
         // Don't handle attack collision on the "windup" frame
         // Can always provide more control over which frames are checked
-        // TODO: This needs to handle the spin attack on EVERY frame...
-        if ( this.frame > 0 ) {
+        // This needs to handle the spin attack on EVERY frame...
+        if ( this.frame > 0 || this.isSpinAttack() ) {
             this.handleAttackFrame();
         }
     }
@@ -1086,13 +1167,24 @@ export default class Hero extends Sprite {
 /*******************************************************************************
 * Getters
 *******************************************************************************/
+    getWeaponFrame () {
+        if ( this.isSpinAttack() ) {
+            return this.data.spin.weapon[ this.spinFrame ];
+        }
+
+        return this.data.weapon[ this.dir ][ this.frame ];
+    }
+
+
     // Use "offset" to draw weapon debug box
     getWeaponbox ( prop = "position" ) {
+        const frame = this.getWeaponFrame();
+
         return {
-            x: this[ prop ].x + this.data.weapon[ this.dir ][ this.frame ].positionX,
-            y: this[ prop ].y + this.data.weapon[ this.dir ][ this.frame ].positionY,
-            width: this.data.weapon[ this.dir ][ this.frame ].width,
-            height: this.data.weapon[ this.dir ][ this.frame ].height,
+            x: this[ prop ].x + frame.positionX,
+            y: this[ prop ].y + frame.positionY,
+            width: frame.width,
+            height: frame.height,
             // Can be used for collision checks with other sprites etc...
             layer: this.layer,
             elevation: this.elevation,

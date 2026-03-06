@@ -225,12 +225,6 @@ class TopView extends GameBox {
         if ( this.hero.spinLocked ) {
             this.hero.spinLocked = false;
         }
-
-        if ( this.hero.spinCharged ) {
-            this.hero.spinCharged = false;
-            this.hero.updateStat( "magic", -5 );
-            // TODO: SPIN-ATTACK SEQUENCE HERE...
-        }
     }
 
 

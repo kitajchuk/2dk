@@ -83,6 +83,8 @@ export default class Sprite {
         this.previousElapsed = null;
         this.resetElapsed = false;
         this.frameStopped = false;
+        // Used to skip flipX / flipY in render() for unique frame sequences
+        this.frameJacked = false;
         // Used for things like NPCs or Heros that need controls
         this.controls = {
             left: false,
@@ -269,9 +271,9 @@ export default class Sprite {
 
         this.applyOpacity();
 
-        const flipX = this.data.verbs[ this.verb ][ this.dir ].flipX;
-        const flipY = this.data.verbs[ this.verb ][ this.dir ].flipY;
-        let gapX = this.data.verbs[ this.verb ][ this.dir ].gapX;
+        const flipX = this.frameJacked ? false : this.data.verbs[ this.verb ][ this.dir ].flipX;
+        const flipY = this.frameJacked ? false : this.data.verbs[ this.verb ][ this.dir ].flipY;
+        let gapX = this.frameJacked ? false : this.data.verbs[ this.verb ][ this.dir ].gapX;
             gapX = gapX ? gapX * this.frame : 0;
 
         this.player.renderLayer.context.save();
