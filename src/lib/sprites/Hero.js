@@ -51,6 +51,7 @@ export default class Hero extends Sprite {
         this.spinLocked = false;
         this.spinCharged = false;
         this.spinFrame = 0;
+        this.spinFinal = false;
         this.buildSpinFrames();
     }
 
@@ -466,6 +467,13 @@ export default class Hero extends Sprite {
 
 
     spinAttack () {
+        // Know when to stop!
+        if ( this.spinFinal ) {
+            this.resetSpin();
+            this.updateStat( "magic", -2 );
+            return;
+        }
+
         const offsetY = this.data.spin.offsetY;
         const offsetX = this.spinFrames[ this.spinFrame ];
 
@@ -477,11 +485,9 @@ export default class Hero extends Sprite {
             const startFrame = this.getSpinStartFrame();
             const nextFrame = this.spinFrame + 1 === this.data.spin.stepsX ? 0 : this.spinFrame + 1;
 
-            // Know when to stop!
+            // Mark last frame so we end the sequence on the next cycle
             if ( nextFrame === startFrame ) {
-                this.resetSpin();
-                this.updateStat( "magic", -2 );
-                return;
+                this.spinFinal = true;
             }
 
             this.spinFrame = nextFrame;
@@ -503,6 +509,7 @@ export default class Hero extends Sprite {
     resetSpin () {
         this.spinLocked = false;
         this.spinCharged = false;
+        this.spinFinal = false;
         this.resetAttacking();
     }
 
