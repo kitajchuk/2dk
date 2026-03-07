@@ -29,7 +29,7 @@ const renderActiveGameMenu = ( game ) => {
                         <span>PNG</span>
                     </button>
                     <input value="${game.icon}" class="input editor__upload__field editor__field js-upload-field" type="text" placeholder="Choose a file" name="icon_copy" id="editor-game-icon" />
-                    <input class="editor__upload__mask js-upload-file" type="file" name="icon" data-target="editor-game-icon" />
+                    <input class="editor__upload__mask js-upload-file" type="file" accept="image/png" name="icon" data-target="editor-game-icon" />
                 </div>
             </div>
             <div class="editor__setting">

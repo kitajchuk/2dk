@@ -8,7 +8,6 @@
     "tilewidth": 20,
     "tileheight": 16,
     "collider": 16,
-    "dialogue": true,
     "image": "assets/tiles/tiles.png",
     "snapshot": "assets/snapshots/wooded-passage.png",
     "thumbnail": "assets/snapshots/wooded-passage-thumb.png",

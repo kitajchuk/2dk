@@ -59,6 +59,7 @@ class DB {
             }));
             this.cache.set( "maps", maps );
             this.logInfo( "loaded maps" );
+            return Promise.resolve();
         };
 
         await Promise.all([

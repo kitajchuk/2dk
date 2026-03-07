@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v1852";
+const CACHE_NAME = "v1859";
 const CACHE_URLS = [
     "",
     "index.html",
@@ -46,6 +46,13 @@ const CACHE_URLS = [
     "assets/sounds/sfx-smash.mp3",
     "assets/sounds/sfx-sword.mp3",
     "assets/sounds/sfx-throw.mp3",
+    "assets/sounds/bgm-crystal-cave.mp3",
+    "assets/sounds/bgm-mysterious-ambience.mp3",
+    "assets/sounds/bgm-green-town-short.mp3",
+    "assets/sounds/bgm-simple-shop.mp3",
+    "assets/sounds/bgm-snowfall.mp3",
+    "assets/sounds/sfx-boomerang.mp3",
+    "assets/sounds/sfx-energy-charge.mp3",
     "assets/scenes/logo.png",
     "maps/beneath-the-cathedral.json",
     "maps/beneath-the-grave.json",

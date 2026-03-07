@@ -64,7 +64,9 @@ class Editor {
             this.dom.root.classList.remove(
                 "is-not-loaded",
                 "is-saving-map",
+                "is-deleting-map",
                 "is-saving-game",
+                "is-deleting-game",
                 "is-saving-file",
                 "is-deleting-file"
             );
@@ -212,20 +214,19 @@ class Editor {
     }
 
 
-    readFile ( fileInput ) {
+    readFile ( file ) {
         return new Promise( ( resolve, reject ) => {
             const fileReader = new FileReader();
-            const fileData = fileInput.files[ 0 ];
 
-            if ( fileData ) {
+            if ( file ) {
                 fileReader.onload = ( fe ) => {
                     resolve({
-                        fileName: fileData.name,
+                        fileName: file.name,
                         fileData: fe.target.result,
                     });
                 };
 
-                fileReader.readAsDataURL( fileData );
+                fileReader.readAsDataURL( file );
 
             } else {
                 reject();
@@ -517,7 +518,7 @@ class Editor {
             }
 
             if ( target.name === "icon" ) {
-                this.readFile( target ).then( ( response ) => {
+                this.readFile( target.files[ 0 ] ).then( ( response ) => {
                     ipcRenderer.send( "renderer-uploadicon", response );
                 });
             }
@@ -578,6 +579,9 @@ class Editor {
                 return false;
             }
 
+            this.mode = Config.Editor.modes.SAVING;
+            this.dom.root.classList.add( "is-saving-file" );
+
             const menu = target.closest( ".js-upload-menu" );
             const fileInput = menu.querySelector( ".js-upload-file" );
             const fileField = menu.querySelector( ".js-upload-field" );
@@ -586,13 +590,18 @@ class Editor {
                 type: target.dataset.type,
             };
 
-            this.mode = Config.Editor.modes.SAVING;
-            this.dom.root.classList.add( "is-saving-file" );
+            const filePromises = [ ...fileInput.files ].map( async ( file ) => {
+                const response = await this.readFile( file );
 
-            this.readFile( fileInput ).then( ( response ) => {
                 postData.fileName = response.fileName;
                 postData.fileData = response.fileData;
-                ipcRenderer.send( "renderer-newfile", postData );
+                ipcRenderer.send( "renderer-newfile", {
+                    ...postData,
+                    ...response
+                });
+            });
+
+            Promise.all( filePromises ).then( () => {
                 fileField.value = "";
                 this.menus.removeMenus();
                 this.done();

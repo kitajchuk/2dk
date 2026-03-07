@@ -27,8 +27,8 @@ const renderSoundMenu = ({ sounds }) => {
                         </span>
                         <span>MP3</span>
                     </button>
-                    <input class="input editor__upload__field editor__field js-upload-field" id="editor-addsound-file-copy" type="text" placeholder="Choose a file" name="new_sound_copy" />
-                    <input class="editor__upload__mask js-upload-file" id="editor-addsound-file" type="file" name="new_sound" data-target="editor-addsound-file-copy" />
+                    <input class="input editor__upload__field editor__field js-upload-field" id="editor-addsound-file-copy" type="text" placeholder="Choose files (mp3)" name="new_sound_copy" />
+                    <input class="editor__upload__mask js-upload-file" id="editor-addsound-file" type="file" multiple accept="audio/mpeg" name="new_sound" data-target="editor-addsound-file-copy" />
                 </div>
             </div>
             <div class="editor__setting">
