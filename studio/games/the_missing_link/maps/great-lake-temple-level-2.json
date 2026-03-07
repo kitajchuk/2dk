@@ -68,6 +68,7 @@
                 {
                     "verb": "open",
                     "fx": "smoke",
+                    "sound": "smash",
                     "quest": {
                         "checkItem": "key"
                     }
