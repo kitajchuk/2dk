@@ -674,7 +674,7 @@ export default class Sprite {
 
     getFullbox ( poi = null, includeZ = false ) {
         const pos = poi || this.position;
-        const z = includeZ ? position.z : 0;
+        const z = includeZ ? pos.z : 0;
 
         return {
             x: pos.x,
