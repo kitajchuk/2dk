@@ -650,25 +650,46 @@ class TopView extends GameBox {
     }
 
 
-    handleHeroItem ( poi, dir, item ) {
-        if ( !item.canPickup() ) {
-            return;
-        }
-
-        // Key map items
-        if ( item.mapId ) {
+    handleHeroItemGet( item, hasItemAlready ) {
+        if ( item.data.dialogue && !hasItemAlready ) {
             // Cancel attack animation for itemGet sequence
             if ( this.attacking ) {
                 this.attacking = null;
             }
 
-            this.hero.giveItem( item.data.id, item.mapId );
-            this.gamequest.completeQuest( item.mapId );
             this.playItemGetDialogue( item.data.dialogue );
+
+        } else if ( item.data.sound ) {
+            this.player.gameaudio.hitSound( item.data.sound );
+        }
+    }
+
+
+    handleHeroItem ( poi, dir, item ) {
+        if ( !item.canPickup() ) {
+            return;
         }
 
+        const hasItemAlready = this.hero.getItem( item.data.id );
+
+        // KeyItem's placed on the Map are handled uniquely with an early return
+        if ( item.mapId ) {
+            if ( item.data.collect ) {
+                this.hero.collectItem( item.data.id, item.mapId );
+
+            } else {
+                this.hero.giveItem( item.data.id, item.mapId );
+            }
+
+            this.gamequest.completeQuest( item.mapId );
+            this.handleHeroItemGet( item, hasItemAlready );
+            this.map.killObject( "items", item );
+            return;
+        }
+
+        // Otherwise consider this an ItemDrop or KeyItemDrop
+
         if ( item.data.sound ) {
-            // Don't use hero sound channel for item pickup sounds
             this.player.gameaudio.hitSound( item.data.sound );
         }
 
@@ -676,15 +697,11 @@ class TopView extends GameBox {
             this.hero.updateStat( item.data.stat.key, item.data.stat.value );
         }
 
-        // We handle currency in Hero.giveItem() so don't double collect if a map item
-        if ( item.data.currency && !item.mapId ) {
+        if ( item.data.currency ) {
             this.hero.receive( item.data.currency );
         }
 
-        // A KeyItemDrop won't have a mapId (don't double collect if a map item)
-        if ( item.data.collect && !item.mapId ) {
-            const hasItemAlready = this.hero.getItem( item.data.id );
-
+        if ( item.data.collect ) {
             this.hero.collectItem( item.data.id );
 
             // If the item is picked up remove it's quest flag connection.
@@ -694,15 +711,7 @@ class TopView extends GameBox {
                 delete item.checkFlag;
             }
 
-            if ( item.data.dialogue && !hasItemAlready ) {
-                // Cancel attack animation for itemGet sequence
-                if ( this.attacking ) {
-                    this.attacking = null;
-                }
-
-                this.playItemGetDialogue( item.data.dialogue );
-            }
-            // TODO: Add sound here for ite pickup if it's not first time...
+            this.handleHeroItemGet( item, hasItemAlready );
         }
 
         this.map.killObject( "items", item );

@@ -60,7 +60,9 @@ const Config = {
         CURRENCY: "currency",
         HEART: "heart",
         DEATH: "death",
-        DAMAGE: "damage"
+        DAMAGE: "damage",
+        KEY: "key",
+        MAGIC: "magic"
     },
     map: {
         types: {

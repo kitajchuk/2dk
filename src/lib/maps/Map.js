@@ -483,7 +483,7 @@ export default class Map {
         };
 
         const collision = {
-            hero: Utils.collide( tile, this.gamebox.hero.getFullbox() ),
+            hero: Utils.collide( tile, this.gamebox.hero.getFullbox( null, true ) ),
             companion: this.gamebox.companion ? Utils.collide( tile, this.gamebox.companion.getFullbox() ) : false,
             liftedTile: this.gamebox.hero.liftedTile ? Utils.collide( tile, this.gamebox.hero.liftedTile.getFullbox() ) : false,
         };
