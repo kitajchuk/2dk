@@ -225,6 +225,10 @@ class TopView extends GameBox {
         if ( this.hero.spinLocked ) {
             this.hero.spinLocked = false;
         }
+
+        if ( this.hero.isSpinAttack() ) {
+            this.player.gameaudio.heroSound( Config.verbs.ATTACK );
+        }
     }
 
 
