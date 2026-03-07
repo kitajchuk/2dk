@@ -1020,25 +1020,29 @@ class TopView extends GameBox {
         // For now assume that a quest tile only has one action...
         const action = tile.instance.data.actions[ 0 ];
 
+        let success = false;
+
         // Assume there can only be one quest per action for an active tile...
         if ( quest ) {
             // TODO: Need an exhaustive check against Config.quest.action...
             if ( quest.checkItem ) {
                 const item = this.hero.getItem( quest.checkItem );
 
-                    if ( item && item.collect ) {
-                        this.hero.takeCollectible( quest.checkItem );
-                    }
+                if ( item && item.collect ) {
+                    this.hero.takeCollectible( quest.checkItem );
+                    success = true;
 
-            } else {
-                this.dialogue.auto({
-                    text: [ "..." ],
-                });
-                return;
+                } else {
+                    this.dialogue.auto({
+                        text: [ "..." ],
+                    });
+                }
             }
         }
 
-        tile.instance.attack( tile.coord, action );
+        if ( success ) {
+            tile.instance.attack( tile.coord, action );
+        }
     }
 
 
