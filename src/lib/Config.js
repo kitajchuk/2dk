@@ -46,6 +46,22 @@ const Config = {
         ATTRACT: "attract",
         SWITCH: "switch",
     },
+    sounds: {
+        LIFT: "lift",
+        JUMP: "jump",
+        THROW: "throw",
+        SMASH: "smash",
+        CHEST: "chest",
+        ATTACK: "attack",
+        BOUNCE: "bounce",
+        PARKOUR: "parkour",
+        ITEM_GET: "itemGet",
+        MOVE_OBJECT: "moveObject",
+        CURRENCY: "currency",
+        HEART: "heart",
+        DEATH: "death",
+        DAMAGE: "damage"
+    },
     map: {
         types: {
             WORLD: "world",

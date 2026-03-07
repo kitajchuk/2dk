@@ -667,7 +667,7 @@ export default class Map {
 
         if ( fx ) {
             this.mapFX.smokeObject( obj );
-            this.player.gameaudio.hitSound( "smash" );
+            this.player.gameaudio.hitSound( Config.sounds.SMASH );
         }
     }
 

@@ -31,7 +31,7 @@
         "parkour": "assets/sounds/sfx-dropping.mp3",
         "itemGet": "assets/sounds/sfx-item-get.mp3",
         "moveObject": "assets/sounds/sfx-move-object.mp3",
-        "rupee": "assets/sounds/sfx-rupee.mp3",
+        "currency": "assets/sounds/sfx-rupee.mp3",
         "heart": "assets/sounds/sfx-heart.mp3",
         "death": "assets/sounds/sfx-death.mp3",
         "damage": "assets/sounds/sfx-damage.mp3"
@@ -840,7 +840,7 @@
             "offsetX": 146,
             "offsetY": 68,
             "currency": 1,
-            "sound": "rupee"
+            "sound": "currency"
         },
         {
             "id": "blue-rupee",
@@ -851,7 +851,7 @@
             "offsetX": 18,
             "offsetY": 68,
             "currency": 5,
-            "sound": "rupee"
+            "sound": "currency"
         },
         {
             "id": "red-rupee",
@@ -862,7 +862,7 @@
             "offsetX": 82,
             "offsetY": 68,
             "currency": 20,
-            "sound": "rupee"
+            "sound": "currency"
         },
         {
             "id": "heart",

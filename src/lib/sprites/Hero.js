@@ -87,14 +87,14 @@ export default class Hero extends Sprite {
         this.resetMaxV();
         this.cycle( Config.verbs.JUMP, this.dir );
         this.physics.vz = -( this.map.data.tilesize / 3 );
-        this.player.gameaudio.heroSound( Config.verbs.JUMP );
+        this.player.gameaudio.heroSound( Config.sounds.JUMP );
     }
 
 
     swimKick () {
         this.kickCounter = 30;
         this.physics.maxv = this.physics.controlmaxv * 4;
-        this.player.gameaudio.heroSound( Config.verbs.JUMP );
+        this.player.gameaudio.heroSound( Config.sounds.JUMP );
     }
 
 
@@ -267,7 +267,7 @@ export default class Hero extends Sprite {
             this.itemGet = new ItemGet( this.position, item, this.map, this );
             this.stillTimer = Infinity;
             this.cycle( "itemGet", "down" );
-            this.player.gameaudio.heroSound( "itemGet" );
+            this.player.gameaudio.heroSound( Config.sounds.ITEM_GET );
         }
     }
 
@@ -858,7 +858,7 @@ export default class Hero extends Sprite {
             }
 
             this.player.gameaudio.stop();
-            this.player.gameaudio.heroSound( "death" );
+            this.player.gameaudio.heroSound( Config.sounds.DEATH );
         }
     }
 
@@ -919,7 +919,7 @@ export default class Hero extends Sprite {
             y: this.gamebox.interact.tile.coord[ 1 ] * this.map.data.tilesize,
         };
 
-        this.player.gameaudio.heroSound( Config.verbs.LIFT );
+        this.player.gameaudio.heroSound( Config.sounds.LIFT );
         this.map.spliceActiveTile( this.gamebox.interact.tile.group, this.gamebox.interact.tile.coord );
         this.liftedTile = new LiftedTile( spawn, activeTiles, this.map, this );
         this.cycle( Config.verbs.LIFT, this.dir );

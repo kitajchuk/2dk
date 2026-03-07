@@ -115,7 +115,7 @@ export class LiftedTile extends Sprite {
 
     throw () {
         this.hero.face( this.hero.dir );
-        this.player.gameaudio.heroSound( Config.verbs.THROW );
+        this.player.gameaudio.heroSound( Config.sounds.THROW );
         this.hero.physics.maxv = this.hero.physics.controlmaxv;
         this.throwing = true;
 

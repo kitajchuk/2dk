@@ -227,7 +227,7 @@ class TopView extends GameBox {
         }
 
         if ( this.hero.isSpinAttack() ) {
-            this.player.gameaudio.heroSound( Config.verbs.ATTACK );
+            this.player.gameaudio.heroSound( Config.sounds.ATTACK );
         }
     }
 
@@ -567,7 +567,7 @@ class TopView extends GameBox {
         this.jumping = true;
         this.hero.cycle( Config.verbs.JUMP, dir );
         this.hero.physics.vz = -( this.map.data.tilesize / 4 );
-        this.player.gameaudio.heroSound( "parkour" );
+        this.player.gameaudio.heroSound( Config.sounds.PARKOUR );
 
         this.hero.parkour = {
             poi: destPos,
@@ -815,7 +815,7 @@ class TopView extends GameBox {
         this.hero.cycle( Config.verbs.ATTACK, this.hero.dir );
         
         if ( isWeapon ) {
-            this.player.gameaudio.heroSound( Config.verbs.ATTACK );
+            this.player.gameaudio.heroSound( Config.sounds.ATTACK );
         }
     }
 
@@ -877,7 +877,7 @@ class TopView extends GameBox {
 
         this.falling = true;
         this.hero.cycle( Config.verbs.DIVE, this.hero.dir );
-        this.player.gameaudio.heroSound( "parkour" );
+        this.player.gameaudio.heroSound( Config.sounds.PARKOUR );
 
         this.hero.falling = {
             to: fallToPosition,
@@ -948,7 +948,7 @@ class TopView extends GameBox {
 
         this.falling = true;
         this.hero.cycle( Config.verbs.FALL, this.hero.dir );
-        this.player.gameaudio.heroSound( "parkour" );
+        this.player.gameaudio.heroSound( Config.sounds.PARKOUR );
 
         this.hero.falling = {
             to: fallToPosition,
