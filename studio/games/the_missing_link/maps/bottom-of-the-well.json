@@ -183,7 +183,22 @@
             }
         }
     ],
-    "items": [],
+    "items": [
+        {
+            "id": "key",
+            "spawn": {
+                "x": 273,
+                "y": 496
+            },
+            "dialogue": {
+                "type": "text",
+                "text": [
+                    "Dev key!"
+                ]
+            },
+            "dropin": true
+        }
+    ],
     "collision": [
         [
             76,
@@ -2353,8 +2368,8 @@
                 ],
                 [
                     [
-                        0,
-                        2240
+                        704,
+                        384
                     ]
                 ],
                 [
