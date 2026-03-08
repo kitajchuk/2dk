@@ -23,6 +23,11 @@ export default class GameStorage {
     ];
 
 
+    static playerProps = [
+        "playtime",
+    ];
+
+
     constructor ( player ) {
         this.player = player;
         this.storage = {};
@@ -84,6 +89,10 @@ export default class GameStorage {
 
         for ( const prop of GameStorage.heroProps ) {
             this.set( prop, gamebox.hero[ prop ] );
+        }
+
+        for ( const prop of GameStorage.playerProps ) {
+            this.set( prop, gamebox.player[ prop ] );
         }
 
         this.save();

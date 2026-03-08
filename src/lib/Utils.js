@@ -396,6 +396,31 @@ const Utils = {
     },
 
 
+    padTime ( unit ) {
+        return unit.toString().padStart( 2, "0" );
+    },
+
+
+    convertMS( ms ) {
+        let seconds = Math.floor( ms / 1000 );
+        let minute = Math.floor( seconds / 60 );
+        seconds = seconds % 60;
+        let hour = Math.floor( minute / 60 );
+        minute = minute % 60;
+        const day = Math.floor( hour / 24 );
+        hour = hour % 24;
+        const formatted = `${this.padTime( hour )}:${this.padTime( minute )}:${this.padTime( seconds )}`;
+
+        return {
+            day,
+            hour,
+            minute,
+            seconds,
+            formatted,
+        };
+    },
+
+
     // From Akihabara helpers:
 
 
@@ -415,12 +440,10 @@ const Utils = {
     },
 
 
-    // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L122
     goToZero ( v ) {
         return ( v ? v - ( v / Math.abs( v ) ) : 0 );
     },
 
-    // https://github.com/Akihabara/akihabara/blob/master/src/helpers.js#L95
 	upAndDown ( counter, max ) {
 		if ( ( counter % max ) > ( max / 2 ) ) {
 			return max - ( counter % max );

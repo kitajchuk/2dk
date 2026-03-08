@@ -86,11 +86,16 @@ export default class Player extends Controller {
 
         this.idleStarted = true;
         this.animate = ( currentTime ) => {
+            // Request next animation frame right away (eager)...
             this.rafId = window.requestAnimationFrame( this.animate );
+
             if ( this.gamepad.gamepadConnected ) {
+                // Need to blit so we can resume via gamepad input
                 this.gamepad.blitNativeGamepad( currentTime );
             }
         };
+
+        // Start the animation loop
         this.rafId = window.requestAnimationFrame( this.animate );
     }
 
@@ -105,11 +110,16 @@ export default class Player extends Controller {
         this.currentFPS = this.fps;
         this.previousTime = performance.now();
         this.previousFrameTime = this.previousTime;
+        this.previousPlayTime = performance.now();
         this.animate = ( currentTime ) => {
             // Request next animation frame right away (eager)...
             this.rafId = window.requestAnimationFrame( this.animate );
 
             const deltaTime = currentTime - this.previousTime;
+
+            // Track total play time
+            this.playtime += currentTime - this.previousPlayTime;
+            this.previousPlayTime = currentTime;
 
             if ( deltaTime >= this.interval ) {
                 // Update physics at controlled frame rate
@@ -333,6 +343,7 @@ export default class Player extends Controller {
         this.resolution = this.getResolution();
         this.width = this.data.width / this.resolution;
         this.height = this.data.height / this.resolution;
+        this.playtime = this.query.nostorage ? 0 : this.gamestorage.get( "playtime" ) || 0;
         this.buildScreen();
         this.buildGamebox();
         this.splashLoad.innerHTML = `

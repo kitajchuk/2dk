@@ -1,5 +1,6 @@
 import Config from "./Config";
 import Loader from "./Loader";
+import Utils from "./Utils";
 import { renderButtonSprite } from "./DOM";
 import { touchControls } from "./GamePad";
 
@@ -44,6 +45,7 @@ export default class HUD {
         this.renderCurrency();
         this.renderKeys();
         this.renderFPS();
+        this.renderPlaytime();
     }
 
 
@@ -114,6 +116,27 @@ export default class HUD {
         this.player.renderLayer.context.textBaseline = "top";
         this.player.renderLayer.context.fillText(
             fpsString,
+            x,
+            y
+        );
+
+        this.player.renderLayer.context.restore();
+    }
+
+
+    renderPlaytime () {
+        const time = Utils.convertMS( this.player.playtime );
+        const playtimeString = time.formatted;
+        const x = this.gamebox.camera.width / 2 - 40, y = 20;
+
+        this.player.renderLayer.context.save();
+
+        this.player.renderLayer.context.font = "16px Calamity-Bold";
+        this.player.renderLayer.context.fillStyle = Config.colors.white;
+        this.player.renderLayer.context.textAlign = "left";
+        this.player.renderLayer.context.textBaseline = "top";
+        this.player.renderLayer.context.fillText(
+            playtimeString,
             x,
             y
         );
