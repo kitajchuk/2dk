@@ -267,6 +267,7 @@ export class TileBox {
         this.offgrid = false;
         this.mapId = this.activeTiles.getMapId( this.coords );
         this.pushed = null;
+        this.layer = Config.layers.SPRITES;
 
         // Apply initial perceptionBox
         this.applyHitbox();
