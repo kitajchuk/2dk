@@ -1,4 +1,5 @@
 import Config from "./Config";
+import Hero from "./sprites/Hero";
 
 
 
@@ -211,6 +212,11 @@ const Utils = {
         );
 
         return { collision, isCollision };
+    },
+
+
+    isHero ( sprite ) {
+        return sprite instanceof Hero;
     },
 
 

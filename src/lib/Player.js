@@ -24,7 +24,7 @@ export default class Player extends Controller {
         this.frame = 0;
         this.interval = 1000 / this.fps;
 
-        this.renderLayer = null;;
+        this.renderLayer = null;
 
         this.loader = new Loader();
         this.Loader = Loader;

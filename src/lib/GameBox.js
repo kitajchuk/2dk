@@ -210,9 +210,10 @@ export default class GameBox {
 
 
     checkElevationCollision ( poi, sprite, collisions = {}, eventOpts = { dirCheck: false }, elevationOpts = undefined ) {
+        const checkFunc = Utils.isHero( sprite  ) ? "checkEvents" : "checkEventsNPC";
         const collision = {
             map: this.checkMap( poi, sprite ),
-            event: this.checkEvents( poi, sprite, eventOpts ),
+            event: this[ checkFunc ]( poi, sprite, eventOpts ),
 
         };
         const { 
