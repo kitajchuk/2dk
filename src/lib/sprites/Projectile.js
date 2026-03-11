@@ -4,25 +4,33 @@ import Utils from "../Utils";
 
 
 export default class Projectile extends Sprite {
-    constructor ( projectile, dir, sprite, map ) {
+    constructor ( projectile, dir, sprite, map, customSpawn = undefined ) {
         const width = projectile.dirs ? projectile.dirs[ dir ].width : projectile.width;
         const height = projectile.dirs ? projectile.dirs[ dir ].height : projectile.height;
         const spawn = {
-            x: sprite.position.x + ( sprite.width / 2 ) - ( width / 2 ),
-            y: sprite.position.y + ( sprite.height / 2 ) - ( height / 2 ),
-        }
+            x: customSpawn?.x ?? sprite.position.x,
+            y: customSpawn?.y ?? sprite.position.y,
+        };
         switch ( dir ) {
             case "left":
                 spawn.x -= width;
+                spawn.y += ( ( customSpawn?.height ?? sprite.height ) / 2 ) - ( height / 2 );
+                projectile.vx = -projectile.maxv;
                 break;
             case "right":
-                spawn.x += width;
+                spawn.x += customSpawn?.width ?? sprite.width;
+                spawn.y += ( ( customSpawn?.height ?? sprite.height ) / 2 ) - ( height / 2 );
+                projectile.vx = projectile.maxv;
                 break;
             case "up":
                 spawn.y -= height;
+                spawn.x += ( ( customSpawn?.width ?? sprite.width ) / 2 ) - ( width / 2 );
+                projectile.vy = -projectile.maxv;
                 break;
             case "down":
-                spawn.y += height;
+                spawn.y += customSpawn?.height ?? sprite.height;
+                spawn.x += ( ( customSpawn?.width ?? sprite.width ) / 2 ) - ( width / 2 );
+                projectile.vy = projectile.maxv;
                 break;
         }
         const hitbox = {
@@ -33,10 +41,7 @@ export default class Projectile extends Sprite {
         }
         const verbs = projectile.dirs ? {
             face: {
-                down: projectile.dirs.down,
-                up: projectile.dirs.up,
-                left: projectile.dirs.left,
-                right: projectile.dirs.right,
+                ...projectile.dirs,
             },
         } : {
             face: {

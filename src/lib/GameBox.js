@@ -392,6 +392,11 @@ export default class GameBox {
             if ( prop === "status" && this.hero.status ) {
                 this.hero.applyStatus( this.hero.status );
             }
+
+            // Apply weapon projectile if present in items
+            if ( prop === "items" ) {
+                this.hero.weaponProjectile = this.hero.getWeaponProjectile() ?? null;
+            }
         }
     }
 

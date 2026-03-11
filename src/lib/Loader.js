@@ -8,7 +8,7 @@ export default class Loader {
             cache[ id ] = val;
         }
 
-        return ( id ? cache[ id ] : cache );
+        return ( id ? cache[ id ] : undefined );
     }
 
 

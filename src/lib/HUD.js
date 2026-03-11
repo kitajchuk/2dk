@@ -326,7 +326,7 @@ export default class HUD {
         } else if ( this.gamebox.hero.mode !== this.buttons.b ) {
             switch ( this.gamebox.hero.mode ) {
                 case Config.hero.modes.WEAPON:
-                    const weaponItem = this.hero.items.find( ( item ) => item.equip === "weapon" );
+                    const weaponItem = this.hero.getWeapon();
                     if ( weaponItem ) {
                         touchControls.b.elem.innerHTML = renderButtonSprite( weaponItem, "B" );
                         this.buttons.b = Config.hero.modes.WEAPON;

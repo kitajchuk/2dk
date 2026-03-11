@@ -614,8 +614,8 @@ export default class Sprite {
 
     getNextPoiByAngle ( angle ) {
         return {
-            x: this.position.x + ( Math.cos( angle ) * ( this.physics.maxv * 2 ) ),
-            y: this.position.y + ( Math.sin( angle ) * ( this.physics.maxv * 2 ) ),
+            x: this.position.x + ( Math.cos( angle ) * ( this.physics.maxv * 1.5 ) ),
+            y: this.position.y + ( Math.sin( angle ) * ( this.physics.maxv * 1.5 ) ),
             z: this.position.z,
         };
     }

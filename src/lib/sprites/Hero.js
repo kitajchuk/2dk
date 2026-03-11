@@ -40,6 +40,7 @@ export default class Hero extends Sprite {
         this.projectileIndex = -1;
         this.projectileItem = null;
         this.projectileControlLocked = false;
+        this.weaponProjectile = null;
         this.mode = Config.hero.modes.WEAPON;
         this.interact = {};
         this.parkour = null;
@@ -177,6 +178,11 @@ export default class Hero extends Sprite {
     }
 
 
+    hasFullHealth () {
+        return this.health >= this.getMaxHealth();
+    }
+
+
 /*******************************************************************************
 * Items
 *******************************************************************************/
@@ -286,8 +292,13 @@ export default class Hero extends Sprite {
             this.doItemGet( item );
         }
 
-        if ( item.equip ) {
+        // Only base equip (e.g. skip sword-beam)
+        if ( item.equip && !item.projectile ) {
             this.equip( item.equip );
+        }
+
+        if ( item.projectile && item.equip === "weapon" ) {
+            this.weaponProjectile = item;
         }
 
         if ( item.currency ) {
@@ -317,8 +328,13 @@ export default class Hero extends Sprite {
 
         this.items.splice( this.items.indexOf( item ), 1 );
 
-        if ( item.equip ) {
+        // Only base equip (e.g. skip sword-beam)
+        if ( item.equip && !item.projectile ) {
             this.unequip( item.equip );
+        }
+
+        if ( item.projectile && item.equip === "weapon" ) {
+            this.weaponProjectile = null;
         }
 
         if ( item.status ) {
@@ -363,6 +379,11 @@ export default class Hero extends Sprite {
     }
 
 
+    getWeapon () {
+        return this.items.find( ( item ) => item.equip === "weapon" && !item.projectile );
+    }
+
+
     hasShield () {
         return this.equipped.shield && this.data.shield?.[ this.verb ]?.[ this.dir ]?.length;
     }
@@ -373,17 +394,33 @@ export default class Hero extends Sprite {
     }
 
 
+    getProjectiles () {
+        return this.items.filter( ( item ) => item.projectile && !item.equip )
+    }
+
+
+    getWeaponProjectile () {
+        return this.items.find( ( item ) => item.projectile && item.equip === "weapon" );
+    }
+
+
+    canFireWeaponProjectile () {
+        return this.isWeaponMode() && this.getWeaponProjectile() && this.hasFullHealth() && !this.spinLocked;
+    }
+
+
     canCycleProjectile () {
-        const projectiles = this.items.filter( ( item ) => item.projectile );
+        const projectiles = this.getProjectiles();
         return projectiles.length > 1 && this.projectileIndex < projectiles.length - 1;
     }
 
 
     updateProjectileItem () {
-        const projectiles = this.items.filter( ( item ) => item.projectile );
+        const projectiles = this.getProjectiles();
         
         if ( this.projectileIndex >= projectiles.length - 1 ) {
             this.projectileIndex = 0;
+
         } else {
             this.projectileIndex++;
         }
@@ -399,6 +436,19 @@ export default class Hero extends Sprite {
 
         const data = this.gamebox.player.getMergedData({
             id: this.projectileItem.projectile,
+        }, "projectiles" );
+
+        this.projectile = new HeroProjectile( data, this.dir, this, this.map );
+    }
+
+
+    fireWeaponProjectile () {
+        if ( this.projectile || !this.weaponProjectile ) {
+            return;
+        }
+
+        const data = this.gamebox.player.getMergedData({
+            id: this.weaponProjectile.projectile,
         }, "projectiles" );
 
         this.projectile = new HeroProjectile( data, this.dir, this, this.map );
@@ -622,7 +672,7 @@ export default class Hero extends Sprite {
             return;
         }
 
-        if ( this.controls.b ) {
+        if ( this.controls.b && !this.isSpinAttack() ) {
             if ( this.controls.bHold ) {
                 this.spinCharged = true;
                 this.spinCounter++;
@@ -746,6 +796,15 @@ export default class Hero extends Sprite {
         // This needs to handle the spin attack on EVERY frame...
         if ( this.frame > 0 || this.isSpinAttack() ) {
             this.handleAttackFrame();
+        }
+
+        if (
+            // Fire on the last frame
+            this.frame === this.data.weapon[ this.dir ].length - 1 && 
+            !this.isSpinAttack() &&
+            this.canFireWeaponProjectile()
+        ) {
+            this.fireWeaponProjectile();
         }
     }
 
@@ -1503,7 +1562,19 @@ export class HeroMaskFX extends FX {
 *******************************************************************************/
 export class HeroProjectile extends Projectile {
     constructor ( projectile, dir, hero, map ) {
-        super( projectile, dir, hero, map );
+        let customSpawn = undefined;
+        if ( hero.canFireWeaponProjectile() ) {
+            const frame = hero.getWeaponFrame();
+            customSpawn = {
+                x: hero.position.x + frame.positionX,
+                y: hero.position.y + frame.positionY,
+                width: frame.width,
+                height: frame.height,
+            };
+        }
+        super( projectile, dir, hero, map, customSpawn );
+        this.isWeaponProjectile = hero.canFireWeaponProjectile();
+        this.opacityCounter = 0;
         this.hero = hero;
         this.angle = null;
         this.dpadCheck = null;
@@ -1555,6 +1626,20 @@ export class HeroProjectile extends Projectile {
     }
 
 
+    applyOpacity () {
+        if ( !this.isWeaponProjectile ) {
+            super.applyOpacity();
+            return;
+        }
+
+        this.opacityCounter++;
+
+        if ( this.opacityCounter % 2 === 0 ) {
+            this.player.renderLayer.context.globalAlpha = 0.25;
+        }
+    }
+
+
     applyPosition () {
         let poi = this.getNextPoi();
 
@@ -1592,7 +1677,7 @@ export class HeroProjectile extends Projectile {
         
         if ( isCollision ) {
             if ( collision.enemy && collision.enemy.canBeAttacked( this ) ) {
-                collision.enemy.hit( this.hero.getStat( "power" ) );
+                collision.enemy.hit( this.data.power );
             }
 
             this.kill();
