@@ -197,6 +197,19 @@
                 ]
             },
             "dropin": true
+        },
+        {
+            "id": "sword-beam",
+            "spawn": {
+                "x": 628,
+                "y": 356
+            },
+            "dialogue": {
+                "type": "text",
+                "text": [
+                    "You got the sword beam!"
+                ]
+            }
         }
     ],
     "collision": [

@@ -16,7 +16,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1867,
+    "save": 1868,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -771,6 +771,17 @@
             }
         },
         {
+            "id": "sword-beam",
+            "name": "Sword Beam",
+            "width": 24,
+            "height": 60,
+            "image": "assets/sprites/hero_la.png",
+            "offsetX": 460,
+            "offsetY": 460,
+            "equip": "weapon",
+            "projectile": "sword-beam"
+        },
+        {
             "id": "shield",
             "name": "Shield",
             "width": 32,
@@ -955,8 +966,8 @@
             "power": 1,
             "fx": "smoke",
             "sound": "smash",
-            "maxv": 6,
-            "controlmaxv": 6,
+            "maxv": 8,
+            "controlmaxv": 8,
             "dirs": {
                 "left": {
                     "offsetX": 548,
@@ -988,12 +999,12 @@
             "id": "boomerang",
             "name": "Boomerang",
             "image": "assets/sprites/hero_la.png",
-            "power": 1,
+            "power": 2,
             "fx": "smoke",
             "sound": "smash",
             "spin": true,
-            "maxv": 8,
-            "controlmaxv": 8,
+            "maxv": 12,
+            "controlmaxv": 12,
             "dirs": {
                 "left": {
                     "offsetX": 0,
@@ -1020,6 +1031,44 @@
                     "flipX": true,
                     "width": 48,
                     "height": 48
+                }
+            }
+        },
+        {
+            "id": "sword-beam",
+            "name": "Sword Beam",
+            "image": "assets/sprites/hero_la.png",
+            "power": 0.5,
+            "fx": "smoke",
+            "sound": "smash",
+            "maxv": 24,
+            "controlmaxv": 24,
+            "dirs": {
+                "left": {
+                    "offsetX": 492,
+                    "offsetY": 528,
+                    "width": 60,
+                    "height": 24
+                },
+                "up": {
+                    "offsetX": 460,
+                    "offsetY": 460,
+                    "width": 24,
+                    "height": 60
+                },
+                "down": {
+                    "offsetX": 460,
+                    "offsetY": 460,
+                    "width": 24,
+                    "height": 60,
+                    "flipY": true
+                },
+                "right": {
+                    "offsetX": 492,
+                    "offsetY": 528,
+                    "width": 60,
+                    "height": 24,
+                    "flipX": true
                 }
             }
         }
