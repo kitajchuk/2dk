@@ -16,7 +16,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1870,
+    "save": 1885,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -2112,6 +2112,75 @@
             ]
         },
         {
+            "id": "old-hermit",
+            "name": "Old Hermit",
+            "width": 64,
+            "height": 64,
+            "image": "assets/sprites/npcs.png",
+            "maxv": 1,
+            "controlmaxv": 1,
+            "hitbox": {
+                "x": 0,
+                "y": 20,
+                "width": 64,
+                "height": 44
+            },
+            "verbs": {
+                "face": {
+                    "down": {
+                        "offsetX": 680,
+                        "offsetY": 480
+                    },
+                    "up": {
+                        "offsetX": 808,
+                        "offsetY": 480
+                    },
+                    "left": {
+                        "offsetX": 936,
+                        "offsetY": 480
+                    },
+                    "right": {
+                        "offsetX": 936,
+                        "offsetY": 480,
+                        "flipX": true
+                    }
+                },
+                "walk": {
+                    "dur": 500,
+                    "down": {
+                        "offsetX": 680,
+                        "offsetY": 480,
+                        "stepsX": 2
+                    },
+                    "up": {
+                        "offsetX": 808,
+                        "offsetY": 480,
+                        "stepsX": 2
+                    },
+                    "left": {
+                        "offsetX": 936,
+                        "offsetY": 480,
+                        "stepsX": 2
+                    },
+                    "right": {
+                        "offsetX": 936,
+                        "offsetY": 480,
+                        "stepsX": 2,
+                        "flipX": true
+                    }
+                }
+            },
+            "states": [
+                {
+                    "verb": "face",
+                    "dir": "down",
+                    "action": {
+                        "verb": "talk"
+                    }
+                }
+            ]
+        },
+        {
             "id": "cucco",
             "name": "Cucco",
             "width": 64,
@@ -2680,6 +2749,7 @@
         "maps/plateau-cavern.json",
         "maps/plateau-residence.json",
         "maps/sport-fishing-shop.json",
+        "maps/sword-masters-house.json",
         "maps/tunnel-crypt.json",
         "maps/under-the-plateau.json",
         "maps/untended-graveyard.json",
