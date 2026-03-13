@@ -77,8 +77,11 @@ I've found the [Mozilla Gaming](https://developer.mozilla.org/en-US/docs/Games) 
 I've been trying to keep track of where I've found resources online. Stuff like sprites, tiles and audio.
 
 #### Assets
-* Sounds for LA from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/link-s-awakening-dx)
+* Sounds & Music for LA from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/link-s-awakening-dx)
 * Sprites & Tiles from [The Sprites Resource](https://www.spriters-resource.com/game_boy_gbc/thelegendofzeldalinksawakeningdx)
+* Music from [OpenGameArt](https://opengameart.org/)
+* Music from [playonloop](https://www.playonloop.com/)
+* Music from [tannerhelland](https://tannerhelland.com/)
 
 #### Inspiration
 * I'm an OG fan of [kesiev's](https://github.com/kesiev) original [Akihabara](https://github.com/akihabara/akihabara/) work
