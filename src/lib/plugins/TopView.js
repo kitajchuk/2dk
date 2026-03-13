@@ -30,7 +30,7 @@ class TopView extends GameBox {
 * GamePad Inputs
 *******************************************************************************/
     pressD ( dir ) {
-        if ( this.panning || this.dropin || this.hero.projectileControlLocked || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.dropin || this.hero.projectileControlLocked || this.hero.isStill() ) {
             return;
         }
 
@@ -39,7 +39,7 @@ class TopView extends GameBox {
 
 
     releaseD () {
-        if ( this.panning || this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.swimming || this.hero.isHitOrStill() ) {
+        if ( this.panning || this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.swimming || this.hero.isStill() ) {
             return;
         }
 
@@ -100,7 +100,7 @@ class TopView extends GameBox {
 
     // Common pressA methods
     canBlockAPress () {
-        return this.panning || this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.liftLocked || this.hero.isHitOrStill();
+        return this.panning || this.locked || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.liftLocked || this.hero.isStill();
     }
 
 
@@ -130,7 +130,7 @@ class TopView extends GameBox {
 
     // Common releaseA methods
     canBlockReleaseA () {
-        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isHitOrStill();
+        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.hero.isStill();
     }
 
 
@@ -187,7 +187,7 @@ class TopView extends GameBox {
 
     // Common pressB methods
     canBlockPressB () {
-        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isAttackBlocked() || this.hero.isHitOrStill();
+        return this.panning || this.jumping || this.falling || this.attacking || this.dropin || this.dialogue.active || this.hero.isAttackBlocked() || this.hero.isStill();
     }
 
 
@@ -217,7 +217,7 @@ class TopView extends GameBox {
 
     // Common releaseB methods
     canBlockReleaseB () {
-        return this.panning || this.jumping || this.falling || this.dropin || this.hero.isHitOrStill();
+        return this.panning || this.jumping || this.falling || this.dropin || this.hero.isStill();
     }
 
 
@@ -257,7 +257,7 @@ class TopView extends GameBox {
             this.panning ||
             this.falling ||
             this.liftLocked ||
-            this.hero.isHitOrStill() ||
+            this.hero.isStill() ||
             this.hero.isProjectileLocked() ||
             // Hero can move around while spinLocked (e.g. get into position for spin attack)
             ( this.attacking && !this.hero.spinLocked )

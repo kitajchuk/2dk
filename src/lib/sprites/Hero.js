@@ -62,12 +62,12 @@ export default class Hero extends Sprite {
     }
 
 
-    hit ( ...args ) {
+    hit ( power ) {
         if ( this.falling || this.diveCounter > 0 ) {
             return;
         }
 
-        super.hit( ...args );
+        super.hit( power, 50, 150 );
 
         this.destroyLiftedTile();
 

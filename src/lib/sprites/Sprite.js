@@ -137,9 +137,9 @@ export default class Sprite {
     }
 
 
-    hit ( power = 1, timer = 50 ) {
-        this.hitTimer = timer;
-        this.stillTimer = timer;
+    hit ( power = 1, stillTime = 50, hitTime = 50 ) {
+        this.hitTimer = hitTime;
+        this.stillTimer = stillTime;
         this.frame = 0;
         this.health = Math.max( this.health - power, 0 );
         this.resetPhysics();
@@ -158,6 +158,11 @@ export default class Sprite {
 
     isHitOrStill () {
         return this.hitTimer > 0 || this.stillTimer > 0;
+    }
+
+
+    isStill () {
+        return this.stillTimer > 0;
     }
 
 
