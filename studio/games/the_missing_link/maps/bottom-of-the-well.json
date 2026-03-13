@@ -183,35 +183,7 @@
             }
         }
     ],
-    "items": [
-        {
-            "id": "key",
-            "spawn": {
-                "x": 273,
-                "y": 496
-            },
-            "dialogue": {
-                "type": "text",
-                "text": [
-                    "Dev key!"
-                ]
-            },
-            "dropin": true
-        },
-        {
-            "id": "sword-beam",
-            "spawn": {
-                "x": 628,
-                "y": 356
-            },
-            "dialogue": {
-                "type": "text",
-                "text": [
-                    "You got the sword beam!"
-                ]
-            }
-        }
-    ],
+    "items": [],
     "collision": [
         [
             76,
