@@ -77,11 +77,21 @@ I've found the [Mozilla Gaming](https://developer.mozilla.org/en-US/docs/Games) 
 I've been trying to keep track of where I've found resources online. Stuff like sprites, tiles and audio.
 
 #### Assets
-* Sounds & Music for LA from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/link-s-awakening-dx)
+* Sounds & Music from LA from [khinsider](https://downloads.khinsider.com/game-soundtracks/album/link-s-awakening-dx)
 * Sprites & Tiles from [The Sprites Resource](https://www.spriters-resource.com/game_boy_gbc/thelegendofzeldalinksawakeningdx)
 * Music from [OpenGameArt](https://opengameart.org/)
 * Music from [playonloop](https://www.playonloop.com/)
 * Music from [tannerhelland](https://tannerhelland.com/)
+* Sprites sourced from rips by
+  * [Bruce Juice](https://www.spriters-resource.com/game_boy_gbc/thelegendofzeldalinksawakeningdx/asset/9452/)
+    * No profile so linking to at least one sheet used
+  * [Darth RPG](https://www.spriters-resource.com/profile/darth+rpg/)
+  * [Shawn](https://www.spriters-resource.com/profile/shawn/)
+* Tiles sourced from rips by
+  * [Jermungandr](https://www.spriters-resource.com/profile/jermungandr/)
+  * [Red Mage Moogle](https://www.spriters-resource.com/game_boy_gbc/thelegendofzeldalinksawakeningdx/asset/9457/?source=genre)
+    * No profile so linking to at least one sheet used
+  * [KOOLKID67890](https://www.spriters-resource.com/profile/koolkid67890/)
 
 #### Inspiration
 * I'm an OG fan of [kesiev's](https://github.com/kesiev) original [Akihabara](https://github.com/akihabara/akihabara/) work
