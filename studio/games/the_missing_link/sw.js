@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
-const CACHE_NAME = "v1886";
+const CACHE_NAME = "v1914";
 const CACHE_URLS = [
     "",
     "index.html",
@@ -64,6 +64,7 @@ const CACHE_URLS = [
     "maps/bottom-of-the-well.json",
     "maps/cathedral-of-the-cursed.json",
     "maps/fishermans-shack.json",
+    "maps/forest-cavern.json",
     "maps/graveyard-residence.json",
     "maps/great-fairy-fountain.json",
     "maps/great-lake-temple-level-2.json",
@@ -80,6 +81,7 @@ const CACHE_URLS = [
     "maps/plateau-residence.json",
     "maps/sport-fishing-shop.json",
     "maps/sword-masters-house.json",
+    "maps/treetop-village.json",
     "maps/tunnel-crypt.json",
     "maps/under-the-plateau.json",
     "maps/untended-graveyard.json",
