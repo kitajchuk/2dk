@@ -302,7 +302,7 @@
                                 "Folks don't wander in here from your corner of the world.",
                                 "...",
                                 "Yes, well I suppose it's too late now. Here you are!",
-                                "If you continue North through the tunnel crypt you'll find yourself at an impasse.",
+                                "If you continue North through the {Tunnel Crypt} you'll find yourself at an impasse.",
                                 "But, you seem like a smart lad. You'll figure it out."
                             ]
                         }
@@ -531,7 +531,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got the bracelet!",
+                                "You got the {Bracelet}!",
                                 "You feel like you could lift anything!"
                             ]
                         }

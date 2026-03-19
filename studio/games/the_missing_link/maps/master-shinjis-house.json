@@ -84,7 +84,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got the Master Sword!",
+                                "You got the {Hero Sword}!",
                                 "Now you can slay your enemies!"
                             ]
                         }
@@ -143,7 +143,7 @@
                             "type": "text",
                             "text": [
                                 "Hmm...",
-                                "It looks like Master Shinji was writing a letter to someone in the Imperial City before he died..."
+                                "It looks like {Master Shinji} was writing a letter to someone in the Imperial City before he died..."
                             ]
                         }
                     }

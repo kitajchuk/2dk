@@ -104,9 +104,9 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "Welcome to the Sport Fishing Shop!",
+                                "Welcome to the {Sport Fishing Shop}!",
                                 "Between you and me, I've developed a new way to catch fish.",
-                                "I use bombs! It blows 'em right out of the water. Then you can just scoop them up with a net.",
+                                "I use {Bombs}! It blows 'em right out of the water. Then you can just scoop them up with a net.",
                                 "...",
                                 "Don't be silly. This new technique will catch on quick once you learn how effective it is!",
                                 "Anyway, go ahead and have a look around."

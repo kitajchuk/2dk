@@ -104,7 +104,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got 20 rupees!",
+                                "You got {20} {game.currency}!",
                                 "Joy!"
                             ]
                         }
@@ -130,7 +130,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got a small key!",
+                                "You got a {Small Key}!",
                                 "I bet it opens something cool!"
                             ]
                         }
@@ -164,7 +164,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got a small key!",
+                                "You got a {Small Key}!",
                                 "I bet it opens something cool!"
                             ]
                         }
@@ -198,7 +198,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got a small key!",
+                                "You got a {Small Key}!",
                                 "I bet it opens something cool!"
                             ]
                         }

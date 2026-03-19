@@ -244,7 +244,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got a small key!",
+                                "You got a {Small Key}!",
                                 "Someone must have lost this..."
                             ]
                         }

@@ -82,7 +82,12 @@ datalist {
     }
 }
 .textarea {
-    min-height: 96px;
+    height: 96px;
+    transition: height 200ms ease;
+
+    &:focus {
+        height: 256px;
+    }
 }
 .select {
     position: relative;

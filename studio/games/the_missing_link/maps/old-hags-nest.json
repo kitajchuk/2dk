@@ -89,7 +89,7 @@
                                 "...",
                                 "What brings you here, boy? I don't get many visitors in this old shack.",
                                 "...",
-                                "Hmm, yes I see. Are those cursed ghosts in the graveyard giving you trouble then?",
+                                "Hmm, yes I see. Are those {Cursed Ghosts} in the graveyard giving you trouble then?",
                                 "You're just going to have to figure out how to deal with them.",
                                 "Hee hee hee!"
                             ]
@@ -129,7 +129,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got the curse potion!",
+                                "You got the {Curse Potion}!",
                                 "You feel wicked sick but full of new power!"
                             ]
                         }

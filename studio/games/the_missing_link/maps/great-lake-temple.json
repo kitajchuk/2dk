@@ -119,7 +119,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got a Boomerang!",
+                                "You got a {Boomerang}!",
                                 "It has a magical flight path!"
                             ]
                         }
@@ -229,7 +229,7 @@
             "dialogue": {
                 "type": "text",
                 "text": [
-                    "You got a small key!"
+                    "You got a {Small Key}!"
                 ]
             }
         }

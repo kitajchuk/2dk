@@ -107,7 +107,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got the bow!",
+                                "You got the {Bow}!",
                                 "Let loose on your enemies!"
                             ]
                         }

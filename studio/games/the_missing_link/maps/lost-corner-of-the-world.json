@@ -557,9 +557,9 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "Oh hey, Kiln. Sorry to hear about Master Shinji.",
+                                "Oh hey, {hero.name}. Sorry to hear about {Master Shinji}.",
                                 "What do you think you'll do now? I bet you're curious about venturing beyond this lost corner of the world...",
-                                "If you decide to go on a quest, make sure you equip a Sword and a Shield first. It's dangerous out there."
+                                "If you decide to go on a quest, make sure you equip a {Sword} and a {Shield} first. It's dangerous out there."
                             ]
                         }
                     },
@@ -568,7 +568,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "Things have been rough around here ever since those Moblins moved in on us."
+                                "Things have been rough around here ever since those {Moblins} moved in on us."
                             ]
                         }
                     },
@@ -577,7 +577,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "Between you and me, the passage behind my house that leads to the graveyard is littered with boarblins.",
+                                "Between you and me, the passage behind my house that leads to the graveyard is littered with {Boarblins}.",
                                 "I can't even step foot out there these days. Face it pal, we're stuck here..."
                             ]
                         }

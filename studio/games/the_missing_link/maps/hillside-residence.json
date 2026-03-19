@@ -67,7 +67,7 @@
                             "type": "text",
                             "text": [
                                 "Hello. You look new.",
-                                "My dog has run off somewhere outside. I'm too scared to go out looking for him with all the Moblins roaming around.",
+                                "My dog has run off somewhere outside. I'm too scared to go out looking for him with all the {Moblins} roaming around.",
                                 "You look like a brave kid. If you find my dog please bring him home where he belongs."
                             ]
                         }
@@ -143,7 +143,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got some Flippers!",
+                                "You got some {Flippers}!",
                                 "Now you can swim in deep water!"
                             ]
                         }

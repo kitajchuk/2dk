@@ -75,7 +75,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "That's a fine sword you have there, boy. But you clearly lack the skill to use it properly. Come back when you can truly wield it."
+                                "That's a fine {hero.weapon} you have there, boy. But you clearly lack the skill to use it properly. Come back when you can truly wield it."
                             ]
                         }
                     },
@@ -95,7 +95,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "Well done, lad, you've learned the true nature of your weapon. Take this skill with you. When you find yourself full of vigor and health you will emit a beam of attack energy from your sword. Carry it well."
+                                "Well done, lad, you've learned the true nature of your weapon. Take this skill with you. When you find yourself full of vigor and health you will emit a beam of attack energy from your {hero.weapon}. Carry it well."
                             ]
                         }
                     },

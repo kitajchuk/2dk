@@ -87,7 +87,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got the Feather!",
+                                "You got the {Feather}!",
                                 "Now you can jump over gaps in the ground!"
                             ]
                         }

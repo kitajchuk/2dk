@@ -100,7 +100,7 @@
                         "dialogue": {
                             "type": "text",
                             "text": [
-                                "You got Master Shinji's old shield!",
+                                "You got {Master Shinji's} old shield!",
                                 "Now you can block enemy attacks!"
                             ]
                         }

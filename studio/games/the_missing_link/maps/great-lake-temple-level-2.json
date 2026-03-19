@@ -223,7 +223,7 @@
             "dialogue": {
                 "type": "text",
                 "text": [
-                    "You got a small key!"
+                    "You got a {Small Key}!"
                 ]
             },
             "dropin": true
