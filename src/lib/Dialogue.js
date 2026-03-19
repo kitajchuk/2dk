@@ -35,13 +35,46 @@ export default class Dialogue {
     }
 
 
+    parseText ( text ) {
+        const matches = [ ...text.matchAll( Config.dialogue.matcher ) ];
+
+        for ( let i = 0; i < matches.length; i++ ) {
+            const match = matches[ i ][ 1 ];
+
+            // By default we'll allow any arbitrary text to be highlighted here
+            let swap = match;
+
+            // Handle curated built-ins for live game access to internal game values
+            switch ( match ) {
+                case Config.dialogue.shortcodes.HERO_NAME:
+                    swap = this.gamebox.hero.data.name;
+                    break;
+                case Config.dialogue.shortcodes.HERO_WEAPON:
+                    swap = this.gamebox.hero.getGameWeapon()?.name ?? swap;
+                    break;
+                case Config.dialogue.shortcodes.HERO_CURRENCY:
+                    swap = this.gamebox.hero.currency;
+                    break;
+                case Config.dialogue.shortcodes.GAME_CURRENCY:
+                    swap = this.player.data.currency;
+                    break;
+            }
+
+            // Perform a dumb replacement -- non-global, first-match for current state of the text string
+            text = text.replace( match, `<span class="a">${swap}</span>` );
+        }
+
+        return text;
+    }
+
+
     writeText ( text ) {
-        this.element.innerHTML = renderDialogueText( text );
+        this.element.innerHTML = renderDialogueText( this.parseText( text ) );
     }
 
 
     writePrompt ( text ) {
-        this.writeText( renderDialoguePrompt( text, this.data ) );
+        this.writeText( renderDialoguePrompt( this.parseText( text ), this.data ) );
     }
 
 

@@ -384,6 +384,12 @@ export default class Hero extends Sprite {
     }
 
 
+    // E.g. The primary weapon available in the game -- whether the Hero currently "has" it or not
+    getGameWeapon () {
+        return this.player.data.items.find( ( item ) => item.equip === "weapon" && !item.projectile );
+    }
+
+
     hasShield () {
         return this.equipped.shield && this.data.shield?.[ this.verb ]?.[ this.dir ]?.length;
     }

@@ -159,6 +159,13 @@ const Config = {
             TALK: "talk",
             READ: "read",
         },
+        matcher: /\{(.*?)\}/g,
+        shortcodes: {
+            HERO_NAME: "hero.name",
+            HERO_WEAPON: "hero.weapon",
+            HERO_CURRENCY: "hero.currency",
+            GAME_CURRENCY: "game.currency",
+        },
     },
     quest: {
         dialogue: {
