@@ -39,13 +39,13 @@ export default class Dialogue {
         const matches = [ ...text.matchAll( Config.dialogue.matcher ) ];
 
         for ( let i = 0; i < matches.length; i++ ) {
-            const match = matches[ i ][ 1 ];
+            const match = matches[ i ][ 0 ];
 
             // By default we'll allow any arbitrary text to be highlighted here
-            let swap = match;
+            let swap = matches[ i ][ 1 ];
 
             // Handle curated built-ins for live game access to internal game values
-            switch ( match ) {
+            switch ( swap ) {
                 case Config.dialogue.shortcodes.HERO_NAME:
                     swap = this.gamebox.hero.data.name;
                     break;
