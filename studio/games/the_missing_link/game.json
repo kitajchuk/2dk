@@ -16,7 +16,7 @@
     "maxresolution": 2,
     "diagonaldpad": true,
     "icon": "icon.png",
-    "save": 1917,
+    "save": 1918,
     "release": 1,
     "plugin": "topview",
     "currency": "Rupees",
@@ -944,6 +944,17 @@
                 "value": 5
             },
             "sound": "magic"
+        },
+        {
+            "id": "bombs",
+            "name": "Bombs",
+            "width": 32,
+            "height": 52,
+            "image": "assets/sprites/items.png",
+            "offsetX": 272,
+            "offsetY": 198,
+            "collect": true,
+            "sound": "heart"
         }
     ],
     "projectiles": [

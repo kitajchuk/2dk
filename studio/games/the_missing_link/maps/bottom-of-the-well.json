@@ -183,7 +183,22 @@
             }
         }
     ],
-    "items": [],
+    "items": [
+        {
+            "id": "bombs",
+            "spawn": {
+                "x": 624,
+                "y": 351
+            },
+            "dialogue": {
+                "type": "text",
+                "text": [
+                    "You got some {Bombs}!",
+                    "Now you can blow stuff up!"
+                ]
+            }
+        }
+    ],
     "collision": [
         [
             76,
