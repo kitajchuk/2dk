@@ -616,7 +616,7 @@ export default class Hero extends Sprite {
 
 
     blitPassiveInteraction () {
-        const poi = this.getNextPoiByDir( this.dir, 1 );
+        const poi = this.getNextPoiByDir( this.dir, { ahead: true } );
         const collision = {
             npc: this.gamebox.checkNPC( poi, this ),
             door: this.gamebox.checkDoor( poi, this ),

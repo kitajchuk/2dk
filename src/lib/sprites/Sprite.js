@@ -583,7 +583,7 @@ export default class Sprite {
     //       - The Hero's position is used to calculate the camera position.
     //       - The camera is used to calculate sprite offsets for rendering.
     // FACT: Turns out the issue had to do with uneven math with friction tiles (e.g. grass dividing by 1.5)
-    //       Removed frition from grass (stairs still use 2 which works find) and it feels better not to slow down in the grass.
+    //       Removed friction from grass (stairs still use 2 which works fine) and it feels better not to slow down in the grass.
 
 
     getNextX () {
@@ -626,34 +626,32 @@ export default class Sprite {
     }
 
 
-    getNextPoiByDir ( dir, ahead ) {
-        if ( ahead && dir === "left" ) {
-            ahead = -this.physics.maxv;
+    getNextPoiByDir ( dir, { ahead = false } = {} ) {
+        let x = this.position.x;
+        let y = this.position.y;
+
+        const lookAhead = ahead ? this.physics.controlmaxv : 0;
+
+        switch ( dir ) {
+            case "left":
+                x = this.getNextX() - lookAhead;
+                break;
+            case "right":
+                x = this.getNextX() + lookAhead;
+                break;
+            case "up":
+                y = this.getNextY() - lookAhead;
+                break;
+            case "down":
+                y = this.getNextY() + lookAhead;
+                break;
         }
 
-        if ( ahead && dir === "right" ) {
-            ahead = this.physics.maxv;
-        }
-
-        if ( ahead && dir === "up" ) {
-            ahead = -this.physics.maxv;
-        }
-
-        if ( ahead && dir === "down" ) {
-            ahead = this.physics.maxv;
-        }
-
-        if ( !ahead ) {
-            ahead = 0;
-        }
-
-        const poi = {
-            x: ( dir === "left" || dir === "right" ) ? ( this.getNextX() + ahead ) : this.position.x,
-            y: ( dir === "up" || dir === "down" ) ? ( this.getNextY() + ahead ) : this.position.y,
+        return {
+            x,
+            y,
             z: this.position.z,
         };
-
-        return poi;
     }
 
 

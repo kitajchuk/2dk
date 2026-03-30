@@ -29,12 +29,17 @@ class TopView extends GameBox {
 /*******************************************************************************
 * GamePad Inputs
 *******************************************************************************/
-    pressD ( dir ) {
+    pressD ( dpad ) {
         if ( this.panning || this.dropin || this.hero.projectileControlLocked || this.hero.isStill() ) {
             return;
         }
 
-        this.handleHero( this.hero.getNextPoiByDir( dir ), dir );
+        // The GamePad always sorts "up" / "down" to the "top" of the stack, e.g. end of array for consistent sprite cycling
+        for ( let i = 0; i < dpad.length; i++ ) {
+            for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
+                this.handleHero( this.hero.getNextPoiByDir( dpad[ i ].dpad[ j ] ), dpad[ i ].dpad[ j ] );
+            }
+        }
     }
 
 

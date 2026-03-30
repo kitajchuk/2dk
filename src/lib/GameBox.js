@@ -272,7 +272,7 @@ export default class GameBox {
         this.hero.applyPosition( poi, dir );
         this.hero.applyPriority();
 
-        // Applly offset
+        // Apply offset
         this.hero.applyOffset();
 
         // Apply the sprite animation cycle

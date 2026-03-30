@@ -185,11 +185,7 @@ export default class Player extends Controller {
             );
 
         } else {
-            for ( let i = 0; i < dpad.length; i++ ) {
-                for ( let j = 0; j < dpad[ i ].dpad.length; j++ ) {
-                    this.gamebox.pressD( dpad[ i ].dpad[ j ] );
-                }
-            }
+            this.gamebox.pressD( dpad );
         }
 
         // Action buttons

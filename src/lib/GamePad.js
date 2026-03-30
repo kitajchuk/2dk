@@ -367,6 +367,12 @@ export default class GamePad {
         control.elem.classList.add( "is-active" );
 
         if ( control.dpad ) {
+            // const dpad = this.checkDpad();
+            // const dirs = dpad.flatMap( ( dp ) => dp.dpad );
+
+            // TODO: disable opposite controls (e.g. if left is down disallow right)
+            //       diffucult to do for diagonal touch controls since those have both dirs in their dpad array
+
             control.touched = true;
             control.dpad.forEach( ( dpad ) => {
                 this.player.controls[ dpad ] = true;
